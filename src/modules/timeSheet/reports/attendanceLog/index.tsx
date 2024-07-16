@@ -3,7 +3,6 @@ import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -23,6 +22,7 @@ import {
   monthLastDate,
 } from "utility/dateFormatter";
 import { empBasicInfo } from "../helper";
+import NoResult from "common/NoResult";
 
 const AttendanceLog = () => {
   const dispatch = useDispatch();
@@ -113,7 +113,7 @@ const AttendanceLog = () => {
       <PForm
         form={form}
         initialValues={{
-          employee: { value: employeeId, label: userName },
+          employee: null,
           fromDate: moment(monthFirstDate()),
           toDate: moment(monthLastDate()),
         }}
@@ -126,34 +126,17 @@ const AttendanceLog = () => {
         <PCard>
           {landingApi?.loading && <Loading />}
           <PCardHeader
-          // exportIcon={true}
-          // title={`Total ${landingApi?.data?.length || 0} results`}
-          // // onSearch={(e) => {
-          // //   searchFunc(e?.target?.value);
-          // //   form.setFieldsValue({
-          // //     search: e?.target?.value,
-          // //   });
-          // // }}
-          // onExport={() => {
-          //   createJobCardExcelHandler({
-          //     BuDetails: buDetails,
-          //     buName,
-          //     rowDto: landingApi?.data,
-          //     empInfo,
-          //   });
-          // }}
-          // printIcon={true}
-          // pdfExport={() => {
-          //   const values = form.getFieldsValue(true);
-          //   getPDFAction(
-          //     `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${
-          //       values?.employee?.value
-          //     }&FromDate=${moment(values?.fromDate).format(
-          //       "YYYY-MM-DD"
-          //     )}&ToDate=${moment(values?.toDate).format("YYYY-MM-DD")}`,
-          //     setLoading
-          //   );
-          // }}
+            exportIcon={true}
+            title={`Total ${landingApi?.data?.length || 0} results`}
+            // onSearch={(e) => {
+            //   searchFunc(e?.target?.value);
+            //   form.setFieldsValue({
+            //     search: e?.target?.value,
+            //   });
+            // }}
+            onExport={() => {}}
+            printIcon={true}
+            pdfExport={() => {}}
           />
           <PCardBody className="">
             <Row gutter={[10, 2]}>
@@ -212,131 +195,138 @@ const AttendanceLog = () => {
               </Col>
             </Row>
           </PCardBody>
-          <Form.Item shouldUpdate noStyle>
-            {() => {
-              return (
-                <Row
-                  className="mb-1"
-                  style={{
-                    border: "1px solid rgba(0, 0, 0, 0.12)",
-                    borderRadius: "6px",
-                    padding: "10px",
-                    marginRight: "0",
-                    marginLeft: "0",
-                    marginTop: "15px",
-                  }}
-                >
-                  <Col
-                    md={6}
-                    sm={12}
-                    xs={24}
-                    style={{
-                      borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-                    }}
-                  >
-                    <div
-                      className="card-des"
+          {landingApi?.data?.length > 0 ? (
+            <>
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  return (
+                    <Row
+                      className="mb-1"
                       style={{
-                        fontSize: "17px",
+                        border: "1px solid rgba(0, 0, 0, 0.12)",
+                        borderRadius: "6px",
+                        padding: "10px",
+                        marginRight: "0",
+                        marginLeft: "0",
+                        marginTop: "15px",
                       }}
                     >
-                      <p>
-                        Employee:{" "}
-                        <strong>
-                          {empInfo?.[0]?.EmployeeName} -
-                          {empInfo?.[0]?.EmployeeCode}
-                        </strong>{" "}
-                      </p>
-                      <p>
-                        Workplace Group:{" "}
-                        <strong>{empInfo?.[0]?.WorkplaceGroupName}</strong>{" "}
-                      </p>
-                      <p>
-                        Workplace Name:{" "}
-                        <strong>{empInfo?.[0]?.WorkplaceName}</strong>{" "}
-                      </p>
-                    </div>
-                  </Col>
-                  <Col
-                    md={6}
-                    sm={12}
-                    xs={24}
-                    style={{
-                      borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    <div className="card-des" style={{}}>
-                      <p>
-                        HR Position:{" "}
-                        <strong>{empInfo?.[0]?.PositionName}</strong>
-                      </p>
-                      {/* <p>
+                      <Col
+                        md={6}
+                        sm={12}
+                        xs={24}
+                        style={{
+                          borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                        }}
+                      >
+                        <div
+                          className="card-des"
+                          style={{
+                            fontSize: "17px",
+                          }}
+                        >
+                          <p>
+                            Employee:{" "}
+                            <strong>
+                              {empInfo?.[0]?.EmployeeName} -
+                              {empInfo?.[0]?.EmployeeCode}
+                            </strong>{" "}
+                          </p>
+                          <p>
+                            Workplace Group:{" "}
+                            <strong>{empInfo?.[0]?.WorkplaceGroupName}</strong>{" "}
+                          </p>
+                          <p>
+                            Workplace Name:{" "}
+                            <strong>{empInfo?.[0]?.WorkplaceName}</strong>{" "}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col
+                        md={6}
+                        sm={12}
+                        xs={24}
+                        style={{
+                          borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        <div className="card-des" style={{}}>
+                          <p>
+                            HR Position:{" "}
+                            <strong>{empInfo?.[0]?.PositionName}</strong>
+                          </p>
+                          {/* <p>
                             Business Unit:{" "}
                             <strong>{empInfo?.[0]?.BusinessUnitName}</strong>
                           </p> */}
-                      <p>
-                        Joining Date:{" "}
-                        <strong>
-                          {dateFormatter(empInfo?.[0]?.JoiningDate)}
-                        </strong>
-                      </p>
-                    </div>
-                  </Col>
-                  <Col
-                    md={6}
-                    sm={12}
-                    xs={24}
-                    style={{
-                      borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    <div
-                      className="card-des"
-                      style={{
-                        borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-                      }}
-                    >
-                      <p>
-                        Designation:{" "}
-                        <strong>{empInfo?.[0]?.DesignationName}</strong>
-                      </p>
-                      <p>
-                        Department:{" "}
-                        <strong>{empInfo?.[0]?.DepartmentName}</strong>{" "}
-                      </p>
-                    </div>
-                  </Col>
-                  <Col
-                    md={6}
-                    sm={12}
-                    xs={24}
-                    style={{
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    <div className="card-des">
-                      <p>
-                        Employment Type:{" "}
-                        <strong>{empInfo?.[0]?.EmploymentTypeName}</strong>
-                      </p>
-                      <p>
-                        {"Supervisor"}:{" "}
-                        <strong>{empInfo?.[0]?.SupervisorName}</strong>
-                      </p>
-                    </div>
-                  </Col>
-                </Row>
-              );
-            }}
-          </Form.Item>
-          <DataTable
-            bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
-            loading={landingApi?.loading}
-            header={attendanceLogTableHeader()}
-          />
+                          <p>
+                            Joining Date:{" "}
+                            <strong>
+                              {dateFormatter(empInfo?.[0]?.JoiningDate)}
+                            </strong>
+                          </p>
+                        </div>
+                      </Col>
+                      <Col
+                        md={6}
+                        sm={12}
+                        xs={24}
+                        style={{
+                          borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        <div
+                          className="card-des"
+                          style={{
+                            borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                          }}
+                        >
+                          <p>
+                            Designation:{" "}
+                            <strong>{empInfo?.[0]?.DesignationName}</strong>
+                          </p>
+                          <p>
+                            Department:{" "}
+                            <strong>{empInfo?.[0]?.DepartmentName}</strong>{" "}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col
+                        md={6}
+                        sm={12}
+                        xs={24}
+                        style={{
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        <div className="card-des">
+                          <p>
+                            Employment Type:{" "}
+                            <strong>{empInfo?.[0]?.EmploymentTypeName}</strong>
+                          </p>
+                          <p>
+                            {"Supervisor"}:{" "}
+                            <strong>{empInfo?.[0]?.SupervisorName}</strong>
+                          </p>
+                        </div>
+                      </Col>
+                    </Row>
+                  );
+                }}
+              </Form.Item>
+
+              <DataTable
+                bordered
+                data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+                loading={landingApi?.loading}
+                header={attendanceLogTableHeader()}
+              />
+            </>
+          ) : (
+            <NoResult />
+          )}
         </PCard>
       </PForm>
     </>

@@ -2,7 +2,7 @@ import React from "react";
 import noResult from "../assets/images/noResult.png";
 import { gray400, gray600 } from "../utility/customColor";
 
-export default function NoResult({ title, para }) {
+export default function NoResult({ title = "", para = "" }) {
   return (
     <>
       <div className="no-result my-4">
