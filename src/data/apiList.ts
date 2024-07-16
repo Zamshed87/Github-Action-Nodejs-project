@@ -149,5 +149,6 @@ export const apiList = {
   SwapEmployeeHistory: "/Employee/SwapEmployeeHistory",
   holidayOffdayAssignPost: "/Employee/HolidayOffdaySwapEmployeeAssign",
   BonusSetupGetbyByBonusCode: "/Employee/BonusSetupGetbyByBonusCode",
-  EmployeeMasterAttendanceReport: "/Employee/EmployeeMasterAttendanceReport"
+  EmployeeMasterAttendanceReport: "/Employee/EmployeeMasterAttendanceReport",
+  AttendanceLogLanding: "/Employee/GetPunchMachineRawData",
 };
