@@ -466,14 +466,27 @@ const EmployeeJobCard = () => {
                     className="btn btn-default mt-4 ml-2"
                     type="button"
                     onClick={() => {
+                      // custom26to25LandingDataHandler(
+                      //   (previousMonthDate: any, currentMonthDate: any) => {
+                      //     form.setFieldsValue({
+                      //       fromDate: moment(previousMonthDate),
+                      //       toDate: moment(currentMonthDate),
+                      //     });
+                      //     landingApiCall();
+                      //   }
+                      // );
+                      const { fromDate } = form.getFieldsValue(true);
                       custom26to25LandingDataHandler(
-                        (previousMonthDate: any, currentMonthDate: any) => {
+                        fromDate,
+                        (
+                          previousMonthStartDate: any,
+                          currentMonthEndDate: any
+                        ) => {
                           form.setFieldsValue({
-                            fromDate: moment(previousMonthDate),
-                            toDate: moment(currentMonthDate),
+                            fromDate: moment(previousMonthStartDate),
+                            toDate: moment(currentMonthEndDate),
                           });
-                          //   setFieldValue("fromDate", previousMonthDate);
-                          //   setFieldValue("toDate", currentMonthDate);
+
                           landingApiCall();
                         }
                       );
