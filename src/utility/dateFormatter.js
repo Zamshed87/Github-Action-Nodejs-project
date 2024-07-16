@@ -102,8 +102,8 @@ export const monthFirstDate = () => {
   return dateFormatterForInput(firstDay);
 };
 
-export const monthLastDate = () => {
-  const date = new Date(),
+export const monthLastDate = (dt) => {
+  const date = dt ? new Date(dt) : new Date(),
     y = date.getFullYear(),
     m = date.getMonth();
   const lastDay = new Date(y, m + 1, 0);
