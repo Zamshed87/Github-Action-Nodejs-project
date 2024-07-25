@@ -91,14 +91,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           ? isCustom
             ? {
                 ...payload,
-
-                dteAttendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+                attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
               }
             : payload
           : {
               ...payload,
 
-              dteAttendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+              attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
             },
     });
   };
