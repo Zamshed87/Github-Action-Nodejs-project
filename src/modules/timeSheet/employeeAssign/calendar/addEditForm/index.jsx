@@ -1,5 +1,5 @@
-import { Close } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Close, DeleteOutline } from "@mui/icons-material";
+import { IconButton, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
@@ -14,6 +14,8 @@ import Loading from "./../../../../../common/loading/Loading";
 import { customStyles } from "./../../../../../utility/selectCustomStyle";
 import { todayDate } from "./../../../../../utility/todayDate";
 import { monthLastDate } from "utility/dateFormatter";
+import { isUniq } from "utility/uniqChecker";
+import { Tag } from "antd";
 
 const ifPrevousDateSelected = (date) => {
   const selectedDate = new Date(date);
@@ -51,26 +53,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Calendar Type is required"),
     })
     .typeError("Calendar Type is required"),
-  calender: Yup.object()
-    .shape({
-      label: Yup.string().required("Calendar is required"),
-      value: Yup.string().required("Calendar is required"),
-    })
-    .typeError("Calendar is required"),
-  // nextChangeDate: Yup.string()
-  // 	.min(1, "Minimum 1 symbols")
-  // 	.max(100, "Maximum 100 symbols")
-  // 	.required("Next Change Date is required")
-  // 	.typeError("Next Change Date is required"),
-  // startingCalender: Yup.object().when("calenderType", {
-  // 	is: (val) => val?.value === 2,
-  // 	then: Yup.object()
-  // 		.shape({
-  // 			label: Yup.string().required("Starting calender is required"),
-  // 			value: Yup.string().required("Starting calender is required"),
-  // 		})
-  // 		.typeError("Starting calender is required"),
-  // }),
+  // calender: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("Calendar is required"),
+  //     value: Yup.string().required("Calendar is required"),
+  //   })
+  //   .typeError("Calendar is required"),
 });
 
 export default function AddEditFormComponent({
@@ -105,6 +93,7 @@ export default function AddEditFormComponent({
   const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
   const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
   const [isPrevousDate, setIsPrevousDate] = useState(false);
+  const [tableData, setTableData] = useState([]);
 
   const getDDL = (value) => {
     let ddlType = value === 1 ? "Calender" : "RosterGroup";
@@ -116,6 +105,16 @@ export default function AddEditFormComponent({
     );
   };
 
+  const setter = (payload) => {
+    if (isUniq("intCalendarId", payload?.intCalendarId, tableData)) {
+      setTableData([...tableData, payload]);
+    }
+  };
+
+  const remover = (payload) => {
+    const filterArr = tableData.filter((itm) => itm.intCalendarId !== payload);
+    setTableData(filterArr);
+  };
   const saveHandler = (values, cb) => {
     if (values?.calenderType?.value === 2) {
       if (!values?.nextChangeDate)
@@ -123,28 +122,11 @@ export default function AddEditFormComponent({
       if (!values?.startingCalender)
         return toast.warn("Starting calender is required");
     }
-
     const modifyFilterRowDto =
       singleData.length > 0
         ? singleData
         : checked.filter((itm) => itm.isSelected === true);
     setRowDto(rowDto?.map((item) => ({ ...item, isSelected: false })));
-    // const payload = modifyFilterRowDto.map((item) => {
-    //   return {
-    //     employeeId: item?.employeeId,
-    //     generateStartDate: values?.generateDate,
-    //     IntCreatedBy: employeeId,
-    //     runningCalendarId:
-    //       values?.calenderType?.value === 2
-    //         ? values?.startingCalender?.value
-    //         : values?.calender?.value,
-    //     nextChangeDate: values?.nextChangeDate || null,
-    //     calendarType: values?.calenderType?.label,
-    //     rosterGroupId:
-    //       values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-    //     isAutoGenerate: false,
-    //   };
-    // });
     const empIdList = modifyFilterRowDto.map((data) => {
       return data?.employeeId;
     });
@@ -152,16 +134,19 @@ export default function AddEditFormComponent({
       employeeList: isAssignAll ? empIDString : empIdList.join(","),
       generateStartDate: values?.generateDate,
       intCreatedBy: employeeId,
-      runningCalendarId:
-        values?.calenderType?.value === 2
-          ? values?.startingCalender?.value
-          : values?.calender?.value,
+      // runningCalendarId:
+      //   values?.calenderType?.value === 2
+      //     ? values?.startingCalender?.value
+      //     : values?.calender?.value,
+      // calendarType: values?.calenderType?.label,
       nextChangeDate: values?.nextChangeDate || null,
-      calendarType: values?.calenderType?.label,
+      runningCalendarId: tableData?.[0]?.intCalendarId || 0,
+      calendarType: tableData?.[0]?.strCalendarName || "",
       rosterGroupId:
         values?.calenderType?.value === 2 ? values?.calender?.value : 0,
       generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
+      extendedEmployeeCalendarList: tableData.slice(1),
     };
     rosterGenerateAction(payload, setLoading, cb);
   };
@@ -265,7 +250,10 @@ export default function AddEditFormComponent({
                               value={values?.generateEndDate}
                               name="generateEndDate"
                               onChange={(e) => {
-                                setFieldValue("generateEndDate", e.target.value);
+                                setFieldValue(
+                                  "generateEndDate",
+                                  e.target.value
+                                );
                               }}
                               errors={errors}
                               touched={touched}
@@ -301,7 +289,13 @@ export default function AddEditFormComponent({
                           </div>
                         </div>
                         <div className="row mx-0">
-                          <div className="col-12">
+                          <div
+                            className={`${
+                              values?.calenderType?.value === 1
+                                ? "col-6"
+                                : "col-12"
+                            }`}
+                          >
                             <label>
                               {values?.calenderType?.value === 2
                                 ? `Roster Name`
@@ -337,7 +331,116 @@ export default function AddEditFormComponent({
                               isDisabled={!values?.calenderType}
                             />
                           </div>
+                          {values?.calenderType?.value === 1 && (
+                            <div
+                              className="col-3 d-flex ml-1 row"
+                              style={{ marginTop: "26px" }}
+                            >
+                              <button
+                                type="button"
+                                className="btn btn-green btn-green-disable"
+                                onClick={() => {
+                                  const obj = {
+                                    intAutoId: 0,
+                                    intEmployeeId: employeeId || 0,
+                                    intCalendarId: values?.calender?.value || 0,
+                                    strCalendarName:
+                                      values?.calender?.label || "",
+                                  };
+                                  setter(obj);
+                                  setFieldValue("calender", "");
+                                }}
+                                disabled={!values?.calender}
+                              >
+                                Add
+                              </button>
+                            </div>
+                          )}
                         </div>
+
+                        {values?.calenderType?.value === 1 && (
+                          <div className="table-card-body pt-3">
+                            <div
+                              className=" table-card-styled tableOne"
+                              style={{ padding: "0px 12px" }}
+                            >
+                              <table className="table align-middle">
+                                <thead style={{ color: "#212529" }}>
+                                  <tr>
+                                    <th>
+                                      <div className="d-flex align-items-center">
+                                        Calendar name
+                                      </div>
+                                    </th>
+                                    <th>
+                                      <div className="d-flex align-items-center justify-content-end">
+                                        Action
+                                      </div>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {tableData?.length > 0 && (
+                                    <>
+                                      {tableData.map((item, index) => {
+                                        const { strCalendarName } = item;
+                                        return (
+                                          <tr key={index}>
+                                            <td>
+                                              {index === 0 ? (
+                                                <>
+                                                  {strCalendarName}{" "}
+                                                  <Tag
+                                                    color="green"
+                                                    style={{
+                                                      borderRadius: "16px",
+                                                      padding: "0 8px",
+                                                    }}
+                                                  >
+                                                    Default
+                                                  </Tag>
+                                                </>
+                                              ) : (
+                                                strCalendarName
+                                              )}
+                                            </td>
+                                            <td>
+                                              <div className="d-flex align-items-end justify-content-end">
+                                                <IconButton
+                                                  type="button"
+                                                  style={{
+                                                    height: "25px",
+                                                    width: "25px",
+                                                  }}
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    remover(
+                                                      item?.intCalendarId
+                                                    );
+                                                  }}
+                                                >
+                                                  <Tooltip title="Delete">
+                                                    <DeleteOutline
+                                                      sx={{
+                                                        height: "25px",
+                                                        width: "25px",
+                                                      }}
+                                                    />
+                                                  </Tooltip>
+                                                </IconButton>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
+                                    </>
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+
                         {values?.calenderType?.value === 2 && (
                           <>
                             <div className="row mx-0">
@@ -400,6 +503,7 @@ export default function AddEditFormComponent({
                           resetForm(initData);
                           getData(checked);
                           setFieldValueParent("search", "");
+                          setTableData([]);
                         }}
                       >
                         Cancel
