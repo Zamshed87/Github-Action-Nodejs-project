@@ -314,10 +314,10 @@ export const salaryGenerateCreateEditTableColumn = (
     title: "Department",
     dataIndex: "strDepartment",
   },
-  // {
-  //   title: "Department Section",
-  //   dataIndex: "strDepartmentSection",
-  // },
+  {
+    title: "Department Section",
+    dataIndex: "strDepartmentSection",
+  },
   {
     title: "Workplace",
     dataIndex: "strWorkplace",
