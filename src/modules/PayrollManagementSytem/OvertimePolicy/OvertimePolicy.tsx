@@ -54,22 +54,27 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
     {
       title: "Policy Name",
       dataIndex: "strPolicyName",
+      filter: true,
     },
     {
       title: "Workplace",
       dataIndex: "strWorkplaceName",
+      filter: true,
     },
     {
       title: "HR Position",
       dataIndex: "strHrPositionName",
+      filter: true,
     },
     {
       title: "Employment Type",
       dataIndex: "employmentType",
+      filter: true,
     },
     {
       title: "Calendar Name",
       dataIndex: "strCalenderName",
+      filter: true,
     },
 
     {
