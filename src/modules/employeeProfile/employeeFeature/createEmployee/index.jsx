@@ -743,17 +743,17 @@ const CreateAndEditEmploye = () => {
                   />
                 </Col>
 
-                  <Col md={6} sm={24}>
-                    <PInput
-                      type="text"
-                      name="strReferenceId"
-                      label="Reference ID"
-                      placeholder="Reference ID"
-                      // disabled={
-                      //   empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
-                      // }
-                    />
-                  </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="text"
+                    name="strReferenceId"
+                    label="Reference ID"
+                    placeholder="Reference ID"
+                    // disabled={
+                    //   empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
+                    // }
+                  />
+                </Col>
 
                 <Col md={6} sm={24}>
                   <PSelect
@@ -1088,7 +1088,7 @@ const CreateAndEditEmploye = () => {
                   />
                 </Col>
                 {empId && (employeeFeature?.isEdit || isOfficeAdmin) ? (
-                  <Col  md={6} sm={24}>
+                  <Col md={6} sm={24}>
                     <PSelect
                       options={employeeStatusDDL?.data || []}
                       name="employeeStatus"
@@ -1124,8 +1124,16 @@ const CreateAndEditEmploye = () => {
                                 dteLastInactiveDate: value,
                               });
                             }}
-                            disabledDate={(current) => moment(current) > moment()}
+                            disabledDate={(current) =>
+                              moment(current) > moment()
+                            }
                             // disabled={params?.id}
+                            rules={[
+                              {
+                                required: employeeStatus?.value === 2 && true,
+                                message: "Inactive date is required",
+                              },
+                            ]}
                           />
                         </Col>
                       );
