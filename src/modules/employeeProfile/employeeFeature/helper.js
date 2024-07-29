@@ -93,7 +93,12 @@ export const createEditEmpAction = async (
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
       intEmployeeStatusId: values?.employeeStatus?.value || 1,
-      dteLastInactiveDate: values?.employeeStatus?.value === 2 ? moment(values?.dteLastInactiveDate).format("YYYY-MM-DD") : null,
+      dteLastInactiveDate:
+        values?.employeeStatus?.value === 2
+          ? values?.dteLastInactiveDate
+            ? moment(values?.dteLastInactiveDate).format("YYYY-MM-DD")
+            : null
+          : null,
       strEmployeeStatus: values?.employeeStatus?.label || "Active",
       intCalenderId: 0,
       strCalenderName: "",
@@ -345,7 +350,11 @@ export const getEmployeeProfileViewDataForAddress = async (
   }
 };
 
-export const getEmployeeProfileViewDataAuth = async (id, setter, setLoading) => {
+export const getEmployeeProfileViewDataAuth = async (
+  id,
+  setter,
+  setLoading
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
@@ -359,7 +368,6 @@ export const getEmployeeProfileViewDataAuth = async (id, setter, setLoading) => 
     setLoading && setLoading(false);
   }
 };
-
 
 export const getEmployeeProfileViewData = async (
   id,
@@ -608,12 +616,15 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isActive: empBasic?.employeeProfileLandingView?.userStatus,
-          dteLastInactiveDate: empBasic?.employeeProfileLandingView?.dteLastInactiveDate ? moment(empBasic?.employeeProfileLandingView?.dteLastInactiveDate) : null,
+          dteLastInactiveDate: empBasic?.employeeProfileLandingView
+            ?.dteLastInactiveDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteLastInactiveDate)
+            : null,
           officePhone:
             empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
           officeEmail:
             empBasic?.employeeProfileLandingView?.strOfficeMail || "",
-            personalMobile:
+          personalMobile:
             empBasic?.employeeProfileLandingView?.strPersonalMobile || "",
           personalEmail:
             empBasic?.employeeProfileLandingView?.strPersonalMail || "",
