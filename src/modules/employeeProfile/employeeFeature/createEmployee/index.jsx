@@ -1304,6 +1304,7 @@ const CreateAndEditEmploye = () => {
                     onChange={(value, op) => {
                       form.setFieldsValue({
                         strOTbasedon: op,
+                        intOTFixedHour: null,
                       });
                     }}
                     rules={[
