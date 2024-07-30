@@ -93,7 +93,12 @@ export const createEditEmpAction = async (
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
       intEmployeeStatusId: values?.employeeStatus?.value || 1,
-      dteLastInactiveDate: values?.employeeStatus?.value === 2 ? moment(values?.dteLastInactiveDate).format("YYYY-MM-DD") : null,
+      dteLastInactiveDate:
+        values?.employeeStatus?.value === 2
+          ? values?.dteLastInactiveDate
+            ? moment(values?.dteLastInactiveDate).format("YYYY-MM-DD")
+            : null
+          : null,
       strEmployeeStatus: values?.employeeStatus?.label || "Active",
       intCalenderId: 0,
       strCalenderName: "",
@@ -111,6 +116,8 @@ export const createEditEmpAction = async (
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
       nid: values?.nid || "",
       tinNo: values?.tinNo || "",
+      strOTbasedon: values?.strOTbasedon?.value || "",
+      intOTFixedHour: +values?.intOTFixedHour || 0,
     };
     if (!isEdit) {
       payload = {
@@ -345,7 +352,11 @@ export const getEmployeeProfileViewDataForAddress = async (
   }
 };
 
-export const getEmployeeProfileViewDataAuth = async (id, setter, setLoading) => {
+export const getEmployeeProfileViewDataAuth = async (
+  id,
+  setter,
+  setLoading
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
@@ -359,7 +370,6 @@ export const getEmployeeProfileViewDataAuth = async (id, setter, setLoading) => 
     setLoading && setLoading(false);
   }
 };
-
 
 export const getEmployeeProfileViewData = async (
   id,
@@ -608,12 +618,15 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isActive: empBasic?.employeeProfileLandingView?.userStatus,
-          dteLastInactiveDate: empBasic?.employeeProfileLandingView?.dteLastInactiveDate ? moment(empBasic?.employeeProfileLandingView?.dteLastInactiveDate) : null,
+          dteLastInactiveDate: empBasic?.employeeProfileLandingView
+            ?.dteLastInactiveDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteLastInactiveDate)
+            : null,
           officePhone:
             empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
           officeEmail:
             empBasic?.employeeProfileLandingView?.strOfficeMail || "",
-            personalMobile:
+          personalMobile:
             empBasic?.employeeProfileLandingView?.strPersonalMobile || "",
           personalEmail:
             empBasic?.employeeProfileLandingView?.strPersonalMail || "",
@@ -643,6 +656,16 @@ export const getEmployeeProfileViewData = async (
                 value: 1,
                 label: "Not Applicable",
               },
+          strOTbasedon: empBasic?.employeeProfileLandingView?.strOTbasedon
+            ? {
+                value: empBasic?.employeeProfileLandingView?.strOTbasedon,
+                label: empBasic?.employeeProfileLandingView?.strOTbasedon,
+              }
+            : {
+                value: "Calendar",
+                label: "Calendar",
+              },
+          intOTFixedHour:  empBasic?.employeeProfileLandingView?.intOTFixedHour || 0,
           // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
           // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
           // calenderType: [{value: 1, label: "Calendar"},

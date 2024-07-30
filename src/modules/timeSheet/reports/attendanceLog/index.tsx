@@ -23,13 +23,14 @@ import {
 } from "utility/dateFormatter";
 import { empBasicInfo } from "../helper";
 import NoResult from "common/NoResult";
+import { downloadFile, getPDFAction } from "utility/downloadFile";
 
 const AttendanceLog = () => {
   const dispatch = useDispatch();
   // redux states data
   const {
     permissionList,
-    profileData: { buId, wgId, orgId, employeeId, userName },
+    profileData: { buId, wgId, orgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const featurePermission = useMemo(
@@ -49,6 +50,7 @@ const AttendanceLog = () => {
 
   //   api states and actions
   const [empInfo, setEmpInfo] = useState<any>();
+  const [loading, setLoading] = useState(false);
   const CommonEmployeeDDL = useApiRequest([]);
   const landingApi = useApiRequest({});
   const getEmployee = (value: any) => {
@@ -124,19 +126,37 @@ const AttendanceLog = () => {
         }}
       >
         <PCard>
-          {landingApi?.loading && <Loading />}
+          {(landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.length || 0} results`}
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            //   form.setFieldsValue({
-            //     search: e?.target?.value,
-            //   });
-            // }}
-            onExport={() => {}}
+            onExport={() => {
+              const values = form.getFieldsValue(true);
+              const url = `/PdfAndExcelReport/GetPunchMachineRawDataPdfNExl?partType=excelView&fromDate=${moment(
+                values?.fromDate
+              ).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&employeeId=${
+                values?.employee?.value
+              }&workplaceGroupId=${wgId}&businessUnitId=${buId}`;
+              landingApi?.data?.length > 0 &&
+                downloadFile(url, "Salary Details Report", "xlsx", setLoading);
+            }}
             printIcon={true}
-            pdfExport={() => {}}
+            pdfExport={() => {
+              const values = form.getFieldsValue(true);
+              landingApi?.data?.length > 0 &&
+                getPDFAction(
+                  `/PdfAndExcelReport/GetPunchMachineRawDataPdfNExl?partType=pdfView&fromDate=${moment(
+                    values?.fromDate
+                  ).format("YYYY-MM-DD")}&toDate=${moment(
+                    values?.toDate
+                  ).format("YYYY-MM-DD")}&employeeId=${
+                    values?.employee?.value
+                  }&workplaceGroupId=${wgId}&businessUnitId=${buId}`,
+                  setLoading
+                );
+            }}
           />
           <PCardBody className="">
             <Row gutter={[10, 2]}>
@@ -157,6 +177,7 @@ const AttendanceLog = () => {
                   }}
                   showSearch
                   filterOption={false}
+                  rules={[{ required: true, message: "Employee is required" }]}
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>

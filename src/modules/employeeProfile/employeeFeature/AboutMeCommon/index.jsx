@@ -494,6 +494,17 @@ function AboutMeDetails() {
                     empBasic?.employeeProfileLandingView
                       ?.intProbationayClosedByInDate
                 ) || undefined,
+              strOTbasedon: empBasic?.employeeProfileLandingView?.strOTbasedon
+                ? {
+                    value: empBasic?.employeeProfileLandingView?.strOTbasedon,
+                    label: empBasic?.employeeProfileLandingView?.strOTbasedon,
+                  }
+                : {
+                    value: "Calendar",
+                    label: "Calendar",
+                  },
+              intOTFixedHour:
+                empBasic?.employeeProfileLandingView?.intOTFixedHour || 0,
               // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
               // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
               // calenderType: [{value: 1, label: "Calendar"},

@@ -588,6 +588,10 @@ const CreateAndEditEmploye = () => {
             value: 1,
             label: "Not Applicable",
           },
+          strOTbasedon: {
+            value: "Calendar",
+            label: "Calendar",
+          },
           // userType: {
           //   value: 1,
           //   label: "Not Applicable fhfdh",
@@ -743,17 +747,17 @@ const CreateAndEditEmploye = () => {
                   />
                 </Col>
 
-                  <Col md={6} sm={24}>
-                    <PInput
-                      type="text"
-                      name="strReferenceId"
-                      label="Reference ID"
-                      placeholder="Reference ID"
-                      // disabled={
-                      //   empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
-                      // }
-                    />
-                  </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="text"
+                    name="strReferenceId"
+                    label="Reference ID"
+                    placeholder="Reference ID"
+                    // disabled={
+                    //   empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
+                    // }
+                  />
+                </Col>
 
                 <Col md={6} sm={24}>
                   <PSelect
@@ -1088,7 +1092,7 @@ const CreateAndEditEmploye = () => {
                   />
                 </Col>
                 {empId && (employeeFeature?.isEdit || isOfficeAdmin) ? (
-                  <Col  md={6} sm={24}>
+                  <Col md={6} sm={24}>
                     <PSelect
                       options={employeeStatusDDL?.data || []}
                       name="employeeStatus"
@@ -1124,8 +1128,16 @@ const CreateAndEditEmploye = () => {
                                 dteLastInactiveDate: value,
                               });
                             }}
-                            disabledDate={(current) => moment(current) > moment()}
+                            disabledDate={(current) =>
+                              moment(current) > moment()
+                            }
                             // disabled={params?.id}
+                            rules={[
+                              {
+                                required: employeeStatus?.value === 2 && true,
+                                message: "Inactive date is required",
+                              },
+                            ]}
                           />
                         </Col>
                       );
@@ -1277,6 +1289,78 @@ const CreateAndEditEmploye = () => {
                 </Col>
                 <Col md={6} sm={24}>
                   <PSelect
+                    options={[
+                      {
+                        value: "Calendar",
+                        label: "Calendar",
+                      },
+                      { value: "Fixed Hour", label: "Fixed Hour" },
+                    ]}
+                    name="strOTbasedon"
+                    label="Overtime Based On"
+                    placeholder={"Overtime Based On"}
+                    allowClear
+                    // disabled={!calenderType}
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        strOTbasedon: op,
+                        intOTFixedHour: null,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Overtime Based On is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const { strOTbasedon } = form.getFieldsValue(true);
+                    return (
+                      strOTbasedon?.value === "Fixed Hour" && (
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="number"
+                            name="intOTFixedHour"
+                            label="OT Fixed Hour"
+                            placeholder="OT Fixed Hour"
+                            onChange={(value) => {
+                              if (value > 24) {
+                                form.setFieldsValue({
+                                  intOTFixedHour: "",
+                                });
+                                toast.warn(
+                                  "OT Fixed Hour can't be more than 24 hours"
+                                );
+                                return;
+                              }
+                              if (value < 0) {
+                                form.setFieldsValue({
+                                  intOTFixedHour: "",
+                                });
+                                toast.warn("OT Fixed Hour can't be negative");
+                                return;
+                              }
+                              form.setFieldsValue({
+                                intOTFixedHour: value,
+                              });
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Inactive date is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      )
+                    );
+                  }}
+                </Form.Item>
+                <Col md={6} sm={24}>
+                  <PSelect
                     options={payScaleGradeDDL?.data || []}
                     name="payScaleGrade"
                     showSearch
@@ -1294,7 +1378,7 @@ const CreateAndEditEmploye = () => {
 
                 {!empId && (
                   <Col className="mt-2" md={6} sm={24}>
-                    <div>
+                    <div className="mt-3">
                       <FileUploadComponents
                         propsObj={{
                           title: "Employee Signature",

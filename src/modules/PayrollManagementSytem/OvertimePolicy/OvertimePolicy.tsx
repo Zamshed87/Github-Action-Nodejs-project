@@ -1,5 +1,6 @@
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { useApiRequest } from "Hooks";
+import { Form } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -14,6 +15,9 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
   );
 
   const history = useHistory();
+
+  // Form Instance
+  const [form] = Form.useForm();
 
   // Api Actions
   const GetOverTimeConfig = useApiRequest([]);
@@ -54,22 +58,32 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
     {
       title: "Policy Name",
       dataIndex: "strPolicyName",
+      filter: true,
+      filterSearch: true,
     },
     {
       title: "Workplace",
       dataIndex: "strWorkplaceName",
+      filter: true,
+      filterSearch: true,
     },
     {
       title: "HR Position",
       dataIndex: "strHrPositionName",
+      filter: true,
+      filterSearch: true,
     },
     {
       title: "Employment Type",
       dataIndex: "employmentType",
+      filter: true,
+      filterSearch: true,
     },
     {
       title: "Calendar Name",
       dataIndex: "strCalenderName",
+      filter: true,
+      filterSearch: true,
     },
 
     {
@@ -98,6 +112,7 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
   return (
     <>
       <PForm
+        form={form}
         onFinish={() => {
           history.push(
             "/administration/payrollConfiguration/overtimePolicy/create"
