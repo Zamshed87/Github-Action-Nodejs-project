@@ -80,10 +80,15 @@ export default function AddEditFormComponent({
   let currentMonth = new Date().getMonth() + 1;
 
   const saveHandler = (values, cb) => {
-    console.log("selectedPayloadState",selectedPayloadState)
     if (isMulti) {
       const payload = [];
-      selectedPayloadState.forEach((item) => {
+
+      const dataToProcess =
+        selectedPayloadState?.length > 0 ? selectedPayloadState : tableData;
+
+      console.log("dataToProcess", dataToProcess);
+
+      dataToProcess.forEach((item) => {
         const inTImeStr =
           item?.inDateUpdate +
           "T" +
@@ -115,19 +120,20 @@ export default function AddEditFormComponent({
             requestStatus: values?.inputFieldType?.label,
             remarks: item?.reasonUpdate || values?.code,
             isApproved: item?.isApproved || false,
-            isActive: item?.isActive,
+            isActive: item?.isActive || true,
             intCreatedBy: employeeId,
             dteCreatedAt: todayDate(),
             isManagement: false,
             accountId: orgId,
             workPlaceGroup: buId,
             businessUnitId: wgId,
-            inDateTime: inTImeStr || null,
-            outDateTime: outTimeStr || null,
+            inDateTime: item?.isChanged ? inTImeStr : null,
+            outDateTime: item?.isChanged ? outTimeStr : null,
           });
         }
       });
       editManualAttendance(payload, setLoading, cb);
+      // console.log("payload multi", payload);
     } else {
       let status =
         singleRowData?.isPresent === true
@@ -154,7 +160,7 @@ export default function AddEditFormComponent({
           requestStatus: values?.inputFieldType?.label,
           remarks: values?.code,
           isApproved: singleRowData?.isApproved || false,
-          isActive: singleRowData?.isActive,
+          isActive: true,
           intCreatedBy: employeeId,
           dteCreatedAt: todayDate(),
           isManagement: false,
@@ -164,6 +170,7 @@ export default function AddEditFormComponent({
         },
       ];
       editManualAttendance(payload, setLoading, cb);
+      // console.log("payload", payload);
     }
   };
 

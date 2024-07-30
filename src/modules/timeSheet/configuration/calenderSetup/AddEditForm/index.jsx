@@ -14,14 +14,13 @@ import {
   onCreateCalendarSetupWithValidation,
   validationSchema,
 } from "./helper";
-import FormikSelect from "../../../../../common/FormikSelect";
-import { customStyles } from "../../../../../utility/selectCustomStyle";
-import { isUniq } from "../../../../../utility/uniqChecker";
+// import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
 import { calculateNextDate } from "utility/dateFormatter";
 import { toast } from "react-toastify";
 import moment from "moment";
+import MultiCheckedSelect from "common/MultiCheckedSelect";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -60,6 +59,13 @@ const CalendarSetupModal = ({
   }, [id]);
   useEffect(() => {
     if (singleData) {
+      const tableData = singleData?.timeSheetCalenderRows?.map((item) => ({
+        intCalenderRowId: item?.intCalenderRowId,
+        intWorkplaceId: item?.intWorkplaceId,
+        strWorkplace: item?.strWorkplaceName,
+        value: item?.intWorkplaceId,
+        label: item?.strWorkplaceName,
+      }));
       const newRowData = {
         calendarName: singleData?.strCalenderName,
         isLunchBreakAsWorkingHour:
@@ -75,12 +81,9 @@ const CalendarSetupModal = ({
         officeCloseTime: singleData?.dteOfficeCloseTime || "",
         nightShift: singleData?.isNightShift || "",
         isEmployeeUpdate: true,
+        workplace: tableData?.length > 0 ? tableData : [],
       };
-      const tableData = singleData?.timeSheetCalenderRows?.map((item) => ({
-        intCalenderRowId: item?.intCalenderRowId,
-        intWorkplaceId: item?.intWorkplaceId,
-        strWorkplace: item?.strWorkplaceName,
-      }));
+
       id && setTableData(tableData);
       setModifySingleData(newRowData);
     }
@@ -97,11 +100,11 @@ const CalendarSetupModal = ({
   }, [buId, wgId, employeeId]);
 
   // setter function
-  const setter = (payload) => {
-    if (isUniq("intWorkplaceId", payload?.intWorkplaceId, tableData)) {
-      setTableData([...tableData, payload]);
-    }
-  };
+  // const setter = (payload) => {
+  //   if (isUniq("intWorkplaceId", payload?.intWorkplaceId, tableData)) {
+  //     setTableData([...tableData, payload]);
+  //   }
+  // };
 
   // row remover
   const remover = (payload) => {
@@ -611,9 +614,7 @@ const CalendarSetupModal = ({
                               timesState(
                                 e.target.value,
                                 values?.breakStartTime
-                              ) === "after" &&
-                              timesState(e.target.value, values?.endTime) ===
-                                "before"
+                              ) === "after"
                             ) {
                               setFieldValue("breakEndTime", e.target.value);
                             } else {
@@ -733,7 +734,7 @@ const CalendarSetupModal = ({
                         </div>
                       </>
                     ) : null}
-                    <div className="col-6">
+                    {/* <div className="col-6">
                       <label>Workplace </label>
                       <FormikSelect
                         name="year"
@@ -749,47 +750,74 @@ const CalendarSetupModal = ({
                         isDisabled={false}
                         menuPosition="fixed"
                       />
+                    </div> */}
+                    <div className="col-md-6">
+                      <div className="input-field-main">
+                        <label>Workplace</label>
+                        <MultiCheckedSelect
+                          name="workplace"
+                          options={workPlaceDDL || []}
+                          value={values?.workplace}
+                          onChange={(valueOption) => {
+                            setFieldValue("workplace", valueOption);
+                            setTableData(valueOption);
+                          }}
+                          isShowAllSelectedItem={false}
+                          errors={errors}
+                          placeholder="Workplace"
+                          touched={touched}
+                          setFieldValue={setFieldValue}
+                          isSearchFieldVisible={false}
+                        />
+                      </div>
                     </div>
-                    <div className="col-3 d-flex mt-4 ml-1 row">
+                    {/* <div className="col-3 d-flex mt-4 ml-1 row">
                       <button
                         type="button"
                         className="btn btn-green btn-green-disable"
                         onClick={() => {
-                          const obj = {
-                            intWorkplaceId: values?.workplace?.value,
-                            strWorkplace: values?.workplace?.label,
-                          };
-                          setter(obj);
-                          setFieldValue("workplace", "");
+                          // console.log(values);
+                          // const modifiedData = values?.workplace?.map((dto) => {
+                          //   return {
+                          //     intWorkplaceId: dto?.value,
+                          //     strWorkplace: dto?.label,
+                          //   };
+                          // });
+                          // // const obj = {
+                          // //   intWorkplaceId: values?.workplace?.value,
+                          // //   strWorkplace: values?.workplace?.label,
+                          // // };
+                          // setTableData(modifiedData);
+                          // setFieldValue("workplace", []);
                         }}
                         disabled={!values?.workplace}
                       >
                         Add
                       </button>
-                    </div>
+                    </div> */}
 
-                    <div className="table-card-body pt-3">
-                      <div
-                        className=" table-card-styled tableOne"
-                        style={{ padding: "0px 12px" }}
-                      >
-                        <table className="table align-middle">
-                          <thead style={{ color: "#212529" }}>
-                            <tr>
-                              <th>
-                                <div className="d-flex align-items-center">
-                                  Workplace name
-                                </div>
-                              </th>
-                              <th>
-                                <div className="d-flex align-items-center justify-content-end">
-                                  Action
-                                </div>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {tableData?.length > 0 && (
+                    {tableData?.length > 0 && (
+                      <div className="table-card-body pt-3">
+                        <div
+                          className=" table-card-styled tableOne"
+                          style={{ padding: "0px 12px" }}
+                        >
+                          <table className="table align-middle">
+                            <thead style={{ color: "#212529" }}>
+                              <tr>
+                                <th>
+                                  <div className="d-flex align-items-center">
+                                    Workplace name
+                                  </div>
+                                </th>
+                                <th>
+                                  <div className="d-flex align-items-center justify-content-end">
+                                    Action
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
                               <>
                                 {tableData.map((item, index) => {
                                   const { strWorkplace } = item;
@@ -808,6 +836,20 @@ const CalendarSetupModal = ({
                                               e.stopPropagation();
                                               remover(item?.intWorkplaceId);
                                               deleteRow(item?.intWorkplaceId);
+                                              if (
+                                                values?.workplace?.length > 0
+                                              ) {
+                                                const filterArr =
+                                                  tableData.filter(
+                                                    (itm) =>
+                                                      itm.value !==
+                                                      item?.intWorkplaceId
+                                                  );
+                                                setFieldValue(
+                                                  "workplace",
+                                                  filterArr
+                                                );
+                                              }
                                             }}
                                           >
                                             <Tooltip title="Delete">
@@ -825,11 +867,11 @@ const CalendarSetupModal = ({
                                   );
                                 })}
                               </>
-                            )}
-                          </tbody>
-                        </table>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
                 <div className="modal-footer form-modal-footer">
