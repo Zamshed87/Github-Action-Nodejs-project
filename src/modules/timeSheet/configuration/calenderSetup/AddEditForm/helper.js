@@ -221,6 +221,7 @@ export const initData = {
   isEmployeeUpdate: false,
   dteEmployeeUpdateFromDate: "",
   dteEmployeeUpdateToDate: "",
+  workplace: [],
 };
 
 export const validationSchema = Yup.object({

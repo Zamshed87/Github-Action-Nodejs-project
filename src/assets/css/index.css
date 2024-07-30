@@ -34,7 +34,7 @@
   z-index: 999;
 }
 .modal {
-  z-index: 99999999;
+  /* z-index: 99999999; */
 }
 .asset-requision-modal.modal {
   z-index: 1050;

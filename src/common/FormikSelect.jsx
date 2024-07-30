@@ -2,11 +2,7 @@
 import React, { useState, useRef } from "react";
 import FormikError from "./login/FormikError";
 import Select from "react-select";
-import {
-  customStyles,
-  customStylesLarge,
-  smallCustomStyles,
-} from "../utility/selectCustomStyle";
+import { customStyles, customStylesLarge } from "../utility/selectCustomStyle";
 
 const FormikSelect = (props) => {
   const target = useRef(null);
@@ -26,7 +22,7 @@ const FormikSelect = (props) => {
     menuPosition,
     isClearable,
     isSearchable,
-    isOptionDisabled
+    isOptionDisabled,
   } = props;
 
   // styleMode = "small" || "medium" || "large"
@@ -39,9 +35,9 @@ const FormikSelect = (props) => {
   }
 
   return (
-    <div className='form-container' id={name}>
+    <div className="form-container" id={name}>
       <div
-        className='formik-select-wrapper'
+        className="formik-select-wrapper"
         ref={target}
         onFocus={() => setIsFocusForm(true)}
         onBlur={() => setIsFocusForm(false)}
@@ -70,7 +66,7 @@ const FormikSelect = (props) => {
         />
         {setClear && (
           <i
-            class='fa fa-times-circle select-cross-icon'
+            className="fa fa-times-circle select-cross-icon"
             onClick={() => {
               setClear(name, "");
             }}
