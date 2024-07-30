@@ -77,6 +77,7 @@ export const processBulkUploadEmployeeAction = async (
           ? "Without Salary/Additional OT"
           : "Not Applicable",
       intOtTypeId: +item["OT Type"],
+      intOTFixedHour : +item?.["OT Fixed Hour"] || 0,
       strJobLocation: item["Job Location"] || "",
       strJobTerritory: item["Job Territory"] || "",
     }));
