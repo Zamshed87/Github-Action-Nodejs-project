@@ -172,6 +172,7 @@ const ChangedInOutTimeEmpListModal = ({
     dteStartTime: false,
     dteEndTime: false,
   });
+
   const updateByApplyAll = (fieldName) => {
     const firstIndex = moment(
       moment(rowDto?.[0][fieldName]).format("HH:mm:ss"),
@@ -187,8 +188,8 @@ const ChangedInOutTimeEmpListModal = ({
     });
     setRowDto(updateState);
   };
-
   useEffect(() => {
+   
     setRowDto([
       ...selectedData.map((info) => ({
         ...info,
@@ -200,6 +201,7 @@ const ChangedInOutTimeEmpListModal = ({
           : null,
         intimeUpdate: info?.dteStartTime ? moment(info?.dteStartTime, "h:mma") : null,
         outtimeUpdate: info?.dteEndTime ? moment(info?.dteEndTime, "h:mma") : null,
+        isChanged: true,
         reasonUpdate: "",
       })),
     ]);
