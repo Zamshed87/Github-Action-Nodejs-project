@@ -43,6 +43,7 @@ const MultiCheckedSelect = ({
   isAvatar = false,
   searchFieldPlaceholder = "Search",
   isShowAllSelectedItem = true,
+  isSearchFieldVisible = true,
 }) => {
   const [allChecked, setAllChecked] = useState(false);
   const [searchString, setSearchString] = useState("");
@@ -90,10 +91,6 @@ const MultiCheckedSelect = ({
     item?.label?.toLowerCase()?.includes(searchString?.toLowerCase())
   );
 
-  const stopPropagation = (e) => {
-    e.stopPropagation();
-  };
-
   return (
     <>
       <FormControl
@@ -135,7 +132,7 @@ const MultiCheckedSelect = ({
               options.length > 0 &&
               options.length === value.length) ||
             !isShowAllSelectedItem ? (
-              <p>{value.length} items Selected</p>
+              <small>{value.length} items Selected</small>
             ) : (
               <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {selected?.map((item, index) => (
@@ -183,59 +180,51 @@ const MultiCheckedSelect = ({
           }
           MenuProps={MenuProps}
         >
-          <MenuItem
-            onKeyDown={(e) => stopPropagation(e)}
-            sx={{
-              "&.Mui-focusVisible": {
-                backgroundColor: "white",
-              },
-              "&:focus": {
-                backgroundColor: "white",
-              },
-              "&:hover": {
-                backgroundColor: "white",
-              },
-            }}
-          >
-            <OutlinedInput
-              inputProps={{
-                style: {
-                  paddingTop: "5px",
-                  paddingBottom: "5px",
-                },
-              }}
-              sx={{
-                "&.MuiOutlinedInput-root": {
-                  "&:hover fieldset": {
-                    borderColor: gray400,
+          {isSearchFieldVisible && (
+            <li
+              onKeyDown={(e) => e.preventDefault()}
+              style={{ width: "100%", padding: "5px 10px" }}
+            >
+              <OutlinedInput
+                inputProps={{
+                  style: {
+                    paddingTop: "5px",
+                    paddingBottom: "5px",
                   },
-                  "&.Mui-focused fieldset": {
-                    border: `1px solid ${gray400}`,
+                }}
+                sx={{
+                  "&.MuiOutlinedInput-root": {
+                    "&:hover fieldset": {
+                      borderColor: gray400,
+                    },
+                    "&.Mui-focused fieldset": {
+                      border: `1px solid ${gray400}`,
+                    },
                   },
-                },
-                width: "100%",
-              }}
-              value={searchString}
-              onClick={(e) => stopPropagation(e)}
-              onKeyDown={(e) => stopPropagation(e)}
-              onChange={(e) => {
-                stopPropagation(e);
-                setSearchString(e.target.value);
-              }}
-              size="small"
-              placeholder={searchFieldPlaceholder}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    edge="end"
-                  >
-                    <SearchIcon sx={{ width: "18px", padding: 0 }} />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </MenuItem>
+                  width: "100%",
+                }}
+                value={searchString}
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  setSearchString(e.target.value);
+                }}
+                size="small"
+                placeholder={searchFieldPlaceholder}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      edge="end"
+                    >
+                      <SearchIcon sx={{ width: "18px", padding: 0 }} />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </li>
+          )}
           {options?.length > 0 && (
             <li
               style={{

@@ -3,14 +3,12 @@ import { Box } from "@mui/system";
 import { Edit, CalendarToday, WatchLater, Watch } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import { shallowEqual, useSelector } from "react-redux";
-import { getPeopleDeskAllLanding } from "../../../../../common/api";
 import { timeFormatter } from "../../../../../utility/timeFormatter";
 import { getTimeSheetCalenderById } from "../AddEditForm/helper";
 
 const ViewCalendarSetup = ({
   id,
   handleOpen,
-  onHide,
   setId,
   singleData,
   setSingleData,
@@ -25,7 +23,7 @@ const ViewCalendarSetup = ({
     boxSizing: "border-box",
   };
 
-  const { orgId, buId, wgId } = useSelector(
+  const { buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
