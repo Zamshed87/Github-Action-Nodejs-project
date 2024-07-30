@@ -115,13 +115,18 @@ export default function AddEditFormComponent({
     const filterArr = tableData.filter((itm) => itm.intCalendarId !== payload);
     setTableData(filterArr);
   };
+
   const saveHandler = (values, cb) => {
+    if (values?.calenderType?.value === 1 && tableData.length === 0)
+      return toast.warn("Please add calendar");
+
     if (values?.calenderType?.value === 2) {
       if (!values?.nextChangeDate)
         return toast.warn("Next change date is required");
       if (!values?.startingCalender)
         return toast.warn("Starting calender is required");
     }
+
     const modifyFilterRowDto =
       singleData.length > 0
         ? singleData
@@ -171,6 +176,7 @@ export default function AddEditFormComponent({
             onHide();
             setFieldValueParent("search", "");
             resetForm(initData);
+            setTableData([]);
           });
         }}
       >
