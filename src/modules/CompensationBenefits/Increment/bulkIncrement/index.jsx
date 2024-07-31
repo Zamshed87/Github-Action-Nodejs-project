@@ -63,7 +63,10 @@ export default function BulkIncrementEntry() {
 
   const processData = async (file) => {
     try {
-      const processData = await excelFileToArray(file, 1);
+      const processData = await excelFileToArray(
+        file,
+        "Employee Bulk Increment Upload"
+      );
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,
@@ -115,8 +118,8 @@ export default function BulkIncrementEntry() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=104"
-                                  : "/document/downloadfile?id=120"
+                                  ? "/document/downloadfile?id=1680"
+                                  : "/document/downloadfile?id=2652"
                               }`,
                               "Increment Bulk Upload",
                               "xlsx",
@@ -156,11 +159,20 @@ export default function BulkIncrementEntry() {
                                 <th>
                                   <div>Designation</div>
                                 </th>
-                                <th>
+                                {/* <th>
                                   <div>Depend On</div>
                                 </th>
                                 <th>
                                   <div>Increment Percentage/Amount</div>
+                                </th> */}
+                                <th>
+                                  <div>Fixed Amount</div>
+                                </th>
+                                <th>
+                                  <div>Percentage Based On Basic</div>
+                                </th>
+                                <th>
+                                  <div>Percentage Based On Gross</div>
                                 </th>
                                 <th>
                                   <div>Effective Date</div>
@@ -190,7 +202,7 @@ export default function BulkIncrementEntry() {
                                       {item?.strDesignation}
                                     </div>
                                   </td>
-                                  <td>
+                                  {/* <td>
                                     <div className="content tableBody-title">
                                       {item?.strIncrementDependOn}
                                     </div>
@@ -199,11 +211,26 @@ export default function BulkIncrementEntry() {
                                     <div className="content tableBody-title">
                                       {item?.numIncrementPercentageOrAmount}
                                     </div>
+                                  </td> */}
+                                  <td>
+                                    <div className="content tableBody-title">
+                                      {item?.numIncrementAmountBasedOnAmount}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="content tableBody-title">
+                                      {item?.numIncrementPercentageBasedOnBasic}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="content tableBody-title">
+                                      {item?.numIncrementPercentBasedOnGross}
+                                    </div>
                                   </td>
                                   <td>
                                     <div className="content tableBody-title">
                                       {/* {item?.dteEffectiveDate} */}
-                                     { dateFormatter(item?.dteEffectiveDate) }
+                                      {dateFormatter(item?.dteEffectiveDate)}
                                     </div>
                                   </td>
                                 </tr>
