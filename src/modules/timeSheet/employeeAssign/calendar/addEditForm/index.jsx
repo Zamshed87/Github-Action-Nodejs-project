@@ -106,6 +106,13 @@ export default function AddEditFormComponent({
   };
 
   const setter = (payload) => {
+
+    if(tableData.length === 0){
+      payload.isDefault = true;
+    }else{
+      payload.isDefault = false;
+    }
+
     if (isUniq("intCalendarId", payload?.intCalendarId, tableData)) {
       setTableData([...tableData, payload]);
     }
@@ -151,7 +158,7 @@ export default function AddEditFormComponent({
         values?.calenderType?.value === 2 ? values?.calender?.value : 0,
       generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
-      extendedEmployeeCalendarList: tableData.slice(1),
+      extendedEmployeeCalendarList: tableData,
     };
     rosterGenerateAction(payload, setLoading, cb);
   };
