@@ -146,12 +146,13 @@ export default function AddEditFormComponent({
       // calendarType: values?.calenderType?.label,
       nextChangeDate: values?.nextChangeDate || null,
       runningCalendarId: tableData?.[0]?.intCalendarId || 0,
-      calendarType: tableData?.[0]?.strCalendarName || "",
+      calendarType: values?.calenderType?.label || "",
+      strCalendarName: tableData?.[0]?.strCalendarName || "",
       rosterGroupId:
         values?.calenderType?.value === 2 ? values?.calender?.value : 0,
       generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
-      extendedEmployeeCalendarList: tableData.slice(1),
+      extendedEmployeeCalendarList: tableData.slice(1) || [],
     };
     rosterGenerateAction(payload, setLoading, cb);
   };
