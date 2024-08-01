@@ -8,8 +8,6 @@ import { getSearchEmployeeListNew } from "../../../../common/api";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   initialValues,
-  onGetAttendanceResponse,
-  onPostAttendanceResponse,
   onPostBridgeResponse,
   validationSchema,
 } from "./helper";
@@ -18,8 +16,7 @@ import moment from "moment";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import AsyncFormikSelect from "common/AsyncFormikSelect";
 import { paginationSize } from "common/peopleDeskTable";
-import { DataTable } from "Components";
-import { Button, Tag } from "antd";
+import {Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
 import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
@@ -77,7 +74,8 @@ function AttendanceRawDataProcess() {
     onPostBridgeResponse({
       setRes,
       setLoading,
-      values
+      values,
+      wId
     });
   };
 
@@ -203,7 +201,7 @@ function AttendanceRawDataProcess() {
                 />
               </div>
 
-              <div className="input-field-main col-lg-3">
+              <div className="input-field-main col-lg-3 d-none">
                 <label>Employee</label>
                 <AsyncFormikSelect
                   selectedValue={values?.employee}
