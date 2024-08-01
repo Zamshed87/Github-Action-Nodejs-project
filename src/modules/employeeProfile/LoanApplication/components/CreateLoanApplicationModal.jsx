@@ -517,7 +517,7 @@ const CreateLoanApplicationModal = ({
                       type="number"
                       onChange={(e) => {
                         const installmentNum =
-                          (values?.loanAmount || 0) / e.target.value;
+                          (values?.totalwithinterest || 0) / e.target.value;
                         setFieldValue(
                           "installmentNumber",
                           Math.ceil(installmentNum)
