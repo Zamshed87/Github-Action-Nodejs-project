@@ -149,11 +149,11 @@ export default function AddEditFormComponent({
       runningCalendarId:
         values?.calenderType?.value === 2
           ? values?.startingCalender?.value
-          : tableData?.[0]?.intCalendarId || 0,
+          : tableData?.[0]?.intCalendarId,
       calendarType: values?.calenderType?.label || "",
       strCalendarName: tableData?.[0]?.strCalendarName || "",
       rosterGroupId:
-        values?.calenderType?.value === 2 ? tableData?.[0]?.intCalendarId : 0,
+        values?.calenderType?.value === 2 ? values?.calender?.value : 0,
       generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
       extendedEmployeeCalendarList: tableData.slice(1) || [],
