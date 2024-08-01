@@ -54,15 +54,20 @@ export const validationSchema = Yup.object().shape({
 // };
 
 // new from business requirement
-export const onPostBridgeResponse = async ({ setRes, setLoading, values }) => {
+export const onPostBridgeResponse = async ({
+  setRes,
+  setLoading,
+  values,
+  wId,
+}) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
       `/Employee/BridgeLeaveProcess?fromDate=${values?.fromDate}&toDate=${
         values?.toDate
-      }&EmployeeId=${values?.employee?.value || 0}`
+      }&EmployeeId=${values?.employee?.value || 0}&workplaceId=${wId || 0}`
     );
-    console.log("response",res)
+    console.log("response", res);
     if (res?.data) {
       toast.success(res?.data?.Message);
       setLoading && setLoading(false);
