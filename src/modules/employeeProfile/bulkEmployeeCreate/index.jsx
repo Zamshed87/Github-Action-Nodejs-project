@@ -168,8 +168,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=10351"
-                                  : "/document/downloadfile?id=1372"
+                                  ? "/document/downloadfile?id=1679"
+                                  : "/document/downloadfile?id=2635"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -248,6 +248,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th>
                                 <div>OT Type</div>
+                              </th>
+                              <th>
+                                <div>OT Fixed Hour</div>
                               </th>
                               <th>
                                 <div>Salary Hold</div>
@@ -404,6 +407,11 @@ export default function BulkEmployeeCreate() {
                                 <td>
                                   <div className="tableBody-title">
                                     {data?.intOtTypeName}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.intOTFixedHour}
                                   </div>
                                 </td>
                                 <td>

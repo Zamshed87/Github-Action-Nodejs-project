@@ -18,17 +18,25 @@ const StyledTable = ({
                   <small>Module Name</small>
                 </div>
               </th>
-              <th>
+              {/* <th>
                 <div className="d-flex align-items-center ">
                   <small>Employee Name</small>
                 </div>
-              </th>
+              </th> */}
               <th>
                 <div
                   className="d-flex align-items-center "
                   style={{ width: "100px" }}
                 >
                   <small>Feature</small>
+                </div>
+              </th>
+              <th>
+                <div
+                  className="d-flex align-items-center "
+                  style={{ width: "200px" }}
+                >
+                  <small>Permission Based On</small>
                 </div>
               </th>
               <th style={{ width: "100px" }}>
@@ -126,13 +134,16 @@ const StyledTable = ({
                 <td>
                   <span className="tableBody-title">{data?.moduleName}</span>
                 </td>
-                <td>
+                {/* <td>
                   <span className="tableBody-title">
                     {index === 0 ? data?.strEmployeeName : ""}
                   </span>
-                </td>
+                </td> */}
                 <td>
                   <span className="tableBody-title">{data?.strMenuName}</span>
+                </td>
+                <td>
+                  <span className="tableBody-title">{data?.strEmployeeName}</span>
                 </td>
                 <td>
                   <div className="d-flex align-items-center">
