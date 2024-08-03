@@ -54,24 +54,19 @@ export const validationSchema = Yup.object().shape({
 // };
 
 // new from business requirement
-export const onPostBridgeResponse = async ({
-  setRes,
-  setLoading,
-  values,
-  wId,
-}) => {
+
+export const onPostBridgeResponse = async ({ setLoading, payload, cb }) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
-      `/Employee/BridgeLeaveProcess?fromDate=${values?.fromDate}&toDate=${
-        values?.toDate
-      }&EmployeeId=${values?.employee?.value || 0}&workplaceId=${wId || 0}`
+      `/Employee/BridgeLeaveProcessLog`,
+      payload
     );
-    console.log("response", res);
     if (res?.data) {
-      toast.success(res?.data?.Message);
+      toast.success(res?.data?.message);
       setLoading && setLoading(false);
     }
+    cb?.();
   } catch (error) {
     toast.warn("failed");
     setLoading && setLoading(false);
@@ -111,4 +106,34 @@ export const onGetAttendanceResponse = async (
 export const calcDateDiff = (fDate, tDate) => {
   const difference = moment(tDate).diff(moment(fDate), "days");
   return difference;
+};
+
+export const onGetBridgeResponse = async (
+  wId,
+  wgId,
+  pageSize,
+  pageNo,
+  setRes,
+  setLoading,
+  setPages
+) => {
+  setLoading && setLoading(true);
+
+  try {
+    const res = await axios.get(
+      `/Employee/GetBridgeLeaveDataProcessLog?intWorkplaceId=${wId}&intWorkplaceGroupId=${wgId}&pageSize=${pageSize}&pageNo=${pageNo}`
+    );
+    if (res?.data) {
+      setRes(res?.data);
+      setPages?.({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize, // Page Size From Api Response
+        total: res?.data?.totalCount,
+      });
+    }
+    setLoading(false);
+  } catch (error) {
+    console.log(error);
+    setLoading && setLoading(false);
+  }
 };
