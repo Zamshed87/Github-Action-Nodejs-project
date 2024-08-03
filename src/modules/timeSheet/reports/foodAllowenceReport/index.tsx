@@ -81,12 +81,12 @@ const FoodAllowenceReport = () => {
             title={`Food Allowence Report`}
             onExport={() => {
               const values = form.getFieldsValue(true);
-              const url = `/PdfAndExcelReport/GetFoodAllowenceReport?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&payrollYearId=${moment(
+              const url = `/PdfAndExcelReport/GetFoodAllowenceReport?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&payrollYearId=${moment(
                 values?.payrollMonth
               ).format("YYYY")}&payrollMonthId=${moment(
                 values?.payrollMonth
               ).format("MM")}`;
-              downloadFile(url, "Salary Details Report", "xlsx", setLoading);
+              downloadFile(url, "Food_Allowence_Report", "xlsx", setLoading);
             }}
             printIcon={true}
             pdfExport={() => {
