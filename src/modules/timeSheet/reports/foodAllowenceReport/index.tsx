@@ -14,7 +14,6 @@ import { useApiRequest } from "Hooks";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 
 const FoodAllowenceReport = () => {
@@ -42,16 +41,15 @@ const FoodAllowenceReport = () => {
 
   //   api states and actions
   const [loading, setLoading] = useState(false);
-  const [detailsData, setDetailsData] = useState("");
   const landingApi = useApiRequest({});
 
-  const landingApiCall = (viewType: string) => {
+  const landingApiCall = () => {
     const values = form.getFieldsValue(true);
     landingApi.action({
       urlKey: "FoodAllowenceLanding",
       method: "GET",
       params: {
-        strPartName: viewType,
+        strPartName: "htmlView",
         intAccountId: orgId,
         intWorkplaceId: wId,
         intBusinessUnitId: buId,
@@ -61,17 +59,19 @@ const FoodAllowenceReport = () => {
     });
   };
 
+  useEffect(() => {
+    landingApiCall();
+  }, [wId]);
+
   return featurePermission?.isView ? (
     <>
       <PForm
-        form={form}
         initialValues={{
-          employee: null,
-          fromDate: moment(monthFirstDate()),
-          toDate: moment(monthLastDate()),
+          payrollMonth: "",
         }}
+        form={form}
         onFinish={() => {
-          landingApiCall("htmlView");
+          landingApiCall();
         }}
       >
         <PCard>
@@ -93,9 +93,9 @@ const FoodAllowenceReport = () => {
               const values = form.getFieldsValue(true);
               const url = `/PdfAndExcelReport/GetFoodAllowenceReport?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&payrollYearId=${moment(
                 values?.payrollMonth
-              ).format("YYYY")}&payrollMonthId=${moment(
-                values?.payrollMonth
-              ).format("MM")}`;
+              ).format("YYYY")}&payrollMonthId=${parseInt(
+                moment(values?.payrollMonth).format("MM")
+              )}`;
               getPDFAction(url, setLoading);
             }}
           />
@@ -105,6 +105,7 @@ const FoodAllowenceReport = () => {
                 <PInput
                   type="date"
                   format="MMM-YYYY"
+                  picker="month"
                   name="payrollMonth"
                   label="Payroll Month"
                   placeholder="Payroll Month"
@@ -113,6 +114,9 @@ const FoodAllowenceReport = () => {
                       payrollMonth: value,
                     });
                   }}
+                  rules={[
+                    { required: true, message: "This field is required" },
+                  ]}
                 />
               </Col>
               <Col
@@ -124,15 +128,19 @@ const FoodAllowenceReport = () => {
               </Col>
             </Row>
           </PCardBody>
-          <>
-            {loading && <Loading />}
-            <div className="sme-scrollable-table">
-              <div
-                className="scroll-table scroll-table-height"
-                dangerouslySetInnerHTML={{ __html: detailsData }}
-              ></div>
-            </div>
-          </>
+          {!landingApi?.error && !landingApi?.loading && (
+            <>
+              {loading && <Loading />}
+              <div className="sme-scrollable-table mt-2">
+                <div
+                  className="scroll-table scroll-table-height"
+                  dangerouslySetInnerHTML={{
+                    __html: landingApi?.data,
+                  }}
+                ></div>
+              </div>
+            </>
+          )}
         </PCard>
       </PForm>
     </>
