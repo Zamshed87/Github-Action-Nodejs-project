@@ -103,6 +103,7 @@ export const createJobCardExcelHandler = ({
         totalMovement: `${rowDto?.[0]?.totalMovement || 0} Days`,
         totalOffday: `${rowDto?.[0]?.totalOffday || 0} Days`,
         totalAbsent: `${rowDto?.[0]?.totalAbsent || 0} Days`,
+        totalOvertime: `${rowDto?.[0]?.totalOvertime || 0}`,
       });
     },
     subHeaderColumn: {
