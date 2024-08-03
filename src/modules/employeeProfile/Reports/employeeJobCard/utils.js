@@ -87,6 +87,7 @@ export const createJobCardExcelHandler = ({
           new Cell(obj?.totalMovement || 0, "center", "text").getCell(),
           new Cell(obj?.totalOffday || 0, "center", "text").getCell(),
           new Cell(obj?.totalAbsent || 0, "center", "text").getCell(),
+          new Cell(obj?.totalOvertime || 0, "center", "text").getCell(),
         ];
       };
       return generateSubHeadData({
@@ -117,6 +118,7 @@ export const createJobCardExcelHandler = ({
       totalMovement: "Total Movement",
       totalOffday: "Total Off day",
       totalAbsent: "Total Absent",
+      totalOvertime: "Total Over Time",
     },
   });
 };
