@@ -44,6 +44,7 @@ import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
+import FoodAllowenceReport from "modules/timeSheet/reports/foodAllowenceReport";
 import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 
@@ -1636,6 +1637,10 @@ export const routingList = [
   {
     path: "/profile/reports/attendanceLogs",
     component: AttendanceLog,
+  },
+  {
+    path: "/profile/reports/foodAllowenceReport",
+    component: FoodAllowenceReport,
   },
   {
     path: "/profile/reports/rosterDetails",
