@@ -117,7 +117,6 @@ function AttendanceRawDataProcess() {
       setPages
     );
   };
-  console.log({pages})
 
   const header = [
 
