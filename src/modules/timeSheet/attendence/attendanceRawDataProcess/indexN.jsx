@@ -167,7 +167,7 @@ function AttendanceRawDataProcess() {
       dataIndex: "isProcessing",
       render: (_, record) => (
         <>
-          {record?.isProcessing ? (
+          {!record?.isProcessing ? (
             <Tag icon={<CheckCircleOutlined />} color="success">
               success
             </Tag>
