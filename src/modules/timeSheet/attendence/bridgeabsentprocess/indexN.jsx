@@ -19,7 +19,7 @@ import AsyncFormikSelect from "common/AsyncFormikSelect";
 import { paginationSize } from "common/peopleDeskTable";
 import { Button, Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
-import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, ClockCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
 import Loading from "common/loading/Loading";
 import { DataTable } from "Components";
@@ -165,13 +165,19 @@ function AttendanceRawDataProcess() {
       dataIndex: "isProcessing",
       render: (_, record) => (
         <>
-          {record?.isProcessing ? (
-            <Tag icon={<CheckCircleOutlined />} color="success">
-              success
+          {record?.status === "default" && (
+            <Tag icon={<ClockCircleOutlined />} color="default">
+              waiting
             </Tag>
-          ) : (
+          )}
+          {record?.status === "processing" && (
             <Tag icon={<SyncOutlined spin />} color="processing">
               processing
+            </Tag>
+          )}
+          {record?.status === "complete" && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              success
             </Tag>
           )}
         </>
