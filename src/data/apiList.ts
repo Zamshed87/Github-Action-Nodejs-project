@@ -151,4 +151,5 @@ export const apiList = {
   BonusSetupGetbyByBonusCode: "/Employee/BonusSetupGetbyByBonusCode",
   EmployeeMasterAttendanceReport: "/Employee/EmployeeMasterAttendanceReport",
   AttendanceLogLanding: "/Employee/GetPunchMachineRawData",
+  FoodAllowenceLanding: "/PdfAndExcelReport/GetFoodAllowenceReport",
 };
