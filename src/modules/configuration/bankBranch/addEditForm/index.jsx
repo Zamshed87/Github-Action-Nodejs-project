@@ -5,9 +5,9 @@ import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Switch } from "antd";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
-import moment from "moment";
+import { toast } from "react-toastify";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -110,7 +110,8 @@ export default function AddEditForm({
       urlKey: "CreateBankBranch",
       method: "POST",
       payload: payload,
-      onSuccess: () => {
+      onSuccess: (res) => {
+        toast.success(res?.message || "Submitted successfully");
         cb();
       },
     });
