@@ -194,7 +194,7 @@ function BankBranch() {
             bordered
             data={
               landingApi?.data?.data?.length > 0
-                ? landingApi?.data?.data?.slice(0, 50)
+                ? landingApi?.data?.data?.slice(0, 200)
                 : []
             }
             loading={landingApi?.loading}
