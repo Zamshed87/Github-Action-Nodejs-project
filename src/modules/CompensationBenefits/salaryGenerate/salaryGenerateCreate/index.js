@@ -219,7 +219,8 @@ const SalaryGenerateCreate = () => {
     const { empIdList, payload, callback } = salaryGeneratepayloadHandler(
       values,
       allData,
-      false
+      false,
+      setLoading
     );
 
     const res = await axios.post(
@@ -238,7 +239,12 @@ const SalaryGenerateCreate = () => {
         : createSalaryGenerateRequest(payload, setLoading, callback);
     }
   };
-  const salaryGeneratepayloadHandler = (values, allData, isAllAssign) => {
+  const salaryGeneratepayloadHandler = (
+    values,
+    allData,
+    isAllAssign,
+    setLoading
+  ) => {
     // const valueArray =
     //   (values?.workplace || [])?.map((obj) => obj?.intWorkplaceId) || [];
     // Joining the values into a string separated by commas
@@ -1047,6 +1053,7 @@ const SalaryGenerateCreate = () => {
                         }}
                         className="btn btn-default"
                         type="submit"
+                        disabled={loading}
                       >
                         {state?.intSalaryGenerateRequestId
                           ? "Re-Generate " +
@@ -1067,6 +1074,7 @@ const SalaryGenerateCreate = () => {
                         }}
                         className="btn btn-default ml-2"
                         type="button"
+                        disabled={loading}
                         onClick={() => {
                           setAllAssign(true);
                           allBulkSalaryGenerateHandler(values, allData);
