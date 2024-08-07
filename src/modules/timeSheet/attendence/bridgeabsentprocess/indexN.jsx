@@ -8,8 +8,7 @@ import { getSearchEmployeeListNew } from "../../../../common/api";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   initialValues,
-  onGetAttendanceResponse,
-  onPostAttendanceResponse,
+  onGetBridgeResponse,
   onPostBridgeResponse,
   validationSchema,
 } from "./helper";
@@ -18,12 +17,12 @@ import moment from "moment";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import AsyncFormikSelect from "common/AsyncFormikSelect";
 import { paginationSize } from "common/peopleDeskTable";
-import { DataTable } from "Components";
 import { Button, Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
-import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, ClockCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
 import Loading from "common/loading/Loading";
+import { DataTable } from "Components";
 
 function AttendanceRawDataProcess() {
   const { orgId, buId, employeeId, wId, wgId } = useSelector(
@@ -51,17 +50,17 @@ function AttendanceRawDataProcess() {
     total: 0,
   });
 
-  // useEffect(() =>{
-  //   onGetAttendanceResponse(
-  //     wId,
-  //     wgId,
-  //     pages?.pageSize,
-  //     pages?.current,
-  //     setRes,
-  //     setLoading,
-  //     setPages
-  //   );
-  // },[])
+  useEffect(() => {
+    onGetBridgeResponse(
+      wId,
+      wgId,
+      pages?.pageSize,
+      pages?.current,
+      setRes,
+      setLoading,
+      setPages
+    );
+  }, []);
 
   const { handleSubmit, values, setFieldValue, errors, touched, resetForm } =
     useFormik({
@@ -74,10 +73,31 @@ function AttendanceRawDataProcess() {
     });
 
   const saveHandler = (values) => {
+    const payload = {
+      intAccountId: orgId,
+      intWorkplaceId: wId,
+      dteFromDate: values?.fromDate,
+      dteToDate: values?.toDate,
+      intWorkplaceGroupId: wgId || 0,
+      intCreatedBy: 0,
+      dteCreatedAt: "2024-02-15T08:50:05.869Z",
+    };
+
     onPostBridgeResponse({
       setRes,
       setLoading,
-      values
+      payload,
+      cb: () => {
+        onGetBridgeResponse(
+          wId,
+          wgId,
+          pages?.pageSize,
+          pages?.current,
+          setRes,
+          setLoading,
+          setPages
+        );
+      },
     });
   };
 
@@ -85,18 +105,17 @@ function AttendanceRawDataProcess() {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // const landingApi = (pagination) => {
-  //   console.log(pagination)
-  //   onGetAttendanceResponse(
-  //     wId,
-  //     wgId,
-  //     pagination?.pageSize,
-  //     pagination?.current,
-  //     setRes,
-  //     setLoading,
-  //     setPages
-  //   );
-  // };
+  const landingApi = (pagination) => {
+    onGetBridgeResponse(
+      wId,
+      wgId,
+      pagination?.pageSize,
+      pagination?.current,
+      setRes,
+      setLoading,
+      setPages
+    );
+  };
 
   const header = [
     {
@@ -146,13 +165,19 @@ function AttendanceRawDataProcess() {
       dataIndex: "isProcessing",
       render: (_, record) => (
         <>
-          {record?.isProcessing ? (
-            <Tag icon={<CheckCircleOutlined />} color="success">
-              success
+          {record?.status === "default" && (
+            <Tag icon={<ClockCircleOutlined />} color="default">
+              waiting
             </Tag>
-          ) : (
+          )}
+          {record?.status === "processing" && (
             <Tag icon={<SyncOutlined spin />} color="processing">
               processing
+            </Tag>
+          )}
+          {record?.status === "complete" && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              success
             </Tag>
           )}
         </>
@@ -203,7 +228,7 @@ function AttendanceRawDataProcess() {
                 />
               </div>
 
-              <div className="input-field-main col-lg-3">
+              <div className="input-field-main col-lg-3 d-none">
                 <label>Employee</label>
                 <AsyncFormikSelect
                   selectedValue={values?.employee}
@@ -217,35 +242,46 @@ function AttendanceRawDataProcess() {
               </div>
 
               <div style={{ marginTop: "21px" }} className="col-lg-3">
-                <div className="d-flex">
+                {/* <div className="d-flex">
                   <PrimaryButton
                     type="submit"
                     className="btn btn-green flex-center"
                     label={"Process"}
                     disabled={loading ? true : false}
                   />
-                  {/* {res?.data && (
-                    <Button
-                      className="btn btn-success flex-center ml-2"
-                      onClick={() => {
-                        onGetAttendanceResponse(
-                          wId,
-                          wgId,
-                          pages?.pageSize,
-                          pages?.current,
-                          setRes,
-                          setLoading,
-                          setPages
-                        );
-                      }}
-                    >
-                      Refresh
-                    </Button>
-                  )} */}
+
+                </div> */}
+                <div style={{ marginTop: "" }} className="col-lg-3">
+                  <div className="d-flex">
+                    <PrimaryButton
+                      type="submit"
+                      className="btn btn-green flex-center"
+                      label={"Process"}
+                      disabled={loading ? true : false}
+                    />
+                    {res?.data && (
+                      <Button
+                        className="btn btn-success flex-center ml-2"
+                        onClick={() => {
+                          onGetBridgeResponse(
+                            wId,
+                            wgId,
+                            pages?.pageSize,
+                            pages?.current,
+                            setRes,
+                            setLoading,
+                            setPages
+                          );
+                        }}
+                      >
+                        Refresh
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-            {/* {res?.data && (
+            {res?.data && (
               <DataTable
                 header={header}
                 bordered
@@ -262,7 +298,7 @@ function AttendanceRawDataProcess() {
                   landingApi(pagination);
                 }}
               />
-            )} */}
+            )}
           </div>
         </div>
       </div>

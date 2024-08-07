@@ -48,6 +48,11 @@ const MultiCheckedSelect = ({
   const [allChecked, setAllChecked] = useState(false);
   const [searchString, setSearchString] = useState("");
 
+  // Ensure value is an array
+  if (!Array.isArray(value)) {
+    value = [];
+  }
+
   const handleDelete = (e, option, value) => {
     e.preventDefault();
     const filtered = value?.filter((item) => item.value !== option.value);
@@ -55,6 +60,7 @@ const MultiCheckedSelect = ({
     onChange(filtered);
     setAllChecked(false);
   };
+
   const handleAdd = (e, option, value) => {
     e.preventDefault();
     const filtered = [...value, option];
@@ -182,7 +188,7 @@ const MultiCheckedSelect = ({
         >
           {isSearchFieldVisible && (
             <li
-              onKeyDown={(e) => e.preventDefault()}
+              onClick={(e) => e.stopPropagation()}
               style={{ width: "100%", padding: "2px 5px" }}
             >
               <OutlinedInput
@@ -215,7 +221,7 @@ const MultiCheckedSelect = ({
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label="toggle password visibility"
+                      aria-label="toggle search visibility"
                       edge="end"
                     >
                       <SearchIcon sx={{ width: "18px", padding: 0 }} />
@@ -234,7 +240,7 @@ const MultiCheckedSelect = ({
                 cursor: "pointer",
                 width: "100%",
               }}
-              onClick={(e) => handleSelectAllClick(e)}
+              onClick={(e) => e.stopPropagation()}
             >
               <Checkbox
                 onClick={(e) => handleSelectAllClick(e)}
@@ -242,7 +248,7 @@ const MultiCheckedSelect = ({
                 sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
                 checked={allChecked}
               />
-              <p style={{ color: "black" }}>Select All</p>
+              <p style={{ color: "black", margin: 0 }}>Select All</p>
             </li>
           )}
           {filteredData?.length ? (

@@ -705,6 +705,12 @@ const EmployeeJobCard = () => {
                       {landingApi?.data?.[0]?.totalManualAbsent} Days
                     </strong>{" "}
                   </p>
+                  <p>
+                    Total Over Time:{" "}
+                    <strong>
+                      {landingApi?.data?.[0]?.totalOvertime} Days
+                    </strong>{" "}
+                  </p>
                 </div>
               </Col>
               <Col

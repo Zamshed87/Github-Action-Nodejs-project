@@ -145,7 +145,11 @@ export default function AddEditFormComponent({
       //     : values?.calender?.value,
       // calendarType: values?.calenderType?.label,
       nextChangeDate: values?.nextChangeDate || null,
-      runningCalendarId: tableData?.[0]?.intCalendarId || 0,
+      // runningCalendarId: tableData?.[0]?.intCalendarId || 0,
+      runningCalendarId:
+        values?.calenderType?.value === 2
+          ? values?.startingCalender?.value
+          : tableData?.[0]?.intCalendarId,
       calendarType: values?.calenderType?.label || "",
       strCalendarName: tableData?.[0]?.strCalendarName || "",
       rosterGroupId:

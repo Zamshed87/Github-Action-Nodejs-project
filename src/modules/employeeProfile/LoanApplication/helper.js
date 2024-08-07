@@ -408,7 +408,11 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
     installmentNumber: data?.numberOfInstallment,
     amountPerInstallment: data?.numberOfInstallmentAmount,
     description: data?.description,
-    effectiveDate: data?.effectiveDate ? `${dateFormatterForInput(data?.effectiveDate)?.split("-")[0]}-${dateFormatterForInput(data?.effectiveDate)?.split("-")[1]}` : "",
+    effectiveDate: data?.effectiveDate
+      ? `${dateFormatterForInput(data?.effectiveDate)?.split("-")[0]}-${
+          dateFormatterForInput(data?.effectiveDate)?.split("-")[1]
+        }`
+      : "",
     loanClosingDate: dateFormatterForInput(data?.closingDate),
     fileUrl: data?.fileUrl,
     loanApplicationId: data?.loanApplicationId,
@@ -495,6 +499,8 @@ export const loanCrudAction = async (
         ? "ManagerLoanUpdate"
         : "LoanCreate",
       intAccountId: orgId,
+      LastFractionAmount:
+        values?.loanAmount % values?.amountPerInstallment || 0,
       guarantorRelative: values?.familyGuarantor || "",
       loanApplicationId: values?.loanApplicationId || 0,
       employeeId: values?.employee?.value || values?.employeeId,
