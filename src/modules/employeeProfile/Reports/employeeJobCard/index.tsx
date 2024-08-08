@@ -15,7 +15,7 @@ import { Col, Form, Row, Tag, Tooltip } from "antd";
 import { getBuDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
+// import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
@@ -110,21 +110,18 @@ const EmployeeJobCard = () => {
   //     });
   //   };
   // data call
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-    IsForXl?: boolean;
-    date?: string;
-  };
-  const landingApiCall = ({
-    pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
-  }: TLandingApi = {}) => {
+  // type TLandingApi = {
+  //   pagination?: {
+  //     current?: number;
+  //     pageSize?: number;
+  //   };
+  //   filerList?: any;
+  //   searchText?: string;
+  //   excelDownload?: boolean;
+  //   IsForXl?: boolean;
+  //   date?: string;
+  // };
+  const landingApiCall = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
@@ -142,15 +139,16 @@ const EmployeeJobCard = () => {
   };
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    const values = form.getFieldsValue(true);
 
     CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "CommonEmployeeDDLForActiveInactive",
       method: "GET",
       params: {
-        businessUnitId: buId,
         workplaceGroupId: wgId,
-        // workplaceId: wId,
         searchText: value,
+        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: number) => {
@@ -445,26 +443,27 @@ const EmployeeJobCard = () => {
                   marginTop: "23px",
                 }}
               >
-                <PButton type="primary" action="submit" content="View" />
+                <PButton
+                  type="primary"
+                  action="submit"
+                  content="View"
+                  disabled={loading || landingApi?.loading}
+                />
               </Col>
               <Col
                 style={{
-                  marginTop: "-1px",
+                  marginTop: "23px",
                 }}
               >
                 <Tooltip
                   title="Previous Month 26 to Current Month 25"
                   placement="bottom"
                 >
-                  <button
-                    style={{
-                      height: "30px",
-                      width: "160px",
-                      fontSize: "12px",
-                      padding: "0px 12px 0px 5px",
-                    }}
-                    className="btn btn-default mt-4 ml-2"
-                    type="button"
+                  <PButton
+                    type="primary"
+                    action="button"
+                    content="Custom [26 - 25]"
+                    disabled={loading || landingApi?.loading}
                     onClick={() => {
                       // custom26to25LandingDataHandler(
                       //   (previousMonthDate: any, currentMonthDate: any) => {
@@ -491,16 +490,13 @@ const EmployeeJobCard = () => {
                         }
                       );
                     }}
-                  >
-                    Custom [26 - 25]
-                  </button>
+                  />
                 </Tooltip>
               </Col>
             </Row>
           </PCardBody>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employee } = form.getFieldsValue(true);
               return (
                 <Row
                   className="mb-1"
@@ -707,9 +703,7 @@ const EmployeeJobCard = () => {
                   </p>
                   <p>
                     Total Over Time:{" "}
-                    <strong>
-                      {landingApi?.data?.[0]?.totalOvertime} Days
-                    </strong>{" "}
+                    <strong>{landingApi?.data?.[0]?.totalOvertime} Days</strong>{" "}
                   </p>
                 </div>
               </Col>

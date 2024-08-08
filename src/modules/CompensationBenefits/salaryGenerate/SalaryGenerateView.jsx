@@ -794,6 +794,12 @@ const SalaryGenerateView = () => {
                       <th style={{ textAlign: "right" }} className="mr-2">
                         Total Deduction
                       </th>
+                      {orgId === 5 && (
+                        <th style={{ textAlign: "right" }} className="mr-2">
+                          PF Amount
+                        </th>
+                      )}
+
                       <th
                         style={{ textAlign: "right" }}
                         className="th-inner-table mr-2"
@@ -834,11 +840,18 @@ const SalaryGenerateView = () => {
                         )}
                       </th>
                       <th className="text-right">
-                        {" "}
                         {numberWithCommas(
                           getRowTotal(rowDto, "TotalDeduction").toFixed(2)
                         )}
                       </th>
+                      {orgId === 5 && (
+                        <th className="text-right">
+                          {numberWithCommas(
+                            getRowTotal(rowDto, "PFAmount").toFixed(2)
+                          )}
+                        </th>
+                      )}
+
                       <th className="text-right">
                         {" "}
                         {numberWithCommas(
@@ -910,6 +923,12 @@ const SalaryGenerateView = () => {
                               <td style={{ textAlign: "right" }}>
                                 {numberWithCommas(item?.TotalDeduction) || "-"}
                               </td>
+                              {orgId === 5 && (
+                                <td style={{ textAlign: "right" }}>
+                                  {numberWithCommas(item?.PFAmount) || "-"}
+                                </td>
+                              )}
+
                               <td style={{ textAlign: "right" }}>
                                 {numberWithCommas(item?.NetPay) || "-"}
                               </td>
