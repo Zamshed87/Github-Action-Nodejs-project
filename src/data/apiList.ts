@@ -152,4 +152,6 @@ export const apiList = {
   EmployeeMasterAttendanceReport: "/Employee/EmployeeMasterAttendanceReport",
   AttendanceLogLanding: "/Employee/GetPunchMachineRawData",
   FoodAllowenceLanding: "/PdfAndExcelReport/GetFoodAllowenceReport",
+  CommonEmployeeDDLForActiveInactive:
+    "/Employee/CommonEmployeeDDLForActiveInactive",
 };

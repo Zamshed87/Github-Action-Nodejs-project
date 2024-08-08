@@ -11,7 +11,6 @@ import { PInput } from "Components/PForm";
 import { PButton, buttonType } from "Components/Button/PButton";
 import { debounce } from "lodash";
 import { MdPrint } from "react-icons/md";
-import { gray200 } from "utility/customColor";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
   text?: string | React.ReactNode;
