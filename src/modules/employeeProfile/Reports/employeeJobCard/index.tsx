@@ -564,6 +564,21 @@ const EmployeeJobCard = () => {
                           {dateFormatter(empInfo?.[0]?.JoiningDate)}
                         </strong>
                       </p>
+                      <p>
+                        Active Status:{" "}
+                        <Tag
+                          style={{ borderRadius: "50px" }}
+                          color={
+                            empInfo?.[0]?.strEmployeeStatusWithDate
+                              ?.toLowerCase()
+                              ?.includes("inactive")
+                              ? "red"
+                              : "green"
+                          }
+                        >
+                          {empInfo?.[0]?.strEmployeeStatusWithDate}
+                        </Tag>
+                      </p>
                     </div>
                   </Col>
                   <Col
