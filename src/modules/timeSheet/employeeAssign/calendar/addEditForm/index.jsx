@@ -96,7 +96,7 @@ export default function AddEditFormComponent({
   const [tableData, setTableData] = useState([]);
 
   const getDDL = (value) => {
-    let ddlType = value === 1 ? "Calender" : "RosterGroup";
+    const ddlType = value === 1 ? "Calender" : "RosterGroup";
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
       value === 1 ? "CalenderId" : "RosterGroupId",
