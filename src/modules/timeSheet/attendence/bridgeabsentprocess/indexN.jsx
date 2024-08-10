@@ -4,7 +4,10 @@ import DefaultInput from "../../../../common/DefaultInput";
 import { useState } from "react";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import { useEffect } from "react";
-import { getSearchEmployeeListNew } from "../../../../common/api";
+import {
+  getPeopleDeskAllDDLWithCode,
+  getSearchEmployeeListNew,
+} from "../../../../common/api";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   initialValues,
@@ -19,10 +22,17 @@ import AsyncFormikSelect from "common/AsyncFormikSelect";
 import { paginationSize } from "common/peopleDeskTable";
 import { Button, Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
-import { CheckCircleOutlined, ClockCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { getSerial } from "Utils";
 import Loading from "common/loading/Loading";
 import { DataTable } from "Components";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import { gray600, success500 } from "utility/customColor";
 
 function AttendanceRawDataProcess() {
   const { orgId, buId, employeeId, wId, wgId } = useSelector(
@@ -43,6 +53,7 @@ function AttendanceRawDataProcess() {
 
   //   the api response will throw only a string either success or server error
   const [res, setRes] = useState("");
+  const [employeeDDL, setEmployeeDDL] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
@@ -62,6 +73,16 @@ function AttendanceRawDataProcess() {
     );
   }, []);
 
+  useEffect(() => {
+    getPeopleDeskAllDDLWithCode(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
+      "intEmployeeBasicInfoId",
+      "strEmployeeName",
+      setEmployeeDDL
+    );
+    setFieldValue("employee", "");
+  }, [employeeId, wgId]);
+
   const { handleSubmit, values, setFieldValue, errors, touched, resetForm } =
     useFormik({
       enableReinitialize: true,
@@ -73,7 +94,9 @@ function AttendanceRawDataProcess() {
     });
 
   const saveHandler = (values) => {
+    const empList = values?.employee?.map((item) => item?.value).join(",");
     const payload = {
+      employeeIdList: empList || "",
       intAccountId: orgId,
       intWorkplaceId: wId,
       dteFromDate: values?.fromDate,
@@ -238,6 +261,55 @@ function AttendanceRawDataProcess() {
                   }}
                   placeholder="Search (min 3 letter)"
                   loadOptions={(v) => getSearchEmployeeListNew(buId, orgId, v)}
+                />
+              </div>
+
+              <div className="col-3">
+                <label>Employee</label>
+                <FormikSelect
+                  name="employee"
+                  isClearable={false}
+                  options={employeeDDL || []}
+                  value={values?.employee}
+                  onChange={(valueOption) => {
+                    setFieldValue("employee", valueOption);
+                  }}
+                  styles={{
+                    ...customStyles,
+                    control: (provided, state) => ({
+                      ...provided,
+                      minHeight: "auto",
+                      height: values?.employee?.length > 1 ? "auto" : "auto",
+                      borderRadius: "4px",
+                      boxShadow: `${success500}!important`,
+                      ":hover": {
+                        borderColor: `${gray600}!important`,
+                      },
+                      ":focus": {
+                        borderColor: `${gray600}!important`,
+                      },
+                    }),
+                    valueContainer: (provided, state) => ({
+                      ...provided,
+                      height: values?.employee?.length > 1 ? "auto" : "auto",
+                      padding: "0 6px",
+                    }),
+                    multiValue: (styles) => {
+                      return {
+                        ...styles,
+                        position: "relative",
+                        top: "-1px",
+                      };
+                    },
+                    multiValueLabel: (styles) => ({
+                      ...styles,
+                      padding: "0",
+                    }),
+                  }}
+                  isMulti
+                  errors={errors}
+                  placeholder="Employee"
+                  touched={touched}
                 />
               </div>
 

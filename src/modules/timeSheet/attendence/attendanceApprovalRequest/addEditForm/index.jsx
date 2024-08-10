@@ -86,8 +86,6 @@ export default function AddEditFormComponent({
       const dataToProcess =
         selectedPayloadState?.length > 0 ? selectedPayloadState : tableData;
 
-      console.log("dataToProcess", dataToProcess);
-
       dataToProcess.forEach((item) => {
         const inTImeStr =
           item?.inDateUpdate +

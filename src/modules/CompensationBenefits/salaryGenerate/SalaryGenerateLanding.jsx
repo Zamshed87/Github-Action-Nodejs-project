@@ -328,41 +328,7 @@ const SalaryGenerateLanding = () => {
         dataIndex: "strWorkplaceList",
         width: 150,
       },
-      /*     {
-        title: "Wing",
-        dataIndex: "wingName",
-        sorter: true,
-        filter: true,
-        width: 100,
-      },
-      {
-        title: "Sole Depo",
-        dataIndex: "soleDepoName",
-        sorter: true,
-        filter: true,
-        width: 100,
-      },
-      {
-        title: "Region",
-        dataIndex: "regionName",
-        sorter: true,
-        filter: true,
-        width: 100,
-      },
-      {
-        title: "Area",
-        dataIndex: "areaName",
-        sorter: true,
-        filter: true,
-        width: 100,
-      },
-      {
-        title: "Territory",
-        dataIndex: "territoryName",
-        sorter: true,
-        filter: true,
-        width: 100,
-      }, */
+    
       {
         title: "Payroll Month",
         dataIndex: "intMonth",
