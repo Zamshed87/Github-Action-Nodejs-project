@@ -141,8 +141,8 @@ const JoineeAttendanceReport = () => {
       params: {
         ReportType: "new_joinee_in_out_attendance_report_for_all_employee",
         AccountId: orgId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: values?.workplaceGroup?.value || 0,
+        WorkplaceId: values?.workplace?.value || 0,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -163,13 +163,49 @@ const JoineeAttendanceReport = () => {
   //   table column
   const header: any = () => {
     const values = form.getFieldsValue(true);
-    const dateList = fromToDateList(
-      moment(values?.fromDate).format("YYYY-MM-DD"),
-      moment(values?.toDate).format("YYYY-MM-DD")
-    );
-    const d =
-      dateList?.length > 0 &&
-      dateList.map((item: any) => ({
+    console.log("values", values);
+    // const dateList = fromToDateList(
+    //   moment(values?.fromDate).format("YYYY-MM-DD"),
+    //   moment(values?.toDate).format("YYYY-MM-DD")
+    // );
+    // const d =
+    //   dateList?.length > 0 &&
+    //   dateList.map((item: any) => ({
+    //     title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
+    //     render: (_: any, record: any) =>
+    //       record?.[item?.date] ? (
+    //         <span style={getChipStyle(record?.[item?.date])}>
+    //           {record?.[item?.date]}
+    //         </span>
+    //       ) : (
+    //         "-"
+    //       ),
+    //     width: 150,
+    //   }));
+
+    // new code start from here
+    let d : any = [];
+
+    if (values?.attendanceMonth) {
+      // Extract the selected year and month from attendanceMonth
+      const attendanceMonth = moment(values?.attendanceMonth);
+      const selectedYear = attendanceMonth.year();
+      const selectedMonth = attendanceMonth.month(); // Month is 0-based in moment.js
+    
+      // Get the full month name
+      const monthName = attendanceMonth.format("MMMM");
+    
+      // Generate the full date list for the selected month
+      const daysInMonth = attendanceMonth.daysInMonth();
+      const dateList = Array.from({ length: daysInMonth }, (_, index) => {
+        const date = moment([selectedYear, selectedMonth, index + 1]).format("YYYY-MM-DD");
+        return {
+          date,
+          level: `${monthName} ${index + 1}`, // Label with the month name and day number
+        };
+      });
+    
+      d = dateList.map((item: any) => ({
         title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
         render: (_: any, record: any) =>
           record?.[item?.date] ? (
@@ -181,6 +217,8 @@ const JoineeAttendanceReport = () => {
           ),
         width: 150,
       }));
+    }
+
     return [
       {
         title: "SL",
@@ -221,7 +259,7 @@ const JoineeAttendanceReport = () => {
             </div>
           );
         },
-        fixed: "left",
+        // fixed: "left",
         width: 120,
       },
 
