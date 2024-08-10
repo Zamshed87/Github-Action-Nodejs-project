@@ -288,6 +288,9 @@ const EmployeeJobCard = () => {
             {record?.AttStatus === "Early Out" && (
               <Tag color="geekblue">{record?.AttStatus}</Tag>
             )}
+            {record?.AttStatus === "Halfday Leave" && (
+              <Tag color="purple">{record?.AttStatus}</Tag>
+            )}
             {record?.AttStatus === "Not Found" && <p>-</p>}
           </>
         ),
@@ -671,12 +674,12 @@ const EmployeeJobCard = () => {
                     <strong>{landingApi?.data?.[0]?.totalLeave} Days</strong>{" "}
                   </p>
                   <p>
-                    Total Late Time:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalLateMin}</strong>{" "}
+                    Total Halfday Leave:{" "}
+                    <strong>{landingApi?.data?.[0]?.totalHalfdayLeave}</strong>{" "}
                   </p>
                   <p>
-                    Total Early Out Time:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalEarlyOutMin}</strong>{" "}
+                    Total Late Time:{" "}
+                    <strong>{landingApi?.data?.[0]?.totalLateMin}</strong>{" "}
                   </p>
                 </div>
               </Col>
@@ -740,6 +743,10 @@ const EmployeeJobCard = () => {
                   <p>
                     Total Early Out:{" "}
                     <strong>{landingApi?.data?.[0]?.totalEarlyOut} Days</strong>{" "}
+                  </p>
+                  <p>
+                    Total Early Out Time:{" "}
+                    <strong>{landingApi?.data?.[0]?.totalEarlyOutMin}</strong>{" "}
                   </p>
                   <p>
                     Total Holiday:{" "}

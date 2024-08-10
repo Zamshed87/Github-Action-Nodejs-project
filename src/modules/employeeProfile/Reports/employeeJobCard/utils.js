@@ -124,7 +124,7 @@ export const createJobCardExcelHandler = ({
   });
 };
 const dateFormatterForInputUpdate = (date) => {
-  return date.toISOString().split('T')[0]; // Example: '2024-04-26'
+  return date.toISOString().split("T")[0]; // Example: '2024-04-26'
 };
 
 export const custom26to25LandingDataHandler = (selectedDate, cb) => {
@@ -249,6 +249,9 @@ export const JobCardTableHeadColumn = (page, paginationSize) => {
           )}
           {record?.AttStatus === "Early Out" && (
             <Chips label={record?.AttStatus} classess="info" />
+          )}
+          {record?.AttStatus === "Halfday Leave" && (
+            <Chips label={record?.AttStatus} classess="warning" />
           )}
           {record?.AttStatus === "Not Found" && <p>-</p>}
         </>
