@@ -141,8 +141,8 @@ const JoineeAttendanceReport = () => {
       params: {
         ReportType: "new_joinee_in_out_attendance_report_for_all_employee",
         AccountId: orgId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: values?.workplaceGroup?.value || 0,
+        WorkplaceId: values?.workplace?.value || 0,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
