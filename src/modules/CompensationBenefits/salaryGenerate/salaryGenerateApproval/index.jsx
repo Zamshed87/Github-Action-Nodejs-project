@@ -3,7 +3,6 @@ import {
   Cancel,
   CheckCircle,
   InfoOutlined,
-  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -22,7 +21,6 @@ import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
-import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -40,6 +38,7 @@ import {
 import FilterModal from "./component/FilterModal";
 import "./index.css";
 import ApproveRejectComp from "common/ApproveRejectComp";
+import { numberWithCommas } from "utility/numberWithCommas";
 
 const initData = {
   search: "",
@@ -64,7 +63,6 @@ export default function SalaryGenerateApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
   const [filterLanding, setFilterLanding] = useState([]);
 
   const getLandingData = () => {
@@ -95,8 +93,6 @@ export default function SalaryGenerateApproval() {
   useEffect(() => {
     getLandingData();
   }, [employeeId]);
-
-  const debounce = useDebounce();
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -417,6 +413,19 @@ export default function SalaryGenerateApproval() {
         filter: true,
       },
       {
+        title: "Workplaces",
+        render: (text) =>
+          text ? (
+            <LightTooltip title={<div>{text}</div>}>
+              {text.substring(0, 15) + "...."}
+            </LightTooltip>
+          ) : (
+            "-"
+          ),
+        dataIndex: "strWorkplace",
+        width: 150,
+      },
+      {
         title: "Month",
         render: (_, record) => (
           <div className="d-flex align-items-center">
@@ -461,6 +470,21 @@ export default function SalaryGenerateApproval() {
         ),
         filter: false,
         sorter: false,
+      },
+      {
+        title: "Net Amount",
+        dataIndex: "numNetPayableSalary",
+        sorter: true,
+        filter: true,
+        render: (_, record) => (
+          <>
+            {record?.application?.numNetPayableSalary
+              ? numberWithCommas(record?.application?.numNetPayableSalary)
+              : "0"}
+          </>
+        ),
+        width: 120,
+        className: "text-center",
       },
       {
         title: "Waiting Stage",

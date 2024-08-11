@@ -582,34 +582,41 @@ export default function LeaveApproval() {
       },
       {
         title: "Remarks",
-        render: (_, record, index) => (
+        dataIndex: "strApprovalRemarks",
+        render: (_, record) => (
           <div className="d-flex align-items-center">
-            <div
-              onClick={(e) => {
-                console.log("e", e);
-                e.stopPropagation();
-              }}
-            >
-              <FormikInput
-                classes="input-sm"
-                value={values?.remarks}
-                name="remarks"
-                type="text"
-                className="form-control"
-                placeholder="Remarks"
-                onChange={(e) => {
-                  inputHandler(
-                    "remarks",
-                    e.target.value,
-                    index,
-                    leaveApplicationData?.listData,
-                    setApplicationData
-                  );
-                }}
-              />
+            <div>
+              {record?.leaveApplication?.strApprovalRemarks}
             </div>
           </div>
         ),
+        // render: (_, record, index) => (
+        //   <div className="d-flex align-items-center d-none">
+        //     <div
+        //       onClick={(e) => {
+        //         e.stopPropagation();
+        //       }}
+        //     >
+        //       <FormikInput
+        //         classes="input-sm"
+        //         value={values?.remarks}
+        //         name="remarks"
+        //         type="text"
+        //         className="form-control"
+        //         placeholder="Remarks"
+        //         onChange={(e) => {
+        //           inputHandler(
+        //             "remarks",
+        //             e.target.value,
+        //             index,
+        //             leaveApplicationData?.listData,
+        //             setApplicationData
+        //           );
+        //         }}
+        //       />
+        //     </div>
+        //   </div>
+        // ),
         filter: false,
         sorter: false,
         width: "130px",
