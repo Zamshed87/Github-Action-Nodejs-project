@@ -149,7 +149,7 @@ const ActiveInactiveEmployeeReport = () => {
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.todate).format("YYYY-MM-DD"),
+        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         WorkplaceId: values?.workplace?.value,
         searchTxt: searchText,
       },
