@@ -132,13 +132,17 @@ function AttendanceRawDataProcess() {
     onGetBridgeResponse(
       wId,
       wgId,
-      pagination?.pageSize,
-      pagination?.current,
+      pagination?.pageSize || 0,
+      pagination?.current || 0,
       setRes,
       setLoading,
       setPages
     );
   };
+
+  useEffect(() =>{
+    landingApi()
+  },[wgId,wId])
 
   const header = [
     {
@@ -153,7 +157,6 @@ function AttendanceRawDataProcess() {
       width: 15,
       align: "center",
     },
-
     {
       title: "Workplace Group",
       dataIndex: "strWorkplaceGroupName",

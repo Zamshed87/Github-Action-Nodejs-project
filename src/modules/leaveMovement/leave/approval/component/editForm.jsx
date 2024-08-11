@@ -32,6 +32,7 @@ const LeaveApprovalEditForm = ({ objProps }) => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
   const { values, errors, touched, handleSubmit, resetForm, setFieldValue } =
     useFormik({
       enableReinitialize: true,
@@ -48,6 +49,7 @@ const LeaveApprovalEditForm = ({ objProps }) => {
         toDate: dateFormatterForInput(
           singleApplication?.leaveApplication?.dteToDate
         ),
+        strApprovalRemarks: singleApplication?.leaveApplication?.strApprovalRemarks || "",
       },
       onSubmit: (values) => {
         handleSubmitEdit(values, () => {
@@ -66,15 +68,6 @@ const LeaveApprovalEditForm = ({ objProps }) => {
       toDate: values?.toDate,
       intActionBy: employeeId,
       strApprovalRemarks: values?.strApprovalRemarks || "",
-
-      // intEmployeeId: singleApplication?.leaveApplication?.intEmployeeId,
-      // intApplicationId:
-      //   singleApplication?.leaveApplication?.intApplicationId || 0,
-      // intLeaveTypeId: singleApplication?.leaveApplication?.intLeaveTypeId,
-      // fromDate: values?.fromDate,
-      // toDate: values?.toDate,
-      // intActionBy: employeeId,
-      // strApprovalRemarks: values?.strApprovalRemarks || "",
     };
     reqApprovedApi(
       "/LeaveMovement/UpdateLeaveApplicationDuringApproval",
