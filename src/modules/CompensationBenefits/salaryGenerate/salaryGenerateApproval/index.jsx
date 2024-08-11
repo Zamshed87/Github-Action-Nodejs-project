@@ -407,8 +407,8 @@ export default function SalaryGenerateApproval() {
         filter: true,
       },
       {
-        title: "Salary Code",
-        dataIndex: "strSalaryCode",
+        title: "Workplace Group",
+        dataIndex: "strWorkplaceGroup",
         sorter: true,
         filter: true,
       },
@@ -425,6 +425,28 @@ export default function SalaryGenerateApproval() {
         dataIndex: "strWorkplace",
         width: 150,
       },
+      {
+        title: "Salary Code",
+        dataIndex: "strSalaryCode",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Net Amount",
+        dataIndex: "numNetPayableSalary",
+        sorter: true,
+        filter: true,
+        render: (_, record) => (
+          <>
+            {record?.application?.numNetPayableSalary
+              ? numberWithCommas(record?.application?.numNetPayableSalary)
+              : "0"}
+          </>
+        ),
+        width: 120,
+        className: "text-center",
+      },
+   
       {
         title: "Month",
         render: (_, record) => (
@@ -471,21 +493,7 @@ export default function SalaryGenerateApproval() {
         filter: false,
         sorter: false,
       },
-      {
-        title: "Net Amount",
-        dataIndex: "numNetPayableSalary",
-        sorter: true,
-        filter: true,
-        render: (_, record) => (
-          <>
-            {record?.application?.numNetPayableSalary
-              ? numberWithCommas(record?.application?.numNetPayableSalary)
-              : "0"}
-          </>
-        ),
-        width: 120,
-        className: "text-center",
-      },
+   
       {
         title: "Waiting Stage",
         dataIndex: "waitingStage",
