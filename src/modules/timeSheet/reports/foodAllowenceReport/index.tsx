@@ -31,7 +31,7 @@ const FoodAllowenceReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Attendance Log";
+    document.title = "Food Allowence Report";
     () => {
       document.title = "PeopleDesk";
     };
