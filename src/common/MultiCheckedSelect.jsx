@@ -131,7 +131,7 @@ const MultiCheckedSelect = ({
           multiple
           value={value}
           onBlur={onBlur}
-          onChange={onChange}
+          onChange={() => onChange()}
           input={<OutlinedInput />}
           renderValue={(selected) =>
             (value.length > 0 &&
@@ -188,7 +188,9 @@ const MultiCheckedSelect = ({
         >
           {isSearchFieldVisible && (
             <li
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
               style={{ width: "100%", padding: "2px 5px" }}
             >
               <OutlinedInput

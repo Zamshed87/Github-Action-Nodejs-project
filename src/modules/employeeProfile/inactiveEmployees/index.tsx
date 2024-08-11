@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {
   Avatar,
   DataTable,
@@ -61,11 +62,6 @@ const ActiveInactiveEmployeeReport = () => {
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
   const [, getExcelData, apiLoading] = useAxiosGet();
 
   const { id }: any = useParams();
@@ -328,16 +324,11 @@ const ActiveInactiveEmployeeReport = () => {
           toDate: moment(getDateOfYear("last")),
         }}
         onFinish={() => {
-          landingApiCall({
-            pagination: {
-              current: landingApi?.data?.currentPage,
-              pageSize: landingApi?.data?.totalCount,
-            },
-          });
+          landingApiCall();
         }}
       >
         <PCard>
-          {excelLoading && <Loading />}
+          {(excelLoading || apiLoading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}

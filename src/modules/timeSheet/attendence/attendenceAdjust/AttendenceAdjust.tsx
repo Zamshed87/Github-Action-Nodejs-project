@@ -593,7 +593,10 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         name="date"
                         label="Select From Date"
                         placeholder="Select a date"
-                        onChange={() => {
+                        onChange={(value) => {
+                          form.setFieldsValue({
+                            tdate: value,
+                          });
                           AttendanceAdjustmentFilter?.reset();
                           setSelectedRow([]);
                         }}
