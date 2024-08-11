@@ -10,7 +10,13 @@ import { useHistory } from "react-router-dom";
 const StyledTable = (props) => {
   const history = useHistory();
 
-  const { tableData, setOpenModal, setTableData, setSingleRowData, setSelectedData } = props;
+  const {
+    tableData,
+    setOpenModal,
+    setTableData,
+    setSingleRowData,
+    setSelectedData,
+  } = props;
 
   const getWeek = (day) => {
     if (day === 0) {
@@ -59,7 +65,7 @@ const StyledTable = (props) => {
                   const selectedObjects = tableData.filter(
                     (item) => item.selectCheckbox
                   );
-                  setSelectedData(selectedObjects)
+                  setSelectedData(selectedObjects);
                 }}
                 disabled={
                   data?.ApplicationStatus === "Approved" ||
@@ -137,8 +143,22 @@ const StyledTable = (props) => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
+
+                      // Set the data for the single row that was clicked
                       setSingleRowData(data);
+
+                      // Filter the tableData to find all objects where intEmployeeId matches
+                      const selectedObjects = tableData.filter(
+                        (item) =>
+                          item.AttendanceSummaryId === data.AttendanceSummaryId
+                      );
+                      // Set the selected data with the filtered array
+                      setSelectedData(selectedObjects);
+
+                      // Open the modal
                       setOpenModal(true);
+
+                      // Update the history with the single row data
                       history.push({
                         singleRowData: data,
                       });
