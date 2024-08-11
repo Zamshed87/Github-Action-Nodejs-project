@@ -3,7 +3,13 @@ import { TimePicker } from "antd";
 import moment from "moment";
 import { memo, useEffect, useState } from "react";
 
-const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto) => {
+const tableHeadColumn = (
+  updateRowDto,
+  apply,
+  setApply,
+  updateByApplyAll,
+  rowDto
+) => {
   return [
     {
       title: "SL",
@@ -60,7 +66,7 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
                 setApply({ ...apply, inTime: e.target.checked });
                 e.target.checked && updateByApplyAll("intimeUpdate");
               }}
-              disabled={rowDto?.[0]?.intimeUpdate ? false : true }
+              disabled={rowDto?.[0]?.intimeUpdate ? false : true}
             />
           </div>
         );
@@ -120,8 +126,7 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
                 setApply({ ...apply, outTime: e.target.checked });
                 e.target.checked && updateByApplyAll("outtimeUpdate");
               }}
-              disabled={rowDto?.[0]?.outtimeUpdate ? false : true }
-
+              disabled={rowDto?.[0]?.outtimeUpdate ? false : true}
             />
           </div>
         );
@@ -144,7 +149,26 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
       ),
     },
     {
-      title: "Reason (optional)",
+      title: () => {
+        return (
+          <div className="d-flex align-items-center justify-content-between">
+            <p style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }}>
+              Reason (optional)
+            </p>
+            <PInput
+              label="Apply All?"
+              type="checkbox"
+              checked={apply.reason}
+              layout="horizontal"
+              onChange={(e) => {
+                setApply({ ...apply, reason: e.target.checked });
+                e.target.checked && updateByApplyAll("reasonUpdate");
+              }}
+              // disabled={rowDto?.[0]?.reasonUpdate ? false : true}
+            />
+          </div>
+        );
+      },
       dataIndex: "reasonUpdate",
       render: (_, record, idx) => (
         <div>
@@ -155,10 +179,11 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
             onChange={(e) => {
               updateRowDto("reasonUpdate", e?.target?.value, idx);
             }}
+            disabled={apply.reason && idx !== 0 ? true : false}
           />
         </div>
       ),
-      width: 150,
+      width: 200,
     },
   ];
 };
@@ -176,12 +201,12 @@ const ChangedInOutTimeEmpListModal = ({
   const [apply, setApply] = useState({
     inTime: false,
     outTime: false,
+    reason: false,
   });
   const updateByApplyAll = (fieldName) => {
-    const firstIndex = moment(
-      moment(rowDto?.[0][fieldName]).format("HH:mm:ss"),
-      "h:mma"
-    );
+    const firstIndex = fieldName?.toLowerCase()?.includes("time")
+      ? moment(moment(rowDto?.[0][fieldName]).format("HH:mm:ss"), "h:mma")
+      : rowDto?.[0][fieldName];
     const updateState = [];
     rowDto.forEach((item) => {
       const obj = {
@@ -192,7 +217,6 @@ const ChangedInOutTimeEmpListModal = ({
     });
     setRowDto(updateState);
   };
-console.log("selectedRow",selectedRow)
   useEffect(() => {
     setRowDto([
       ...selectedRow.map((info) => ({
@@ -205,7 +229,7 @@ console.log("selectedRow",selectedRow)
           : null,
         intimeUpdate: info?.InTime ? moment(info?.InTime, "h:mma") : null,
         outtimeUpdate: info?.OutTime ? moment(info?.OutTime, "h:mma") : null,
-        reasonUpdate: "",
+        reasonUpdate: info?.reasonUpdate || null,
       })),
     ]);
   }, [selectedRow]);
@@ -214,7 +238,13 @@ console.log("selectedRow",selectedRow)
     <div>
       {rowDto.length > 0 ? (
         <DataTable
-          header={tableHeadColumn(updateRowDto, apply, setApply, updateByApplyAll, rowDto)}
+          header={tableHeadColumn(
+            updateRowDto,
+            apply,
+            setApply,
+            updateByApplyAll,
+            rowDto
+          )}
           bordered
           data={rowDto || []}
           checkBoxColWidth={50}
