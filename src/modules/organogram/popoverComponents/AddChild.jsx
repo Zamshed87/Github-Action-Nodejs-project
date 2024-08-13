@@ -50,7 +50,7 @@ const AddChild = ({
   // };
   const getPositionDDL = () => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&intAccountId=${orgId}&BusinessUnitId=${buId}&intId=0&intWorkplaceId=${wId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&intAccountId=${orgId}&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "PositionId",
       "PositionName",
       setPosition
