@@ -5,10 +5,18 @@ import { LightTooltip } from "common/LightTooltip";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { gray900 } from "utility/customColor";
+import { failColor, gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Divider, Popover } from "antd";
 
-const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
+const LeaveBalanceTable = ({
+  leaveBalanceData = [],
+  show = false,
+  values,
+  casualLvePunishment = [],
+  medicalLvePunishment = [],
+}) => {
   let leaves = leaveBalanceData;
   if (show) {
     leaves = leaveBalanceData?.filter(
@@ -23,6 +31,32 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
   useEffect(() => {
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
+
+  const punishmentPopupContent = (LvePunishment, type) => {
+    return (
+      <div>
+        <div>
+          <p>
+            <b>{type} leave taken details</b>
+          </p>
+          <Divider style={{ margin: "5px 0 0 0" }} />
+          {LvePunishment?.map((item, index) => (
+            <div className="mt-2" key={index}>
+              <p className="fontWeight600">
+                {item?.isFromApplication
+                  ? "Leave Consumed"
+                  : "Leave Punishment"}
+              </p>
+              <p className="pl-3">
+                {item?.strMonth}:{" "}
+                <span className="fontWeight600">{item?.intLeaveCount}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   console.log(show);
   const header = [
@@ -80,6 +114,35 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
     },
     {
       title: "Taken",
+      render: (data, record) => (
+        <>
+          <p>
+            {data}
+            {show && record?.strLeaveType === "Sick Leave" && (
+              <Popover
+                placement="bottom"
+                content={punishmentPopupContent(medicalLvePunishment, "Sick")}
+                trigger="click"
+              >
+                <InfoCircleOutlined
+                  style={{ color: failColor, marginLeft: "2px" }}
+                />
+              </Popover>
+            )}
+            {show && record?.strLeaveType === "Casual Leave" && (
+              <Popover
+                placement="bottom"
+                content={punishmentPopupContent(casualLvePunishment, "Casual")}
+                trigger="click"
+              >
+                <InfoCircleOutlined
+                  style={{ color: failColor, marginLeft: "2px" }}
+                />
+              </Popover>
+            )}
+          </p>
+        </>
+      ),
       dataIndex: "intTakenLveInDay",
       width: 40,
     },

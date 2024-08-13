@@ -60,6 +60,8 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     isOfficeAdmin,
     // demoPopupForDeleteAdmin,
     empMgmtLeaveApplicationDto,
+    casualLvePunishment,
+    medicalLvePunishment,
   } = props?.propjObj;
   // Form Instance
   const [form] = Form.useForm();
@@ -197,6 +199,8 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
                   leaveBalanceData={leaveBalanceData}
                   show={true}
                   values={form.getFieldsValue(true)}
+                  casualLvePunishment={casualLvePunishment}
+                  medicalLvePunishment={medicalLvePunishment}
                 />
               </Col>
             </Row>

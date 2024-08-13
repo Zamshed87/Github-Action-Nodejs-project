@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ import {
 } from "./helperAPI";
 import {
   empMgmtLeaveApplicationDto,
+  getLvePunishmentData,
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
@@ -45,6 +47,8 @@ const withLeaveApplication = (WrappedComponent) => {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [loadingForInfo, setLoadingForInfo] = useState(false);
+    const [casualLvePunishment, setCasualLvePunishment] = useState([]);
+    const [medicalLvePunishment, setMedicalLvePunishment] = useState([]);
 
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
@@ -216,6 +220,22 @@ const withLeaveApplication = (WrappedComponent) => {
         buId,
         wgId
       );
+      getLvePunishmentData(
+        "EmployeeCasualLeavePunishmentData",
+        buId,
+        empId ? empId : employeeId,
+        year || moment().format("YYYY"),
+        setLoading,
+        setCasualLvePunishment
+      );
+      getLvePunishmentData(
+        "EmployeeMedicalLeavePunishmentData",
+        buId,
+        empId ? empId : employeeId,
+        year || moment().format("YYYY"),
+        setLoading,
+        setMedicalLvePunishment
+      );
     };
 
     useEffect(() => {
@@ -293,6 +313,8 @@ const withLeaveApplication = (WrappedComponent) => {
           isOfficeAdmin,
           // demoPopupForDeleteAdmin,
           empMgmtLeaveApplicationDto,
+          casualLvePunishment,
+          medicalLvePunishment,
         }}
       />
     );
