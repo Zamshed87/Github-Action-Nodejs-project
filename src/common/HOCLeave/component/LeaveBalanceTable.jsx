@@ -58,7 +58,6 @@ const LeaveBalanceTable = ({
     );
   };
 
-  console.log(show);
   const header = [
     {
       title: "Leave Type",
