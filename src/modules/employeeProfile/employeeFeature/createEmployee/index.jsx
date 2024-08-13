@@ -574,6 +574,11 @@ const CreateAndEditEmploye = () => {
     }
   }, [orgId, buId, singleData, employeeId]);
 
+  const disabledDate = (current) => {
+    const startOfPreviousMonth = moment().subtract(1, "month").startOf("month");
+    return current && current < startOfPreviousMonth;
+  };
+
   return (
     <div style={{ marginBottom: "60px" }}>
       {loading && <Loading />}
@@ -1644,6 +1649,7 @@ const CreateAndEditEmploye = () => {
                             name="generateDate"
                             label="Calender Generate Date"
                             placeholder="Generate Date"
+                            disabledDate={disabledDate}
                             // disabled={params?.id}
                           />
                         </Col>
