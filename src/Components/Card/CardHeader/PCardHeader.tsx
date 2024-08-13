@@ -11,6 +11,9 @@ import { PInput } from "Components/PForm";
 import { PButton, buttonType } from "Components/Button/PButton";
 import { debounce } from "lodash";
 import { MdPrint } from "react-icons/md";
+import { LightTooltip } from "common/LightTooltip";
+import { InfoOutlined } from "@mui/icons-material";
+import { failColor } from "utility/customColor";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
   text?: string | React.ReactNode;
@@ -28,6 +31,7 @@ type PCardHeaderType = {
     onClick?: () => void;
     disabled?: boolean;
     icon?: React.ReactNode | "plus";
+    info?: { isInfo?: boolean; infoTitle?: string; infoColor?: any };
   }>;
   children?: React.ReactNode;
 };
@@ -109,14 +113,29 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         {/* Button List */}
         {buttonList
           ? buttonList.map((button, index) => (
-              <PButton
-                key={index}
-                content={button.content}
-                type={button.type}
-                onClick={button.onClick}
-                icon={button.icon === "plus" ? <PlusOutlined /> : button.icon}
-                disabled={button.disabled}
-              />
+              <div key={index} className="d-flex align-items-center">
+                {button?.info?.isInfo && (
+                  <LightTooltip title={button?.info?.infoTitle} arrow>
+                    {" "}
+                    <InfoOutlined
+                      sx={{
+                        color: button?.info?.infoColor || failColor,
+                        width: 16,
+                        cursor: "pointer",
+                        mr: 1,
+                      }}
+                    />
+                  </LightTooltip>
+                )}
+                <PButton
+                  // key={index}
+                  content={button.content}
+                  type={button.type}
+                  onClick={button.onClick}
+                  icon={button.icon === "plus" ? <PlusOutlined /> : button.icon}
+                  disabled={button.disabled}
+                />
+              </div>
             ))
           : undefined}
         {children}

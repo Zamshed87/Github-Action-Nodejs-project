@@ -1,16 +1,7 @@
-import { AddOutlined } from "@mui/icons-material";
 import type { RangePickerProps } from "antd/es/date-picker";
 import { ImAttachment } from "react-icons/im";
 
-import {
-  PButton,
-  PCard,
-  PCardBody,
-  PForm,
-  PInput,
-  PRadio,
-  PSelect,
-} from "Components";
+import { PButton, PCardBody, PForm, PInput, PRadio, PSelect } from "Components";
 import { Col, Form, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -43,12 +34,11 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
     setImageFile,
     isEdit,
     leaveTypeDDL = [],
-    homeReset,
   } = propsObj;
   // hook
   const dispatch = useDispatch();
   const [next3daysForEmp, setNext3daysForEmp] = useState<any>(undefined);
-  const [startYear, setStartYear] = useState<any>(undefined);
+  const [, setStartYear] = useState<any>(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
 
@@ -115,7 +105,9 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
           setAttachmentList([]);
         });
       })
-      .catch(() => {});
+      .catch(() => {
+        console.log();
+      });
   };
   return (
     <>
@@ -226,7 +218,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                             message: "To Date is required",
                           },
                         ]}
-                        onChange={(date, dateString) => {
+                        onChange={(date) => {
                           if (date && fromDate) {
                             const totalLeaves = `${
                               +fromDateToDateDiff(

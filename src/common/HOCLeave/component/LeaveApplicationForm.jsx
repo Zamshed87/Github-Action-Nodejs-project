@@ -24,7 +24,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
   );
   const [startYear, setStartYear] = useState(null);
   const [next3daysForEmp, setNext3daysForEmp] = useState(null);
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const {
     values,
