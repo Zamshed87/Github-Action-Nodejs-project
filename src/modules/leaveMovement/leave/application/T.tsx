@@ -1,4 +1,3 @@
-import { CircularProgress } from "@mui/material";
 import { APIUrl } from "App";
 import {
   DataTable,
@@ -8,13 +7,12 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import { useApiRequest } from "Hooks";
-import { Col, Form, Modal, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import withLeaveApplication from "common/HOCLeave/withLeaveApplication";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { yearDDLAction } from "utility/yearDDL";
 import DemoImg from "../../../../assets/images/demo.png";
 import { dateFormatter } from "utility/dateFormatter";
@@ -44,8 +42,6 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     leaveTypeDDL,
     leaveBalanceData,
     loading,
-    progress,
-    getEmpInfoDetails,
     demoPopupForDelete,
     saveHandler,
     searchData,
@@ -67,9 +63,6 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
   } = props?.propjObj;
   // Form Instance
   const [form] = Form.useForm();
-
-  // Api Actions
-  const CommonEmployeeDDL = useApiRequest([]);
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -95,7 +88,7 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
         <PCardHeader>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employee, year } = form.getFieldsValue();
+              const { employee } = form.getFieldsValue();
               return (
                 <PSelect
                   name="year"

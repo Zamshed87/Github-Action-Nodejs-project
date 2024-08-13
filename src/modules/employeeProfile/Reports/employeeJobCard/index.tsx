@@ -327,24 +327,18 @@ const EmployeeJobCard = () => {
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.length || 0} results`}
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            //   form.setFieldsValue({
-            //     search: e?.target?.value,
-            //   });
-            // }}
-            buttonList={[
-              {
-                type: "primary",
-                content: "Download all",
-                onClick: () => {},
-                info: {
-                  isInfo: true,
-                  infoTitle:
-                    "Download all Employee job card for the current workplace",
-                },
-              },
-            ]}
+            // buttonList={[
+            //   {
+            //     type: "primary",
+            //     content: "Download all",
+            //     onClick: () => {},
+            //     info: {
+            //       isInfo: true,
+            //       infoTitle:
+            //         "Download all Employee job card for the current workplace",
+            //     },
+            //   },
+            // ]}
             onExport={() => {
               createJobCardExcelHandler({
                 BuDetails: buDetails,

@@ -1,7 +1,6 @@
 import { DataTable, PCardBody } from "Components";
 import { InfoOutlined } from "@mui/icons-material";
 
-import { useApiRequest } from "Hooks";
 import { LightTooltip } from "common/LightTooltip";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -18,11 +17,14 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
   }
   const [isView, setIsView] = useState(false);
 
-  const [singleObjList, getSingleObjDataAPI, loading, setSingleObjList] =
-    useAxiosGet({});
+  const [singleObjList, getSingleObjDataAPI, , setSingleObjList] = useAxiosGet(
+    {}
+  );
   useEffect(() => {
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
+
+  console.log(show);
   const header = [
     {
       title: "Leave Type",
