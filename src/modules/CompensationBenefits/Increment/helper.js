@@ -76,6 +76,14 @@ export const incrementColumnData = (
       fieldType: "string",
     },
     {
+      title: "Employee Code",
+      dataIndex: "strEmployeeCode",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+      width: 130,
+    },
+    {
       title: "Type",
       dataIndex: "strEmploymentType",
       sort: true,
@@ -92,6 +100,13 @@ export const incrementColumnData = (
     {
       title: "Department",
       dataIndex: "strDepartment",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "strSection",
       sort: true,
       filter: false,
       fieldType: "string",
