@@ -804,8 +804,10 @@ const SalaryGenerateCreate = () => {
                         value={values?.workplace}
                         onChange={(valueOption) => {
                           setFieldValue("workplace", valueOption);
-                          const values = valueOption.map((item) => item?.value);
-                          const valuesStr = values.join(",");
+                          const values = valueOption?.map(
+                            (item) => item?.value
+                          );
+                          const valuesStr = values?.join(",");
 
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,

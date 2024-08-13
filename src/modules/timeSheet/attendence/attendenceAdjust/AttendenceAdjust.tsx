@@ -15,13 +15,103 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { convertTo12HourFormat } from "utility/timeFormatter";
 import ChangedInOutTimeEmpListModal from "./component/ChangedInOutTime";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { toast } from "react-toastify";
 import { custom26to25LandingDataHandler } from "modules/employeeProfile/Reports/employeeJobCard/utils";
+
+const updateRowDto = ({
+  fieldName,
+  value,
+  index,
+  selectedRow,
+  setSelectedRow,
+}: any) => {
+  const data = [...selectedRow];
+  data[index][fieldName] = value;
+  setSelectedRow(data);
+};
+const tableHeadColumn = (
+  selectedRow: any,
+  setSelectedRow: any,
+  isAllChecked: boolean
+) => {
+  return [
+    {
+      title: "SL",
+      render: (value: any, row: any, index: number) => index + 1,
+      align: "center",
+      width: 30,
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "EmployeeName",
+      width: 120,
+    },
+    {
+      title: "Employee ID",
+      dataIndex: "EmployeeCode",
+      width: 90,
+    },
+    {
+      title: "Attendance Date",
+      dataIndex: "AttendanceDate",
+      render: (data: any) => moment(data).format("DD-MMM-YYYY"),
+      width: 100,
+    },
+    {
+      title: "Actual Attendance",
+      dataIndex: "actualAttendanceStatus",
+      render: (_: any, record: any) =>
+        record?.actualAttendanceStatus === "Present" ? (
+          <PBadge text="Present" type="success" />
+        ) : record?.actualAttendanceStatus === "Absent" ? (
+          <PBadge text="Absent" type="warning" />
+        ) : record?.actualAttendanceStatus === "Holiday" ? (
+          <PBadge text="Holiday" type="light" />
+        ) : record?.actualAttendanceStatus === "Late" ? (
+          <PBadge text="Late" type="danger" />
+        ) : record?.actualAttendanceStatus === "Offday" ? (
+          <PBadge text="Offday" type="light" />
+        ) : record?.actualAttendanceStatus === "Leave" ? (
+          <PBadge text="Leave" type="light" />
+        ) : record?.actualAttendanceStatus === "Movement" ? (
+          <PBadge text="Movement" type="light" />
+        ) : (
+          ""
+        ),
+      align: "center",
+      width: 100,
+    },
+    {
+      title: "Reason",
+      dataIndex: "reasonUpdate",
+      render: (_: any, record: any, idx: number) => (
+        <div>
+          <PInput
+            type="text"
+            placeholder="Write reason"
+            value={record?.strReason}
+            onChange={(e) => {
+              updateRowDto({
+                fieldName: "strReason",
+                value: e?.target?.value,
+                index: idx,
+                selectedRow,
+                setSelectedRow,
+              });
+            }}
+            disabled={isAllChecked}
+          />
+        </div>
+      ),
+      width: 200,
+    },
+  ];
+};
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -36,6 +126,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   const [selectedPayloadState, setSelectedPayloadState] = React.useState<any[]>(
     []
   );
+  const [openModal, setOpenModal] = useState(false);
   // Form Instance
   const [form] = Form.useForm();
 
@@ -99,6 +190,11 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
 
               attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
             },
+      onSuccess(data) {
+        data.forEach((item: any, i: any) => {
+          data[i].strReason = null;
+        });
+      },
     });
   };
 
@@ -243,7 +339,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 ? "Leave"
                 : "Absent",
               requestStatus: values?.attendanceAdujust?.label,
-              remarks: values?.reason || "By HR",
+              remarks: item?.strReason || "By HR",
               isApproved: true,
               isActive: true,
               isManagement: true,
@@ -267,6 +363,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               outtime: "",
               reason: "",
             });
+            setOpenModal(false);
             setSelectedRow([]);
             getAttendanceFilterData();
           },
@@ -334,7 +431,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Punch In/Out",
       dataIndex: "",
-      render: (data: any) => `${data?.InTime} - ${data?.OutTime}`,
+      render: (data: any) =>
+        `${data?.InTime || "N/A"} - ${data?.OutTime || "N/A"}`,
       width: 100,
     },
     {
@@ -401,6 +499,17 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Request Attendance",
       dataIndex: "RequestStatus",
+      render: (data: any) =>
+        data === "Present" ? (
+          <PBadge text="Present" type="success" />
+        ) : data === "Absent" ? (
+          <PBadge text="Absent" type="warning" />
+        ) : data === "Late" ? (
+          <PBadge text="Late" type="danger" />
+        ) : (
+          ""
+        ),
+      align: "center",
       width: 170,
       filter: true,
       sorter: false,
@@ -438,6 +547,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         current > endDateMoment.endOf("day"))
     );
   };
+
   return (
     <PForm
       form={form}
@@ -491,9 +601,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 //   title: "Are you sure to update attendance?",
                 //   onOk: submitHandler,
                 // });
-                form.setFieldsValue({
-                  openModal1: true,
-                });
+
+                setOpenModal(true);
             }}
             disabled={!selectedRow.length}
           />
@@ -593,7 +702,10 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         name="date"
                         label="Select From Date"
                         placeholder="Select a date"
-                        onChange={() => {
+                        onChange={(value) => {
+                          form.setFieldsValue({
+                            tdate: value,
+                          });
                           AttendanceAdjustmentFilter?.reset();
                           setSelectedRow([]);
                         }}
@@ -821,6 +933,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                               intime: "",
                               outtime: "",
                               reason: "",
+                              reasonAll: false,
                             });
                           }}
                           onSubmit={submitHandler}
@@ -843,6 +956,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                               intime: "",
                               outtime: "",
                               reason: "",
+                              reasonAll: false,
                             });
                           }}
                           onSubmit={submitHandler}
@@ -859,24 +973,78 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       {/* Confirmation Modal */}
       <Form.Item shouldUpdate noStyle>
         {() => {
-          const { openModal1, attendanceAdujust } = form.getFieldsValue(true);
+          const { attendanceAdujust, reason } = form.getFieldsValue(true);
           return (
             <PModal
-              width={500}
-              open={openModal1}
+              width={900}
+              open={openModal}
               onCancel={() => {
                 form.setFieldsValue({
-                  openModal1: false,
                   attendanceAdujust: undefined,
+                  reason: "",
+                  reasonAll: false,
                 });
+                const modifiedObj = selectedRow?.map((dto) => {
+                  return {
+                    ...dto,
+                    strReason: null,
+                  };
+                });
+                setSelectedRow(modifiedObj);
+                setOpenModal(false);
               }}
-              title="Are you sure to update attendance?"
+              title={`Are you sure to update attendance to ${attendanceAdujust?.label}?`}
               components={
                 <PForm form={form}>
                   <>
-                    <div>
-                      <p>Request Status: {attendanceAdujust?.label}</p>
+                    <div style={{ maxHeight: "400px" }}>
+                      <p>
+                        Request Status:{" "}
+                        {attendanceAdujust?.label
+                          ?.toLowerCase()
+                          .includes("present") && (
+                          <PBadge text="Present" type="success" />
+                        )}
+                        {attendanceAdujust?.label
+                          ?.toLowerCase()
+                          .includes("absent") && (
+                          <PBadge text="Absent" type="warning" />
+                        )}
+                        {attendanceAdujust?.label
+                          ?.toLowerCase()
+                          .includes("late") && (
+                          <PBadge text="Late" type="danger" />
+                        )}
+                        {/* <strong>{attendanceAdujust?.label}</strong>{" "} */}
+                      </p>
                       <Row gutter={[10, 2]}>
+                        <Col span={18}>
+                          <PInput
+                            label="Reason"
+                            name={"reason"}
+                            type="text"
+                            placeholder="Write reason"
+                          />
+                        </Col>
+                        <Col className="mt-3" span={6}>
+                          <PInput
+                            label="Apply All?"
+                            type="checkbox"
+                            name="reasonAll"
+                            layout="horizontal"
+                            onChange={(e) => {
+                              const modifiedObj = selectedRow?.map((dto) => {
+                                return {
+                                  ...dto,
+                                  strReason: reason,
+                                };
+                              });
+                              e.target.checked && setSelectedRow(modifiedObj);
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                      {/* <Row gutter={[10, 2]}>
                         <Col span={24}>
                           <PInput
                             label="Reason"
@@ -885,16 +1053,41 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             placeholder="Write reason"
                           />
                         </Col>
-                      </Row>
+                      </Row> */}
+                      <div className="mt-2">
+                        {selectedRow.length > 0 ? (
+                          <DataTable
+                            header={tableHeadColumn(
+                              selectedRow,
+                              setSelectedRow,
+                              form.getFieldValue("reasonAll")
+                            )}
+                            bordered
+                            data={selectedRow || []}
+                            checkBoxColWidth={50}
+                            scroll={{ y: 285 }}
+                          />
+                        ) : null}
+                      </div>
                     </div>
+
                     <ModalFooter
-                      submitText="Yes"
-                      cancelText="No"
+                      submitText="Update"
+                      cancelText="Cancel"
                       onCancel={() => {
                         form.setFieldsValue({
-                          openModal1: false,
                           attendanceAdujust: undefined,
+                          reason: "",
+                          reasonAll: false,
                         });
+                        const modifiedObj = selectedRow?.map((dto) => {
+                          return {
+                            ...dto,
+                            strReason: null,
+                          };
+                        });
+                        setSelectedRow(modifiedObj);
+                        setOpenModal(false);
                       }}
                       onSubmit={submitHandler}
                     />
