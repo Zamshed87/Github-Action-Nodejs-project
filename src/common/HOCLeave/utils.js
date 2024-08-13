@@ -1,4 +1,5 @@
 import { Attachment } from "@mui/icons-material";
+import axios from "axios";
 import { TableButton } from "Components";
 import PBadge from "Components/Badge";
 import moment from "moment";
@@ -205,4 +206,26 @@ export const empMgmtLeaveApplicationDto = (
       ),
     },
   ];
+};
+
+export const getLvePunishmentData = async (
+  tableName,
+  buId,
+  empId,
+  yearId,
+  setLoading,
+  setter
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${buId}&EmpId=${empId}&YearId=${yearId}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
 };

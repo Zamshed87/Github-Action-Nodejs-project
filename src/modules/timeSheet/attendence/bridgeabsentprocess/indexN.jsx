@@ -83,15 +83,14 @@ function AttendanceRawDataProcess() {
     setFieldValue("employee", "");
   }, [employeeId, wgId]);
 
-  const { handleSubmit, values, setFieldValue, errors, touched, resetForm } =
-    useFormik({
-      enableReinitialize: true,
-      initialValues,
-      validationSchema,
-      onSubmit: (values) => {
-        saveHandler(values);
-      },
-    });
+  const { handleSubmit, values, setFieldValue, errors, touched } = useFormik({
+    enableReinitialize: true,
+    initialValues,
+    validationSchema,
+    onSubmit: (values) => {
+      saveHandler(values);
+    },
+  });
 
   const saveHandler = (values) => {
     const empList = values?.employee?.map((item) => item?.value).join(",");
@@ -140,9 +139,9 @@ function AttendanceRawDataProcess() {
     );
   };
 
-  useEffect(() =>{
-    landingApi()
-  },[wgId,wId])
+  useEffect(() => {
+    landingApi();
+  }, [wgId, wId]);
 
   const header = [
     {
@@ -279,7 +278,7 @@ function AttendanceRawDataProcess() {
                   }}
                   styles={{
                     ...customStyles,
-                    control: (provided, state) => ({
+                    control: (provided) => ({
                       ...provided,
                       minHeight: "auto",
                       height: values?.employee?.length > 1 ? "auto" : "auto",
@@ -292,7 +291,7 @@ function AttendanceRawDataProcess() {
                         borderColor: `${gray600}!important`,
                       },
                     }),
-                    valueContainer: (provided, state) => ({
+                    valueContainer: (provided) => ({
                       ...provided,
                       height: values?.employee?.length > 1 ? "auto" : "auto",
                       padding: "0 6px",
@@ -356,25 +355,25 @@ function AttendanceRawDataProcess() {
                 </div>
               </div>
             </div>
-            {res?.data && (
-              <DataTable
-                header={header}
-                bordered
-                data={res?.data || []}
-                pagination={{
-                  current: pages?.current,
-                  pageSize: pages.pageSize,
-                  total: pages.total,
-                }}
-                loading={loading}
-                scroll={{ x: 1000 }}
-                onChange={(pagination, filters, sorter, extra) => {
-                  if (extra.action === "sort") return;
-                  landingApi(pagination);
-                }}
-              />
-            )}
           </div>
+          {res?.data && (
+            <DataTable
+              header={header}
+              bordered
+              data={res?.data || []}
+              pagination={{
+                current: pages?.current,
+                pageSize: pages.pageSize,
+                total: pages.total,
+              }}
+              loading={loading}
+              scroll={{ x: 1000 }}
+              onChange={(pagination, filters, sorter, extra) => {
+                if (extra.action === "sort") return;
+                landingApi(pagination);
+              }}
+            />
+          )}
         </div>
       </div>
     </form>

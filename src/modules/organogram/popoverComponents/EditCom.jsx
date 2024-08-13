@@ -22,7 +22,7 @@ const EditCom = ({
   autoId,
   sequence,
 }) => {
-  const { buId, orgId, employeeId, wgId } = useSelector(
+  const { buId, orgId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -33,7 +33,7 @@ const EditCom = ({
 
   const getPositionDDL = () => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&intAccountId=${orgId}&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "PositionId",
       "PositionName",
       setPosition
