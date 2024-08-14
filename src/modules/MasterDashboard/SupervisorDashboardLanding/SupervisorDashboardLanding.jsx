@@ -11,7 +11,6 @@ import EmpInOutModal from "./EmpInOutModal";
 import ViewModal from "../../../common/ViewModal";
 import { useHistory } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
-import { paginationSize } from "common/AntTable";
 import { DataTable } from "Components";
 
 const SupervisorDashboardLanding = ({ loading, setLoading }) => {
@@ -23,12 +22,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [value, setValue] = useState(moment());
   const [modalLoading, setModalLoading] = useState(false);
-  // pages
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
+
   const history = useHistory();
 
   // redux
@@ -127,7 +121,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Movement</h4>
-
               </div>
               <div className="card-context">
                 <div>
@@ -168,7 +161,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Leave</h4>
-
               </div>
               <div className="card-context">
                 <div>
@@ -210,7 +202,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Approval</h4>
-
               </div>
               <div className="card-context">
                 <div>
@@ -261,20 +252,19 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 </span>
               </p>
             </div>
-            <div>
-            </div>
+            <div></div>
           </div>
           {/* <div className="table-card-body mb-5"> */}
           <div
             style={{
               overflow: "auto",
-              maxHeight: "320px",
+              maxHeight: "340px",
             }}
           >
             {midLevelDashboardViewModel?.employeeAttandanceListViewModels
               ?.length ? (
               <DataTable
-                scroll={{ y: "200px" }}
+                scroll={{ y: "300px", x: 1000 }}
                 bordered
                 data={
                   midLevelDashboardViewModel?.employeeAttandanceListViewModels ||
@@ -282,7 +272,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 }
                 loading={loading}
                 header={supervisorLandingColumn(
-                  pages,
                   setEmpData,
                   getAttendanceData,
                   setLoading,
@@ -290,19 +279,13 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                   currMonth,
                   setEmpDetails,
                   empData,
-                  setAnchorEl
+                  setAnchorEl,
+                  midLevelDashboardViewModel?.employeeAttandanceListViewModels
                 )}
-                pagination={{
-                  current: pages?.current,
-                  pageSize: pages?.pageSize,
-                  total: pages?.total,
-                }}
-                onChange={(pagination) => {
-                  setPages({
-                    current: pagination?.current,
-                    pageSize: pagination?.pageSize,
-                    total: pagination?.total,
-                  });
+                onChange={(pagination, filters, sorter, extra) => {
+                  // Return if sort function is called
+                  if (extra.action === "sort") return;
+                  console.log(filters);
                 }}
                 onRow={(record) => ({
                   onClick: () => {
@@ -350,6 +333,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 empData,
                 modalLoading,
                 empDetails,
+                currMonth,
               }}
             />
           </div>

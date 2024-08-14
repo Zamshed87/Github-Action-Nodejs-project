@@ -1,5 +1,5 @@
 import { InfoOutlined } from "@mui/icons-material";
-import { getSerial } from "Utils";
+import { PButton } from "Components";
 import axios from "axios";
 import { toast } from "react-toastify";
 import demoUserIcon from "../../../assets/images/userIcon.svg";
@@ -68,6 +68,7 @@ export const empAttenColumns = () => {
       sorter: false,
       filter: false,
       className: "text-center",
+      width: 20,
     },
     {
       title: "Attendance Date",
@@ -76,14 +77,20 @@ export const empAttenColumns = () => {
     {
       title: "In-Time",
       dataIndex: "InTime",
+      width: 50,
     },
     {
       title: "Out-Time",
       dataIndex: "OutTime",
+      width: 50,
     },
     {
       title: "Total Working Hour",
       dataIndex: "WorkingHours",
+    },
+    {
+      title: "Overtime Hour",
+      dataIndex: "numOverTime",
     },
     {
       title: "Calendar Name",
@@ -141,7 +148,6 @@ export const empAttenColumns = () => {
 };
 
 export const supervisorLandingColumn = (
-  pages,
   setEmpData,
   getAttendanceData,
   setLoading,
@@ -154,14 +160,10 @@ export const supervisorLandingColumn = (
   return [
     {
       title: "SL",
-      render: (_, rec, index) =>
-        getSerial({
-          currentPage: pages?.current,
-          pageSize: pages?.pageSize,
-          index,
-        }),
-      width: 15,
+      render: (_, rec, index) => index + 1,
+      width: 20,
       align: "center",
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -211,11 +213,13 @@ export const supervisorLandingColumn = (
       fieldType: "string",
       sorter: true,
       filter: true,
-      width:"200px"
+      width: 200,
+      fixed: "left",
     },
     {
       title: "Designation",
       dataIndex: "designation",
+      filterKey: "designationId",
       // filterDropDownList: headerList[`strDepartmentList`],
       fieldType: "string",
       sorter: true,
@@ -224,7 +228,6 @@ export const supervisorLandingColumn = (
     {
       title: "Department",
       dataIndex: "departmant",
-      sorter: true,
       filter: true,
     },
     {
@@ -286,6 +289,27 @@ export const supervisorLandingColumn = (
         );
       },
       filter: true,
+    },
+    {
+      title: "Attendance Log",
+      dataIndex: "",
+    },
+    {
+      title: "Leave Balance",
+      render: () => {
+        return (
+          <div>
+            <PButton
+              content="Leave Balance"
+              type="primary"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            />
+          </div>
+        );
+      },
+      dataIndex: "",
     },
   ];
 };
