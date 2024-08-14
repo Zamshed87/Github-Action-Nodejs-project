@@ -6,6 +6,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { DataTable } from "Components";
 import { MdPrint } from "react-icons/md";
 import { getPDFAction } from "utility/downloadFile";
+import moment from "moment";
 
 const EmpInOutModal = ({ propsObj }) => {
   const {
@@ -61,7 +62,14 @@ const EmpInOutModal = ({ propsObj }) => {
               getPDFAction(
                 `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${
                   empDetails?.employeeId
-                }&FromDate=${currYear()}-${currMonth()}-01&ToDate=${currYear()}-${currMonth()}-30`,
+                }&FromDate=${moment(`${currYear()}-${currMonth()}`, "YYYY-MM")
+                  .startOf("month")
+                  .format("YYYY-MM-DD")}&ToDate=${moment(
+                  `${currYear()}-${currMonth()}`,
+                  "YYYY-MM"
+                )
+                  .endOf("month")
+                  .format("YYYY-MM-DD")}`,
                 setModalLoading
               );
             }}
