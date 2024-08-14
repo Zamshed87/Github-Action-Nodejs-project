@@ -32,7 +32,7 @@ const LeaveBalanceTable = ({
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
 
-  // 🔥🔥 This api and leave balance is also used in supervisor dashboard. for any kind of change please consider that.
+  // 🔥🔥 leave balance table is also used in supervisor dashboard. for any kind of change please consider that.
 
   const punishmentPopupContent = (LvePunishment, type) => {
     return (

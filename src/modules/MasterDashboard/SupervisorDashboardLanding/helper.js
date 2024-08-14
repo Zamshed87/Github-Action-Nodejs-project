@@ -293,11 +293,7 @@ export const supervisorLandingColumn = (
           </>
         );
       },
-      filter: true,
-    },
-    {
-      title: "Attendance Log",
-      dataIndex: "",
+      width: 50,
     },
     {
       title: "Leave Balance",
