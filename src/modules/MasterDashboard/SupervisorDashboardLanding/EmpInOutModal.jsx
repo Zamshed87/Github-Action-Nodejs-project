@@ -34,7 +34,7 @@ const EmpInOutModal = ({ propsObj }) => {
           <p>
             Employee :{" "}
             <span style={{ fontWeight: "bold" }}>
-              {empDetails?.employeeName}
+              {empDetails?.employeeName} [{empDetails?.employeeCode}]
             </span>
           </p>
           <p>

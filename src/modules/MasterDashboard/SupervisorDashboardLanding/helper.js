@@ -1,6 +1,7 @@
 import { InfoOutlined } from "@mui/icons-material";
 import { PButton } from "Components";
 import axios from "axios";
+import { getEmployeeLeaveBalanceAndHistory } from "common/HOCLeave/helperAPI";
 import { toast } from "react-toastify";
 import demoUserIcon from "../../../assets/images/userIcon.svg";
 import Chips from "../../../common/Chips";
@@ -155,7 +156,11 @@ export const supervisorLandingColumn = (
   currMonth,
   setEmpDetails,
   empData,
-  setAnchorEl
+  setAnchorEl,
+  setOpen,
+  setLeaveBalanceData,
+  buId,
+  wgId
 ) => {
   return [
     {
@@ -296,7 +301,7 @@ export const supervisorLandingColumn = (
     },
     {
       title: "Leave Balance",
-      render: () => {
+      render: (_, record) => {
         return (
           <div>
             <PButton
@@ -304,6 +309,18 @@ export const supervisorLandingColumn = (
               type="primary"
               onClick={(e) => {
                 e.stopPropagation();
+                setOpen(true);
+                setEmpData(record);
+                getEmployeeLeaveBalanceAndHistory(
+                  record?.employeeId,
+                  "LeaveBalance",
+                  setLeaveBalanceData,
+                  setLoading,
+                  "",
+                  currYear(),
+                  buId,
+                  wgId
+                );
               }}
             />
           </div>

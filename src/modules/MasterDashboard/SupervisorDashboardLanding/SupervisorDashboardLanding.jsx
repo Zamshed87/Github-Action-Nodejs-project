@@ -12,6 +12,7 @@ import ViewModal from "../../../common/ViewModal";
 import { useHistory } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
 import { DataTable } from "Components";
+import LeaveBalanceTable from "common/HOCLeave/component/LeaveBalanceTable";
 
 const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   // const { employeeId, orgId } = useSelector(
@@ -53,6 +54,10 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   const [empData, setEmpData] = useState(null);
   const [empDetails, setEmpDetails] = useState(null);
 
+  // leave balance modal states
+  const [open, setOpen] = useState(false);
+  const [leaveBalanceData, setLeaveBalanceData] = useState([]);
+
   const getAttendanceData = (empId, setLoading, value) => {
     attendanceDetailsReport(
       empId,
@@ -80,6 +85,8 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   }, []);
 
   const { midLevelDashboardViewModel } = dashboardApplicationInfoReport;
+
+  console.log(empData);
 
   return (
     <>
@@ -270,7 +277,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                   midLevelDashboardViewModel?.employeeAttandanceListViewModels ||
                   []
                 }
-                loading={loading}
                 header={supervisorLandingColumn(
                   setEmpData,
                   getAttendanceData,
@@ -280,7 +286,10 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                   setEmpDetails,
                   empData,
                   setAnchorEl,
-                  midLevelDashboardViewModel?.employeeAttandanceListViewModels
+                  setOpen,
+                  setLeaveBalanceData,
+                  buId,
+                  wgId
                 )}
                 onChange={(pagination, filters, sorter, extra) => {
                   // Return if sort function is called
@@ -336,6 +345,52 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 currMonth,
               }}
             />
+          </div>
+        </ViewModal>
+      )}
+      {!loading && (
+        <ViewModal
+          size="lg"
+          title="Employee Leave Balance Report"
+          backdrop="static"
+          classes="default-modal preview-modal"
+          show={open}
+          onHide={() => {
+            setOpen(false);
+            setEmpData(null);
+            setLeaveBalanceData([]);
+          }}
+        >
+          <div className="modal-body2 mx-3">
+            <div>
+              <p>
+                Employee :{" "}
+                <span style={{ fontWeight: "bold" }}>
+                  {empData?.employeeName} [{empData?.employeeCode}]
+                </span>
+              </p>
+              <p>
+                Designation :{" "}
+                <span style={{ fontWeight: "bold" }}>
+                  {empData?.designation}
+                </span>
+              </p>
+              <p>
+                Department :{" "}
+                <span style={{ fontWeight: "bold" }}>
+                  {empData?.departmant}
+                </span>
+              </p>
+            </div>
+            <div className="my-3">
+              <LeaveBalanceTable
+                leaveBalanceData={leaveBalanceData}
+                values={{
+                  year: { value: currYear() },
+                  employee: { value: empData?.employeeId },
+                }}
+              />
+            </div>
           </div>
         </ViewModal>
       )}

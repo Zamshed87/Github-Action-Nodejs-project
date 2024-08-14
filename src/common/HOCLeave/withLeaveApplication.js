@@ -189,6 +189,8 @@ const withLeaveApplication = (WrappedComponent) => {
     };
 
     const getData = (empId, year) => {
+      console.log(empId, year);
+
       PeopleDeskSaasDDL(
         "EmployeeLeaveType",
         wgId,
@@ -210,6 +212,8 @@ const withLeaveApplication = (WrappedComponent) => {
         buId,
         wgId
       );
+
+      // This api and leave balance is also used in supervisor dashboard. for any kind of change please consider that.
       getEmployeeLeaveBalanceAndHistory(
         empId ? empId : employeeId,
         "LeaveBalance",
