@@ -121,7 +121,7 @@ const LeaveBalanceTable = ({
               <Popover
                 placement="bottom"
                 content={punishmentPopupContent(medicalLvePunishment, "Sick")}
-                trigger="click"
+                trigger="hover"
               >
                 <InfoCircleOutlined
                   style={{ color: failColor, marginLeft: "2px" }}
@@ -132,7 +132,7 @@ const LeaveBalanceTable = ({
               <Popover
                 placement="bottom"
                 content={punishmentPopupContent(casualLvePunishment, "Casual")}
-                trigger="click"
+                trigger="hover"
               >
                 <InfoCircleOutlined
                   style={{ color: failColor, marginLeft: "2px" }}
