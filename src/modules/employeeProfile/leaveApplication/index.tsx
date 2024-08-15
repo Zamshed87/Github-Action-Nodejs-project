@@ -139,7 +139,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                           employee: op,
                         });
                         getEmpInfoDetails(value);
-                        getData(value, year);
+                        getData(value, year?.value);
                       }}
                       onSearch={(value) => {
                         getEmployee(value);

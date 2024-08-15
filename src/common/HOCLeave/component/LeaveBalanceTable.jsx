@@ -32,6 +32,8 @@ const LeaveBalanceTable = ({
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
 
+  // 🔥🔥 leave balance table is also used in supervisor dashboard. for any kind of change please consider that.
+
   const punishmentPopupContent = (LvePunishment, type) => {
     return (
       <div>
@@ -164,7 +166,6 @@ const LeaveBalanceTable = ({
     },
     {
       title: "Carry Expire",
-
       render: (data) =>
         data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
     },

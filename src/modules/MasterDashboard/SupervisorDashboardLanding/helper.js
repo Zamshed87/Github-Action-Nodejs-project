@@ -1,6 +1,9 @@
 import { InfoOutlined } from "@mui/icons-material";
-import { getSerial } from "Utils";
+import { Tooltip } from "@mui/material";
+import { PButton } from "Components";
+import { Tag } from "antd";
 import axios from "axios";
+import { getEmployeeLeaveBalanceAndHistory } from "common/HOCLeave/helperAPI";
 import { toast } from "react-toastify";
 import demoUserIcon from "../../../assets/images/userIcon.svg";
 import Chips from "../../../common/Chips";
@@ -26,40 +29,6 @@ export const attendanceDetailsReport = async (
   }
 };
 
-// export const empAttenColumns = () => {
-//   return [
-//     {
-//       title: "SL",
-//       render: (text, record, index) => index + 1,
-//       sorter: false,
-//       filter: false,
-//       className: "text-center",
-//     },
-//     {
-//       title: "Attendance Date",
-//       dataIndex: "AttendanceDateWithName",
-//     },
-//     {
-//       title: "In-Time",
-//       dataIndex: "InTime",
-//       render: (_, record) => (
-//         <div>{record?.InTime || record?.CalendarInTime}</div>
-//       ),
-//     },
-//     {
-//       title: "Out-Time",
-//       dataIndex: "OutTime",
-//       render: (_, record) => (
-//         <div>{record?.OutTime || record?.CalendarOutTime}</div>
-//       ),
-//     },
-//     {
-//       title: "Calendar Name",
-//       dataIndex: "CalendarName",
-//     },
-//   ];
-// };
-
 export const empAttenColumns = () => {
   return [
     {
@@ -68,6 +37,7 @@ export const empAttenColumns = () => {
       sorter: false,
       filter: false,
       className: "text-center",
+      width: 20,
     },
     {
       title: "Attendance Date",
@@ -76,14 +46,20 @@ export const empAttenColumns = () => {
     {
       title: "In-Time",
       dataIndex: "InTime",
+      width: 50,
     },
     {
       title: "Out-Time",
       dataIndex: "OutTime",
+      width: 50,
     },
     {
       title: "Total Working Hour",
       dataIndex: "WorkingHours",
+    },
+    {
+      title: "Overtime Hour",
+      dataIndex: "numOverTime",
     },
     {
       title: "Calendar Name",
@@ -141,7 +117,6 @@ export const empAttenColumns = () => {
 };
 
 export const supervisorLandingColumn = (
-  pages,
   setEmpData,
   getAttendanceData,
   setLoading,
@@ -149,19 +124,20 @@ export const supervisorLandingColumn = (
   currMonth,
   setEmpDetails,
   empData,
-  setAnchorEl
+  setAnchorEl,
+  setOpen,
+  setLeaveBalanceData,
+  buId,
+  wgId,
+  getAttendanceLog
 ) => {
   return [
     {
       title: "SL",
-      render: (_, rec, index) =>
-        getSerial({
-          currentPage: pages?.current,
-          pageSize: pages?.pageSize,
-          index,
-        }),
-      width: 15,
+      render: (_, rec, index) => index + 1,
+      width: 20,
       align: "center",
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -188,49 +164,50 @@ export const supervisorLandingColumn = (
                 <span style={{ color: "#667085", fontSize: "12px" }}>
                   [{rec?.employeeCode}]
                 </span>
-                <InfoOutlined
-                  style={{ cursor: "pointer", width: "18px" }}
-                  className="ml-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setEmpData(null);
-                    getAttendanceData(
-                      rec?.employeeId,
-                      setLoading,
-                      `${currYear()}-${currMonth()}`
-                    );
-                    setEmpDetails(rec);
-                    !empData && setAnchorEl(true);
-                  }}
-                />
+                <Tooltip title="Attendance Report">
+                  <InfoOutlined
+                    style={{ cursor: "pointer", width: "18px" }}
+                    className="ml-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEmpData(null);
+                      getAttendanceData(
+                        rec?.employeeId,
+                        setLoading,
+                        `${currYear()}-${currMonth()}`
+                      );
+                      setEmpDetails(rec);
+                      !empData && setAnchorEl(true);
+                    }}
+                  />
+                </Tooltip>
               </h4>
             </div>
           </div>
         );
       },
-      fieldType: "string",
-      sorter: true,
-      filter: true,
-      width:"200px"
+      width: 150,
+      fixed: "left",
     },
     {
       title: "Designation",
       dataIndex: "designation",
-      // filterDropDownList: headerList[`strDepartmentList`],
-      fieldType: "string",
-      sorter: true,
+      filterKey: "designationList",
+      filterSearch: true,
       filter: true,
     },
     {
       title: "Department",
       dataIndex: "departmant",
-      sorter: true,
+      filterKey: "departmentList",
+      filterSearch: true,
       filter: true,
     },
     {
       title: "Section",
       dataIndex: "sectionName",
-      sorter: true,
+      filterKey: "sectionList",
+      filterSearch: true,
       filter: true,
     },
     {
@@ -246,46 +223,133 @@ export const supervisorLandingColumn = (
       dataIndex: "status",
       render: (_, item) => {
         return (
-          <>
-            {item?.status === "Present" && (
-              <Chips label={item?.status} classess="success" />
+          <div className="d-flex align-items-center">
+            <div className="mr-1">
+              {item?.status === "Present" && (
+                <Tag color="green">{item?.status}</Tag>
+              )}
+              {item?.status === "Absent" && (
+                <Tag color="red">{item?.status}</Tag>
+              )}
+              {item?.status === "Late" && (
+                <Tag color="gold">{item?.status}</Tag>
+              )}
+              {item?.status === "Late Present" && (
+                <Tag color="gold">{item?.status}</Tag>
+              )}
+              {item?.status === "Leave" && (
+                <Tag color="purple">{item?.status}</Tag>
+              )}
+              {item?.status === "Leave without pay" && (
+                <Tag color="purple">{item?.status}</Tag>
+              )}
+              {item?.status === "Holiday" && (
+                <Tag style={{ color: "black" }} color="secondary">
+                  {item?.status}
+                </Tag>
+              )}
+              {item?.status === "Offday" && (
+                <Tag color="blue">{item?.status}</Tag>
+              )}
+              {item?.status === "Movement" && (
+                <Tag color="lime">{item?.status}</Tag>
+              )}
+              {item?.status === "Manual Present" && (
+                <Tag color="green">{item?.status}</Tag>
+              )}
+              {item?.status === "Manual Absent" && (
+                <Tag color="red">{item?.status}</Tag>
+              )}
+              {item?.status === "Manual Leave" && (
+                <Tag color="purple">{item?.status}</Tag>
+              )}
+              {item?.status === "Manual Late" && (
+                <Tag color="gold">{item?.status}</Tag>
+              )}
+              {item?.status === "Early Out" && (
+                <Tag color="geekblue">{item?.status}</Tag>
+              )}
+              {item?.status === "Halfday Leave" && (
+                <Tag color="purple">{item?.status}</Tag>
+              )}
+              {item?.status === "Not Found" && <p>-</p>}
+            </div>
+            {item?.inTime && (
+              <div>
+                <Tooltip title="Attendance Log">
+                  <InfoOutlined
+                    style={{ fontSize: "16px" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      getAttendanceLog(item?.employeeId);
+                    }}
+                  />
+                </Tooltip>
+              </div>
             )}
-            {item?.status === "Late" && (
-              <Chips label={item?.status} classess="warning" />
-            )}
-            {item?.status === "Absent" && (
-              <Chips label={item?.status} classess="danger" />
-            )}
-            {item?.status === "Movement" && (
-              <span
-                style={{
-                  color: "#9F1AB1",
-                  background: "#FBE8FF",
-                  borderRadius: "99px",
-                  padding: "1px 8px",
-                  fontWeight: 600,
-                }}
-              >
-                Movement
-              </span>
-            )}
-            {item?.status === "Leave" && (
-              <span
-                style={{
-                  color: "#6927DA",
-                  background: "#ECE9FE",
-                  borderRadius: "99px",
-                  padding: "1px 8px",
-                  fontWeight: 600,
-                }}
-              >
-                Leave
-              </span>
-            )}
-          </>
+          </div>
         );
       },
-      filter: true,
+      width: 50,
+    },
+    {
+      title: "Leave Balance",
+      render: (_, record) => {
+        return (
+          <div>
+            <PButton
+              content="Leave Balance"
+              type="primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(true);
+                setEmpData(record);
+                getEmployeeLeaveBalanceAndHistory(
+                  record?.employeeId,
+                  "LeaveBalance",
+                  setLeaveBalanceData,
+                  setLoading,
+                  "",
+                  currYear(),
+                  buId,
+                  wgId
+                );
+              }}
+            />
+          </div>
+        );
+      },
+      dataIndex: "",
+    },
+  ];
+};
+
+export const attendanceLogColumns = () => {
+  return [
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
+      width: 120,
+    },
+    {
+      title: "Employee Code",
+      dataIndex: "strEmployeeCode",
+      width: 100,
+    },
+    {
+      title: "Designation",
+      dataIndex: "strDesignation",
+      width: 100,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      width: 100,
+    },
+    {
+      title: "Time Record",
+      dataIndex: "attendanceTimeRecord",
+      width: 200,
     },
   ];
 };

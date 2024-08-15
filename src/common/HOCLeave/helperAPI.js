@@ -8,6 +8,7 @@ const currentYear = () => {
   return currentYear;
 };
 
+// This api and leave balance is also used in supervisor dashboard. for any kind of change please consider that.
 export const getEmployeeLeaveBalanceAndHistory = async (
   employeeId,
   viewType,

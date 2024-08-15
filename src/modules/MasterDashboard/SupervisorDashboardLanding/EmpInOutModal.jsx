@@ -3,7 +3,10 @@ import NoResult from "../../../common/NoResult";
 import { empAttenColumns } from "./helper";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import AntScrollTable from "../../../common/AntScrollTable";
+import { DataTable } from "Components";
+import { MdPrint } from "react-icons/md";
+import { getPDFAction } from "utility/downloadFile";
+import moment from "moment";
 
 const EmpInOutModal = ({ propsObj }) => {
   const {
@@ -18,6 +21,7 @@ const EmpInOutModal = ({ propsObj }) => {
     empData,
     modalLoading,
     empDetails,
+    currMonth,
   } = propsObj;
 
   return (
@@ -25,18 +29,56 @@ const EmpInOutModal = ({ propsObj }) => {
       className="modal-body2 mx-3"
       style={{ height: "500px", overflow: "scroll" }}
     >
-      <p>
-        Employee :{" "}
-        <span style={{ fontWeight: "bold" }}>{empDetails?.employeeName}</span>
-      </p>
-      <p>
-        Designation :{" "}
-        <span style={{ fontWeight: "bold" }}>{empDetails?.designation}</span>
-      </p>
-      <p>
-        Department :{" "}
-        <span style={{ fontWeight: "bold" }}>{empDetails?.departmant}</span>
-      </p>
+      <div className="d-flex justify-content-between">
+        <div>
+          <p>
+            Employee :{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {empDetails?.employeeName} [{empDetails?.employeeCode}]
+            </span>
+          </p>
+          <p>
+            Designation :{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {empDetails?.designation}
+            </span>
+          </p>
+          <p>
+            Department :{" "}
+            <span style={{ fontWeight: "bold" }}>{empDetails?.departmant}</span>
+          </p>
+        </div>
+        <div>
+          <div
+            className="export_icon"
+            style={{
+              background: "var(--gray200)",
+              borderRadius: "50%",
+              padding: "3px 6px",
+              fontSize: "14px",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              getPDFAction(
+                `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${
+                  empDetails?.employeeId
+                }&FromDate=${moment(`${currYear()}-${currMonth()}`, "YYYY-MM")
+                  .startOf("month")
+                  .format("YYYY-MM-DD")}&ToDate=${moment(
+                  `${currYear()}-${currMonth()}`,
+                  "YYYY-MM"
+                )
+                  .endOf("month")
+                  .format("YYYY-MM-DD")}`,
+                setModalLoading
+              );
+            }}
+          >
+            <MdPrint />
+          </div>
+        </div>
+      </div>
+
       <div className="d-flex align-items-center justify-content-center mb-2">
         <KeyboardArrowLeftIcon
           className="pointer"
@@ -69,12 +111,11 @@ const EmpInOutModal = ({ propsObj }) => {
       <Divider />
       <div className="table-card-body">
         {empData?.length > 0 ? (
-          <AntScrollTable
+          <DataTable
+            scroll={{ y: 300, x: 400 }}
+            bordered
             data={empData?.length > 0 && empData}
-            columnsData={empAttenColumns()}
-            removePagination
-            y={300}
-            x={400}
+            header={empAttenColumns()}
           />
         ) : (
           !modalLoading && <NoResult />
