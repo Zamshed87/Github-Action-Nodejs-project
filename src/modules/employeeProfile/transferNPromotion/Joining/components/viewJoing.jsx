@@ -1,13 +1,7 @@
-import { SaveAlt } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import pdfIcon from "../../../../../assets/images/pdfIcon.svg";
 import BackButton from "../../../../../common/BackButton";
 import Loading from "../../../../../common/loading/Loading";
-import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
-import { gray900 } from "../../../../../utility/customColor";
 import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
 import { getEmployeeProfileViewData } from "../../../employeeFeature/helper";
 import Accordion from "../accordion";
@@ -21,7 +15,6 @@ const ViewJoining = () => {
 
   const { id } = useParams();
   const location = useLocation();
-  const dispatch = useDispatch();
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,7 +34,6 @@ const ViewJoining = () => {
     getSingleData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log({ transferNpromotion });
 
   return (
     <>
@@ -55,56 +47,12 @@ const ViewJoining = () => {
             </div>
           </div>
           <div
-            className="table-card-body card-style my-3"
+            className="table-card-body card-style mb-3"
             style={{ minHeight: "auto" }}
           >
             <div className="mt-2">
               <Accordion empBasic={empBasic} />
             </div>
-
-            {/* <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(getDownlloadFileView_Action());
-              }}
-              style={{
-                height: "32px",
-                width: "150px",
-                boxSizing: "border-box",
-                border: "1px solid #EAECF0",
-                borderRadius: "4px",
-              }}
-              className="d-flex justify-content-between align-items-center"
-            >
-              <div className="d-flex justify-content-center align-items-center">
-                <div>
-                  <img
-                    className="pb-1"
-                    style={{ width: "23px", height: "23px" }}
-                    src={pdfIcon}
-                    alt=""
-                  />
-                </div>
-                <p
-                  style={{
-                    color: "#344054",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  }}
-                  className="pl-2"
-                >
-                  Joining Letter
-                </p>
-              </div>
-              <div>
-                <SaveAlt
-                  sx={{
-                    color: gray900,
-                    fontSize: "16px",
-                  }}
-                />
-              </div>
-            </IconButton> */}
 
             {/* Role extension table */}
             {!!transferNpromotion?.empTransferNpromotionRoleExtensionVMList
@@ -193,6 +141,21 @@ const ViewJoining = () => {
                 </div>
               </div>
             )}
+            <div>
+              <div className="col-lg-12 mb-2 mt-3 px-0">
+                <h3
+                  style={{
+                    color: " gray700 !important",
+                    fontSize: "16px",
+                    lineHeight: "20px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Edit Proposed Transfer/Promotion
+                </h3>
+              </div>
+              <div></div>
+            </div>
           </div>
         </div>
       )}
