@@ -627,32 +627,42 @@ const CreateAndEditEmploye = () => {
                 type: "primary",
                 content: "Save",
                 icon: "plus",
-                onClick: async () => {
+                onClick: () => {
+                  const payload = {
+                    strLoginId: form.getFieldValue("loginUserId"),
+                    intUrlId: intUrlId,
+                    intAccountId: orgId,
+                  };
                   if (employeeFeature?.isCreate) {
                     const values = form.getFieldsValue(true);
-
-                    await form
+                    form
                       .validateFields()
                       .then(() => {
-                        submitHandler({
-                          values,
-                          // empBasic,
-                          resetForm: form.resetFields,
-                          employeeId,
-                          dispatch,
-                          updateUerAndEmpNameAction,
-                          isUserCheckMsg,
-                          createEditEmpAction,
-                          isEdit: empId ? true : false,
-                          orgId,
-                          buId,
-                          intUrlId,
-                          action: "save",
-                          history,
-                          setLoading,
-                          intSignature:
-                            empSignature?.[0]?.response?.[0]?.globalFileUrlId ||
-                            0,
+                        userValidation(payload, setIsUserCheckMsg, (data) => {
+                          if (data.message === "Valid") {
+                            submitHandler({
+                              values,
+                              // empBasic,
+                              resetForm: form.resetFields,
+                              employeeId,
+                              dispatch,
+                              updateUerAndEmpNameAction,
+                              isUserCheckMsg,
+                              createEditEmpAction,
+                              isEdit: empId ? true : false,
+                              orgId,
+                              buId,
+                              intUrlId,
+                              action: "save",
+                              history,
+                              setLoading,
+                              intSignature:
+                                empSignature?.[0]?.response?.[0]
+                                  ?.globalFileUrlId || 0,
+                            });
+                          } else {
+                            return toast.error("User Id already exists");
+                          }
                         });
                       })
                       .catch(() => {
@@ -668,43 +678,53 @@ const CreateAndEditEmploye = () => {
                 content: "Save & Create New",
                 icon: "plus",
                 onClick: async () => {
+                  const payload = {
+                    strLoginId: form.getFieldValue("loginUserId"),
+                    intUrlId: intUrlId,
+                    intAccountId: orgId,
+                  };
                   if (employeeFeature?.isCreate) {
                     const values = form.getFieldsValue(true);
-
-                    await form
+                    form
                       .validateFields()
                       .then(() => {
-                        submitHandler({
-                          values,
-                          // empBasic,
-                          resetForm: () => {
-                            form.setFieldValue("employeeCode", "");
-                            form.setFieldValue("fullName", "");
-                            form.setFieldValue("religion", "");
-                            form.setFieldValue("gender", "");
-                            form.setFieldValue("dteDateOfBirth", "");
-                            form.setFieldValue("loginUserId", "");
-                            form.setFieldValue("email", "");
-                            form.setFieldValue("phone", "");
-                            form.setFieldValue("userType", "");
-                            form.setFieldValue("intSignature", "");
-                            setEmpAuthSignature([]);
-                          },
-                          employeeId,
-                          dispatch,
-                          updateUerAndEmpNameAction,
-                          isUserCheckMsg,
-                          createEditEmpAction,
-                          isEdit: empId ? true : false,
-                          orgId,
-                          buId,
-                          intUrlId,
-                          action: "save and new",
-                          history,
-                          setLoading,
-                          intSignature:
-                            empSignature?.[0]?.response?.[0]?.globalFileUrlId ||
-                            0,
+                        userValidation(payload, setIsUserCheckMsg, (data) => {
+                          if (data.message === "Valid") {
+                            submitHandler({
+                              values,
+                              // empBasic,
+                              resetForm: () => {
+                                form.setFieldValue("employeeCode", "");
+                                form.setFieldValue("fullName", "");
+                                form.setFieldValue("religion", "");
+                                form.setFieldValue("gender", "");
+                                form.setFieldValue("dteDateOfBirth", "");
+                                form.setFieldValue("loginUserId", "");
+                                form.setFieldValue("email", "");
+                                form.setFieldValue("phone", "");
+                                form.setFieldValue("userType", "");
+                                form.setFieldValue("intSignature", "");
+                                setEmpAuthSignature([]);
+                              },
+                              employeeId,
+                              dispatch,
+                              updateUerAndEmpNameAction,
+                              isUserCheckMsg,
+                              createEditEmpAction,
+                              isEdit: empId ? true : false,
+                              orgId,
+                              buId,
+                              intUrlId,
+                              action: "save and new",
+                              history,
+                              setLoading,
+                              intSignature:
+                                empSignature?.[0]?.response?.[0]
+                                  ?.globalFileUrlId || 0,
+                            });
+                          } else {
+                            return toast.error("User Id already exists");
+                          }
                         });
                       })
                       .catch(() => {
@@ -1732,13 +1752,8 @@ const CreateAndEditEmploye = () => {
                     {/* User Create */}
                     <Form.Item noStyle shouldUpdate>
                       {() => {
-                        const {
-                          isUsersection,
-                          employeeCode,
-                          userType,
-                          otType,
-                        } = form.getFieldsValue();
-                        console.log({ userType, otType });
+                        const { isUsersection, employeeCode } =
+                          form.getFieldsValue();
                         return !empId ? (
                           <>
                             <Col md={8} sm={24}>
@@ -1779,45 +1794,45 @@ const CreateAndEditEmploye = () => {
                                         required: true,
                                         message: "User Id is required",
                                       },
-                                      () => ({
-                                        validator(_, value) {
-                                          return new Promise(
-                                            (resolve, reject) => {
-                                              const payload = {
-                                                strLoginId: value,
-                                                intUrlId: intUrlId,
-                                                intAccountId: orgId,
-                                              };
-                                              userValidation(
-                                                payload,
-                                                setIsUserCheckMsg,
-                                                (data) => {
-                                                  if (
-                                                    data.message === "Valid"
-                                                  ) {
-                                                    setIsUserCheckMsg(
-                                                      (prev) => {
-                                                        return {
-                                                          ...prev,
-                                                          ...data,
-                                                        };
-                                                      }
-                                                    );
-                                                    resolve();
-                                                  } else {
-                                                    reject(
-                                                      new Error(
-                                                        data.message ||
-                                                          "User is not valid"
-                                                      )
-                                                    );
-                                                  }
-                                                }
-                                              );
-                                            }
-                                          );
-                                        },
-                                      }),
+                                      // () => ({
+                                      //   validator(_, value) {
+                                      //     return new Promise(
+                                      //       (resolve, reject) => {
+                                      //         const payload = {
+                                      //           strLoginId: value,
+                                      //           intUrlId: intUrlId,
+                                      //           intAccountId: orgId,
+                                      //         };
+                                      //         userValidation(
+                                      //           payload,
+                                      //           setIsUserCheckMsg,
+                                      //           (data) => {
+                                      //             if (
+                                      //               data.message === "Valid"
+                                      //             ) {
+                                      //               setIsUserCheckMsg(
+                                      //                 (prev) => {
+                                      //                   return {
+                                      //                     ...prev,
+                                      //                     ...data,
+                                      //                   };
+                                      //                 }
+                                      //               );
+                                      //               resolve();
+                                      //             } else {
+                                      //               reject(
+                                      //                 new Error(
+                                      //                   data.message ||
+                                      //                     "User is not valid"
+                                      //                 )
+                                      //               );
+                                      //             }
+                                      //           }
+                                      //         );
+                                      //       }
+                                      //     );
+                                      //   },
+                                      // }),
                                     ]}
                                   />
                                 </Col>
