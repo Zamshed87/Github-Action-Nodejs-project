@@ -319,7 +319,6 @@ export const submitHandler = ({
   employeeId,
   dispatch,
   updateUerAndEmpNameAction,
-  isUserCheckMsg,
   createEditEmpAction,
   isEdit,
   orgId,
@@ -351,9 +350,6 @@ export const submitHandler = ({
     !values?.dteConfirmationDate
   ) {
     return toast.warn("Please Select Confirmation Date");
-  }
-  if (isUserCheckMsg?.statusCode !== 200 && values?.isUsersection === true) {
-    return toast.warn("Please provide a valid user !!!");
   }
 
   if (
