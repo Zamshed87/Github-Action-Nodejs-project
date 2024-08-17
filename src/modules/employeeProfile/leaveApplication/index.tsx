@@ -9,12 +9,12 @@ import {
   PSelect,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Modal, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import withLeaveApplication from "common/HOCLeave/withLeaveApplication";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { yearDDLAction } from "utility/yearDDL";
 import DemoImg from "../../../assets/images/demo.png";
 import { dateFormatter } from "utility/dateFormatter";
@@ -44,19 +44,13 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
     singleData,
     imageFile,
     leaveHistoryData,
-    viewModal,
     employeeInfo,
     isEdit,
-    isFilter,
     leaveTypeDDL,
     leaveBalanceData,
     loading,
     progress,
     loadingForInfo,
-    id,
-    handleOpen,
-    handleClick,
-    handleViewClose,
     getEmpInfoDetails,
     demoPopupForDelete,
     saveHandler,
@@ -64,20 +58,13 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
     getData,
     setSingleData,
     setImageFile,
-    setViewModal,
     setIsEdit,
-    setIsFilter,
     setLoading,
     setLeaveHistoryData,
     userName,
-    empMgmtLeaveApplicationDtoColumn,
     initDataForLeaveApplication,
-    validationSchemaForLeaveApplication,
     employeeId,
-    setEmployeeInfo,
-    orgId,
     buId,
-    setAllData,
     wgId,
     permission,
     isOfficeAdmin,
@@ -152,7 +139,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                           employee: op,
                         });
                         getEmpInfoDetails(value);
-                        getData(value, year);
+                        getData(value, year?.value);
                       }}
                       onSearch={(value) => {
                         getEmployee(value);

@@ -1,15 +1,22 @@
 import { DataTable, PCardBody } from "Components";
 import { InfoOutlined } from "@mui/icons-material";
 
-import { useApiRequest } from "Hooks";
 import { LightTooltip } from "common/LightTooltip";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { gray900 } from "utility/customColor";
+import { failColor, gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Divider, Popover } from "antd";
 
-const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
+const LeaveBalanceTable = ({
+  leaveBalanceData = [],
+  show = false,
+  values,
+  casualLvePunishment = [],
+  medicalLvePunishment = [],
+}) => {
   let leaves = leaveBalanceData;
   if (show) {
     leaves = leaveBalanceData?.filter(
@@ -18,11 +25,41 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
   }
   const [isView, setIsView] = useState(false);
 
-  const [singleObjList, getSingleObjDataAPI, loading, setSingleObjList] =
-    useAxiosGet({});
+  const [singleObjList, getSingleObjDataAPI, , setSingleObjList] = useAxiosGet(
+    {}
+  );
   useEffect(() => {
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
+
+  // 🔥🔥 leave balance table is also used in supervisor dashboard. for any kind of change please consider that.
+
+  const punishmentPopupContent = (LvePunishment, type) => {
+    return (
+      <div>
+        <div>
+          <p>
+            <b>{type} leave taken details</b>
+          </p>
+          <Divider style={{ margin: "5px 0 0 0" }} />
+          {LvePunishment?.map((item, index) => (
+            <div className="mt-2" key={index}>
+              <p className="fontWeight600">
+                {item?.isFromApplication
+                  ? "Leave Consumed"
+                  : "Leave Punishment"}
+              </p>
+              <p className="pl-3">
+                {item?.strMonth}:{" "}
+                <span className="fontWeight600">{item?.intLeaveCount}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const header = [
     {
       title: "Leave Type",
@@ -78,6 +115,35 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
     },
     {
       title: "Taken",
+      render: (data, record) => (
+        <>
+          <p>
+            {data}
+            {show && record?.strLeaveType === "Sick Leave" && (
+              <Popover
+                placement="bottom"
+                content={punishmentPopupContent(medicalLvePunishment, "Sick")}
+                trigger="hover"
+              >
+                <InfoCircleOutlined
+                  style={{ color: failColor, marginLeft: "2px" }}
+                />
+              </Popover>
+            )}
+            {show && record?.strLeaveType === "Casual Leave" && (
+              <Popover
+                placement="bottom"
+                content={punishmentPopupContent(casualLvePunishment, "Casual")}
+                trigger="hover"
+              >
+                <InfoCircleOutlined
+                  style={{ color: failColor, marginLeft: "2px" }}
+                />
+              </Popover>
+            )}
+          </p>
+        </>
+      ),
       dataIndex: "intTakenLveInDay",
       width: 40,
     },
@@ -100,7 +166,6 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
     },
     {
       title: "Carry Expire",
-
       render: (data) =>
         data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
     },

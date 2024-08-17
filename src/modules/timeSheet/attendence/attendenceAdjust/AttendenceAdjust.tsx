@@ -548,6 +548,22 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     );
   };
 
+  const onCancel = () => {
+    form.setFieldsValue({
+      attendanceAdujust: undefined,
+      reason: "",
+      reasonAll: false,
+    });
+    const modifiedObj = selectedRow?.map((dto) => {
+      return {
+        ...dto,
+        strReason: null,
+      };
+    });
+    setSelectedRow(modifiedObj);
+    setOpenModal(false);
+  };
+
   return (
     <PForm
       form={form}
@@ -978,21 +994,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             <PModal
               width={900}
               open={openModal}
-              onCancel={() => {
-                form.setFieldsValue({
-                  attendanceAdujust: undefined,
-                  reason: "",
-                  reasonAll: false,
-                });
-                const modifiedObj = selectedRow?.map((dto) => {
-                  return {
-                    ...dto,
-                    strReason: null,
-                  };
-                });
-                setSelectedRow(modifiedObj);
-                setOpenModal(false);
-              }}
+              onCancel={onCancel}
               title={`Are you sure to update attendance to ${attendanceAdujust?.label}?`}
               components={
                 <PForm form={form}>
@@ -1000,21 +1002,25 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     <div style={{ maxHeight: "400px" }}>
                       <p>
                         Request Status:{" "}
-                        {attendanceAdujust?.label
-                          ?.toLowerCase()
-                          .includes("present") && (
-                          <PBadge text="Present" type="success" />
-                        )}
-                        {attendanceAdujust?.label
-                          ?.toLowerCase()
-                          .includes("absent") && (
-                          <PBadge text="Absent" type="warning" />
-                        )}
-                        {attendanceAdujust?.label
-                          ?.toLowerCase()
-                          .includes("late") && (
-                          <PBadge text="Late" type="danger" />
-                        )}
+                        {(() => {
+                          const attendanceMapping: any = {
+                            present: { text: "Present", type: "success" },
+                            absent: { text: "Absent", type: "warning" },
+                            late: { text: "Late", type: "danger" },
+                          };
+
+                          const attendanceStatus =
+                            attendanceAdujust?.label?.toLowerCase();
+                          const badgeProps =
+                            attendanceMapping[attendanceStatus];
+
+                          return badgeProps ? (
+                            <PBadge
+                              text={badgeProps.text}
+                              type={badgeProps.type}
+                            />
+                          ) : null;
+                        })()}
                         {/* <strong>{attendanceAdujust?.label}</strong>{" "} */}
                       </p>
                       <Row gutter={[10, 2]}>
@@ -1028,7 +1034,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         </Col>
                         <Col className="mt-3" span={6}>
                           <PInput
-                            label="Apply All?"
+                            label="Apply to All?"
                             type="checkbox"
                             name="reasonAll"
                             layout="horizontal"
@@ -1044,16 +1050,6 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           />
                         </Col>
                       </Row>
-                      {/* <Row gutter={[10, 2]}>
-                        <Col span={24}>
-                          <PInput
-                            label="Reason"
-                            name={"reason"}
-                            type="text"
-                            placeholder="Write reason"
-                          />
-                        </Col>
-                      </Row> */}
                       <div className="mt-2">
                         {selectedRow.length > 0 ? (
                           <DataTable
@@ -1074,21 +1070,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     <ModalFooter
                       submitText="Update"
                       cancelText="Cancel"
-                      onCancel={() => {
-                        form.setFieldsValue({
-                          attendanceAdujust: undefined,
-                          reason: "",
-                          reasonAll: false,
-                        });
-                        const modifiedObj = selectedRow?.map((dto) => {
-                          return {
-                            ...dto,
-                            strReason: null,
-                          };
-                        });
-                        setSelectedRow(modifiedObj);
-                        setOpenModal(false);
-                      }}
+                      onCancel={onCancel}
                       onSubmit={submitHandler}
                     />
                   </>

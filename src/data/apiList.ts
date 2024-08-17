@@ -154,4 +154,5 @@ export const apiList = {
   FoodAllowenceLanding: "/PdfAndExcelReport/GetFoodAllowenceReport",
   CommonEmployeeDDLForActiveInactive:
     "/Employee/CommonEmployeeDDLForActiveInactive",
+  SupervirorDashboardLanding: "/Dashboard/MidLevelDashboard",
 };

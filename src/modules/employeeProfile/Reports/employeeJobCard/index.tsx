@@ -226,18 +226,17 @@ const EmployeeJobCard = () => {
         title: "Total Working Hours",
         dataIndex: "WorkingHours",
 
-        width: 120,
+        width: 100,
       },
       {
         title: "Over Time",
         dataIndex: "numOverTime",
-
         width: 75,
       },
       {
         title: "Calendar Name",
         dataIndex: "CalendarName",
-        width: 300,
+        width: 200,
       },
 
       {
@@ -299,7 +298,7 @@ const EmployeeJobCard = () => {
       {
         title: "Remarks",
         dataIndex: "Remarks",
-        width: 80,
+        width: 120,
       },
     ];
   };
@@ -328,12 +327,18 @@ const EmployeeJobCard = () => {
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.length || 0} results`}
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            //   form.setFieldsValue({
-            //     search: e?.target?.value,
-            //   });
-            // }}
+            // buttonList={[
+            //   {
+            //     type: "primary",
+            //     content: "Download all",
+            //     onClick: () => {},
+            //     info: {
+            //       isInfo: true,
+            //       infoTitle:
+            //         "Download all Employee job card for the current workplace",
+            //     },
+            //   },
+            // ]}
             onExport={() => {
               createJobCardExcelHandler({
                 BuDetails: buDetails,

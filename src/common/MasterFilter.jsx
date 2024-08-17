@@ -13,7 +13,7 @@ export default function MasterFilter({
   inputWidth,
   withoutFrontIcon,
   styles,
-  placeholder
+  placeholder,
 }) {
   return (
     <div
@@ -24,7 +24,6 @@ export default function MasterFilter({
         display: "flex",
         height: "32px",
       }}
-      component="form"
       className="search-form-input"
     >
       {!withoutFrontIcon && (
@@ -42,7 +41,7 @@ export default function MasterFilter({
             },
           }}
           aria-label="search"
-          onClick={(e)=> e.preventDefault()}
+          onClick={(e) => e.preventDefault()}
         >
           <Search sx={{ fontSize: "16px", color: "#323232" }} />
         </IconButton>
