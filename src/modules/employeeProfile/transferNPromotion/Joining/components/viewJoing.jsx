@@ -6,12 +6,19 @@ import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
 import { getEmployeeProfileViewData } from "../../../employeeFeature/helper";
 import Accordion from "../accordion";
 import ViewJoiningTable from "./viewJoiningTable";
+import { PForm, PInput, PSelect } from "Components";
+import { Col, Form, Row } from "antd";
+import moment from "moment";
+import { useApiRequest } from "Hooks";
 
 const ViewJoining = () => {
   // const { buId, wgId } = useSelector(
   //   (state) => state?.auth?.profileData,
   //   shallowEqual
   // );
+
+  // form states
+  const [form] = Form.useForm();
 
   const { id } = useParams();
   const location = useLocation();
@@ -34,6 +41,14 @@ const ViewJoining = () => {
     getSingleData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+
+  console.log(transferNpromotion);
 
   return (
     <>
@@ -154,7 +169,103 @@ const ViewJoining = () => {
                   Edit Proposed Transfer/Promotion
                 </h3>
               </div>
-              <div></div>
+              <PForm
+                form={form}
+                initialValues={{
+                  type: {
+                    lebel: transferNpromotion?.strTransferNpromotionType,
+                    value: transferNpromotion?.strTransferNpromotionType,
+                  },
+                  effectiveDate: moment(transferNpromotion?.dteEffectiveDate),
+                  businessUnit: {
+                    label: transferNpromotion?.businessUnitName,
+                    value: transferNpromotion?.intBusinessUnitId,
+                  },
+                  workplaceGroup: {
+                    label: transferNpromotion?.workplaceGroupName,
+                    value: transferNpromotion?.intWorkplaceGroupId,
+                  },
+                  workplace: {
+                    label: transferNpromotion?.workplaceName,
+                    value: transferNpromotion?.intWorkplaceId,
+                  },
+                }}
+              >
+                <Row gutter={[10, 2]}>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="type"
+                      label="Type"
+                      placeholder="Type"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PInput
+                      type="date"
+                      name="effectiveDate"
+                      label="Effective Date"
+                      placeholder="Effective Date"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="businessUnit"
+                      label="Business Unit"
+                      placeholder="Business Unit"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="workplaceGroup"
+                      label="Workplace Group"
+                      placeholder="Workplace Group"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="workplace"
+                      label="Workplace"
+                      placeholder="Workplace"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="workplace"
+                      label="Workplace"
+                      placeholder="Workplace"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="workplace"
+                      label="Workplace"
+                      placeholder="Workplace"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="employmentType"
+                      label="Employment Type"
+                      placeholder="Employment Type"
+                      disabled
+                    />
+                  </Col>
+                </Row>
+              </PForm>
             </div>
           </div>
         </div>
