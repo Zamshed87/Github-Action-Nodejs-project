@@ -10,12 +10,13 @@ import { PForm, PInput, PSelect } from "Components";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
 import { useApiRequest } from "Hooks";
+import { shallowEqual, useSelector } from "react-redux";
 
 const ViewJoining = () => {
-  // const { buId, wgId } = useSelector(
-  //   (state) => state?.auth?.profileData,
-  //   shallowEqual
-  // );
+  const { orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // form states
   const [form] = Form.useForm();
@@ -47,6 +48,86 @@ const ViewJoining = () => {
   const empSectionDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
+
+  const getData = () => {
+    const { workplaceGroup, workplace, businessUnit } =
+      form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: businessUnit?.value,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+    empDesignationDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDesignation",
+        AccountId: orgId,
+        BusinessUnitId: businessUnit?.value,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DesignationName;
+          res[i].value = item?.DesignationId;
+        });
+      },
+    });
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: businessUnit?.value,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: businessUnit?.value,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   console.log(transferNpromotion);
 
@@ -173,7 +254,7 @@ const ViewJoining = () => {
                 form={form}
                 initialValues={{
                   type: {
-                    lebel: transferNpromotion?.strTransferNpromotionType,
+                    lebel: transferNpromotion?.strTransferNpromotionType || "",
                     value: transferNpromotion?.strTransferNpromotionType,
                   },
                   effectiveDate: moment(transferNpromotion?.dteEffectiveDate),
@@ -239,29 +320,15 @@ const ViewJoining = () => {
                   </Col>
                   <Col md={6} sm={12} xs={24}>
                     <PSelect
-                      options={[]}
-                      name="workplace"
-                      label="Workplace"
-                      placeholder="Workplace"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      options={[]}
-                      name="workplace"
-                      label="Workplace"
-                      placeholder="Workplace"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      options={[]}
+                      options={employmentTypeDDL?.data || []}
                       name="employmentType"
                       label="Employment Type"
                       placeholder="Employment Type"
-                      disabled
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          employmentType: op,
+                        });
+                      }}
                     />
                   </Col>
                 </Row>
