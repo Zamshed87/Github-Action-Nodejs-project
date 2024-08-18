@@ -362,6 +362,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               intime: "",
               outtime: "",
               reason: "",
+              reasonAll: false,
             });
             setOpenModal(false);
             setSelectedRow([]);
