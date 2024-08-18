@@ -597,14 +597,6 @@ const CreateAndEditEmploye = () => {
             value: "Calendar",
             label: "Calendar",
           },
-          // userType: {
-          //   value: 1,
-          //   label: "Not Applicable fhfdh",
-          // },
-          // userType: {
-          //   value: userTypeDDL?.data ? userTypeDDL?.data?.[0]?.value : 1,
-          //   label: userTypeDDL?.data ? userTypeDDL?.data?.[0]?.label : "test",
-          // },
         }}
       >
         <PCard>
@@ -629,7 +621,9 @@ const CreateAndEditEmploye = () => {
                 icon: "plus",
                 onClick: () => {
                   const payload = {
-                    strLoginId: form.getFieldValue("loginUserId"),
+                    strLoginId:
+                      form.getFieldValue("loginUserId") ||
+                      form.getFieldValue("employeeCode"),
                     intUrlId: intUrlId,
                     intAccountId: orgId,
                   };
@@ -639,7 +633,10 @@ const CreateAndEditEmploye = () => {
                       .validateFields()
                       .then(() => {
                         userValidation(payload, setIsUserCheckMsg, (data) => {
-                          if (data.message === "Valid") {
+                          if (
+                            data.message === "Valid" ||
+                            (!values?.isUsersection && empId)
+                          ) {
                             submitHandler({
                               values,
                               // empBasic,
@@ -679,7 +676,9 @@ const CreateAndEditEmploye = () => {
                 icon: "plus",
                 onClick: async () => {
                   const payload = {
-                    strLoginId: form.getFieldValue("loginUserId"),
+                    strLoginId:
+                      form.getFieldValue("loginUserId") ||
+                      form.getFieldValue("employeeCode"),
                     intUrlId: intUrlId,
                     intAccountId: orgId,
                   };
@@ -689,7 +688,10 @@ const CreateAndEditEmploye = () => {
                       .validateFields()
                       .then(() => {
                         userValidation(payload, setIsUserCheckMsg, (data) => {
-                          if (data.message === "Valid") {
+                          if (
+                            data.message === "Valid" ||
+                            (!values?.isUsersection && empId)
+                          ) {
                             submitHandler({
                               values,
                               // empBasic,
