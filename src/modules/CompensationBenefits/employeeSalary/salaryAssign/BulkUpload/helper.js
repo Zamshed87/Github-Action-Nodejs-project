@@ -111,21 +111,22 @@ export const processBulkUploadSalaryAction = async (
       ?.filter((item) => item["Employee Code"]) // Only include items with an Employee Code
       .map((item, index) => ({
         rowNo: index + 1 || 0,
-        employeeCode: item["Employee Code"] || "",
+        employeeCode: String(item["Employee Code"]) || "", // Convert to string
         employeeName: item["Employee Name"] || "",
         payrollGroup: item["Payroll Group"] || "",
         grossSalary: item["Gross Salary"]?.result || 0,
         bankPay: item["Bank"] || 0,
         cashPay: item["Cash"] || 0,
         digitalPay: item["Digital"] || 0,
-        routingNo: item["Routing No"] || "",
+        routingNo: String(item["Routing No"]) || "",
         swiftCode: item["Swift Code"] || "",
-        accountNo: item["Account No"] || "",
+        accountNo: String(item["Account No"]) || "",
         accountName: item["Account Name"] || "",
         isSalaryInserted: false,
         isBankDetailsInserted: false,
         exMessage: "",
       }));
+
     setter(salaryBulkData);
     setLoading(false);
   } catch (error) {
@@ -160,8 +161,8 @@ export const saveBulkUploadSalaryAction = async (
     });
 
     setErrorData(res?.data?.Result);
-    console.log("res",res)
-    setData(res?.data)
+    console.log("res", res);
+    setData(res?.data);
 
     setLoading(false);
     toast.success(res?.data?.message || "Saved Successfully");
