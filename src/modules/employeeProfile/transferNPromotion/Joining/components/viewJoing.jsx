@@ -7,13 +7,14 @@ import { getEmployeeProfileViewData } from "../../../employeeFeature/helper";
 import Accordion from "../accordion";
 import ViewJoiningTable from "./viewJoiningTable";
 import { PForm, PInput, PSelect } from "Components";
-import { Col, Form, Row } from "antd";
+import { Col, Divider, Form, Row } from "antd";
 import moment from "moment";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
+import { debounce } from "lodash";
 
 const ViewJoining = () => {
-  const { orgId } = useSelector(
+  const { orgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -26,8 +27,81 @@ const ViewJoining = () => {
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initData, setInitData] = useState({});
   const getSingleData = () => {
-    getTransferNpromotion(`/Employee/GetEmpTransferNpromotionById?id=${id}`);
+    getTransferNpromotion(
+      `/Employee/GetEmpTransferNpromotionById?id=${id}`,
+      (res) => {
+        setInitData({
+          type: {
+            label: res?.strTransferNpromotionType,
+            value: res?.strTransferNpromotionType,
+          },
+          effectiveDate: moment(res?.dteEffectiveDate),
+          businessUnit: {
+            label: res?.businessUnitName,
+            value: res?.intBusinessUnitId,
+          },
+          workplaceGroup: {
+            label: res?.workplaceGroupName,
+            value: res?.intWorkplaceGroupId,
+          },
+          workplace: {
+            label: res?.workplaceName,
+            value: res?.intWorkplaceId,
+          },
+          employmentType: {
+            label: res?.strEmploymentType,
+            value: res?.intEmploymentTypeId,
+          },
+          hrPosition: {
+            label: res?.hrPositionName,
+            value: res?.hrPositionId,
+          },
+          department: {
+            label: res?.departmentName,
+            value: res?.intDepartmentId,
+          },
+          designation: {
+            label: res?.designationName,
+            value: res?.intDesignationId,
+          },
+          section: {
+            label: res?.strSectionName,
+            value: res?.intSectionId,
+          },
+          supervisor: {
+            label: res?.supervisorName,
+            value: res?.intSupervisorId,
+          },
+          dottedSuperVisor: {
+            label: res?.dottedSupervisorName,
+            value: res?.intDottedSupervisorId,
+          },
+          lineManager: {
+            label: res?.lineManagerName,
+            value: res?.intLineManagerId,
+          },
+          role: res?.empTransferNpromotionUserRoleVMList?.map((item) => {
+            return {
+              ...item,
+              label: item?.strUserRoleName,
+              value: item?.intUserRoleId,
+            };
+          }),
+          remarks: res?.strRemarks,
+          isRoleExtension: res?.isRoleExtension,
+          orgType: {
+            label: res?.strOrganizationTypeName,
+            value: res?.intOrganizationTypeId,
+          },
+          orgName: {
+            label: res?.strOrganizationReffName,
+            value: res?.intOrganizationReffId,
+          },
+        });
+      }
+    );
     getEmployeeProfileViewData(
       location?.state?.employeeId,
       setEmpBasic,
@@ -37,30 +111,113 @@ const ViewJoining = () => {
     );
   };
 
-  // getting the policy details by id
-  useEffect(() => {
-    getSingleData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const employmentTypeDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const empSectionDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
+  const supervisorDDL = useApiRequest([]);
+  const dottedSupervisorDDL = useApiRequest([]);
+  const lineManagerDDL = useApiRequest([]);
+  const userRoleDDL = useApiRequest([]);
+
+  const getSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return supervisorDDL?.reset();
+    supervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        intId: employeeId,
+        workplaceGroupId: location?.state?.workplaceGroupId,
+        strWorkplaceIdList: location?.state?.workplaceId.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getDottedSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return dottedSupervisorDDL?.reset();
+
+    dottedSupervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        intId: employeeId,
+        workplaceGroupId: location?.state?.workplaceGroupId,
+        strWorkplaceIdList: location?.state?.workplaceId.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getLineManagerDDL = debounce((value) => {
+    if (value?.length < 2) return lineManagerDDL?.reset();
+
+    lineManagerDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        intId: employeeId,
+        workplaceGroupId: location?.state?.workplaceGroupId,
+        strWorkplaceIdList: location?.state?.workplaceId.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
 
   const getData = () => {
-    const { workplaceGroup, workplace, businessUnit } =
-      form.getFieldsValue(true);
-
+    userRoleDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserRoleDDLWithoutDefault",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.label;
+          res[i].value = item?.value;
+        });
+      },
+    });
     positionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Position",
-        BusinessUnitId: businessUnit?.value,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -76,9 +233,9 @@ const ViewJoining = () => {
       params: {
         DDLType: "EmpDesignation",
         AccountId: orgId,
-        BusinessUnitId: businessUnit?.value,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -93,9 +250,9 @@ const ViewJoining = () => {
       method: "GET",
       params: {
         DDLType: "EmpDepartment",
-        BusinessUnitId: businessUnit?.value,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -110,9 +267,9 @@ const ViewJoining = () => {
       method: "GET",
       params: {
         DDLType: "EmploymentType",
-        BusinessUnitId: businessUnit?.value,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -125,6 +282,7 @@ const ViewJoining = () => {
   };
 
   useEffect(() => {
+    getSingleData();
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -221,16 +379,9 @@ const ViewJoining = () => {
             {!!transferNpromotion && (
               <div className="pt-2">
                 <div className="col-lg-12 mb-2 pl-0">
-                  <h3
-                    style={{
-                      color: " gray700 !important",
-                      fontSize: "16px",
-                      lineHeight: "20px",
-                      fontWeight: "500",
-                    }}
-                  >
+                  <Divider style={{ borderColor: "darkgray" }}>
                     Proposed Transfer/Promotion
-                  </h3>
+                  </Divider>
                 </div>
                 <div className="table-colored">
                   <ViewJoiningTable transferNpromotion={transferNpromotion} />
@@ -238,40 +389,17 @@ const ViewJoining = () => {
               </div>
             )}
             <div>
-              <div className="col-lg-12 mb-2 mt-3 px-0">
-                <h3
-                  style={{
-                    color: " gray700 !important",
-                    fontSize: "16px",
-                    lineHeight: "20px",
-                    fontWeight: "500",
-                  }}
-                >
+              <div className="col-lg-12 my-3 px-0">
+                <Divider style={{ borderColor: "darkgray" }}>
                   Edit Proposed Transfer/Promotion
-                </h3>
+                </Divider>
               </div>
               <PForm
                 form={form}
-                initialValues={{
-                  type: {
-                    lebel: transferNpromotion?.strTransferNpromotionType || "",
-                    value: transferNpromotion?.strTransferNpromotionType,
-                  },
-                  effectiveDate: moment(transferNpromotion?.dteEffectiveDate),
-                  businessUnit: {
-                    label: transferNpromotion?.businessUnitName,
-                    value: transferNpromotion?.intBusinessUnitId,
-                  },
-                  workplaceGroup: {
-                    label: transferNpromotion?.workplaceGroupName,
-                    value: transferNpromotion?.intWorkplaceGroupId,
-                  },
-                  workplace: {
-                    label: transferNpromotion?.workplaceName,
-                    value: transferNpromotion?.intWorkplaceId,
-                  },
-                }}
+                initialValues={initData}
+                onFinish={(values) => console.log(values)}
               >
+                <button type="submit">save</button>
                 <Row gutter={[10, 2]}>
                   <Col md={6} sm={12} xs={24}>
                     <PSelect
@@ -329,6 +457,180 @@ const ViewJoining = () => {
                           employmentType: op,
                         });
                       }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={positionDDL?.data || []}
+                      name="hrPosition"
+                      label="HR Position"
+                      placeholder="HR Position"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          hrPosition: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empDepartmentDDL?.data || []}
+                      name="department"
+                      label="Department"
+                      placeholder="Department"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          department: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empSectionDDL?.data || []}
+                      name="section"
+                      label="Section"
+                      placeholder="Section"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          section: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empDesignationDDL?.data || []}
+                      name="designation"
+                      label="Designation"
+                      placeholder="Designation"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          designation: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { workplaceGroup } = form.getFieldsValue(true);
+                      return (
+                        <>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={supervisorDDL?.data || []}
+                              name="supervisor"
+                              label="Supervisor"
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  supervisor: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={supervisorDDL?.loading}
+                              onSearch={(value) => {
+                                getSuperVisorDDL(value);
+                              }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Supervisor is required",
+                                },
+                              ]}
+                            />
+                          </Col>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={dottedSupervisorDDL?.data || []}
+                              name="dottedSuperVisor"
+                              label="Dotted Supervisor"
+                              allowClear
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  dottedSuperVisor: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={dottedSupervisorDDL?.loading}
+                              onSearch={(value) => {
+                                getDottedSuperVisorDDL(value);
+                              }}
+                            />
+                          </Col>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={lineManagerDDL.data || []}
+                              name="lineManager"
+                              label="Line Manager"
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  lineManager: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={lineManagerDDL?.loading}
+                              onSearch={(value) => {
+                                getLineManagerDDL(value);
+                              }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Line Manager is required",
+                                },
+                              ]}
+                            />
+                          </Col>
+                        </>
+                      );
+                    }}
+                  </Form.Item>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={userRoleDDL?.data || []}
+                      name="role"
+                      label="Role"
+                      placeholder="Role"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          role: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="text"
+                      name="remarks"
+                      label="Remarks"
+                      placeholder="remarks"
+                      rules={[
+                        { required: true, message: "Remarks is required" },
+                      ]}
                     />
                   </Col>
                 </Row>

@@ -372,6 +372,7 @@ export default function Joining() {
                                         businessUnitId: item?.intBusinessUnitId,
                                         workplaceGroupId:
                                           item?.intWorkplaceGroupId,
+                                        workplaceId: item?.intWorkplaceId,
                                       }
                                     )
                                   }

@@ -151,7 +151,7 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Supervisor is required"),
     })
     .typeError("Supervisor is required"),
-    dottedSupervisor: Yup.object()
+  dottedSupervisor: Yup.object()
     .shape({
       label: Yup.string().required("Dotted Supervisor is required"),
       value: Yup.string().required("Dotted Supervisor is required"),
@@ -180,7 +180,6 @@ function CreateTransferPromotion() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-console.log({state});
 
   const modifiedData = {
     employee: {
@@ -242,7 +241,7 @@ console.log({state});
     },
     dottedSupervisor: {
       value: state?.singleData?.intDottedSupervisorId,
-      label: state?.singleData?.dottedSupervisorName ,
+      label: state?.singleData?.dottedSupervisorName,
     },
     lineManager: {
       value: state?.singleData?.intLineManagerId,
@@ -815,7 +814,7 @@ console.log({state});
                         department: "",
                         designation: "",
                         supervisor: "",
-                        dottedSupervisor:"",
+                        dottedSupervisor: "",
                         lineManager: "",
                         section: "",
                         wing: "",
