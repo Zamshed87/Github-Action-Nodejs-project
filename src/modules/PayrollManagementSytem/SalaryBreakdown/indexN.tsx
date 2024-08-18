@@ -1,12 +1,8 @@
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
-import PBadge from "Components/Badge";
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
-import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { payrollGroupElementList } from "./calculation";
 import { isDevServer } from "App";
 
 type TindexN = {};
@@ -17,17 +13,6 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
     shallowEqual
   );
   const history = useHistory();
-  const dispatch = useDispatch();
-  const scrollRef = useRef();
-  const { state } = useLocation();
-
-  const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
-  const [singleData, setSingleData] = useState("");
-  const [isFreeze, setIsFreeze] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  // gross form
-  const [dynamicForm, setDynamicForm] = useState([]);
 
   // Api Actions
   const GetAllSalaryBreakdownLanding = useApiRequest([]);
@@ -96,7 +81,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
     {
       title: "Is Default",
       dataIndex: "isDefault",
-      render: (data: any) => <div>{data ? "Yes" : "No"}</div>,
+      render: (data: any, item: any) => <div>{item?.isDefault ? "Yes" : "No"}</div>,
       sorter: true,
       filter: false,
     },
@@ -111,10 +96,10 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
                 type: "edit",
                 isActive: isDevServer,
                 onClick: () => {
-                    history.push({
-                      pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
-                      state: item,
-                    });
+                  history.push({
+                    pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
+                    state: item,
+                  });
                 },
               },
               {
@@ -133,7 +118,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       width: "60px",
     },
   ];
-
+  console.log(GetAllSalaryBreakdownLanding?.data);
   return (
     <>
       <PForm

@@ -177,6 +177,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       });
     }
   }, [orgId, state]);
+  console.log("state", state);
 
   const onFinish = () => {
     const values = form.getFieldsValue();
@@ -218,6 +219,9 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
     };
+
+    console.log("values", values);
+    console.log("payload", payload);
 
     if (values?.isPerdaySalary) {
       payload = {
@@ -430,7 +434,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                 basedOn: undefined,
                                 payrollElement: undefined,
                                 dependsOn: option,
-                                isDedicated: false
+                                isDedicated: false,
                               });
                             }}
                             // rules={[
@@ -462,6 +466,24 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                           />
                         </Col>
                       )}
+                    </>
+                  );
+                }}
+              </Form.Item>
+
+              <Form.Item noStyle shouldUpdate>
+                {() => {
+                  // const { dependsOn } = form.getFieldsValue();
+                  return (
+                    <>
+                      <Col md={6} sm={12} className="mt-3">
+                        <PInput
+                          type="checkbox"
+                          label="Is Default"
+                          name="isDefaultBreakdown"
+                          layout="horizontal"
+                        />
+                      </Col>
                     </>
                   );
                 }}
