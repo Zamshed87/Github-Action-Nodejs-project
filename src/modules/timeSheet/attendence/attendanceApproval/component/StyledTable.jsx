@@ -14,7 +14,7 @@ import {
   failColor,
   gray900,
   greenColor,
-  successColor
+  successColor,
 } from "../../../../../utility/customColor";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
 import { approveAttendance } from "../helper";
@@ -124,10 +124,11 @@ const StyledTable = ({
                 parentChangeHandler(e);
                 let data = filterLanding.map((item) => ({
                   ...item,
-                  selectCheckbox: 
-                  !item?.application?.isReject && !item?.application?.isApproved
-                    ? e.target.checked
-                    : false,
+                  selectCheckbox:
+                    !item?.application?.isReject &&
+                    !item?.application?.isApproved
+                      ? e.target.checked
+                      : false,
                 }));
                 setFilterLanding(data);
                 setFieldValue("allSelected", e.target.checked);
@@ -171,7 +172,7 @@ const StyledTable = ({
                     };
                   } else return item;
                 });
-                setFilterLanding(data2)
+                setFilterLanding(data2);
                 setGridData([...data]);
               }}
             />
@@ -371,9 +372,7 @@ const StyledTable = ({
           setPaginationSize={setPaginationSize}
           rowKey={(item) => item?.application?.intId}
           setColumnsData={(allData) => {
-            if (
-              allData?.length === gridData.length
-            ) {
+            if (allData?.length === gridData.length) {
               let temp = allData?.map((item) => {
                 return {
                   ...item,
@@ -387,7 +386,9 @@ const StyledTable = ({
             setFilterLanding(allData);
           }}
         />
-      ) : <NoResult title="" para="" />}
+      ) : (
+        <NoResult title="" para="" />
+      )}
     </div>
   );
 };
