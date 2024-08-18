@@ -49,12 +49,12 @@ function AssetItemRegForm({ propsObj }) {
           <div className="col-lg-12">
             <label>Is Manual Code</label>
             <FormikCheckBox
-             height="15px"
-             styleobj={{
-               color: gray900,
-               checkedColor: greenColor,
-               padding: "0px 0px 0px 10px",
-             }}
+              height="15px"
+              styleobj={{
+                color: gray900,
+                checkedColor: greenColor,
+                padding: "0px 0px 0px 10px",
+              }}
               label=""
               name="isAutoCode"
               checked={values?.isAutoCode}
@@ -169,7 +169,7 @@ function AssetItemRegForm({ propsObj }) {
             </button>
             {isEdit && (
               <button
-                onClick={(e) => {
+                onClick={() => {
                   setIsEdit(false);
                   resetForm(initData);
                   setSingleData("");
