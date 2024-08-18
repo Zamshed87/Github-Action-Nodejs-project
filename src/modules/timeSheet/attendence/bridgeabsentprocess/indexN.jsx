@@ -57,7 +57,7 @@ function AttendanceRawDataProcess() {
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: paginationSize,
+    pageSize: 25,
     total: 0,
   });
 
@@ -71,7 +71,7 @@ function AttendanceRawDataProcess() {
       setLoading,
       setPages
     );
-  }, []);
+  }, [wgId, wId]);
 
   useEffect(() => {
     getPeopleDeskAllDDLWithCode(
@@ -93,7 +93,10 @@ function AttendanceRawDataProcess() {
   });
 
   const saveHandler = (values) => {
-    const empList = values?.employee?.map((item) => item?.value).join(",");
+    const empList = values?.employee?.length
+      ? values.employee.map((item) => item?.value).join(",")
+      : "";
+
     const payload = {
       employeeIdList: empList || "",
       intAccountId: orgId,
