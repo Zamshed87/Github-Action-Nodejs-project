@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import FormikInput from "../../../../common/FormikInput";
 import { todayDate } from "../../../../utility/todayDate";
 import { createSetup, getDDL } from "../helper";
+import { shallowEqual, useSelector } from "react-redux";
 
 const initData = {
   UoMNewName: "",
@@ -21,12 +22,18 @@ export default function AddItemUoM({
   setShow,
   setLoading,
 }) {
+  const { wgId, wId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   const saveHandler = (values, cb) => {
     const payload = {
       itemUomId: 0,
       accountId: orgId,
       businessUnitId: buId,
       itemUom: values?.UoMNewName,
+      workplaceId: wId,
+      workplaceGroupId: wgId,
       active: true,
       createdAt: todayDate(),
       createdBy: employeeId,
@@ -50,21 +57,13 @@ export default function AddItemUoM({
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <div className="modalBody pt-0 px-0">
