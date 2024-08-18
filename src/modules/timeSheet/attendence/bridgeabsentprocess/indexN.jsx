@@ -57,7 +57,7 @@ function AttendanceRawDataProcess() {
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 25,
+    pageSize: paginationSize,
     total: 0,
   });
 
@@ -71,7 +71,7 @@ function AttendanceRawDataProcess() {
       setLoading,
       setPages
     );
-  }, [wgId, wId]);
+  }, []);
 
   useEffect(() => {
     getPeopleDeskAllDDLWithCode(
@@ -142,9 +142,9 @@ function AttendanceRawDataProcess() {
     );
   };
 
-  useEffect(() => {
-    landingApi();
-  }, [wgId, wId]);
+  // useEffect(() => {
+  //   landingApi();
+  // }, [wgId, wId]);
 
   const header = [
     {
