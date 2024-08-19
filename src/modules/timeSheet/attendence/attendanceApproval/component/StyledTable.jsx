@@ -18,6 +18,7 @@ import {
 } from "../../../../../utility/customColor";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
 import { approveAttendance } from "../helper";
+import PBadge from "Components/Badge";
 
 const StyledTable = ({
   setFieldValue,
@@ -265,7 +266,7 @@ const StyledTable = ({
       title: "Request Attendance",
       dataIndex: "strRequestStatus",
       render: (_, record) => (
-        <div className="d-flex">
+        <div className="d-flex align-items-center">
           <LightTooltip
             title={
               <div className="movement-tooltip p-1">
@@ -279,16 +280,23 @@ const StyledTable = ({
           >
             <InfoOutlined sx={{ marginRight: "12px" }} />
           </LightTooltip>
-          {record?.strRequestStatus === "Present" && (
-            <Chips label="Present" classess="success" />
+          {record?.strRequestStatus === "Present" ? (
+            <PBadge text="Present" type="success" />
+          ) : record?.strRequestStatus === "Absent" ? (
+            <PBadge text="Absent" type="warning" />
+          ) : record?.strRequestStatus === "Holiday" ? (
+            <PBadge text="Holiday" type="light" />
+          ) : record?.strRequestStatus === "Late" ? (
+            <PBadge text="Late" type="danger" />
+          ) : record?.strRequestStatus === "Offday" ? (
+            <PBadge text="Offday" type="light" />
+          ) : record?.strRequestStatus === "Leave" ? (
+            <PBadge text="Leave" type="light" />
+          ) : record?.strRequestStatus === "Movement" ? (
+            <PBadge text="Movement" type="light" />
+          ) : (
+            <PBadge text={record?.strRequestStatus} type="light" />
           )}
-          {record?.strRequestStatus === "Late" && (
-            <Chips label="Late" classess="warning" />
-          )}
-          {record?.strRequestStatus === "Absent" && (
-            <Chips label="Absent" classess="danger" />
-          )}
-          {!record?.strRequestStatus && "-"}
         </div>
       ),
     },
