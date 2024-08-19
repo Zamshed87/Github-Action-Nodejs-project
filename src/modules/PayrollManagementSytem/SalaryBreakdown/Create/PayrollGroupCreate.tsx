@@ -330,6 +330,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Payroll Group Name is required!",
                     },
                   ]}
+                  disabled={state?.intSalaryBreakdownHeaderId}
                 />
               </Col>
               <Col md={6} sm={12}>
@@ -349,6 +350,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Please Select Payroll Policy!",
                     },
                   ]}
+                  disabled={state?.intSalaryBreakdownHeaderId}
                 />
               </Col>
               <Col md={6} sm={12}>
@@ -369,6 +371,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Please Select Workplace Group!",
                     },
                   ]}
+                  disabled={state?.intSalaryBreakdownHeaderId}
                 />
               </Col>
               <Col md={6} sm={12}>
@@ -395,6 +398,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Please Select Workplace!",
                     },
                   ]}
+                  disabled={state?.intSalaryBreakdownHeaderId}
                 />
               </Col>
 
@@ -411,6 +415,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       payrollElement: undefined,
                     });
                   }}
+                  disabled={state?.intSalaryBreakdownHeaderId}
                 />
               </Col>
 
@@ -443,6 +448,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             //     message: "Please Select Workplace!",
                             //   },
                             // ]}
+                            disabled={state?.intSalaryBreakdownHeaderId}
                           />
                         </Col>
                       </>
@@ -463,6 +469,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             label="Is Flat Salary?"
                             name="isFlat"
                             layout="horizontal"
+                            disabled={state?.intSalaryBreakdownHeaderId}
                           />
                         </Col>
                       )}
@@ -488,64 +495,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                   );
                 }}
               </Form.Item>
-              {/* <Form.Item noStyle shouldUpdate>
-                {() => {
-                  const { isDedicated, dependsOn } = form.getFieldsValue();
-                  return (
-                    <>
-                      {dependsOn?.value === 1 ? (
-                        <>
-                          <Col md={6} sm={12} className="mt-3">
-                            <PInput
-                              type="checkbox"
-                              label="Is Dedicated Payroll Group?"
-                              name="isDedicated"
-                              layout="horizontal"
-                              onChange={(value) => {
-                                // console.log({value, checked})
-                                form.setFieldsValue({
-                                  dedicatedDDL: undefined,
-                                  isDedicated: value?.target?.checked,
-                                });
-                              }}
-                            />
-                          </Col>
-                          {isDedicated && (
-                            <Col md={6} sm={12}>
-                              <PSelect
-                                label="Dedicated Payroll Group"
-                                name="dedicatedDDL"
-                                placeholder="Dedicated Payroll Group"
-                                options={[
-                                  {
-                                    value: 1,
-                                    label: "Basic = (Gross - Conveyance) / 1.6",
-                                  },
-                                ]}
-                                onChange={(value, option) => {
-                                  form.setFieldsValue({
-                                    basedOn: undefined,
-                                    payrollElement: undefined,
-                                    dedicatedDDL: option,
-                                  });
-                                }}
-                                // rules={[
-                                //   {
-                                //     required: true,
-                                //     message: "Please Select Workplace!",
-                                //   },
-                                // ]}
-                              />
-                            </Col>
-                          )}
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  );
-                }}
-              </Form.Item> */}
             </Row>
             <Row gutter={[10, 2]}>
               <Form.Item noStyle shouldUpdate>
@@ -570,6 +519,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                 basedOn: option,
                               });
                             }}
+                            disabled={state?.intSalaryBreakdownHeaderId}
                           />
                         </Col>
                         <Col md={6} sm={12}>
@@ -583,12 +533,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                 payrollElement: option,
                               });
                             }}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Payroll Element!",
-                            //   },
-                            // ]}
+                            disabled={state?.intSalaryBreakdownHeaderId}
                           />
                         </Col>
                         <Col md={6} sm={12}>
@@ -640,26 +585,29 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                             ? "Basic"
                                             : "Gross"
                                         }]`}
-                                        <span
-                                          style={{
-                                            color: success800,
-                                            fontWeight: "500",
-                                            fontSize: "12px",
-                                            lineHeight: "18px",
-                                            textDecoration: "underline",
-                                            cursor: "pointer",
-                                            marginLeft: "8px",
-                                          }}
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            remover(itm?.levelVariable);
-                                            form.setFieldsValue({
-                                              levelVariable: itm?.levelVariable,
-                                            });
-                                          }}
-                                        >
-                                          Remove
-                                        </span>
+                                        {!state?.intSalaryBreakdownHeaderId && (
+                                          <span
+                                            style={{
+                                              color: success800,
+                                              fontWeight: "500",
+                                              fontSize: "12px",
+                                              lineHeight: "18px",
+                                              textDecoration: "underline",
+                                              cursor: "pointer",
+                                              marginLeft: "8px",
+                                            }}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              remover(itm?.levelVariable);
+                                              form.setFieldsValue({
+                                                levelVariable:
+                                                  itm?.levelVariable,
+                                              });
+                                            }}
+                                          >
+                                            Remove
+                                          </span>
+                                        )}
                                       </>
                                     }
                                     value={itm?.[itm?.levelVariable]}
@@ -671,6 +619,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                         value
                                       );
                                     }}
+                                    disabled={state?.intSalaryBreakdownHeaderId}
                                   />
                                 </Col>
                               </div>
