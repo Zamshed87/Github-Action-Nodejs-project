@@ -110,7 +110,7 @@ export default function AttendanceApproval() {
       message: `Do you want to ${action} ?`,
       yesAlertFunc: () => {
         if (newArray.length) {
-          approveAttendance(newArray.slice(0, 100), setLoading, () =>
+          approveAttendance(newArray.slice(0, 50), setLoading, () =>
             getLandingData()
           );
         }
