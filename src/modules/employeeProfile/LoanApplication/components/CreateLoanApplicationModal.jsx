@@ -102,6 +102,8 @@ const CreateLoanApplicationModal = ({
   const [employeeDDL, setEmployeeDDL] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [guarantorDDL, setGuarantorDDL] = useState([]);
+  const [grossSalary, setGrossSalary] = useState();
+  const [isLoan, setIsloan] = useState(false);
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -124,7 +126,6 @@ const CreateLoanApplicationModal = ({
       setEmployeeDDL
     );
   }, [employeeId, wgId]);
-
 
   const saveHandler = (values, cb) => {
     // approveLoanAmount approveInstallmentNumber approveAmountPerInstallment
@@ -191,7 +192,6 @@ const CreateLoanApplicationModal = ({
   }, [wgId, buId]);
 
   const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
-
 
   useEffect(() => {
     if (singleData?.loanApplicationId) {
@@ -278,10 +278,25 @@ const CreateLoanApplicationModal = ({
                       isSearchIcon={true}
                       handleChange={(valueOption) => {
                         setFieldValue("employee", valueOption);
+                        setIsloan(valueOption?.isLoan);
+                        const doubleGross = valueOption?.numGrossSalary * 2;
+                        setGrossSalary(doubleGross);
                       }}
                       placeholder="Search (min 3 letter)"
                       loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
                     />
+                    {isLoan && (
+                      <div
+                        style={{
+                          color: "red",
+                          fontWeight: "bold",
+                          marginTop: "10px",
+                          fontSize: "12px",
+                        }}
+                      >
+                        Please note: This employee is associated with a loan.
+                      </div>
+                    )}
                   </div>
                   <div className="col-4">
                     <label>
@@ -316,17 +331,36 @@ const CreateLoanApplicationModal = ({
                         setFieldValue("installmentNumber", "");
                         setFieldValue("amountPerInstallment", "");
                         setFieldValue("approveLoanAmount", e.target.value);
-                        setFieldValue("loanAmount", e.target.value);
+
                         setFieldValue("totalwithinterest", e.target.value);
-                        if (values?.interest) {
+
+                        if (e.target.value > grossSalary) {
+                          return toast.warn(
+                            "Loan Amount cannot be greater than gross salary"
+                          );
+                        } else {
+                          setFieldValue("loanAmount", e.target.value);
+                        }
+
+                        if (values?.interest || e.target.value) {
                           const totalAmountwithInterest = (
                             +e.target.value +
                             +e.target.value * (values?.interest / 100)
                           ).toFixed(2);
-                          setFieldValue(
-                            "totalwithinterest",
-                            totalAmountwithInterest
-                          );
+
+                          if (totalAmountwithInterest > grossSalary) {
+                            setFieldValue("interest", "");
+                            setFieldValue("totalwithinterest", grossSalary);
+                            return toast.warn(
+                              "Total amount with interest cannot exceed gross salary",
+                              { toastId: "toastId" }
+                            );
+                          } else {
+                            setFieldValue(
+                              "totalwithinterest",
+                              totalAmountwithInterest
+                            );
+                          }
                         }
                       }}
                       className="form-control"
@@ -334,10 +368,6 @@ const CreateLoanApplicationModal = ({
                       errors={errors}
                       touched={touched}
                       disabled={singleData?.loanApplicationId}
-                      // disabled={
-                      //   singleData?.loanApplicationId &&
-                      //   singleData?.intCreatedBy !== employeeId
-                      // }
                     />
                   </div>
                   <div className="col-4">
@@ -349,15 +379,23 @@ const CreateLoanApplicationModal = ({
                       type="number"
                       onChange={(e) => {
                         setFieldValue("interest", e.target.value);
-                        if (values?.loanAmount) {
+                        if (values?.loanAmount || e.target.value) {
                           const totalAmountwithInterest = (
                             +values?.loanAmount +
                             +values?.loanAmount * (e.target.value / 100)
                           ).toFixed(2);
-                          setFieldValue(
-                            "totalwithinterest",
-                            totalAmountwithInterest
-                          );
+                          if (totalAmountwithInterest > grossSalary) {
+                            toast.warn(
+                              "Total amount with interest cannot exceed gross salary",
+                              { toastId: "toastId" }
+                            );
+                            setFieldValue("totalwithinterest", grossSalary);
+                          } else {
+                            setFieldValue(
+                              "totalwithinterest",
+                              totalAmountwithInterest
+                            );
+                          }
                         }
                         setFieldValue("amountPerInstallment", "");
                         setFieldValue("installmentNumber", "");
@@ -375,7 +413,40 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Total Loan Amount with interest</label>
+                    <div className="d-flex justify-content-between">
+                      <label>Total Loan Amount with interest</label>
+                      <span style={{ fontSize: "14px", position: "relative" }}>
+                        {formatMoney(grossSalary)}
+                        <i
+                          className="bi bi-info-circle"
+                          style={{ cursor: "pointer", marginLeft: "5px" }}
+                        ></i>
+                        <span
+                          style={{
+                            visibility: "hidden",
+                            width: "150px",
+                            backgroundColor: "black",
+                            color: "#fff",
+                            textAlign: "center",
+                            borderRadius: "6px",
+                            padding: "5px 0",
+                            position: "absolute",
+                            zIndex: 1,
+                            bottom: "125%",
+                            left: "50%",
+                            marginLeft: "-75px",
+                            fontSize: "12px",
+                            opacity: 0,
+                            transition: "opacity 0.3s",
+                          }}
+                          className="tooltip-text"
+                        >
+                          This is the maximum loan amount you can apply for,
+                          based on your gross salary.
+                        </span>
+                      </span>
+                    </div>
+
                     <FormikInput
                       classes="input-sm"
                       value={values?.totalwithinterest}
@@ -661,9 +732,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>
-                      Family Guarantor
-                    </label>
+                    <label>Family Guarantor</label>
                     <FormikTextArea
                       classes="textarea-with-label"
                       value={values?.familyGuarantor}
@@ -1026,6 +1095,7 @@ const CreateLoanApplicationModal = ({
                   className="btn btn-green btn-green-disable"
                   style={{ width: "auto" }}
                   type="submit"
+                  disabled={isLoan}
                 >
                   Save
                 </button>
