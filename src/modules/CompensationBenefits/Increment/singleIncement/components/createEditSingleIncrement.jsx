@@ -575,7 +575,7 @@ function CreateSingleIncrement() {
                       setHistoryData,
                       setLoading,
                       buId,
-                      wgId,
+                      wgId
                     );
                   }}
                   placeholder="Search (min 3 letter)"
@@ -700,7 +700,7 @@ function CreateSingleIncrement() {
                 </div>
               </div>
 
-              <div className="col-lg-12 my-2">
+              {/* <div className="col-lg-12 my-2">
                 <h3
                   style={{
                     color: " gray700 !important",
@@ -731,7 +731,7 @@ function CreateSingleIncrement() {
                     }));
                   }}
                 />
-              </div>
+              </div> */}
               {/* promotion part start */}
               {values?.promote && (
                 <>
