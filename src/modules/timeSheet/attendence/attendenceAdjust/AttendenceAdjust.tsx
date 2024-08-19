@@ -508,7 +508,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         ) : data === "Late" ? (
           <PBadge text="Late" type="danger" />
         ) : (
-          ""
+          <PBadge text={data} type="light" />
         ),
       align: "center",
       width: 170,
