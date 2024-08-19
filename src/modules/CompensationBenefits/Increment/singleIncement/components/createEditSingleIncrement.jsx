@@ -700,6 +700,8 @@ function CreateSingleIncrement() {
                 </div>
               </div>
 
+              {/* 🔥🔥 Hidded the checkbox only If the check box is enabled the complete functionality of promote will work. this part is been hidden according to the instruction from avishek voumik vai. 🔥🔥 */}
+
               {/* <div className="col-lg-12 my-2">
                 <h3
                   style={{
