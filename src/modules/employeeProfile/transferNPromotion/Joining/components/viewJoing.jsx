@@ -16,7 +16,12 @@ import { organizationTypeList } from "../../transferNPromotion/components/create
 import { setOrganizationDDLFunc } from "modules/roleExtension/ExtensionCreate/helper";
 import { toast } from "react-toastify";
 import { DeleteOutlined } from "@ant-design/icons";
-import { createPayload, joiningDisabledDate, setInitialData } from "./helper";
+import {
+  createPayload,
+  joiningDisabledDate,
+  saveJoining,
+  setInitialData,
+} from "./helper";
 
 const ViewJoining = () => {
   const { orgId, employeeId, buId } = useSelector(
@@ -323,16 +328,8 @@ const ViewJoining = () => {
     ]);
   };
 
-  console.log(transferNpromotion, "transferNpromotion");
-
   return (
-    <PForm
-      form={form}
-      initialValues={initData}
-      onFinish={(values) =>
-        createPayload(values, transferNpromotion, employeeId)
-      }
-    >
+    <>
       {loading || loading1 ? (
         <Loading />
       ) : (
@@ -349,6 +346,7 @@ const ViewJoining = () => {
                     type="primary"
                     action="submit"
                     disabled={loading}
+                    onClick={() => form.submit()}
                   />
                 </li>
               </ul>
@@ -381,600 +379,617 @@ const ViewJoining = () => {
                   Edit Proposed Transfer/Promotion
                 </Divider>
               </div>
-
-              <Row gutter={[10, 2]}>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={[]}
-                    name="type"
-                    label="Type"
-                    placeholder="Type"
-                    disabled
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PInput
-                    type="date"
-                    name="effectiveDate"
-                    label="Effective Date"
-                    placeholder="Effective Date"
-                    disabled
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={[]}
-                    name="businessUnit"
-                    label="Business Unit"
-                    placeholder="Business Unit"
-                    disabled
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={[]}
-                    name="workplaceGroup"
-                    label="Workplace Group"
-                    placeholder="Workplace Group"
-                    disabled
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={[]}
-                    name="workplace"
-                    label="Workplace"
-                    placeholder="Workplace"
-                    disabled
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={employmentTypeDDL?.data || []}
-                    name="employmentType"
-                    label="Employment Type"
-                    placeholder="Employment Type"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        employmentType: op,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={positionDDL?.data || []}
-                    name="hrPosition"
-                    label="HR Position"
-                    placeholder="HR Position"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        hrPosition: op,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={empDepartmentDDL?.data || []}
-                    name="department"
-                    label="Department"
-                    placeholder="Department"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        department: op,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={empSectionDDL?.data || []}
-                    name="section"
-                    label="Section"
-                    placeholder="Section"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        section: op,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={empDesignationDDL?.data || []}
-                    name="designation"
-                    label="Designation"
-                    placeholder="Designation"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        designation: op,
-                      });
-                    }}
-                  />
-                </Col>
-                <Form.Item shouldUpdate noStyle>
-                  {() => {
-                    const { workplaceGroup } = form.getFieldsValue(true);
-                    return (
-                      <>
-                        <Col md={6} sm={24}>
-                          <PSelect
-                            options={supervisorDDL?.data || []}
-                            name="supervisor"
-                            label="Supervisor"
-                            placeholder={`${
-                              workplaceGroup?.value
-                                ? "Search minimum 2 character"
-                                : "Select Workplace Group first"
-                            }`}
-                            disabled={!workplaceGroup?.value}
-                            onChange={(value, op) => {
-                              form.setFieldsValue({
-                                supervisor: op,
-                              });
-                            }}
-                            showSearch
-                            filterOption={false}
-                            // notFoundContent={null}
-                            loading={supervisorDDL?.loading}
-                            onSearch={(value) => {
-                              getSuperVisorDDL(value);
-                            }}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Supervisor is required",
-                              },
-                            ]}
-                          />
-                        </Col>
-                        <Col md={6} sm={24}>
-                          <PSelect
-                            options={dottedSupervisorDDL?.data || []}
-                            name="dottedSuperVisor"
-                            label="Dotted Supervisor"
-                            allowClear
-                            placeholder={`${
-                              workplaceGroup?.value
-                                ? "Search minimum 2 character"
-                                : "Select Workplace Group first"
-                            }`}
-                            disabled={!workplaceGroup?.value}
-                            onChange={(value, op) => {
-                              form.setFieldsValue({
-                                dottedSuperVisor: op,
-                              });
-                            }}
-                            showSearch
-                            filterOption={false}
-                            // notFoundContent={null}
-                            loading={dottedSupervisorDDL?.loading}
-                            onSearch={(value) => {
-                              getDottedSuperVisorDDL(value);
-                            }}
-                          />
-                        </Col>
-                        <Col md={6} sm={24}>
-                          <PSelect
-                            options={lineManagerDDL.data || []}
-                            name="lineManager"
-                            label="Line Manager"
-                            placeholder={`${
-                              workplaceGroup?.value
-                                ? "Search minimum 2 character"
-                                : "Select Workplace Group first"
-                            }`}
-                            disabled={!workplaceGroup?.value}
-                            onChange={(value, op) => {
-                              form.setFieldsValue({
-                                lineManager: op,
-                              });
-                            }}
-                            showSearch
-                            filterOption={false}
-                            // notFoundContent={null}
-                            loading={lineManagerDDL?.loading}
-                            onSearch={(value) => {
-                              getLineManagerDDL(value);
-                            }}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Line Manager is required",
-                              },
-                            ]}
-                          />
-                        </Col>
-                      </>
-                    );
-                  }}
-                </Form.Item>
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    mode="multiple"
-                    options={userRoleDDL?.data || []}
-                    name="role"
-                    label="Role"
-                    placeholder="Role"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        role: op,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={6} sm={24}>
-                  <PInput
-                    type="text"
-                    name="remarks"
-                    label="Remarks"
-                    placeholder="remarks"
-                    rules={[{ required: true, message: "Remarks is required" }]}
-                  />
-                </Col>
-                <Col md={6} sm={24} style={{ marginTop: "21px" }}>
-                  <FileUploadComponents
-                    propsObj={{
-                      title: "Upload Document",
-                      attachmentList: empSignature,
-                      setAttachmentList: setEmpSignature,
-                      accountId: orgId,
-                      tableReferrence: "LeaveAndMovement",
-                      documentTypeId: 15,
-                      userId: employeeId,
-                      buId,
-                      maxCount: 1,
-                      accept:
-                        "image/png, image/jpeg, image/jpg, application/pdf",
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Divider
-                orientation="left"
-                style={{ fontSize: "13px", marginBottom: "10px" }}
+              <PForm
+                form={form}
+                initialValues={initData}
+                onFinish={(values) => {
+                  const payload = createPayload(
+                    values,
+                    transferNpromotion,
+                    employeeId
+                  );
+                  saveJoining(payload, setLoading);
+                }}
               >
-                Employment Shift Info
-              </Divider>
-              {/* emp calendar info 🔥🔥🔥 */}
-              <>
                 <Row gutter={[10, 2]}>
-                  <Form.Item shouldUpdate noStyle>
-                    {() => {
-                      const { calenderType, workplace } =
-                        form.getFieldsValue(true);
-                      return (
-                        <>
-                          <Col md={8} sm={24}>
-                            <PSelect
-                              options={[
-                                {
-                                  value: 1,
-                                  label: "Calendar",
-                                },
-                                { value: 2, label: "Roster" },
-                              ]}
-                              type="date"
-                              name="calenderType"
-                              label="Calendar Type"
-                              placeholder="Calendar Type"
-                              onChange={(value, op) => {
-                                form.setFieldsValue({
-                                  calender: null,
-                                  // otType: null,
-                                  calenderType: op,
-                                });
-
-                                value === 1
-                                  ? getCalendarDDL()
-                                  : getRosterGroupDDL();
-                              }}
-                            />
-                          </Col>
-                          <Col md={8} sm={24}>
-                            <PSelect
-                              options={
-                                calenderType?.value === 2
-                                  ? rosterGroupDDL.data || []
-                                  : calendarDDL?.data || []
-                              }
-                              name="calender"
-                              label={
-                                calenderType?.value === 2
-                                  ? `Roster Name`
-                                  : `Calendar Name`
-                              }
-                              placeholder={
-                                calenderType?.value === 2
-                                  ? `Roster Name`
-                                  : `Calendar Name`
-                              }
-                              disabled={!workplace}
-                              onChange={(value, op) => {
-                                form.setFieldsValue({
-                                  calender: op,
-                                });
-
-                                const { calenderType } = form.getFieldsValue();
-                                calenderType?.value === 2 &&
-                                  getCalendarByRosterDDL();
-                              }}
-                            />
-                          </Col>
-
-                          {calenderType?.value === 2 ? (
-                            <>
-                              <Col md={8} sm={24}>
-                                <PSelect
-                                  options={calendarByRosterGroupDDL?.data || []}
-                                  name="startingCalender"
-                                  label="Starting Calendar"
-                                  placeholder={"Starting Calendar"}
-                                  disabled={!workplace}
-                                  onChange={(value, op) => {
-                                    form.setFieldsValue({
-                                      startingCalender: op,
-                                    });
-                                  }}
-                                />
-                              </Col>
-                              <Col md={8} sm={24}>
-                                <PInput
-                                  type="date"
-                                  name="nextChangeDate"
-                                  label="Next Calendar Change"
-                                  placeholder={"Next Calendar Change"}
-                                />
-                              </Col>
-                            </>
-                          ) : undefined}
-                        </>
-                      );
-                    }}
-                  </Form.Item>
-                  <Col md={8} sm={24}>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="type"
+                      label="Type"
+                      placeholder="Type"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="date"
-                      name="generateDate"
-                      label="Calender Generate Date"
-                      placeholder="Generate Date"
-                      disabledDate={joiningDisabledDate}
+                      name="effectiveDate"
+                      label="Effective Date"
+                      placeholder="Effective Date"
+                      disabled
                     />
                   </Col>
-                  <Col md={8} sm={24}>
+                  <Col md={6} sm={12} xs={24}>
                     <PSelect
-                      mode="multiple"
-                      options={[
-                        {
-                          value: 1,
-                          label: "Friday",
-                        },
-                        { value: 2, label: "Saturday" },
-                        { value: 3, label: "Sunday" },
-                        { value: 4, label: "Monday" },
-                        { value: 5, label: "Tuseday" },
-                        { value: 6, label: "Wednesday" },
-                        { value: 7, label: "Thursday" },
-                      ]}
-                      name="offday"
-                      label="Off Day"
-                      placeholder=" Off Day"
+                      options={[]}
+                      name="businessUnit"
+                      label="Business Unit"
+                      placeholder="Business Unit"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="workplaceGroup"
+                      label="Workplace Group"
+                      placeholder="Workplace Group"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="workplace"
+                      label="Workplace"
+                      placeholder="Workplace"
+                      disabled
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={employmentTypeDDL?.data || []}
+                      name="employmentType"
+                      label="Employment Type"
+                      placeholder="Employment Type"
                       onChange={(value, op) => {
                         form.setFieldsValue({
-                          offday: op,
+                          employmentType: op,
                         });
-
-                        // value && getWorkplace();
                       }}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Off Day is required",
-                        },
-                      ]}
                     />
                   </Col>
-                  <Col md={8} sm={24}>
+                  <Col md={6} sm={12} xs={24}>
                     <PSelect
-                      options={holidayDDL?.data || []}
-                      name="holiday"
-                      label="Holiday"
-                      placeholder="Holiday"
+                      options={positionDDL?.data || []}
+                      name="hrPosition"
+                      label="HR Position"
+                      placeholder="HR Position"
                       onChange={(value, op) => {
                         form.setFieldsValue({
-                          holiday: op,
+                          hrPosition: op,
                         });
                       }}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Holiday is required",
-                        },
-                      ]}
                     />
                   </Col>
-                </Row>
-              </>
-
-              {/* emp role extension 🔥🔥🔥 */}
-              <Divider
-                orientation="left"
-                style={{ fontSize: "13px", marginBottom: "10px" }}
-              >
-                Role Extension
-              </Divider>
-              <>
-                <Row gutter={[10, 2]}>
-                  {/* User Create */}
-                  <Form.Item noStyle shouldUpdate>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empDepartmentDDL?.data || []}
+                      name="department"
+                      label="Department"
+                      placeholder="Department"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          department: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empSectionDDL?.data || []}
+                      name="section"
+                      label="Section"
+                      placeholder="Section"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          section: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empDesignationDDL?.data || []}
+                      name="designation"
+                      label="Designation"
+                      placeholder="Designation"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          designation: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { isRoleExtension, orgName, orgType } =
-                        form.getFieldsValue();
+                      const { workplaceGroup } = form.getFieldsValue(true);
                       return (
                         <>
-                          <Col md={8} sm={24}>
-                            <PInput
-                              label="Is applicable for role extension?"
-                              type="checkbox"
-                              name="isRoleExtension"
-                              layout="horizontal"
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={supervisorDDL?.data || []}
+                              name="supervisor"
+                              label="Supervisor"
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  supervisor: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={supervisorDDL?.loading}
+                              onSearch={(value) => {
+                                getSuperVisorDDL(value);
+                              }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Supervisor is required",
+                                },
+                              ]}
                             />
                           </Col>
-                          {isRoleExtension && (
-                            <>
-                              <Divider style={{ margin: "3px 0" }} />
-                              <Col md={6} sm={24}>
-                                <PSelect
-                                  options={organizationTypeList || []}
-                                  name="orgType"
-                                  label="Organization Type"
-                                  placeholder="Organization Type"
-                                  onChange={(value, op) => {
-                                    form.setFieldsValue({
-                                      orgType: op,
-                                      orgName: null,
-                                    });
-                                    setOrganizationDDLFunc(
-                                      orgId,
-                                      buId,
-                                      employeeId,
-                                      op,
-                                      setOrganizationDDL
-                                    );
-                                  }}
-                                />
-                              </Col>
-                              <Col md={6} sm={24}>
-                                <PSelect
-                                  options={organizationDDL || []}
-                                  name="orgName"
-                                  label="Organization Name"
-                                  placeholder="Organization Name"
-                                  onChange={(value, op) => {
-                                    form.setFieldsValue({
-                                      orgName: op,
-                                    });
-                                  }}
-                                />
-                              </Col>
-                              <Col md={8} sm={24}>
-                                <PButton
-                                  content="Add"
-                                  type="primary"
-                                  style={{ marginTop: "22px" }}
-                                  disabled={!orgName || !orgType}
-                                  onClick={() => {
-                                    const roleExist = rowDto?.some(
-                                      (item) =>
-                                        item?.intOrganizationTypeId ===
-                                          orgType?.value &&
-                                        item?.intOrganizationReffId ===
-                                          orgName?.value
-                                    );
-
-                                    if (roleExist)
-                                      return toast.warn(
-                                        "Already extis this role"
-                                      );
-                                    onRoleAdd(orgType, orgName);
-                                    form.setFieldsValue({
-                                      orgType: null,
-                                      orgName: null,
-                                    });
-                                  }}
-                                />
-                              </Col>
-                            </>
-                          )}
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={dottedSupervisorDDL?.data || []}
+                              name="dottedSuperVisor"
+                              label="Dotted Supervisor"
+                              allowClear
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  dottedSuperVisor: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={dottedSupervisorDDL?.loading}
+                              onSearch={(value) => {
+                                getDottedSuperVisorDDL(value);
+                              }}
+                            />
+                          </Col>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={lineManagerDDL.data || []}
+                              name="lineManager"
+                              label="Line Manager"
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  lineManager: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={lineManagerDDL?.loading}
+                              onSearch={(value) => {
+                                getLineManagerDDL(value);
+                              }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Line Manager is required",
+                                },
+                              ]}
+                            />
+                          </Col>
                         </>
                       );
                     }}
                   </Form.Item>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={userRoleDDL?.data || []}
+                      name="role"
+                      label="Role"
+                      placeholder="Role"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          role: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="text"
+                      name="remarks"
+                      label="Remarks"
+                      placeholder="remarks"
+                      rules={[
+                        { required: true, message: "Remarks is required" },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24} style={{ marginTop: "21px" }}>
+                    <FileUploadComponents
+                      propsObj={{
+                        title: "Upload Document",
+                        attachmentList: empSignature,
+                        setAttachmentList: setEmpSignature,
+                        accountId: orgId,
+                        tableReferrence: "LeaveAndMovement",
+                        documentTypeId: 15,
+                        userId: employeeId,
+                        buId,
+                        maxCount: 1,
+                        accept:
+                          "image/png, image/jpeg, image/jpg, application/pdf",
+                      }}
+                    />
+                  </Col>
                 </Row>
-                <div>
-                  {rowDto.length > 0 && (
-                    <>
-                      <div className="col-lg-12 mb-2 mt-3">
-                        <h3
-                          style={{
-                            color: " gray700 !important",
-                            fontSize: "16px",
-                            lineHeight: "20px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          Role Extension List
-                        </h3>
-                      </div>
-                      <div className="col-md-12">
-                        <div className="table-card-body">
-                          <div className="table-card-styled tableOne">
-                            <table className="table">
-                              <thead>
-                                <tr className="py-1">
-                                  <th>SL</th>
-                                  <th>
-                                    <span className="mr-1"> Org Type</span>
-                                  </th>
-                                  <th>
-                                    <span className="mr-1"> Org Name</span>
-                                  </th>
-                                  <th></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {rowDto?.map((item, index) => (
-                                  <tr className="hasEvent" key={index + 1}>
-                                    <td>
-                                      <p className="tableBody-title pl-1">
-                                        {index + 1}
-                                      </p>
-                                    </td>
-                                    <td>
-                                      <p className="tableBody-title">
-                                        {item?.strOrganizationTypeName}
-                                      </p>
-                                    </td>
-                                    <td>
-                                      <p className="tableBody-title">
-                                        {item?.strOrganizationReffName}
-                                      </p>
-                                    </td>
-                                    <td>
-                                      <div className="d-flex align-items-center justify-content-end">
-                                        <button
-                                          type="button"
-                                          className="iconButton mt-0 mt-md-2 mt-lg-0"
-                                          onClick={() =>
-                                            setRowDto((prev) => [
-                                              ...prev.filter(
-                                                (prev_item, item_index) =>
-                                                  item_index !== index
-                                              ),
-                                            ])
-                                          }
-                                        >
-                                          <DeleteOutlined />
-                                        </button>
-                                      </div>
-                                    </td>
+                <Divider
+                  orientation="left"
+                  style={{ fontSize: "13px", marginBottom: "10px" }}
+                >
+                  Employment Shift Info
+                </Divider>
+                {/* emp calendar info 🔥🔥🔥 */}
+                <>
+                  <Row gutter={[10, 2]}>
+                    <Form.Item shouldUpdate noStyle>
+                      {() => {
+                        const { calenderType, workplace } =
+                          form.getFieldsValue(true);
+                        return (
+                          <>
+                            <Col md={8} sm={24}>
+                              <PSelect
+                                options={[
+                                  {
+                                    value: 1,
+                                    label: "Calendar",
+                                  },
+                                  { value: 2, label: "Roster" },
+                                ]}
+                                type="date"
+                                name="calenderType"
+                                label="Calendar Type"
+                                placeholder="Calendar Type"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    calender: null,
+                                    // otType: null,
+                                    calenderType: op,
+                                  });
+
+                                  value === 1
+                                    ? getCalendarDDL()
+                                    : getRosterGroupDDL();
+                                }}
+                              />
+                            </Col>
+                            <Col md={8} sm={24}>
+                              <PSelect
+                                options={
+                                  calenderType?.value === 2
+                                    ? rosterGroupDDL.data || []
+                                    : calendarDDL?.data || []
+                                }
+                                name="calender"
+                                label={
+                                  calenderType?.value === 2
+                                    ? `Roster Name`
+                                    : `Calendar Name`
+                                }
+                                placeholder={
+                                  calenderType?.value === 2
+                                    ? `Roster Name`
+                                    : `Calendar Name`
+                                }
+                                disabled={!workplace}
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    calender: op,
+                                  });
+
+                                  const { calenderType } =
+                                    form.getFieldsValue();
+                                  calenderType?.value === 2 &&
+                                    getCalendarByRosterDDL();
+                                }}
+                              />
+                            </Col>
+
+                            {calenderType?.value === 2 ? (
+                              <>
+                                <Col md={8} sm={24}>
+                                  <PSelect
+                                    options={
+                                      calendarByRosterGroupDDL?.data || []
+                                    }
+                                    name="startingCalender"
+                                    label="Starting Calendar"
+                                    placeholder={"Starting Calendar"}
+                                    disabled={!workplace}
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        startingCalender: op,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PInput
+                                    type="date"
+                                    name="nextChangeDate"
+                                    label="Next Calendar Change"
+                                    placeholder={"Next Calendar Change"}
+                                  />
+                                </Col>
+                              </>
+                            ) : undefined}
+                          </>
+                        );
+                      }}
+                    </Form.Item>
+                    <Col md={8} sm={24}>
+                      <PInput
+                        type="date"
+                        name="generateDate"
+                        label="Calender Generate Date"
+                        placeholder="Generate Date"
+                        disabledDate={joiningDisabledDate}
+                      />
+                    </Col>
+                    <Col md={8} sm={24}>
+                      <PSelect
+                        mode="multiple"
+                        options={[
+                          {
+                            value: 1,
+                            label: "Friday",
+                          },
+                          { value: 2, label: "Saturday" },
+                          { value: 3, label: "Sunday" },
+                          { value: 4, label: "Monday" },
+                          { value: 5, label: "Tuseday" },
+                          { value: 6, label: "Wednesday" },
+                          { value: 7, label: "Thursday" },
+                        ]}
+                        name="offday"
+                        label="Off Day"
+                        placeholder=" Off Day"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            offday: op,
+                          });
+
+                          // value && getWorkplace();
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Off Day is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={8} sm={24}>
+                      <PSelect
+                        options={holidayDDL?.data || []}
+                        name="holiday"
+                        label="Holiday"
+                        placeholder="Holiday"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            holiday: op,
+                          });
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Holiday is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                  </Row>
+                </>
+
+                {/* emp role extension 🔥🔥🔥 */}
+                <Divider
+                  orientation="left"
+                  style={{ fontSize: "13px", marginBottom: "10px" }}
+                >
+                  Role Extension
+                </Divider>
+                <>
+                  <Row gutter={[10, 2]}>
+                    {/* User Create */}
+                    <Form.Item noStyle shouldUpdate>
+                      {() => {
+                        const { isRoleExtension, orgName, orgType } =
+                          form.getFieldsValue();
+                        return (
+                          <>
+                            <Col md={8} sm={24}>
+                              <PInput
+                                label="Is applicable for role extension?"
+                                type="checkbox"
+                                name="isRoleExtension"
+                                layout="horizontal"
+                              />
+                            </Col>
+                            {isRoleExtension && (
+                              <>
+                                <Divider style={{ margin: "3px 0" }} />
+                                <Col md={6} sm={24}>
+                                  <PSelect
+                                    options={organizationTypeList || []}
+                                    name="orgType"
+                                    label="Organization Type"
+                                    placeholder="Organization Type"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        orgType: op,
+                                        orgName: null,
+                                      });
+                                      setOrganizationDDLFunc(
+                                        orgId,
+                                        buId,
+                                        employeeId,
+                                        op,
+                                        setOrganizationDDL
+                                      );
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={6} sm={24}>
+                                  <PSelect
+                                    options={organizationDDL || []}
+                                    name="orgName"
+                                    label="Organization Name"
+                                    placeholder="Organization Name"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        orgName: op,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PButton
+                                    content="Add"
+                                    type="primary"
+                                    style={{ marginTop: "22px" }}
+                                    disabled={!orgName || !orgType}
+                                    onClick={() => {
+                                      const roleExist = rowDto?.some(
+                                        (item) =>
+                                          item?.intOrganizationTypeId ===
+                                            orgType?.value &&
+                                          item?.intOrganizationReffId ===
+                                            orgName?.value
+                                      );
+
+                                      if (roleExist)
+                                        return toast.warn(
+                                          "Already extis this role"
+                                        );
+                                      onRoleAdd(orgType, orgName);
+                                      form.setFieldsValue({
+                                        orgType: null,
+                                        orgName: null,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                              </>
+                            )}
+                          </>
+                        );
+                      }}
+                    </Form.Item>
+                  </Row>
+                  <div>
+                    {rowDto.length > 0 && (
+                      <>
+                        <div className="col-lg-12 mb-2 mt-3">
+                          <h3
+                            style={{
+                              color: " gray700 !important",
+                              fontSize: "16px",
+                              lineHeight: "20px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Role Extension List
+                          </h3>
+                        </div>
+                        <div className="col-md-12">
+                          <div className="table-card-body">
+                            <div className="table-card-styled tableOne">
+                              <table className="table">
+                                <thead>
+                                  <tr className="py-1">
+                                    <th>SL</th>
+                                    <th>
+                                      <span className="mr-1"> Org Type</span>
+                                    </th>
+                                    <th>
+                                      <span className="mr-1"> Org Name</span>
+                                    </th>
+                                    <th></th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {rowDto?.map((item, index) => (
+                                    <tr className="hasEvent" key={index + 1}>
+                                      <td>
+                                        <p className="tableBody-title pl-1">
+                                          {index + 1}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        <p className="tableBody-title">
+                                          {item?.strOrganizationTypeName}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        <p className="tableBody-title">
+                                          {item?.strOrganizationReffName}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        <div className="d-flex align-items-center justify-content-end">
+                                          <button
+                                            type="button"
+                                            className="iconButton mt-0 mt-md-2 mt-lg-0"
+                                            onClick={() =>
+                                              setRowDto((prev) => [
+                                                ...prev.filter(
+                                                  (prev_item, item_index) =>
+                                                    item_index !== index
+                                                ),
+                                              ])
+                                            }
+                                          >
+                                            <DeleteOutlined />
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
+                      </>
+                    )}
+                  </div>
+                </>
+              </PForm>
             </div>
           </div>
         </div>
       )}
-    </PForm>
+    </>
   );
 };
 

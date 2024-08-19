@@ -1,4 +1,6 @@
+import axios from "axios";
 import moment from "moment";
+import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
 export const joiningDisabledDate = (current) => {
@@ -7,12 +9,7 @@ export const joiningDisabledDate = (current) => {
 };
 
 export const setInitialData = (res, setInitData) => {
-  setInitData({
-    tnpId: res?.intTransferNpromotionId,
-    employee: {
-      label: res?.strEmployeeName,
-      value: res?.intEmployeeId,
-    },
+  return setInitData({
     type: {
       label: res?.strTransferNpromotionType,
       value: res?.strTransferNpromotionType,
@@ -77,9 +74,9 @@ export const setInitialData = (res, setInitData) => {
 
 export const createPayload = (values, data, employeeId) => {
   const tnpInfo = {
-    intTransferNpromotionId: values?.tnpId || 0,
-    intEmployeeId: values?.employee?.value,
-    strEmployeeName: values?.employee?.label,
+    intTransferNpromotionId: data?.intTransferNpromotionId,
+    intEmployeeId: data?.intEmployeeId,
+    strEmployeeName: data?.strEmployeeName,
     strTransferNpromotionType: values?.type?.value,
     intTransferOrpromotedFrom: data?.intTransferOrpromotedFrom,
     intAccountId: data?.intAccountId,
@@ -100,9 +97,9 @@ export const createPayload = (values, data, employeeId) => {
     lineManagerName: values?.lineManager?.label,
     intDottedSupervisorId: values?.dottedSuperVisor?.value,
     dottedSupervisorName: values?.dottedSuperVisor?.label,
-    dteEffectiveDate: values?.effectiveDate,
-    dteReleaseDate: values?.dteReleaseDate,
-    intAttachementId: 0,
+    dteEffectiveDate: moment(values?.effectiveDate).format("YYYY-MM-DD"),
+    dteReleaseDate: data?.dteReleaseDate,
+    intAttachementId: data?.intAttachementId,
     strRemarks: values?.remarks || "",
     strStatus: data?.strStatus || "",
     isJoined: data?.isJoined,
@@ -185,6 +182,25 @@ export const createPayload = (values, data, employeeId) => {
   };
   const payload = {
     ...tnpInfo,
+    calendarAssignViewModel,
+    holidayAssignViewModel,
+    offdayAssignViewModel,
   };
-  console.log(payload);
+  return payload;
+};
+
+export const saveJoining = async (payload, setLoading, cb) => {
+  try {
+    setLoading(true);
+    const res = await axios.post(
+      `/Employee/JoiningAcknowledgeEmpTransferNpromotion`,
+      payload
+    );
+    setLoading(false);
+    cb && cb();
+    toast.success(res?.data?.message, { toastId: 1 });
+  } catch (error) {
+    setLoading(false);
+    toast.warn(error?.response?.data?.message, { toastId: 1 });
+  }
 };

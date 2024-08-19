@@ -414,9 +414,6 @@ export const calculateProbationCloseDateByDateOrMonth = ({
   days = 15,
   month = 6,
 }) => {
-  //
-  console.log({ days, month, inputDate });
-
   let date = null;
   if (days) {
     console.log("this is days");
