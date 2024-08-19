@@ -12,9 +12,10 @@ import moment from "moment";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { debounce } from "lodash";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
 
 const ViewJoining = () => {
-  const { orgId, employeeId } = useSelector(
+  const { orgId, employeeId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -28,6 +29,7 @@ const ViewJoining = () => {
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
   const [initData, setInitData] = useState({});
+  const [empSignature, setEmpSignature] = useState([]);
   const getSingleData = () => {
     getTransferNpromotion(
       `/Employee/GetEmpTransferNpromotionById?id=${id}`,
@@ -51,8 +53,8 @@ const ViewJoining = () => {
             value: res?.intWorkplaceId,
           },
           employmentType: {
-            label: res?.strEmploymentType,
-            value: res?.intEmploymentTypeId,
+            label: res?.employmentTypeName,
+            value: res?.employmentTypeId,
           },
           hrPosition: {
             label: res?.hrPositionName,
@@ -633,6 +635,62 @@ const ViewJoining = () => {
                       ]}
                     />
                   </Col>
+                  <Col md={6} sm={24} style={{ marginTop: "21px" }}>
+                    <FileUploadComponents
+                      propsObj={{
+                        title: "Upload Document",
+                        attachmentList: empSignature,
+                        setAttachmentList: setEmpSignature,
+                        accountId: orgId,
+                        tableReferrence: "LeaveAndMovement",
+                        documentTypeId: 15,
+                        userId: employeeId,
+                        buId,
+                        maxCount: 1,
+                        accept:
+                          "image/png, image/jpeg, image/jpg, application/pdf",
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={[10, 2]}>
+                  {/* User Create */}
+                  <Form.Item noStyle shouldUpdate>
+                    {() => {
+                      const { isRoleExtension } = form.getFieldsValue();
+                      return (
+                        <>
+                          <Col md={8} sm={24}>
+                            <PInput
+                              label="Is applicable for role extension?"
+                              type="checkbox"
+                              name="isRoleExtension"
+                              layout="horizontal"
+                            />
+                          </Col>
+                          {isRoleExtension && (
+                            <>
+                              <Divider style={{ margin: "3px 0" }} />
+                              <Col md={8} sm={24}>
+                                <PSelect
+                                  options={[]}
+                                  name="userType"
+                                  // value="userType"
+                                  label="User Type"
+                                  placeholder="User Type"
+                                  onChange={(value, op) => {
+                                    form.setFieldsValue({
+                                      userType: op,
+                                    });
+                                  }}
+                                />
+                              </Col>
+                            </>
+                          )}
+                        </>
+                      );
+                    }}
+                  </Form.Item>
                 </Row>
               </PForm>
             </div>
