@@ -94,7 +94,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
             buttonsList={[
               {
                 type: "edit",
-                isActive: isDevServer,
+                // isActive: isDevServer,
                 onClick: () => {
                   history.push({
                     pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
