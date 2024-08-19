@@ -326,7 +326,13 @@ const ViewJoining = () => {
   console.log(transferNpromotion, "transferNpromotion");
 
   return (
-    <PForm form={form} initialValues={initData} onFinish={createPayload}>
+    <PForm
+      form={form}
+      initialValues={initData}
+      onFinish={(values) =>
+        createPayload(values, transferNpromotion, employeeId)
+      }
+    >
       {loading || loading1 ? (
         <Loading />
       ) : (
