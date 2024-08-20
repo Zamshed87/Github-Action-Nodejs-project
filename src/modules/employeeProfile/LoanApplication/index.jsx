@@ -21,6 +21,7 @@ import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 import "./application.css";
 import CreateLoanApplicationModal from "./components/CreateLoanApplicationModal";
 import ViewLoanApplicationModal from "./components/ViewLoanApplicationModal";
+
 import {
   loanRequestLandingTableColumns,
   onFilterLoanApplication,
