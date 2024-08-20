@@ -283,7 +283,7 @@ export default function AddEditFormComponent({
                               touched={touched}
                             />
                           </div>
-                          {values?.inputFieldType?.value == 1 && (
+                          {/* {values?.inputFieldType?.value == 1 && (
                             <>
                               <div className="col-6">
                                 <label>In Time </label>
@@ -334,7 +334,7 @@ export default function AddEditFormComponent({
                                 />
                               </div>
                             </>
-                          )}
+                          )} */}
                           {values?.inputFieldType?.value == 2 && (
                             <>
                               <ChangedInOutTimeEmpListModal
