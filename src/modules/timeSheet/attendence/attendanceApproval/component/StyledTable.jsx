@@ -266,7 +266,7 @@ const StyledTable = ({
       title: "Request Attendance",
       dataIndex: "strRequestStatus",
       render: (_, record) => (
-        <div className="d-flex">
+        <div className="d-flex align-items-center">
           <LightTooltip
             title={
               <div className="movement-tooltip p-1">
