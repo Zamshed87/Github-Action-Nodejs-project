@@ -105,7 +105,7 @@ export const createPayload = (values, data, employeeId, rowDto) => {
     intAttachementId: data?.intAttachementId,
     strRemarks: values?.remarks || "",
     strStatus: data?.strStatus || "",
-    isJoined: data?.isJoined,
+    isJoined: true,
     isReject: data?.isReject,
     dteRejectDateTime: data?.dteRejectDateTime,
     intRejectedBy: data?.intRejectedBy,
