@@ -9,7 +9,7 @@ import ViewJoiningTable from "./viewJoiningTable";
 import { PButton, PForm, PInput, PSelect } from "Components";
 import { Col, Divider, Form, Row } from "antd";
 import { useApiRequest } from "Hooks";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { organizationTypeList } from "../../transferNPromotion/components/createTransferPromotion";
@@ -22,6 +22,8 @@ import {
   saveJoining,
   setInitialData,
 } from "./helper";
+import { AttachmentOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 const ViewJoining = () => {
   const { orgId, employeeId, buId } = useSelector(
@@ -35,6 +37,7 @@ const ViewJoining = () => {
   const { id } = useParams();
   const location = useLocation();
   const history = useHistory();
+  const dispatch = useDispatch();
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -388,7 +391,8 @@ const ViewJoining = () => {
                     values,
                     transferNpromotion,
                     employeeId,
-                    rowDto
+                    rowDto,
+                    empSignature
                   );
                   saveJoining(payload, setLoading, () =>
                     history.push("/profile/transferandpromotion/joining")
@@ -629,21 +633,50 @@ const ViewJoining = () => {
                     />
                   </Col>
                   <Col md={6} sm={24} style={{ marginTop: "21px" }}>
-                    <FileUploadComponents
-                      propsObj={{
-                        title: "Upload Document",
-                        attachmentList: empSignature,
-                        setAttachmentList: setEmpSignature,
-                        accountId: orgId,
-                        tableReferrence: "LeaveAndMovement",
-                        documentTypeId: 15,
-                        userId: employeeId,
-                        buId,
-                        maxCount: 1,
-                        accept:
-                          "image/png, image/jpeg, image/jpg, application/pdf",
-                      }}
-                    />
+                    {!transferNpromotion?.intAttachementId ? (
+                      <FileUploadComponents
+                        propsObj={{
+                          title: "Upload Document",
+                          attachmentList: empSignature,
+                          setAttachmentList: setEmpSignature,
+                          accountId: orgId,
+                          tableReferrence: "LeaveAndMovement",
+                          documentTypeId: 15,
+                          userId: employeeId,
+                          buId,
+                          maxCount: 1,
+                          accept:
+                            "image/png, image/jpeg, image/jpg, application/pdf",
+                        }}
+                      />
+                    ) : (
+                      <p
+                        onClick={() => {
+                          dispatch(
+                            getDownlloadFileView_Action(
+                              transferNpromotion?.intAttachementId
+                            )
+                          );
+                        }}
+                      >
+                        <AttachmentOutlined
+                          sx={{
+                            marginRight: "5px",
+                            color: "#0072E5",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "500",
+                            color: "#0072E5",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {"Attachment"}
+                        </span>
+                      </p>
+                    )}
                   </Col>
                 </Row>
                 <Divider

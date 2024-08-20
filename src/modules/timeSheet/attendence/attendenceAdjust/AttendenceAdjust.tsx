@@ -492,7 +492,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         ) : record?.actualAttendanceStatus === "Movement" ? (
           <PBadge text="Movement" type="light" />
         ) : (
-          ""
+          <PBadge text={record?.actualAttendanceStatus} type="light" />
         ),
       align: "center",
       width: 150,
