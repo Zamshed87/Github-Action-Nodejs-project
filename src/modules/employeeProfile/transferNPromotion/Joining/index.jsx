@@ -364,18 +364,6 @@ export default function Joining() {
                                     cursor: "pointer",
                                   }}
                                   key={index}
-                                  onClick={() =>
-                                    history.push(
-                                      `/profile/transferandpromotion/joining/view/${item?.intTransferNpromotionId}`,
-                                      {
-                                        employeeId: item?.intEmployeeId,
-                                        businessUnitId: item?.intBusinessUnitId,
-                                        workplaceGroupId:
-                                          item?.intWorkplaceGroupId,
-                                        workplaceId: item?.intWorkplaceId,
-                                      }
-                                    )
-                                  }
                                 >
                                   <JoiningTable
                                     item={item}

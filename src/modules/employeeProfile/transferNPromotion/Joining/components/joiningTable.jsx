@@ -1,29 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../../common/AvatarComponent";
 import Chips from "../../../../../common/Chips";
-import IConfirmModal from "../../../../../common/IConfirmModal";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
 import { todayDate } from "../../../../../utility/todayDate";
-import { joinTransfer } from "../helper";
+import { useHistory } from "react-router-dom";
 
-const JoiningTable = ({
-  item,
-  index,
-  setSingleData,
-  singleData,
-  permission,
-  getData,
-  setLoading,
-  page,
-  paginationSize,
-  values,
-}) => {
-  const { orgId, employeeId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+const JoiningTable = ({ item, index, permission, page, paginationSize }) => {
+  const history = useHistory();
 
   return (
     <>
@@ -119,6 +103,7 @@ const JoiningTable = ({
         <div>{dateFormatter(item?.dteReleaseDate)}</div>
       </td>
       <td>
+        {!item?.dteReleaseDate && "Yet to release"}
         {item?.strStatus === "Joined" && (
           <Chips label="Joined" classess="success" />
         )}
@@ -136,26 +121,15 @@ const JoiningTable = ({
               e.stopPropagation();
               if (!permission?.isCreate)
                 return toast.warn("You don't have permission");
-              let confirmObject = {
-                closeOnClickOutside: false,
-                message: ` Do you want to join? `,
-                yesAlertFunc: () => {
-                  joinTransfer(item, orgId, employeeId, setLoading, () => {
-                    setSingleData({});
-                    getData(
-                      {
-                        current: page,
-                        pageSize: paginationSize,
-                      },
-                      values?.filterFromDate,
-                      values?.filterToDate,
-                      values?.search
-                    );
-                  });
-                },
-                noAlertFunc: () => {},
-              };
-              IConfirmModal(confirmObject);
+              history.push(
+                `/profile/transferandpromotion/joining/view/${item?.intTransferNpromotionId}`,
+                {
+                  employeeId: item?.intEmployeeId,
+                  businessUnitId: item?.intBusinessUnitId,
+                  workplaceGroupId: item?.intWorkplaceGroupId,
+                  workplaceId: item?.intWorkplaceId,
+                }
+              );
             }}
           >
             Join

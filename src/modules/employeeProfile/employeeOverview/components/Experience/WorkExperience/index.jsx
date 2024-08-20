@@ -569,45 +569,43 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                             </div>
                           )}
                         </div>
-                          <div
-                            className="d-flex align-items-center justify-content-end"
-                            style={{ marginTop: "24px" }}
+                        <div
+                          className="d-flex align-items-center justify-content-end"
+                          style={{ marginTop: "24px" }}
+                        >
+                          <button
+                            type="button"
+                            className="btn btn-cancel"
+                            style={{ marginRight: "16px" }}
+                            onClick={() => {
+                              setStatus("empty");
+                              setSingleData("");
+                              setIsCreateForm(false);
+                              setFieldValue("companyName", "");
+                              setFieldValue("jobTitle", "");
+                              setFieldValue("location", "");
+                              setFieldValue("jobDescription", "");
+                              setImageFile("");
+                            }}
                           >
-                            <button
-                              type="button"
-                              variant="text"
-                              className="btn btn-cancel"
-                              style={{ marginRight: "16px" }}
-                              onClick={() => {
-                                setStatus("empty");
-                                setSingleData("");
-                                setIsCreateForm(false);
-                                setFieldValue("companyName", "");
-                                setFieldValue("jobTitle", "");
-                                setFieldValue("location", "");
-                                setFieldValue("jobDescription", "");
-                                setImageFile("");
-                              }}
-                            >
-                              Cancel
-                            </button>
+                            Cancel
+                          </button>
 
-                            <button
-                              variant="text"
-                              type="submit"
-                              className="btn btn-green btn-green-disable"
-                              disabled={
-                                !values.companyName ||
-                                !values.jobTitle ||
-                                !values.location ||
-                                !values.jobDescription ||
-                                !values?.fromDate ||
-                                !values?.toDate
-                              }
-                            >
-                              Save
-                            </button>
-                          </div>
+                          <button
+                            type="submit"
+                            className="btn btn-green btn-green-disable"
+                            disabled={
+                              !values.companyName ||
+                              !values.jobTitle ||
+                              !values.location ||
+                              !values.jobDescription ||
+                              !values?.fromDate ||
+                              !values?.toDate
+                            }
+                          >
+                            Save
+                          </button>
+                        </div>
                       </div>
                     </>
                   )}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import BackButton from "../../../../../common/BackButton";
 import Loading from "../../../../../common/loading/Loading";
 import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
@@ -34,6 +34,7 @@ const ViewJoining = () => {
 
   const { id } = useParams();
   const location = useLocation();
+  const history = useHistory();
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -342,7 +343,7 @@ const ViewJoining = () => {
               <ul>
                 <li>
                   <PButton
-                    content="Save"
+                    content="Join"
                     type="primary"
                     action="submit"
                     disabled={loading}
@@ -386,9 +387,12 @@ const ViewJoining = () => {
                   const payload = createPayload(
                     values,
                     transferNpromotion,
-                    employeeId
+                    employeeId,
+                    rowDto
                   );
-                  saveJoining(payload, setLoading);
+                  saveJoining(payload, setLoading, () =>
+                    history.push("/profile/transferandpromotion/joining")
+                  );
                 }}
               >
                 <Row gutter={[10, 2]}>

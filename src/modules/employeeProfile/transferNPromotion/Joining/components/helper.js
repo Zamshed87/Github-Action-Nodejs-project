@@ -59,20 +59,23 @@ export const setInitialData = (res, setInitData) => {
       label: res?.lineManagerName,
       value: res?.intLineManagerId,
     },
-    role: res?.empTransferNpromotionUserRoleVMList?.map((item) => {
-      return {
-        ...item,
-        label: item?.strUserRoleName,
-        value: item?.intUserRoleId,
-      };
-    }),
+    role:
+      res?.empTransferNpromotionUserRoleVMList?.length > 0
+        ? res?.empTransferNpromotionUserRoleVMList?.map((item) => {
+            return {
+              ...item,
+              label: item?.strUserRoleName,
+              value: item?.intUserRoleId,
+            };
+          })
+        : [],
     remarks: res?.strRemarks,
     isRoleExtension:
       res?.empTransferNpromotionRoleExtensionVMList?.length > 0 ? true : false,
   });
 };
 
-export const createPayload = (values, data, employeeId) => {
+export const createPayload = (values, data, employeeId, rowDto) => {
   const tnpInfo = {
     intTransferNpromotionId: data?.intTransferNpromotionId,
     intEmployeeId: data?.intEmployeeId,
@@ -133,16 +136,18 @@ export const createPayload = (values, data, employeeId) => {
     sectionNameFrom: data?.sectionNameFrom,
     employmentTypeId: values?.employmentType?.value,
     hrPositionId: values?.hrPosition?.value,
+    empTransferNpromotionUserRoleVMList: values?.role,
+    empTransferNpromotionRoleExtensionVMList: rowDto,
   };
 
-  const calendarAssignViewModel = {
-    employeeList: "",
+  const calanderAssign = {
+    employeeList: `${data?.intEmployeeId}`,
     generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
     intCreatedBy: employeeId,
     runningCalendarId:
       values?.calenderType?.value === 2
         ? values?.startingCalender?.value
-        : values?.calender?.value,
+        : values?.calender?.value || 0,
     nextChangeDate: values?.nextChangeDate
       ? moment(values?.nextChangeDate).format("YYYY-MM-DD")
       : null,
@@ -152,8 +157,8 @@ export const createPayload = (values, data, employeeId) => {
     generateEndDate: null,
     isAutoGenerate: true,
   };
-  const holidayAssignViewModel = {
-    employeeList: "",
+  const holidayAssign = {
+    employeeList: `${data?.intEmployeeId}`,
     holidayGroupId: values?.holiday?.value,
     holidayGroupName: values?.holiday?.label,
     effectiveDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
@@ -164,8 +169,8 @@ export const createPayload = (values, data, employeeId) => {
     actionBy: employeeId,
   };
 
-  const offdayAssignViewModel = {
-    employeeList: "",
+  const offdayAssign = {
+    employeeList: `${data?.intEmployeeId}`,
     effectiveDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
     isSaturday: values?.offday?.find((i) => i.value === 2) ? true : false,
     isSunday: values?.offday?.find((i) => i.value === 3) ? true : false,
@@ -180,11 +185,13 @@ export const createPayload = (values, data, employeeId) => {
     isActive: true,
     actionBy: employeeId,
   };
+  const payrollAsign = {};
   const payload = {
     ...tnpInfo,
-    calendarAssignViewModel,
-    holidayAssignViewModel,
-    offdayAssignViewModel,
+    calanderAssign,
+    holidayAssign,
+    offdayAssign,
+    payrollAsign,
   };
   return payload;
 };
@@ -192,7 +199,7 @@ export const createPayload = (values, data, employeeId) => {
 export const saveJoining = async (payload, setLoading, cb) => {
   try {
     setLoading(true);
-    const res = await axios.post(
+    const res = await axios.put(
       `/Employee/JoiningAcknowledgeEmpTransferNpromotion`,
       payload
     );
