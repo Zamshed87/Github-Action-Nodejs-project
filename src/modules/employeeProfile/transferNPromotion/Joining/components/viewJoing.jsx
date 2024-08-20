@@ -391,7 +391,8 @@ const ViewJoining = () => {
                     values,
                     transferNpromotion,
                     employeeId,
-                    rowDto
+                    rowDto,
+                    empSignature
                   );
                   saveJoining(payload, setLoading, () =>
                     history.push("/profile/transferandpromotion/joining")

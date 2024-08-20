@@ -75,7 +75,13 @@ export const setInitialData = (res, setInitData) => {
   });
 };
 
-export const createPayload = (values, data, employeeId, rowDto) => {
+export const createPayload = (
+  values,
+  data,
+  employeeId,
+  rowDto,
+  empSignature
+) => {
   const tnpInfo = {
     intTransferNpromotionId: data?.intTransferNpromotionId,
     intEmployeeId: data?.intEmployeeId,
@@ -102,7 +108,7 @@ export const createPayload = (values, data, employeeId, rowDto) => {
     dottedSupervisorName: values?.dottedSuperVisor?.label,
     dteEffectiveDate: moment(values?.effectiveDate).format("YYYY-MM-DD"),
     dteReleaseDate: data?.dteReleaseDate,
-    intAttachementId: data?.intAttachementId,
+    intAttachementId: data?.intAttachementId || empSignature,
     strRemarks: values?.remarks || "",
     strStatus: data?.strStatus || "",
     isJoined: true,
