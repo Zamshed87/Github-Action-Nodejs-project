@@ -36,12 +36,10 @@ export default function SalaryDetailsReport() {
     shallowEqual
   );
 
-  const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
-
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    document.title = "Salary Details Report";
+    document.title = "Salary Requisition Report";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -55,10 +53,6 @@ export default function SalaryDetailsReport() {
 
   // state define
   const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
-  // eslint-disable-next-line no-unused-vars
-  const [allData, setAllData] = useState([]);
-  const [tableColumn, setTableColumn] = useState([]);
   // DDl section
   const [payrollPolicyDDL, setPayrollPolicyDDL] = useState([]);
 
@@ -150,10 +144,7 @@ export default function SalaryDetailsReport() {
                               .join(""),
                             monthYear: e.target.value,
                           }));
-                          setRowDto([]);
                           setRequisitionData("");
-                          setAllData([]);
-                          setTableColumn([]);
                         }}
                         errors={errors}
                         touched={touched}
@@ -172,11 +163,7 @@ export default function SalaryDetailsReport() {
                             ...prev,
                             payrollPolicy: valueOption,
                           }));
-                          setRowDto([]);
                           setRequisitionData("");
-
-                          setAllData([]);
-                          setTableColumn([]);
                         }}
                         placeholder=""
                         styles={customStyles}
@@ -208,10 +195,7 @@ export default function SalaryDetailsReport() {
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setRowDto([]);
                             setRequisitionData("");
-                            setAllData([]);
-                            setTableColumn([]);
                             setFieldValue("search", "");
                             resetForm(initData);
                           }}
