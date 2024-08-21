@@ -31,6 +31,7 @@ import {
   custom26to25LandingDataHandler,
 } from "./utils";
 import { getPDFAction } from "utility/downloadFile";
+import AttendanceStatus from "common/AttendanceStatus";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 
 const EmployeeJobCard = () => {
@@ -242,56 +243,7 @@ const EmployeeJobCard = () => {
       {
         title: "Attendance Status",
         render: (_: any, record: any) => (
-          <>
-            {record?.AttStatus === "Present" && (
-              <Tag color="green">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Absent" && (
-              <Tag color="red">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Late" && (
-              <Tag color="gold">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Late Present" && (
-              <Tag color="gold">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Leave" && (
-              <Tag color="purple">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Leave without pay" && (
-              <Tag color="purple">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Holiday" && (
-              <Tag style={{ color: "black" }} color="secondary">
-                {record?.AttStatus}
-              </Tag>
-            )}
-            {record?.AttStatus === "Offday" && (
-              <Tag color="blue">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Movement" && (
-              <Tag color="lime">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Manual Present" && (
-              <Tag color="green">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Manual Absent" && (
-              <Tag color="red">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Manual Leave" && (
-              <Tag color="purple">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Manual Late" && (
-              <Tag color="gold">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Early Out" && (
-              <Tag color="geekblue">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Halfday Leave" && (
-              <Tag color="purple">{record?.AttStatus}</Tag>
-            )}
-            {record?.AttStatus === "Not Found" && <p>-</p>}
-          </>
+          <AttendanceStatus status={record?.AttStatus} />
         ),
         width: 150,
       },
