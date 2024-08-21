@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -11,22 +10,17 @@ import {
   getYearlyPolicyById,
   getYearlyPolicyPopUpDDL,
   isPolicyExist,
-  saveHandler,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
-import BackButton from "../../../../common/BackButton";
-import { success500 } from "../../../../utility/customColor";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { IconButton, Tooltip, Alert } from "@mui/material";
 import { toast } from "react-toastify";
-import { Col, Form, List, Row, Typography, Divider } from "antd";
+import { Col, Form, List, Row, Divider } from "antd";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "../../../../Hooks";
-import Loading from "common/loading/Loading";
 import { useHistory, useParams } from "react-router-dom";
 import {
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -35,6 +29,7 @@ import {
   PSelect,
 } from "Components";
 import { generatePayload } from "./Utils";
+import Loading from "common/loading/Loading";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
@@ -222,6 +217,7 @@ const CreateEditLeavePolicy = () => {
 
   return (
     <>
+      {loading && <Loading />}
       <PForm
         form={form}
         // onFinish={(values) => {
@@ -446,8 +442,7 @@ const CreateEditLeavePolicy = () => {
                   </Divider>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { intWorkplaceList, wg, bu } =
-                        form.getFieldsValue();
+                      const { bu } = form.getFieldsValue();
 
                       // const empType = employeeType?.label;
 
@@ -501,7 +496,6 @@ const CreateEditLeavePolicy = () => {
                                 label="Workplace Group"
                                 placeholder="Workplace Group"
                                 onChange={(value, op: any) => {
-                                  const wddl = [...workplaceDDL];
                                   form.setFieldsValue({
                                     wg: op,
                                   });
@@ -1258,12 +1252,7 @@ const CreateEditLeavePolicy = () => {
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const {
-                          intLeaveType,
-                          isCompensatoryLveExpire,
-                          isCompensatoryLve,
-                        } = form.getFieldsValue();
-                        console.log({ isCompensatoryLve });
+                        const { intLeaveType } = form.getFieldsValue();
                         // const empType = employeeType?.label;
 
                         return intLeaveType?.label ===
@@ -1368,13 +1357,7 @@ const CreateEditLeavePolicy = () => {
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const {
-                          intLeaveType,
-                          isHalfDayLeave,
-                          intLveInDay,
-                          intEndServiceLengthInYear,
-                          intStartServiceLengthInYear,
-                        } = form.getFieldsValue();
+                        const { isHalfDayLeave } = form.getFieldsValue();
 
                         // const empType = employeeType?.label;
 
@@ -1903,7 +1886,7 @@ const CreateEditLeavePolicy = () => {
               <Col span={12}>
                 <Form.Item shouldUpdate noStyle>
                   {() => {
-                    const { intWorkplaceList } = form.getFieldsValue();
+                    // const { intWorkplaceList } = form.getFieldsValue();
 
                     // const empType = employeeType?.label;
 
@@ -1945,12 +1928,13 @@ const CreateEditLeavePolicy = () => {
                                       (itm: any, idx: number) => idx !== index
                                     );
                                     setExistingPolicies(filterArr);
-                                    const temp = intWorkplaceList?.filter(
-                                      (item: any) =>
-                                        item?.value !==
-                                        existingPolicies[index]?.intWorkplace
-                                    );
                                     // requirement from habiba apu🔥🔥🔥
+                                    // const temp = intWorkplaceList?.filter(
+                                    //   (item: any) =>
+                                    //     item?.value !==
+                                    //     existingPolicies[index]?.intWorkplace
+                                    // );
+
                                     // form.setFieldsValue({
                                     //   intWorkplaceList: temp,
                                     // });

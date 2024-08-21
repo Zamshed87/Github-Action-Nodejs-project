@@ -402,51 +402,6 @@ const ViewJoining = () => {
                 <Row gutter={[10, 2]}>
                   <Col md={6} sm={12} xs={24}>
                     <PSelect
-                      options={[]}
-                      name="type"
-                      label="Type"
-                      placeholder="Type"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PInput
-                      type="date"
-                      name="effectiveDate"
-                      label="Effective Date"
-                      placeholder="Effective Date"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      options={[]}
-                      name="businessUnit"
-                      label="Business Unit"
-                      placeholder="Business Unit"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      options={[]}
-                      name="workplaceGroup"
-                      label="Workplace Group"
-                      placeholder="Workplace Group"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      options={[]}
-                      name="workplace"
-                      label="Workplace"
-                      placeholder="Workplace"
-                      disabled
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
                       options={employmentTypeDDL?.data || []}
                       name="employmentType"
                       label="Employment Type"
