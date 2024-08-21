@@ -38,10 +38,17 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({ status }) => {
   }
 
   // Handling unknown status
-  return status === "Not Found" ? (
+  return status === "Not Found" || !status ? (
     <p>-</p>
   ) : (
-    <Tag color="default" style={{ backgroundColor: "#d9d9d9", color: "black" }}>
+    <Tag
+      color="default"
+      style={{
+        backgroundColor: "#e1f5fe",
+        color: "#0091ea",
+        border: "1px solid #0091ea",
+      }}
+    >
       {status}
     </Tag>
   );
