@@ -470,7 +470,7 @@ function Confirmation() {
                               orgId,
                               setValues,
                               pages,
-                              wgId
+                              setLoading
                             )}
                             pages={pages}
                             rowDto={rowDto}
