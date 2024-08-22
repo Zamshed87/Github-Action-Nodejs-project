@@ -39,19 +39,6 @@ const CalenderCommon = ({
     setDates(demoDate.reverse());
   }, [date]);
 
-  // if (calendarData.length === 0) {
-  //   const demoData = [];
-  //   dates?.forEach((item) => {
-  //     demoData.push({
-  //       date: "",
-  //       dayId: item?.day,
-  //       dayName: item?.dayName,
-  //       isOffday: false,
-  //     });
-  //   });
-  //   setCalendarData(demoData);
-  // }
-
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
       <div className="mx-0 " style={{ height: "80%" }}>
@@ -143,19 +130,44 @@ const CalenderCommon = ({
                       cursor: isClickable ? "pointer" : "",
                       backgroundColor: calendarData[i]?.isOffday
                         ? calendarData[i]?.offdayReason === "Reassign"
-                          ? "rgba(255,223,186,1)" // Color for Reassign
+                          ? "rgba(99 196 126)" // Color for Reassign
                           : calendarData[i]?.offdayReason === "Swap"
                           ? "rgba(186,255,201,1)" // Color for Swap
                           : calendarData[i]?.offdayReason === "Weekly"
                           ? "gray" // Color for Weekly
                           : "rgba(222,228,239,1)" // Default color
-                        : calendarData[i]?.isSwapday
-                        ? "green"
                         : "",
-                      color:
-                        calendarData[i]?.isOffday || calendarData[i]?.isSwapday
-                          ? "white"
-                          : "",
+                      color: calendarData[i]?.isOffday ? "white" : "",
+                      transition: "background-color 0.3s ease", // Smooth transition for hover
+                    }}
+                    title={
+                      calendarData[i]?.isOffday
+                        ? calendarData[i]?.offdayReason
+                        : ""
+                    }
+                    onMouseEnter={(e) => {
+                      if (calendarData[i]?.offdayReason === "Reassign") {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(99 196 135)"; // Hover color for Reassign
+                      } else if (calendarData[i]?.offdayReason === "Swap") {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(150,255,180,1)"; // Hover color for Swap
+                      } else if (calendarData[i]?.offdayReason === "Weekly") {
+                        e.currentTarget.style.backgroundColor = "darkgray"; // Hover color for Weekly
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (calendarData[i]?.isOffday) {
+                        if (calendarData[i]?.offdayReason === "Reassign") {
+                          e.currentTarget.style.backgroundColor =
+                            "rgba(99 196 135)"; // Reset color for Reassign
+                        } else if (calendarData[i]?.offdayReason === "Swap") {
+                          e.currentTarget.style.backgroundColor =
+                            "rgba(186,255,201,1)"; // Reset color for Swap
+                        } else if (calendarData[i]?.offdayReason === "Weekly") {
+                          e.currentTarget.style.backgroundColor = "gray"; // Reset color for Weekly
+                        }
+                      }
                     }}
                   >
                     {item?.day}

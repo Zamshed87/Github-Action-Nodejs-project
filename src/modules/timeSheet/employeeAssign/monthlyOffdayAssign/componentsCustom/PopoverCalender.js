@@ -33,7 +33,7 @@ const PopoverCalender = ({ propsObj }) => {
 
   const currMonthName = () => moment(monthYear).format("MMMM");
   const currYear = () => moment(monthYear).format("YYYY");
-  
+
   const prevMonth = () => {
     setMonthYear((prev) =>
       moment(prev).subtract(1, "months").format("YYYY-MM")
@@ -65,13 +65,75 @@ const PopoverCalender = ({ propsObj }) => {
       </div>
       <Divider sx={{ my: "8px !important" }} />
       <div className="px-3 pb-3">
-      <div className="d-flex align-items-center justify-content-center mb-2">
-              <KeyboardArrowLeftIcon className="pointer" onClick={prevMonth} />
-              <p style={{ fontSize: "20px" }}>
-                {currMonthName() + `, ` + currYear()}
-              </p>
-              <KeyboardArrowRightIcon className="pointer" onClick={nextMonth} />
+        <div className="d-flex align-items-center justify-content-center mb-2">
+          <KeyboardArrowLeftIcon className="pointer" onClick={prevMonth} />
+          <p style={{ fontSize: "20px", margin: "0 15px" }}>
+            {currMonthName() + `, ` + currYear()}
+          </p>
+          <KeyboardArrowRightIcon className="pointer" onClick={nextMonth} />
+          <div className="d-flex ml-auto">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+                marginRight: "15px",
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "15px",
+                  height: "15px",
+                  backgroundColor: "rgba(99,196,126)",
+                  marginRight: "5px",
+                  borderRadius: "3px",
+                }}
+              ></span>
+              <span>Reassign</span>
             </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+                marginRight: "15px",
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "15px",
+                  height: "15px",
+                  backgroundColor: "rgba(186,255,201,1)",
+                  marginRight: "5px",
+                  borderRadius: "3px",
+                }}
+              ></span>
+              <span>Swap</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "15px",
+                  height: "15px",
+                  backgroundColor: "gray",
+                  marginRight: "5px",
+                  borderRadius: "3px",
+                }}
+              ></span>
+              <span>Weekly</span>
+            </div>
+          </div>
+        </div>
+
         <CalenderCommon
           orgId={orgId}
           monthYear={monthYear}
