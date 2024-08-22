@@ -15,7 +15,7 @@ function OAuth({ index, tabIndex, empId }) {
         <div className="common-overview-part">
           <div className="common-overview-content">
             <Gmails empId={empId} />
-            <FaceBook empId={empId} />
+            {/* <FaceBook empId={empId} /> */}
           </div>
         </div>
       </>
