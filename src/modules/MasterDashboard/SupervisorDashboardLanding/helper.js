@@ -1,12 +1,11 @@
 import { InfoOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { PButton } from "Components";
-import { Tag } from "antd";
 import axios from "axios";
+import AttendanceStatus from "common/AttendanceStatus";
 import { getEmployeeLeaveBalanceAndHistory } from "common/HOCLeave/helperAPI";
 import { toast } from "react-toastify";
 import demoUserIcon from "../../../assets/images/userIcon.svg";
-import Chips from "../../../common/Chips";
 
 export const attendanceDetailsReport = async (
   empId,
@@ -67,50 +66,7 @@ export const empAttenColumns = () => {
     },
     {
       title: "Attendance Status",
-      render: (_, record) => (
-        <>
-          {record?.AttStatus === "Present" && (
-            <Chips label={record?.AttStatus} classess="success" />
-          )}
-          {record?.AttStatus === "Absent" && (
-            <Chips label={record?.AttStatus} classess="danger" />
-          )}
-          {record?.AttStatus === "Late" && (
-            <Chips label={record?.AttStatus} classess="warning" />
-          )}
-          {record?.AttStatus === "Late Present" && (
-            <Chips label={record?.AttStatus} classess="warning" />
-          )}
-          {record?.AttStatus === "Leave" && (
-            <Chips label={record?.AttStatus} classess="indigo" />
-          )}
-          {record?.AttStatus === "Holiday" && (
-            <Chips label={record?.AttStatus} classess="secondary" />
-          )}
-          {record?.AttStatus === "Offday" && (
-            <Chips label={record?.AttStatus} classess="primary" />
-          )}
-          {record?.AttStatus === "Movement" && (
-            <Chips label={record?.AttStatus} classess="movement" />
-          )}
-          {record?.AttStatus === "Manual Present" && (
-            <Chips label={record?.AttStatus} classess="success" />
-          )}
-          {record?.AttStatus === "Manual Absent" && (
-            <Chips label={record?.AttStatus} classess="danger" />
-          )}
-          {record?.AttStatus === "Manual Leave" && (
-            <Chips label={record?.AttStatus} classess="indigo" />
-          )}
-          {record?.AttStatus === "Manual Late" && (
-            <Chips label={record?.AttStatus} classess="warning" />
-          )}
-          {record?.AttStatus === "Early Out" && (
-            <Chips label={record?.AttStatus} classess="info" />
-          )}
-          {record?.AttStatus === "Not Found" && <p>-</p>}
-        </>
-      ),
+      render: (_, record) => <AttendanceStatus status={record?.AttStatus} />,
       dataIndex: "AttStatus",
     },
   ];
@@ -224,56 +180,7 @@ export const supervisorLandingColumn = (
       render: (_, item) => {
         return (
           <div className="d-flex align-items-center">
-            <div className="mr-1">
-              {item?.status === "Present" && (
-                <Tag color="green">{item?.status}</Tag>
-              )}
-              {item?.status === "Absent" && (
-                <Tag color="red">{item?.status}</Tag>
-              )}
-              {item?.status === "Late" && (
-                <Tag color="gold">{item?.status}</Tag>
-              )}
-              {item?.status === "Late Present" && (
-                <Tag color="gold">{item?.status}</Tag>
-              )}
-              {item?.status === "Leave" && (
-                <Tag color="purple">{item?.status}</Tag>
-              )}
-              {item?.status === "Leave without pay" && (
-                <Tag color="purple">{item?.status}</Tag>
-              )}
-              {item?.status === "Holiday" && (
-                <Tag style={{ color: "black" }} color="secondary">
-                  {item?.status}
-                </Tag>
-              )}
-              {item?.status === "Offday" && (
-                <Tag color="blue">{item?.status}</Tag>
-              )}
-              {item?.status === "Movement" && (
-                <Tag color="lime">{item?.status}</Tag>
-              )}
-              {item?.status === "Manual Present" && (
-                <Tag color="green">{item?.status}</Tag>
-              )}
-              {item?.status === "Manual Absent" && (
-                <Tag color="red">{item?.status}</Tag>
-              )}
-              {item?.status === "Manual Leave" && (
-                <Tag color="purple">{item?.status}</Tag>
-              )}
-              {item?.status === "Manual Late" && (
-                <Tag color="gold">{item?.status}</Tag>
-              )}
-              {item?.status === "Early Out" && (
-                <Tag color="geekblue">{item?.status}</Tag>
-              )}
-              {item?.status === "Halfday Leave" && (
-                <Tag color="purple">{item?.status}</Tag>
-              )}
-              {item?.status === "Not Found" && <p>-</p>}
-            </div>
+            <AttendanceStatus status={item?.status} />
             {item?.inTime && (
               <div>
                 <Tooltip title="Attendance Log">
