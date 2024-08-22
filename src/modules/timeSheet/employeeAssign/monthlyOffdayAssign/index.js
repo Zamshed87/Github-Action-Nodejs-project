@@ -23,7 +23,6 @@ import {
 } from "../../../../common/peopleDeskTable/helper";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { printDays } from "../offDay/helper";
-// import PopoverCalender from "./components/PopoverCalender";
 import ViewModalCalender from "./components/ViewModalCalender";
 import PopoverCalender from "./componentsCustom/PopoverCalender";
 import { createMonthlyOffdayAssign, offDayAssignDtoCol } from "./helper";
@@ -230,7 +229,7 @@ function MonthlyOffdayAssignLanding() {
     getData(pages);
     // setChecked([]);
   }, [buId, orgId, wId, wgId]);
-
+  
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
