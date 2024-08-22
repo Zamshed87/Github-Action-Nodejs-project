@@ -9,6 +9,8 @@ const CalenderCommon = ({
   setCalendarData,
   isClickable = false,
 }) => {
+  console.log("calendarData", calendarData);
+
   const [dates, setDates] = useState([]);
   const [date, setDate] = useState({
     year: monthYear.split("-")[0],
@@ -107,7 +109,7 @@ const CalenderCommon = ({
                     }`,
                   }}
                 >
-                  <div
+                  {/* <div
                     className=""
                     style={{
                       borderRadius: "50%",
@@ -123,10 +125,38 @@ const CalenderCommon = ({
                         : "",
                       color: calendarData[i]?.isOffday ? "gray" : "",
                     }}
-                    // onClick={() => {
-                    //   calendarData[i].isOffday = !calendarData[i].isOffday;
-                    //   isClickable && setCalendarData([...calendarData]);
-                    // }}
+                   
+                  >
+                    {item?.day}
+                  </div> */}
+
+                  <div
+                    className=""
+                    style={{
+                      borderRadius: "50%",
+                      width: "35px",
+                      height: "35px",
+                      textAlign: "center",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: isClickable ? "pointer" : "",
+                      backgroundColor: calendarData[i]?.isOffday
+                        ? calendarData[i]?.offdayReason === "Reassign"
+                          ? "rgba(255,223,186,1)" // Color for Reassign
+                          : calendarData[i]?.offdayReason === "Swap"
+                          ? "rgba(186,255,201,1)" // Color for Swap
+                          : calendarData[i]?.offdayReason === "Weekly"
+                          ? "gray" // Color for Weekly
+                          : "rgba(222,228,239,1)" // Default color
+                        : calendarData[i]?.isSwapday
+                        ? "green"
+                        : "",
+                      color:
+                        calendarData[i]?.isOffday || calendarData[i]?.isSwapday
+                          ? "white"
+                          : "",
+                    }}
                   >
                     {item?.day}
                   </div>
