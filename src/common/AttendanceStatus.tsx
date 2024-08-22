@@ -28,7 +28,10 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({ status }) => {
 
   if (status === "Holiday") {
     return (
-      <Tag style={{ color: "black" }} color={color}>
+      <Tag
+        style={{ color: "grey", border: "1px solid lightGrey" }}
+        color={color}
+      >
         {status}
       </Tag>
     );
