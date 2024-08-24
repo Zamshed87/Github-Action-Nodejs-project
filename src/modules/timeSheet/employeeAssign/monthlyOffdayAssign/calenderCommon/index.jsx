@@ -9,8 +9,7 @@ const CalenderCommon = ({
   setCalendarData,
   isClickable = false,
 }) => {
-  console.log("calendarData", calendarData);
-
+  
   const [dates, setDates] = useState([]);
   const [date, setDate] = useState({
     year: monthYear.split("-")[0],
@@ -96,27 +95,6 @@ const CalenderCommon = ({
                     }`,
                   }}
                 >
-                  {/* <div
-                    className=""
-                    style={{
-                      borderRadius: "50%",
-                      width: "35px",
-                      height: "35px",
-                      textAlign: "center",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: isClickable ? "pointer" : "",
-                      backgroundColor: calendarData[i]?.isOffday
-                        ? "rgba(222,228,239,1)"
-                        : "",
-                      color: calendarData[i]?.isOffday ? "gray" : "",
-                    }}
-                   
-                  >
-                    {item?.day}
-                  </div> */}
-
                   <div
                     className=""
                     style={{
@@ -130,14 +108,14 @@ const CalenderCommon = ({
                       cursor: isClickable ? "pointer" : "",
                       backgroundColor: calendarData[i]?.isOffday
                         ? calendarData[i]?.offdayReason === "Reassign"
-                          ? "rgba(99 196 126)" // Color for Reassign
+                          ? "yellow" // Color for Reassign (changed to yellow)
                           : calendarData[i]?.offdayReason === "Swap"
-                          ? "rgba(186,255,201,1)" // Color for Swap
+                          ? "rgba(99, 196, 126)" // Color for Swap (swapped with Reassign's color)
                           : calendarData[i]?.offdayReason === "Weekly"
                           ? "gray" // Color for Weekly
                           : "rgba(222,228,239,1)" // Default color
                         : "",
-                      color: calendarData[i]?.isOffday ? "white" : "",
+                      color: calendarData[i]?.isOffday ? "black" : "",
                       transition: "background-color 0.3s ease", // Smooth transition for hover
                     }}
                     title={
@@ -145,30 +123,6 @@ const CalenderCommon = ({
                         ? calendarData[i]?.offdayReason
                         : ""
                     }
-                    onMouseEnter={(e) => {
-                      if (calendarData[i]?.offdayReason === "Reassign") {
-                        e.currentTarget.style.backgroundColor =
-                          "rgba(99 196 135)"; // Hover color for Reassign
-                      } else if (calendarData[i]?.offdayReason === "Swap") {
-                        e.currentTarget.style.backgroundColor =
-                          "rgba(150,255,180,1)"; // Hover color for Swap
-                      } else if (calendarData[i]?.offdayReason === "Weekly") {
-                        e.currentTarget.style.backgroundColor = "darkgray"; // Hover color for Weekly
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (calendarData[i]?.isOffday) {
-                        if (calendarData[i]?.offdayReason === "Reassign") {
-                          e.currentTarget.style.backgroundColor =
-                            "rgba(99 196 135)"; // Reset color for Reassign
-                        } else if (calendarData[i]?.offdayReason === "Swap") {
-                          e.currentTarget.style.backgroundColor =
-                            "rgba(186,255,201,1)"; // Reset color for Swap
-                        } else if (calendarData[i]?.offdayReason === "Weekly") {
-                          e.currentTarget.style.backgroundColor = "gray"; // Reset color for Weekly
-                        }
-                      }
-                    }}
                   >
                     {item?.day}
                   </div>

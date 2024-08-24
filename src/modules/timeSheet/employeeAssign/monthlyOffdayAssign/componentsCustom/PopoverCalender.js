@@ -85,7 +85,7 @@ const PopoverCalender = ({ propsObj }) => {
                   display: "inline-block",
                   width: "15px",
                   height: "15px",
-                  backgroundColor: "rgba(99,196,126)",
+                  backgroundColor: "yellow", // Updated color for Reassign
                   marginRight: "5px",
                   borderRadius: "3px",
                 }}
@@ -105,7 +105,7 @@ const PopoverCalender = ({ propsObj }) => {
                   display: "inline-block",
                   width: "15px",
                   height: "15px",
-                  backgroundColor: "rgba(186,255,201,1)",
+                  backgroundColor: "rgba(99,196,126)", // Updated color for Swap
                   marginRight: "5px",
                   borderRadius: "3px",
                 }}
@@ -124,7 +124,7 @@ const PopoverCalender = ({ propsObj }) => {
                   display: "inline-block",
                   width: "15px",
                   height: "15px",
-                  backgroundColor: "gray",
+                  backgroundColor: "gray", // Color for Weekly remains the same
                   marginRight: "5px",
                   borderRadius: "3px",
                 }}
