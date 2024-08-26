@@ -133,6 +133,7 @@ export const topSheet = (
               alignment: "left:middle",
             },
           ],
+          // need to be dynamic
           [
             {
               text:
@@ -140,6 +141,8 @@ export const topSheet = (
                   ? "Dhanmondi Road# 5 Branch "
                   : values?.bank?.label === "Dhaka Bank Limited "
                   ? "Imamganj Branch Dhaka"
+                  : values?.bank?.label === "DUTCH-BANGLA BANK LTD"
+                  ? "Tejgaon Branch Dhaka"
                   : "Local Office Branch, Dilkusha Dhaka.",
               fontSize: 10,
               cellRange: "A1:F1",
