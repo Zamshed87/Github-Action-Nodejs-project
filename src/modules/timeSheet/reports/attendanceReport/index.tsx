@@ -14,7 +14,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Typography } from "antd";
-import { getWorkplaceDetails } from "common/api";
+import { getWorkplaceDetails } from "../../../../common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -136,6 +136,10 @@ const AttendanceReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     landingApi.action({
       urlKey: "GetEmpAttendanceReport",
       method: "GET",
@@ -146,7 +150,8 @@ const AttendanceReport = () => {
         IsPaginated: true,
 
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
-        IntWorkplaceId: values?.workplace?.value,
+        // IntWorkplaceId: values?.workplace?.value,
+        WorkplaceList: workplaceList || "",
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -456,6 +461,7 @@ const AttendanceReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({

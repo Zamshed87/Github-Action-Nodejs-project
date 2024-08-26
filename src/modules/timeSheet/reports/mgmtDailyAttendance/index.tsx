@@ -136,10 +136,16 @@ const MgmtDailyAttendance = () => {
     date = todayDate(),
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
+
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     const payload = {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
-      intWorkplaceId: values?.workplace?.value || 0,
+      // intWorkplaceId: values?.workplace?.value || 0,
+      workplaceList: workplaceList || "",
       pageNo: pagination?.current,
       pageSize: pagination?.pageSize,
       isPaginated: true,

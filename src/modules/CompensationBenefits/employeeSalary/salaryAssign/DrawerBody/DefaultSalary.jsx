@@ -88,7 +88,6 @@ const DefaultSalary = ({ propsObj }) => {
       setBankDDL
     );
   }, []);
-  console.log("bankId", bankId);
   useEffect(() => {
     getBankBranchDDL(bankId || 0, orgId, 0, setBankBranchDDL);
   }, [bankId]);
