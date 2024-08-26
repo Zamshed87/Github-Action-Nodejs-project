@@ -14,7 +14,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Typography } from "antd";
-import { getWorkplaceDetails } from "common/api";
+import { getWorkplaceDetails } from "../../../../common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
