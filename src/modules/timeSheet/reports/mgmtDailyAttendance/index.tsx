@@ -139,7 +139,6 @@ const MgmtDailyAttendance = () => {
     const payload = {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
-
       intWorkplaceId: values?.workplace?.value || 0,
       pageNo: pagination?.current,
       pageSize: pagination?.pageSize,
@@ -565,8 +564,10 @@ const MgmtDailyAttendance = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
+                    console.log("op", op);
                     form.setFieldsValue({
                       workplace: op,
                     });
