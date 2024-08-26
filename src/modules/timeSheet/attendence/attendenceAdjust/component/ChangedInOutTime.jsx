@@ -1,7 +1,8 @@
-import { DataTable, PInput } from "Components";
+import { DataTable, PInput, PSelect } from "Components";
 import { TimePicker } from "antd";
 import moment from "moment";
 import { memo, useEffect, useState } from "react";
+import { InfoOutlined } from "@mui/icons-material";
 
 const tableHeadColumn = (
   updateRowDto,
@@ -144,6 +145,62 @@ const tableHeadColumn = (
             style={{ width: "100%" }}
             disabled={apply.outTime && idx !== 0 ? true : false}
             allowClear={false}
+          />
+        </div>
+      ),
+    },
+    {
+      title: () => {
+        return (
+          <div className="d-flex align-items-center justify-content-between">
+            <p style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }}>
+              Calendar
+            </p>
+            <InfoOutlined
+              style={{ cursor: "pointer", fontSize: "14px" }}
+              className="ml-2"
+              onClick={(e) => {}}
+            />
+          </div>
+        );
+      },
+      dataIndex: "calendar",
+      width: 120,
+      render: (_, record, idx) => (
+        <div>
+          <PSelect
+            name="calendar"
+            label="Select Calendar"
+            placeholder="Select Calendar"
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Please Select Attendance Status",
+            //   },
+            // ]}
+            options={[
+              {
+                value: "Present",
+                label: "Present",
+              },
+              {
+                value: "Absent",
+                label: "Absent",
+              },
+              {
+                label: "Late",
+                value: "Late",
+              },
+              {
+                value: "Leave",
+                label: "Leave",
+              },
+              {
+                label: "Movement",
+                value: "Movement",
+              },
+            ]}
+            onChange={() => {}}
           />
         </div>
       ),

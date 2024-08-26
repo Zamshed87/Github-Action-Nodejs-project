@@ -879,6 +879,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     intime: "",
                     outtime: "",
                     reason: "",
+                    calendar: "",
                   }}
                 >
                   <>
@@ -950,6 +951,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                               intime: "",
                               outtime: "",
                               reason: "",
+                              calendar: "",
+
                               reasonAll: false,
                             });
                           }}
