@@ -24,7 +24,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
 
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 
@@ -132,6 +131,11 @@ const AbsentReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
+
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     const payload = {
       intAccountId: orgId,
       fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -145,7 +149,8 @@ const AbsentReport = () => {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
 
-      intWorkplaceId: values?.workplace?.value || 0,
+      // intWorkplaceId: values?.workplace?.value || 0,
+      workplaceList: workplaceList || "",
 
       departmentList: filerList?.department || [],
       designationList: filerList?.designation || [],
@@ -406,6 +411,7 @@ const AbsentReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,

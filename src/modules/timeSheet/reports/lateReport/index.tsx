@@ -136,6 +136,10 @@ const LateReport = () => {
   TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     landingApi.action({
       urlKey: "GetLateReport",
       method: "GET",
@@ -143,7 +147,8 @@ const LateReport = () => {
         IntBusinessUnitId: buId,
         IsXls: false,
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
-        IntWorkplaceId: values?.workplace?.value,
+        // IntWorkplaceId: values?.workplace?.value,
+        WorkplaceList: workplaceList || "",
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         Date: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -416,6 +421,7 @@ const LateReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({

@@ -136,6 +136,10 @@ const MonthlyInOutReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
@@ -144,7 +148,8 @@ const MonthlyInOutReport = () => {
         AccountId: orgId,
         BusinessUnitId: buId,
         WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        // WorkplaceId: values?.workplace?.value,
+        WorkplaceList: workplaceList || "",
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -431,6 +436,7 @@ const MonthlyInOutReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
