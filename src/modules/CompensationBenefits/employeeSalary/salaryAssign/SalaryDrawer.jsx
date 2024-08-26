@@ -152,7 +152,15 @@ export default function SalaryDrawer(props) {
       employee: "",
 
       isPerdaySalary: singleData[0]?.isPerdaySalary || false,
-      IntOthersAdditionalAmountTransferInto: { label: "Cash", value: 3 },
+      IntOthersAdditionalAmountTransferInto:
+        singleData[0]?.intOthersAdditionalAmountTransferInto === 3
+          ? { label: "Cash", value: 3 }
+          : singleData[0]?.intOthersAdditionalAmountTransferInto === 1
+          ? { label: "Bank", value: 1 }
+          : {
+              label: "Digital/MFS",
+              value: 2,
+            },
       payrollElement: singleData[0]?.intSalaryBreakdownHeaderId
         ? {
             intSalaryBreakdownHeaderId:
@@ -204,7 +212,7 @@ export default function SalaryDrawer(props) {
     // Number.parseFloat(x).toFixed(2)
     return Math.round(Number.parseFloat(amount).toFixed(2));
   };
-
+  console.log({ singleData });
   useEffect(() => {
     if (breakDownList?.length > 0) {
       const amount = breakDownList
