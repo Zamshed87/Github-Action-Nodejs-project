@@ -147,9 +147,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       urlKey: "BonusAllLanding",
       payload: {
         strPartName: "BonusNameList",
-        intAccountId: 1,
-        intBusinessUnitId: 1,
-        intCreatedBy: 1,
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+        intCreatedBy: employeeId,
         dteEffectedDate: moment().format("YYYY-MM-DD"),
         intWorkplaceGroupId: wgId,
         intWorkplaceId: wId,
@@ -255,9 +255,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 item.intReligion === row.intReligion
             );
             return matchingRes
-              ? { ...row, 
-                responceMessage: matchingRes.responceMessage
-               }
+              ? { ...row, responceMessage: matchingRes.responceMessage }
               : row;
           });
           setRowGenerate(updatedRowGenerate);

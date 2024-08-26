@@ -575,7 +575,7 @@ function CreateSingleIncrement() {
                       setHistoryData,
                       setLoading,
                       buId,
-                      wgId,
+                      wgId
                     );
                   }}
                   placeholder="Search (min 3 letter)"
@@ -700,7 +700,9 @@ function CreateSingleIncrement() {
                 </div>
               </div>
 
-              <div className="col-lg-12 my-2">
+              {/* 🔥🔥 Hidded the checkbox only If the check box is enabled the complete functionality of promote will work. this part is been hidden according to the instruction from avishek voumik vai. 🔥🔥 */}
+
+              {/* <div className="col-lg-12 my-2">
                 <h3
                   style={{
                     color: " gray700 !important",
@@ -731,7 +733,7 @@ function CreateSingleIncrement() {
                     }));
                   }}
                 />
-              </div>
+              </div> */}
               {/* promotion part start */}
               {values?.promote && (
                 <>

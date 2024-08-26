@@ -41,7 +41,6 @@ export default function Joining() {
 
   const [singleData, setSingleData] = useState({});
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [pages, setPages] = useState({
@@ -55,19 +54,10 @@ export default function Joining() {
     shallowEqual
   );
 
-  const {
-    setFieldValue,
-    setValues,
-    values,
-    errors,
-    touched,
-    handleSubmit,
-    resetForm,
-  } = useFormik({
+  const { values } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues,
-    onSubmit: () => {},
   });
 
   const getData = (
@@ -115,7 +105,7 @@ export default function Joining() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -128,17 +118,6 @@ export default function Joining() {
       values?.filterToDate,
       searchText
     );
-  };
-
-  //Search Filter
-  const filterData = (keywords) => {
-    const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter(
-      (item) =>
-        regex.test(item?.strEmployeeName?.toLowerCase()) ||
-        regex.test(item?.strTransferNpromotionType?.toLowerCase())
-    );
-    setRowDto(newDta);
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -155,20 +134,13 @@ export default function Joining() {
         enableReinitialize={true}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={() => {
           // saveHandler(values, () => {
           //   resetForm(initData);
           // });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             {loading && <Loading />}
             <div className="overtime-entry">
@@ -392,17 +364,6 @@ export default function Joining() {
                                     cursor: "pointer",
                                   }}
                                   key={index}
-                                  onClick={() =>
-                                    history.push(
-                                      `/profile/transferandpromotion/joining/view/${item?.intTransferNpromotionId}`,
-                                      {
-                                        employeeId: item?.intEmployeeId,
-                                        businessUnitId: item?.intBusinessUnitId,
-                                        workplaceGroupId:
-                                          item?.intWorkplaceGroupId,
-                                      }
-                                    )
-                                  }
                                 >
                                   <JoiningTable
                                     item={item}

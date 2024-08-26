@@ -117,6 +117,7 @@ const HolidayOffdaySwapAssign = () => {
         empId: employeeId,
         strRemaks: strRemarks || "",
       },
+      toast: true,
       onSuccess: () => {
         setOpen(false);
         setSelectedRow([]);

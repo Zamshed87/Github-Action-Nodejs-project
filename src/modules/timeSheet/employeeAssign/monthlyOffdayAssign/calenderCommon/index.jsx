@@ -9,6 +9,7 @@ const CalenderCommon = ({
   setCalendarData,
   isClickable = false,
 }) => {
+  
   const [dates, setDates] = useState([]);
   const [date, setDate] = useState({
     year: monthYear.split("-")[0],
@@ -36,19 +37,6 @@ const CalenderCommon = ({
     }
     setDates(demoDate.reverse());
   }, [date]);
-
-  // if (calendarData.length === 0) {
-  //   const demoData = [];
-  //   dates?.forEach((item) => {
-  //     demoData.push({
-  //       date: "",
-  //       dayId: item?.day,
-  //       dayName: item?.dayName,
-  //       isOffday: false,
-  //     });
-  //   });
-  //   setCalendarData(demoData);
-  // }
 
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
@@ -119,14 +107,22 @@ const CalenderCommon = ({
                       alignItems: "center",
                       cursor: isClickable ? "pointer" : "",
                       backgroundColor: calendarData[i]?.isOffday
-                        ? "rgba(222,228,239,1)"
+                        ? calendarData[i]?.offdayReason === "Reassign"
+                          ? "yellow" // Color for Reassign (changed to yellow)
+                          : calendarData[i]?.offdayReason === "Swap"
+                          ? "rgba(99, 196, 126)" // Color for Swap (swapped with Reassign's color)
+                          : calendarData[i]?.offdayReason === "Weekly"
+                          ? "gray" // Color for Weekly
+                          : "rgba(222,228,239,1)" // Default color
                         : "",
-                      color: calendarData[i]?.isOffday ? "gray" : "",
+                      color: calendarData[i]?.isOffday ? "black" : "",
+                      transition: "background-color 0.3s ease", // Smooth transition for hover
                     }}
-                    // onClick={() => {
-                    //   calendarData[i].isOffday = !calendarData[i].isOffday;
-                    //   isClickable && setCalendarData([...calendarData]);
-                    // }}
+                    title={
+                      calendarData[i]?.isOffday
+                        ? calendarData[i]?.offdayReason
+                        : ""
+                    }
                   >
                     {item?.day}
                   </div>

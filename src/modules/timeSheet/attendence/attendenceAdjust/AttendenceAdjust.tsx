@@ -22,6 +22,7 @@ import ChangedInOutTimeEmpListModal from "./component/ChangedInOutTime";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { toast } from "react-toastify";
 import { custom26to25LandingDataHandler } from "modules/employeeProfile/Reports/employeeJobCard/utils";
+import AttendanceStatus from "common/AttendanceStatus";
 
 const updateRowDto = ({
   fieldName,
@@ -476,40 +477,16 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Actual Attendance",
       dataIndex: "actualAttendanceStatus",
-      render: (_: any, record: any) =>
-        record?.actualAttendanceStatus === "Present" ? (
-          <PBadge text="Present" type="success" />
-        ) : record?.actualAttendanceStatus === "Absent" ? (
-          <PBadge text="Absent" type="warning" />
-        ) : record?.actualAttendanceStatus === "Holiday" ? (
-          <PBadge text="Holiday" type="light" />
-        ) : record?.actualAttendanceStatus === "Late" ? (
-          <PBadge text="Late" type="danger" />
-        ) : record?.actualAttendanceStatus === "Offday" ? (
-          <PBadge text="Offday" type="light" />
-        ) : record?.actualAttendanceStatus === "Leave" ? (
-          <PBadge text="Leave" type="light" />
-        ) : record?.actualAttendanceStatus === "Movement" ? (
-          <PBadge text="Movement" type="light" />
-        ) : (
-          ""
-        ),
+      render: (_: any, record: any) => (
+        <AttendanceStatus status={record?.actualAttendanceStatus} />
+      ),
       align: "center",
       width: 150,
     },
     {
       title: "Request Attendance",
       dataIndex: "RequestStatus",
-      render: (data: any) =>
-        data === "Present" ? (
-          <PBadge text="Present" type="success" />
-        ) : data === "Absent" ? (
-          <PBadge text="Absent" type="warning" />
-        ) : data === "Late" ? (
-          <PBadge text="Late" type="danger" />
-        ) : (
-          <PBadge text={data} type="light" />
-        ),
+      render: (data: any) => <AttendanceStatus status={data} />,
       align: "center",
       width: 170,
       filter: true,

@@ -1,32 +1,60 @@
-import { SaveAlt } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
-import pdfIcon from "../../../../../assets/images/pdfIcon.svg";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import BackButton from "../../../../../common/BackButton";
 import Loading from "../../../../../common/loading/Loading";
-import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
-import { gray900 } from "../../../../../utility/customColor";
 import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
 import { getEmployeeProfileViewData } from "../../../employeeFeature/helper";
 import Accordion from "../accordion";
 import ViewJoiningTable from "./viewJoiningTable";
+import { PButton, PForm, PInput, PSelect } from "Components";
+import { Col, Divider, Form, Row } from "antd";
+import { useApiRequest } from "Hooks";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { debounce } from "lodash";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import { organizationTypeList } from "../../transferNPromotion/components/createTransferPromotion";
+import { setOrganizationDDLFunc } from "modules/roleExtension/ExtensionCreate/helper";
+import { toast } from "react-toastify";
+import { DeleteOutlined } from "@ant-design/icons";
+import {
+  createPayload,
+  joiningDisabledDate,
+  saveJoining,
+  setInitialData,
+} from "./helper";
+import { AttachmentOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 const ViewJoining = () => {
-  // const { buId, wgId } = useSelector(
-  //   (state) => state?.auth?.profileData,
-  //   shallowEqual
-  // );
+  const { orgId, employeeId, buId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  // form states
+  const [form] = Form.useForm();
 
   const { id } = useParams();
   const location = useLocation();
+  const history = useHistory();
   const dispatch = useDispatch();
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initData, setInitData] = useState({});
+  const [empSignature, setEmpSignature] = useState([]);
+  const [organizationDDL, setOrganizationDDL] = useState([]);
+  const [rowDto, setRowDto] = useState([]);
+
   const getSingleData = () => {
-    getTransferNpromotion(`/Employee/GetEmpTransferNpromotionById?id=${id}`);
+    getTransferNpromotion(
+      `/Employee/GetEmpTransferNpromotionById?id=${id}`,
+      (res) => {
+        setInitialData(res, setInitData);
+        res?.empTransferNpromotionRoleExtensionVMList?.length > 0 &&
+          setRowDto(res?.empTransferNpromotionRoleExtensionVMList);
+      }
+    );
     getEmployeeProfileViewData(
       location?.state?.employeeId,
       setEmpBasic,
@@ -36,12 +64,273 @@ const ViewJoining = () => {
     );
   };
 
-  // getting the policy details by id
+  // api states
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+  const supervisorDDL = useApiRequest([]);
+  const dottedSupervisorDDL = useApiRequest([]);
+  const lineManagerDDL = useApiRequest([]);
+  const userRoleDDL = useApiRequest([]);
+  const calendarDDL = useApiRequest([]);
+  const rosterGroupDDL = useApiRequest([]);
+  const calendarByRosterGroupDDL = useApiRequest([]);
+  const holidayDDL = useApiRequest([]);
+
+  const getSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return supervisorDDL?.reset();
+    supervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        intId: employeeId,
+        workplaceGroupId: location?.state?.workplaceGroupId,
+        strWorkplaceIdList: location?.state?.workplaceId.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getDottedSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return dottedSupervisorDDL?.reset();
+
+    dottedSupervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        intId: employeeId,
+        workplaceGroupId: location?.state?.workplaceGroupId,
+        strWorkplaceIdList: location?.state?.workplaceId.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getLineManagerDDL = debounce((value) => {
+    if (value?.length < 2) return lineManagerDDL?.reset();
+
+    lineManagerDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        intId: employeeId,
+        workplaceGroupId: location?.state?.workplaceGroupId,
+        strWorkplaceIdList: location?.state?.workplaceId.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getData = () => {
+    userRoleDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserRoleDDLWithoutDefault",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.label;
+          res[i].value = item?.value;
+        });
+      },
+    });
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+    empDesignationDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDesignation",
+        AccountId: orgId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DesignationName;
+          res[i].value = item?.DesignationId;
+        });
+      },
+    });
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+    holidayDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "HolidayGroup",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.HolidayGroupName;
+          res[i].value = item?.HolidayGroupId;
+        });
+      },
+    });
+  };
+
+  const getCalendarDDL = () => {
+    calendarDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Calender",
+        IntWorkplaceId: location?.state?.workplaceId,
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
+  };
+
+  const getRosterGroupDDL = () => {
+    rosterGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "RosterGroup",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        IntWorkplaceId: location?.state?.workplaceId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.RosterGroupName;
+          res[i].value = item?.RosterGroupId;
+        });
+      },
+    });
+  };
+  const getCalendarByRosterDDL = () => {
+    const { calender } = form.getFieldsValue(true);
+    calendarByRosterGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "CalenderByRosterGroup",
+        BusinessUnitId: location?.state?.businessUnitId,
+        WorkplaceGroupId: location?.state?.workplaceGroupId,
+        intId: calender?.value, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     getSingleData();
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log({ transferNpromotion });
+
+  const onRoleAdd = (orgType, orgName) => {
+    setRowDto([
+      ...rowDto,
+      {
+        intOrganizationTypeId: +orgType?.value,
+        strOrganizationTypeName: orgType?.label,
+        intOrganizationReffId: orgName?.value,
+        strOrganizationReffName: orgName?.label,
+      },
+    ]);
+  };
 
   return (
     <>
@@ -53,146 +342,642 @@ const ViewJoining = () => {
             <div className="d-flex align-items-center">
               <BackButton title={"View Joining Details"} />
             </div>
+            <div className="table-card-head-right">
+              <ul>
+                <li>
+                  <PButton
+                    content="Join"
+                    type="primary"
+                    action="submit"
+                    disabled={loading}
+                    onClick={() => form.submit()}
+                  />
+                </li>
+              </ul>
+            </div>
           </div>
           <div
-            className="table-card-body card-style my-3"
+            className="table-card-body card-style mb-3"
             style={{ minHeight: "auto" }}
           >
             <div className="mt-2">
               <Accordion empBasic={empBasic} />
             </div>
 
-            {/* <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(getDownlloadFileView_Action());
-              }}
-              style={{
-                height: "32px",
-                width: "150px",
-                boxSizing: "border-box",
-                border: "1px solid #EAECF0",
-                borderRadius: "4px",
-              }}
-              className="d-flex justify-content-between align-items-center"
-            >
-              <div className="d-flex justify-content-center align-items-center">
-                <div>
-                  <img
-                    className="pb-1"
-                    style={{ width: "23px", height: "23px" }}
-                    src={pdfIcon}
-                    alt=""
-                  />
-                </div>
-                <p
-                  style={{
-                    color: "#344054",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  }}
-                  className="pl-2"
-                >
-                  Joining Letter
-                </p>
-              </div>
-              <div>
-                <SaveAlt
-                  sx={{
-                    color: gray900,
-                    fontSize: "16px",
-                  }}
-                />
-              </div>
-            </IconButton> */}
-
-            {/* Role extension table */}
-            {!!transferNpromotion?.empTransferNpromotionRoleExtensionVMList
-              ?.length && (
-              <div>
-                <div className="col-lg-12 mb-2 mt-3 px-0">
-                  <h3
-                    style={{
-                      color: " gray700 !important",
-                      fontSize: "16px",
-                      lineHeight: "20px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Role Extension List
-                  </h3>
-                </div>
-                <div className="col-md-12 mx-0 px-0">
-                  <div className="table-card-body px-0">
-                    <div
-                      className="table-card-styled tableOne"
-                      style={{ marginTop: "12px" }}
-                    >
-                      <table className="table">
-                        <thead>
-                          <tr className="py-1">
-                            <th>SL</th>
-                            <th>
-                              <div>
-                                <span className="mr-1"> Org Type</span>
-                              </div>
-                            </th>
-                            <th>
-                              <div>
-                                <span className="mr-1"> Org Name</span>
-                              </div>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {transferNpromotion?.empTransferNpromotionRoleExtensionVMList.map(
-                            (item, index) => (
-                              <tr className="hasEvent" key={index + 1}>
-                                <td>
-                                  <p className="tableBody-title">{index + 1}</p>
-                                </td>
-                                <td>
-                                  <p className="tableBody-title">
-                                    {item?.strOrganizationTypeName}
-                                  </p>
-                                </td>
-                                <td>
-                                  <p className="tableBody-title">
-                                    {" "}
-                                    {item?.strOrganizationReffName}
-                                  </p>
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Proposed History transfers and promotions */}
             {!!transferNpromotion && (
-              <div className="pt-2">
+              <div>
                 <div className="col-lg-12 mb-2 pl-0">
-                  <h3
-                    style={{
-                      color: " gray700 !important",
-                      fontSize: "16px",
-                      lineHeight: "20px",
-                      fontWeight: "500",
-                    }}
-                  >
+                  <Divider style={{ borderColor: "darkgray" }}>
                     Proposed Transfer/Promotion
-                  </h3>
+                  </Divider>
                 </div>
                 <div className="table-colored">
                   <ViewJoiningTable transferNpromotion={transferNpromotion} />
                 </div>
               </div>
             )}
+            <div>
+              <div className="col-lg-12 my-3 px-0">
+                <Divider style={{ borderColor: "darkgray" }}>
+                  Edit Proposed Transfer/Promotion
+                </Divider>
+              </div>
+              <PForm
+                form={form}
+                initialValues={initData}
+                onFinish={(values) => {
+                  const payload = createPayload(
+                    values,
+                    transferNpromotion,
+                    employeeId,
+                    rowDto,
+                    empSignature
+                  );
+                  saveJoining(payload, setLoading, () =>
+                    history.push("/profile/transferandpromotion/joining")
+                  );
+                }}
+              >
+                <Row gutter={[10, 2]}>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={employmentTypeDDL?.data || []}
+                      name="employmentType"
+                      label="Employment Type"
+                      placeholder="Employment Type"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          employmentType: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={positionDDL?.data || []}
+                      name="hrPosition"
+                      label="HR Position"
+                      placeholder="HR Position"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          hrPosition: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empDepartmentDDL?.data || []}
+                      name="department"
+                      label="Department"
+                      placeholder="Department"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          department: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empSectionDDL?.data || []}
+                      name="section"
+                      label="Section"
+                      placeholder="Section"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          section: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={empDesignationDDL?.data || []}
+                      name="designation"
+                      label="Designation"
+                      placeholder="Designation"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          designation: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { workplaceGroup } = form.getFieldsValue(true);
+                      return (
+                        <>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={supervisorDDL?.data || []}
+                              name="supervisor"
+                              label="Supervisor"
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  supervisor: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={supervisorDDL?.loading}
+                              onSearch={(value) => {
+                                getSuperVisorDDL(value);
+                              }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Supervisor is required",
+                                },
+                              ]}
+                            />
+                          </Col>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={dottedSupervisorDDL?.data || []}
+                              name="dottedSuperVisor"
+                              label="Dotted Supervisor"
+                              allowClear
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  dottedSuperVisor: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={dottedSupervisorDDL?.loading}
+                              onSearch={(value) => {
+                                getDottedSuperVisorDDL(value);
+                              }}
+                            />
+                          </Col>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              options={lineManagerDDL.data || []}
+                              name="lineManager"
+                              label="Line Manager"
+                              placeholder={`${
+                                workplaceGroup?.value
+                                  ? "Search minimum 2 character"
+                                  : "Select Workplace Group first"
+                              }`}
+                              disabled={!workplaceGroup?.value}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  lineManager: op,
+                                });
+                              }}
+                              showSearch
+                              filterOption={false}
+                              // notFoundContent={null}
+                              loading={lineManagerDDL?.loading}
+                              onSearch={(value) => {
+                                getLineManagerDDL(value);
+                              }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Line Manager is required",
+                                },
+                              ]}
+                            />
+                          </Col>
+                        </>
+                      );
+                    }}
+                  </Form.Item>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={userRoleDDL?.data || []}
+                      name="role"
+                      label="Role"
+                      placeholder="Role"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          role: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="text"
+                      name="remarks"
+                      label="Remarks"
+                      placeholder="remarks"
+                      rules={[
+                        { required: true, message: "Remarks is required" },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24} style={{ marginTop: "21px" }}>
+                    {!transferNpromotion?.intAttachementId ? (
+                      <FileUploadComponents
+                        propsObj={{
+                          title: "Upload Document",
+                          attachmentList: empSignature,
+                          setAttachmentList: setEmpSignature,
+                          accountId: orgId,
+                          tableReferrence: "LeaveAndMovement",
+                          documentTypeId: 15,
+                          userId: employeeId,
+                          buId,
+                          maxCount: 1,
+                          accept:
+                            "image/png, image/jpeg, image/jpg, application/pdf",
+                        }}
+                      />
+                    ) : (
+                      <p
+                        onClick={() => {
+                          dispatch(
+                            getDownlloadFileView_Action(
+                              transferNpromotion?.intAttachementId
+                            )
+                          );
+                        }}
+                      >
+                        <AttachmentOutlined
+                          sx={{
+                            marginRight: "5px",
+                            color: "#0072E5",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "500",
+                            color: "#0072E5",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {"Attachment"}
+                        </span>
+                      </p>
+                    )}
+                  </Col>
+                </Row>
+                <Divider
+                  orientation="left"
+                  style={{ fontSize: "13px", marginBottom: "10px" }}
+                >
+                  Employment Shift Info
+                </Divider>
+                {/* emp calendar info 🔥🔥🔥 */}
+                <>
+                  <Row gutter={[10, 2]}>
+                    <Form.Item shouldUpdate noStyle>
+                      {() => {
+                        const { calenderType, workplace } =
+                          form.getFieldsValue(true);
+                        return (
+                          <>
+                            <Col md={8} sm={24}>
+                              <PSelect
+                                options={[
+                                  {
+                                    value: 1,
+                                    label: "Calendar",
+                                  },
+                                  { value: 2, label: "Roster" },
+                                ]}
+                                type="date"
+                                name="calenderType"
+                                label="Calendar Type"
+                                placeholder="Calendar Type"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    calender: null,
+                                    // otType: null,
+                                    calenderType: op,
+                                  });
+
+                                  value === 1
+                                    ? getCalendarDDL()
+                                    : getRosterGroupDDL();
+                                }}
+                              />
+                            </Col>
+                            <Col md={8} sm={24}>
+                              <PSelect
+                                options={
+                                  calenderType?.value === 2
+                                    ? rosterGroupDDL.data || []
+                                    : calendarDDL?.data || []
+                                }
+                                name="calender"
+                                label={
+                                  calenderType?.value === 2
+                                    ? `Roster Name`
+                                    : `Calendar Name`
+                                }
+                                placeholder={
+                                  calenderType?.value === 2
+                                    ? `Roster Name`
+                                    : `Calendar Name`
+                                }
+                                disabled={!workplace}
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    calender: op,
+                                  });
+
+                                  const { calenderType } =
+                                    form.getFieldsValue();
+                                  calenderType?.value === 2 &&
+                                    getCalendarByRosterDDL();
+                                }}
+                              />
+                            </Col>
+
+                            {calenderType?.value === 2 ? (
+                              <>
+                                <Col md={8} sm={24}>
+                                  <PSelect
+                                    options={
+                                      calendarByRosterGroupDDL?.data || []
+                                    }
+                                    name="startingCalender"
+                                    label="Starting Calendar"
+                                    placeholder={"Starting Calendar"}
+                                    disabled={!workplace}
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        startingCalender: op,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PInput
+                                    type="date"
+                                    name="nextChangeDate"
+                                    label="Next Calendar Change"
+                                    placeholder={"Next Calendar Change"}
+                                  />
+                                </Col>
+                              </>
+                            ) : undefined}
+                          </>
+                        );
+                      }}
+                    </Form.Item>
+                    <Col md={8} sm={24}>
+                      <PInput
+                        type="date"
+                        name="generateDate"
+                        label="Calender Generate Date"
+                        placeholder="Generate Date"
+                        disabledDate={joiningDisabledDate}
+                      />
+                    </Col>
+                    <Col md={8} sm={24}>
+                      <PSelect
+                        mode="multiple"
+                        options={[
+                          {
+                            value: 1,
+                            label: "Friday",
+                          },
+                          { value: 2, label: "Saturday" },
+                          { value: 3, label: "Sunday" },
+                          { value: 4, label: "Monday" },
+                          { value: 5, label: "Tuseday" },
+                          { value: 6, label: "Wednesday" },
+                          { value: 7, label: "Thursday" },
+                        ]}
+                        name="offday"
+                        label="Off Day"
+                        placeholder=" Off Day"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            offday: op,
+                          });
+
+                          // value && getWorkplace();
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Off Day is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={8} sm={24}>
+                      <PSelect
+                        options={holidayDDL?.data || []}
+                        name="holiday"
+                        label="Holiday"
+                        placeholder="Holiday"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            holiday: op,
+                          });
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Holiday is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                  </Row>
+                </>
+
+                {/* emp role extension 🔥🔥🔥 */}
+                <Divider
+                  orientation="left"
+                  style={{ fontSize: "13px", marginBottom: "10px" }}
+                >
+                  Role Extension
+                </Divider>
+                <>
+                  <Row gutter={[10, 2]}>
+                    {/* User Create */}
+                    <Form.Item noStyle shouldUpdate>
+                      {() => {
+                        const { isRoleExtension, orgName, orgType } =
+                          form.getFieldsValue();
+                        return (
+                          <>
+                            <Col md={8} sm={24}>
+                              <PInput
+                                label="Is applicable for role extension?"
+                                type="checkbox"
+                                name="isRoleExtension"
+                                layout="horizontal"
+                              />
+                            </Col>
+                            {isRoleExtension && (
+                              <>
+                                <Divider style={{ margin: "3px 0" }} />
+                                <Col md={6} sm={24}>
+                                  <PSelect
+                                    options={organizationTypeList || []}
+                                    name="orgType"
+                                    label="Organization Type"
+                                    placeholder="Organization Type"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        orgType: op,
+                                        orgName: null,
+                                      });
+                                      setOrganizationDDLFunc(
+                                        orgId,
+                                        buId,
+                                        employeeId,
+                                        op,
+                                        setOrganizationDDL
+                                      );
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={6} sm={24}>
+                                  <PSelect
+                                    options={organizationDDL || []}
+                                    name="orgName"
+                                    label="Organization Name"
+                                    placeholder="Organization Name"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        orgName: op,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PButton
+                                    content="Add"
+                                    type="primary"
+                                    style={{ marginTop: "22px" }}
+                                    disabled={!orgName || !orgType}
+                                    onClick={() => {
+                                      const roleExist = rowDto?.some(
+                                        (item) =>
+                                          item?.intOrganizationTypeId ===
+                                            orgType?.value &&
+                                          item?.intOrganizationReffId ===
+                                            orgName?.value
+                                      );
+
+                                      if (roleExist)
+                                        return toast.warn(
+                                          "Already extis this role"
+                                        );
+                                      onRoleAdd(orgType, orgName);
+                                      form.setFieldsValue({
+                                        orgType: null,
+                                        orgName: null,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                              </>
+                            )}
+                          </>
+                        );
+                      }}
+                    </Form.Item>
+                  </Row>
+                  <div>
+                    {rowDto.length > 0 && (
+                      <>
+                        <div className="col-lg-12 mb-2 mt-3">
+                          <h3
+                            style={{
+                              color: " gray700 !important",
+                              fontSize: "16px",
+                              lineHeight: "20px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Role Extension List
+                          </h3>
+                        </div>
+                        <div className="col-md-12">
+                          <div className="table-card-body">
+                            <div className="table-card-styled tableOne">
+                              <table className="table">
+                                <thead>
+                                  <tr className="py-1">
+                                    <th>SL</th>
+                                    <th>
+                                      <span className="mr-1"> Org Type</span>
+                                    </th>
+                                    <th>
+                                      <span className="mr-1"> Org Name</span>
+                                    </th>
+                                    <th></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {rowDto?.map((item, index) => (
+                                    <tr className="hasEvent" key={index + 1}>
+                                      <td>
+                                        <p className="tableBody-title pl-1">
+                                          {index + 1}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        <p className="tableBody-title">
+                                          {item?.strOrganizationTypeName}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        <p className="tableBody-title">
+                                          {item?.strOrganizationReffName}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        <div className="d-flex align-items-center justify-content-end">
+                                          <button
+                                            type="button"
+                                            className="iconButton mt-0 mt-md-2 mt-lg-0"
+                                            onClick={() =>
+                                              setRowDto((prev) => [
+                                                ...prev.filter(
+                                                  (prev_item, item_index) =>
+                                                    item_index !== index
+                                                ),
+                                              ])
+                                            }
+                                          >
+                                            <DeleteOutlined />
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              </PForm>
+            </div>
           </div>
         </div>
       )}

@@ -393,6 +393,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                   />
                                 ),
                                 onClick: () => {
+                                  console.log(item);
                                   setValues({
                                     ...values,
                                     name: item?.strRelativesName || "",

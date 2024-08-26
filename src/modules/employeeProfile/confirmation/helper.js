@@ -1,5 +1,8 @@
+import { Tooltip } from "antd";
 import axios from "axios";
+import { MdPrint } from "react-icons/md";
 import { toast } from "react-toastify";
+import { getPDFAction } from "utility/downloadFile";
 import AvatarComponent from "../../../common/AvatarComponent";
 import Chips from "../../../common/Chips";
 import {
@@ -98,7 +101,8 @@ export const empConfirmcolumns = (
   permission,
   orgId,
   setValues,
-  pages
+  pages,
+  setLoading
 ) => {
   return [
     {
@@ -150,46 +154,6 @@ export const empConfirmcolumns = (
       filter: false,
       fieldType: "string",
     },
-    // {
-    //   title: "Wing",
-    //   dataIndex: "wingName",
-    //   sort: true,
-    //   filter: false,
-    //   hidden: wgId !== 3 ? true : false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Sole Depo",
-    //   dataIndex: "soleDepoName",
-    //   sort: true,
-    //   filter: false,
-    //   hidden: wgId !== 3 ? true : false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Region",
-    //   dataIndex: "regionName",
-    //   sort: true,
-    //   filter: false,
-    //   hidden: wgId !== 3 ? true : false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Area",
-    //   dataIndex: "areaName",
-    //   sort: true,
-    //   filter: false,
-    //   hidden: wgId !== 3 ? true : false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Territory",
-    //   dataIndex: "territoryName",
-    //   sort: true,
-    //   filter: false,
-    //   hidden: wgId !== 3 ? true : false,
-    //   fieldType: "string",
-    // },
     {
       title: "Employment Type",
       dataIndex: "employmentType",
@@ -198,15 +162,6 @@ export const empConfirmcolumns = (
       width: 140,
       fieldType: "string",
     },
-    // {
-    //   title: "Pin No.",
-    //   dataIndex: "pinNo",
-    //   render: (record) => (record?.pinNo ? record?.pinNo : "-"),
-    //   sort: true,
-    //   filter: false,
-    //   width: 100,
-    //   fieldType: "string",
-    // },
     {
       title: "Joining Date",
       dataIndex: "joiningDate",
@@ -305,6 +260,38 @@ export const empConfirmcolumns = (
               </button>
             )}
           </div>
+        );
+      },
+    },
+    {
+      title: "Action",
+      width: 150,
+      dataIndex: "confirmationDate",
+      fieldType: "string",
+      render: (record) => {
+        return (
+          record?.confirmationStatus === "Confirm" && (
+            <Tooltip title="Download Letter">
+              <div
+                className="export_icon"
+                style={{
+                  background: "var(--gray200)",
+                  borderRadius: "50%",
+                  padding: "3px 6px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  getPDFAction(
+                    `/PdfAndExcelReport/EmployeeConfirmationPDF?AccountId=${orgId}&EmployeeId=${record?.employeeId}&JoiningDate=${record?.confirmationDateRaw}`,
+                    setLoading
+                  );
+                }}
+              >
+                <MdPrint />
+              </div>
+            </Tooltip>
+          )
         );
       },
     },

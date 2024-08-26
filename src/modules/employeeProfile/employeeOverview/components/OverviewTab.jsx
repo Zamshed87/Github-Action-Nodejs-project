@@ -25,7 +25,7 @@ function OverviewTab({ empId, wgId, buId }) {
     { name: "Family & Relationships" },
     { name: "Documents" },
     { name: "others" },
-    { name: "OAuth2" },
+    { name: "Social Media Information" },
   ];
   return (
     <>
