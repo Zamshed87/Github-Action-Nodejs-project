@@ -520,7 +520,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { date } = form.getFieldsValue(true);
     const fromDateMoment = moment(date, "MM/DD/YYYY");
-    const endDateMoment = fromDateMoment.clone().add(29, "days");
+    const daysInMonth = fromDateMoment.daysInMonth();
+    const endDateMoment = fromDateMoment.clone().add(daysInMonth - 1, "days");
 
     // Disable dates before fromDate and after next3daysForEmp
     return (
