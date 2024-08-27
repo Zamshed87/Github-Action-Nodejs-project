@@ -16,6 +16,8 @@ import NoResult from "../../../common/NoResult";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/selectCustomStyle";
+import { size } from "lodash";
+import { formatMoney } from "utility/formatMoney";
 
 const ManagementDashboardLanding = ({ setLoading }) => {
   // Redux
@@ -773,6 +775,19 @@ const ManagementDashboardLanding = ({ setLoading }) => {
     );
   };
 
+  const groupedData =
+    topLevelDashboardDetailsDetails?.topLevelDashboardViewModel?.departmentWiseEmployeeSalaryCount.reduce(
+      (acc, item) => {
+        const { workPlaceName } = item;
+        if (!acc[workPlaceName]) {
+          acc[workPlaceName] = [];
+        }
+        acc[workPlaceName].push(item);
+        return acc;
+      },
+      {}
+    );
+
   return (
     <>
       {(loading1 ||
@@ -1465,23 +1480,6 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                     {currentYear}
                   </p>
                 </div>
-                {/* <div>
-                  <DefaultInput
-                    classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
-                    inputClasses="search-inner-input"
-                    placeholder="Search"
-                    value={values?.search}
-                    name="search"
-                    type="text"
-                    trailicon={<SearchOutlined sx={{ color: "#323232" }} />}
-                    onChange={(e) => {
-                      // filterData(e.target.value, allData, setRowDto);
-                      setFieldValue("search", e.target.value);
-                    }}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div> */}
               </div>
               <div
                 className="tableOne my-emp-table mt-1"
@@ -1489,68 +1487,78 @@ const ManagementDashboardLanding = ({ setLoading }) => {
               >
                 {topLevelDashboardDetailsDetails?.topLevelDashboardViewModel
                   ?.departmentWiseEmployeeSalaryCount?.length ? (
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <p
-                            style={{
-                              color: "#98a2b3",
-                              fontWeight: 500,
-                            }}
-                          >
-                            Department
-                          </p>
-                        </th>
-                        <th>
-                          <p
-                            style={{
-                              color: "#98a2b3",
-                              fontWeight: 500,
-                            }}
-                          >
-                            Employee Count
-                          </p>
-                        </th>
-                        <th>
-                          <p
-                            style={{
-                              color: "#98a2b3",
-                              fontWeight: 500,
-                            }}
-                          >
-                            Salary
-                          </p>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {topLevelDashboardDetailsDetails
-                        ?.topLevelDashboardViewModel
-                        ?.departmentWiseEmployeeSalaryCount.length &&
-                        topLevelDashboardDetailsDetails?.topLevelDashboardViewModel?.departmentWiseEmployeeSalaryCount?.map(
-                          (item, i) => (
-                            <tr key={i}>
-                              <td>
-                                <p className="tableBody-title">
-                                  {item?.department}
+                  <div>
+                    {Object.keys(groupedData).map((workPlaceName, index) => (
+                      <div key={index}>
+                        <h3 style={{ color: "#4a5568", fontWeight: "bold" }}>
+                         Workplace Name: {workPlaceName}
+                        </h3>
+                        <table className="table">
+                          <thead>
+                            <tr>
+                              <th style={{ width: "40%" }}>
+                                <p
+                                  style={{ color: "#98a2b3", fontWeight: 500 }}
+                                >
+                                  Department
                                 </p>
+                              </th>
+                              <th style={{ width: "30%" }}>
+                                <p
+                                  style={{ color: "#98a2b3", fontWeight: 500 }}
+                                >
+                                  Employee Count
+                                </p>
+                              </th>
+                              <th style={{ width: "60%" }}>
+                                <p
+                                  style={{ color: "#98a2b3", fontWeight: 500 }}
+                                >
+                                  Salary
+                                </p>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {groupedData[workPlaceName].map((item, i) => (
+                              <tr key={i}>
+                                <td>
+                                  <p className="tableBody-title">
+                                    {item?.department}
+                                  </p>
+                                </td>
+                                <td>
+                                  <p className="tableBody-title">
+                                    {item?.employeeCount}
+                                  </p>
+                                </td>
+                                <td>
+                                  <p className="tableBody-title">
+                                    {formatMoney(item?.salary)} ৳
+                                  </p>
+                                </td>
+                              </tr>
+                            ))}
+                            <tr>
+                              <td></td>
+                              <td
+                                style={{
+                                  fontWeight: "bold",
+                                  textAlign: "center",
+                                  fontSize: "11px",
+                                }}
+                              >
+                                Total Salary: {" "}
                               </td>
-                              <td>
-                                <p className="tableBody-title">
-                                  {item?.employeeCount}
-                                </p>
-                              </td>
-                              <td>
-                                <p className="tableBody-title">
-                                  {item?.salary} ৳
-                                </p>
+                              <td style={{ fontWeight: "bold", fontSize:'11px' }}>
+                                 {formatMoney(groupedData[workPlaceName]?.reduce((acc, item) => acc + item.salary, 0))} ৳
                               </td>
                             </tr>
-                          )
-                        )}
-                    </tbody>
-                  </table>
+                          </tbody>
+                        </table>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <NoResult />
                 )}

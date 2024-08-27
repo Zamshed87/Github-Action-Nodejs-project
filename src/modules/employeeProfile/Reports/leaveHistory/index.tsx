@@ -6,10 +6,8 @@ import {
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tag } from "antd";
@@ -18,7 +16,6 @@ import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
@@ -133,6 +130,10 @@ const EmLeaveHistory = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     landingApi.action({
       urlKey: "LeaveBalanceHistoryForAllEmployee",
       method: "GET",
@@ -144,7 +145,8 @@ const EmLeaveHistory = () => {
         IsPaginated: true,
         SearchText: searchText || "",
         WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        // WorkplaceId: values?.workplace?.value,
+        WorkplaceList: workplaceList || "",
       },
     });
   };
@@ -416,6 +418,7 @@ const EmLeaveHistory = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,

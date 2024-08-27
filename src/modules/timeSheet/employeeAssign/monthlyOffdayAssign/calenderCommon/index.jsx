@@ -9,8 +9,7 @@ const CalenderCommon = ({
   setCalendarData,
   isClickable = false,
 }) => {
-  console.log("calendarData", calendarData);
-
+  
   const [dates, setDates] = useState([]);
   const [date, setDate] = useState({
     year: monthYear.split("-")[0],
@@ -38,19 +37,6 @@ const CalenderCommon = ({
     }
     setDates(demoDate.reverse());
   }, [date]);
-
-  // if (calendarData.length === 0) {
-  //   const demoData = [];
-  //   dates?.forEach((item) => {
-  //     demoData.push({
-  //       date: "",
-  //       dayId: item?.day,
-  //       dayName: item?.dayName,
-  //       isOffday: false,
-  //     });
-  //   });
-  //   setCalendarData(demoData);
-  // }
 
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
@@ -109,27 +95,6 @@ const CalenderCommon = ({
                     }`,
                   }}
                 >
-                  {/* <div
-                    className=""
-                    style={{
-                      borderRadius: "50%",
-                      width: "35px",
-                      height: "35px",
-                      textAlign: "center",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: isClickable ? "pointer" : "",
-                      backgroundColor: calendarData[i]?.isOffday
-                        ? "rgba(222,228,239,1)"
-                        : "",
-                      color: calendarData[i]?.isOffday ? "gray" : "",
-                    }}
-                   
-                  >
-                    {item?.day}
-                  </div> */}
-
                   <div
                     className=""
                     style={{
@@ -143,20 +108,21 @@ const CalenderCommon = ({
                       cursor: isClickable ? "pointer" : "",
                       backgroundColor: calendarData[i]?.isOffday
                         ? calendarData[i]?.offdayReason === "Reassign"
-                          ? "rgba(255,223,186,1)" // Color for Reassign
+                          ? "yellow" // Color for Reassign (changed to yellow)
                           : calendarData[i]?.offdayReason === "Swap"
-                          ? "rgba(186,255,201,1)" // Color for Swap
+                          ? "rgba(99, 196, 126)" // Color for Swap (swapped with Reassign's color)
                           : calendarData[i]?.offdayReason === "Weekly"
                           ? "gray" // Color for Weekly
                           : "rgba(222,228,239,1)" // Default color
-                        : calendarData[i]?.isSwapday
-                        ? "green"
                         : "",
-                      color:
-                        calendarData[i]?.isOffday || calendarData[i]?.isSwapday
-                          ? "white"
-                          : "",
+                      color: calendarData[i]?.isOffday ? "black" : "",
+                      transition: "background-color 0.3s ease", // Smooth transition for hover
                     }}
+                    title={
+                      calendarData[i]?.isOffday
+                        ? calendarData[i]?.offdayReason
+                        : ""
+                    }
                   >
                     {item?.day}
                   </div>
