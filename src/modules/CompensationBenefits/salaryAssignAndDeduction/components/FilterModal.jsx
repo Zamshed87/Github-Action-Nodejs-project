@@ -4,7 +4,7 @@ import { getFilterDDLNewAction } from "../../../../common/api";
 import BorderlessSelect from "../../../../common/BorderlessSelect";
 import { borderlessSelectStyle } from "../../../../utility/BorderlessStyle";
 
-const FilterModal = ({ propsObj, masterFilterHandler }) => {
+const FilterModal = ({ propsObj }) => {
   const { orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -41,7 +41,7 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                 touched={touched}
                 isDisabled={false}
                 isClearable={false}
-                setClear={(name, val) => {
+                setClear={(name) => {
                   setFieldValue(name, "");
                   getFilterValues(name, "");
                 }}
@@ -81,7 +81,7 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                 touched={touched}
                 isDisabled={false}
                 isClearable={false}
-                setClear={(name, val) => {
+                setClear={(name) => {
                   setFieldValue("employee", "");
                   getFilterValues("employee", "");
                   setFieldValue(name, "");
@@ -124,7 +124,7 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                 touched={touched}
                 isDisabled={false}
                 isClearable={false}
-                setClear={(name, val) => {
+                setClear={(name) => {
                   setFieldValue("employee", "");
                   getFilterValues("employee", "");
                   setFieldValue(name, "");
@@ -170,7 +170,7 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                 touched={touched}
                 isDisabled={false}
                 isClearable={false}
-                setClear={(name, val) => {
+                setClear={(name) => {
                   setFieldValue("designation", "");
                   getFilterValues("designation", "");
                   setFieldValue("employee", "");
@@ -214,7 +214,7 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                 touched={touched}
                 isDisabled={false}
                 isClearable={false}
-                setClear={(name, val) => {
+                setClear={(name) => {
                   setFieldValue("employee", "");
                   getFilterValues("employee", "");
                   setFieldValue(name, "");
@@ -257,7 +257,7 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                 touched={touched}
                 isDisabled={false}
                 isClearable={false}
-                setClear={(name, val) => {
+                setClear={(name) => {
                   setFieldValue("employee", "");
                   getFilterValues("employee", "");
                   setFieldValue(name, "");
