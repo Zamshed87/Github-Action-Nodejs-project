@@ -1,7 +1,7 @@
 import { Close, DeleteOutline } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -16,6 +16,8 @@ import { todayDate } from "./../../../../../utility/todayDate";
 import { monthLastDate } from "utility/dateFormatter";
 import { isUniq } from "utility/uniqChecker";
 import { Tag } from "antd";
+import { useApiRequest } from "Hooks";
+import IConfirmModal from "common/IConfirmModal";
 
 const ifPrevousDateSelected = (date) => {
   const selectedDate = new Date(date);
@@ -84,7 +86,7 @@ export default function AddEditFormComponent({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const { buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -158,7 +160,57 @@ export default function AddEditFormComponent({
       isAutoGenerate: false,
       extendedEmployeeCalendarList: tableData.slice(1) || [],
     };
-    rosterGenerateAction(payload, setLoading, cb);
+    if (values?.calenderType?.value ===1 && orgId === 6 && (checked?.length > 1 || isAssignAll)) {
+      demoPopup(() => {
+        rosterGenerateAction(payload, setLoading, cb);
+      });
+    } else {
+      rosterGenerateAction(payload, setLoading, cb);
+    }
+  };
+  const CommonCalendarDDL = useApiRequest([]);
+  const getCalendarDefault = () => {
+    CommonCalendarDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "MultiCalendarByEmployeeIdDDL",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: checked[0]?.employeeId,
+      },
+      onSuccess: (res) => {
+        // res.forEach((item, i) => {
+        //   res[i].label = item?.strCalendarName;
+        //   res[i].value = item?.intCalendarId;
+        // });
+        setTableData([
+          {
+            strCalendarName: checked[0]?.calendarName,
+            intCalendarId: checked[0]?.calendarAssignId,
+          },
+          ...res,
+        ]);
+      },
+    });
+  };
+  useEffect(() => {
+    if (checked?.length === 1 && !isAssignAll && orgId === 6) {
+      getCalendarDefault();
+    }
+  }, [checked, isAssignAll]);
+  const demoPopup = (cb) => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `There might be multiple calendar assigned to these employees
+Are you sure ? You want to assign Calendar again?
+`,
+      yesAlertFunc: () => {
+        cb();
+      },
+      noAlertFunc: () => null,
+    };
+    IConfirmModal(confirmObject);
   };
 
   return (
@@ -173,6 +225,7 @@ export default function AddEditFormComponent({
             !values?.startingCalender?.label
           )
             return toast.warning("Starting calender is required");
+
           saveHandler(values, () => {
             setIsAssignAll(false);
             setChecked([]);
