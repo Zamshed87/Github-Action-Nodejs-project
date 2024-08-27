@@ -32,6 +32,8 @@ import {
 } from "./utils";
 import { getPDFAction } from "utility/downloadFile";
 import AttendanceStatus from "common/AttendanceStatus";
+import { PModal } from "Components/Modal";
+import DownloadAllJobCard from "./DownloadAllJobCard";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 
 const EmployeeJobCard = () => {
@@ -54,12 +56,11 @@ const EmployeeJobCard = () => {
   const [buDetails, setBuDetails] = useState({});
   const [empInfo, setEmpInfo] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // Form Instance
   const [form] = Form.useForm();
-  //   api states
-  //   const workplaceGroup = useApiRequest([]);
-  //   const workplace = useApiRequest([]);
+
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -69,59 +70,6 @@ const EmployeeJobCard = () => {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  // workplace wise
-  //   const getWorkplaceGroup = () => {
-  //     workplaceGroup?.action({
-  //       urlKey: "PeopleDeskAllDDL",
-  //       method: "GET",
-  //       params: {
-  //         DDLType: "WorkplaceGroup",
-  //         BusinessUnitId: buId,
-  //         WorkplaceGroupId: wgId, // This should be removed
-  //         intId: employeeId,
-  //       },
-  //       onSuccess: (res) => {
-  //         res.forEach((item: any, i: any) => {
-  //           res[i].label = item?.strWorkplaceGroup;
-  //           res[i].value = item?.intWorkplaceGroupId;
-  //         });
-  //       },
-  //     });
-  //   };
-
-  //   const getWorkplace = () => {
-  //     const { workplaceGroup } = form.getFieldsValue(true);
-  //     workplace?.action({
-  //       urlKey: "PeopleDeskAllDDL",
-  //       method: "GET",
-  //       params: {
-  //         DDLType: "Workplace",
-  //         BusinessUnitId: buId,
-  //         WorkplaceGroupId: workplaceGroup?.value,
-  //         intId: employeeId,
-  //       },
-  //       onSuccess: (res: any) => {
-  //         res.forEach((item: any, i: any) => {
-  //           res[i].label = item?.strWorkplace;
-  //           res[i].value = item?.intWorkplaceId;
-  //         });
-  //       },
-  //     });
-  //   };
-  // data call
-  // type TLandingApi = {
-  //   pagination?: {
-  //     current?: number;
-  //     pageSize?: number;
-  //   };
-  //   filerList?: any;
-  //   searchText?: string;
-  //   excelDownload?: boolean;
-  //   IsForXl?: boolean;
-  //   date?: string;
-  // };
   const landingApiCall = () => {
     const values = form.getFieldsValue(true);
 
@@ -283,11 +231,13 @@ const EmployeeJobCard = () => {
             //   {
             //     type: "primary",
             //     content: "Download all",
-            //     onClick: () => {},
+            //     onClick: () => {
+            //       setOpen(true);
+            //     },
             //     info: {
             //       isInfo: true,
             //       infoTitle:
-            //         "Download all Employee job card for the current workplace",
+            //         "Download all Employee job card for the current workplace for given date range",
             //     },
             //   },
             // ]}
@@ -749,6 +699,18 @@ const EmployeeJobCard = () => {
           />
         </PCard>
       </PForm>
+      <PModal
+        open={open}
+        title={"Download All Employee Job Card"}
+        width=""
+        onCancel={() => setOpen(false)}
+        maskClosable={false}
+        components={
+          <>
+            <DownloadAllJobCard propsObj={{ loading, setOpen }} />
+          </>
+        }
+      />
     </>
   ) : (
     <NotPermittedPage />

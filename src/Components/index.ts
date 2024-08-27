@@ -6,3 +6,5 @@ export { PCard, PCardHeader, PCardBody } from "./Card/PCard";
 export { PButton } from "./Button/PButton";
 
 export { PForm, PInput, PSelect, PRadio } from "./PForm";
+
+export { Flex } from "./CustomElement/PCustomElement";
