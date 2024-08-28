@@ -36,6 +36,9 @@ import {
 } from "./helper";
 import "./salaryGenerate.css";
 import { LightTooltip } from "common/LightTooltip";
+import { Tooltip } from "antd";
+import { downloadFile } from "utility/downloadFile";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const initialValues = {
   salaryTpe: {
@@ -290,9 +293,47 @@ const SalaryGenerateLanding = () => {
       {
         title: "Salary Code",
         dataIndex: "strSalaryCode",
+        render: (text, item) => {
+          return (
+            <div className="d-flex align-items-center">
+              <p>{text}</p>
+              <Tooltip title="Print Details PDF" arrow>
+                <button
+                  className="btn-save ml-2"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
+
+                    downloadFile(
+                      url,
+                      "Salary Details Report",
+                      "xlsx",
+                      setLoading
+                    );
+                  }}
+                  style={{
+                    border: "transparent",
+                    width: "30px",
+                    height: "30px",
+                    background: "#f2f2f7",
+                    borderRadius: "100px",
+                  }}
+                >
+                  <DownloadIcon
+                    sx={{
+                      color: "#101828",
+                      fontSize: "16px",
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            </div>
+          );
+        },
         sorter: true,
         filter: true,
-        width: 120,
+        width: 180,
       },
       {
         title: "Salary Type",
@@ -328,7 +369,7 @@ const SalaryGenerateLanding = () => {
         dataIndex: "strWorkplaceList",
         width: 150,
       },
-    
+
       {
         title: "Payroll Month",
         dataIndex: "intMonth",
