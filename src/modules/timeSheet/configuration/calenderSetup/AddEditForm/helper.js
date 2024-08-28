@@ -147,6 +147,7 @@ export const onCreateCalendarSetupWithValidation = (
       ? moment(values?.officeCloseTime, "HH:mm").format("HH:mm:ss")
       : `${values?.officeCloseTime}:00` || "00:00:00",
     isNightShift: values?.nightShift || false,
+    isAssignedHourMustBeCover: values?.isWorkingHour || false,
     timeSheetCalenderRows: userList,
   };
   if (values?.isEmployeeUpdate) {
