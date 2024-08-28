@@ -720,12 +720,37 @@ function CreateTransferPromotion() {
                       setValues((prev) => ({
                         ...prev,
                         transferNPromotionType: valueOption,
+                        businessUnit: valueOption?.value === "Promotion" && {
+                          label:
+                            empBasic?.employeeProfileLandingView
+                              ?.strBusinessUnitName,
+                          value:
+                            empBasic?.employeeProfileLandingView
+                              ?.intBusinessUnitId,
+                        },
+                        workplaceGroup: valueOption?.value === "Promotion" && {
+                          label:
+                            empBasic?.employeeProfileLandingView
+                              ?.strWorkplaceGroupName,
+                          value:
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId,
+                        },
+                        workplace: valueOption?.value === "Promotion" && {
+                          label:
+                            empBasic?.employeeProfileLandingView
+                              ?.strWorkplaceName,
+                          value:
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceId,
+                        },
                       }));
                     }}
                     placeholder=""
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
+                    isDisabled={values?.employee?.value ? false : true}
                   />
                 </div>
               </div>
@@ -748,6 +773,7 @@ function CreateTransferPromotion() {
                     }}
                     errors={errors}
                     touched={touched}
+                    disabled={!values?.employee?.value}
                   />
                 </div>
               </div>
@@ -829,6 +855,11 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isClearable={false}
+                    isDisabled={
+                      !values?.employee?.value ||
+                      !values?.transferNPromotionType?.value ||
+                      values?.transferNPromotionType?.value === "Promotion"
+                    }
                   />
                 </div>
               </div>
@@ -877,7 +908,10 @@ function CreateTransferPromotion() {
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
-                    isDisabled={!values?.businessUnit}
+                    isDisabled={
+                      !values?.businessUnit ||
+                      values?.transferNPromotionType?.value === "Promotion"
+                    }
                     isClearable={false}
                   />
                 </div>
@@ -956,7 +990,10 @@ function CreateTransferPromotion() {
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
-                    isDisabled={!values?.workplaceGroup}
+                    isDisabled={
+                      !values?.workplaceGroup ||
+                      values?.transferNPromotionType?.value === "Promotion"
+                    }
                     isClearable={false}
                   />
                 </div>
