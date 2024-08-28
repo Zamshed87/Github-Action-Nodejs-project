@@ -164,7 +164,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       matchingData,
       state,
     });
-    // console.log({ payload });
     SaveNUpdateOverTimeConfig?.action({
       method: "POST",
       urlKey: "SaveNUpdateOverTimeConfig",
@@ -570,6 +569,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                           calendarName: option,
                         });
                       }}
+                      disabled={state?.intOtconfigId}
                       // rules={[
                       //   {
                       //     required: true,
