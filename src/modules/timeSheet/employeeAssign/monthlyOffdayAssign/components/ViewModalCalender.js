@@ -26,7 +26,7 @@ const ViewModalCalender = ({ propsObj }) => {
     handleSave,
     isAssignAll,
   } = propsObj;
-  
+
   const [monthYear, setMonthYear] = useState(moment().format("YYYY-MM"));
   const prevMonth = () => {
     setMonthYear((prev) =>
@@ -47,9 +47,7 @@ const ViewModalCalender = ({ propsObj }) => {
         <div className="row">
           <div className="col-4 px-2">
             {checkedList?.length > 0 && !isAssignAll && (
-              <p className="ml-3 mb-2">
-                Total Selected {checkedList?.length}
-              </p>
+              <p className="ml-3 mb-2">Total Selected {checkedList?.length}</p>
             )}
             {isAssignAll && (
               <p className="ml-3 mb-2">Assigning all employees</p>
@@ -107,6 +105,10 @@ const ViewModalCalender = ({ propsObj }) => {
           </div>
 
           <div className="col-8">
+            <p className="text-danger">
+              <span className="mr-2">*</span>Please select all previous and new
+              offday for this month. Other wise Previous offday will be removed.
+            </p>
             <div className="d-flex align-items-center justify-content-center mb-2">
               <KeyboardArrowLeftIcon className="pointer" onClick={prevMonth} />
               <p style={{ fontSize: "20px" }}>
