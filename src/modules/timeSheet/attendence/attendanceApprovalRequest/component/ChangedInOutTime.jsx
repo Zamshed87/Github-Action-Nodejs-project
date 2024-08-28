@@ -8,7 +8,6 @@ import { memo, useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { convertTo12HourFormat } from "utility/timeFormatter";
 
-
 const ChangedInOutTimeEmpListModal = ({
   selectedData = [],
   rowDto = [],
@@ -45,7 +44,6 @@ const ChangedInOutTimeEmpListModal = ({
     setRowDto(updateState);
   };
   useEffect(() => {
-   
     setRowDto([
       ...selectedData.map((info) => ({
         ...info,
@@ -55,8 +53,12 @@ const ChangedInOutTimeEmpListModal = ({
         outDateUpdate: info?.dteAttendanceDate
           ? moment(info?.dteAttendanceDate).format("YYYY-MM-DD")
           : null,
-        intimeUpdate: info?.dteStartTime ? moment(info?.dteStartTime, "h:mma") : null,
-        outtimeUpdate: info?.dteEndTime ? moment(info?.dteEndTime, "h:mma") : null,
+        intimeUpdate: info?.dteStartTime
+          ? moment(info?.dteStartTime, "h:mma")
+          : null,
+        outtimeUpdate: info?.dteEndTime
+          ? moment(info?.dteEndTime, "h:mma")
+          : null,
         isChanged: true,
         reasonUpdate: "",
       })),
@@ -87,7 +89,6 @@ const ChangedInOutTimeEmpListModal = ({
       getCalendarDefault();
     }
   }, [employeeId]);
-
 
   const tableHeadColumn = (
     updateRowDto,
@@ -130,7 +131,10 @@ const ChangedInOutTimeEmpListModal = ({
         title: () => {
           return (
             <div className="d-flex align-items-center justify-content-between">
-              <p style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }}className="my-3">
+              <p
+                style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }}
+                className="my-3"
+              >
                 In-Time
               </p>
               <PInput
@@ -189,7 +193,10 @@ const ChangedInOutTimeEmpListModal = ({
         title: () => {
           return (
             <div className="d-flex align-items-center justify-content-between">
-              <p style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }} className="my-3">
+              <p
+                style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }}
+                className="my-3"
+              >
                 Out-Time
               </p>
               <PInput
@@ -224,11 +231,14 @@ const ChangedInOutTimeEmpListModal = ({
           </div>
         ),
       },
-      orgId === 6 && {
+      {
         title: () => {
           return (
             <div className="d-flex align-items-center justify-content-between">
-              <p style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }} className="my-3">
+              <p
+                style={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.85)" }}
+                className="my-3"
+              >
                 Calendar
               </p>
               <InfoOutlined
@@ -257,6 +267,7 @@ const ChangedInOutTimeEmpListModal = ({
             />
           </div>
         ),
+        hidden: orgId === 6 ? false : true,
       },
       {
         title: "Reason (optional)",
@@ -275,7 +286,7 @@ const ChangedInOutTimeEmpListModal = ({
         ),
         width: 150,
       },
-    ];
+    ].filter((item) => item.hidden !== true);
   };
   const header = [
     {
@@ -330,7 +341,7 @@ const ChangedInOutTimeEmpListModal = ({
     },
   ];
   return (
-    <div >
+    <div>
       {rowDto.length > 0 ? (
         <DataTable
           header={tableHeadColumn(
@@ -345,21 +356,19 @@ const ChangedInOutTimeEmpListModal = ({
           checkBoxColWidth={50}
         />
       ) : null}
-      
-            {openModal && <section className="my-3" >
-              <h3 className="my-3">Calendar Details</h3>
-              <DataTable
-                header={header}
-                bordered
-                data={
-                  CommonCalendarDDL?.data?.length > 0
-                    ? CommonCalendarDDL?.data
-                    : []
-                }
-              />
-            </section>}
 
-            
+      {openModal && (
+        <section className="my-3">
+          <h3 className="my-3">Calendar Details</h3>
+          <DataTable
+            header={header}
+            bordered
+            data={
+              CommonCalendarDDL?.data?.length > 0 ? CommonCalendarDDL?.data : []
+            }
+          />
+        </section>
+      )}
     </div>
   );
 };
