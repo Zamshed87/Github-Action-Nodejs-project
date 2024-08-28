@@ -22,9 +22,8 @@ const ChangedInOutTimeEmpListModal = ({
 
   const updateRowDto = (fieldName, value, index) => {
     const data = [...rowDto];
-    
+
     data[index][fieldName] = value;
-    
 
     setRowDto(data);
   };
@@ -235,7 +234,7 @@ const ChangedInOutTimeEmpListModal = ({
           </div>
         ),
       },
-      orgId === 6 && {
+      {
         title: () => {
           return (
             <div className="d-flex align-items-center justify-content-between">
@@ -268,6 +267,7 @@ const ChangedInOutTimeEmpListModal = ({
             />
           </div>
         ),
+        hidden: orgId === 6 ? false : true,
       },
       {
         title: () => {
@@ -306,7 +306,7 @@ const ChangedInOutTimeEmpListModal = ({
         ),
         width: 200,
       },
-    ];
+    ].filter((item) => item.hidden !== true);
   };
   const header = [
     {

@@ -6,7 +6,11 @@ import { useApiRequest } from "Hooks";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { holidayOffdaySwapLandingheader } from "./helper";
+// import { holidayOffdaySwapLandingheader } from "./helper";
+import { Popover } from "@mui/material";
+import profileImg from "../../../assets/images/profile.jpg";
+import { InfoOutlined } from "@mui/icons-material";
+import PopoverCalender from "modules/timeSheet/employeeAssign/monthlyOffdayAssign/components/PopoverCalender";
 
 const HolidayOffdaySwap = () => {
   const {
@@ -28,7 +32,12 @@ const HolidayOffdaySwap = () => {
   // api states
   const holidayOffdayLandingAPI = useApiRequest([]);
   const history = useHistory();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [calendarData, setCalendarData] = useState([]);
+  const [selectedSingleEmployee, setSelectedSingleEmployee] = useState<any>([]);
 
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
   const getholidayOffdayLanding = (
     pagination = { current: 1, pageSize: 25 }
   ) => {
@@ -59,7 +68,90 @@ const HolidayOffdaySwap = () => {
   useEffect(() => {
     getholidayOffdayLanding();
   }, [wgId, buId, wId]);
+  const holidayOffdaySwapLandingheader: any = () => {
+    return [
+      {
+        title: "SL",
+        render: (value: any, row: any, index: number) => index + 1,
+        align: "center",
+        width: 25,
+      },
+      {
+        title: "Emp ID",
+        dataIndex: "empCode",
+        width: 55,
+      },
+      {
+        title: "Employee Name",
+        dataIndex: "empName",
 
+        // width: 65,
+      },
+      {
+        title: "Department",
+        dataIndex: "empDepartment",
+      },
+      {
+        title: "Designation",
+        dataIndex: "empDesignation",
+      },
+      {
+        title: "HR Position",
+        dataIndex: "empHr",
+      },
+      {
+        title: "Section",
+        dataIndex: "empSection",
+        width: 45,
+      },
+      {
+        title: "Calender Name",
+        dataIndex: "calenderName",
+      },
+      {
+        title: "Attendence Date",
+        dataIndex: "dteAttendenceDate",
+        className: "text-center",
+      },
+      {
+        title: "Attendence Status",
+        dataIndex: "attendendeceStatus",
+        className: "text-center",
+        render: (data: any, record: any) => (
+          <div className="d-flex align-items-center">
+            <span className="ml-2">{record?.attendendeceStatus}</span>
+            {record?.attendendeceStatus === "Offday" && (
+              <InfoOutlined
+                className="ml-2"
+                sx={{ cursor: "pointer", fontSize: "14px" }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  // getSingleCalendar(
+                  //   moment().format("MM"),
+                  //   moment().format("YYYY"),
+                  //   record?.employeeId,
+                  //   setCalendarData,
+                  //   setLoading
+                  // );
+                  setAnchorEl(e.currentTarget);
+                  setSelectedSingleEmployee([record]);
+                }}
+              />
+            )}
+          </div>
+        ),
+      },
+      {
+        title: "Swap Date",
+        dataIndex: "swapDate",
+        className: "text-center",
+      },
+      {
+        title: "Remarks",
+        dataIndex: "strRemarks",
+      },
+    ];
+  };
   return holidayOffdayPermission?.isView ? (
     <>
       <PForm form={form} initialValues={{}}>
@@ -87,7 +179,7 @@ const HolidayOffdaySwap = () => {
           />
 
           <DataTable
-            header={holidayOffdaySwapLandingheader()}
+            header={holidayOffdaySwapLandingheader(setSelectedSingleEmployee)}
             bordered
             data={rowDto || []}
             loading={holidayOffdayLandingAPI?.loading}
@@ -110,6 +202,35 @@ const HolidayOffdaySwap = () => {
             }}
           />
         </PCard>
+        <Popover
+          sx={{
+            "& .MuiPaper-root": {
+              width: "600px",
+              minHeight: "200px",
+              borderRadius: "4px",
+            },
+          }}
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={() => {
+            setAnchorEl(null);
+            setCalendarData([]);
+          }}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+        >
+          <PopoverCalender
+            propsObj={{
+              selectedSingleEmployee,
+              profileImg,
+              calendarData,
+              setCalendarData,
+            }}
+          />
+        </Popover>
       </PForm>
     </>
   ) : (

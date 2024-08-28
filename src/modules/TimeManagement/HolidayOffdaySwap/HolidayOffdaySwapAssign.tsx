@@ -13,10 +13,14 @@ import { Col, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { attendenceStatusDDL, header } from "./helper";
+import { attendenceStatusDDL } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { PModal } from "Components/Modal";
 import { toast } from "react-toastify";
+import { Popover } from "@mui/material";
+import PopoverCalender from "modules/timeSheet/employeeAssign/monthlyOffdayAssign/components/PopoverCalender";
+import profileImg from "../../../assets/images/profile.jpg";
+import { InfoOutlined } from "@mui/icons-material";
 
 const HolidayOffdaySwapAssign = () => {
   const {
@@ -37,6 +41,11 @@ const HolidayOffdaySwapAssign = () => {
   const [rowDto, setRowDto] = useState<any[]>([]);
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [calendarData, setCalendarData] = useState([]);
+  const [selectedSingleEmployee, setSelectedSingleEmployee] = useState<any>([]);
+  const openPop = Boolean(anchorEl);
+  const id = openPop ? "simple-popover" : undefined;
   // api states
   const empDepartmentDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
@@ -169,7 +178,74 @@ const HolidayOffdaySwapAssign = () => {
     getEmployeDesignation();
     getEmployeePosition();
   }, [wgId, buId, wId]);
-
+  const header: any = (values: any) => {
+    return [
+      {
+        title: "SL",
+        render: (value: any, row: any, index: number) => index + 1,
+        align: "center",
+      },
+      {
+        title: "Employee ID",
+        dataIndex: "strEmpCode",
+        width: 25,
+      },
+      {
+        title: "Employee Name",
+        dataIndex: "strEmpName",
+        width: 45,
+        render: (data: any, record: any) => (
+          <div className="d-flex align-items-center">
+            <span className="ml-2">{record?.strEmpName}</span>
+            {values?.attendenceStatus?.label === "Offday" && (
+              <InfoOutlined
+                className="ml-2"
+                sx={{ cursor: "pointer", fontSize: "14px" }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  // getSingleCalendar(
+                  //   moment().format("MM"),
+                  //   moment().format("YYYY"),
+                  //   record?.employeeId,
+                  //   setCalendarData,
+                  //   setLoading
+                  // );
+                  setAnchorEl(e.currentTarget);
+                  setSelectedSingleEmployee([record]);
+                }}
+              />
+            )}
+          </div>
+        ),
+      },
+      {
+        title: "Department",
+        dataIndex: "strDepartment",
+      },
+      {
+        title: "Designation",
+        dataIndex: "strDesignation",
+      },
+      {
+        title: "HR Position",
+        dataIndex: "strHr",
+        width: 25,
+      },
+      {
+        title: "Section",
+        dataIndex: "strSectionName",
+        width: 25,
+      },
+      {
+        title: "Calender Name",
+        dataIndex: "strCalenderName",
+      },
+      {
+        title: "Swap Date",
+        dataIndex: "strSwapDate",
+      },
+    ];
+  };
   return holidayOffdayPermission?.isView ? (
     <>
       <PForm
@@ -297,7 +373,7 @@ const HolidayOffdaySwapAssign = () => {
             </Row>
           </PCardBody>
           <DataTable
-            header={header(holidayOffdayLandingAPI)}
+            header={header(form.getFieldsValue(true))}
             bordered
             data={rowDto || []}
             loading={holidayOffdayLandingAPI?.loading}
@@ -380,6 +456,35 @@ const HolidayOffdaySwapAssign = () => {
           </Row>
         }
       />
+      <Popover
+        sx={{
+          "& .MuiPaper-root": {
+            width: "600px",
+            minHeight: "200px",
+            borderRadius: "4px",
+          },
+        }}
+        id={id}
+        open={openPop}
+        anchorEl={anchorEl}
+        onClose={() => {
+          setAnchorEl(null);
+          setCalendarData([]);
+        }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <PopoverCalender
+          propsObj={{
+            selectedSingleEmployee,
+            profileImg,
+            calendarData,
+            setCalendarData,
+          }}
+        />
+      </Popover>
     </>
   ) : (
     <NotPermittedPage />
