@@ -106,8 +106,8 @@ const ViewModalCalender = ({ propsObj }) => {
 
           <div className="col-8">
             <p className="text-danger">
-              <span className="mr-2">*</span>Please select all previous and new
-              offday for this month. Other wise Previous offday will be removed.
+              Please select all previous and new offday for this month. Other
+              wise Previous offday will be removed.
             </p>
             <div className="d-flex align-items-center justify-content-center mb-2">
               <KeyboardArrowLeftIcon className="pointer" onClick={prevMonth} />
@@ -124,6 +124,10 @@ const ViewModalCalender = ({ propsObj }) => {
                 calendarData={calendarData}
                 setCalendarData={setCalendarData}
                 isClickable={true}
+                singleAssign={singleAssign}
+                selectedSingleEmployee={selectedSingleEmployee}
+                isAssignAll={isAssignAll}
+                checkedList={checkedList}
               />
             </div>
           </div>
