@@ -265,8 +265,9 @@ function MonthlyOffdayAssignLanding() {
   }
 
   const handleSave = () => {
+    console.log("calendarData", calendarData);
     const offdays = calendarData.map((data) => ({
-      date: data.date,
+      date: data.dteDate,
       isOffDay: data.isOffday,
       isActive: true,
     }));
@@ -301,6 +302,7 @@ function MonthlyOffdayAssignLanding() {
       setCheckedList([]);
       setFieldValue("search", "");
     };
+    console.log("payload",payload);
     payload?.offdays?.length > 0
       ? createMonthlyOffdayAssign(payload, setLoading, callback)
       : toast.error("Please select at least one day");
