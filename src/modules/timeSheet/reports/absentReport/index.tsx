@@ -412,6 +412,7 @@ const AbsentReport = () => {
                   label="Workplace"
                   placeholder="Workplace"
                   mode="multiple"
+                  maxTagCount={"responsive"}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,

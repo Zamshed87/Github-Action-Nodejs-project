@@ -422,6 +422,7 @@ const LateReport = () => {
                   label="Workplace"
                   placeholder="Workplace"
                   mode="multiple"
+                  maxTagCount={"responsive"}
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({

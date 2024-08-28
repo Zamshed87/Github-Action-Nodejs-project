@@ -564,16 +564,16 @@ const MgmtDailyAttendance = () => {
                   }
                 />
               </Col>
-              <Col md={5} sm={12} xs={24}>
+              <Col md={8} sm={12} xs={24}>
                 <PSelect
                   options={workplace?.data || []}
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
                   mode="multiple"
+                  maxTagCount={"responsive"}
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
-                    console.log("op", op);
                     form.setFieldsValue({
                       workplace: op,
                     });
