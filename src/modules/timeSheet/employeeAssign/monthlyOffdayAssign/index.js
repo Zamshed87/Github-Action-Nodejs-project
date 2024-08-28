@@ -229,7 +229,7 @@ function MonthlyOffdayAssignLanding() {
     getData(pages);
     // setChecked([]);
   }, [buId, orgId, wId, wgId]);
-  
+
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -279,7 +279,7 @@ function MonthlyOffdayAssignLanding() {
       intEmployeeId: singleAssign
         ? intEmployeeId
         : isAssignAll
-        ? empIDString?.split(",").map(id => parseInt(id.trim(),10))
+        ? empIDString?.split(",").map((id) => parseInt(id.trim(), 10))
         : empArr,
       offdays: offdays?.filter((data) => data?.isOffDay === true),
       intActionBy: employeeId,
