@@ -7,7 +7,6 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
@@ -30,6 +29,7 @@ import {
   payrollGroupCalculation,
   payrollGroupElementList,
 } from "../calculation";
+import Loading from "common/loading/Loading";
 
 type TOvertimePolicy = unknown;
 const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
@@ -38,32 +38,16 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
-  const { workplaceDDL } = useSelector(
-    (state: any) => state?.auth,
-    shallowEqual
-  );
-  const workplaceList = workplaceDDL?.map((item: any) => {
-    return {
-      value: item?.WorkplaceId,
-      label: item?.WorkplaceName,
-    };
-  });
-
   const history = useHistory();
   const { state }: any = useLocation();
 
   // States
   const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState<any>({});
-  const [isFreeze, setIsFreeze] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   // Form Instance
   const [form] = Form.useForm();
   // gross form
   const [dynamicForm, setDynamicForm] = useState([]);
-  // Api Actions
-  const EmploymentTypeDDL = useApiRequest([]);
 
   // ddl
   const [workplace, setWorkplace] = useState([]);
@@ -104,27 +88,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       );
     }
   }, [orgId, buId, employeeId]);
-
-  const getEmploymentTypeDDL = () => {
-    const { workplace } = form.getFieldsValue(true);
-    EmploymentTypeDDL?.action({
-      method: "GET",
-      urlKey: "PeopleDeskAllDDL",
-      params: {
-        DDLType: "EmploymentType",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (data) => {
-        data?.forEach((item: any, i: number) => {
-          data[i].value = item?.Id;
-          data[i].label = item?.EmploymentType;
-        });
-      },
-    });
-  };
 
   // state
   useEffect(() => {
@@ -183,8 +146,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
     const values = form.getFieldsValue();
     const callback = () => {
       // cb();
-      setIsFreeze(false);
-      setIsEdit(false);
       setSingleData("");
       getAllAppliedSalaryBreakdownList(
         orgId,
@@ -194,9 +155,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         0,
         0,
         0,
-        employeeId,
-        setRowDto,
-        setLoading
+        employeeId
       );
       setDynamicForm([]);
       history.push({
@@ -219,9 +178,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
     };
-
-    console.log("values", values);
-    console.log("payload", payload);
 
     if (values?.isPerdaySalary) {
       payload = {
@@ -308,6 +264,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         }}
         onFinish={onFinish}
       >
+        {loading && <Loading />}
         <PCard>
           <PCardHeader
             title={`${

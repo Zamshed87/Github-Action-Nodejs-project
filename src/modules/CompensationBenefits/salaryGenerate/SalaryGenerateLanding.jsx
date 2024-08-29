@@ -297,7 +297,7 @@ const SalaryGenerateLanding = () => {
           return (
             <div className="d-flex align-items-center">
               <p>{text}</p>
-              <Tooltip title="Print Details PDF" arrow>
+              <Tooltip title="Print Details Excel" arrow>
                 <button
                   className="btn-save ml-2"
                   type="button"
