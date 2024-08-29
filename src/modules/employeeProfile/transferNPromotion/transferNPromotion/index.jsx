@@ -3,13 +3,7 @@ import {
   Clear,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import {
-  IconButton,
-  Popover,
-  MenuItem,
-  Pagination,
-  Select,
-} from "@mui/material";
+import { IconButton, Popover } from "@mui/material";
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -22,7 +16,6 @@ import FormikInput from "../../../../common/FormikInput";
 import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
-import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import ResetButton from "../../../../common/ResetButton";
@@ -30,14 +23,18 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray900 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import {
+  dateFormatter,
   dateFormatterForInput,
   getDateOfYear,
 } from "../../../../utility/dateFormatter";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getAllTransferAndPromotionLanding } from "../helper";
-import TransferPromotionTable from "./components/transferPromotionTable";
 import { releaseEmpTransferNPromotion } from "./helper";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { Avatar, DataTable } from "Components";
+import { Tag } from "antd";
+import { getSerial } from "Utils";
+import NoResult from "common/NoResult";
 
 const initialValues = {
   search: "",
@@ -91,44 +88,26 @@ export default function TransferAndPromotion() {
     total: 0,
   });
 
-  const getData = (fromDate, toDate) => {
+  const getData = (
+    fromDate = getDateOfYear("first"),
+    toDate = getDateOfYear("last"),
+    srcStr = "",
+    pagination = pages
+  ) => {
     getAllTransferAndPromotionLanding(
       buId,
       wgId,
       "all",
-      fromDate ? fromDate : getDateOfYear("first"),
-      toDate ? toDate : getDateOfYear("last"),
+      fromDate,
+      toDate,
       setRowDto,
       setLoading,
-      1,
-      paginationSize,
+      pagination.current,
+      pagination.pageSize,
       setPages,
-      "",
+      srcStr,
       wId
     );
-  };
-
-  const handleChangePage = (_, newPage) => {
-    setPages((prev) => {
-      return { ...prev, current: newPage };
-    });
-
-    getData({
-      current: newPage,
-      pageSize: pages?.pageSize,
-      total: pages?.total,
-    });
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPages(() => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
-    });
-    getData({
-      current: 1,
-      pageSize: +event.target.value,
-      total: pages?.total,
-    });
   };
 
   useEffect(() => {
@@ -138,20 +117,7 @@ export default function TransferAndPromotion() {
   }, []);
 
   useEffect(() => {
-    getAllTransferAndPromotionLanding(
-      buId,
-      wgId,
-      "all",
-      getDateOfYear("first"),
-      getDateOfYear("last"),
-      setRowDto,
-      setLoading,
-      1,
-      paginationSize,
-      setPages,
-      "",
-      wId
-    );
+    getData();
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
       "EmployeeId",
@@ -174,6 +140,202 @@ export default function TransferAndPromotion() {
       }
     );
   };
+
+  const transferNPromotionHeader = [
+    {
+      title: "SL",
+      render: (_, rec, index) =>
+        getSerial({
+          currentPage: pages?.current,
+          pageSize: pages?.pageSize,
+          index,
+        }),
+      fixed: "left",
+      width: 20,
+      align: "center",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
+      render: (_, rec) => {
+        return (
+          <div className="d-flex align-items-center">
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
+          </div>
+        );
+      },
+      fixed: "left",
+      width: 150,
+    },
+    {
+      title: "From",
+      children: [
+        {
+          title: "B.Unit, Workplace Group, Workplace",
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: "rgba(247, 220, 92, 1)",
+              padding: "0",
+            },
+          }),
+          render: (_, rec) => {
+            return {
+              props: { style: { background: "rgba(254, 249, 223, 1)" } },
+              children: (
+                <div>
+                  <div>{rec?.businessUnitNameFrom}</div>
+                  <div>{rec?.workplaceGroupNameFrom}</div>
+                  <div>{rec?.workplaceNameFrom}</div>
+                </div>
+              ),
+            };
+          },
+          dataIndex: "collectionPrinciple",
+          width: 100,
+        },
+        {
+          title: "Dept, Section & Designation",
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: "rgba(247, 220, 92, 1)",
+              padding: "0",
+            },
+          }),
+          render: (_, rec) => {
+            return {
+              props: { style: { background: "rgba(254, 249, 223, 1)" } },
+              children: (
+                <div>
+                  <div>{rec?.departmentNameFrom}</div>
+                  <div>{rec?.sectionNameFrom}</div>
+                  <div>{rec?.designationNameFrom}</div>
+                </div>
+              ),
+            };
+          },
+          dataIndex: "collectionInterest",
+          width: 100,
+        },
+      ],
+    },
+    {
+      title: "To",
+      children: [
+        {
+          title: "B.Unit, Workplace Group, Workplace",
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: "rgba(129, 225, 255, 1)",
+              padding: "0",
+            },
+          }),
+          render: (_, rec) => {
+            return {
+              props: { style: { background: "rgba(230, 246, 253, 1)" } },
+              children: (
+                <div>
+                  <div>{rec?.businessUnitName}</div>
+                  <div>{rec?.workplaceGroupName}</div>
+                  <div>{rec?.workplaceName}</div>
+                </div>
+              ),
+            };
+          },
+          dataIndex: "collectionPrinciple",
+          width: 100,
+        },
+        {
+          title: "Dept, Section & Designation",
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: "rgba(129, 225, 255, 1)",
+              padding: "0",
+            },
+          }),
+          render: (_, rec) => {
+            return {
+              props: { style: { background: "rgba(230, 246, 253, 1)" } },
+              children: (
+                <div>
+                  <div>{rec?.departmentName}</div>
+                  <div>{rec?.sectionNameFrom}</div>
+                  <div>{rec?.designationNameFrom}</div>
+                </div>
+              ),
+            };
+          },
+          dataIndex: "collectionInterest",
+          width: 100,
+        },
+      ],
+    },
+    {
+      title: "Type",
+      dataIndex: "strTransferNpromotionType",
+      width: 50,
+    },
+    {
+      title: "Effective Date",
+      dataIndex: "dteEffectiveDate",
+      render: (text) => dateFormatter(text),
+      width: 50,
+    },
+    {
+      title: "Status",
+      dataIndex: "strStatus",
+      render: (_, item) => (
+        <div>
+          {item?.strStatus === "Pending" && (
+            <Tag style={{ borderRadius: "50px" }} color="gold">
+              Pending
+            </Tag>
+          )}
+          {item?.strStatus === "Rejected" && (
+            <Tag style={{ borderRadius: "50px" }} color="red">
+              Rejected
+            </Tag>
+          )}
+          {item?.strStatus === "Released" && (
+            <Tag style={{ borderRadius: "50px" }} color="purple">
+              Released
+            </Tag>
+          )}
+          {item?.strStatus === "Joined" && (
+            <Tag style={{ borderRadius: "50px" }} color="blue">
+              Joined
+            </Tag>
+          )}
+          {item?.strStatus === "Approved" &&
+            (item?.strTransferNpromotionType === "Promotion" ? (
+              <Tag style={{ borderRadius: "50px" }} color="green">
+                Approved
+              </Tag>
+            ) : (
+              <button
+                style={{
+                  height: "24px",
+                  fontSize: "12px",
+                  padding: "0px 12px 0px 12px",
+                }}
+                className="btn btn-default"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!permission?.isCreate)
+                    return toast.warn("You don't have permission");
+                  setAnchorEl(e.currentTarget);
+                  setSingleData(item);
+                }}
+              >
+                Release
+              </button>
+            ))}
+        </div>
+      ),
+      width: 50,
+    },
+  ];
 
   return (
     <>
@@ -287,7 +449,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 />
                               }
-                              onClick={(e) => {
+                              onClick={() => {
                                 if (!permission?.isCreate)
                                   return toast.warn(
                                     "You don't have permission"
@@ -324,7 +486,7 @@ export default function TransferAndPromotion() {
                       </div>
                     </div>
 
-                    <div className="table-card-body pt-1">
+                    <div className="table-card-body">
                       <div className="card-style my-2">
                         <div className="row">
                           <div className="col-lg-3">
@@ -382,154 +544,51 @@ export default function TransferAndPromotion() {
                           </div>
                         </div>
                       </div>
-                      <div className="table-card-styled tableOne formCardTwoWithTable">
-                        {rowDto?.length > 0 ? (
-                          <table className="table table-bordered table-colored">
-                            <thead>
-                              <tr className="heading-row">
-                                <th rowSpan="2" className="table-heading">
-                                  <div>SL</div>
-                                </th>
-                                <th rowSpan="2" className="table-heading">
-                                  <div>Employee</div>
-                                </th>
-                                <th
-                                  className="table-heading text-center"
-                                  colSpan="2"
-                                >
-                                  <div>From</div>
-                                </th>
-                                <th
-                                  className="table-heading text-center"
-                                  colSpan="2"
-                                >
-                                  <div>To</div>
-                                </th>
-                                <th rowSpan="2" className="table-heading">
-                                  <div>Type</div>
-                                </th>
-                                <th rowSpan="2" className="table-heading">
-                                  <div>Effective Date</div>
-                                </th>
-                                <th rowSpan="2" className="table-heading">
-                                  <div>Status</div>
-                                </th>
-                              </tr>
-                              <tr
-                                style={{
-                                  fontSize: "11px",
-                                  fontWeight: "400",
-                                  color: "rgba(82, 82, 82, 1)",
-                                }}
-                              >
-                                <td
-                                  style={{
-                                    backgroundColor: "rgba(247, 220, 92, 1)",
-                                    width: "200px",
-                                  }}
-                                >
-                                  <div>B.Unit, Workplace Group, Workplace</div>
-                                </td>
-                                <td
-                                  style={{
-                                    backgroundColor: "rgba(247, 220, 92, 1)",
-                                    width: "200px",
-                                  }}
-                                >
-                                  Dept, Section & Designation
-                                </td>
-                                <td
-                                  style={{
-                                    backgroundColor: "rgba(129, 225, 255, 1)",
-                                    width: "200px",
-                                  }}
-                                >
-                                  <div>B.Unit, Workplace Group, Workplace</div>
-                                </td>
-                                <td
-                                  style={{
-                                    backgroundColor: "rgba(129, 225, 255, 1)",
-                                    width: "200px",
-                                  }}
-                                >
-                                  Dept, Section & Designation
-                                </td>
-                              </tr>
-                            </thead>
-                            <tbody
-                              style={{ color: "var(--gray600)!important" }}
-                            >
-                              {rowDto?.map((item, index) => (
-                                <tr
-                                  style={{
-                                    color: "var(--gray600)!important",
-                                    fontSize: "11px",
-                                    cursor: "pointer",
-                                  }}
-                                  key={index}
-                                  onClick={() => {
-                                    history.push(
-                                      `/profile/transferandpromotion/transferandpromotion/view/${item?.intTransferNpromotionId}`,
-                                      {
-                                        employeeId: item?.intEmployeeId,
-                                        businessUnitId: item?.intBusinessUnitId,
-                                        workplaceGroupId:
-                                          item?.intWorkplaceGroupId,
-                                        showButton:
-                                          item?.strStatus !== "Pending"
-                                            ? false
-                                            : true,
-                                      }
-                                    );
-                                  }}
-                                >
-                                  <TransferPromotionTable
-                                    item={item}
-                                    index={index}
-                                    setSingleData={setSingleData}
-                                    permission={permission}
-                                    setAnchorEl={setAnchorEl}
-                                    page={pages?.current}
-                                    paginationSize={pages?.pageSize}
-                                  />
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        ) : (
-                          <NoResult />
-                        )}
-                      </div>
-
                       {rowDto?.length > 0 ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "right",
-                            alignItems: "center",
-                            marginTop: "10px",
+                        <DataTable
+                          bordered
+                          data={rowDto?.length > 0 ? rowDto : []}
+                          header={transferNPromotionHeader}
+                          onChange={(pagination, filters, sorter, extra) => {
+                            // Return if sort function is called
+                            if (extra.action === "sort") return;
+                            setPages({
+                              current: pagination.current,
+                              pageSize: pagination.pageSize,
+                              total: pagination.total,
+                            });
+                            getData(
+                              values?.filterFromDate,
+                              values?.filterToDate,
+                              values.search,
+                              pagination
+                            );
                           }}
-                        >
-                          <Select
-                            value={pages?.pageSize}
-                            onChange={handleChangeRowsPerPage}
-                            variant="outlined"
-                            size="small"
-                            sx={{ marginRight: "16px", fontSize: "14px" }}
-                          >
-                            <MenuItem value={25}>25 per page</MenuItem>
-                            <MenuItem value={50}>50 per page</MenuItem>
-                            <MenuItem value={100}>100 per page</MenuItem>
-                            <MenuItem value={500}>500 per page</MenuItem>
-                          </Select>
-                          <Pagination
-                            count={Math.ceil(pages?.total / pages?.pageSize)}
-                            page={pages.current}
-                            onChange={handleChangePage}
-                            size="small"
-                          />
-                        </div>
-                      ) : null}
+                          onRow={(record) => ({
+                            onClick: () => {
+                              history.push(
+                                `/profile/transferandpromotion/transferandpromotion/view/${record?.intTransferNpromotionId}`,
+                                {
+                                  employeeId: record?.intEmployeeId,
+                                  businessUnitId: record?.intBusinessUnitId,
+                                  workplaceGroupId: record?.intWorkplaceGroupId,
+                                  showButton:
+                                    record?.strStatus !== "Pending"
+                                      ? false
+                                      : true,
+                                }
+                              );
+                            },
+                            className: "pointer",
+                          })}
+                          pagination={{
+                            pageSize: pages?.pageSize,
+                            total: pages?.total,
+                          }}
+                        />
+                      ) : (
+                        <NoResult />
+                      )}
                     </div>
                   </div>
                 </div>
