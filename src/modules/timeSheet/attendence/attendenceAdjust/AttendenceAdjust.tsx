@@ -303,6 +303,10 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
               workPlaceGroup: wgId,
               businessUnitId: buId,
+              isAdditionalCalendar: item?.isAdditionalCalendar ? true : false,
+              additionalCalendarId: item?.isAdditionalCalendar
+                ? item?.additionalCalendarId
+                : 0,
             };
           });
         } else {
@@ -880,6 +884,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     intime: "",
                     outtime: "",
                     reason: "",
+                    calendar: "",
                   }}
                 >
                   <>
@@ -940,6 +945,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           selectedRow={selectedRow}
                           rowDto={selectedPayloadState}
                           setRowDto={setSelectedPayloadState}
+                          value={form?.getFieldsValue(true)}
                         />
                         <ModalFooter
                           submitText="Yes"
@@ -951,6 +957,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                               intime: "",
                               outtime: "",
                               reason: "",
+                              calendar: "",
+
                               reasonAll: false,
                             });
                           }}

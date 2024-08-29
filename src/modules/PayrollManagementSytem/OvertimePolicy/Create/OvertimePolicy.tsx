@@ -145,10 +145,13 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   };
   // Submit Handler
   const onFinish = () => {
-    if (matchingData?.length)
+    if (matchingData?.length) {
+      console.log("something");
       return toast.info(
         "Please delete existing policy first or create new policy."
       );
+    }
+
     const commonData = {
       dteCreateAt: moment().format("YYYY-MM-DDTHH:mm:ss"),
       intAccountId: orgId,
@@ -161,7 +164,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       matchingData,
       state,
     });
-    // console.log({payload})
     SaveNUpdateOverTimeConfig?.action({
       method: "POST",
       urlKey: "SaveNUpdateOverTimeConfig",
@@ -181,6 +183,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       },
     });
   };
+
   return (
     <>
       <PForm
@@ -216,7 +219,9 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       >
         <PCard>
           <PCardHeader
-            title={`${state?.intOtconfigId ? "Edit" : "Create"} OT Policy`}
+            title={`${
+              state?.intOtconfigIdstate?.intOtconfigId ? "Edit" : "Create"
+            } OT Policy`}
             backButton
             submitText="Save"
           />
@@ -304,7 +309,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   {/* 💥💥 change requirement  */}
 
                   {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
-                  <div className="d-none">
+                  {/* <div className="d-none">
                     <Form.Item noStyle shouldUpdate>
                       {() => {
                         const { policyType } = form.getFieldsValue(true);
@@ -449,7 +454,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         return formElements;
                       }}
                     </Form.Item>
-                  </div>
+                  </div> */}
                   {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
 
                   {/* new requirement 💥💥 */}
@@ -564,6 +569,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                           calendarName: option,
                         });
                       }}
+                      disabled={state?.intOtconfigId}
                       // rules={[
                       //   {
                       //     required: true,
@@ -793,12 +799,13 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                               placeholder="Holiday Max OT Limit (HR)"
                               type="text"
                               name="intMaxOverTimeForHolidayInMin"
-                               rules={[
-                                 {
-                                   required: true,
-                                   message: "Holiday Max OT Limit (HR) is required!",
-                                 },
-                               ]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message:
+                                    "Holiday Max OT Limit (HR) is required!",
+                                },
+                              ]}
                             />
                           </Col>
                         )
@@ -828,24 +835,24 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       return (
                         isOffdayCountAsFullDayOt && (
                           <Col md={12} sm={24}>
-                          <PInput
-                            label="Offday Max OT Limit (Hr)"
-                            placeholder="Offday Max OT Limit (Hr)"
-                            type="text"
-                            name="intMaxOverTimeForOffdayInMin"
-                             rules={[
-                               {
-                                 required: true,
-                                 message: "Offday Max OT Limit (Hr) is required!",
-                               },
-                             ]}
-                          />
-                        </Col>
+                            <PInput
+                              label="Offday Max OT Limit (Hr)"
+                              placeholder="Offday Max OT Limit (Hr)"
+                              type="text"
+                              name="intMaxOverTimeForOffdayInMin"
+                              rules={[
+                                {
+                                  required: true,
+                                  message:
+                                    "Offday Max OT Limit (Hr) is required!",
+                                },
+                              ]}
+                            />
+                          </Col>
                         )
                       );
                     }}
                   </Form.Item>
-                  
 
                   <Divider
                     style={{ margin: "3px 0", fontSize: 12 }}

@@ -2,7 +2,12 @@
 import { useState } from "react";
 import { components } from "react-select";
 import AsyncSelect from "react-select/async";
-import { customAutoStyles, customStyles, customStylesLarge } from "../utility/selectCustomStyle";
+import {
+  customAutoStyles,
+  customStyles,
+  customStylesLarge,
+} from "../utility/selectCustomStyle";
+import FormikError from "./login/FormikError";
 
 const AsyncFormikSelect = ({
   selectedValue,
@@ -13,12 +18,11 @@ const AsyncFormikSelect = ({
   name,
   placeholder,
   isSearchIcon,
-  paddingRight,
   errors,
   touched,
   isMulti,
   styleMode,
-  onChange
+  onChange,
 }) => {
   const [inputValue, setValue] = useState("");
   // const [selectedValue, setSelectedValue] = useState(null);
@@ -44,7 +48,7 @@ const AsyncFormikSelect = ({
   }
 
   return (
-    <div className="form-container">
+    <div className="form-container" id={name}>
       <div className="formik-select-wrapper">
         {isMulti ? (
           <AsyncSelect
@@ -87,6 +91,7 @@ const AsyncFormikSelect = ({
           ></i>
         )}
       </div>
+      <FormikError errors={errors} name={name} touched={touched} />
     </div>
   );
 };

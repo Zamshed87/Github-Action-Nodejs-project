@@ -10,11 +10,10 @@ import CalenderCommon from "../calenderCommon";
 import { getSingleCalendar } from "../helper";
 
 const PopoverCalender = ({ propsObj }) => {
-
-  
+  console.log(propsObj);
   const [monthYear, setMonthYear] = useState(moment().format("YYYY-MM"));
   const [loading, setLoading] = useState(false);
-  
+
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -24,7 +23,9 @@ const PopoverCalender = ({ propsObj }) => {
     getSingleCalendar(
       month,
       year,
-      selectedSingleEmployee[0]?.employeeId,
+      selectedSingleEmployee[0]?.employeeId ||
+        selectedSingleEmployee[0]?.employId ||
+        selectedSingleEmployee[0]?.intEmpId,
       setCalendarData,
       setLoading
     );
@@ -45,6 +46,7 @@ const PopoverCalender = ({ propsObj }) => {
 
   const { selectedSingleEmployee, profileImg, calendarData, setCalendarData } =
     propsObj;
+
   return (
     <div>
       <div className="d-flex align-items-center my-3">
@@ -69,7 +71,7 @@ const PopoverCalender = ({ propsObj }) => {
         {/* <div className="mb-2" style={{ fontSize: "14px", fontWeight: 500 }}>
           {moment().format("MMM, YYYY")}
         </div> */}
-         <div className="d-flex align-items-center justify-content-center mb-2">
+        <div className="d-flex align-items-center justify-content-center mb-2">
           <KeyboardArrowLeftIcon className="pointer" onClick={prevMonth} />
           <p style={{ fontSize: "20px", margin: "0 15px" }}>
             {currMonthName() + `, ` + currYear()}

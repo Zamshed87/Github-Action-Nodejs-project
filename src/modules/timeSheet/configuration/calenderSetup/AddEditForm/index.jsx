@@ -2,7 +2,6 @@ import { Box } from "@mui/system";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-
 import { getPeopleDeskAllDDL } from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
@@ -14,7 +13,6 @@ import {
   onCreateCalendarSetupWithValidation,
   validationSchema,
 } from "./helper";
-// import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
 import { calculateNextDate } from "utility/dateFormatter";
@@ -80,6 +78,7 @@ const CalendarSetupModal = ({
         officeStartTime: singleData?.dteOfficeStartTime || "",
         officeCloseTime: singleData?.dteOfficeCloseTime || "",
         nightShift: singleData?.isNightShift || "",
+        isWorkingHour: singleData?.isAssignedHourMustBeCover,
         isEmployeeUpdate: true,
         workplace: tableData?.length > 0 ? tableData : [],
       };
@@ -226,7 +225,7 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
-                    <div className="col-12">
+                    <div className="col-6">
                       <FormikCheckBox
                         name="nightShift"
                         styleObj={{
@@ -236,6 +235,19 @@ const CalendarSetupModal = ({
                         checked={values?.nightShift}
                         onChange={(e) => {
                           setFieldValue("nightShift", e.target.checked);
+                        }}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <FormikCheckBox
+                        name="isWorkingHour"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Mandatory Working Hours"
+                        checked={values?.isWorkingHour}
+                        onChange={(e) => {
+                          setFieldValue("isWorkingHour", e.target.checked);
                         }}
                       />
                     </div>

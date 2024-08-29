@@ -300,13 +300,6 @@ function CreateTransferPromotion() {
   // const [supNLineManagerDDL, setSupNLineManagerDDL] = useState([]);
   const [userRoleDDL, setUserRoleDDL] = useState([]);
   const [organizationDDL, setOrganizationDDL] = useState([]);
-
-  const [wingDDL, setWingDDL] = useState([]);
-  const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  const [regionDDL, setRegionDDL] = useState([]);
-  const [areaDDL, setAreaDDL] = useState([]);
-  const [territoryDDL, setTerritoryDDL] = useState([]);
-
   //  states
   const [orgTypeOrder, setOrgTypeOrder] = useState("desc");
   const [orgOrder, setOrgOrder] = useState("desc");
@@ -391,38 +384,6 @@ function CreateTransferPromotion() {
         setWorkplaceDDL
       );
 
-      // ddl for marketing section
-      getPeopleDeskWithoutAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}&ParentTerritoryId=0`,
-        "WingId",
-        "WingName",
-        setWingDDL
-      );
-      getPeopleDeskWithoutAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}&ParentTerritoryId=${state?.singleData?.intWingId}`,
-        "SoleDepoId",
-        "SoleDepoName",
-        setSoleDepoDDL
-      );
-      getPeopleDeskWithoutAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}&ParentTerritoryId=${state?.singleData?.intSoldDepoId}`,
-        "RegionId",
-        "RegionName",
-        setRegionDDL
-      );
-      getPeopleDeskWithoutAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}&ParentTerritoryId=${state?.singleData?.intRegionId}`,
-        "AreaId",
-        "AreaName",
-        setAreaDDL
-      );
-      getPeopleDeskWithoutAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}&ParentTerritoryId=${state?.singleData?.intAreaId}`,
-        "TerritoryId",
-        "TerritoryName",
-        setTerritoryDDL
-      );
-
       state?.singleData &&
         setRowDto(state?.singleData?.empTransferNpromotionRoleExtensionVMList);
       setFileId(state?.singleData?.intAttachementId);
@@ -494,12 +455,6 @@ function CreateTransferPromotion() {
           strOrganizationReffName: item?.strOrganizationReffName,
         };
       });
-
-    if (values?.workplaceGroup?.label === "Marketing") {
-      if (!values?.wing) {
-        return toast.warning("Wing is required field!");
-      }
-    }
 
     const payload = {
       intTransferNpromotionId: !id
@@ -720,12 +675,121 @@ function CreateTransferPromotion() {
                       setValues((prev) => ({
                         ...prev,
                         transferNPromotionType: valueOption,
+                        businessUnit: valueOption?.value === "Promotion" && {
+                          label:
+                            empBasic?.employeeProfileLandingView
+                              ?.strBusinessUnitName,
+                          value:
+                            empBasic?.employeeProfileLandingView
+                              ?.intBusinessUnitId,
+                        },
+                        workplaceGroup: valueOption?.value === "Promotion" && {
+                          label:
+                            empBasic?.employeeProfileLandingView
+                              ?.strWorkplaceGroupName,
+                          value:
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId,
+                        },
+                        workplace: valueOption?.value === "Promotion" && {
+                          label:
+                            empBasic?.employeeProfileLandingView
+                              ?.strWorkplaceName,
+                          value:
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceId,
+                        },
                       }));
+                      if (valueOption?.value === "Promotion") {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${empBasic?.employeeProfileLandingView?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                          "intWorkplaceGroupId",
+                          "strWorkplaceGroup",
+                          setWorkplaceGroupDDL
+                        );
+                        PeopleDeskSaasDDL(
+                          "UserRoleDDLWithoutDefault",
+                          wgId,
+                          empBasic?.employeeProfileLandingView
+                            ?.intBusinessUnitId,
+                          setUserRoleDDL,
+                          "value",
+                          "label",
+                          0
+                        );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${empBasic?.employeeProfileLandingView?.intBusinessUnitId}&WorkplaceGroupId=${empBasic?.employeeProfileLandingView?.intWorkplaceGroupId}&intId=${employeeId}`,
+                          "intWorkplaceId",
+                          "strWorkplace",
+                          setWorkplaceDDL
+                        );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intBusinessUnitId
+                          }&WorkplaceGroupId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId || wgId
+                          }&intWorkplaceId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceId || 0
+                          }`,
+                          "DesignationId",
+                          "DesignationName",
+                          setDesignationDDL
+                        );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intBusinessUnitId
+                          }&WorkplaceGroupId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId || wgId
+                          }&intWorkplaceId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceId || 0
+                          }&intId=0`,
+                          "Id",
+                          "EmploymentType",
+                          setEmploymentTypeDDL
+                        );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intBusinessUnitId
+                          }&WorkplaceGroupId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId || wgId
+                          }&intWorkplaceId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceId || 0
+                          }&intId=0`,
+                          "PositionId",
+                          "PositionName",
+                          setHrPositionDDL
+                        );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intBusinessUnitId
+                          }&WorkplaceGroupId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId || wgId
+                          }&intWorkplaceId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceId || 0
+                          }`,
+                          "DepartmentId",
+                          "DepartmentName",
+                          setDepartmentDDL
+                        );
+                      }
                     }}
                     placeholder=""
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
+                    isDisabled={values?.employee?.value ? false : true}
                   />
                 </div>
               </div>
@@ -748,6 +812,7 @@ function CreateTransferPromotion() {
                     }}
                     errors={errors}
                     touched={touched}
+                    disabled={!values?.employee?.value}
                   />
                 </div>
               </div>
@@ -790,22 +855,6 @@ function CreateTransferPromotion() {
                         "label",
                         0
                       );
-                      // wing DDL
-                      // if (
-                      //   valueOption?.value &&
-                      //   values?.workplaceGroup?.label === "Marketing"
-                      // ) {
-                      //   getPeopleDeskWithoutAllDDL(
-                      //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${
-                      //       valueOption?.value
-                      //     }&WorkplaceGroupId=${
-                      //       values?.workplaceGroup?.value || wgId
-                      //     }&ParentTerritoryId=0`,
-                      //     "WingId",
-                      //     "WingName",
-                      //     setWingDDL
-                      //   );
-                      // }
                       setValues((prev) => ({
                         ...prev,
                         businessUnit: valueOption,
@@ -829,6 +878,11 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isClearable={false}
+                    isDisabled={
+                      !values?.employee?.value ||
+                      !values?.transferNPromotionType?.value ||
+                      values?.transferNPromotionType?.value === "Promotion"
+                    }
                   />
                 </div>
               </div>
@@ -859,25 +913,15 @@ function CreateTransferPromotion() {
                         "strWorkplace",
                         setWorkplaceDDL
                       );
-
-                      // wing DDL
-                      if (
-                        values?.businessUnit?.value &&
-                        valueOption?.label === "Marketing"
-                      ) {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                          "WingId",
-                          "WingName",
-                          setWingDDL
-                        );
-                      }
                     }}
                     placeholder=""
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
-                    isDisabled={!values?.businessUnit}
+                    isDisabled={
+                      !values?.businessUnit ||
+                      values?.transferNPromotionType?.value === "Promotion"
+                    }
                     isClearable={false}
                   />
                 </div>
@@ -956,173 +1000,15 @@ function CreateTransferPromotion() {
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
-                    isDisabled={!values?.workplaceGroup}
+                    isDisabled={
+                      !values?.workplaceGroup ||
+                      values?.transferNPromotionType?.value === "Promotion"
+                    }
                     isClearable={false}
                   />
                 </div>
               </div>
-              {/* marketing setup */}
-              {values?.workplaceGroup?.label === "Marketing" && (
-                <div className="col-md-3">
-                  <div className="input-field-main">
-                    <label>Wing</label>
-                    <FormikSelect
-                      menuPosition="fixed"
-                      name="wing"
-                      options={wingDDL || []}
-                      value={values?.wing}
-                      onChange={(valueOption) => {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                          "SoleDepoId",
-                          "SoleDepoName",
-                          setSoleDepoDDL
-                        );
-                        setValues((prev) => ({
-                          ...prev,
 
-                          soleDepo: "",
-                          region: "",
-                          area: "",
-                          territory: "",
-                          wing: valueOption,
-                        }));
-                      }}
-                      styles={customStyles}
-                      placeholder=""
-                      errors={errors}
-                      touched={touched}
-                      isClearable={false}
-                    />
-                  </div>
-                </div>
-              )}
-              {values?.workplaceGroup?.label === "Marketing" && (
-                <div className="col-md-3">
-                  <div className="input-field-main">
-                    <label>Sole Depo</label>
-                    <FormikSelect
-                      menuPosition="fixed"
-                      name="soleDepo"
-                      options={soleDepoDDL || []}
-                      value={values?.soleDepo}
-                      onChange={(valueOption) => {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                          "RegionId",
-                          "RegionName",
-                          setRegionDDL
-                        );
-
-                        setValues((prev) => ({
-                          ...prev,
-
-                          region: "",
-                          area: "",
-                          territory: "",
-                          soleDepo: valueOption,
-                        }));
-                      }}
-                      styles={customStyles}
-                      placeholder=""
-                      errors={errors}
-                      touched={touched}
-                      isClearable={false}
-                    />
-                  </div>
-                </div>
-              )}
-              {values?.workplaceGroup?.label === "Marketing" && (
-                <div className="col-md-3">
-                  <div className="input-field-main">
-                    <label>Region</label>
-                    <FormikSelect
-                      menuPosition="fixed"
-                      name="region"
-                      options={regionDDL || []}
-                      value={values?.region}
-                      onChange={(valueOption) => {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                          "AreaId",
-                          "AreaName",
-                          setAreaDDL
-                        );
-
-                        setValues((prev) => ({
-                          ...prev,
-
-                          area: "",
-                          territory: "",
-                          region: valueOption,
-                        }));
-                      }}
-                      styles={customStyles}
-                      placeholder=""
-                      errors={errors}
-                      touched={touched}
-                      isClearable={false}
-                    />
-                  </div>
-                </div>
-              )}
-              {values?.workplaceGroup?.label === "Marketing" && (
-                <div className="col-md-3">
-                  <div className="input-field-main">
-                    <label>Area</label>
-                    <FormikSelect
-                      menuPosition="fixed"
-                      name="area"
-                      options={areaDDL || []}
-                      value={values?.area}
-                      onChange={(valueOption) => {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                          "TerritoryId",
-                          "TerritoryName",
-                          setTerritoryDDL
-                        );
-                        setValues((prev) => ({
-                          ...prev,
-
-                          territory: "",
-                          area: valueOption,
-                        }));
-                      }}
-                      styles={customStyles}
-                      placeholder=""
-                      errors={errors}
-                      touched={touched}
-                      isClearable={false}
-                    />
-                  </div>
-                </div>
-              )}
-              {values?.workplaceGroup?.label === "Marketing" && (
-                <div className="col-md-3">
-                  <div className="input-field-main">
-                    <label>Territory</label>
-                    <FormikSelect
-                      menuPosition="fixed"
-                      name="territory"
-                      options={territoryDDL || []}
-                      value={values?.territory}
-                      onChange={(valueOption) => {
-                        setValues((prev) => ({
-                          ...prev,
-
-                          territory: valueOption,
-                        }));
-                      }}
-                      styles={customStyles}
-                      placeholder=""
-                      errors={errors}
-                      touched={touched}
-                      isClearable={false}
-                    />
-                  </div>
-                </div>
-              )}
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Employment Type</label>
@@ -1265,6 +1151,7 @@ function CreateTransferPromotion() {
                 <div className="input-field-main">
                   <label>Supervisor</label>
                   <AsyncFormikSelect
+                    name="supervisor"
                     selectedValue={values?.supervisor}
                     isSearchIcon={true}
                     handleChange={(valueOption) => {
@@ -1298,6 +1185,8 @@ function CreateTransferPromotion() {
                       }
                     }
                     isDisabled={!values?.workplaceGroup || !values?.workplace}
+                    errors={errors}
+                    touched={touched}
                   />
                 </div>
               </div>
@@ -1305,6 +1194,7 @@ function CreateTransferPromotion() {
                 <div className="input-field-main">
                   <label>Dotted Supervisor</label>
                   <AsyncFormikSelect
+                    name={"dottedSupervisor"}
                     selectedValue={values?.dottedSupervisor}
                     isSearchIcon={true}
                     handleChange={(valueOption) => {
@@ -1338,6 +1228,8 @@ function CreateTransferPromotion() {
                       }
                     }
                     isDisabled={!values?.workplaceGroup || !values?.workplace}
+                    errors={errors}
+                    touched={touched}
                   />
                 </div>
               </div>
@@ -1345,6 +1237,7 @@ function CreateTransferPromotion() {
                 <div className="input-field-main">
                   <label>Line Manager</label>
                   <AsyncFormikSelect
+                    name="lineManager"
                     selectedValue={values?.lineManager}
                     isSearchIcon={true}
                     handleChange={(valueOption) => {
@@ -1387,6 +1280,8 @@ function CreateTransferPromotion() {
                       }
                     }
                     isDisabled={!values?.workplaceGroup || !values?.workplace}
+                    errors={errors}
+                    touched={touched}
                   />
                 </div>
               </div>
