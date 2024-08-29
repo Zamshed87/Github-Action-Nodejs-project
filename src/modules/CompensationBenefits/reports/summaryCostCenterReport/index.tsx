@@ -81,7 +81,7 @@ const SummaryCostCenterReport = () => {
       workPlaceId: (workplaceDDL || []).map((w: any) => w?.intWorkplaceId),
     });
   };
-
+  document.title = "Salary Summary Cost Center Report";
   return (
     <>
       <PForm
@@ -151,7 +151,7 @@ const SummaryCostCenterReport = () => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
 
-                      const url = `/PdfAndExcelReport/GetSalaryCostCenterReportMatador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
+                      const url = `/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
                         values?.month
                       ).format("MM")}&intYearId=${moment(values?.month).format(
                         "YYYY"
@@ -188,7 +188,7 @@ const SummaryCostCenterReport = () => {
                     onClick={(e) => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
-                      const url = `/PdfAndExcelReport/GetSalaryCostCenterReportMatador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
+                      const url = `/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
                         values?.month
                       ).format("MM")}&intYearId=${moment(values?.month).format(
                         "YYYY"
