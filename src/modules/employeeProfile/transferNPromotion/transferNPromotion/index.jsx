@@ -92,7 +92,7 @@ export default function TransferAndPromotion() {
     fromDate = getDateOfYear("first"),
     toDate = getDateOfYear("last"),
     srcStr = "",
-    pagination = pages
+    pagination = { current: 1, pageSize: paginationSize }
   ) => {
     getAllTransferAndPromotionLanding(
       buId,
@@ -374,20 +374,7 @@ export default function TransferAndPromotion() {
                                 onClick={() => {
                                   setIsFilter(false);
                                   setFieldValue("search", "");
-                                  getAllTransferAndPromotionLanding(
-                                    buId,
-                                    wgId,
-                                    "all",
-                                    getDateOfYear("first"),
-                                    getDateOfYear("last"),
-                                    setRowDto,
-                                    setLoading,
-                                    1,
-                                    paginationSize,
-                                    setPages,
-                                    "",
-                                    wId
-                                  );
+                                  getData();
                                 }}
                               />
                             </li>
@@ -401,37 +388,21 @@ export default function TransferAndPromotion() {
                               setValue={(value) => {
                                 setFieldValue("search", value);
                                 debounce(() => {
-                                  getAllTransferAndPromotionLanding(
-                                    buId,
-                                    wgId,
-                                    "all",
-                                    values?.filterFromDate || "",
-                                    values?.filterToDate || "",
-                                    setRowDto,
-                                    setLoading,
-                                    1,
-                                    paginationSize,
-                                    setPages,
-                                    value || "",
-                                    wId
+                                  getData(
+                                    values?.filterFromDate,
+                                    values?.filterToDate,
+                                    value,
+                                    pages
                                   );
                                 }, 500);
                               }}
                               cancelHandler={() => {
                                 setFieldValue("search", "");
-                                getAllTransferAndPromotionLanding(
-                                  buId,
-                                  wgId,
-                                  "all",
-                                  values?.filterFromDate || "",
-                                  values?.filterToDate || "",
-                                  setRowDto,
-                                  setLoading,
-                                  1,
-                                  paginationSize,
-                                  setPages,
+                                getData(
+                                  values?.filterFromDate,
+                                  values?.filterToDate,
                                   "",
-                                  wId
+                                  pages
                                 );
                               }}
                             />
@@ -535,7 +506,9 @@ export default function TransferAndPromotion() {
                               onClick={() => {
                                 getData(
                                   values?.filterFromDate,
-                                  values?.filterToDate
+                                  values?.filterToDate,
+                                  values?.search,
+                                  pages
                                 );
                               }}
                             >
