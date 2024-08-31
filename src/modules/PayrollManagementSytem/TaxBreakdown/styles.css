@@ -1,0 +1,19 @@
+.Salary_Breakdown_Page_Wrapper .table-card-heading{
+    padding: .5em 0 1em 0;
+    border-bottom: 1px solid #EAECF0;
+}
+
+.Salary_Breakdown_Page_Wrapper .breakdown-element-input-wrapper{
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .2em 0;
+}
+
+.Salary_Breakdown_Page_Wrapper .breakdown-element-input-wrapper > label{
+    color: #667085;
+    font-weight: 400;
+    font-size: 12px;
+}

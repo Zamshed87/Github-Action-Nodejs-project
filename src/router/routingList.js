@@ -32,21 +32,23 @@ import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import CafeteriaPricingLanding from "modules/employeeProfile/cafeteriaPricingSetup";
 import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddEditForm";
 
+import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
+import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
+import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
+import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
+import FoodAllowenceReport from "modules/timeSheet/reports/foodAllowenceReport";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
-import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
-import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
-
-import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
-import FoodAllowenceReport from "modules/timeSheet/reports/foodAllowenceReport";
 import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
+import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
+import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -2648,6 +2650,27 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/salaryBreakdown/:id",
     component: SalaryBreakdownDetails,
+  },
+  {
+    path: "/administration/payrollConfiguration/breakdownSalaryAssign",
+    component: BreakdownSalaryAssign,
+  },
+  // tax breakdown______________
+  {
+    path: "/administration/payrollConfiguration/incomeTaxGroup",
+    component: TaxBreakdown,
+  },
+  {
+    path: "/administration/payrollConfiguration/incomeTaxGroup/create",
+    component: TaxGroupCreate,
+  },
+  {
+    path: "/administration/payrollConfiguration/incomeTaxGroup/edit/:id",
+    component: TaxGroupCreate,
+  },
+  {
+    path: "/administration/payrollConfiguration/incomeTaxGroup/:id",
+    component: TaxBreakdownDetails,
   },
   {
     path: "/administration/payrollConfiguration/breakdownSalaryAssign",
