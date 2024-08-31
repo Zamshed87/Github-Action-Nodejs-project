@@ -118,7 +118,7 @@ export default function SalaryDrawer(props) {
       bankDataHandler(singleData);
     }
   }, [singleData?.[0]]);
-
+  console.log({ singleData });
   const {
     handleSubmit,
     resetForm,
@@ -153,13 +153,13 @@ export default function SalaryDrawer(props) {
 
       isPerdaySalary: singleData[0]?.isPerdaySalary || false,
       IntOthersAdditionalAmountTransferInto:
-        singleData[0]?.intOthersAdditionalAmountTransferInto === 3
-          ? { label: "Cash", value: 3 }
+        singleData[0]?.intOthersAdditionalAmountTransferInto === 2
+          ? { label: "Digital/MFS", value: 2 }
           : singleData[0]?.intOthersAdditionalAmountTransferInto === 1
           ? { label: "Bank", value: 1 }
           : {
-              label: "Digital/MFS",
-              value: 2,
+              label: "Cash",
+              value: 3,
             },
       payrollElement: singleData[0]?.intSalaryBreakdownHeaderId
         ? {
