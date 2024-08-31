@@ -2,6 +2,7 @@ import { Close, DeleteOutline } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Modal } from "react-bootstrap";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -86,7 +87,7 @@ export default function AddEditFormComponent({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -160,7 +161,11 @@ export default function AddEditFormComponent({
       isAutoGenerate: false,
       extendedEmployeeCalendarList: tableData.slice(1) || [],
     };
-    if (values?.calenderType?.value ===1 && orgId === 6 && (checked?.length > 1 || isAssignAll)) {
+    if (
+      values?.calenderType?.value === 1 &&
+      orgId === 6 &&
+      (checked?.length > 1 || isAssignAll)
+    ) {
       demoPopup(() => {
         rosterGenerateAction(payload, setLoading, cb);
       });
@@ -211,6 +216,16 @@ Are you sure ? You want to assign Calendar again?
       noAlertFunc: () => null,
     };
     IConfirmModal(confirmObject);
+  };
+
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(tableData);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setTableData(items);
   };
 
   return (
@@ -411,7 +426,20 @@ Are you sure ? You want to assign Calendar again?
                                     strCalendarName:
                                       values?.calender?.label || "",
                                   };
-                                  setter(obj);
+
+                                  if (intAccountId === 6) {
+                                    setter(obj);
+                                  } else {
+                                    const existingItems = tableData;
+                                    if (existingItems.length === 0) {
+                                      setter(obj);
+                                    } else {
+                                      toast.warn(
+                                        "You are allowed to add only one calendar name."
+                                      );
+                                    }
+                                  }
+
                                   setFieldValue("calender", "");
                                 }}
                                 disabled={!values?.calender}
@@ -425,7 +453,7 @@ Are you sure ? You want to assign Calendar again?
                         {values?.calenderType?.value === 1 && (
                           <div className="table-card-body pt-3">
                             <div
-                              className=" table-card-styled tableOne"
+                              className="table-card-styled tableOne"
                               style={{ padding: "0px 12px" }}
                             >
                               <table className="table align-middle">
@@ -443,63 +471,89 @@ Are you sure ? You want to assign Calendar again?
                                     </th>
                                   </tr>
                                 </thead>
-                                <tbody>
-                                  {tableData?.length > 0 && (
-                                    <>
-                                      {tableData.map((item, index) => {
-                                        const { strCalendarName } = item;
-                                        return (
-                                          <tr key={index}>
-                                            <td>
-                                              {index === 0 ? (
-                                                <>
-                                                  {strCalendarName}{" "}
-                                                  <Tag
-                                                    color="green"
-                                                    style={{
-                                                      borderRadius: "16px",
-                                                      padding: "0 8px",
-                                                    }}
+                                <DragDropContext onDragEnd={handleOnDragEnd}>
+                                  <Droppable droppableId="tableData">
+                                    {(provided) => (
+                                      <tbody
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                      >
+                                        {tableData?.length > 0 &&
+                                          tableData.map((item, index) => {
+                                            const {
+                                              strCalendarName,
+                                              intCalendarId,
+                                            } = item;
+
+                                            return (
+                                              <Draggable
+                                                key={intCalendarId}
+                                                draggableId={String(
+                                                  intCalendarId
+                                                )}
+                                                index={index}
+                                              >
+                                                {(provided) => (
+                                                  <tr
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
                                                   >
-                                                    Default
-                                                  </Tag>
-                                                </>
-                                              ) : (
-                                                strCalendarName
-                                              )}
-                                            </td>
-                                            <td>
-                                              <div className="d-flex align-items-end justify-content-end">
-                                                <IconButton
-                                                  type="button"
-                                                  style={{
-                                                    height: "25px",
-                                                    width: "25px",
-                                                  }}
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    remover(
-                                                      item?.intCalendarId
-                                                    );
-                                                  }}
-                                                >
-                                                  <Tooltip title="Delete">
-                                                    <DeleteOutline
-                                                      sx={{
-                                                        height: "25px",
-                                                        width: "25px",
-                                                      }}
-                                                    />
-                                                  </Tooltip>
-                                                </IconButton>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        );
-                                      })}
-                                    </>
-                                  )}
-                                </tbody>
+                                                    <td>
+                                                      {index === 0 ? (
+                                                        <>
+                                                          {strCalendarName}{" "}
+                                                          <Tag
+                                                            color="green"
+                                                            style={{
+                                                              borderRadius:
+                                                                "16px",
+                                                              padding: "0 8px",
+                                                            }}
+                                                          >
+                                                            Default
+                                                          </Tag>
+                                                        </>
+                                                      ) : (
+                                                        strCalendarName
+                                                      )}
+                                                    </td>
+                                                    <td>
+                                                      <div className="d-flex align-items-end justify-content-end">
+                                                        <IconButton
+                                                          type="button"
+                                                          style={{
+                                                            height: "25px",
+                                                            width: "25px",
+                                                          }}
+                                                          onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            remover(
+                                                              intCalendarId
+                                                            );
+                                                          }}
+                                                        >
+                                                          <Tooltip title="Delete">
+                                                            <DeleteOutline
+                                                              sx={{
+                                                                height: "25px",
+                                                                width: "25px",
+                                                              }}
+                                                            />
+                                                          </Tooltip>
+                                                        </IconButton>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                )}
+                                              </Draggable>
+                                            );
+                                          })}
+                                        {provided.placeholder}
+                                      </tbody>
+                                    )}
+                                  </Droppable>
+                                </DragDropContext>
                               </table>
                             </div>
                           </div>
