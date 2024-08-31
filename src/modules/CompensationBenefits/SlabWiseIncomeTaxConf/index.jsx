@@ -28,7 +28,7 @@ const SlabWiseIncomeTaxConf = () => {
   });
   return (
     <form onSubmit={handleSubmit}>
-      {0 ? (
+      {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading">
             <div className="d-flex align-items-center">
