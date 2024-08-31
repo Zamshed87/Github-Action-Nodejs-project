@@ -4,8 +4,7 @@ import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-type TindexN = {};
-const SalaryBreakdownN: React.FC<TindexN> = () => {
+const TaxBreakdown = () => {
   // Data From Store
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -16,22 +15,9 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
   // Api Actions
   const GetAllSalaryBreakdownLanding = useApiRequest([]);
 
-  // Landing Api
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any[];
-    searchText?: string;
-  };
-  const landingApi = ({
-    pagination = {},
-    filerList = [],
-    searchText = "",
-  }: TLandingApi = {}) => {
+  const landingApi = () => {
     GetAllSalaryBreakdownLanding?.action({
-      urlKey: "GetAllSalaryBreakdownLanding",
+      urlKey: "GetAllTaxBreakdownLanding",
       method: "GET",
       params: {
         accountId: orgId,
@@ -61,7 +47,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       filter: false,
     },
     {
-      title: "Payroll Group Name",
+      title: "Tax Group Name",
       dataIndex: "strSalaryBreakdownTitle",
     },
     {
@@ -73,12 +59,6 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
     {
       title: "Workplace group",
       dataIndex: "workplaceGroup",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Workplace",
-      dataIndex: "workplace",
       sorter: true,
       filter: true,
     },
@@ -104,7 +84,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
                 // isActive: isDevServer,
                 onClick: () => {
                   history.push({
-                    pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
+                    pathname: `/administration/payrollConfiguration/incomeTaxGroup/edit/id:${item?.intSalaryBreakdownHeaderId}`,
                     state: item,
                   });
                 },
@@ -113,7 +93,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
                 type: "view",
                 onClick: () => {
                   history.push({
-                    pathname: `/administration/payrollConfiguration/salaryBreakdown/${item?.intSalaryBreakdownHeaderId}`,
+                    pathname: `/administration/payrollConfiguration/incomeTaxGroup/${item?.intSalaryBreakdownHeaderId}`,
                     state: item,
                   });
                 },
@@ -125,19 +105,18 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       width: "60px",
     },
   ];
-  console.log(GetAllSalaryBreakdownLanding?.data);
   return (
     <>
       <PForm
         onFinish={() => {
           history.push(
-            "/administration/payrollConfiguration/salaryBreakdown/create"
+            "/administration/payrollConfiguration/incomeTaxGroup/create"
           );
         }}
       >
         <PCard>
           <PCardHeader
-            title="Payroll Group List"
+            title="Tax Group List"
             submitText="Create"
             // onSearch={() => {}}
             // buttonList={[{ type: "primary", content: "Create" }]}
@@ -150,10 +129,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
             loading={GetAllSalaryBreakdownLanding?.loading}
             onChange={(pagination, filters, sorter, extra) => {
               if (extra.action === "sort") return;
-              landingApi({
-                pagination,
-                filerList: filters,
-              });
+              landingApi();
             }}
           />
         </PCard>
@@ -162,4 +138,4 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
   );
 };
 
-export default SalaryBreakdownN;
+export default TaxBreakdown;

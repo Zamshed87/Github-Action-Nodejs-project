@@ -64,6 +64,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
 
   const [emergencyContact, setEmergencyContact] = useState("empty");
   const [empSpecialContact, setEmpSpecialContact] = useState({});
+  const [singleData, setSingleData] = useState();
 
   const { employeeId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -98,7 +99,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
       phone: values?.mobileNumber || "",
       email: values?.email,
       nid: values?.nid,
-      dateOfBirth: values?.dateOfBirth || null,
+      dateOfBirth: values?.dateOfBirth ? values?.dateOfBirth : null,
       remarks: values?.remarks,
       addressDetails: values?.address,
       isEmergencyContact: values?.isEmergencyContact || false,
@@ -380,6 +381,8 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             setAnchorEl={setAnchorEl}
                             color={gray900}
                             fontSize={"18px"}
+                            setSingleData={setSingleData}
+                            item={item}
                             options={[
                               {
                                 value: 1,
@@ -392,27 +395,29 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                     }}
                                   />
                                 ),
-                                onClick: () => {
-                                  console.log(item);
+                                onClick: (e) => {
                                   setValues({
                                     ...values,
-                                    name: item?.strRelativesName || "",
+                                    name: singleData?.strRelativesName || "",
                                     relationship: {
-                                      value: item?.intRelationShipId,
-                                      label: item?.strRelationship,
+                                      value: singleData?.intRelationShipId,
+                                      label: singleData?.strRelationship,
                                     },
-                                    mobileNumber: item?.strPhone,
-                                    email: item?.strEmail,
-                                    nid: item?.strNid,
-                                    dateOfBirth: dateFormatterForInput(
-                                      item?.dteDateOfBirth
-                                    ),
-                                    remarks: item?.strRemarks,
-                                    address: item?.strAddress,
+                                    mobileNumber: singleData?.strPhone,
+                                    email: singleData?.strEmail,
+                                    nid: singleData?.strNid,
+                                    dateOfBirth: singleData?.dteDateOfBirth
+                                      ? dateFormatterForInput(
+                                          singleData?.dteDateOfBirth
+                                        )
+                                      : null,
+                                    remarks: singleData?.strRemarks,
+                                    address: singleData?.strAddress,
                                     isEmergencyContact:
-                                      item?.isEmergencyContact,
-                                    birthCertificate: item?.strBirthId,
-                                    autoId: item?.intEmployeeRelativesContactId,
+                                      singleData?.isEmergencyContact,
+                                    birthCertificate: singleData?.strBirthId,
+                                    autoId:
+                                      singleData?.intEmployeeRelativesContactId,
                                   });
                                   setEmergencyContact("input");
                                   setAnchorEl(null);
@@ -539,8 +544,9 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                           </div>
                           <div className="col-lg-11">
                             <h4>
-                              {dateFormatterForInput(item?.dteDateOfBirth) ||
-                                "N/A"}
+                              {item?.dteDateOfBirth
+                                ? dateFormatterForInput(item?.dteDateOfBirth)
+                                : "N/A"}
                             </h4>
                             <small>Date of birth</small>
                           </div>
