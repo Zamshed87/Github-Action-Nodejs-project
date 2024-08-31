@@ -1,9 +1,8 @@
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useRef, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
-import { isDevServer } from "App";
+import React, { useEffect } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 type TindexN = {};
 const SalaryBreakdownN: React.FC<TindexN> = () => {
@@ -77,11 +76,19 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       sorter: true,
       filter: true,
     },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+      sorter: true,
+      filter: true,
+    },
 
     {
       title: "Is Default",
       dataIndex: "isDefault",
-      render: (data: any, item: any) => <div>{item?.isDefault ? "Yes" : "No"}</div>,
+      render: (data: any, item: any) => (
+        <div>{item?.isDefault ? "Yes" : "No"}</div>
+      ),
       sorter: true,
       filter: false,
     },
