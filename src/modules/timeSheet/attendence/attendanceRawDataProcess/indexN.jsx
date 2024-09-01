@@ -216,10 +216,10 @@ function AttendanceRawDataProcess() {
                   min={values?.fromDate}
                   max={
                     values?.employee ? 
-                    // Condition 1: If employee is selected, set max date to 45 days from fromDate
-                    moment(values?.fromDate).add(44, 'days').format("YYYY-MM-DD") : 
-                    // Condition 2: If no employee is selected, set max date to 7 days from fromDate
-                    moment(values?.fromDate).add(44, 'days').format("YYYY-MM-DD")
+                    // Condition 1: If employee is selected, set max date to 29 days from fromDate
+                    moment(values?.fromDate).add(29, 'days').format("YYYY-MM-DD") : 
+                    // Condition 2: If no employee is selected, set max date to 6 days from fromDate
+                    moment(values?.fromDate).add(6, 'days').format("YYYY-MM-DD")
                 }
                   className="form-control"
                   onChange={(e) => {
