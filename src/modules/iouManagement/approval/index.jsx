@@ -38,6 +38,8 @@ import NoResult from "../../../common/NoResult";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import "./index.css";
 import ViewFormComponent from "./view-form";
+import ViewModal from "common/ViewModal";
+import LeaveApprovalEditForm from "./editForm";
 
 const initData = {
   search: "",
@@ -53,10 +55,8 @@ const initData = {
 };
 
 export default function IOUApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
@@ -135,6 +135,8 @@ export default function IOUApproval() {
   const [filterValues, setFilterValues] = useState({});
   const openFilter = Boolean(filterAnchorEl);
   const id = openFilter ? "simple-popover" : undefined;
+  const [show, setShow] = useState(false);
+  const [singleDataForReject, setSingleDataForReject] = useState({});
 
   const handleSearch = (values) => {
     getAllIOUListDataForApproval(
@@ -246,7 +248,7 @@ export default function IOUApproval() {
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
         if (array.length) {
-          IOUApproveReject(newArray, callback);
+          IOUApproveReject(newArray, callback, setLoading);
         }
         newArray = [];
       },
@@ -292,7 +294,7 @@ export default function IOUApproval() {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
-        IOUApproveReject(payload, callback);
+        IOUApproveReject(payload, callback, setLoading)
       },
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
@@ -582,7 +584,12 @@ export default function IOUApproval() {
                       className="muiIconHover  danger"
                       onClick={(e) => {
                         e.stopPropagation();
-                        singlePopup("reject", "Reject", record);
+                        if (intAccountId === 5) {
+                          setShow(true);
+                          setSingleDataForReject(record);
+                        } else {
+                          singlePopup("reject", "Reject", record);
+                        }
                       }}
                     >
                       <MuiIcon icon={<Cancel sx={{ color: failColor }} />} />
@@ -816,6 +823,25 @@ export default function IOUApproval() {
                 />
               </div>
             </Form>
+
+            <ViewModal
+              size="md"
+              title="Reject With Reason"
+              backdrop="static"
+              classes="default-modal preview-modal asset-requision-modal"
+              show={show}
+              onHide={() => {
+                setShow(false);
+              }}
+            >
+              <LeaveApprovalEditForm
+                objProps={{
+                  setShow,
+                  getLandingData,
+                  singleDataForReject,
+                }}
+              />
+            </ViewModal>
           </>
         )}
       </Formik>

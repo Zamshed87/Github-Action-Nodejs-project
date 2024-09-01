@@ -26,16 +26,19 @@ export const getAllIOUListDataForApproval = async (
   }
 };
 
-export const IOUApproveReject = async (payload, cb) => {
+export const IOUApproveReject = async (payload, cb, setLoading) => {
   try {
+    setLoading(true);
     const res = await axios.post(
       `/ApprovalPipeline/IOUApplicationApproval`,
       payload
     );
     cb && cb();
     toast.success(res?.data || "Submitted Successfully");
+    setLoading(false);
   } catch (error) {
     toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading(false);
   }
 };
 
