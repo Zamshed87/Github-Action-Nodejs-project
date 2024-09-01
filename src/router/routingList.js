@@ -32,6 +32,7 @@ import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import CafeteriaPricingLanding from "modules/employeeProfile/cafeteriaPricingSetup";
 import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddEditForm";
 
+import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/reports/monthlyAllowanceDeduction";
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
@@ -2459,6 +2460,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
     component: SummaryCostCenterReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/monthlyAllowenceNDeduction",
+    component: MonthlyAllowanceDeductionReport,
   },
   {
     path: "/compensationAndBenefits/reports/salary&AllowenceCostCenterReport",
