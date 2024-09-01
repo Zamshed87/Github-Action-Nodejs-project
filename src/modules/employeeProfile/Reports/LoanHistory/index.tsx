@@ -34,7 +34,7 @@ const EmLoanHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId },
+    profileData: { orgId, wId, buId, wgId, employeeId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -445,11 +445,9 @@ const EmLoanHistory = () => {
               onClick: () => {
                 const values = form.getFieldsValue(true);
                 getPDFAction(
-                  `/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${
-                    record?.loanApplicationId
-                  }&BusinessUintId=${buId}&WorkplaceGroupId=${
-                    values?.workplaceGroup?.value || wgId
-                  }&EmployeeId=${record?.employeeId}`,
+                  `/PdfAndExcelReport/EmpLoanReportPdf?PartType=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
+                    values?.workplace?.value || wId
+                  }&intLoanId=${record?.loanApplicationId}`,
                   setLoading
                 );
               },
