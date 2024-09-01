@@ -195,17 +195,17 @@ function AttendanceRawDataProcess() {
         <>
           {record?.status === "default" && (
             <Tag icon={<ClockCircleOutlined />} color="default">
-              waiting
+              Waiting
             </Tag>
           )}
           {record?.status === "processing" && (
             <Tag icon={<SyncOutlined spin />} color="processing">
-              processing
+              Processing
             </Tag>
           )}
           {record?.status === "complete" && (
             <Tag icon={<CheckCircleOutlined />} color="success">
-              success
+              Success
             </Tag>
           )}
         </>

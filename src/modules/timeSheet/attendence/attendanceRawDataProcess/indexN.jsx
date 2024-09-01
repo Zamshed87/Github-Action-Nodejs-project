@@ -20,7 +20,7 @@ import { paginationSize } from "common/peopleDeskTable";
 import { DataTable } from "Components";
 import { Button, Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
-import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, ClockCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
 
 function AttendanceRawDataProcess() {
@@ -49,7 +49,7 @@ function AttendanceRawDataProcess() {
     total: 0,
   });
 
-  useEffect(() =>{
+  useEffect(() => {
     onGetAttendanceResponse(
       wId,
       wgId,
@@ -59,7 +59,7 @@ function AttendanceRawDataProcess() {
       setLoading,
       setPages
     );
-  },[])
+  }, []);
 
   const { handleSubmit, values, setFieldValue, errors, touched, resetForm } =
     useFormik({
@@ -105,7 +105,7 @@ function AttendanceRawDataProcess() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const landingApi = (pagination) => {
-    console.log(pagination)
+    console.log(pagination);
     onGetAttendanceResponse(
       wId,
       wgId,
@@ -118,7 +118,6 @@ function AttendanceRawDataProcess() {
   };
 
   const header = [
-
     {
       title: "SL",
       render: (_, rec, index) =>
@@ -163,20 +162,33 @@ function AttendanceRawDataProcess() {
     },
     {
       title: "Processing",
-      dataIndex: "isProcessing",
+      dataIndex: "strStatus",
+
       render: (_, record) => (
         <>
-          {record?.isProcessing ? (
-            <Tag icon={<CheckCircleOutlined />} color="success">
-              success
+          {record?.strStatus === "Pending" && (
+            <Tag icon={<ClockCircleOutlined />} color="default">
+              Pending
             </Tag>
-          ) : (
+          )}
+          {record?.strStatus === "Processing" && (
             <Tag icon={<SyncOutlined spin />} color="processing">
-              processing
+              Processing
+            </Tag>
+          )}
+          {record?.strStatus === "Success" && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              Success
+            </Tag>
+          )}
+          {record?.strStatus === "Failed" && (
+            <Tag icon={<CheckCircleOutlined />} color="magenta">
+              Failed
             </Tag>
           )}
         </>
       ),
+
       sorter: true,
       filter: false,
     },
@@ -215,12 +227,16 @@ function AttendanceRawDataProcess() {
                   type="date"
                   min={values?.fromDate}
                   max={
-                    values?.employee ? 
-                    // Condition 1: If employee is selected, set max date to 29 days from fromDate
-                    moment(values?.fromDate).add(29, 'days').format("YYYY-MM-DD") : 
-                    // Condition 2: If no employee is selected, set max date to 6 days from fromDate
-                    moment(values?.fromDate).add(6, 'days').format("YYYY-MM-DD")
-                }
+                    values?.employee
+                      ? // Condition 1: If employee is selected, set max date to 29 days from fromDate
+                        moment(values?.fromDate)
+                          .add(29, "days")
+                          .format("YYYY-MM-DD")
+                      : // Condition 2: If no employee is selected, set max date to 6 days from fromDate
+                        moment(values?.fromDate)
+                          .add(6, "days")
+                          .format("YYYY-MM-DD")
+                  }
                   className="form-control"
                   onChange={(e) => {
                     setFieldValue("toDate", e.target.value);
@@ -341,7 +357,6 @@ function AttendanceRawDataProcess() {
                   if (extra.action === "sort") return;
                   landingApi(pagination);
                 }}
-
               />
             )}
           </div>
