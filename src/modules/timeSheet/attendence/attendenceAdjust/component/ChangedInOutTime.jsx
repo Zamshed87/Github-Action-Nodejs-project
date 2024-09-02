@@ -164,6 +164,27 @@ const ChangedInOutTimeEmpListModal = ({
             <TimePicker
               value={record?.intimeUpdate}
               onChange={(e) => {
+                const date = record?.inDateUpdate;
+                const time = moment(e).format("hh:mm:ss");
+                const datetime = moment(`${date} ${time}`)
+                  .set({ hour: 23, minute: 59, second: 0 })
+                  .format("YYYY-MM-DDTHH:mm:ss");
+                if (
+                  moment(datetime).isBetween(
+                    record?.officeOpeningTime,
+                    record?.officeClosingTime,
+                    null,
+                    "[]"
+                  )
+                ) {
+                  console.log(true);
+                }
+                console.log(
+                  record?.officeOpeningTime,
+                  record?.officeClosingTime,
+                  datetime
+                );
+                console.log(record);
                 updateRowDto("intimeUpdate", e, idx);
               }}
               format={"hh:mm A"}
