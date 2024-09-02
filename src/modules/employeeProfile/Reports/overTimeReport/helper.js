@@ -10,7 +10,7 @@ export const filterData = (keywords, allData, setRowDto) => {
       return;
     }
     const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter((item) =>
+    const newDta = allData?.filter((item) =>
       regex.test(item?.employee?.toLowerCase())
     );
     setRowDto(newDta);
