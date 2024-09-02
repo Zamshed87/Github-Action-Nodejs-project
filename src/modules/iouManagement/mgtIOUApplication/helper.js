@@ -1,12 +1,13 @@
-import { toast } from "react-toastify";
+import { EditOutlined, InfoOutlined } from "@mui/icons-material";
+import { styled, Tooltip, tooltipClasses } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
+import { toast } from "react-toastify";
+import { stripHtml } from "utility/stripHTML";
 import Chips from "../../../common/Chips";
-import { styled, Tooltip, tooltipClasses } from "@mui/material";
-import { EditOutlined, InfoOutlined } from "@mui/icons-material";
 import { gray900 } from "../../../utility/customColor";
-import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { dateFormatter } from "../../../utility/dateFormatter";
+import { numberWithCommas } from "../../../utility/numberWithCommas";
 
 export const getEmployeeProfileViewData = async (
   id,
@@ -292,6 +293,24 @@ export const iouLandingTableColumn = (page, paginationSize, history) => {
       filter: false,
       sort: true,
       fieldType: "string",
+    },
+    {
+      title: "Reject Reason",
+      dataIndex: "strRemarks",
+      sort: true,
+      render: (record) => (
+        <>
+          {record?.strRemarks && (
+            <LightTooltip title={stripHtml(record?.strRemarks)} arrow>
+              <div className="pointer">
+                {stripHtml(record?.strRemarks?.slice(0, 10))}
+                {stripHtml(record?.strRemarks?.length > 10 ? "..." : "")}
+              </div>
+            </LightTooltip>
+          )}
+        </>
+      ),
+      filter: false,
     },
     {
       title: "Adjustment Status",
