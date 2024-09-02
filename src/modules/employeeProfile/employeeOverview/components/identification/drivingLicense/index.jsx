@@ -378,7 +378,8 @@ function DrivingLicense({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    {
+                                    !rowDto?.employeeProfileLandingView
+                                    ?.isMarkCompleted && {
                                       value: 1,
                                       label: "Edit",
                                       icon: (

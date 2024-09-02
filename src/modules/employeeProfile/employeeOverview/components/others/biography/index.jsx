@@ -135,7 +135,8 @@ export default function Biography({ empId, buId, wgId }) {
                       color={gray900}
                       fontSize={"18px"}
                       options={[
-                        {
+                        !empBasic?.employeeProfileLandingView
+                        ?.isMarkCompleted && {
                           value: 1,
                           label: "Edit",
                           icon: (

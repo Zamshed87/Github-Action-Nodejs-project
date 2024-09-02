@@ -29,9 +29,7 @@ import {
 } from "./../../../../../utility/customColor";
 import { dateFormatter } from "./../../../../../utility/dateFormatter";
 import { todayDate } from "./../../../../../utility/todayDate";
-import {
-  attachment_action,
-} from "./../Experience/helper";
+import { attachment_action } from "./../Experience/helper";
 import "./education.css";
 import NocSlider from "./NocSlider";
 import { updateEmployeeProfile } from "../helper";
@@ -387,19 +385,13 @@ function Education({
               : todayDate(),
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, {  resetForm }) => {
+          onSubmit={(values, { resetForm }) => {
             saveHandler(values, () => {
               resetForm(initData);
             });
           }}
         >
-          {({
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            setFieldValue,
-          }) => (
+          {({ handleSubmit, values, errors, touched, setFieldValue }) => (
             <>
               {loading && <Loading />}
               <Form onSubmit={handleSubmit} className="common-overview-part">
@@ -735,7 +727,9 @@ function Education({
                                               color={gray900}
                                               fontSize={"18px"}
                                               options={[
-                                                {
+                                                !rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.isMarkCompleted && {
                                                   value: 1,
                                                   label: "Edit",
                                                   icon: (

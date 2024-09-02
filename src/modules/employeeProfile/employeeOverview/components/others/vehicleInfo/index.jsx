@@ -169,7 +169,8 @@ export default function VehicleInfo({ empId, buId, wgId }) {
                           color={gray900}
                           fontSize={"18px"}
                           options={[
-                            {
+                            !vehicleNo?.employeeProfileLandingView
+                            ?.isMarkCompleted && {
                               value: 1,
                               label: "Edit",
                               icon: (
