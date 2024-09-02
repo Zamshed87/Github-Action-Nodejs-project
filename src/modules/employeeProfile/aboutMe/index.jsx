@@ -6,7 +6,13 @@ import BankDetails from "./bankDetails";
 // import { getPeopleDeskAllLanding } from "../../../common/api";
 import OverviewTab from "../employeeOverview/components/OverviewTab";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { getEmployeeProfileViewData } from "../employeeFeature/helper";
+import {
+  getEmployeeProfileViewData,
+  markAsComplete,
+} from "../employeeFeature/helper";
+import { Tag } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
+import IConfirmModal from "common/IConfirmModal";
 
 function AboutMe() {
   const dispatch = useDispatch();
@@ -16,7 +22,7 @@ function AboutMe() {
     document.title = "About Me";
   }, []);
 
-  const { employeeId, buId, wgId, logWgId } = useSelector(
+  const { employeeId, buId, wgId, logWgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -30,8 +36,6 @@ function AboutMe() {
   const [rowDto, setRowDto] = useState([]);
 
   const getEmpData = () => {
-    // getPeopleDeskAllLanding("EmployeeBasicById", orgId, buId, employeeId, setEmpBasic, null, setLoading);
-    // getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, wgId);
     getEmployeeProfileViewData(
       employeeId,
       setEmpBasic,
@@ -60,7 +64,54 @@ function AboutMe() {
     <>
       {loading && <Loading />}
       <div className="about-info-main">
-        <div className="container-about-info" style={{ marginTop: "36px" }}>
+        {intAccountId === 5 && (
+          <div className="d-flex justify-content-end">
+            {empBasic?.employeeProfileLandingView?.isMarkCompleted ? (
+              <Tag
+                style={{ marginRight: "1rem", fontSize: "14px" }}
+                icon={<CheckCircleOutlined />}
+                color="success"
+              >
+                Marked As Completed
+              </Tag>
+            ) : (
+              <Tag
+                style={{
+                  cursor: "pointer",
+                  marginRight: "1rem",
+                  fontSize: "14px",
+                }}
+                onClick={() => {
+                  let confirmObject = {
+                    closeOnClickOutside: false,
+                    message:
+                      "Are you sure you want to mark as complete? After marking as complete, you can't edit.",
+                    yesAlertFunc: () => {
+                      markAsComplete(
+                        empBasic?.employeeProfileLandingView
+                          ?.intEmployeeBasicInfoId,
+                        true,
+                        setLoading,
+                        () => {
+                          getEmpData();
+                        }
+                      );
+                    },
+                    noAlertFunc: () => {
+                      //   history.push("/components/dialogs")
+                    },
+                  };
+                  IConfirmModal(confirmObject);
+                }}
+                color="success"
+              >
+                Mark As Complete
+              </Tag>
+            )}
+          </div>
+        )}
+
+        <div className="container-about-info" style={{ marginTop: "18px" }}>
           <ProfileCard
             empBasic={empBasic?.employeeProfileLandingView}
             getEmpData={getEmpData}
