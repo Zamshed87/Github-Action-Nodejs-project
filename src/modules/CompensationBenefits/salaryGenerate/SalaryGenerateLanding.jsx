@@ -1,7 +1,4 @@
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import axios from "axios";
 import FormikSelect from "common/FormikSelect";
 import { getPeopleDeskAllDDL } from "common/api";
@@ -13,8 +10,6 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import * as Yup from "yup";
-import AntScrollTable from "../../../common/AntScrollTable";
-import Chips from "../../../common/Chips";
 import DefaultInput from "../../../common/DefaultInput";
 import NoResult from "../../../common/NoResult";
 import ResetButton from "../../../common/ResetButton";
@@ -36,9 +31,13 @@ import {
 } from "./helper";
 import "./salaryGenerate.css";
 import { LightTooltip } from "common/LightTooltip";
-import { Tooltip } from "antd";
+import { Tag, Tooltip } from "antd";
 import { downloadFile } from "utility/downloadFile";
-import DownloadIcon from "@mui/icons-material/Download";
+import { DataTable, Flex } from "Components";
+import { getSerial } from "Utils";
+import { DownloadOutlined } from "@ant-design/icons";
+import useDebounce from "utility/customHooks/useDebounce";
+import MasterFilter from "common/MasterFilter";
 
 const initialValues = {
   salaryTpe: {
@@ -84,6 +83,7 @@ const validationSchema = Yup.object().shape({
 const SalaryGenerateLanding = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const debounce = useDebounce();
   const [loading, setLoading] = useState(false);
   const [singleData] = useState(null);
   const [rowDto, setRowDto] = useState([]);
@@ -91,8 +91,7 @@ const SalaryGenerateLanding = () => {
   const [takeHomePayTax, setTakeHomePayTax] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
+  const [paginationSize] = useState(15);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
     []
@@ -119,7 +118,7 @@ const SalaryGenerateLanding = () => {
   }, shallowEqual);
 
   //get landing data
-  const getLandingData = (values) => {
+  const getLandingData = (values, pagination = pages) => {
     getSalaryGenerateRequestLanding(
       "SalaryGenerateRequestLanding",
       orgId,
@@ -133,7 +132,7 @@ const SalaryGenerateLanding = () => {
       setRowDto,
       setAllData,
       setLoading,
-      pages,
+      pagination,
       setPages,
       undefined,
       "",
@@ -280,12 +279,16 @@ const SalaryGenerateLanding = () => {
     document.title = "Salary Generate";
   }, [dispatch]);
 
-  const salaryGenerateColumn = (page, paginationSize) => {
+  const salaryGenerateColumn = (pagination) => {
     return [
       {
         title: "SL",
         render: (text, record, index) =>
-          (page - 1) * paginationSize + index + 1,
+          getSerial({
+            currentPage: pagination?.current,
+            pageSize: pagination?.pageSize,
+            index,
+          }),
         sorter: false,
         filter: false,
         width: 30,
@@ -296,64 +299,18 @@ const SalaryGenerateLanding = () => {
         render: (text, item) => {
           return (
             <div className="d-flex align-items-center">
-              <p>{text}</p>
-              <Tooltip title="Print Details Excel" arrow>
-                <button
-                  className="btn-save ml-2"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
-
-                    downloadFile(
-                      url,
-                      "Salary Details Report",
-                      "xlsx",
-                      setLoading
-                    );
-                  }}
-                  style={{
-                    border: "transparent",
-                    width: "30px",
-                    height: "30px",
-                    background: "#f2f2f7",
-                    borderRadius: "100px",
-                  }}
-                >
-                  <DownloadIcon
-                    sx={{
-                      color: "#101828",
-                      fontSize: "16px",
-                    }}
-                  />
-                </button>
-              </Tooltip>
+              <p>
+                {text} ({item?.strSalaryTypeLabel})
+              </p>
             </div>
           );
         },
-        sorter: true,
         filter: true,
         width: 180,
       },
       {
-        title: "Salary Type",
-        dataIndex: "strSalaryTypeLabel",
-        sorter: true,
-        filter: true,
-        width: 120,
-      },
-      {
-        title: "Business Unit",
-        dataIndex: "strBusinessUnit",
-        sorter: true,
-        filter: true,
-        width: 150,
-      },
-      {
         title: "Workplace Group",
         dataIndex: "strWorkplaceGroupName",
-        sorter: true,
-        filter: true,
         width: 120,
       },
       {
@@ -403,8 +360,6 @@ const SalaryGenerateLanding = () => {
       {
         title: "Net Amount",
         dataIndex: "numNetPayableSalary",
-        sorter: true,
-        filter: true,
         render: (_, record) => (
           <>
             {record?.numNetPayableSalary
@@ -412,25 +367,55 @@ const SalaryGenerateLanding = () => {
               : "0"}
           </>
         ),
-        width: 120,
-        className: "text-center",
+        width: 100,
+        className: "text-right",
       },
       {
         title: "Processing Status",
         dataIndex: "ProcessionStatus",
-        sorter: true,
-        filter: true,
         className: "text-center",
         render: (_, item) => {
           return (
-            <>
-              {item?.ProcessionStatus === "Success" && (
-                <Chips label={item?.ProcessionStatus} classess="success" />
-              )}
-              {item?.ProcessionStatus === "Processing" && (
-                <Chips label={item?.ProcessionStatus} classess="warning" />
-              )}
-            </>
+            <Flex align="center" gap="8px">
+              <Tooltip title="Download as Excel" arrow>
+                <button
+                  className="btn-save ml-2"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
+
+                    downloadFile(
+                      url,
+                      "Salary Details Report",
+                      "xlsx",
+                      setLoading
+                    );
+                  }}
+                  style={{
+                    border: "transparent",
+                    width: "30px",
+                    height: "30px",
+                    background: "#f2f2f7",
+                    borderRadius: "100px",
+                  }}
+                >
+                  <DownloadOutlined />
+                </button>
+              </Tooltip>
+              <div>
+                {item?.ProcessionStatus === "Success" && (
+                  <Tag style={{ borderRadius: "50px" }} color="green">
+                    {item?.ProcessionStatus}
+                  </Tag>
+                )}
+                {item?.ProcessionStatus === "Processing" && (
+                  <Tag style={{ borderRadius: "50px" }} color="gold">
+                    {item?.ProcessionStatus}
+                  </Tag>
+                )}
+              </div>
+            </Flex>
           );
         },
         width: 130,
@@ -583,27 +568,24 @@ const SalaryGenerateLanding = () => {
                   </li>
                 )}
                 <li>
-                  <DefaultInput
-                    classes="search-input"
-                    inputClasses="search-inner-input"
-                    placeholder="Search"
-                    value={values?.search}
-                    name="search"
-                    type="text"
-                    trailicon={
-                      <SearchOutlined
-                        sx={{
-                          color: "#323232",
-                          fontSize: "18px",
-                        }}
-                      />
-                    }
-                    onChange={(e) => {
-                      filterData(e.target.value);
-                      setFieldValue("search", e.target.value);
+                  <MasterFilter
+                    isHiddenFilter
+                    styles={{
+                      marginRight: "0px",
                     }}
-                    errors={errors}
-                    touched={touched}
+                    width="100%"
+                    inputWidth="200px"
+                    value={values?.search}
+                    setValue={(value) => {
+                      setFieldValue("search", value);
+                      debounce(() => {
+                        filterData(value);
+                      }, 500);
+                    }}
+                    cancelHandler={() => {
+                      setFieldValue("search", "");
+                      filterData("");
+                    }}
                   />
                 </li>
                 <li>
@@ -787,41 +769,44 @@ const SalaryGenerateLanding = () => {
                 </div>
               </div>
             </div>
-            <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
+            <div>
               {rowDto?.length > 0 ? (
-                <AntScrollTable
+                <DataTable
+                  bordered
                   data={rowDto?.length > 0 ? rowDto : []}
-                  columnsData={
-                    wgId < 3
-                      ? salaryGenerateColumn(page, paginationSize).filter(
-                          (item) =>
-                            item.title !== "Wing" &&
-                            item.title !== "Sole Depo" &&
-                            item.title !== "Region" &&
-                            item.title !== "Area" &&
-                            item.title !== "Territory"
-                        )
-                      : salaryGenerateColumn(page, paginationSize)
-                  }
-                  rowClassName="pointer"
-                  onRowClick={(item) => {
-                    if (item?.isGenerated === true) {
-                      history.push({
-                        pathname: `/compensationAndBenefits/payrollProcess/generateSalaryView/${item?.intSalaryGenerateRequestId}`,
-                        state: item,
-                      });
-                    } else {
-                      return toast.warning(
-                        "Salary Generate on processing. Please wait...",
-                        {
-                          toastId: 1,
-                        }
-                      );
-                    }
+                  header={salaryGenerateColumn(pages)}
+                  onChange={(pagination, filters, sorter, extra) => {
+                    if (extra.action === "sort") return;
+                    getLandingData(values, pagination);
+                    setPages({
+                      current: pagination?.current,
+                      pageSize: pagination?.pageSize,
+                      total: pagination?.total,
+                    });
                   }}
-                  setPage={setPage}
-                  setPaginationSize={setPaginationSize}
-                  rowKey={(record) => record?.strSalaryCode}
+                  onRow={(item) => ({
+                    onClick: () => {
+                      if (item?.isGenerated === true) {
+                        history.push({
+                          pathname: `/compensationAndBenefits/payrollProcess/generateSalaryView/${item?.intSalaryGenerateRequestId}`,
+                          state: item,
+                        });
+                      } else {
+                        return toast.warning(
+                          "Salary Generate on processing. Please wait...",
+                          {
+                            toastId: 1,
+                          }
+                        );
+                      }
+                    },
+                    className: "pointer",
+                  })}
+                  pagination={{
+                    current: pages?.current,
+                    pageSize: pages?.pageSize,
+                    total: pages?.total,
+                  }}
                 />
               ) : (
                 <NoResult title="No result found" />
