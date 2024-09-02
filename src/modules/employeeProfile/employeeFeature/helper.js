@@ -734,6 +734,30 @@ export const userExistValidation = async (payload, setter, cb) => {
   }
 };
 
+export const markAsComplete = async (
+  empId,
+  isComplete,
+  setLoading,
+  cb
+) => {
+  try {
+    setLoading(true);
+
+    const res = await axios.post(
+      `/Employee/EmployeeAllInfoMarkAsCompletById?employeeId=${empId}&isComplete=${isComplete}`
+    );
+
+    cb && cb();
+
+    toast.success(res?.data?.message, { toastId: 1 });
+
+    setLoading(false);
+  } catch (error) {
+    console.log(error);
+    setLoading(false);
+  }
+};
+
 //UI table column
 export const empListColumn = (
   page,

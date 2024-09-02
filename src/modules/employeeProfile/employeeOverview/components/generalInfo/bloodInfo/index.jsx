@@ -280,7 +280,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       );
       setStatus("empty");
       setSingleData("");
-      setFieldValue("bloodGroup", "")
+      setFieldValue("bloodGroup", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -293,9 +293,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           ...initData,
           bloodGroup: singleData?.value
             ? {
-              value: singleData?.value,
-              label: singleData?.label,
-            }
+                value: singleData?.value,
+                label: singleData?.label,
+              }
             : "",
         }}
         validationSchema={validationSchema}
@@ -305,13 +305,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -373,7 +367,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                   {rowDto?.employeeProfileLandingView && !singleData && (
                     <>
                       {rowDto?.employeeProfileLandingView?.strBloodGroup ===
-                        "" ? (
+                      "" ? (
                         <>
                           <h5>Blood Group</h5>
                           <div
@@ -426,7 +420,8 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      {
+                                      !rowDto?.employeeProfileLandingView
+                                        ?.isMarkCompleted && {
                                         value: 1,
                                         label: "Edit",
                                         icon: (

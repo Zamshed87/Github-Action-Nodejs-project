@@ -20,6 +20,8 @@ import { getEmployeeProfileViewData } from "../helper";
 import "./aboutMeCommon.css";
 import { isDevServer } from "App";
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
+import { Tag } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 function AboutMeDetails() {
   const dispatch = useDispatch();
@@ -40,7 +42,7 @@ function AboutMeDetails() {
   const location = useLocation();
   const { buId, wgId } = location?.state;
 
-  const { isOfficeAdmin } = useSelector(
+  const { isOfficeAdmin, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -89,7 +91,22 @@ function AboutMeDetails() {
                 style={{ marginBottom: "12px" }}
               >
                 <BackButton title={"Employee Details"} />
-                <div>
+                <div className="d-flex mr-5">
+                  {empBasic?.isMarkCompleted && intAccountId === 5 && (
+                    <Tag
+                      style={{
+                        fontSize: "14px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      icon={<CheckCircleOutlined />}
+                      color="success"
+                    >
+                      Marked As Completed
+                    </Tag>
+                  )}
+
                   {(isOfficeAdmin || employeeFeature?.isEdit) && (
                     <Button
                       onClick={() => {

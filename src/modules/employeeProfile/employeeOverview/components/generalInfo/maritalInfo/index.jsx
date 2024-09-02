@@ -277,6 +277,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     updateEmployeeProfile(payload, setLoading, callback);
   };
 
+
   return (
     <>
       <Formik
@@ -423,7 +424,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    {
+                                    !rowDto?.employeeProfileLandingView?.isMarkCompleted && {
                                       value: 1,
                                       label: "Edit",
                                       icon: (
