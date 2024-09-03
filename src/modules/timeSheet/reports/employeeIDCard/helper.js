@@ -23,7 +23,7 @@ export const employeeIdCardLandingColumns = (
     },
     {
       title: "Employee Id",
-      dataIndex: "employeeCode",
+      dataIndex: "EmployeeCode",
       sort: true,
       filter: false,
       fieldType: "string",
@@ -31,11 +31,11 @@ export const employeeIdCardLandingColumns = (
     },
     {
       title: "Employee Name",
-      dataIndex: "employeeName",
+      dataIndex: "EmployeeName",
       render: (record) => {
         return (
           <div className="d-flex align-items-center">
-            <span className="ml-2">{record?.employeeName}</span>
+            <span className="ml-2">{record?.EmployeeName}</span>
           </div>
         );
       },
@@ -46,28 +46,28 @@ export const employeeIdCardLandingColumns = (
 
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "Department",
       sort: true,
       filter: true,
-      filterDropDownList: headerList[`departmentList`],
+      filterDropDownList: headerList[`DepartmentList`],
       fieldType: "string",
     },
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "Designation",
       sort: true,
       filter: true,
-      filterDropDownList: headerList[`designationList`],
+      filterDropDownList: headerList[`DesignationList`],
       fieldType: "string",
     },
     {
       title: "Nid",
-      dataIndex: "nid",
+      dataIndex: "Nid",
       fieldType: "string",
     },
     {
       title: "Personal Mobile Number",
-      dataIndex: "personalMobileNumber",
+      dataIndex: "PersonalMobileNumber",
       fieldType: "string",
     },
     {
@@ -77,7 +77,7 @@ export const employeeIdCardLandingColumns = (
     },
     {
       title: "Blood Group",
-      dataIndex: "bloodGroup",
+      dataIndex: "BloodGroup",
       fieldType: "string",
     },
     // {
@@ -106,8 +106,8 @@ export const employeeIdCardLandingColumns = (
     // },
     {
       title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (record) => dateFormatter(record?.joiningDate),
+      dataIndex: "JoiningDate",
+      render: (record) => dateFormatter(record?.JoiningDate),
     },
     {
       title: "Action",
@@ -115,7 +115,7 @@ export const employeeIdCardLandingColumns = (
       dataIndex: "",
       render: (record) => (
         <div>
-          {!(record?.calendarAssignId || record?.isSelected) && (
+          {!(record?.CalendarAssignId || record?.isSelected) && (
             <div className="assign-btn">
               <button
                 style={{
