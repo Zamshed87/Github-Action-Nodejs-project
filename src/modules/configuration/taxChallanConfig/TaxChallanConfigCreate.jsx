@@ -23,6 +23,8 @@ export default function AddEditForm({
   const getFiscalDDL = useApiRequest({});
   const getBankDDL = useApiRequest({});
   const getSingleData = useApiRequest({});
+  const workplaceGroup = useApiRequest([]);
+  const workplace = useApiRequest([]);
   const saveTaxChallanConfig = useApiRequest({});
 
   const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
@@ -71,7 +73,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intTaxChallanConfigId: singleData?.intTaxChallanConfigId || 0,
       intYear: values?.intYear?.value,
       dteFiscalFromDate: values?.dteFiscalFromDate,
@@ -82,6 +84,8 @@ export default function AddEditForm({
       strBankName: values?.bankName?.label,
       intBankId: values?.bankName?.value,
       intAccountId: orgId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value,
+      intWorkplaceId: values?.workplace?.value,
       intFiscalYearId: values?.fiscalYearRange?.value,
       intActionBy: singleData?.intActionBy || employeeId,
       intCreatedBy: singleData?.intCreatedBy || employeeId,
@@ -113,12 +117,63 @@ export default function AddEditForm({
           label: singleData?.strBankName,
           value: singleData?.intBankId,
         },
+        workplaceGroup: {
+          label: singleData?.strWorkplaceGroupName,
+          value: singleData?.intWorkplaceGroupId,
+        },
+        workplace: {
+          label: singleData?.strWorkplaceName,
+          value: singleData?.intWorkplaceId,
+        },
         dteChallanDate: moment(singleData?.dteChallanDate),
         dteFiscalFromDate: moment(singleData?.dteFiscalFromDate),
         dteFiscalToDate: moment(singleData?.dteFiscalToDate),
       });
     }
   }, [singleData]);
+console.log({singleData});
+
+  const getWorkplaceGroup = () => {
+    workplaceGroup?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "WorkplaceGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId, // This should be removed
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+  };
+
+  const getWorkplace = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    workplace?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
+  useEffect(() => {
+    getWorkplaceGroup();
+  }, [wgId]);
   return (
     <>
       <PForm
@@ -136,6 +191,40 @@ export default function AddEditForm({
         initialValues={{}}
       >
         <Row gutter={[10, 2]}>
+        <Col  sm={12} xs={24}>
+                <PSelect
+                  options={workplaceGroup?.data || []}
+                  name="workplaceGroup"
+                  label="Workplace Group"
+                  placeholder="Workplace Group"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplaceGroup: op,
+                      workplace: undefined,
+                    });
+                    getWorkplace();
+                  }}
+                  rules={
+                    [
+                        { required: true, message: "Workplace Group is required" },
+                    ]
+                  }
+                />
+              </Col>
+              <Col  sm={12} xs={24}>
+                <PSelect
+                  options={workplace?.data || []}
+                  name="workplace"
+                  label="Workplace"
+                  placeholder="Workplace"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplace: op,
+                    });
+                  }}
+                  rules={[{ required: true, message: "Workplace is required" }]}
+                />
+              </Col>
           <Col md={12} sm={24}>
             <PSelect
               options={yearDDLAction(5, 100)}
