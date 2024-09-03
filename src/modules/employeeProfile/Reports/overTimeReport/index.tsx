@@ -128,9 +128,14 @@ const EmOverTimeReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
-      ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+    console.log(pagination, pages);
+
+    const workplaceList =
+      values?.workplace?.length > 0
+        ? `${values?.workplace
+            ?.map((item: any) => item?.intWorkplaceId)
+            .join(",")}`
+        : "";
 
     landingApi.action({
       urlKey: "OvertimeReport",
@@ -284,7 +289,7 @@ const EmOverTimeReport = () => {
           landingApiCall({
             pagination: {
               current: pages?.current,
-              pageSize: landingApi?.data[0]?.totalCount,
+              pageSize: pages?.pageSize,
             },
           });
         }}
@@ -303,13 +308,25 @@ const EmOverTimeReport = () => {
             }}
             onExport={() => {
               const values = form.getFieldsValue(true);
-              const url = ``;
+              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=excelView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
+                values?.workplaceGroup?.value
+              }&dteFromDate=${moment(values?.fromDate).format(
+                "YYYY-MM-DD"
+              )}&dteToDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
               downloadFile(url, "Overtime_Report", "xlsx", setExcelLoading);
             }}
             printIcon={true}
             pdfExport={() => {
               const values = form.getFieldsValue(true);
-              const url = ``;
+              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=pdfView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
+                values?.workplaceGroup?.value
+              }&dteFromDate=${moment(values?.fromDate).format(
+                "YYYY-MM-DD"
+              )}&dteToDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
               getPDFAction(url, setExcelLoading);
             }}
           />
