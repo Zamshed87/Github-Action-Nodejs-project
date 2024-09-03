@@ -61,6 +61,7 @@ function TaxChallanConfigLanding() {
       params: {
         intAccountId: orgId,
         workplaceId: wId,
+        workplaceGroupId: wgId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
