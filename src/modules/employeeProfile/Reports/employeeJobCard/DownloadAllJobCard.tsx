@@ -6,22 +6,33 @@ import { custom26to25LandingDataHandler } from "./utils";
 import { RangePickerProps } from "antd/es/date-picker";
 import PInfo from "common/PInfo";
 import { shallowEqual, useSelector } from "react-redux";
+import { getPDFAction } from "utility/downloadFile";
 
 const DownloadAllJobCard = ({ propsObj }: any) => {
   const {
-    profileData: { wName },
+    profileData: { wName, orgId, wgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   // Form Instance
   const [form] = Form.useForm();
 
-  const { loading, setOpen } = propsObj;
+  const { loading, setLoading } = propsObj;
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
     // Disable dates before fromDate and after next3daysForEmp
     return current && current < fromDateMoment.startOf("day");
+  };
+
+  const getPdf = () => {
+    const values = form.getFieldsValue(true);
+    const url = `/PdfAndExcelReport/GetJobCardAllReports?accountId=${orgId}&workplaceId=${wgId}&fromDate=${moment(
+      values?.fromDate
+    ).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format(
+      "YYYY-MM-DD"
+    )}`;
+    getPDFAction(url, setLoading);
   };
 
   return (
@@ -31,7 +42,9 @@ const DownloadAllJobCard = ({ propsObj }: any) => {
         fromDate: moment(monthFirstDate()),
         toDate: moment(monthLastDate()),
       }}
-      onFinish={() => {}}
+      onFinish={() => {
+        getPdf();
+      }}
     >
       <Row gutter={[10, 2]}>
         <Col md={24} sm={24} xs={24}>
@@ -105,7 +118,7 @@ const DownloadAllJobCard = ({ propsObj }: any) => {
                       fromDate: moment(previousMonthStartDate),
                       toDate: moment(currentMonthEndDate),
                     });
-                    setOpen(false);
+                    getPdf();
                   }
                 );
               }}
