@@ -261,13 +261,7 @@ function Nid({ empId, buId, wgId }) {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -386,7 +380,8 @@ function Nid({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    {
+                                    !rowDto?.employeeProfileLandingView
+                                      ?.isMarkCompleted && {
                                       value: 1,
                                       label: "Edit",
                                       icon: (

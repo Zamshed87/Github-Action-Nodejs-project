@@ -19,6 +19,7 @@ import useDebounce from "utility/customHooks/useDebounce";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import ChangedInOutTimeEmpListModal from "../component/ChangedInOutTime";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const initData = {
   businessUnit: "",
@@ -80,6 +81,9 @@ export default function AddEditFormComponent({
   const currentMonth = new Date().getMonth() + 1;
 
   const saveHandler = (values, cb) => {
+    if (loading) {
+      return toast.warning("Please wait while we are processing your request");
+    }
     if (isMulti) {
       const payload = [];
 
@@ -137,15 +141,14 @@ export default function AddEditFormComponent({
       editManualAttendance(payload, setLoading, cb);
       // console.log("payload multi", payload);
     } else {
-      
       const inTImeStr =
-      selectedPayloadState[0]?.inDateUpdate +
-      "T" +
-      moment(selectedPayloadState[0]?.intimeUpdate).format("HH:mm:ss");
-    const outTimeStr =
-      selectedPayloadState[0]?.outDateUpdate +
-      "T" +
-      moment(selectedPayloadState[0]?.outtimeUpdate).format("HH:mm:ss");
+        selectedPayloadState[0]?.inDateUpdate +
+        "T" +
+        moment(selectedPayloadState[0]?.intimeUpdate).format("HH:mm:ss");
+      const outTimeStr =
+        selectedPayloadState[0]?.outDateUpdate +
+        "T" +
+        moment(selectedPayloadState[0]?.outtimeUpdate).format("HH:mm:ss");
       const status =
         singleRowData?.isPresent === true
           ? "Present"
@@ -158,7 +161,6 @@ export default function AddEditFormComponent({
           : singleRowData?.isAbsent === true
           ? "Absent"
           : "";
-console.log({values},{selectedPayloadState});
 
       const payload = [
         {
@@ -167,7 +169,7 @@ console.log({values},{selectedPayloadState});
           employeeId: employeeId,
           attendanceDate: singleRowData?.dteAttendanceDate,
           inTime: values?.inputFieldType?.value == 1 ? values?.inTime : "",
-          outTime: values?.inputFieldType?.value == 1 ? values?.outTime : '',
+          outTime: values?.inputFieldType?.value == 1 ? values?.outTime : "",
           currentStatus: status,
           requestStatus: values?.inputFieldType?.label,
           remarks: values?.code,
@@ -181,11 +183,12 @@ console.log({values},{selectedPayloadState});
           outDateTime: outTimeStr,
           workPlaceGroup: buId,
           businessUnitId: wgId,
-          isAdditionalCalendar: selectedPayloadState[0]?.isAdditionalCalendar ? true : false,
+          isAdditionalCalendar: selectedPayloadState[0]?.isAdditionalCalendar
+            ? true
+            : false,
           additionalCalendarId: selectedPayloadState[0]?.isAdditionalCalendar
             ? selectedPayloadState[0]?.additionalCalendarId
             : 0,
-          
         },
       ];
       editManualAttendance(payload, setLoading, cb);
@@ -411,6 +414,7 @@ console.log({values},{selectedPayloadState});
                     <button
                       className="btn btn-green btn-green-disable"
                       type="submit"
+                      disabled={loading}
                       onSubmit={() => handleSubmit()}
                     >
                       Save

@@ -384,7 +384,8 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             setSingleData={setSingleData}
                             item={item}
                             options={[
-                              {
+                              !empSpecialContact?.employeeProfileLandingView
+                              ?.isMarkCompleted && {
                                 value: 1,
                                 label: "Edit",
                                 icon: (

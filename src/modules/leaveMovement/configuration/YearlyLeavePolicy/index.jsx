@@ -277,7 +277,7 @@ const YearlyLeavePolicy = () => {
                                         </td>
                                         <td>
                                           {" "}
-                                          {policy?.genderListDTO
+                                          {policy?.genderListDto
                                             ?.map(
                                               (gender) =>
                                                 gender?.strGenderName + " "
@@ -286,7 +286,7 @@ const YearlyLeavePolicy = () => {
                                         </td>
                                         <td>
                                           {" "}
-                                          {policy?.hrPositionListDTO
+                                          {policy?.hrPositionListDto
                                             ?.map(
                                               (pos) =>
                                                 pos?.strHrPositionName + " "

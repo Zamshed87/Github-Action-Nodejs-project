@@ -13,7 +13,6 @@ import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -22,27 +21,19 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import {
-  dateFormatter,
-  monthFirstDate,
-  monthLastDate,
-} from "utility/dateFormatter";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 // import { column, getTableDataMonthlyAttendance } from "./helper";
 // import { fromToDateList } from "../helper";
-import axios from "axios";
 import { numberWithCommas } from "utility/numberWithCommas";
-import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
-import { column } from "./helper";
+import { downloadFile, getPDFAction } from "utility/downloadFile";
 
 const EmOverTimeReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -56,7 +47,6 @@ const EmOverTimeReport = () => {
   //   const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
-  const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
@@ -138,9 +128,14 @@ const EmOverTimeReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
-      ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+    console.log(pagination, pages);
+
+    const workplaceList =
+      values?.workplace?.length > 0
+        ? `${values?.workplace
+            ?.map((item: any) => item?.intWorkplaceId)
+            .join(",")}`
+        : "";
 
     landingApi.action({
       urlKey: "OvertimeReport",
@@ -294,7 +289,7 @@ const EmOverTimeReport = () => {
           landingApiCall({
             pagination: {
               current: pages?.current,
-              pageSize: landingApi?.data[0]?.totalCount,
+              pageSize: pages?.pageSize,
             },
           });
         }}
@@ -312,102 +307,27 @@ const EmOverTimeReport = () => {
               });
             }}
             onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                try {
-                  const values = form.getFieldsValue(true);
-
-                  const res = await axios.get(
-                    `/Employee/OvertimeReportLanding?PartType=CalculatedHistoryReportForAllEmployee&BusinessUnitId=${buId}&WorkplaceGroupId=${
-                      values?.workplaceGroup?.value
-                    }&FromDate=${moment(values?.fromDate).format(
-                      "YYYY-MM-DD"
-                    )}&ToDate=${moment(values?.toDate).format(
-                      "YYYY-MM-DD"
-                    )}&IsPaginated=false&PageNo=0&PageSize=0`
-                  );
-                  if (res?.data) {
-                    setExcelLoading(true);
-                    if (res?.data < 1) {
-                      return toast.error("No Attendance Data Found");
-                    }
-
-                    const newData = res?.data?.map((item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    });
-                    createCommonExcelFile({
-                      titleWithDate: `Overtime Report - ${dateFormatter(
-                        moment(values?.fromDate).format("YYYY-MM-DD")
-                      )} to ${dateFormatter(
-                        moment(values?.toDate).format("YYYY-MM-DD")
-                      )}`,
-                      fromDate: "",
-                      toDate: "",
-                      buAddress: (buDetails as any)?.strAddress,
-                      businessUnit: values?.workplaceGroup?.value
-                        ? (buDetails as any)?.strWorkplace
-                        : buName,
-                      tableHeader: column,
-                      getTableData: () =>
-                        getTableDataMonthlyAttendance(
-                          newData,
-                          Object.keys(column)
-                        ),
-
-                      // eslint-disable-next-line @typescript-eslint/no-empty-function
-                      getSubTableData: () => {},
-                      subHeaderInfoArr: [],
-                      subHeaderColumn: [],
-                      tableFooter: [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        Number(
-                          newData
-                            ?.reduce(
-                              (acc: any, item: any) => acc + item?.payAmount,
-                              0
-                            )
-                            .toFixed(2)
-                        ),
-                      ],
-                      extraInfo: {},
-                      tableHeadFontSize: 10,
-                      widthList: {
-                        C: 30,
-                        B: 30,
-                        D: 30,
-                        E: 25,
-                        F: 20,
-                        G: 25,
-                        H: 15,
-                        I: 15,
-                        J: 20,
-                        K: 20,
-                      },
-                      commonCellRange: "A1:J1",
-                      CellAlignment: "left",
-                    });
-                    setExcelLoading(false);
-                  }
-                } catch (error: any) {
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                  // console.log(error?.message);
-                }
-              };
-              excelLanding();
+              const values = form.getFieldsValue(true);
+              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=excelView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
+                values?.workplaceGroup?.value
+              }&dteFromDate=${moment(values?.fromDate).format(
+                "YYYY-MM-DD"
+              )}&dteToDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
+              downloadFile(url, "Overtime_Report", "xlsx", setExcelLoading);
+            }}
+            printIcon={true}
+            pdfExport={() => {
+              const values = form.getFieldsValue(true);
+              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=pdfView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
+                values?.workplaceGroup?.value
+              }&dteFromDate=${moment(values?.fromDate).format(
+                "YYYY-MM-DD"
+              )}&dteToDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
+              getPDFAction(url, setExcelLoading);
             }}
           />
           <PCardBody className="mb-3">
@@ -454,11 +374,9 @@ const EmOverTimeReport = () => {
                     });
                     getWorkplace();
                   }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
+                  rules={[
+                    { required: true, message: "Workplace Group is required" },
+                  ]}
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
@@ -474,7 +392,6 @@ const EmOverTimeReport = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
-                    getWorkplaceDetails(value, setBuDetails);
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />

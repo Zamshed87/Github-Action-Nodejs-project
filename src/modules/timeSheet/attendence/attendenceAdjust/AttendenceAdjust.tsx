@@ -259,6 +259,9 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   };
 
   const submitHandler = async () => {
+    if (ManualAttendance?.loading)
+      return toast.warn("Please wait for the previous request to complete");
+
     await form
       .validateFields(["intime", "outtime"])
       .then(() => {

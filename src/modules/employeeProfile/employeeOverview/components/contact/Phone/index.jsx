@@ -259,13 +259,7 @@ function Phone({ empId, buId, wgId }) {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -324,7 +318,7 @@ function Phone({ empId, buId, wgId }) {
                     <>
                       {rowDto?.employeeProfileLandingView?.strPersonalMobile ===
                         "" ||
-                        rowDto?.employeeProfileLandingView?.strPersonalMobile ===
+                      rowDto?.employeeProfileLandingView?.strPersonalMobile ===
                         null ? (
                         <>
                           <h5>Phone</h5>
@@ -377,7 +371,8 @@ function Phone({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    {
+                                    !rowDto?.employeeProfileLandingView
+                                      ?.isMarkCompleted && {
                                       value: 1,
                                       label: "Edit",
                                       icon: (
