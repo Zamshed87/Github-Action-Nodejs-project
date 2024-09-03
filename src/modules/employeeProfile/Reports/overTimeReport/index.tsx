@@ -28,6 +28,7 @@ import { debounce } from "lodash";
 // import { fromToDateList } from "../helper";
 import { numberWithCommas } from "utility/numberWithCommas";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
+import { todayDate } from "utility/todayDate";
 
 const EmOverTimeReport = () => {
   const dispatch = useDispatch();
@@ -315,7 +316,12 @@ const EmOverTimeReport = () => {
               )}&dteToDate=${moment(values?.toDate).format(
                 "YYYY-MM-DD"
               )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
-              downloadFile(url, "Overtime_Report", "xlsx", setExcelLoading);
+              downloadFile(
+                url,
+                `Overtime_Report (${todayDate()})`,
+                "xlsx",
+                setExcelLoading
+              );
             }}
             printIcon={true}
             pdfExport={() => {
