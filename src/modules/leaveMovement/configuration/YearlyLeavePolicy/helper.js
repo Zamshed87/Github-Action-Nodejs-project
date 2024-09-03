@@ -185,7 +185,7 @@ export const getYearlyPolicyById = async (
           value: res?.data?.intWorkplaceGroupId,
           label: res?.data?.strWorkplaceGroupName,
         },
-        intGender: res?.data?.genderListDTO?.map((itm) => {
+        intGender: res?.data?.genderListDto?.map((itm) => {
           return {
             ...itm,
             value: itm?.intGenderId,
@@ -208,7 +208,7 @@ export const getYearlyPolicyById = async (
           value: res?.data?.intYear,
           label: res?.data?.intYear,
         },
-        hrPositionListDTO: res?.data?.hrPositionListDTO?.map((itm) => {
+        hrPositionListDTO: res?.data?.hrPositionListDto?.map((itm) => {
           return {
             ...itm,
             value: itm?.intHrPositionId,
@@ -237,7 +237,7 @@ export const getYearlyPolicyById = async (
       const dummy = [];
 
       res?.data?.intExistingPolicyIdList?.forEach((itm) => {
-        let a = allPolicies?.find((it) => it.intPolicyId === itm);
+        const a = allPolicies?.find((it) => it.intPolicyId === itm);
         if (a?.intPolicyId) {
           dummy.push(a);
         }
