@@ -227,20 +227,20 @@ const EmployeeJobCard = () => {
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.length || 0} results`}
-            // buttonList={[
-            //   {
-            //     type: "primary",
-            //     content: "Download all",
-            //     onClick: () => {
-            //       setOpen(true);
-            //     },
-            //     info: {
-            //       isInfo: true,
-            //       infoTitle:
-            //         "Download all Employee job card for the current workplace for given date range",
-            //     },
-            //   },
-            // ]}
+            buttonList={[
+              {
+                type: "primary",
+                content: "Download all",
+                onClick: () => {
+                  setOpen(true);
+                },
+                info: {
+                  isInfo: true,
+                  infoTitle:
+                    "Download all Employee job card for the current workplace for given date range",
+                },
+              },
+            ]}
             onExport={() => {
               createJobCardExcelHandler({
                 BuDetails: buDetails,
@@ -707,7 +707,7 @@ const EmployeeJobCard = () => {
         maskClosable={false}
         components={
           <>
-            <DownloadAllJobCard propsObj={{ loading, setOpen }} />
+            <DownloadAllJobCard propsObj={{ loading, setOpen, setLoading }} />
           </>
         }
       />
