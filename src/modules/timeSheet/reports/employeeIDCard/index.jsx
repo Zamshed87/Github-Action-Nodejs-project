@@ -38,8 +38,8 @@ const EmployeeIdCardLanding = () => {
     total: 0,
   });
   const initHeaderList = {
-    departmentList: [],
-    designationList: [],
+    DepartmentList: [],
+    DesignationList: [],
     // supervisorList: [],
     // linemanagerList: [],
     // employmentTypeList: [],
@@ -94,7 +94,7 @@ const EmployeeIdCardLanding = () => {
         setHeaderListDataDynamically({
           currentFilterSelection,
           checkedHeaderList,
-          headerListKey: "employeeInfoHeader",
+          headerListKey: "EmployeeInfoHeader",
           headerList,
           setHeaderList,
           response: res?.data,
@@ -111,7 +111,7 @@ const EmployeeIdCardLanding = () => {
           ...item,
           initialSerialNumber: index + 1,
           isSelected: checkedList?.find(
-            ({ employeeCode }) => item?.employeeCode === employeeCode
+            ({ EmployeeCode }) => item?.EmployeeCode === EmployeeCode
           )
             ? true
             : false,
