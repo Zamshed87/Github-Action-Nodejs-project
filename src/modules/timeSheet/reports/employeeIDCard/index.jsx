@@ -162,8 +162,8 @@ const EmployeeIdCardLanding = () => {
 
   const downloadEmpIdCardZipFile = (isAll, singleEmpData) => {
     let payload = isAll ? empIDString : "";
-    if (singleEmpData?.employeeId) {
-      payload = singleEmpData?.employeeId + "";
+    if (singleEmpData?.EmployeeId) {
+      payload = singleEmpData?.EmployeeId + "";
     } else if (isAll) {
       payload = empIDString;
     } else {
@@ -171,7 +171,7 @@ const EmployeeIdCardLanding = () => {
         (itm) => itm.isSelected === true
       );
       const empIdList = modifyFilterRowDto.map((data) => {
-        return data?.employeeId;
+        return data?.EmployeeId;
       });
       payload = empIdList.join(",");
     }
@@ -472,7 +472,7 @@ const EmployeeIdCardLanding = () => {
               }
               filterOrderList={filterOrderList}
               setFilterOrderList={setFilterOrderList}
-              uniqueKey="employeeId"
+              uniqueKey="EmployeeId"
               getFilteredData={(
                 currentFilterSelection,
                 updatedFilterData,
