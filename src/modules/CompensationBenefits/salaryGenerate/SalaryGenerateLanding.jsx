@@ -30,8 +30,7 @@ import {
   getSalaryGenerateRequestLanding,
 } from "./helper";
 import "./salaryGenerate.css";
-import { LightTooltip } from "common/LightTooltip";
-import { Tag, Tooltip } from "antd";
+import { Popover, Tag, Tooltip } from "antd";
 import { downloadFile } from "utility/downloadFile";
 import { DataTable, Flex } from "Components";
 import { getSerial } from "Utils";
@@ -317,9 +316,23 @@ const SalaryGenerateLanding = () => {
         title: "Workplaces",
         render: (text) =>
           text ? (
-            <LightTooltip title={<div>{text}</div>}>
+            <Popover
+              placement="bottom"
+              content={() => {
+                const textArr = text.split(",");
+
+                return (
+                  <ol className="ml-2">
+                    {textArr.map((item, index) => {
+                      return <li key={index}>{item}</li>;
+                    })}
+                  </ol>
+                );
+              }}
+              trigger="hover"
+            >
               {text.substring(0, 15) + "...."}
-            </LightTooltip>
+            </Popover>
           ) : (
             "-"
           ),
