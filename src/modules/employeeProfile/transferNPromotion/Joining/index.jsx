@@ -3,7 +3,6 @@ import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Formik, useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import FormikInput from "../../../../common/FormikInput";
 import Loading from "../../../../common/loading/Loading";
@@ -30,7 +29,6 @@ const paginationSize = 25;
 
 export default function Joining() {
   const dispatch = useDispatch();
-  const history = useHistory();
   const debounce = useDebounce();
 
   useEffect(() => {

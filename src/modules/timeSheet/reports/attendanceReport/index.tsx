@@ -40,7 +40,7 @@ const AttendanceReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId, buName, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -164,6 +164,7 @@ const AttendanceReport = () => {
   useEffect(() => {
     getWorkplaceGroup();
     landingApiCall();
+    getWorkplaceDetails(wId, setBuDetails);
   }, []);
 
   const header: any = [
@@ -468,7 +469,6 @@ const AttendanceReport = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
-                    getWorkplaceDetails(value, setBuDetails);
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />
