@@ -10,7 +10,7 @@ import { getPDFAction } from "utility/downloadFile";
 
 const DownloadAllJobCard = ({ propsObj }: any) => {
   const {
-    profileData: { wName, orgId, wgId },
+    profileData: { wName, orgId, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   // Form Instance
@@ -27,11 +27,12 @@ const DownloadAllJobCard = ({ propsObj }: any) => {
 
   const getPdf = () => {
     const values = form.getFieldsValue(true);
-    const url = `/PdfAndExcelReport/GetJobCardAllReports?accountId=${orgId}&workplaceId=${wgId}&fromDate=${moment(
+    const url = `/PdfAndExcelReport/GetJobCardAllReports?accountId=${orgId}&isForPdf=true&workplaceId=${wId}&employeeId=0&fromDate=${moment(
       values?.fromDate
     ).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format(
       "YYYY-MM-DD"
-    )}`;
+    )}
+`;
     getPDFAction(url, setLoading);
   };
 

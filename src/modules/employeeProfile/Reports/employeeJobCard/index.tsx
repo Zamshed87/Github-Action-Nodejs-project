@@ -40,7 +40,7 @@ const EmployeeJobCard = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, userName, wId },
+    profileData: { buId, wgId, employeeId, orgId, buName, userName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -253,19 +253,21 @@ const EmployeeJobCard = () => {
                 buName,
                 rowDto: attendanceInfo,
                 empInfo,
+                empActivity,
               });
             }}
             printIcon={true}
             pdfExport={() => {
               const values = form.getFieldsValue(true);
-              getPDFAction(
-                `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${
-                  values?.employee?.value
-                }&FromDate=${moment(values?.fromDate).format(
-                  "YYYY-MM-DD"
-                )}&ToDate=${moment(values?.toDate).format("YYYY-MM-DD")}`,
-                setLoading
-              );
+              const url = `/PdfAndExcelReport/GetJobCardAllReports?accountId=${orgId}&workplaceId=0&employeeId=${
+                values?.employee?.value
+              }&fromDate=${moment(values?.fromDate).format(
+                "YYYY-MM-DD"
+              )}&toDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&isForPdf=true
+`;
+              getPDFAction(url, setLoading);
             }}
           />
           <PCardBody className="">
