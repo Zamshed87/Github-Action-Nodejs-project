@@ -80,14 +80,13 @@ const SelfSalaryPayslipReport = () => {
   useEffect(() => {
     if (values?.inMonth && values?.intYear) {
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&intId=${employeeId}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+        `/PeopleDeskDdl/PeopleDeskAllDDL?ddlType=PayrollPeriodByEmployeeId&businessUnitId=${buId}&workplaceGroupId=${wgId}&intId=${employeeId}&intMonth=${values?.inMonth}&intYear=${values?.intYear}`,
         "SalaryGenerateRequestId",
         "SalaryCode",
         setPayrollPeiodDDL
       );
     }
   }, [values, employeeId, orgId]);
-
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps

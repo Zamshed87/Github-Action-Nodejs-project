@@ -136,9 +136,9 @@ const AttendanceReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
+    const workplaceList = values?.workplace
       ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+      .join(",");
 
     landingApi.action({
       urlKey: "GetEmpAttendanceReport",
@@ -151,7 +151,7 @@ const AttendanceReport = () => {
 
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
         // IntWorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceList: `${workplaceList}` || "",
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),

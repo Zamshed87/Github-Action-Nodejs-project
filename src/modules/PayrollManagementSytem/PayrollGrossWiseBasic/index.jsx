@@ -1,5 +1,7 @@
 import {
-  AddOutlined, EditOutlined, SettingsBackupRestoreOutlined
+  AddOutlined,
+  EditOutlined,
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
@@ -13,10 +15,11 @@ import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../common/PrimaryButton";
 import ResetButton from "../../../common/ResetButton";
-import { getPyrGrossWiseBasicAction, setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
+import {
+  getPyrGrossWiseBasicAction,
+  setFirstLevelNameAction,
+} from "../../../commonRedux/reduxForLocalStorage/actions";
 import { getAllGrossWiseBasicLanding } from "./helper";
-
-
 
 const initData = {
   status: "",
@@ -50,33 +53,18 @@ export default function PayrollGrossWiseBasicLanding() {
     return state?.localStorage?.pyrGrossWiseBasic;
   }, shallowEqual);
 
-
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
   }, [dispatch]);
 
   const getData = () => {
-    getAllGrossWiseBasicLanding(
-      orgId,
-      buId,
-      setRowDto,
-      setLoading
-    );
-    dispatch(
-      getPyrGrossWiseBasicAction(orgId, buId)
-    );
+    getAllGrossWiseBasicLanding(orgId, buId, setRowDto, setLoading);
+    dispatch(getPyrGrossWiseBasicAction(orgId, buId));
   };
 
   useEffect(() => {
-    getAllGrossWiseBasicLanding(
-      orgId,
-      buId,
-      setRowDto,
-      setLoading
-    );
-    dispatch(
-      getPyrGrossWiseBasicAction(orgId, buId)
-    );
+    getAllGrossWiseBasicLanding(orgId, buId, setRowDto, setLoading);
+    dispatch(getPyrGrossWiseBasicAction(orgId, buId));
   }, [orgId, buId, dispatch]);
 
   const { setFieldValue, handleSubmit } = useFormik({
@@ -93,13 +81,14 @@ export default function PayrollGrossWiseBasicLanding() {
       render: (text, record, index) => index + 1,
       sorter: false,
       filter: false,
-      width: 40
+      width: 40,
     },
     {
       title: "Gross Salary",
       render: (_, item) => (
         <div>
-          {item?.numMinGross}-{item?.numMaxGross < 999999 ? item?.numMaxGross : "Max"}
+          {item?.numMinGross}-
+          {item?.numMaxGross < 999999 ? item?.numMaxGross : "Max"}
         </div>
       ),
       sorter: false,
@@ -179,8 +168,8 @@ export default function PayrollGrossWiseBasicLanding() {
                       icon={<AddOutlined sx={{ marginRight: "11px" }} />}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (!permission?.isCreate)
-                          return toast.warn("You don't have permission");
+                        // if (!permission?.isCreate)
+                        //   return toast.warn("You don't have permission");
                         history.push(
                           "/administration/payrollConfiguration/payrollBasic/create"
                         );
@@ -192,7 +181,10 @@ export default function PayrollGrossWiseBasicLanding() {
               <div className="table-card-body">
                 <div className="table-card-styled tableOne">
                   {pyrGrossWiseBasicLanding?.length > 0 ? (
-                    <AntTable data={pyrGrossWiseBasicLanding} columnsData={columns} />
+                    <AntTable
+                      data={pyrGrossWiseBasicLanding}
+                      columnsData={columns}
+                    />
                   ) : (
                     <>
                       {!loading && (
