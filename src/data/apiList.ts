@@ -158,4 +158,5 @@ export const apiList = {
   CommonEmployeeDDLForActiveInactive:
     "/Employee/CommonEmployeeDDLForActiveInactive",
   SupervirorDashboardLanding: "/Dashboard/MidLevelDashboard",
+  JobCardLandingNPDF: "/PdfAndExcelReport/GetJobCardAllReports",
 };

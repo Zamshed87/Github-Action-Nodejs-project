@@ -188,6 +188,7 @@ const EmployeeIdCardLanding = () => {
           setIsLoading
         );
       },
+      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
@@ -244,8 +245,6 @@ const EmployeeIdCardLanding = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Employee ID Card";
   }, []);
-
-  console.log(checkedList);
 
   return (
     <>
