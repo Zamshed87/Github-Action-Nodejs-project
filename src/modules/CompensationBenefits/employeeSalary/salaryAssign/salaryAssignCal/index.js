@@ -571,7 +571,11 @@ export const tenMsNotAssignCal = (res, grossSalaryAmount) => {
 
   return finalModify;
 };
-export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
+export const addinNotAssignCal = (
+  res,
+  basicSalaryObj = { basicSalary: 2000, numNumberOfPercent: 50 },
+  grossSalaryAmount
+) => {
   // --------------------------------------
   // addin
   // intPayrollElementTypeId: 1;
@@ -601,10 +605,10 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
   // strSalaryBreakdownTitle: "Basic 50%";
   //------------------------>
   console.log({ res });
-  console.log({ basicSalaryObj });
+  console.log({ basicSalaryObj }, "2");
   console.log({ grossSalaryAmount });
   let modifyData = [];
-
+  basicSalaryObj = { basicSalary: 2000, numNumberOfPercent: 50 };
   let basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
 
   modifyData = res?.data?.map((itm) => {
@@ -613,6 +617,7 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     // for corporate
     if (itm?.strSalaryBreakdownTitle === "Corporate3") {
       console.log("t");
+      console.log({ itm });
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
         modifyObj = {

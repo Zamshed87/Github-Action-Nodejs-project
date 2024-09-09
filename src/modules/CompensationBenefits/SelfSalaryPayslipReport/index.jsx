@@ -437,7 +437,7 @@ const SelfSalaryPayslipReport = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "lef" }}>
+                      <td style={{ textAlign: "left" }}>
                         <p>Loan</p>
                       </td>
                       <td style={{ textAlign: "right" }} colSpan="3">
