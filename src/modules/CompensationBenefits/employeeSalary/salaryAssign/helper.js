@@ -209,7 +209,13 @@ export const getByIdBreakdownListDDL = async (
           //   resBasicAllowance?.data
           // );
           // getByIdSalaryAssignDDLUpdate(res, grossSalaryAmount, setter);
-          getByIdSalaryAssignDDLUpdate2(res, grossSalaryAmount, setter);
+          getByIdSalaryAssignDDLUpdate2(
+            res,
+            grossSalaryAmount,
+            setter,
+            accId,
+            resBasicAllowance?.data
+          );
           setLoading && setLoading(false);
         }
       } catch (error) {
