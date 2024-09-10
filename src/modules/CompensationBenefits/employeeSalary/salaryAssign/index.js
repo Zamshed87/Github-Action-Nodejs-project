@@ -407,7 +407,9 @@ const SalaryAssign = () => {
                     }
                     onClick={() => {
                       if (permission?.isCreate) {
-                        history.push("/compensationAndBenefits/employeeSalary/salaryAssign/bulk");
+                        history.push(
+                          "/compensationAndBenefits/employeeSalary/salaryAssign/bulk"
+                        );
                       } else {
                         toast.warn("You don't have permission");
                       }

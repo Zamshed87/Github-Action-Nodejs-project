@@ -57,6 +57,8 @@ const EmployeeJobCard = () => {
   const [empInfo, setEmpInfo] = useState<any>();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [empActivity, setEmpActivity] = useState<any>({});
+  const [attendanceInfo, setAttendanceInfo] = useState<any>([]);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -74,15 +76,19 @@ const EmployeeJobCard = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetAttendanceDetailsReport",
+      urlKey: "JobCardLandingNPDF",
       method: "GET",
       params: {
-        EmployeeId: values?.employee?.value,
-        // IsPaginated: true,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-
-        TypeId: 0,
+        accountId: orgId,
+        workplaceId: 0,
+        employeeId: values?.employee?.value,
+        isForPdf: false,
+        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+      },
+      onSuccess: (res) => {
+        setEmpActivity(res[0]?.attendanceSummaryInformation);
+        setAttendanceInfo(res[0]?.attendanceInformation);
       },
     });
   };
@@ -123,30 +129,30 @@ const EmployeeJobCard = () => {
         width: 35,
         align: "center",
       },
-
       {
         title: "Attendance Date",
-        dataIndex: "AttendanceDateWithName",
+        dataIndex: "attendanceDate",
+        render: (date: any) => moment(date).format("DD MMM, YYYY (ddd)"),
         width: 120,
       },
       {
         title: "In-Time",
-        dataIndex: "InTime",
+        dataIndex: "inTime",
         width: 80,
       },
       {
         title: "Out-Time",
-        dataIndex: "OutTime",
+        dataIndex: "outTime",
         width: 80,
       },
       {
         title: "Late Min",
-        dataIndex: "LateMin",
+        dataIndex: "lateMin",
         width: 80,
       },
       {
         title: "Start Time",
-        dataIndex: "StartTime",
+        dataIndex: "startTime",
         width: 80,
       },
       {
@@ -161,43 +167,42 @@ const EmployeeJobCard = () => {
       },
       {
         title: "End Time",
-        dataIndex: "EndTime",
+        dataIndex: "endTime",
         width: 80,
       },
 
       {
         title: "Early Out",
-        dataIndex: "EarlyOut",
+        dataIndex: "earlyOut",
 
         width: 75,
       },
       {
         title: "Total Working Hours",
-        dataIndex: "WorkingHours",
+        dataIndex: "totalWorkingHour",
 
         width: 100,
       },
       {
         title: "Over Time",
-        dataIndex: "numOverTime",
+        dataIndex: "overTime",
         width: 75,
       },
       {
         title: "Calendar Name",
-        dataIndex: "CalendarName",
+        dataIndex: "calenderName",
         width: 200,
       },
-
       {
         title: "Attendance Status",
         render: (_: any, record: any) => (
-          <AttendanceStatus status={record?.AttStatus} />
+          <AttendanceStatus status={record?.attendanceStatus} />
         ),
         width: 150,
       },
       {
         title: "Remarks",
-        dataIndex: "Remarks",
+        dataIndex: "remarks",
         width: 120,
       },
     ];
@@ -209,6 +214,7 @@ const EmployeeJobCard = () => {
     // Disable dates before fromDate and after next3daysForEmp
     return current && current < fromDateMoment.startOf("day");
   };
+
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -226,7 +232,7 @@ const EmployeeJobCard = () => {
           {(loading || landingApi?.loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Total ${landingApi?.data?.length || 0} results`}
+            title={`Total ${attendanceInfo?.length || 0} results`}
             buttonList={[
               {
                 type: "primary",
@@ -245,21 +251,23 @@ const EmployeeJobCard = () => {
               createJobCardExcelHandler({
                 BuDetails: buDetails,
                 buName,
-                rowDto: landingApi?.data,
+                rowDto: attendanceInfo,
                 empInfo,
+                empActivity,
               });
             }}
             printIcon={true}
             pdfExport={() => {
               const values = form.getFieldsValue(true);
-              getPDFAction(
-                `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${
-                  values?.employee?.value
-                }&FromDate=${moment(values?.fromDate).format(
-                  "YYYY-MM-DD"
-                )}&ToDate=${moment(values?.toDate).format("YYYY-MM-DD")}`,
-                setLoading
-              );
+              const url = `/PdfAndExcelReport/GetJobCardAllReports?accountId=${orgId}&workplaceId=0&employeeId=${
+                values?.employee?.value
+              }&fromDate=${moment(values?.fromDate).format(
+                "YYYY-MM-DD"
+              )}&toDate=${moment(values?.toDate).format(
+                "YYYY-MM-DD"
+              )}&isForPdf=true
+`;
+              getPDFAction(url, setLoading);
             }}
           />
           <PCardBody className="">
@@ -311,42 +319,6 @@ const EmployeeJobCard = () => {
                   }}
                 />
               </Col>
-
-              {/* <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
-                />
-              </Col> */}
-              {/* <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                  }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col> */}
 
               <Col
                 style={{
@@ -542,7 +514,7 @@ const EmployeeJobCard = () => {
               );
             }}
           </Form.Item>
-          {landingApi?.data?.length > 0 ? (
+          {attendanceInfo?.length > 0 ? (
             <Row
               className="mb-1"
               style={{
@@ -571,25 +543,23 @@ const EmployeeJobCard = () => {
                 >
                   <p>
                     Total Present:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalPresent} Days</strong>{" "}
+                    <strong>{empActivity?.totalPresent} Days</strong>{" "}
                   </p>
                   <p>
                     Total Manual Present:{" "}
-                    <strong>
-                      {landingApi?.data?.[0]?.totalManualPresent} Days
-                    </strong>{" "}
+                    <strong>{empActivity?.totalManualPresent} Days</strong>{" "}
                   </p>
                   <p>
                     Total Leave: :{" "}
-                    <strong>{landingApi?.data?.[0]?.totalLeave} Days</strong>{" "}
+                    <strong>{empActivity?.totalLeave} Days</strong>{" "}
                   </p>
                   <p>
                     Total Halfday Leave:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalHalfdayLeave}</strong>{" "}
+                    <strong>{empActivity?.totalHalfdayLeave}</strong>{" "}
                   </p>
                   <p>
                     Total Late Time:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalLateMin}</strong>{" "}
+                    <strong>{empActivity?.totalLateMin}</strong>{" "}
                   </p>
                 </div>
               </Col>
@@ -610,28 +580,23 @@ const EmployeeJobCard = () => {
                   }}
                 >
                   <p>
-                    Total Late:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalLate} Days</strong>{" "}
+                    Total Late: <strong>{empActivity?.totalLate} Days</strong>{" "}
                   </p>
                   <p>
                     Total Manual late:{" "}
-                    <strong>
-                      {landingApi?.data?.[0]?.totalManualLate} Days
-                    </strong>{" "}
+                    <strong>{empActivity?.totalManualLate} Days</strong>{" "}
                   </p>
                   <p>
                     Total Absent:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalAbsent} Days</strong>{" "}
+                    <strong>{empActivity?.totalAbsent} Days</strong>{" "}
                   </p>
                   <p>
                     Total Manual Absent:{" "}
-                    <strong>
-                      {landingApi?.data?.[0]?.totalManualAbsent} Days
-                    </strong>{" "}
+                    <strong>{empActivity?.totalManualAbsent} Days</strong>{" "}
                   </p>
                   <p>
                     Total Over Time:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalOvertime} Days</strong>{" "}
+                    <strong>{empActivity?.totalOvertime} Days</strong>{" "}
                   </p>
                 </div>
               </Col>
@@ -652,23 +617,23 @@ const EmployeeJobCard = () => {
                 >
                   <p>
                     Total Early Out:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalEarlyOut} Days</strong>{" "}
+                    <strong>{empActivity?.totalEarlyOut} Days</strong>{" "}
                   </p>
                   <p>
                     Total Early Out Time:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalEarlyOutMin}</strong>{" "}
+                    <strong>{empActivity?.totalEarlyOutMin}</strong>{" "}
                   </p>
                   <p>
                     Total Holiday:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalHoliday} Days</strong>{" "}
+                    <strong>{empActivity?.totalHoliday} Days</strong>{" "}
                   </p>
                   <p>
                     Total Movement:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalMovement} Days</strong>{" "}
+                    <strong>{empActivity?.totalMovement} Days</strong>{" "}
                   </p>
                   <p>
                     Total Off day:{" "}
-                    <strong>{landingApi?.data?.[0]?.totalOffday} Days</strong>{" "}
+                    <strong>{empActivity?.totalOffday} Days</strong>{" "}
                   </p>
                 </div>
               </Col>
@@ -676,7 +641,7 @@ const EmployeeJobCard = () => {
           ) : null}
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={attendanceInfo?.length > 0 ? attendanceInfo : []}
             loading={landingApi?.loading}
             header={header()}
             // pagination={{
