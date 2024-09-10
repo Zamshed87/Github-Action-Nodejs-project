@@ -176,6 +176,7 @@ export default function AddEditFormComponent({
     }
   };
   const CommonCalendarDDL = useApiRequest([]);
+  
   const getCalendarDefault = () => {
     CommonCalendarDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -187,15 +188,16 @@ export default function AddEditFormComponent({
         intId: checked[0]?.employeeId,
       },
       onSuccess: (res) => {
+        console.log("res", res);
         // res.forEach((item, i) => {
         //   res[i].label = item?.strCalendarName;
         //   res[i].value = item?.intCalendarId;
         // });
         setTableData([
-          {
-            strCalendarName: checked[0]?.calendarName,
-            intCalendarId: checked[0]?.calendarAssignId,
-          },
+          // {
+          //   strCalendarName: checked[0]?.calendarName,
+          //   intCalendarId: checked[0]?.calendarAssignId,
+          // },
           ...res,
         ]);
       },
@@ -431,9 +433,6 @@ Are you sure ? You want to assign Calendar again?
                                   };
 
                                   if (intAccountId === 6) {
-                                    if (tableData.length === 0) {
-                                      obj.isDefault = true;
-                                    }
                                     setter(obj);
                                   } else {
                                     const existingItems = tableData;
@@ -477,6 +476,7 @@ Are you sure ? You want to assign Calendar again?
                                     </th>
                                   </tr>
                                 </thead>
+                                {console.log("tableData", tableData)}
                                 <DragDropContext onDragEnd={handleOnDragEnd}>
                                   <Droppable droppableId="tableData">
                                     {(provided) => (
