@@ -420,7 +420,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      isOfficeAdmin && {
+                                       {
                                         value: 1,
                                         label: "Edit",
                                         icon: (

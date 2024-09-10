@@ -39,7 +39,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId, isOfficeAdmin } = useSelector(
+  const { employeeId, isOfficeAdmin, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -417,7 +417,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    isOfficeAdmin && {
+                                    ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [{
                                         value: 1,
                                         label: "Edit",
                                         icon: (
@@ -431,18 +431,16 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                         onClick: () => {
                                           setSingleData({
                                             value:
-                                              rowDto?.employeeProfileLandingView
-                                                ?.strMaritalStatus === "Single"
+                                              rowDto?.employeeProfileLandingView?.strMaritalStatus === "Single"
                                                 ? 1
                                                 : 2,
-                                            label:
-                                              rowDto?.employeeProfileLandingView
-                                                ?.strMaritalStatus,
+                                            label: rowDto?.employeeProfileLandingView?.strMaritalStatus,
                                           });
                                           setStatus("input");
                                           setIsCreateForm(true);
                                         },
-                                      },
+                                      }] : []),
+                                  
                                     {
                                       value: 2,
                                       label: "Delete",
@@ -459,6 +457,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                       },
                                     },
                                   ]}
+                                  
                                 />
                               </div>
                             </div>
