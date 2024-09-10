@@ -39,10 +39,8 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
   const [authSignatureImage, setAuthSignatureImage] = useState([]);
-  const { buId, employeeId, wgId, orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, orgId, isOfficeAdmin, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   /* 
   const authSignatureImage = {
@@ -457,8 +455,7 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      !rowDto?.employeeProfileLandingView
-                                        ?.isMarkCompleted && {
+                                      {
                                         value: 1,
                                         label: "Edit",
                                         icon: (
