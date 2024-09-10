@@ -103,7 +103,10 @@ const JoiningTable = ({ item, index, permission, page, paginationSize }) => {
         <div>{dateFormatter(item?.dteReleaseDate)}</div>
       </td>
       <td>
-        {!item?.dteReleaseDate && "Yet to release"}
+        {!item?.dteReleaseDate &&
+          (item?.strTransferNpromotionType === "Promotion"
+            ? "promoted"
+            : "Yet to release")}
         {item?.strStatus === "Joined" && (
           <Chips label="Joined" classess="success" />
         )}

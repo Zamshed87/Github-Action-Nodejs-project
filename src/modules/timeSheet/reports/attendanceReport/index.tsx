@@ -40,7 +40,7 @@ const AttendanceReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId, buName, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -136,9 +136,9 @@ const AttendanceReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
+    const workplaceList = values?.workplace
       ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+      .join(",");
 
     landingApi.action({
       urlKey: "GetEmpAttendanceReport",
@@ -151,7 +151,7 @@ const AttendanceReport = () => {
 
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
         // IntWorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceList: `${workplaceList}` || "",
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -164,6 +164,7 @@ const AttendanceReport = () => {
   useEffect(() => {
     getWorkplaceGroup();
     landingApiCall();
+    getWorkplaceDetails(wId, setBuDetails);
   }, []);
 
   const header: any = [
@@ -468,7 +469,6 @@ const AttendanceReport = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
-                    getWorkplaceDetails(value, setBuDetails);
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />

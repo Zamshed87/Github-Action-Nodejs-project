@@ -619,6 +619,7 @@ const CreateAndEditEmploye = () => {
                 type: "primary",
                 content: "Save",
                 icon: "plus",
+                disabled: loading,
                 onClick: () => {
                   const payload = {
                     strLoginId:
@@ -674,6 +675,8 @@ const CreateAndEditEmploye = () => {
                 type: "primary",
                 content: "Save & Create New",
                 icon: "plus",
+                disabled: loading,
+
                 onClick: async () => {
                   const payload = {
                     strLoginId:

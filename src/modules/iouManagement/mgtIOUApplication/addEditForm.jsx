@@ -142,14 +142,15 @@ export default function MgtIOUApplicationCreate() {
       cb();
       getData();
     };
-
-    const modifyImageArray = imageFile
-      ? imageFile.map((image) => {
-          return {
-            intDocURLId: image?.globalFileUrlId,
-          };
-        })
-      : [];
+    console.log({ editImageRow });
+    const modifyImageArray =
+      editImageRow?.length > 0
+        ? editImageRow?.map((image) => {
+            return {
+              intDocURLId: image?.globalFileUrlId || image[0]?.globalFileUrlId,
+            };
+          })
+        : [];
 
     const payload = {
       strEntryType: params?.id ? "EDIT" : "ENTRY",
@@ -182,7 +183,7 @@ export default function MgtIOUApplicationCreate() {
             ? {
                 formDate: dateFormatterForInput(singleData?.dteFromDate),
                 toDate: dateFormatterForInput(singleData?.dteToDate),
-                amount: singleData?.numIOUAmount,
+                amount: singleData?.numIouAmount,
                 description: singleData?.discription,
                 employeeName: {
                   value: singleData?.employeeId,
@@ -209,6 +210,7 @@ export default function MgtIOUApplicationCreate() {
             } else {
               resetForm(initData);
               setImageFile("");
+              setEditImageRow([]);
             }
           });
         }}
@@ -249,6 +251,9 @@ export default function MgtIOUApplicationCreate() {
                             onClick={() => {
                               resetForm(initData);
                               setImageFile("");
+                              setFieldValue("amount", "");
+                              setFieldValue("description", "");
+                              setEditImageRow([]);
                             }}
                           >
                             Reset
@@ -363,10 +368,12 @@ export default function MgtIOUApplicationCreate() {
                                 setLoading
                               )
                                 .then((data) => {
-                                  setImageFile(data);
+                                  // setImageFile(data);
+                                  setEditImageRow((prev) => [...prev, data]);
                                 })
                                 .catch((error) => {
-                                  setImageFile("");
+                                  // setImageFile("");
+                                  setEditImageRow([]);
                                 });
                             }
                           }}
