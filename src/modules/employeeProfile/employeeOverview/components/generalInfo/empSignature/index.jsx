@@ -39,10 +39,8 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
   const [authSignatureImage, setAuthSignatureImage] = useState([]);
-  const { buId, employeeId, wgId, orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, orgId, isOfficeAdmin, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   /* 
   const authSignatureImage = {
@@ -457,69 +455,73 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      !rowDto?.employeeProfileLandingView
-                                        ?.isMarkCompleted && {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setSingleData({
-                                            value: rowDto
-                                              ?.empEmployeePhotoIdentity
-                                              ?.intSignatureFileUrlId
-                                              ? rowDto?.empEmployeePhotoIdentity
-                                                  ?.intSignatureFileUrlId
-                                              : 0,
-                                            label: rowDto
-                                              ?.empEmployeePhotoIdentity
-                                              ?.intSignatureFileUrlId
-                                              ? rowDto?.empEmployeePhotoIdentity
-                                                  ?.intSignatureFileUrlId
-                                              : 0,
-                                          });
-                                          if (
-                                            rowDto?.empEmployeePhotoIdentity
-                                              ?.intSignatureFileUrlId
-                                          ) {
-                                            const authSignatureImage = {
-                                              lastModified: new Date(),
-                                              lastModifiedDate: todayDate(),
-                                              name: `Attachment 1`,
-                                              response: [
-                                                {
-                                                  fileName: `Attachment 1`,
-                                                  globalFileUrlId:
-                                                    rowDto
-                                                      ?.empEmployeePhotoIdentity
-                                                      ?.intSignatureFileUrlId,
-                                                  intAutoId: 1,
-                                                  isActive: true,
-                                                },
-                                              ],
-                                              url: `${APIUrl}/Document/DownloadFile?id=${rowDto?.empEmployeePhotoIdentity?.intSignatureFileUrlId}`,
-                                              status: "done",
-                                              type: "image/jpeg",
-                                              uid: `Attachment ${
-                                                rowDto?.empEmployeePhotoIdentity
-                                                  ?.intSignatureFileUrlId
-                                              }-${1}`,
-                                            };
-                                            setAuthSignatureImage([
-                                              authSignatureImage,
-                                            ]);
-                                          }
+                                      isOfficeAdmin &&
+                                        (intAccountId === 5 ||
+                                          intAccountId === 4) && {
+                                          value: 1,
+                                          label: "Edit",
+                                          icon: (
+                                            <ModeEditOutlined
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            setSingleData({
+                                              value: rowDto
+                                                ?.empEmployeePhotoIdentity
+                                                ?.intSignatureFileUrlId
+                                                ? rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.intSignatureFileUrlId
+                                                : 0,
+                                              label: rowDto
+                                                ?.empEmployeePhotoIdentity
+                                                ?.intSignatureFileUrlId
+                                                ? rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.intSignatureFileUrlId
+                                                : 0,
+                                            });
+                                            if (
+                                              rowDto?.empEmployeePhotoIdentity
+                                                ?.intSignatureFileUrlId
+                                            ) {
+                                              const authSignatureImage = {
+                                                lastModified: new Date(),
+                                                lastModifiedDate: todayDate(),
+                                                name: `Attachment 1`,
+                                                response: [
+                                                  {
+                                                    fileName: `Attachment 1`,
+                                                    globalFileUrlId:
+                                                      rowDto
+                                                        ?.empEmployeePhotoIdentity
+                                                        ?.intSignatureFileUrlId,
+                                                    intAutoId: 1,
+                                                    isActive: true,
+                                                  },
+                                                ],
+                                                url: `${APIUrl}/Document/DownloadFile?id=${rowDto?.empEmployeePhotoIdentity?.intSignatureFileUrlId}`,
+                                                status: "done",
+                                                type: "image/jpeg",
+                                                uid: `Attachment ${
+                                                  rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.intSignatureFileUrlId
+                                                }-${1}`,
+                                              };
+                                              setAuthSignatureImage([
+                                                authSignatureImage,
+                                              ]);
+                                            }
 
-                                          setStatus("input");
-                                          setIsCreateForm(true);
+                                            setStatus("input");
+                                            setIsCreateForm(true);
+                                          },
                                         },
-                                      },
                                       {
                                         value: 2,
                                         label: "Delete",

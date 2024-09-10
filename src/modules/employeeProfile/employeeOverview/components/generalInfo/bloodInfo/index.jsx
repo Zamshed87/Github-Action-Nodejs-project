@@ -41,7 +41,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { buId, employeeId, wgId } = useSelector(
+  const { buId, employeeId, wgId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -420,8 +420,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      !rowDto?.employeeProfileLandingView
-                                        ?.isMarkCompleted && {
+                                      isOfficeAdmin && {
                                         value: 1,
                                         label: "Edit",
                                         icon: (
