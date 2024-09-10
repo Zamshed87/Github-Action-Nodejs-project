@@ -36,6 +36,7 @@ import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/report
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
+import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
@@ -3052,6 +3053,10 @@ export const routingList = [
   {
     path: "/test/submission",
     component: SubmissionDetails,
+  },
+  {
+    path: "/administration/configuration/latepunishmentpolicy",
+    component: LatePunishmentPolicy,
   },
   // Trainnning and development ends
 
