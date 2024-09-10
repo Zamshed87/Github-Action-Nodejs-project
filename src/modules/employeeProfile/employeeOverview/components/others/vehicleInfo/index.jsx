@@ -24,7 +24,7 @@ export default function VehicleInfo({ empId, buId, wgId }) {
   const [loading, setLoading] = useState(false);
   const [vehicleNo, setVehicleNo] = useState({});
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -169,30 +169,30 @@ export default function VehicleInfo({ empId, buId, wgId }) {
                           color={gray900}
                           fontSize={"18px"}
                           options={[
-                            !vehicleNo?.employeeProfileLandingView
-                            ?.isMarkCompleted && {
-                              value: 1,
-                              label: "Edit",
-                              icon: (
-                                <EditOutlined
-                                  sx={{ marginRight: "10px", fontSize: "16px" }}
-                                />
-                              ),
-                              onClick: () => {
-                                setIsForm(true);
-                                setFieldValue(
-                                  "vehicleNo",
-                                  vehicleNo?.employeeProfileLandingView
-                                    ?.vehicleNo
-                                );
-                                setFieldValue(
-                                  "autoId",
-                                  vehicleNo?.employeeProfileLandingView
-                                    ?.intEmployeeBasicInfoId
-                                );
+                            ...(isOfficeAdmin || (intAccountId === 5 && !vehicleNo.isMarkCompleted) ? [
+                              {
+                                value: 1,
+                                label: "Edit",
+                                icon: (
+                                  <EditOutlined
+                                    sx={{ marginRight: "10px", fontSize: "16px" }}
+                                  />
+                                ),
+                                onClick: () => {
+                                  setIsForm(true);
+                                  setFieldValue(
+                                    "vehicleNo",
+                                    vehicleNo?.employeeProfileLandingView?.vehicleNo
+                                  );
+                                  setFieldValue(
+                                    "autoId",
+                                    vehicleNo?.employeeProfileLandingView?.intEmployeeBasicInfoId
+                                  );
+                                },
                               },
-                            },
+                            ] : []),
                           ]}
+                          
                         />
                       </div>
                     )}

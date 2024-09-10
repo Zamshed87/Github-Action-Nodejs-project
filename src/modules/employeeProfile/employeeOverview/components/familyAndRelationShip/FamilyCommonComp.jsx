@@ -66,7 +66,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
   const [empSpecialContact, setEmpSpecialContact] = useState({});
   const [singleData, setSingleData] = useState();
 
-  const { employeeId, buId, wgId } = useSelector(
+  const { employeeId, buId, wgId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -384,72 +384,70 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             setSingleData={setSingleData}
                             item={item}
                             options={[
-                              !empSpecialContact?.employeeProfileLandingView
-                              ?.isMarkCompleted && {
-                                value: 1,
-                                label: "Edit",
-                                icon: (
-                                  <ModeEditOutlined
-                                    sx={{
-                                      marginRight: "10px",
-                                      fontSize: "16px",
-                                    }}
-                                  />
-                                ),
-                                onClick: (e) => {
-                                  setValues({
-                                    ...values,
-                                    name: singleData?.strRelativesName || "",
-                                    relationship: {
-                                      value: singleData?.intRelationShipId,
-                                      label: singleData?.strRelationship,
-                                    },
-                                    mobileNumber: singleData?.strPhone,
-                                    email: singleData?.strEmail,
-                                    nid: singleData?.strNid,
-                                    dateOfBirth: singleData?.dteDateOfBirth
-                                      ? dateFormatterForInput(
-                                          singleData?.dteDateOfBirth
-                                        )
-                                      : null,
-                                    remarks: singleData?.strRemarks,
-                                    address: singleData?.strAddress,
-                                    isEmergencyContact:
-                                      singleData?.isEmergencyContact,
-                                    birthCertificate: singleData?.strBirthId,
-                                    autoId:
-                                      singleData?.intEmployeeRelativesContactId,
-                                  });
-                                  setEmergencyContact("input");
-                                  setAnchorEl(null);
+                              ...(isOfficeAdmin || (intAccountId === 5 && !empSpecialContact.isMarkCompleted) ? [
+                                {
+                                  value: 1,
+                                  label: "Edit",
+                                  icon: (
+                                    <ModeEditOutlined
+                                      sx={{
+                                        marginRight: "10px",
+                                        fontSize: "16px",
+                                      }}
+                                    />
+                                  ),
+                                  onClick: (e) => {
+                                    setValues({
+                                      ...values,
+                                      name: singleData?.strRelativesName || "",
+                                      relationship: {
+                                        value: singleData?.intRelationShipId,
+                                        label: singleData?.strRelationship,
+                                      },
+                                      mobileNumber: singleData?.strPhone,
+                                      email: singleData?.strEmail,
+                                      nid: singleData?.strNid,
+                                      dateOfBirth: singleData?.dteDateOfBirth
+                                        ? dateFormatterForInput(singleData?.dteDateOfBirth)
+                                        : null,
+                                      remarks: singleData?.strRemarks,
+                                      address: singleData?.strAddress,
+                                      isEmergencyContact: singleData?.isEmergencyContact,
+                                      birthCertificate: singleData?.strBirthId,
+                                      autoId: singleData?.intEmployeeRelativesContactId,
+                                    });
+                                    setEmergencyContact("input");
+                                    setAnchorEl(null);
+                                  },
                                 },
-                              },
-                              {
-                                value: 2,
-                                label: "Delete",
-                                icon: (
-                                  <DeleteOutline
-                                    sx={{
-                                      marginRight: "10px",
-                                      fontSize: "16px",
-                                    }}
-                                  />
-                                ),
-                                onClick: () => {
-                                  saveHandler(
-                                    values,
-                                    () => {
-                                      resetForm(initData);
-                                      getData();
-                                      setEmergencyContact("empty");
-                                    },
-                                    item?.intEmployeeRelativesContactId,
-                                    true
-                                  );
-                                  setAnchorEl(null);
+                                {
+                                  value: 2,
+                                  label: "Delete",
+                                  icon: (
+                                    <DeleteOutline
+                                      sx={{
+                                        marginRight: "10px",
+                                        fontSize: "16px",
+                                      }}
+                                    />
+                                  ),
+                                  onClick: () => {
+                                    saveHandler(
+                                      values,
+                                      () => {
+                                        resetForm(initData);
+                                        getData();
+                                        setEmergencyContact("empty");
+                                      },
+                                      item?.intEmployeeRelativesContactId,
+                                      true
+                                    );
+                                    setAnchorEl(null);
+                                  },
                                 },
-                              },
+                              ] : []),
                             ]}
+                            
                           />
                         </div>
                         <div className="row mb-3">
