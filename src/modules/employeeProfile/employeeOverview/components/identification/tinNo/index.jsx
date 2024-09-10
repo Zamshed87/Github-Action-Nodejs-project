@@ -32,7 +32,7 @@ function TinNo({ empId, buId, wgId }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState(0);
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -259,13 +259,7 @@ function TinNo({ empId, buId, wgId }) {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -276,7 +270,7 @@ function TinNo({ empId, buId, wgId }) {
                     <>
                       <h5>TIN No.</h5>
                       <div style={{ marginBottom: "25px", cursor: "pointer" }}>
-                      <FormikInput
+                        <FormikInput
                           name="tinNo"
                           value={values?.tinNo}
                           type="text"
@@ -371,10 +365,7 @@ function TinNo({ empId, buId, wgId }) {
                               </div>
                               <div className="col-lg-10">
                                 <h4>
-                                  {
-                                    rowDto?.employeeProfileLandingView
-                                      ?.tinNo
-                                  }
+                                  {rowDto?.employeeProfileLandingView?.tinNo}
                                 </h4>
                                 <small>TIN No.</small>
                               </div>
@@ -383,42 +374,48 @@ function TinNo({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView
-                                    ?.isMarkCompleted && {
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData(
-                                          rowDto?.employeeProfileLandingView
-                                            ?.tinNo
-                                        );
-                                        setStatus("input");
-                                        setIsCreateForm(true);
-                                      },
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Delete",
-                                      icon: (
-                                        <DeleteOutline
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        deleteHandler(values);
-                                      },
-                                    },
+                                    ...(isOfficeAdmin ||
+                                    (intAccountId === 5 &&
+                                      !rowDto.isMarkCompleted)
+                                      ? [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setSingleData(
+                                                rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.tinNo
+                                              );
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                            },
+                                          },
+                                          {
+                                            value: 2,
+                                            label: "Delete",
+                                            icon: (
+                                              <DeleteOutline
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              deleteHandler(values);
+                                            },
+                                          },
+                                        ]
+                                      : []),
                                   ]}
                                 />
                               </div>

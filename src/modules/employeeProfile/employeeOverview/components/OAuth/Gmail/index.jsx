@@ -30,7 +30,7 @@ function Gmails({ empId }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId, strLoginId, intAccountId } = useSelector(
+  const { employeeId, strLoginId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -220,42 +220,44 @@ function Gmails({ empId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView
-                                    ?.isMarkCompleted && {
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData(
-                                          rowDto?.userVM?.loginGmailId
-                                        );
-                                        setStatus("input");
-                                        setIsCreateForm(true);
+                                    ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [
+                                      {
+                                        value: 1,
+                                        label: "Edit",
+                                        icon: (
+                                          <ModeEditOutlined
+                                            sx={{
+                                              marginRight: "10px",
+                                              fontSize: "16px",
+                                            }}
+                                          />
+                                        ),
+                                        onClick: () => {
+                                          setSingleData(
+                                            rowDto?.userVM?.loginGmailId
+                                          );
+                                          setStatus("input");
+                                          setIsCreateForm(true);
+                                        },
                                       },
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Delete",
-                                      icon: (
-                                        <DeleteOutline
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        deleteHandler(values);
+                                      {
+                                        value: 2,
+                                        label: "Delete",
+                                        icon: (
+                                          <DeleteOutline
+                                            sx={{
+                                              marginRight: "10px",
+                                              fontSize: "16px",
+                                            }}
+                                          />
+                                        ),
+                                        onClick: () => {
+                                          deleteHandler(values);
+                                        },
                                       },
-                                    },
+                                    ] : []),
                                   ]}
+                                  
                                 />
                               </div>
                             </div>

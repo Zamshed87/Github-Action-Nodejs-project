@@ -455,83 +455,94 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setSingleData({
-                                            value: rowDto
-                                              ?.empEmployeePhotoIdentity
-                                              ?.intSignatureFileUrlId
-                                              ? rowDto?.empEmployeePhotoIdentity
-                                                  ?.intSignatureFileUrlId
-                                              : 0,
-                                            label: rowDto
-                                              ?.empEmployeePhotoIdentity
-                                              ?.intSignatureFileUrlId
-                                              ? rowDto?.empEmployeePhotoIdentity
-                                                  ?.intSignatureFileUrlId
-                                              : 0,
-                                          });
-                                          if (
-                                            rowDto?.empEmployeePhotoIdentity
-                                              ?.intSignatureFileUrlId
-                                          ) {
-                                            const authSignatureImage = {
-                                              lastModified: new Date(),
-                                              lastModifiedDate: todayDate(),
-                                              name: `Attachment 1`,
-                                              response: [
-                                                {
-                                                  fileName: `Attachment 1`,
-                                                  globalFileUrlId:
-                                                    rowDto
-                                                      ?.empEmployeePhotoIdentity
-                                                      ?.intSignatureFileUrlId,
-                                                  intAutoId: 1,
-                                                  isActive: true,
-                                                },
-                                              ],
-                                              url: `${APIUrl}/Document/DownloadFile?id=${rowDto?.empEmployeePhotoIdentity?.intSignatureFileUrlId}`,
-                                              status: "done",
-                                              type: "image/jpeg",
-                                              uid: `Attachment ${
-                                                rowDto?.empEmployeePhotoIdentity
-                                                  ?.intSignatureFileUrlId
-                                              }-${1}`,
-                                            };
-                                            setAuthSignatureImage([
-                                              authSignatureImage,
-                                            ]);
-                                          }
+                                      ...(isOfficeAdmin ||
+                                      (intAccountId === 5 &&
+                                        !rowDto.isMarkCompleted)
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData({
+                                                  value: rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.intSignatureFileUrlId
+                                                    ? rowDto
+                                                        ?.empEmployeePhotoIdentity
+                                                        ?.intSignatureFileUrlId
+                                                    : 0,
+                                                  label: rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.intSignatureFileUrlId
+                                                    ? rowDto
+                                                        ?.empEmployeePhotoIdentity
+                                                        ?.intSignatureFileUrlId
+                                                    : 0,
+                                                });
+                                                if (
+                                                  rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.intSignatureFileUrlId
+                                                ) {
+                                                  const authSignatureImage = {
+                                                    lastModified: new Date(),
+                                                    lastModifiedDate:
+                                                      todayDate(),
+                                                    name: `Attachment 1`,
+                                                    response: [
+                                                      {
+                                                        fileName: `Attachment 1`,
+                                                        globalFileUrlId:
+                                                          rowDto
+                                                            ?.empEmployeePhotoIdentity
+                                                            ?.intSignatureFileUrlId,
+                                                        intAutoId: 1,
+                                                        isActive: true,
+                                                      },
+                                                    ],
+                                                    url: `${APIUrl}/Document/DownloadFile?id=${rowDto?.empEmployeePhotoIdentity?.intSignatureFileUrlId}`,
+                                                    status: "done",
+                                                    type: "image/jpeg",
+                                                    uid: `Attachment ${
+                                                      rowDto
+                                                        ?.empEmployeePhotoIdentity
+                                                        ?.intSignatureFileUrlId
+                                                    }-${1}`,
+                                                  };
+                                                  setAuthSignatureImage([
+                                                    authSignatureImage,
+                                                  ]);
+                                                }
 
-                                          setStatus("input");
-                                          setIsCreateForm(true);
-                                        },
-                                      },
-                                      {
-                                        value: 2,
-                                        label: "Delete",
-                                        icon: (
-                                          <DeleteOutline
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          deleteHandler(values);
-                                        },
-                                      },
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(values);
+                                              },
+                                            },
+                                          ]
+                                        : []),
                                     ]}
                                   />
                                 </div>

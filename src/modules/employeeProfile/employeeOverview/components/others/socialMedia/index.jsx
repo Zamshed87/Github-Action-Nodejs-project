@@ -27,7 +27,7 @@ export default function SocialMedia({ empId, buId, wgId }) {
   const [loading, setLoading] = useState(false);
   const [empSocial, setEmpSocial] = useState({});
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -131,45 +131,58 @@ export default function SocialMedia({ empId, buId, wgId }) {
                       color={gray900}
                       fontSize={"18px"}
                       options={[
-                        !empSocial?.employeeProfileLandingView
-                        ?.isMarkCompleted && {
-                          value: 1,
-                          label: "Edit",
-                          icon: (
-                            <EditOutlined
-                              sx={{ marginRight: "10px", fontSize: "16px" }}
-                            />
-                          ),
-                          onClick: () => {
-                            setIsForm(true);
-                            setFieldValue(
-                              "socialMedia",
-                              item?.strSocialMedialLink
-                            );
-                            setFieldValue("autoId", item?.intSocialMediaId);
-                          },
-                        },
-                        {
-                          value: 2,
-                          label: "Delete",
-                          icon: (
-                            <DeleteOutlined
-                              sx={{ marginRight: "10px", fontSize: "16px" }}
-                            />
-                          ),
-                          onClick: () => {
-                            saveHandler(
-                              values,
-                              () => {
-                                resetForm(initData);
-                                setIsForm(false);
-                                getData();
+                        ...(isOfficeAdmin ||
+                        (intAccountId === 5 && !empSocial.isMarkCompleted)
+                          ? [
+                              {
+                                value: 1,
+                                label: "Edit",
+                                icon: (
+                                  <EditOutlined
+                                    sx={{
+                                      marginRight: "10px",
+                                      fontSize: "16px",
+                                    }}
+                                  />
+                                ),
+                                onClick: () => {
+                                  setIsForm(true);
+                                  setFieldValue(
+                                    "socialMedia",
+                                    item?.strSocialMedialLink
+                                  );
+                                  setFieldValue(
+                                    "autoId",
+                                    item?.intSocialMediaId
+                                  );
+                                },
                               },
-                              true,
-                              item?.intSocialMediaId
-                            );
-                          },
-                        },
+                              {
+                                value: 2,
+                                label: "Delete",
+                                icon: (
+                                  <DeleteOutlined
+                                    sx={{
+                                      marginRight: "10px",
+                                      fontSize: "16px",
+                                    }}
+                                  />
+                                ),
+                                onClick: () => {
+                                  saveHandler(
+                                    values,
+                                    () => {
+                                      resetForm(initData);
+                                      setIsForm(false);
+                                      getData();
+                                    },
+                                    true,
+                                    item?.intSocialMediaId
+                                  );
+                                },
+                              },
+                            ]
+                          : []),
                       ]}
                     />
                   </div>

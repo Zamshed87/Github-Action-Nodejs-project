@@ -19,6 +19,7 @@ import { isUniq } from "utility/uniqChecker";
 import { Tag } from "antd";
 import { useApiRequest } from "Hooks";
 import IConfirmModal from "common/IConfirmModal";
+import { is } from "date-fns/locale";
 
 const ifPrevousDateSelected = (date) => {
   const selectedDate = new Date(date);
@@ -159,7 +160,8 @@ export default function AddEditFormComponent({
         values?.calenderType?.value === 2 ? values?.calender?.value : 0,
       generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
-      extendedEmployeeCalendarList: tableData.slice(1) || [],
+      // extendedEmployeeCalendarList: tableData.slice(1) || [],
+      extendedEmployeeCalendarList: tableData,
     };
     if (
       values?.calenderType?.value === 1 &&
@@ -425,9 +427,13 @@ Are you sure ? You want to assign Calendar again?
                                     intCalendarId: values?.calender?.value || 0,
                                     strCalendarName:
                                       values?.calender?.label || "",
+                                    isDefault: false,
                                   };
 
                                   if (intAccountId === 6) {
+                                    if (tableData.length === 0) {
+                                      obj.isDefault = true;
+                                    }
                                     setter(obj);
                                   } else {
                                     const existingItems = tableData;
