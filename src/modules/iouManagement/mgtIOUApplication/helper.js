@@ -199,7 +199,7 @@ export const iouLandingTableColumn = (page, paginationSize, history) => {
     },
     {
       title: "IOU",
-      dataIndex: "numIOUAmount",
+      dataIndex: "numIouAmount",
       className: "text-right",
       sort: true,
       // render: (record) => numberWithCommas(record?.numIOUAmount),

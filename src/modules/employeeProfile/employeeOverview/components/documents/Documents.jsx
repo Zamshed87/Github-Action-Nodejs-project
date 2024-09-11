@@ -58,10 +58,8 @@ function Documents({
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, userName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, userName, intAccountId, isOfficeAdmin } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     if (params?.empId) {
@@ -449,50 +447,55 @@ function Documents({
                                         color={gray900}
                                         fontSize={"18px"}
                                         options={[
-                                          !rowDto?.employeeProfileLandingView
-                                          ?.isMarkCompleted && {
-                                            value: 1,
-                                            label: "Edit",
-                                            icon: (
-                                              <ModeEditOutlined
-                                                sx={{
-                                                  marginRight: "10px",
-                                                  fontSize: "16px",
-                                                }}
-                                              />
-                                            ),
-                                            onClick: () => {
-                                              setStatus("input");
-                                              setIsCreateForm(true);
-                                              setSingleData({
-                                                documentName:
-                                                  item?.strDocumentType,
-                                                intDocumentManagementId:
-                                                  item?.intDocumentManagementId,
-                                              });
-                                              setImageFile({
-                                                globalFileUrlId:
-                                                  item?.intFileUrlId,
-                                              });
-                                            },
-                                          },
-                                          {
-                                            value: 2,
-                                            label: "Delete",
-                                            icon: (
-                                              <DeleteOutline
-                                                sx={{
-                                                  marginRight: "10px",
-                                                  fontSize: "16px",
-                                                }}
-                                              />
-                                            ),
-                                            onClick: () => {
-                                              deleteHandler(
-                                                item?.intDocumentManagementId
-                                              );
-                                            },
-                                          },
+                                          ...(isOfficeAdmin ||
+                                          (intAccountId === 5 &&
+                                            !rowDto.isMarkCompleted)
+                                            ? [
+                                                {
+                                                  value: 1,
+                                                  label: "Edit",
+                                                  icon: (
+                                                    <ModeEditOutlined
+                                                      sx={{
+                                                        marginRight: "10px",
+                                                        fontSize: "16px",
+                                                      }}
+                                                    />
+                                                  ),
+                                                  onClick: () => {
+                                                    setStatus("input");
+                                                    setIsCreateForm(true);
+                                                    setSingleData({
+                                                      documentName:
+                                                        item?.strDocumentType,
+                                                      intDocumentManagementId:
+                                                        item?.intDocumentManagementId,
+                                                    });
+                                                    setImageFile({
+                                                      globalFileUrlId:
+                                                        item?.intFileUrlId,
+                                                    });
+                                                  },
+                                                },
+                                                {
+                                                  value: 2,
+                                                  label: "Delete",
+                                                  icon: (
+                                                    <DeleteOutline
+                                                      sx={{
+                                                        marginRight: "10px",
+                                                        fontSize: "16px",
+                                                      }}
+                                                    />
+                                                  ),
+                                                  onClick: () => {
+                                                    deleteHandler(
+                                                      item?.intDocumentManagementId
+                                                    );
+                                                  },
+                                                },
+                                              ]
+                                            : []),
                                         ]}
                                       />
                                     </div>

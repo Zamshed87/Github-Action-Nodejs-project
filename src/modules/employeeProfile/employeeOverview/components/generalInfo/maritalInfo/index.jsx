@@ -39,7 +39,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId } = useSelector(
+  const { employeeId, isOfficeAdmin, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -277,7 +277,6 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     updateEmployeeProfile(payload, setLoading, callback);
   };
 
-
   return (
     <>
       <Formik
@@ -298,13 +297,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -424,47 +417,56 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView?.isMarkCompleted && {
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData({
-                                          value:
-                                            rowDto?.employeeProfileLandingView
-                                              ?.strMaritalStatus === "Single"
-                                              ? 1
-                                              : 2,
-                                          label:
-                                            rowDto?.employeeProfileLandingView
-                                              ?.strMaritalStatus,
-                                        });
-                                        setStatus("input");
-                                        setIsCreateForm(true);
-                                      },
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Delete",
-                                      icon: (
-                                        <DeleteOutline
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        deleteHandler(setFieldValue);
-                                      },
-                                    },
+                                    ...(isOfficeAdmin ||
+                                    (intAccountId === 5 &&
+                                      !rowDto.isMarkCompleted)
+                                      ? [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setSingleData({
+                                                value:
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.strMaritalStatus ===
+                                                  "Single"
+                                                    ? 1
+                                                    : 2,
+                                                label:
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.strMaritalStatus,
+                                              });
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                            },
+                                          },
+                                          {
+                                            value: 2,
+                                            label: "Delete",
+                                            icon: (
+                                              <DeleteOutline
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              deleteHandler(setFieldValue);
+                                            },
+                                          },
+                                        ]
+                                      : []),
                                   ]}
                                 />
                               </div>

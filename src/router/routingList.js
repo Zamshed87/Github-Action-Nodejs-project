@@ -40,6 +40,7 @@ import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
+import HolidayOffdaySetup from "modules/timeSheet/configuration/HolidayOffdaySetup";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
@@ -2251,6 +2252,10 @@ export const routingList = [
     component: LoanReportPrint,
   },
   {
+    path: "/compensationAndBenefits/leaveEncashment",
+    component: LeaveEncashment,
+  },
+  {
     path: "/SelfService/report/leaveHistory/print",
     component: LeaveReportPrint,
   },
@@ -3073,6 +3078,10 @@ export const routingList = [
   { path: "/components/masterReport2", component: CustomReport2 },
 
   { path: "/components/test", component: Test },
+  {
+    path: "/administration/timeManagement/holidayOffdaySetup",
+    component: HolidayOffdaySetup,
+  },
 ];
 
 // Those hidden menu just use for develper

@@ -82,10 +82,8 @@ function Education({
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, wgId, intAccountId, isOfficeAdmin } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -727,67 +725,75 @@ function Education({
                                               color={gray900}
                                               fontSize={"18px"}
                                               options={[
-                                                !rowDto
-                                                  ?.employeeProfileLandingView
-                                                  ?.isMarkCompleted && {
-                                                  value: 1,
-                                                  label: "Edit",
-                                                  icon: (
-                                                    <ModeEditOutlined
-                                                      sx={{
-                                                        marginRight: "10px",
-                                                        fontSize: "16px",
-                                                      }}
-                                                    />
-                                                  ),
-                                                  onClick: () => {
-                                                    setStatus("input");
-                                                    setIsCreateForm(true);
-                                                    setSingleData({
-                                                      isForeign:
-                                                        item?.isForeign,
-                                                      instituteName:
-                                                        item?.strInstituteName,
-                                                      degree: {
-                                                        value:
-                                                          item?.intEducationDegreeId,
-                                                        label:
-                                                          item?.strEducationDegree,
+                                                ...(isOfficeAdmin ||
+                                                (intAccountId === 5 &&
+                                                  !rowDto.isMarkCompleted)
+                                                  ? [
+                                                      {
+                                                        value: 1,
+                                                        label: "Edit",
+                                                        icon: (
+                                                          <ModeEditOutlined
+                                                            sx={{
+                                                              marginRight:
+                                                                "10px",
+                                                              fontSize: "16px",
+                                                            }}
+                                                          />
+                                                        ),
+                                                        onClick: () => {
+                                                          setStatus("input");
+                                                          setIsCreateForm(true);
+                                                          setSingleData({
+                                                            isForeign:
+                                                              item?.isForeign,
+                                                            instituteName:
+                                                              item?.strInstituteName,
+                                                            degree: {
+                                                              value:
+                                                                item?.intEducationDegreeId,
+                                                              label:
+                                                                item?.strEducationDegree,
+                                                            },
+                                                            fieldOfStudy:
+                                                              item?.strEducationFieldOfStudy,
+                                                            cgpa: item?.strCgpa,
+                                                            outOf:
+                                                              item?.strOutOf,
+                                                            fromDate:
+                                                              item?.dteStartDate,
+                                                            toDate:
+                                                              item?.dteEndDate,
+                                                            intEmployeeEducationId:
+                                                              item?.intEmployeeEducationId,
+                                                          });
+                                                          setImageFile({
+                                                            globalFileUrlId:
+                                                              item?.intCertificateFileUrlId,
+                                                          });
+                                                        },
                                                       },
-                                                      fieldOfStudy:
-                                                        item?.strEducationFieldOfStudy,
-                                                      cgpa: item?.strCgpa,
-                                                      outOf: item?.strOutOf,
-                                                      fromDate:
-                                                        item?.dteStartDate,
-                                                      toDate: item?.dteEndDate,
-                                                      intEmployeeEducationId:
-                                                        item?.intEmployeeEducationId,
-                                                    });
-                                                    setImageFile({
-                                                      globalFileUrlId:
-                                                        item?.intCertificateFileUrlId,
-                                                    });
-                                                  },
-                                                },
-                                                {
-                                                  value: 2,
-                                                  label: "Delete",
-                                                  icon: (
-                                                    <DeleteOutline
-                                                      sx={{
-                                                        marginRight: "10px",
-                                                        fontSize: "16px",
-                                                      }}
-                                                    />
-                                                  ),
-                                                  onClick: () => {
-                                                    deleteHandler(
-                                                      item?.intEmployeeEducationId,
-                                                      item
-                                                    );
-                                                  },
-                                                },
+                                                      {
+                                                        value: 2,
+                                                        label: "Delete",
+                                                        icon: (
+                                                          <DeleteOutline
+                                                            sx={{
+                                                              marginRight:
+                                                                "10px",
+                                                              fontSize: "16px",
+                                                            }}
+                                                          />
+                                                        ),
+                                                        onClick: () => {
+                                                          deleteHandler(
+                                                            item?.intEmployeeEducationId,
+                                                            item
+                                                          );
+                                                        },
+                                                      },
+                                                    ]
+                                                  : []),
                                               ]}
                                             />
                                           </div>

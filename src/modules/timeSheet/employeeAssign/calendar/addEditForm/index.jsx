@@ -19,6 +19,7 @@ import { isUniq } from "utility/uniqChecker";
 import { Tag } from "antd";
 import { useApiRequest } from "Hooks";
 import IConfirmModal from "common/IConfirmModal";
+import { is } from "date-fns/locale";
 
 const ifPrevousDateSelected = (date) => {
   const selectedDate = new Date(date);
@@ -159,7 +160,8 @@ export default function AddEditFormComponent({
         values?.calenderType?.value === 2 ? values?.calender?.value : 0,
       generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
-      extendedEmployeeCalendarList: tableData.slice(1) || [],
+      // extendedEmployeeCalendarList: tableData.slice(1) || [],
+      extendedEmployeeCalendarList: tableData,
     };
     if (
       values?.calenderType?.value === 1 &&
@@ -174,6 +176,7 @@ export default function AddEditFormComponent({
     }
   };
   const CommonCalendarDDL = useApiRequest([]);
+
   const getCalendarDefault = () => {
     CommonCalendarDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -185,15 +188,16 @@ export default function AddEditFormComponent({
         intId: checked[0]?.employeeId,
       },
       onSuccess: (res) => {
+        console.log("res", res);
         // res.forEach((item, i) => {
         //   res[i].label = item?.strCalendarName;
         //   res[i].value = item?.intCalendarId;
         // });
         setTableData([
-          {
-            strCalendarName: checked[0]?.calendarName,
-            intCalendarId: checked[0]?.calendarAssignId,
-          },
+          // {
+          //   strCalendarName: checked[0]?.calendarName,
+          //   intCalendarId: checked[0]?.calendarAssignId,
+          // },
           ...res,
         ]);
       },
@@ -471,6 +475,7 @@ Are you sure ? You want to assign Calendar again?
                                     </th>
                                   </tr>
                                 </thead>
+                                {console.log("tableData", tableData)}
                                 <DragDropContext onDragEnd={handleOnDragEnd}>
                                   <Droppable droppableId="tableData">
                                     {(provided) => (

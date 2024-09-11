@@ -195,19 +195,19 @@ const MonthlyLeaveReport = () => {
 
       {
         title: "Work. Group/Location",
-        dataIndex: "strWorkPlaceGroupName",
+        dataIndex: "StrWorkPlaceGroupName",
         width: 120,
         fixed: "left",
       },
       {
         title: "Workplace/Concern",
-        dataIndex: "strWorkPlaceName",
+        dataIndex: "StrWorkPlaceName",
         width: 120,
         fixed: "left",
       },
       {
         title: "Department",
-        dataIndex: "strDepartmentName",
+        dataIndex: "StrDepartmentName",
         fixed: "left",
 
         width: 70,
@@ -229,12 +229,12 @@ const MonthlyLeaveReport = () => {
 
       {
         title: "Employee Name",
-        dataIndex: "strEmployeeName",
+        dataIndex: "StrEmployeeName",
         render: (_: any, rec: any) => {
           return (
             <div className="d-flex align-items-center">
-              <Avatar title={rec?.strEmployeeName} />
-              <span className="ml-2">{rec?.strEmployeeName}</span>
+              <Avatar title={rec?.StrEmployeeName} />
+              <span className="ml-2">{rec?.StrEmployeeName}</span>
             </div>
           );
         },
@@ -250,7 +250,7 @@ const MonthlyLeaveReport = () => {
       },
       {
         title: "Leave Type",
-        dataIndex: "strLeaveTypeName",
+        dataIndex: "StrLeaveTypeName",
 
         width: 100,
       },
@@ -268,7 +268,7 @@ const MonthlyLeaveReport = () => {
       },
       {
         title: "Duration",
-        dataIndex: "Start_End_Time",
+        dataIndex: "StartEndTime",
 
         width: 100,
       },

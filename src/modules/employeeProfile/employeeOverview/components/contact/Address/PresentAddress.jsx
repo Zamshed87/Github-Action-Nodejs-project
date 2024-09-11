@@ -77,7 +77,7 @@ function PresentAddress({ getData, rowDto, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId } = useSelector(
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -769,89 +769,67 @@ function PresentAddress({ getData, rowDto, empId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView
-                                   ?.isMarkCompleted &&{
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData({
-                                          country: {
-                                            value:
-                                              rowDto?.presentAddress[0]
-                                                ?.intCountryId,
-                                            label:
-                                              rowDto?.presentAddress[0]
-                                                ?.strCountry,
-                                          },
-                                          division: {
-                                            value:
-                                              rowDto?.presentAddress[0]
-                                                ?.intDivisionId,
-                                            label:
-                                              rowDto?.presentAddress[0]
-                                                ?.strDivision,
-                                          },
-                                          district: {
-                                            value:
-                                              rowDto?.presentAddress[0]
-                                                ?.intDistrictOrStateId,
-                                            label:
-                                              rowDto?.presentAddress[0]
-                                                ?.strDistrictOrState,
-                                          },
-                                          policeStation: {
-                                            value:
-                                              rowDto?.permanentAddress[0]
-                                                ?.intThanaId,
-                                            label:
-                                              rowDto?.permanentAddress[0]
-                                                ?.strThana,
-                                          },
-                                          postOffice: {
-                                            value:
-                                              rowDto?.presentAddress[0]
-                                                ?.intPostOfficeId,
-                                            label:
-                                              rowDto?.presentAddress[0]
-                                                ?.strPostOffice,
-                                          },
-                                          postCode:
-                                            rowDto?.permanentAddress[0]
-                                              ?.strZipOrPostCode,
-                                          address:
-                                            rowDto?.presentAddress[0]
-                                              ?.strAddressDetails,
-                                        });
-                                        setStatus("input");
-                                        setIsCreateForm(true);
+                                    ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [
+                                      {
+                                        value: 1,
+                                        label: "Edit",
+                                        icon: (
+                                          <ModeEditOutlined
+                                            sx={{
+                                              marginRight: "10px",
+                                              fontSize: "16px",
+                                            }}
+                                          />
+                                        ),
+                                        onClick: () => {
+                                          setSingleData({
+                                            country: {
+                                              value: rowDto?.presentAddress[0]?.intCountryId,
+                                              label: rowDto?.presentAddress[0]?.strCountry,
+                                            },
+                                            division: {
+                                              value: rowDto?.presentAddress[0]?.intDivisionId,
+                                              label: rowDto?.presentAddress[0]?.strDivision,
+                                            },
+                                            district: {
+                                              value: rowDto?.presentAddress[0]?.intDistrictOrStateId,
+                                              label: rowDto?.presentAddress[0]?.strDistrictOrState,
+                                            },
+                                            policeStation: {
+                                              value: rowDto?.permanentAddress[0]?.intThanaId,
+                                              label: rowDto?.permanentAddress[0]?.strThana,
+                                            },
+                                            postOffice: {
+                                              value: rowDto?.presentAddress[0]?.intPostOfficeId,
+                                              label: rowDto?.presentAddress[0]?.strPostOffice,
+                                            },
+                                            postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
+                                            address: rowDto?.presentAddress[0]?.strAddressDetails,
+                                          });
+                                          setStatus("input");
+                                          setIsCreateForm(true);
+                                        },
                                       },
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Delete",
-                                      icon: (
-                                        <DeleteOutline
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        deleteHandler(values, () => {
-                                          resetForm(initData);
-                                        });
+                                      {
+                                        value: 2,
+                                        label: "Delete",
+                                        icon: (
+                                          <DeleteOutline
+                                            sx={{
+                                              marginRight: "10px",
+                                              fontSize: "16px",
+                                            }}
+                                          />
+                                        ),
+                                        onClick: () => {
+                                          deleteHandler(values, () => {
+                                            resetForm(initData);
+                                          });
+                                        },
                                       },
-                                    },
+                                    ] : []),
                                   ]}
+                                  
                                 />
                               </div>
                             </div>

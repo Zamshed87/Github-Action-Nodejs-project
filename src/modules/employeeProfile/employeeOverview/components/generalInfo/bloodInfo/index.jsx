@@ -41,7 +41,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { buId, employeeId, wgId } = useSelector(
+  const { buId, employeeId, wgId, isOfficeAdmin, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -420,49 +420,45 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      !rowDto?.employeeProfileLandingView
-                                        ?.isMarkCompleted && {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setSingleData({
-                                            value: rowDto
-                                              ?.employeeProfileLandingView
-                                              ?.strBloodGroup
-                                              ? 1
-                                              : 2,
-                                            label:
-                                              rowDto?.employeeProfileLandingView
-                                                ?.strBloodGroup,
-                                          });
-                                          setStatus("input");
-                                          setIsCreateForm(true);
+                                      ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [
+                                        {
+                                          value: 1,
+                                          label: "Edit",
+                                          icon: (
+                                            <ModeEditOutlined
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            setSingleData({
+                                              value: rowDto?.employeeProfileLandingView?.strBloodGroup ? 1 : 2,
+                                              label: rowDto?.employeeProfileLandingView?.strBloodGroup,
+                                            });
+                                            setStatus("input");
+                                            setIsCreateForm(true);
+                                          },
                                         },
-                                      },
-                                      {
-                                        value: 2,
-                                        label: "Delete",
-                                        icon: (
-                                          <DeleteOutline
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          deleteHandler(setFieldValue);
+                                        {
+                                          value: 2,
+                                          label: "Delete",
+                                          icon: (
+                                            <DeleteOutline
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            deleteHandler(setFieldValue);
+                                          },
                                         },
-                                      },
+                                      ] : []),
                                     ]}
+                                    
                                   />
                                 </div>
                               </div>

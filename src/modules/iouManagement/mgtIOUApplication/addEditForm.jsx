@@ -131,6 +131,20 @@ export default function MgtIOUApplicationCreate() {
   }, []);
 
   const deleteImageHandler = (id) => {
+    setEditImageRow((prev) => {
+      return prev?.filter((item) => {
+        // If item is an object, check item?.globalFileUrlId
+        if (item?.globalFileUrlId) {
+          return item.globalFileUrlId !== id;
+        }
+        // If item is an array, check item[0]?.globalFileUrlId
+        if (Array.isArray(item) && item[0]?.globalFileUrlId) {
+          return item[0].globalFileUrlId !== id;
+        }
+        // Return true to retain items that don't match the condition
+        return true;
+      });
+    });
     attachment_delete_action(id, () => {});
   };
 
@@ -142,14 +156,14 @@ export default function MgtIOUApplicationCreate() {
       cb();
       getData();
     };
-
-    const modifyImageArray = imageFile
-      ? imageFile.map((image) => {
-          return {
-            intDocURLId: image?.globalFileUrlId,
-          };
-        })
-      : [];
+    const modifyImageArray =
+      editImageRow?.length > 0
+        ? editImageRow?.map((image) => {
+            return {
+              intDocURLId: image?.globalFileUrlId || image[0]?.globalFileUrlId,
+            };
+          })
+        : [];
 
     const payload = {
       strEntryType: params?.id ? "EDIT" : "ENTRY",
@@ -182,7 +196,7 @@ export default function MgtIOUApplicationCreate() {
             ? {
                 formDate: dateFormatterForInput(singleData?.dteFromDate),
                 toDate: dateFormatterForInput(singleData?.dteToDate),
-                amount: singleData?.numIOUAmount,
+                amount: singleData?.numIouAmount,
                 description: singleData?.discription,
                 employeeName: {
                   value: singleData?.employeeId,
@@ -209,6 +223,7 @@ export default function MgtIOUApplicationCreate() {
             } else {
               resetForm(initData);
               setImageFile("");
+              setEditImageRow([]);
             }
           });
         }}
@@ -249,13 +264,20 @@ export default function MgtIOUApplicationCreate() {
                             onClick={() => {
                               resetForm(initData);
                               setImageFile("");
+                              setFieldValue("amount", "");
+                              setFieldValue("description", "");
+                              setEditImageRow([]);
                             }}
                           >
                             Reset
                           </button>
                         </li>
                         <li>
-                          <button type="submit" className="btn btn-green w-100">
+                          <button
+                            type="submit"
+                            className="btn btn-green w-100"
+                            disabled={loading}
+                          >
                             Send Request
                           </button>
                         </li>
@@ -363,10 +385,12 @@ export default function MgtIOUApplicationCreate() {
                                 setLoading
                               )
                                 .then((data) => {
-                                  setImageFile(data);
+                                  // setImageFile(data);
+                                  setEditImageRow((prev) => [...prev, data]);
                                 })
                                 .catch((error) => {
-                                  setImageFile("");
+                                  // setImageFile("");
+                                  setEditImageRow([]);
                                 });
                             }
                           }}
@@ -449,24 +473,26 @@ export default function MgtIOUApplicationCreate() {
                                   `Attachment_${
                                     i <= 8 ? `0${i + 1}` : `${i + 1}`
                                   }`}{" "}
-                                {editImageRow?.length && (
-                                  <IconButton
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      deleteImageHandler(
-                                        image?.globalFileUrlId
-                                      );
-                                    }}
-                                    size="small"
-                                    style={{
-                                      fontSize: "18px",
-                                      padding: "0px 5px",
-                                      color: "#175CD3",
-                                    }}
-                                  >
-                                    <CloseIcon fontSize="inherit"> </CloseIcon>
-                                  </IconButton>
-                                )}
+                                {/* {editImageRow?.length && ( */}
+                                <IconButton
+                                  onClick={(e) => {
+                                    // console.log({ image }, e);
+                                    e.stopPropagation();
+                                    deleteImageHandler(
+                                      image?.globalFileUrlId ||
+                                        image[0]?.globalFileUrlId
+                                    );
+                                  }}
+                                  size="small"
+                                  style={{
+                                    fontSize: "18px",
+                                    padding: "0px 5px",
+                                    color: "#175CD3",
+                                  }}
+                                >
+                                  <CloseIcon fontSize="inherit"> </CloseIcon>
+                                </IconButton>
+                                {/* )} */}
                               </div>
                             </div>
                           ))

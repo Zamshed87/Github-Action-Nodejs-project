@@ -1,17 +1,17 @@
-import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import BackButton from '../../../../common/BackButton';
-import DefaultInput from '../../../../common/DefaultInput';
+import BackButton from "../../../../common/BackButton";
+import DefaultInput from "../../../../common/DefaultInput";
 // import FormikCheckBox from '../../../../common/FormikCheckbox';
-import Loading from '../../../../common/loading/Loading';
-import NotPermittedPage from '../../../../common/notPermitted/NotPermittedPage';
-import { setFirstLevelNameAction } from '../../../../commonRedux/reduxForLocalStorage/actions';
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 // import { gray900, greenColor } from '../../../../utility/customColor';
-import { todayDate } from '../../../../utility/todayDate';
-import { createGrossWiseBasic, getAllGrossWiseBasicById } from '../helper';
+import { todayDate } from "../../../../utility/todayDate";
+import { createGrossWiseBasic, getAllGrossWiseBasicById } from "../helper";
 
 const initData = {
   minSalary: "",
@@ -90,12 +90,12 @@ export default function PayrollGrossWiseBasicForm() {
       payload = {
         ...payload,
         intGrossWiseBasicId: state?.intGrossWiseBasicId,
-      }
+      };
     } else {
       payload = {
         ...payload,
         intGrossWiseBasicId: 0,
-      }
+      };
     }
 
     createGrossWiseBasic(payload, setLoading, callback);
@@ -105,15 +105,16 @@ export default function PayrollGrossWiseBasicForm() {
     useFormik({
       enableReinitialize: true,
       validationSchema: validationSchema,
-      initialValues: +params?.id ? {
-        ...singleData
-      } : {
-        ...initData
-      },
+      initialValues: +params?.id
+        ? {
+            ...singleData,
+          }
+        : {
+            ...initData,
+          },
       onSubmit: (values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
           if (params?.id) {
-
           } else {
             resetForm(initData);
           }
@@ -124,13 +125,17 @@ export default function PayrollGrossWiseBasicForm() {
   return (
     <>
       {loading && <Loading />}
-      {permission?.isCreate ? (
+      {permission?.isView ? (
         <form onSubmit={handleSubmit}>
           <div className="table-card">
             <div className="table-card-heading mb12">
               <div className="d-flex align-items-center">
                 <BackButton />
-                <h2>{params?.id ? "Edit Payroll Gross Wise Basic" : "Create Payroll Gross Wise Basic"}</h2>
+                <h2>
+                  {params?.id
+                    ? "Edit Payroll Gross Wise Basic"
+                    : "Create Payroll Gross Wise Basic"}
+                </h2>
               </div>
               <ul className="d-flex flex-wrap">
                 <li>
@@ -145,10 +150,7 @@ export default function PayrollGrossWiseBasicForm() {
                   </button>
                 </li>
                 <li>
-                  <button
-                    type="submit"
-                    className="btn btn-default flex-center"
-                  >
+                  <button type="submit" className="btn btn-default flex-center">
                     Save
                   </button>
                 </li>
@@ -176,7 +178,6 @@ export default function PayrollGrossWiseBasicForm() {
                     </div>
                     <div className="col-lg-3">
                       <div className="input-field-main">
-
                         {/* <div
                         style={{
                           display: "flex",
@@ -226,14 +227,16 @@ export default function PayrollGrossWiseBasicForm() {
                           name="numPercentageOfBasic"
                           type="number"
                           onChange={(e) => {
-                            setFieldValue("numPercentageOfBasic", e.target.value);
+                            setFieldValue(
+                              "numPercentageOfBasic",
+                              e.target.value
+                            );
                           }}
                           errors={errors}
                           touched={touched}
                         />
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -244,5 +247,5 @@ export default function PayrollGrossWiseBasicForm() {
         <NotPermittedPage />
       )}
     </>
-  )
+  );
 }

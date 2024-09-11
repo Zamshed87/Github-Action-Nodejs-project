@@ -15,7 +15,11 @@ import FormikCheckBox from "../../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../../common/FormikInput";
 import FormikSelect from "../../../../../../common/FormikSelect";
 import Loading from "../../../../../../common/loading/Loading";
-import { gray900, greenColor, success500 } from "../../../../../../utility/customColor";
+import {
+  gray900,
+  greenColor,
+  success500,
+} from "../../../../../../utility/customColor";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../../utility/todayDate";
 import { DDLForAddress, updateEmployeeProfile } from "../../helper";
@@ -72,7 +76,7 @@ function OtherAddress({ getData, rowDto, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId } = useSelector(
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -297,7 +301,7 @@ function OtherAddress({ getData, rowDto, empId }) {
       getData();
       setStatus("empty");
       setSingleData("");
-      cb?.()
+      cb?.();
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -365,36 +369,36 @@ function OtherAddress({ getData, rowDto, empId }) {
           ...initData,
           country: singleData?.country?.value
             ? {
-              value: singleData?.country?.value,
-              label: singleData?.country?.label,
-            }
+                value: singleData?.country?.value,
+                label: singleData?.country?.label,
+              }
             : {
-              value: countryDDL[17]?.CountryId,
-              label: countryDDL[17]?.CountryName,
-            },
+                value: countryDDL[17]?.CountryId,
+                label: countryDDL[17]?.CountryName,
+              },
           division: singleData?.division?.value
             ? {
-              value: singleData?.division?.value,
-              label: singleData?.division?.label,
-            }
+                value: singleData?.division?.value,
+                label: singleData?.division?.label,
+              }
             : "",
           district: singleData?.district?.value
             ? {
-              value: singleData?.district?.value,
-              label: singleData?.district?.label,
-            }
+                value: singleData?.district?.value,
+                label: singleData?.district?.label,
+              }
             : "",
           policeStation: singleData?.policeStation?.value
             ? {
-              value: singleData?.policeStation?.value,
-              label: singleData?.policeStation?.label,
-            }
+                value: singleData?.policeStation?.value,
+                label: singleData?.policeStation?.label,
+              }
             : "",
           postOffice: singleData?.postOffice?.value
             ? {
-              value: singleData?.postOffice?.value,
-              label: singleData?.postOffice?.label,
-            }
+                value: singleData?.postOffice?.value,
+                label: singleData?.postOffice?.label,
+              }
             : "",
           postCode: singleData ? singleData?.postCode : "",
           address: singleData ? singleData?.address : "",
@@ -461,11 +465,9 @@ function OtherAddress({ getData, rowDto, empId }) {
                                   },
                                   policeStation: {
                                     value:
-                                      rowDto?.permanentAddress[0]
-                                        ?.intThanaId,
+                                      rowDto?.permanentAddress[0]?.intThanaId,
                                     label:
-                                      rowDto?.permanentAddress[0]
-                                        ?.strThana,
+                                      rowDto?.permanentAddress[0]?.strThana,
                                   },
                                   postOffice: {
                                     value:
@@ -623,7 +625,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                         <FormikInput
                           name="postCode"
                           value={values?.postCode}
-                          onChange={(e) => { }}
+                          onChange={(e) => {}}
                           errors={errors}
                           touched={touched}
                           placeholder="Post Code"
@@ -699,7 +701,10 @@ function OtherAddress({ getData, rowDto, empId }) {
                               setIsCreateForm(true);
                             }}
                           >
-                            <div className="item" style={{ position: "relative", top: "-3px" }}>
+                            <div
+                              className="item"
+                              style={{ position: "relative", top: "-3px" }}
+                            >
                               <ControlPoint
                                 sx={{ color: success500, fontSize: "16px" }}
                               />
@@ -737,93 +742,102 @@ function OtherAddress({ getData, rowDto, empId }) {
                                 </h4>
                                 <small>Other Address</small>
                               </div>
-                              <div className={`col-lg-1 ${!rowDto.otherAddress? "d-none" : ""}`}>
+                              <div
+                                className={`col-lg-1 ${
+                                  !rowDto.otherAddress ? "d-none" : ""
+                                }`}
+                              >
                                 <ActionMenu
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView
-                                    ?.isMarkCompleted && {
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData({
-                                          country: {
-                                            value:
-                                              rowDto?.otherAddress[0]
-                                                ?.intCountryId,
-                                            label:
-                                              rowDto?.otherAddress[0]
-                                                ?.strCountry,
+                                    ...(isOfficeAdmin ||
+                                    (intAccountId === 5 &&
+                                      !rowDto.isMarkCompleted)
+                                      ? [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setSingleData({
+                                                country: {
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intCountryId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strCountry,
+                                                },
+                                                division: {
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intDivisionId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strDivision,
+                                                },
+                                                district: {
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intDistrictOrStateId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strDistrictOrState,
+                                                },
+                                                policeStation: {
+                                                  value:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.intThanaId,
+                                                  label:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strThana,
+                                                },
+                                                postOffice: {
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intPostOfficeId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strPostOffice,
+                                                },
+                                                postCode:
+                                                  rowDto?.permanentAddress[0]
+                                                    ?.strZipOrPostCode,
+                                                address:
+                                                  rowDto?.otherAddress[0]
+                                                    ?.strAddressDetails,
+                                              });
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                            },
                                           },
-                                          division: {
-                                            value:
-                                              rowDto?.otherAddress[0]
-                                                ?.intDivisionId,
-                                            label:
-                                              rowDto?.otherAddress[0]
-                                                ?.strDivision,
+                                          {
+                                            value: 2,
+                                            label: "Delete",
+                                            icon: (
+                                              <DeleteOutline
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              deleteHandler(values, () => {
+                                                resetForm(initData);
+                                              });
+                                            },
                                           },
-                                          district: {
-                                            value:
-                                              rowDto?.otherAddress[0]
-                                                ?.intDistrictOrStateId,
-                                            label:
-                                              rowDto?.otherAddress[0]
-                                                ?.strDistrictOrState,
-                                          },
-                                          policeStation: {
-                                            value:
-                                              rowDto?.permanentAddress[0]
-                                                ?.intThanaId,
-                                            label:
-                                              rowDto?.permanentAddress[0]
-                                                ?.strThana,
-                                          },
-                                          postOffice: {
-                                            value:
-                                              rowDto?.otherAddress[0]
-                                                ?.intPostOfficeId,
-                                            label:
-                                              rowDto?.otherAddress[0]
-                                                ?.strPostOffice,
-                                          },
-                                          postCode:
-                                            rowDto?.permanentAddress[0]
-                                              ?.strZipOrPostCode,
-                                          address:
-                                            rowDto?.otherAddress[0]
-                                              ?.strAddressDetails,
-                                        });
-                                        setStatus("input");
-                                        setIsCreateForm(true);
-                                      },
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Delete",
-                                      icon: (
-                                        <DeleteOutline
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        deleteHandler(values, () => {
-                                          resetForm(initData);
-                                        });
-                                      },
-                                    },
+                                        ]
+                                      : []),
                                   ]}
                                 />
                               </div>

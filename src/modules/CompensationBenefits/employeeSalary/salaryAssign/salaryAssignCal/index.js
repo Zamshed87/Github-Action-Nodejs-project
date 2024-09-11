@@ -268,9 +268,18 @@ export const getSalaryAssignDDLUpdate2 = ({
   grossSalaryAmount,
   setBreakDownList,
   salaryDependsOn = "",
+  accId,
+  basicSalaryObj,
 }) => {
   if (breakDownList?.[0]?.isCustomPayrollFor10ms) {
-    const res = tenMsNotAssignCal({data: breakDownList}, grossSalaryAmount);
+    const res = tenMsNotAssignCal({ data: breakDownList }, grossSalaryAmount);
+    setBreakDownList(res || []);
+  } else if (accId === 9) {
+    const res = addinNotAssignCal(
+      { data: breakDownList },
+      basicSalaryObj,
+      grossSalaryAmount
+    );
     setBreakDownList(res || []);
   } else {
     const modifyData = [];
@@ -322,11 +331,20 @@ export const getSalaryAssignDDLUpdate2 = ({
 export const getByIdSalaryAssignDDLUpdate2 = (
   res,
   grossSalaryAmount,
-  setter
+  setter,
+  accId,
+  basicSalaryObj
 ) => {
   // console.log(res?.data)
   if (res?.data?.[0]?.isCustomPayrollFor10ms) {
     const update = tenMsAssignedCal(res, grossSalaryAmount);
+    setter(update || []);
+  } else if (accId === 9) {
+    const update = addinAssignCal(
+      { data: res?.data },
+      basicSalaryObj,
+      grossSalaryAmount
+    );
     setter(update || []);
   } else {
     const breakdownList = res?.data || [];
@@ -560,7 +578,221 @@ export const tenMsNotAssignCal = (res, grossSalaryAmount) => {
 
   return finalModify;
 };
+export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
+  let modifyData = [];
+  const basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
 
+  modifyData = res?.data?.map((itm) => {
+    let modifyObj;
+
+    // for corporate
+    if (itm?.strSalaryBreakdownTitle === "Corporate") {
+      console.log("t");
+      console.log({ itm });
+      // basic salary
+      if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
+        modifyObj = {
+          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+            basicSalaryObj.basicSalary || 11,
+          numAmount: basicSalaryObj.basicSalary || 11,
+          showPercentage: basicSalaryObj.numPercentageOfGross || 50,
+        };
+      }
+
+      // basic dependency
+      if (
+        itm?.strBasedOn === "Percentage" &&
+        itm?.strDependOn === "Basic" &&
+        !itm?.isBasicSalary
+      ) {
+        modifyObj = {
+          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+          numAmount:
+            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+    }
+    // ------------
+    // Flat salary
+    if (
+      itm?.strPayrollElementName === "Flat Salary" ||
+      itm?.strPayrollElementName === "Flat Gross Salary"
+    ) {
+      // without basic salary
+      if (itm?.strBasedOn === "Percentage") {
+        modifyObj = {
+          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+            (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+    }
+
+    // others
+    if (itm?.strSalaryBreakdownTitle !== "Corporate") {
+      // basic salary
+      if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
+        modifyObj = {
+          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+            (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+
+      // basic dependency
+      if (
+        itm?.strBasedOn === "Percentage" &&
+        itm?.strDependOn === "Basic" &&
+        !itm?.isBasicSalary
+      ) {
+        modifyObj = {
+          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+            itm?.numNumberOfPercent *
+            ((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) *
+            0.01,
+          numAmount:
+            itm?.numNumberOfPercent *
+            ((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) *
+            0.01,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+    }
+
+    // amount
+    if (itm?.strBasedOn === "Amount" && !itm?.isBasicSalary) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+          itm?.numAmount,
+        numAmount: itm?.numAmount,
+      };
+    }
+
+    return {
+      ...itm,
+      ...modifyObj,
+      levelVariable: itm?.strPayrollElementName
+        .toLowerCase()
+        .split(" ")
+        .join(""),
+    };
+  });
+
+  return modifyData;
+};
+export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
+  console.log({ res });
+  console.log({ basicSalaryObj });
+  console.log({ grossSalaryAmount });
+  let modifyData = [];
+  let basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
+
+  modifyData = res?.data?.map((itm) => {
+    let modifyObj;
+
+    // for corporate
+    if (itm?.strSalaryBreakdownTitle === "Corporate") {
+      // basic salary
+      if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
+        modifyObj = {
+          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+            basicSalaryObj.basicSalary || 0,
+          numAmount: basicSalaryObj.basicSalary || 0,
+          showPercentage: basicSalaryObj.numPercentageOfGross || 50,
+        };
+      }
+
+      // basic dependency
+      if (
+        itm?.strBasedOn === "Percentage" &&
+        itm?.strDependOn === "Basic" &&
+        !itm?.isBasicSalary
+      ) {
+        modifyObj = {
+          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+          numAmount:
+            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+    }
+
+    // Flat salary
+    if (
+      itm?.strPayrollElementName === "Flat Salary" ||
+      itm?.strPayrollElementName === "Flat Gross Salary"
+    ) {
+      // without basic salary
+      if (itm?.strBasedOn === "Percentage") {
+        modifyObj = {
+          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+            (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+    }
+
+    // others
+    if (itm?.strSalaryBreakdownTitle !== "Corporate") {
+      // basic salary
+      if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
+        modifyObj = {
+          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+            (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+
+      // basic dependency
+      if (
+        itm?.strBasedOn === "Percentage" &&
+        itm?.strDependOn === "Basic" &&
+        !itm?.isBasicSalary
+      ) {
+        modifyObj = {
+          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+            itm?.numNumberOfPercent *
+            ((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) *
+            0.01,
+          numAmount:
+            itm?.numNumberOfPercent *
+            ((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) *
+            0.01,
+          showPercentage: itm?.numNumberOfPercent,
+        };
+      }
+    }
+
+    // amount
+    if (
+      (itm?.strBasedOn === "Amount" && !itm?.isBasicSalary) ||
+      (itm?.strBasedOn === "Amount" && itm?.isBasicSalary)
+    ) {
+      modifyObj = {
+        [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+          itm?.numAmount,
+        numAmount: itm?.numAmount,
+      };
+    }
+
+    return {
+      ...itm,
+      ...modifyObj,
+      strPayrollElementName: itm?.strSalaryElement,
+      intPayrollElementTypeId: itm?.intSalaryElementId,
+      intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
+      levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
+    };
+  });
+  return modifyData;
+};
 export const tenMsAssignedCal = (res, grossSalaryAmount) => {
   const conveyanceAmount = res?.data?.filter(
     (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary

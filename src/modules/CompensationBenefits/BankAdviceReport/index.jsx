@@ -19,8 +19,11 @@ import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { monthYearFormatter } from "../../../utility/dateFormatter";
-import { getPDFAction } from "../../../utility/downloadFile";
-import { convert_number_to_word, withDecimal } from "../../../utility/numberToWord";
+import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
+import {
+  convert_number_to_word,
+  withDecimal,
+} from "../../../utility/numberToWord";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
@@ -37,11 +40,11 @@ import {
 import { paginationSize } from "../../../common/peopleDeskTable";
 import PeopleDeskTable from "../../componentModule/peopledeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
-import { set } from "lodash";
 import { generateTopSheetAction } from "./excel/excelTopSheet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { todayDate } from "utility/todayDate";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { useApiRequest } from "Hooks";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -55,6 +58,8 @@ const BankAdviceReport = () => {
   const [accountDDL, setAccountDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [buDetails, setBuDetails] = useState(false);
+  const [tenMsdata, setTenMsdata] = useState("");
+
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
   );
@@ -82,13 +87,43 @@ const BankAdviceReport = () => {
       permission = item;
     }
   });
-
+  const tenMsBankAdvice = useApiRequest([]);
+  // Functions
+  const tenMsBALanding = (partName, values) => {
+    if (!values?.adviceName?.value) {
+      return toast.warning("Please select Salary Code");
+    }
+    tenMsBankAdvice?.action({
+      method: "get",
+      urlKey: "BankAdviceReport10MS",
+      params: {
+        strPartName: partName,
+        IntAccountId: orgId,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: values?.workplaceGroup?.value,
+        IntWorkplaceId: values?.workplace?.value,
+        IntMonthId: values?.monthId,
+        IntYearId: values?.yearId,
+        IntBankId: values?.bank?.value,
+        IntSalaryGenerateRequestId: values?.adviceName?.value,
+      },
+      onSuccess: (res) => {
+        setTenMsdata(res);
+      },
+    });
+  };
   const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
     useFormik({
       enableReinitialize: true,
       validationSchema: bankAdviceValidationSchema,
       initialValues: bankAdviceInitialValues,
-      onSubmit: () => saveHandler(values),
+      onSubmit: () => {
+        if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
+          tenMsBALanding("htmlView", values);
+        } else {
+          saveHandler(values);
+        }
+      },
     });
 
   // on form submit
@@ -325,7 +360,7 @@ const BankAdviceReport = () => {
   }, []);
   return (
     <form onSubmit={handleSubmit}>
-      {loading && <Loading />}
+      {(loading || tenMsBankAdvice?.loading) && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading mt-2 pt-1">
@@ -690,227 +725,308 @@ const BankAdviceReport = () => {
               </div>
             </div>
 
-            <div className="d-flex justify-content-between">
+            {orgId === 4 && values?.bankAdviceFor?.value === 1 ? (
               <div>
-                <h2
-                  style={{
-                    color: gray500,
-                    fontSize: "14px",
-                    margin: "12px 0px 10px 0px",
-                  }}
-                >
-                  Bank Advice List
-                </h2>
-              </div>
-              <div>
-                <ul className="d-flex flex-wrap">
-                  {!!rowDto?.length && (
-                    <>
-                      <li className="pr-2">
-                        <Tooltip title="Export Top Sheet" arrow>
-                          <IconButton
-                            style={{ color: "#101828" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (rowDto?.length <= 0) {
-                                return toast.warning("Data is empty !!!!", {
-                                  toastId: 1,
-                                });
-                              }
+                {tenMsdata && (
+                  <ul className="d-flex flex-wrap  align-items-center justify-content-end">
+                    <li className="pr-2">
+                      <Tooltip title="Download as Excel">
+                        <button
+                          className="btn-save"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
 
-                              excelGenerate(values, (res) => {
-                                const total = Number(
-                                  res
-                                    ?.reduce(
-                                      (acc, item) => acc + item?.numNetPayable,
-                                      0
-                                    )
-                                    .toFixed(2)
-                                );
-                                console.log("values", values);
-
-                                generateTopSheetAction(
-                                  monthYearFormatter(values?.monthYear),
-                                  "",
-                                  "",
-                                  excelColumnFunc(0),
-                                  excelDataFunc(0),
-                                  strBusinessUnit,
-                                  4,
-                                  res,
-                                  values,
-                                  total,
-                                  // withDecimal(total),
-                                  convert_number_to_word(total),
-                                  businessUnitDDL[0]?.BusinessUnitAddress
-                                );
-                              });
-                            }}
-                          >
-                            <DownloadIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li className="pr-2">
-                        <Tooltip title="Export Details CSV" arrow>
-                          <IconButton
-                            style={{ color: "#101828" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (rowDto?.length <= 0) {
-                                return toast.warning("Data is empty !!!!", {
-                                  toastId: 1,
-                                });
-                              }
-
-                              excelGenerate(values, (res) => {
-                                const total = Number(
-                                  res
-                                    ?.reduce(
-                                      (acc, item) => acc + item?.numNetPayable,
-                                      0
-                                    )
-                                    .toFixed(2)
-                                );
-
-                                generateExcelAction(
-                                  monthYearFormatter(values?.monthYear),
-                                  "",
-                                  "",
-                                  excelColumnFunc(0),
-                                  excelDataFunc(0),
-                                  strBusinessUnit,
-                                  values,
-                                  res,
-                                  values?.account?.AccountNo,
-                                  total,
-                                  // withDecimal(total),
-                                  convert_number_to_word(total),
-                                  businessUnitDDL[0]?.BusinessUnitAddress
-                                );
-                              });
-                            }}
-                          >
-                            <DownloadIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                    </>
-                  )}
-                  {values?.search && (
-                    <li className="pt-1">
-                      <ResetButton
-                        classes="btn-filter-reset"
-                        title="Reset"
-                        icon={<SettingsBackupRestoreOutlined />}
-                        onClick={() => {
-                          setFieldValue("search", "");
-                          if (values?.bankAdviceFor?.value === 2) {
-                            if (!values?.bonusCode?.length > 0)
-                              return toast.warning("Please select Bonus Code");
-                            getBankAdviceBonusRequestLanding(
-                              orgId,
-                              buId,
-                              wgId,
-                              {
-                                current: 1,
-                                pageSize: pages?.pageSize,
-                                total: pages?.total,
-                              },
-                              values,
-                              setPages,
-                              setRowDto,
-                              setLoading,
-                              ""
+                            const url = `/PdfAndExcelReport/BankAdviceReport10MS?strPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}`;
+                            downloadFile(
+                              url,
+                              `Bank Advice For 10 MS- ${todayDate()}`,
+                              "xlsx",
+                              setLoading
                             );
-                          } else if (values?.bankAdviceFor?.value === 1) {
-                            if (!values?.adviceName?.value)
-                              return toast.warning("Please select Salary Code");
-                            getBankAdviceRequestLanding(
-                              orgId,
-                              buId,
-                              wgId,
-                              {
-                                current: 1,
-                                pageSize: pages?.pageSize,
-                                total: pages?.total,
-                              },
-                              values,
-                              setPages,
-                              setRowDto,
-                              setLoading,
-                              ""
-                            );
-                          }
-                        }}
-                      />
+                          }}
+                          style={{
+                            border: "transparent",
+                            width: "30px",
+                            height: "30px",
+                            background: "#f2f2f7",
+                            borderRadius: "100px",
+                          }}
+                        >
+                          <DownloadIcon
+                            sx={{
+                              color: "#101828",
+                              fontSize: "16px",
+                            }}
+                          />
+                        </button>
+                      </Tooltip>
                     </li>
-                  )}
-                  <li>
-                    <DefaultInput
-                      classes="search-input fixed-width mt-1 tableCardHeaderSeach"
-                      inputClasses="search-inner-input"
-                      placeholder="Search"
-                      value={values?.search}
-                      name="search"
-                      type="text"
-                      trailicon={
-                        <SearchOutlined
-                          sx={{
-                            color: "#323232",
-                            fontSize: "18px",
+                    <li>
+                      <Tooltip title="Print as PDF">
+                        <button
+                          className="btn-save"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const url = `/PdfAndExcelReport/BankAdviceReport10MS?strPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}`;
+
+                            getPDFAction(url, setLoading);
+                          }}
+                          // disabled={resDetailsReport?.length <= 0}
+                          style={{
+                            border: "transparent",
+                            width: "30px",
+                            height: "30px",
+                            background: "#f2f2f7",
+                            borderRadius: "100px",
+                          }}
+                        >
+                          <LocalPrintshopIcon
+                            sx={{
+                              color: "#101828",
+                              fontSize: "16px",
+                            }}
+                          />
+                        </button>
+                      </Tooltip>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <div className="d-flex justify-content-between">
+                <div>
+                  <h2
+                    style={{
+                      color: gray500,
+                      fontSize: "14px",
+                      margin: "12px 0px 10px 0px",
+                    }}
+                  >
+                    Bank Advice List
+                  </h2>
+                </div>
+                <div>
+                  <ul className="d-flex flex-wrap">
+                    {!!rowDto?.length && (
+                      <>
+                        <li className="pr-2">
+                          <Tooltip title="Export Top Sheet" arrow>
+                            <IconButton
+                              style={{ color: "#101828" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (rowDto?.length <= 0) {
+                                  return toast.warning("Data is empty !!!!", {
+                                    toastId: 1,
+                                  });
+                                }
+
+                                excelGenerate(values, (res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+                                  console.log("values", values);
+
+                                  generateTopSheetAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    4,
+                                    res,
+                                    values,
+                                    total,
+                                    // withDecimal(total),
+                                    convert_number_to_word(total),
+                                    businessUnitDDL[0]?.BusinessUnitAddress
+                                  );
+                                });
+                              }}
+                            >
+                              <DownloadIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li className="pr-2">
+                          <Tooltip title="Export Details CSV" arrow>
+                            <IconButton
+                              style={{ color: "#101828" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (rowDto?.length <= 0) {
+                                  return toast.warning("Data is empty !!!!", {
+                                    toastId: 1,
+                                  });
+                                }
+
+                                excelGenerate(values, (res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    values,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    // withDecimal(total),
+                                    convert_number_to_word(total),
+                                    businessUnitDDL[0]?.BusinessUnitAddress
+                                  );
+                                });
+                              }}
+                            >
+                              <DownloadIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                      </>
+                    )}
+                    {values?.search && (
+                      <li className="pt-1">
+                        <ResetButton
+                          classes="btn-filter-reset"
+                          title="Reset"
+                          icon={<SettingsBackupRestoreOutlined />}
+                          onClick={() => {
+                            setFieldValue("search", "");
+                            if (values?.bankAdviceFor?.value === 2) {
+                              if (!values?.bonusCode?.length > 0)
+                                return toast.warning(
+                                  "Please select Bonus Code"
+                                );
+                              getBankAdviceBonusRequestLanding(
+                                orgId,
+                                buId,
+                                wgId,
+                                {
+                                  current: 1,
+                                  pageSize: pages?.pageSize,
+                                  total: pages?.total,
+                                },
+                                values,
+                                setPages,
+                                setRowDto,
+                                setLoading,
+                                ""
+                              );
+                            } else if (values?.bankAdviceFor?.value === 1) {
+                              if (!values?.adviceName?.value)
+                                return toast.warning(
+                                  "Please select Salary Code"
+                                );
+                              getBankAdviceRequestLanding(
+                                orgId,
+                                buId,
+                                wgId,
+                                {
+                                  current: 1,
+                                  pageSize: pages?.pageSize,
+                                  total: pages?.total,
+                                },
+                                values,
+                                setPages,
+                                setRowDto,
+                                setLoading,
+                                ""
+                              );
+                            }
                           }}
                         />
-                      }
-                      onChange={(e) => {
-                        setFieldValue("search", e.target.value);
-                        debounce(() => {
-                          if (values?.bankAdviceFor?.value === 2) {
-                            if (!values?.bonusCode?.length > 0)
-                              return toast.warning("Please select Bonus Code");
-                            getBankAdviceBonusRequestLanding(
-                              orgId,
-                              buId,
-                              wgId,
-                              {
-                                current: 1,
-                                pageSize: pages?.pageSize,
-                                total: pages?.total,
-                              },
-                              values,
-                              setPages,
-                              setRowDto,
-                              setLoading,
-                              e.target.value
-                            );
-                          } else if (values?.bankAdviceFor?.value === 1) {
-                            if (!values?.adviceName?.value)
-                              return toast.warning("Please select Salary Code");
-                            getBankAdviceRequestLanding(
-                              orgId,
-                              buId,
-                              wgId,
-                              {
-                                current: 1,
-                                pageSize: pages?.pageSize,
-                                total: pages?.total,
-                              },
-                              values,
-                              setPages,
-                              setRowDto,
-                              setLoading,
-                              e.target.value
-                            );
-                          }
-                        }, 500);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </li>
-                </ul>
+                      </li>
+                    )}
+                    <li>
+                      <DefaultInput
+                        classes="search-input fixed-width mt-1 tableCardHeaderSeach"
+                        inputClasses="search-inner-input"
+                        placeholder="Search"
+                        value={values?.search}
+                        name="search"
+                        type="text"
+                        trailicon={
+                          <SearchOutlined
+                            sx={{
+                              color: "#323232",
+                              fontSize: "18px",
+                            }}
+                          />
+                        }
+                        onChange={(e) => {
+                          setFieldValue("search", e.target.value);
+                          debounce(() => {
+                            if (values?.bankAdviceFor?.value === 2) {
+                              if (!values?.bonusCode?.length > 0)
+                                return toast.warning(
+                                  "Please select Bonus Code"
+                                );
+                              getBankAdviceBonusRequestLanding(
+                                orgId,
+                                buId,
+                                wgId,
+                                {
+                                  current: 1,
+                                  pageSize: pages?.pageSize,
+                                  total: pages?.total,
+                                },
+                                values,
+                                setPages,
+                                setRowDto,
+                                setLoading,
+                                e.target.value
+                              );
+                            } else if (values?.bankAdviceFor?.value === 1) {
+                              if (!values?.adviceName?.value)
+                                return toast.warning(
+                                  "Please select Salary Code"
+                                );
+                              getBankAdviceRequestLanding(
+                                orgId,
+                                buId,
+                                wgId,
+                                {
+                                  current: 1,
+                                  pageSize: pages?.pageSize,
+                                  total: pages?.total,
+                                },
+                                values,
+                                setPages,
+                                setRowDto,
+                                setLoading,
+                                e.target.value
+                              );
+                            }
+                          }, 500);
+                        }}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            )}
 
             {rowDto?.length ? (
               <PeopleDeskTable
@@ -931,6 +1047,14 @@ const BankAdviceReport = () => {
                 isCheckBox={false}
                 isScrollAble={false}
               />
+            ) : orgId === 4 && values?.bankAdviceFor?.value === 1 ? (
+              <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: tenMsdata,
+                  }}
+                />
+              </div>
             ) : (
               <NoResult />
             )}

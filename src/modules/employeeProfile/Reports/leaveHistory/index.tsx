@@ -130,10 +130,13 @@ const EmLeaveHistory = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
+    // const workplaceList = `${values?.workplace
+    //   ?.map((item: any) => item?.intWorkplaceId)
+    //   .join(",")}`;
+    const workplaceList = values?.workplace
       ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
-
+      .join(",");
+    console.log({ workplaceList });
     landingApi.action({
       urlKey: "LeaveBalanceHistoryForAllEmployee",
       method: "GET",
@@ -146,7 +149,7 @@ const EmLeaveHistory = () => {
         SearchText: searchText || "",
         WorkplaceGroupId: values?.workplaceGroup?.value,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceList: `${workplaceList}` || "",
       },
     });
   };

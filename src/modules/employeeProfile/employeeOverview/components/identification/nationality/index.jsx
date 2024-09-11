@@ -41,7 +41,7 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId, wgId, buId } = useSelector(
+  const { employeeId, wgId, buId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -295,13 +295,13 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           ...initData,
           nationality: singleData?.value
             ? {
-              value: singleData?.value,
-              label: singleData?.label,
-            }
+                value: singleData?.value,
+                label: singleData?.label,
+              }
             : {
-              value: nationalityDDL[17]?.CountryId,
-              label: nationalityDDL[17]?.CountryName,
-            },
+                value: nationalityDDL[17]?.CountryId,
+                label: nationalityDDL[17]?.CountryName,
+              },
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -380,9 +380,9 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                   {!singleData && (
                     <>
                       {rowDto?.empEmployeePhotoIdentity === "" ||
-                        rowDto?.empEmployeePhotoIdentity === null ||
-                        rowDto?.empEmployeePhotoIdentity?.strNationality === "" ||
-                        rowDto?.empEmployeePhotoIdentity?.strNationality ===
+                      rowDto?.empEmployeePhotoIdentity === null ||
+                      rowDto?.empEmployeePhotoIdentity?.strNationality === "" ||
+                      rowDto?.empEmployeePhotoIdentity?.strNationality ===
                         null ? (
                         <>
                           <h5>Nationality</h5>
@@ -443,46 +443,53 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      !rowDto?.employeeProfileLandingView
-                                      ?.isMarkCompleted &&  {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setSingleData({
-                                            value:
-                                              rowDto?.empEmployeePhotoIdentity
-                                                ?.strNationality,
-                                            label:
-                                              rowDto?.empEmployeePhotoIdentity
-                                                ?.strNationality,
-                                          });
-                                          setStatus("input");
-                                          setIsCreateForm(true);
-                                        },
-                                      },
-                                      {
-                                        value: 2,
-                                        label: "Delete",
-                                        icon: (
-                                          <DeleteOutline
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          deleteHandler(values);
-                                        },
-                                      },
+                                      ...(isOfficeAdmin ||
+                                      (intAccountId === 5 &&
+                                        !rowDto.isMarkCompleted)
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData({
+                                                  value:
+                                                    rowDto
+                                                      ?.empEmployeePhotoIdentity
+                                                      ?.strNationality,
+                                                  label:
+                                                    rowDto
+                                                      ?.empEmployeePhotoIdentity
+                                                      ?.strNationality,
+                                                });
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(values);
+                                              },
+                                            },
+                                          ]
+                                        : []),
                                     ]}
                                   />
                                 </div>

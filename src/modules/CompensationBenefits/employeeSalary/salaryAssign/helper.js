@@ -5,7 +5,7 @@ import Chips from "../../../../common/Chips";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import {
   getByIdSalaryAssignDDLUpdate2,
-  getSalaryAssignDDLUpdate2
+  getSalaryAssignDDLUpdate2,
 } from "./salaryAssignCal";
 
 export const reverseBasedOnBasicPercentage = (basicElement, payrollElement) => {
@@ -81,6 +81,8 @@ export const getBreakdownListDDL = async (
             breakDownList: res?.data,
             grossSalaryAmount: grossSalaryAmount,
             setBreakDownList: setter,
+            accId,
+            basicSalaryObj: resBasicAllowance?.data,
           });
           setLoading && setLoading(false);
         }
@@ -184,6 +186,8 @@ export const getByIdBreakdownListDDL = async (
 ) => {
   setLoading && setLoading(true);
   try {
+    console.log("first----------->");
+
     const res = await axios.get(
       `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${
         wId || 0
@@ -205,7 +209,13 @@ export const getByIdBreakdownListDDL = async (
           //   resBasicAllowance?.data
           // );
           // getByIdSalaryAssignDDLUpdate(res, grossSalaryAmount, setter);
-          getByIdSalaryAssignDDLUpdate2(res, grossSalaryAmount, setter);
+          getByIdSalaryAssignDDLUpdate2(
+            res,
+            grossSalaryAmount,
+            setter,
+            accId,
+            resBasicAllowance?.data
+          );
           setLoading && setLoading(false);
         }
       } catch (error) {
