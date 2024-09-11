@@ -202,9 +202,12 @@ function AddEditForm() {
       strEntryType: "ENTRY",
       intSalaryAdditionAndDeductionId: 0,
       intAccountId: orgId,
-      intBusinessUnitId: empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
-      intWorkplaceGroupId:  empBasic?.employeeProfileLandingView?.intWorkplaceGroupId  || wgId,
-      intWorkplaceId:  empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+      intBusinessUnitId:
+        empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+      intWorkplaceGroupId:
+        empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
+      intWorkplaceId:
+        empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
       intEmployeeId: values?.employee?.value,
       isAutoRenew: values?.isAutoRenew ? true : false,
       intYear: +values?.fromMonth?.split("-")[0] || null,
@@ -246,9 +249,12 @@ function AddEditForm() {
         ? singleData?.intSalaryAdditionAndDeductionId
         : 0,
       intAccountId: orgId,
-      intBusinessUnitId: empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
-      intWorkplaceGroupId: empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
-      intWorkplaceId: empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+      intBusinessUnitId:
+        empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+      intWorkplaceGroupId:
+        empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
+      intWorkplaceId:
+        empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
       intEmployeeId: values?.employee?.value,
       isAutoRenew: values?.isAutoRenew ? true : false,
       intYear: +values?.fromMonth?.split("-")[0] || null,
@@ -283,9 +289,12 @@ function AddEditForm() {
         ? values?.intSalaryAdditionAndDeductionId
         : 0,
       intAccountId: orgId,
-      intBusinessUnitId: empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
-      intWorkplaceGroupId:  empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
-      intWorkplaceId: empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+      intBusinessUnitId:
+        empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+      intWorkplaceGroupId:
+        empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
+      intWorkplaceId:
+        empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
       intEmployeeId: values?.intEmployeeId,
       isAutoRenew: values?.isAutoRenew ? true : false,
       intYear: values?.intYear,
@@ -797,6 +806,10 @@ function AddEditForm() {
                                         value: 3,
                                         label: "Based On Attendence",
                                       },
+                                      {
+                                        value: 4,
+                                        label: "Based on Night Stay",
+                                      },
                                     ] || []
                                     /* 
             🔥 from backend -- 
@@ -1104,6 +1117,11 @@ function AddEditForm() {
                                                         value: 3,
                                                         label:
                                                           "Based On Attendence",
+                                                      },
+                                                      {
+                                                        value: 4,
+                                                        label:
+                                                          "Based on Night Stay",
                                                       },
                                                     ].find(
                                                       (el) =>
