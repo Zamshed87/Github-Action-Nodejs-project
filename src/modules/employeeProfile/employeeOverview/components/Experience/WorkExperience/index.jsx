@@ -58,7 +58,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -665,57 +665,53 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                       color={gray900}
                                       fontSize={"18px"}
                                       options={[
-                                        !rowDto?.employeeProfileLandingView
-                                        ?.isMarkCompleted && {
-                                          value: 1,
-                                          label: "Edit",
-                                          icon: (
-                                            <ModeEditOutlined
-                                              sx={{
-                                                marginRight: "10px",
-                                                fontSize: "16px",
-                                              }}
-                                            />
-                                          ),
-                                          onClick: () => {
-                                            setStatus("input");
-                                            setIsCreateForm(true);
-                                            setSingleData({
-                                              companyName: item?.strCompanyName,
-                                              jobTitle: item?.strJobTitle,
-                                              location: item?.strLocation,
-                                              jobDescription:
-                                                item?.strDescription,
-                                              fromDate: item?.dteFromDate,
-                                              toDate: item?.dteToDate,
-                                              intJobExperienceId:
-                                                item?.intJobExperienceId,
-                                            });
-                                            setImageFile({
-                                              globalFileUrlId:
-                                                item?.intNocUrlId,
-                                            });
+                                        ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                              setSingleData({
+                                                companyName: item?.strCompanyName,
+                                                jobTitle: item?.strJobTitle,
+                                                location: item?.strLocation,
+                                                jobDescription: item?.strDescription,
+                                                fromDate: item?.dteFromDate,
+                                                toDate: item?.dteToDate,
+                                                intJobExperienceId: item?.intJobExperienceId,
+                                              });
+                                              setImageFile({
+                                                globalFileUrlId: item?.intNocUrlId,
+                                              });
+                                            },
                                           },
-                                        },
-                                        {
-                                          value: 2,
-                                          label: "Delete",
-                                          icon: (
-                                            <DeleteOutline
-                                              sx={{
-                                                marginRight: "10px",
-                                                fontSize: "16px",
-                                              }}
-                                            />
-                                          ),
-                                          onClick: () => {
-                                            deleteHandler(
-                                              item?.intJobExperienceId,
-                                              item
-                                            );
+                                          {
+                                            value: 2,
+                                            label: "Delete",
+                                            icon: (
+                                              <DeleteOutline
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              deleteHandler(item?.intJobExperienceId, item);
+                                            },
                                           },
-                                        },
+                                        ] : []),
                                       ]}
+                                      
                                     />
                                   </div>
                                 )}

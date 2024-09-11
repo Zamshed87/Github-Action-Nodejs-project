@@ -38,7 +38,7 @@ function SalaryType({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -340,48 +340,55 @@ function SalaryType({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView
-                                    ?.isMarkCompleted && {
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData({
-                                          value:
-                                            rowDto?.employeeProfileLandingView?.strSalaryTypeName?.toUpperCase() ===
-                                            "Daily".toUpperCase()
-                                              ? 1
-                                              : 2,
-                                          label:
-                                            rowDto?.employeeProfileLandingView
-                                              ?.strSalaryTypeName,
-                                        });
-                                        setStatus("input");
-                                        setIsCreateForm(true);
-                                      },
-                                    },
-                                    // {
-                                    //   value: 2,
-                                    //   label: "Delete",
-                                    //   icon: (
-                                    //     <DeleteOutline
-                                    //       sx={{
-                                    //         marginRight: "10px",
-                                    //         fontSize: "16px",
-                                    //       }}
-                                    //     />
-                                    //   ),
-                                    //   onClick: () => {
-                                    //     deleteHandler(values);
-                                    //   },
-                                    // },
+                                    ...(isOfficeAdmin ||
+                                    (intAccountId === 5 &&
+                                      !rowDto.isMarkCompleted)
+                                      ? [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setSingleData({
+                                                value:
+                                                  rowDto?.employeeProfileLandingView?.strSalaryTypeName?.toUpperCase() ===
+                                                  "Daily".toUpperCase()
+                                                    ? 1
+                                                    : 2,
+                                                label:
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.strSalaryTypeName,
+                                              });
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                            },
+                                          },
+                                          // Uncomment and adjust this if you want to include the "Delete" option conditionally
+                                          // {
+                                          //   value: 2,
+                                          //   label: "Delete",
+                                          //   icon: (
+                                          //     <DeleteOutline
+                                          //       sx={{
+                                          //         marginRight: "10px",
+                                          //         fontSize: "16px",
+                                          //       }}
+                                          //     />
+                                          //   ),
+                                          //   onClick: () => {
+                                          //     deleteHandler(values);
+                                          //   },
+                                          // },
+                                        ]
+                                      : []),
                                   ]}
                                 />
                               </div>

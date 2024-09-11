@@ -221,7 +221,7 @@ export default function SalaryDrawer(props) {
       setTotalAmount(amount);
 
       let total = 0;
-
+      console.log({ breakDownList });
       total = breakDownList.reduce((sum, itm) => sum + +itm?.numAmount, 0);
 
       setTotalAmount(amount);
@@ -253,6 +253,7 @@ export default function SalaryDrawer(props) {
 
   const rowDtoHandler = (name, index, value, setBreakDownList) => {
     const data = [...breakDownList];
+    console.log({ data });
     data[index][name] = value;
 
     const modifyArr = data?.map((itm) => {
@@ -439,6 +440,7 @@ export default function SalaryDrawer(props) {
       }
 
       if (+values?.totalGrossSalary !== +finalTotalAmount) {
+        console.log(values?.totalGrossSalary, finalTotalAmount);
         return toast.warning("Total gross salary must be equal net salary !!!");
       }
 

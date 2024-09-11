@@ -33,7 +33,7 @@ function DrivingLicense({ empId, buId, wgId }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState(0);
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -378,42 +378,48 @@ function DrivingLicense({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    !rowDto?.employeeProfileLandingView
-                                    ?.isMarkCompleted && {
-                                      value: 1,
-                                      label: "Edit",
-                                      icon: (
-                                        <ModeEditOutlined
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        setSingleData(
-                                          rowDto?.employeeProfileLandingView
-                                            ?.drivingLicenseNo
-                                        );
-                                        setStatus("input");
-                                        setIsCreateForm(true);
-                                      },
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Delete",
-                                      icon: (
-                                        <DeleteOutline
-                                          sx={{
-                                            marginRight: "10px",
-                                            fontSize: "16px",
-                                          }}
-                                        />
-                                      ),
-                                      onClick: () => {
-                                        deleteHandler(setFieldValue);
-                                      },
-                                    },
+                                    ...(isOfficeAdmin ||
+                                    (intAccountId === 5 &&
+                                      !rowDto.isMarkCompleted)
+                                      ? [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setSingleData(
+                                                rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.drivingLicenseNo
+                                              );
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                            },
+                                          },
+                                          {
+                                            value: 2,
+                                            label: "Delete",
+                                            icon: (
+                                              <DeleteOutline
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              deleteHandler(setFieldValue);
+                                            },
+                                          },
+                                        ]
+                                      : []),
                                   ]}
                                 />
                               </div>

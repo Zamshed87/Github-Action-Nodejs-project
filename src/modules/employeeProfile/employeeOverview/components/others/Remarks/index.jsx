@@ -20,7 +20,7 @@ export default function Remarks({ empId, buId, wgId }) {
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState({});
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -160,28 +160,36 @@ export default function Remarks({ empId, buId, wgId }) {
                           color={gray900}
                           fontSize={"18px"}
                           options={[
-                            !comment?.employeeProfileLandingView
-                            ?.isMarkCompleted && {
-                              value: 1,
-                              label: "Edit",
-                              icon: (
-                                <EditOutlined
-                                  sx={{ marginRight: "10px", fontSize: "16px" }}
-                                />
-                              ),
-                              onClick: () => {
-                                setIsForm(true);
-                                setFieldValue(
-                                  "remarks",
-                                  comment?.employeeProfileLandingView?.remarks
-                                );
-                                setFieldValue(
-                                  "autoId",
-                                  comment?.employeeProfileLandingView
-                                    ?.intEmployeeBasicInfoId
-                                );
-                              },
-                            },
+                            ...(isOfficeAdmin ||
+                            (intAccountId === 5 && !comment.isMarkCompleted)
+                              ? [
+                                  {
+                                    value: 1,
+                                    label: "Edit",
+                                    icon: (
+                                      <EditOutlined
+                                        sx={{
+                                          marginRight: "10px",
+                                          fontSize: "16px",
+                                        }}
+                                      />
+                                    ),
+                                    onClick: () => {
+                                      setIsForm(true);
+                                      setFieldValue(
+                                        "remarks",
+                                        comment?.employeeProfileLandingView
+                                          ?.remarks
+                                      );
+                                      setFieldValue(
+                                        "autoId",
+                                        comment?.employeeProfileLandingView
+                                          ?.intEmployeeBasicInfoId
+                                      );
+                                    },
+                                  },
+                                ]
+                              : []),
                           ]}
                         />
                       </div>
