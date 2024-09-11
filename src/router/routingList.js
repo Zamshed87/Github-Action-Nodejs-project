@@ -2252,6 +2252,10 @@ export const routingList = [
     component: LoanReportPrint,
   },
   {
+    path: "/compensationAndBenefits/leaveEncashment",
+    component: LeaveEncashment,
+  },
+  {
     path: "/SelfService/report/leaveHistory/print",
     component: LeaveReportPrint,
   },
