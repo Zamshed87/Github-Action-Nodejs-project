@@ -11,6 +11,12 @@ export const apiList = {
     "/SaasMasterData/GetBusinessDetailsByBusinessUnitId",
   DatewiseCalanderForEmployee: "/Employee/DatewiseCalanderForEmployee",
   PeopleDeskAllDDL: "/PeopleDeskDDL/PeopleDeskAllDDL",
+  LatePunishmentPolicyCreate:
+    "LatePunishmentPolicySetup/CreateLatePunishmentPolicy",
+  LatePunishmentPolicyUpdate:
+    "LatePunishmentPolicySetup/UpdateLatePunishmentPolicy",
+  LatePunishmentPolicyGetBy:
+    "LatePunishmentPolicySetup/LatePunishmentPolicyGetById",
   GetEmployeeDivision: "/SaasMasterData/GetEmployeeDivision",
   SaveEmployeeDivision: "/SaasMasterData/SaveEmployeeDivision",
   AccountWiseGetOverTimeConfig: "/Payroll/AccountWiseGetOverTimeConfig",

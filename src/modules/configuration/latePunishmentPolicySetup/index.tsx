@@ -10,6 +10,7 @@ import { method } from "lodash";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import AddEditForm from "./addEditForm";
 
 const LatePunishmentPolicy = () => {
   const dispatch = useDispatch();
@@ -194,13 +195,13 @@ const LatePunishmentPolicy = () => {
         maskClosable={false}
         components={
           <>
-            {/* <AddEditForm
+            <AddEditForm
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
               singleData={id}
               setId={setId}
-            /> */}
+            />
           </>
         }
       />
