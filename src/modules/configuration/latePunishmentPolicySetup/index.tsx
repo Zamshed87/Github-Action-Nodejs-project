@@ -1,12 +1,10 @@
 import { AddOutlined } from "@mui/icons-material";
 import { Form } from "antd";
-import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { method } from "lodash";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -15,7 +13,7 @@ import AddEditForm from "./addEditForm";
 const LatePunishmentPolicy = () => {
   const dispatch = useDispatch();
 
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -26,7 +24,7 @@ const LatePunishmentPolicy = () => {
   );
 
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState(false);
+  // const [view, setView] = useState(false);
   const [id, setId] = useState("");
 
   const [form] = Form.useForm();
@@ -68,26 +66,6 @@ const LatePunishmentPolicy = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //   {
-  //     "latePunishmentPolicyLandingData": [
-  //       {
-  //         "latePunishmentPolicyId": 1,
-  //         "latePunishmentPolicyName": "New Punishment Policy",
-  //         "latePunishmentPolicyCode": "",
-  //         "howMuchLateDaysForPenalty": 3,
-  //         "equalAbsent": 1,
-  //         "firstPriority": "SL",
-  //         "secondPriority": "",
-  //         "thirdPriority": "",
-  //         "amountDeductionDependsOn": "",
-  //         "amountForFixedAmount": 0
-  //       }
-  //     ],
-  //     "currentPage": 1,
-  //     "totalCount": 1,
-  //     "pageSize": 50
-  //   }
-
   const header = [
     {
       title: "SL",
@@ -118,16 +96,16 @@ const LatePunishmentPolicy = () => {
       dataIndex: "firstPriority",
       sorter: true,
     },
-    {
-      title: "Second Priority",
-      dataIndex: "secondPriority",
-      sorter: true,
-    },
-    {
-      title: "Third Priority",
-      dataIndex: "thirdPriority",
-      sorter: true,
-    },
+    // {
+    //   title: "Second Priority",
+    //   dataIndex: "secondPriority",
+    //   sorter: true,
+    // },
+    // {
+    //   title: "Third Priority",
+    //   dataIndex: "thirdPriority",
+    //   sorter: true,
+    // },
     {
       width: 20,
       align: "center",
