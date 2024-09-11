@@ -278,28 +278,6 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                       <h2 style={{ color: gray500, fontSize: "14px" }}>
                         Leave List
                       </h2>
-                      {/* <MasterFilter
-                                isHiddenFilter
-                                styles={{
-                                  marginRight: "0px",
-                                }}
-                                width="200px"
-                                inputWidth="200px"
-                                value={values?.search}
-                                setValue={(value) => {
-                                  searchData(
-                                    value,
-                                    allData,
-                                    setLeaveHistoryData
-                                  );
-                                  setFieldValue("search", value);
-                                }}
-                                cancelHandler={() => {
-                                  getData();
-                                  setFieldValue("search", "");
-                                }}
-                                handleClick={handleClick}
-                              /> */}
                       <PInput
                         // label="Reason"
                         name={"search"}

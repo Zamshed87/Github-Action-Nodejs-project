@@ -176,7 +176,7 @@ export default function AddEditFormComponent({
     }
   };
   const CommonCalendarDDL = useApiRequest([]);
-  
+
   const getCalendarDefault = () => {
     CommonCalendarDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -429,7 +429,6 @@ Are you sure ? You want to assign Calendar again?
                                     intCalendarId: values?.calender?.value || 0,
                                     strCalendarName:
                                       values?.calender?.label || "",
-                                    isDefault: false,
                                   };
 
                                   if (intAccountId === 6) {
