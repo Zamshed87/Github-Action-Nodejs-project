@@ -24,7 +24,7 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getDateOfYear } from "utility/dateFormatter";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import {} from "react-icons/md";
 
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
@@ -316,16 +316,22 @@ const AttendanceReport = () => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
+    const endDateMoment = fromDateMoment.clone().add(30 - 1, "days");
+
+    // Disable dates before fromDate and after next30daysForEmp
+    return (
+      current &&
+      (current < fromDateMoment.startOf("day") ||
+        current > endDateMoment.endOf("day"))
+    );
   };
   return employeeFeature?.isView ? (
     <>
       <PForm
         form={form}
         initialValues={{
-          fromDate: moment(getDateOfYear("first")),
-          toDate: moment(getDateOfYear("last")),
+          fromDate: moment(monthFirstDate()),
+          toDate: moment(monthLastDate()),
         }}
         onFinish={() => {
           landingApiCall({
@@ -416,6 +422,7 @@ const AttendanceReport = () => {
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
+                      toDate: value,
                     });
                   }}
                 />
