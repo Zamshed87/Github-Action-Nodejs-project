@@ -182,7 +182,9 @@ const EmployeeIdCardLanding = () => {
         : `Download Selected Employees Card?`,
       yesAlertFunc: () => {
         downloadFile(
-          `/PdfAndExcelReport/IdCardPdf?EmployeeId=${payload}`,
+          `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${
+            isAll ? "" : payload
+          }&WorkplaceId=${wId}`,
           "Employee ID Cards",
           "pdf",
           setIsLoading
@@ -492,6 +494,7 @@ const EmployeeIdCardLanding = () => {
               }}
               isCheckBox={true}
               isScrollAble={true}
+              pageSize={[25, 50, 100]}
             />
           ) : (
             !landingLoading && <NoResult title="No Result Found" para="" />
