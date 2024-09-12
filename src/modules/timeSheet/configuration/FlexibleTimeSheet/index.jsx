@@ -2,12 +2,12 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const HolidayOffdaySetup = () => {
+const FlexibleTimeSheet = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Job Card";
+    document.title = "Flexible Timesheet";
     () => {
       document.title = "PeopleDesk";
     };
@@ -20,4 +20,4 @@ const HolidayOffdaySetup = () => {
   );
 };
 
-export default HolidayOffdaySetup;
+export default FlexibleTimeSheet;
