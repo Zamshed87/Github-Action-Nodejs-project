@@ -223,9 +223,10 @@ export default function RosterSetup() {
                             onRowClick={(dataRow) => {
                               if (!permission?.isEdit)
                                 return toast.warn("You don't have permission");
-                              history.push(
-                                `/administration/timeManagement/rosterSetup/${dataRow?.RosterGroupId}/${dataRow?.RosterGroupName}`
-                              );
+                              history.push({
+                                pathname: `/administration/timeManagement/rosterSetup/${dataRow?.RosterGroupId}/${dataRow?.RosterGroupName}`,
+                                state: wgId,
+                              });
                             }}
                           />
                         </>
