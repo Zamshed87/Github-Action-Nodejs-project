@@ -151,7 +151,7 @@ const AttendanceReport = () => {
 
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
         // IntWorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList?.length > 0 ? `${workplaceList}` : 0,
+        WorkplaceList: workplaceList?.length > 0 ? `${workplaceList}` : "",
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
