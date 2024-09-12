@@ -331,7 +331,16 @@ const SalaryTaxCertificate = () => {
                           </tr>
                         )
                       )}
-
+                      <tr>
+                        <td>
+                          <p>Festival Allowance</p>
+                        </td>
+                        <td colSpan="3" style={{ textAlign: "right" }}>
+                          <p>
+                            {salaryTaxCertificateInformation?.festivalAmount}
+                          </p>
+                        </td>
+                      </tr>
                       {/* <tr>
                         <td>
                           <p>Overtime</p>
