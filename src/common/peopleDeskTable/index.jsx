@@ -6,6 +6,8 @@ import TableContent from "./tableContent";
 
 export const paginationSize = 25;
 
+const pageSizes = [25, 50, 100, 500, 1000];
+
 const PeopleDeskTable = ({
   columnData,
   pages,
@@ -28,6 +30,7 @@ const PeopleDeskTable = ({
   scrollCustomClass = "",
   customClass = "",
   handleSortingData = null,
+  pageSize = pageSizes,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentFilterSelection, setCurrentFilterSelection] = useState(null);
@@ -88,7 +91,6 @@ const PeopleDeskTable = ({
                 setAnchorEl={setAnchorEl}
                 setCurrentFilterSelection={setCurrentFilterSelection}
                 handleSortingData={handleSortingData}
-
               />
             </table>
           </div>
@@ -110,11 +112,16 @@ const PeopleDeskTable = ({
               size="small"
               sx={{ marginRight: "16px", fontSize: "14px" }}
             >
-              <MenuItem value={25}>25 per page</MenuItem>
+              {pageSize.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item} per page
+                </MenuItem>
+              ))}
+              {/* <MenuItem value={25}>25 per page</MenuItem>
               <MenuItem value={50}>50 per page</MenuItem>
               <MenuItem value={100}>100 per page</MenuItem>
               <MenuItem value={500}>500 per page</MenuItem>
-              <MenuItem value={1000}>1000 per page</MenuItem>
+              <MenuItem value={1000}>1000 per page</MenuItem> */}
             </Select>
             <Pagination
               count={Math.ceil(pages?.total / pages?.pageSize)}

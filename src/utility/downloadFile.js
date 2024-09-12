@@ -1,11 +1,17 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const downloadFile = (url, fileName, extension, setLoading) => {
+export const downloadFile = (
+  url,
+  fileName,
+  extension,
+  setLoading,
+  method = "GET"
+) => {
   setLoading && setLoading(true);
   axios({
     url: url,
-    method: "GET",
+    method: method,
     responseType: "blob", // important
   })
     .then((response) => {
