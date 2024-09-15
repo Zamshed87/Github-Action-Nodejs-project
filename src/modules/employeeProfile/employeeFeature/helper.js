@@ -666,7 +666,7 @@ export const getEmployeeProfileViewData = async (
                 label: "Calendar",
               },
           intOTFixedHour:
-            empBasic?.employeeProfileLandingView?.intOTFixedHour || 0,
+            empBasic?.employeeProfileLandingView?.intOtFixedHour || 0,
           // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
           // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
           // calenderType: [{value: 1, label: "Calendar"},
