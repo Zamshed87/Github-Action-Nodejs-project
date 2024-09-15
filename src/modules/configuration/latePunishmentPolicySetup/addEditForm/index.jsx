@@ -1,4 +1,6 @@
 import { Form } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import {
   DataTable,
   PButton,
@@ -23,6 +25,28 @@ const AddEditForm = ({
   singleData,
   setId,
 }) => {
+  const styles = {
+    container: {
+      display: "flex",
+      alignItems: "center",
+      backgroundColor: "#f0f0f0", // Light background for better visibility
+      padding: "5px 8px",
+      borderRadius: "10px",
+      marginBottom: "5px",
+      justifyContent: "space-between",
+    },
+    text: {
+      margin: 0,
+      fontSize: "12px",
+      color: "#333", // Darker text color for contrast
+    },
+    clearButton: {
+      fontSize: "16px",
+      color: "#ff4d4f", // Red color for the delete icon
+      cursor: "pointer",
+    },
+  };
+
   const dispatch = useDispatch();
 
   const { orgId, buId, employeeId, wgId } = useSelector(
@@ -118,33 +142,48 @@ const AddEditForm = ({
   // }
 
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    if (
+      (values?.punishmentType?.label === "Leave" ||
+        values?.thenEffectOn?.label === "Leave") &&
+      rowDto?.length < 3
+    ) {
+      return toast.warn("Select Atleast 3 Leave Types");
+    }
     const cb = () => {
       resetForm();
       setIsAddEditForm(false);
       getData();
+      setId("");
     };
     const payload = {
-      latePunishmentPolicyId: 0,
-      latePunishmentPolicyName: values?.strLatePunishment || "",
-      howMuchLateDaysForPenalty: values?.intHowMuchLateDays || 0,
-      equalAbsent: values?.intEqualToAbsent || 0,
-      firstPriority:
-        values?.punishmentType.value === 1
-          ? values?.leavetype?.label || ""
-          : "Amount",
-      secondPriority: "",
-      thirdPriority: "",
-      amountDeductionDependsOn: values?.dependsOnDDL?.label || "",
-      amountForFixedAmount: values?.intFixedAmount || 0,
-      workplaceIdList:
-        values?.workplaceDDL?.length > 0
-          ? values.workplaceDDL.map((item) => item.value)
-          : [],
+      id: singleData?.id || 0,
+
+      accountId: orgId,
+      businessUnitId: buId,
+      policyName: values?.strLatePunishment,
+      howMuchLateDays: values?.intHowMuchLateDays,
+      equalAbsentDays: values?.intEqualToAbsent,
+      punishmentEffectOn: values?.punishmentType?.label,
+      thenEffectOn: values?.thenEffectOn?.label,
+      leaveTypeId1: rowDto[0]?.value,
+      leaveTypeId2: rowDto[1]?.value,
+      leaveTypeId3: rowDto[2]?.value,
+      amountDependOn: values?.dependsOn?.label,
+      percentOfBasicOrGross:
+        values?.dependsOn?.label === "Fixed Amount"
+          ? 0
+          : values?.intFixedAmount,
+      fixAmount:
+        values?.dependsOn?.label === "Fixed Amount"
+          ? values?.intFixedAmount
+          : 0,
       actionBy: employeeId,
     };
     PolicySaveApi.action({
-      urlKey: "LatePunishmentPolicyCreate",
-      method: "POST",
+      urlKey: singleData?.id
+        ? "UpdateLatePunishmentPolicy"
+        : "CreateLatePunishmentPolicy",
+      method: singleData?.id ? "PUT" : "POST",
       payload: payload,
       onSuccess: () => {
         cb();
@@ -181,38 +220,20 @@ const AddEditForm = ({
     });
   };
 
-  const workplaceDDLApi = useApiRequest({});
-  const workplaceDDLApiCall = () => {
-    workplaceDDLApi.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        intId: 1,
-        WorkplaceGroupId: wgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
+  const clearRowDto = () => {
+    setRowDto([]);
   };
-
   useEffect(() => {
     LeaveTypeDDlApiCall();
-    workplaceDDLApiCall();
   }, [buId, wgId]);
 
   useEffect(() => {
-    if (singleData?.latePunishmentPolicyId) {
+    if (singleData?.id) {
       PolicyGetBy.action({
-        urlKey: "LatePunishmentPolicyGetBy",
+        urlKey: "LatePunishmentPolicyGetById",
         method: "GET",
         params: {
-          PunishmentPolicyId: singleData.latePunishmentPolicyId,
+          PunishmentPolicyId: singleData?.id,
         },
 
         //   {
@@ -248,77 +269,44 @@ const AddEditForm = ({
         //     }
         // }
         onSuccess: (res) => {
-          console.log({ res });
           form.setFieldsValue({
-            strLatePunishment: res?.latePunishmentPolicyName,
-            intHowMuchLateDays: res?.howMuchLateDaysForPenalty,
-            intEqualToAbsent: res?.equalAbsent,
-            punishmentType:
-              res?.firstPriority === "Amount"
-                ? {
-                    value: 2,
-                    label: "Amount",
-                  }
-                : {
-                    value: 1,
-                    label: "Leave",
-                  },
-            workplaceDDL:
-              res?.latePunishmentPolicyRow?.length > 0
-                ? res?.latePunishmentPolicyRow?.map((item) => {
-                    return {
-                      value: item?.workPlaceId,
-                      label: item?.workplaceName,
-                    };
-                  })
-                : [],
+            strLatePunishment: res?.policyName,
+            intHowMuchLateDays: res?.howMuchLateDays,
+            intEqualToAbsent: res?.equalAbsentDays,
+            punishmentType: {
+              value: res?.punishmentEffectOn,
+              label: res?.punishmentEffectOn,
+            },
+
+            thenEffectOn: {
+              value: res?.thenEffectOn,
+              label: res?.thenEffectOn,
+            },
+            dependsOn: {
+              value: res?.amountDependOn,
+              label: res?.amountDependOn,
+            },
+            intFixedAmount:
+              res?.amountDependOn === "Fixed Amount"
+                ? res?.fixAmount
+                : res?.percentOfBasicOrGross,
           });
+          setRowDto([
+            res?.leaveTypeId1?.value && res?.leaveTypeId1,
+            res?.leaveTypeId2?.value && res?.leaveTypeId2,
+            res?.leaveTypeId3?.value && res?.leaveTypeId3,
+          ]);
         },
       });
     }
   }, [singleData]);
-  const header = [
-    {
-      title: "SL",
-      render: (_, rec, index) => index + 1,
-    },
-    {
-      title: "Leave Type",
-      dataIndex: "LeaveType",
-      sorter: true,
-    },
 
-    {
-      width: 20,
-      align: "center",
-      render: (_, rec) => (
-        <>
-          <TableButton
-            buttonsList={[
-              {
-                type: "delete",
-                onClick: (e) => {
-                  setRowDto((prev) => {
-                    return prev?.filter(
-                      (item) => item?.LeaveType !== rec?.LeaveType
-                    );
-                  });
-                },
-              },
-            ]}
-          />
-        </>
-      ),
-    },
-  ];
-  console.log({ rowDto });
   return (
     <>
       <PForm
         form={form}
         onFinish={() => {
           const values = form.getFieldsValue(true);
-          console.log({ values });
           submitHandler({
             values,
             getData,
@@ -374,7 +362,7 @@ const AddEditForm = ({
             />
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col md={12} sm={24}>
             <PSelect
               mode="multiple"
@@ -397,7 +385,7 @@ const AddEditForm = ({
               ]}
             />
           </Col>
-        </Row>
+        </Row> */}
         <hr />
         <Row className="mb-3">
           <Col md={6} sm={24}>
@@ -407,46 +395,96 @@ const AddEditForm = ({
                   value: 1,
                   label: "Leave",
                 },
+                // {
+                //   value: 2,
+                //   label: "Gross",
+                // },
+                // {
+                //   value: 3,
+                //   label: "Basic",
+                // },
                 {
                   value: 2,
-                  label: "Gross",
-                },
-                {
-                  value: 3,
-                  label: "Basic",
-                },
-                {
-                  value: 4,
-                  label: "Fixed Amount",
+                  label: "Salary",
                 },
               ]}
               name="punishmentType"
-              label="Punishment Type"
-              placeholder="Punishment Type"
+              label="Punishment Effect On"
+              placeholder="Punishment Effect On"
               onChange={(value, op) => {
                 form.setFieldsValue({
                   punishmentType: op,
                   intFixedAmount: undefined,
                   leavetype: undefined,
                   leavetypeddl: undefined,
+                  thenEffectOn: undefined,
                 });
                 setRowDto([]);
               }}
               rules={[
                 {
                   required: true,
-                  message: "Punishment Type is required",
+                  message: "Punishment Effect is required",
                 },
               ]}
             />
           </Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { punishmentType } = form.getFieldsValue();
+              const { punishmentType, thenEffectOn, dependsOn } =
+                form.getFieldsValue();
 
               return (
                 <>
-                  {punishmentType?.label === "Leave" ? (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={
+                        punishmentType?.label === "Leave"
+                          ? [
+                              {
+                                value: 2,
+                                label: "Salary",
+                              },
+
+                              {
+                                value: 3,
+                                label: "None",
+                              },
+                            ]
+                          : [
+                              {
+                                value: 1,
+                                label: "Leave",
+                              },
+
+                              {
+                                value: 3,
+                                label: "None",
+                              },
+                            ]
+                      }
+                      name="thenEffectOn"
+                      label="Secondary Effect On"
+                      placeholder="Secondary Effect On"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          thenEffectOn: op,
+                          intFixedAmount: undefined,
+                          leavetype: undefined,
+                          leavetypeddl: undefined,
+                        });
+                        setRowDto([]);
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Punishment Effect is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  {punishmentType?.label === "Leave" ||
+                  thenEffectOn?.label === "Leave" ? (
                     <>
                       <Col md={4} sm={24}>
                         <PSelect
@@ -463,12 +501,12 @@ const AddEditForm = ({
                               leavetype: op,
                             });
                           }}
-                          rules={[
-                            {
-                              required: punishmentType?.label === "Leave",
-                              message: "Punishment Type is required",
-                            },
-                          ]}
+                          // rules={[
+                          //   {
+                          //     required: punishmentType?.label === "Leave",
+                          //     message: "Punishment Type is required",
+                          //   },
+                          // ]}
                         />
                       </Col>
                       <Col span={2} className="mt-1">
@@ -476,16 +514,21 @@ const AddEditForm = ({
                           className="mt-3"
                           content={"Add"}
                           type={"primary"}
+                          disabled={rowDto?.length === 3}
                           action="button"
                           onClick={() => {
                             const { leavetype } = form.getFieldsValue(true);
+
                             const isExists = rowDto?.find(
                               (item) => item?.LeaveType === leavetype?.LeaveType
                             );
-                            console.log({ isExists });
                             if (isExists?.LeaveTypeId) {
                               return toast.warn("Leave Type Already Exists");
                             }
+                            if (!leavetype?.value) {
+                              return toast.warn("Add a Leave Type");
+                            }
+
                             setRowDto((prev) => [...prev, { ...leavetype }]);
                             form.setFieldsValue({
                               leavetypeddl: undefined,
@@ -495,19 +538,69 @@ const AddEditForm = ({
                         />
                       </Col>
                     </>
-                  ) : punishmentType?.value === 4 ? (
+                  ) : undefined}
+
+                  {punishmentType?.label === "Salary" ||
+                  thenEffectOn?.label === "Salary" ? (
                     <>
+                      <Col md={6} sm={24}>
+                        <PSelect
+                          options={[
+                            {
+                              value: 1,
+                              label: "Gross",
+                            },
+                            {
+                              value: 2,
+                              label: "Basic",
+                            },
+                            {
+                              value: 3,
+                              label: "Fixed Amount",
+                            },
+                          ]}
+                          name="dependsOn"
+                          label="Salary Depends On"
+                          placeholder="Salary Depends On"
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              dependsOn: op,
+                              intFixedAmount: undefined,
+                              percentage: undefined,
+                            });
+                          }}
+                          rules={[
+                            {
+                              required:
+                                punishmentType?.value === 2 ||
+                                thenEffectOn?.value === 2,
+                              message: "Punishment Effect is required",
+                            },
+                          ]}
+                        />
+                      </Col>
                       <Col md={6} sm={24}>
                         <PInput
                           type="number"
                           name="intFixedAmount"
-                          label="Amount"
-                          placeholder="Amount"
+                          label={
+                            dependsOn?.label === "Fixed Amount"
+                              ? "Amount"
+                              : "Percentage"
+                          }
+                          placeholder={
+                            dependsOn?.label === "Fixed Amount"
+                              ? "Amount"
+                              : "Percentage"
+                          }
                           min={0}
                           rules={[
                             {
-                              required: punishmentType?.value === 4,
-                              message: "Amount is required",
+                              required: dependsOn?.label,
+                              message:
+                                dependsOn?.value === "Fixed Amount"
+                                  ? "Amount is required"
+                                  : "Percentage is required",
                             },
                           ]}
                         />
@@ -519,9 +612,21 @@ const AddEditForm = ({
             }}
           </Form.Item>
         </Row>
-        {rowDto?.length > 0 && (
-          <DataTable bordered data={rowDto} header={header} />
-        )}
+        <Row className="ml-1">
+          {rowDto?.length > 0 && (
+            <div style={styles.container}>
+              <p style={styles.text}>
+                {rowDto?.map((i) => i?.label).join(" => ")}
+              </p>
+              <Button
+                icon={<CloseOutlined />}
+                type="text"
+                onClick={clearRowDto}
+                style={styles.clearButton}
+              />
+            </div>
+          )}
+        </Row>
         <ModalFooter
           onCancel={() => {
             setId("");

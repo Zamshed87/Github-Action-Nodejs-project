@@ -168,6 +168,14 @@ export const apiList = {
   SupervirorDashboardLanding: "/Dashboard/MidLevelDashboard",
   JobCardLandingNPDF: "/PdfAndExcelReport/GetJobCardAllReports",
 
+  UpdateLatePunishmentPolicy:
+    "/LatePunishmentPolicySetup/UpdateLatePunishmentPolicy",
+  LatePunishmentPolicyGetById:
+    "/LatePunishmentPolicySetup/LatePunishmentPolicyGetById",
+  CreateLatePunishmentPolicy:
+    "/LatePunishmentPolicySetup/CreateLatePunishmentPolicy",
   LatePunishmentPolicyLanding:
-    "LatePunishmentPolicySetup/LatePunishmentPolicyLanding",
+    "/LatePunishmentPolicySetup/LatePunishmentPolicyLanding",
+  DeleteLatePunishmentPolicy:
+    "/LatePunishmentPolicySetup/DeleteLatePunishmentPolicy",
 };

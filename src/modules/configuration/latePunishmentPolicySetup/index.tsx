@@ -9,11 +9,12 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AddEditForm from "./addEditForm";
+import Loading from "common/loading/Loading";
 
 const LatePunishmentPolicy = () => {
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -29,17 +30,17 @@ const LatePunishmentPolicy = () => {
 
   const [form] = Form.useForm();
   const landingApi = useApiRequest({});
+  const deleteApi = useApiRequest({});
 
   const landingApiCall = () => {
     landingApi.action({
       urlKey: "LatePunishmentPolicyLanding",
       method: "GET",
       params: {
-        WorkPlaceGroupId: wgId,
-        WorkplaceId: wId,
+        AccountId: orgId,
+        BusinessUnitId: buId,
         PageNo: 1,
-        PageSize: 1000,
-        searchText: "",
+        PageSize: 500,
       },
     });
   };
@@ -51,7 +52,7 @@ const LatePunishmentPolicy = () => {
     return () => {
       document.title = "Peopledesk";
     };
-  }, [buId, wgId, wId]);
+  }, [buId, orgId]);
 
   let emploteeFeaturePermisionCheck: any = null;
 
@@ -73,34 +74,30 @@ const LatePunishmentPolicy = () => {
     },
     {
       title: "Policy Name",
-      dataIndex: "latePunishmentPolicyName",
+      dataIndex: "policyName",
       sorter: true,
     },
-    {
-      title: "Policy Code",
-      dataIndex: "latePunishmentPolicyCode",
-      sorter: true,
-    },
+
     {
       title: "Late Days",
-      dataIndex: "howMuchLateDaysForPenalty",
+      dataIndex: "howMuchLateDays",
       sorter: true,
     },
     {
       title: "Equal Absent",
-      dataIndex: "equalAbsent",
+      dataIndex: "equalAbsentDays",
       sorter: true,
     },
     {
       title: "First Priority",
-      dataIndex: "firstPriority",
+      dataIndex: "punishmentEffectOn",
       sorter: true,
     },
-    // {
-    //   title: "Second Priority",
-    //   dataIndex: "secondPriority",
-    //   sorter: true,
-    // },
+    {
+      title: "Second Priority",
+      dataIndex: "thenEffectOn",
+      sorter: true,
+    },
     // {
     //   title: "Third Priority",
     //   dataIndex: "thirdPriority",
@@ -124,6 +121,28 @@ const LatePunishmentPolicy = () => {
                   setId(rec);
                 },
               },
+              {
+                type: "delete",
+                onClick: (e: any) => {
+                  if (!emploteeFeaturePermisionCheck?.isEdit) {
+                    return toast.warn("You don't have permission");
+                    e.stopPropagation();
+                  }
+                  const cb = () => {
+                    landingApiCall();
+                  };
+                  deleteApi.action({
+                    urlKey: "DeleteLatePunishmentPolicy",
+                    method: "DELETE",
+                    params: {
+                      PunishmentPolicyId: rec?.id,
+                    },
+                    onSuccess: () => {
+                      cb();
+                    },
+                  });
+                },
+              },
             ]}
           />
         </>
@@ -139,6 +158,7 @@ const LatePunishmentPolicy = () => {
           setOpen(true);
         }}
       >
+        {(landingApi?.loading || deleteApi?.loading) && <Loading />}
         <PCard>
           <PCardHeader
             title="Late Punishment Policy"
