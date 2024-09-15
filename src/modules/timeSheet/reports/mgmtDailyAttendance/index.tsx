@@ -137,9 +137,9 @@ const MgmtDailyAttendance = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
-      ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+    const workplaceList = values?.workplace?.length
+      ? values.workplace.map((item: any) => item.intWorkplaceId).join(",")
+      : "";
 
     const payload = {
       intBusinessUnitId: buId,
