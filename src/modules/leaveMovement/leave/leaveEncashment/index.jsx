@@ -61,8 +61,10 @@ function LeaveEncashment() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { userName, orgId, buId, employeeId, wgId } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { userName, orgId, buId, employeeId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // states
   const [allData, setAllData] = useState([]);
@@ -155,6 +157,7 @@ function LeaveEncashment() {
       IntEncashmentDays: +values?.days || 0,
       isActive: true,
       intCreatedBy: employeeId,
+      intUpdatedBy: employeeId || 0,
       dteCreatedAt: new Date(),
       intLeaveTypeId: values?.leaveType?.value || 0,
       intMainBalanceEncashmentDays: values?.mainBalance || 0,
@@ -198,17 +201,7 @@ function LeaveEncashment() {
     }
   });
   const demoPopupForDelete = (item, values) => {
-    const payload = {
-      intEncashmentId: item ? item?.IntEncashmentId || 0 : 0,
-      intEmployeeId: values?.employee ? values?.employee?.value : employeeId,
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      dteEffectiveDate: item?.dteEffectiveDate,
-      intEncashmentDays: +values?.days,
-      isActive: true,
-      intCreatedBy: employeeId,
-      dteCreatedAt: new Date(),
-    };
+    console.log("item", item);
 
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
@@ -317,6 +310,7 @@ function LeaveEncashment() {
                         behavior: "smooth",
                       });
                       setSingleData(record);
+                      console.log("record", record);
                       setValues({
                         ...values,
                         applicationDate: dateFormatterForInput(
@@ -548,6 +542,7 @@ function LeaveEncashment() {
                             </h2>
                           </div>
                         </div>
+                        {console.log("leaveHistoryData", leaveHistoryData)}
 
                         <div
                           className="table-card-styled table-responsive tableOne mt-2"
