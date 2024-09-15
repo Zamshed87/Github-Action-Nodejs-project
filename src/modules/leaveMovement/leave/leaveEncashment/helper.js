@@ -83,7 +83,7 @@ export const demoPopupForDeleteNew = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.put(`/LeaveMovement/LeaveEncashmentDelete?LeaveEnaashmentId=${id}`);
+    const res = await axios.get(`/LeaveMovement/LeaveEncashmentDelete?LeaveEnaashmentId=${id}`);
     callback && callback();
     if(res?.data?.statusCode === 200){
       toast.success(res?.data?.message || "Submitted Successfully");
