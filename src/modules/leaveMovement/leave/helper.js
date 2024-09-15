@@ -1,4 +1,5 @@
 import axios from "axios";
+import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { toast } from "react-toastify";
 
 export const getEmployeeLeaveBalanceAndHistory = async (
@@ -6,12 +7,17 @@ export const getEmployeeLeaveBalanceAndHistory = async (
   viewType,
   setter,
   setLoading,
-  setAllData
+  setAllData,
+  year,
+  buId,
+  wgId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/LeaveMovement/GetEmployeeLeaveBalanceAndHistory?EmployeeId=${employeeId}&ViewType=${viewType}`
+      `/LeaveMovement/GetEmployeeLeaveBalanceAndHistory?EmployeeId=${employeeId}&ViewType=${viewType}&IntYear=${
+        year || currentYear()
+      }&WorkPlaceGroup=${wgId}&BusinessUnit=${buId}`
     );
     if (res?.data) {
       setter(res?.data);

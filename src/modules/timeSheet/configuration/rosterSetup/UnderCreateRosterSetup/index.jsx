@@ -2,7 +2,7 @@
 import { Edit } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -31,6 +31,7 @@ const initData = {
 export default function UnderCreateRosterSetup() {
   const history = useHistory();
   const params = useParams();
+  const location = useLocation();
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -146,6 +147,12 @@ export default function UnderCreateRosterSetup() {
   useEffect(() => {
     getData();
   }, [orgId, buId, params, wgId]);
+
+  useEffect(() => {
+    if (location?.state !== wgId) {
+      history.push(`/administration/timeManagement/rosterSetup`);
+    }
+  }, [wgId]);
 
   useEffect(() => {
     getPeopleDeskAllDDL(

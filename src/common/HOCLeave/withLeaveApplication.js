@@ -189,8 +189,7 @@ const withLeaveApplication = (WrappedComponent) => {
     };
 
     const getData = (empId, year) => {
-      console.log(empId, year);
-
+      
       PeopleDeskSaasDDL(
         "EmployeeLeaveType",
         wgId,

@@ -81,6 +81,7 @@ const EmployeeJobCard = () => {
       params: {
         accountId: orgId,
         workplaceId: 0,
+        businessUnitId:buId,
         employeeId: values?.employee?.value,
         isForPdf: false,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),

@@ -32,6 +32,7 @@ import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import CafeteriaPricingLanding from "modules/employeeProfile/cafeteriaPricingSetup";
 import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddEditForm";
 
+import YearlyTaxReturnReport from "modules/CompensationBenefits/reports/YearlyTaxReturnReport";
 import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/reports/monthlyAllowanceDeduction";
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
@@ -2253,6 +2254,10 @@ export const routingList = [
     component: LoanReportPrint,
   },
   {
+    path: "/compensationAndBenefits/leaveEncashment",
+    component: LeaveEncashment,
+  },
+  {
     path: "/SelfService/report/leaveHistory/print",
     component: LeaveReportPrint,
   },
@@ -2470,6 +2475,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/salary&AllowenceCostCenterReport",
     component: SalaryCostCenterReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/yearlyTaxReturnReport",
+    component: YearlyTaxReturnReport,
   },
   // increment/promotion start
   { path: "/compensationAndBenefits/increment", component: IncrementLanding },
