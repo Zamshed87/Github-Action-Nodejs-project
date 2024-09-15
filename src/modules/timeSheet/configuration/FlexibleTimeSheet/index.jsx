@@ -1,4 +1,6 @@
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { PForm } from "Components";
+import moment from "moment";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -14,9 +16,14 @@ const FlexibleTimeSheet = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Holiday Offday Setup</h1>
-    </div>
+    <PForm
+      initialValues={{
+        department: null,
+        supervisor: null,
+        fDate: moment(),
+        tDate: moment(),
+      }}
+    ></PForm>
   );
 };
 
