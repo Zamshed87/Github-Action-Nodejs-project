@@ -505,8 +505,8 @@ const MgmtDailyAttendance = () => {
         onFinish={() => {
           landingApiCall({
             pagination: {
-              current: landingApi?.data?.page,
-              pageSize: landingApi?.data?.totalCount,
+              current: landingApi?.data?.currentPage,
+              pageSize: landingApi?.data?.pageSize,
             },
           });
         }}
