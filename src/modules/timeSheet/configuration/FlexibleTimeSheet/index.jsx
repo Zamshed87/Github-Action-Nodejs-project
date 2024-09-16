@@ -154,7 +154,6 @@ const MonthlyAttendanceReport = () => {
     setRowDto(data);
   };
 
-  console.log("rowDto", rowDto);
 
   const handleSave = () => {
     console.log("rowDto", rowDto);
