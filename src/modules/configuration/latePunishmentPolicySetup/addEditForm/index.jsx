@@ -16,6 +16,8 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { Alert } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const AddEditForm = ({
   setIsAddEditForm,
@@ -29,8 +31,8 @@ const AddEditForm = ({
     container: {
       display: "flex",
       alignItems: "center",
-      backgroundColor: "#f0f0f0", // Light background for better visibility
-      padding: "5px 8px",
+      // backgroundColor: "#f0f0f0", // Light background for better visibility
+      // padding: "5px 6px",
       borderRadius: "10px",
       marginBottom: "5px",
       justifyContent: "space-between",
@@ -38,10 +40,10 @@ const AddEditForm = ({
     text: {
       margin: 0,
       fontSize: "12px",
-      color: "#333", // Darker text color for contrast
+      color: "black", // Darker text color for contrast
     },
     clearButton: {
-      fontSize: "16px",
+      fontSize: "14px",
       color: "#ff4d4f", // Red color for the delete icon
       cursor: "pointer",
     },
@@ -613,23 +615,33 @@ const AddEditForm = ({
           </Form.Item>
         </Row>
         {rowDto?.length > 0 && (
-          <Row className="ml-1">
-            <p className="my-3" style={{ fontWeight: "700" }}>
-              Priority Sequence{" "}
-            </p>
-
-            <div className="mx-2" style={styles.container}>
-              <p style={styles.text}>
-                {rowDto?.map((i) => i?.label).join(" => ")}
-              </p>
-              <Button
-                icon={<CloseOutlined />}
-                type="text"
-                onClick={clearRowDto}
-                style={styles.clearButton}
-              />
+          <Alert
+            icon={<InfoOutlinedIcon fontSize="inherit" />}
+            severity="warning"
+            style={{
+              width: "40rem",
+              // position: "sticky",
+              top: "1px",
+            }}
+          >
+            <div>
+              <div className="mb-3">
+                <h2>Priority Sequence</h2>
+              </div>
+              {/* <Divider orientation="left">Small Size</Divider> */}
+              <div className="" style={styles.container}>
+                <p style={styles.text}>
+                  {rowDto?.map((i) => i?.label).join(" => ")}
+                </p>
+                <Button
+                  icon={<CloseOutlined />}
+                  type="text"
+                  onClick={clearRowDto}
+                  style={styles.clearButton}
+                />
+              </div>
             </div>
-          </Row>
+          </Alert>
         )}
         <ModalFooter
           onCancel={() => {
