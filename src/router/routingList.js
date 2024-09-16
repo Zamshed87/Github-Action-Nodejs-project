@@ -43,6 +43,7 @@ import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import HolidayOffdaySetup from "modules/timeSheet/configuration/HolidayOffdaySetup";
+import LatePunishment from "modules/timeSheet/employeeAssign/latePunishment";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
@@ -1875,6 +1876,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/multiCalendarAssign",
     component: MultiCalendarAssign,
+  },
+  {
+    path: "/administration/configuration/latepunishmentassign",
+    component: LatePunishment,
   },
   {
     path: "/administration/timeManagement/holidayOffdaySwap/assign",

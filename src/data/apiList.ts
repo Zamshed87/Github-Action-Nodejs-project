@@ -178,4 +178,8 @@ export const apiList = {
     "/LatePunishmentPolicySetup/LatePunishmentPolicyLanding",
   DeleteLatePunishmentPolicy:
     "/LatePunishmentPolicySetup/DeleteLatePunishmentPolicy",
+  GetLatePunishmentPoliciesDdl:
+    "/AssignLatePunishmentPolicy/GetLatePunishmentPoliciesDdl",
+  AssignEmployeeToLatePunishmentPolicy:
+    "/AssignLatePunishmentPolicy/AssignEmployeeToLatePunishmentPolicy",
 };
