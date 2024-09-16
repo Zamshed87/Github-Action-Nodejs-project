@@ -612,9 +612,13 @@ const AddEditForm = ({
             }}
           </Form.Item>
         </Row>
-        <Row className="ml-1">
-          {rowDto?.length > 0 && (
-            <div style={styles.container}>
+        {rowDto?.length > 0 && (
+          <Row className="ml-1">
+            <p className="my-3" style={{ fontWeight: "700" }}>
+              Priority Sequence{" "}
+            </p>
+
+            <div className="mx-2" style={styles.container}>
               <p style={styles.text}>
                 {rowDto?.map((i) => i?.label).join(" => ")}
               </p>
@@ -625,8 +629,8 @@ const AddEditForm = ({
                 style={styles.clearButton}
               />
             </div>
-          )}
-        </Row>
+          </Row>
+        )}
         <ModalFooter
           onCancel={() => {
             setId("");
