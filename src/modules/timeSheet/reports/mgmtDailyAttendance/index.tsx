@@ -44,7 +44,7 @@ const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId, buName, wgName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -56,7 +56,7 @@ const MgmtDailyAttendance = () => {
 
   const landingApi = useApiRequest({});
 
-  const [, setFilterList] = useState({});
+  const [filters, setFilterList] = useState<any>({});
   const [buDetails, setBuDetails] = useState({});
   const [, setLoading] = useState({});
 
@@ -173,171 +173,6 @@ const MgmtDailyAttendance = () => {
     getWorkplaceGroup();
     landingApiCall();
   }, []);
-  //   const header: any = [
-  //     {
-  //       title: "SL",
-  //       render: (value: any, row: any, index: number) => index + 1,
-  //       align: "center",
-  //       width: 20,
-  //     },
-  //     {
-  //       title: "Workplace Group",
-  //       render: (value: any, row: any) => row?.workplaceGroup?.label,
-  //     },
-  //     {
-  //       title: "Workplace",
-  //       render: (value: any, row: any) => row?.workplace?.label,
-  //     },
-  //     {
-  //       title: "Designation",
-  //       render: (value: any, row: any) => row?.designation?.label,
-  //     },
-
-  //     {
-  //       title: "Own Contribution/Meal",
-  //       render: (value: any, row: any, index: number) =>
-  //         +id ? (
-  //           <>
-  //             <PInput
-  //               type="number"
-  //               // name={`OM_${index}`}
-  //               value={row?.ownContribution}
-  //               placeholder="Amount"
-  //               onPressEnter={(e: any) => {
-  //                 e.preventDefault();
-  //               }}
-  //               // disabled={true}
-  //               onChange={(e: any) => {
-  //                 handleIsPerDayChange(e, index, "ownContribution");
-  //                 handleIsPerDayChange(
-  //                   parseInt(
-  //                     `${
-  //                       row?.companyContribution
-  //                         ? e + +row?.companyContribution
-  //                         : e
-  //                     }`
-  //                   ),
-  //                   index,
-  //                   "TotalCost"
-  //                 );
-  //               }}
-  //             />
-  //           </>
-  //         ) : (
-  //           <>
-  //             <PInput
-  //               type="number"
-  //               name={`OM_${index}`}
-  //               // value={row?.ownContribution}
-  //               placeholder="Amount"
-  //               onPressEnter={(e: any) => {
-  //                 e.preventDefault();
-  //               }}
-  //               rules={[
-  //                 // { required: true, message: "Amount Is Required" },
-  //                 {
-  //                   validator: (_, value, callback) => {
-  //                     const ownMeal = parseFloat(value);
-
-  //                     if (isNaN(ownMeal)) {
-  //                       callback("Amount Is Required");
-  //                     } else if (ownMeal < 0) {
-  //                       callback("Cant be Negative");
-  //                     } else {
-  //                       callback();
-  //                     }
-  //                   },
-  //                 },
-  //               ]}
-  //               // disabled={true}
-  //               onChange={(e: any) => {
-  //                 handleIsPerDayChange(e, index, "ownContribution");
-  //                 handleIsPerDayChange(
-  //                   parseInt(
-  //                     `${
-  //                       row?.companyContribution
-  //                         ? e + +row?.companyContribution
-  //                         : e
-  //                     }`
-  //                   ),
-  //                   index,
-  //                   "TotalCost"
-  //                 );
-  //               }}
-  //             />
-  //           </>
-  //         ),
-  //     },
-
-  //     {
-  //       title: "Company Contribution/Meal",
-  //       render: (value: any, row: any, index: number) =>
-  //         +id ? (
-  //           <>
-  //             <PInput
-  //               type="number"
-  //               // name={`CCC_${index}`}
-  //               value={row?.companyContribution}
-  //               placeholder="Amount"
-  //               // disabled={true}
-  //               onPressEnter={(e: any) => {
-  //                 e.preventDefault();
-  //               }}
-  //               onChange={(e: any) => {
-  //                 handleIsPerDayChange(e, index, "companyContribution");
-
-  //                 handleIsPerDayChange(
-  //                   row?.ownContribution + e,
-  //                   index,
-  //                   "TotalCost"
-  //                 );
-  //               }}
-  //             />
-  //           </>
-  //         ) : (
-  //           <>
-  //             <PInput
-  //               type="number"
-  //               name={`CCC_${index}`}
-  //               placeholder="Amount"
-  //               rules={[
-  //                 // { required: true, message: "Amount Is Required" },
-  //                 {
-  //                   validator: (_, value, callback) => {
-  //                     const companyContribution = parseFloat(value);
-
-  //                     if (isNaN(companyContribution)) {
-  //                       callback("Amount Is Required");
-  //                     } else if (companyContribution < 0) {
-  //                       callback("Cant be Negative");
-  //                     } else {
-  //                       callback();
-  //                     }
-  //                   },
-  //                 },
-  //               ]}
-  //               onPressEnter={(e: any) => {
-  //                 e.preventDefault();
-  //               }}
-  //               // disabled={true}
-  //               onChange={(e: any) => {
-  //                 handleIsPerDayChange(e, index, "companyContribution");
-
-  //                 handleIsPerDayChange(
-  //                   row?.ownContribution + e,
-  //                   index,
-  //                   "TotalCost"
-  //                 );
-  //               }}
-  //             />
-  //           </>
-  //         ),
-  //     },
-  //     {
-  //       title: "Total Cost/Meal ",
-  //       render: (value: any, row: any) => row?.TotalCost,
-  //     },
-  //   ];
   const header: any = [
     {
       title: "SL",
@@ -501,6 +336,7 @@ const MgmtDailyAttendance = () => {
         form={form}
         initialValues={{
           date: moment(todayDate()),
+          workplaceGroup: { value: wgId, label: wgName },
         }}
         onFinish={() => {
           landingApiCall({
@@ -714,6 +550,15 @@ const MgmtDailyAttendance = () => {
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
+                                    const isFilter =
+                                      filters?.department?.length > 0 ||
+                                      filters?.calender?.length > 0 ||
+                                      filters?.actualStatus?.length > 0 ||
+                                      filters?.designation?.length > 0 ||
+                                      filters?.hrPosition?.length > 0 ||
+                                      filters?.manualStatus?.length > 0 ||
+                                      filters?.section?.length > 0;
+                                    console.log({ isFilter });
                                     const list = landingApi?.data?.data?.map(
                                       (item: any) => item?.employeeId
                                     );
@@ -730,7 +575,8 @@ const MgmtDailyAttendance = () => {
                                           : ""
                                       }${
                                         landingApi?.data?.data?.length !==
-                                        landingApi?.data?.totalCount
+                                          landingApi?.data?.totalCount ||
+                                        isFilter
                                           ? `&EmployeeIdList=${list}`
                                           : ""
                                       }${
