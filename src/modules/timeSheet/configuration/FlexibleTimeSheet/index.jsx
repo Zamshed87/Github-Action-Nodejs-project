@@ -1,5 +1,5 @@
 import { useApiRequest } from "Hooks";
-import { Avatar, Button, Col, Form, Row } from "antd";
+import { Avatar, Button, Col, Form, Input, Row } from "antd";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -24,6 +24,7 @@ import { debounce, values } from "lodash";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetSave } from "./helper";
+import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
 
 const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -94,27 +95,7 @@ const MonthlyAttendanceReport = () => {
       },
     });
   };
-
   const CommonCalendarDDL = useApiRequest([]);
-  const getCalendarDDL = () => {
-    CommonCalendarDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Calender",
-        IntWorkplaceId: wId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: 0, // employeeId, Previously set 0
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.CalenderName;
-          res[i].value = item?.CalenderId;
-        });
-      },
-    });
-  };
 
   // data call
   const landingApiCall = ({
@@ -132,13 +113,33 @@ const MonthlyAttendanceReport = () => {
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         strSearchName: searchText,
         intDepartmentIdList: [values?.department || 0],
+        intWorkplaceId: wId || 0,
+      },
+      onSuccess: (res) => {
+        CommonCalendarDDL?.action({
+          urlKey: "PeopleDeskAllDDL",
+          method: "GET",
+          params: {
+            DDLType: "Calender",
+            IntWorkplaceId: res?.[0]?.intWorkplaceId,
+            BusinessUnitId: buId,
+            WorkplaceGroupId: wgId,
+            intId: 0, // employeeId, Previously set 0
+          },
+          onSuccess: (res) => {
+            res.forEach((item, i) => {
+              res[i].label = item?.CalenderName;
+              res[i].value = item?.CalenderId;
+            });
+          },
+        });
       },
     });
   };
 
   useEffect(() => {
     isOfficeAdmin && getEmployeDepartment();
-    getCalendarDDL();
+    // getCalendarDDL();
   }, [wgId]);
 
   useEffect(() => {
@@ -169,7 +170,27 @@ const MonthlyAttendanceReport = () => {
 
   useEffect(() => {
     landingApiCall();
-  }, []);
+  }, [wgId, wId]);
+
+  // const getCalendarDDL = () => {
+  //   CommonCalendarDDL?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "Calender",
+  //       IntWorkplaceId: wId,
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: wgId,
+  //       intId: 0, // employeeId, Previously set 0
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item, i) => {
+  //         res[i].label = item?.CalenderName;
+  //         res[i].value = item?.CalenderId;
+  //       });
+  //     },
+  //   });
+  // };
 
   const handleSave = (rec) => {
     const allCalendarsSelected = rec?.dateLists?.every((item) => {
@@ -194,22 +215,25 @@ const MonthlyAttendanceReport = () => {
     // console.log(payload, "payload");
   };
 
-  // Generate dynamic columns for dateLists
- 
+
   const dateColumns = rowDto?.[0]?.dateLists.map((date, idx) => ({
     title: date?.level,
     dataIndex: date,
     render: (_, record, index) => {
-      const optionValue = record?.intCalenderId
+      const newDateLists = [...record?.dateLists];
+      const obj = newDateLists[idx] ||""
+  
+      const optionValue = obj?.intCalenderId
         ? {
-            value: record?.intCalenderId,
-            label: record?.strCalenderName,
+            value: obj?.intCalenderId,
+            label: obj?.strCalenderName,
           }
         : "";
+        console.log("optionValue", optionValue);
       const key = `${index}_${idx}_calendar`;
       return (
         <div>
-          <PSelect
+          <PSelectWithOutForm
             onClear={true}
             name={key}
             placeholder="Select Calendar"
@@ -219,7 +243,6 @@ const MonthlyAttendanceReport = () => {
             ]}
             value={optionValue}
             onChange={(value, op) => {
-              const newDateLists = [...record?.dateLists];
               newDateLists[idx] = {
                 ...newDateLists[idx],
                 intCalenderId: op?.value,
@@ -238,6 +261,18 @@ const MonthlyAttendanceReport = () => {
     },
     width: 150,
   }));
+
+  const handleInputChange = (e, record) => {
+
+    const values = form.getFieldsValue(true);
+    const payload = {
+      intSupervisorIdList: [values?.supervisor?.value],
+      dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
+      dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+      intEmployeeIdList: [0],
+      intCloneFrom: 0,
+    };
+  };
 
   //   table column
   const header = (rowDto) => {
@@ -270,7 +305,7 @@ const MonthlyAttendanceReport = () => {
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
-        width: 120,
+        width: 50,
         fixed: "left",
       },
 
@@ -298,8 +333,20 @@ const MonthlyAttendanceReport = () => {
       {
         title: "Department",
         dataIndex: "strDepartmentName",
-
         width: 100,
+      },
+      {
+        title: "Copy From (Emp ID)",
+        width: 100,
+        render: (text, record) => (
+          <PInput
+            type="text"
+            name={`empId-${record.key}`}
+            placeholder="Enter Emp ID"
+            value={record.intEmployeeId}
+            onChange={(value) => handleInputChange(value, record)}
+          />
+        ),
       },
       ...(dateColumns || []),
     ];
