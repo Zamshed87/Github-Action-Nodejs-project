@@ -54,7 +54,7 @@ const HolidayOffdaySwap = () => {
         PageSize: pagination?.pageSize,
       },
       onSuccess: (res) => {
-        setRowDto(res?.swapEmployeeHistoryDTO);
+        setRowDto(res?.swapEmployeeHistoryDto);
       },
     });
   };
