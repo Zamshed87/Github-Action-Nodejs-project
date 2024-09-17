@@ -23,7 +23,7 @@ import { gray600 } from "utility/customColor";
 import { debounce, values } from "lodash";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { timeSheetSave } from "./helper";
+import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
 
 const MonthlyAttendanceReport = () => {
@@ -52,8 +52,10 @@ const MonthlyAttendanceReport = () => {
   //   const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
+  const [headerDateList, setHeaderDateList] = useState([]);
   const [rowDto, setRowDto] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [emp, setEmp] = useState([]);
 
   const [pages, setPages] = useState({
     current: 1,
@@ -115,32 +117,13 @@ const MonthlyAttendanceReport = () => {
         intDepartmentIdList: [values?.department || 0],
         intWorkplaceId: wId || 0,
       },
-      onSuccess: (res) => {
-        CommonCalendarDDL?.action({
-          urlKey: "PeopleDeskAllDDL",
-          method: "GET",
-          params: {
-            DDLType: "Calender",
-            IntWorkplaceId: res?.[0]?.intWorkplaceId,
-            BusinessUnitId: buId,
-            WorkplaceGroupId: wgId,
-            intId: 0, // employeeId, Previously set 0
-          },
-          onSuccess: (res) => {
-            res.forEach((item, i) => {
-              res[i].label = item?.CalenderName;
-              res[i].value = item?.CalenderId;
-            });
-          },
-        });
-      },
     });
   };
 
   useEffect(() => {
     isOfficeAdmin && getEmployeDepartment();
-    // getCalendarDDL();
-  }, [wgId]);
+    getCalendarDDL();
+  }, []);
 
   useEffect(() => {
     if (landingApi?.data?.length > 0) {
@@ -165,32 +148,34 @@ const MonthlyAttendanceReport = () => {
       });
 
       setRowDto(modifiedRowDto);
+      setHeaderDateList(modifiedRowDto?.[0])
     }
   }, [landingApi?.data]);
 
+  const getCalendarDDL = () => {
+    CommonCalendarDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Calender",
+        IntWorkplaceId: wId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
+  };
   useEffect(() => {
     landingApiCall();
-  }, [wgId, wId]);
+  }, []);
 
-  // const getCalendarDDL = () => {
-  //   CommonCalendarDDL?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "Calender",
-  //       IntWorkplaceId: wId,
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: wgId,
-  //       intId: 0, // employeeId, Previously set 0
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item, i) => {
-  //         res[i].label = item?.CalenderName;
-  //         res[i].value = item?.CalenderId;
-  //       });
-  //     },
-  //   });
-  // };
+
 
   const handleSave = (rec) => {
     const allCalendarsSelected = rec?.dateLists?.every((item) => {
@@ -215,21 +200,18 @@ const MonthlyAttendanceReport = () => {
     // console.log(payload, "payload");
   };
 
-
-  const dateColumns = rowDto?.[0]?.dateLists.map((date, idx) => ({
+  const dateColumns = headerDateList?.dateLists?.map((date, idx) => ({
     title: date?.level,
     dataIndex: date,
     render: (_, record, index) => {
       const newDateLists = [...record?.dateLists];
-      const obj = newDateLists[idx] ||""
-  
+      const obj = newDateLists[idx] || "";
       const optionValue = obj?.intCalenderId
         ? {
             value: obj?.intCalenderId,
             label: obj?.strCalenderName,
           }
         : "";
-        console.log("optionValue", optionValue);
       const key = `${index}_${idx}_calendar`;
       return (
         <div>
@@ -262,22 +244,28 @@ const MonthlyAttendanceReport = () => {
     width: 150,
   }));
 
-  const handleInputChange = (e, record) => {
-
+  const handleButtonClick = (record, rowIdx) => {
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [values?.supervisor?.value],
       dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
       dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-      intEmployeeIdList: [0],
-      intCloneFrom: 0,
+      intEmployeeIdList: [record?.intEmployeeId],
+      intCloneFrom: +emp || 0,
     };
+    timeSheetClone(payload, setLoading, (resData) => {
+      const cloneEmpRow  =  resData?.[0] || [];
+      const copyPrvRowDto = [...rowDto];
+      copyPrvRowDto[rowIdx] = {
+        ...copyPrvRowDto[rowIdx],
+        dateLists: cloneEmpRow?.dateLists,
+      }
+      setRowDto(copyPrvRowDto);
+    });
   };
 
   //   table column
-  const header = (rowDto) => {
-    const values = form.getFieldsValue(true);
-
+  const header = () => {
     return [
       {
         title: "Action",
@@ -337,15 +325,32 @@ const MonthlyAttendanceReport = () => {
       },
       {
         title: "Copy From (Emp ID)",
-        width: 100,
-        render: (text, record) => (
-          <PInput
-            type="text"
-            name={`empId-${record.key}`}
-            placeholder="Enter Emp ID"
-            value={record.intEmployeeId}
-            onChange={(value) => handleInputChange(value, record)}
-          />
+        width: 250,
+        render: (text, record, rowIdx) => (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <PInput
+              type="text"
+              name={`empId-${record.key}`}
+              placeholder="Enter Emp ID"
+              value={record.intEmployeeId}
+              onChange={(e) => setEmp(e.target.value)}
+            />
+            <button
+            type="button"
+              onClick={() => handleButtonClick(record, rowIdx)}
+              style={{
+                marginLeft: "10px",
+                padding: "5px 10px",
+                backgroundColor: "#34a853",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Clone
+            </button>
+          </div>
         ),
       },
       ...(dateColumns || []),
@@ -456,7 +461,7 @@ const MonthlyAttendanceReport = () => {
             bordered
             data={rowDto?.length > 0 ? rowDto : []}
             loading={landingApi?.loading}
-            header={header(rowDto)}
+            header={header(headerDateList)}
             pagination={{
               pageSize: pages?.pageSize,
               total: rowDto[0]?.totalCount,
