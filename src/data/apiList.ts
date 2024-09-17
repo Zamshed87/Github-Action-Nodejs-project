@@ -11,6 +11,12 @@ export const apiList = {
     "/SaasMasterData/GetBusinessDetailsByBusinessUnitId",
   DatewiseCalanderForEmployee: "/Employee/DatewiseCalanderForEmployee",
   PeopleDeskAllDDL: "/PeopleDeskDDL/PeopleDeskAllDDL",
+  LatePunishmentPolicyCreate:
+    "LatePunishmentPolicySetup/CreateLatePunishmentPolicy",
+  LatePunishmentPolicyUpdate:
+    "LatePunishmentPolicySetup/UpdateLatePunishmentPolicy",
+  LatePunishmentPolicyGetBy:
+    "LatePunishmentPolicySetup/LatePunishmentPolicyGetById",
   GetEmployeeDivision: "/SaasMasterData/GetEmployeeDivision",
   SaveEmployeeDivision: "/SaasMasterData/SaveEmployeeDivision",
   AccountWiseGetOverTimeConfig: "/Payroll/AccountWiseGetOverTimeConfig",
@@ -161,4 +167,19 @@ export const apiList = {
     "/Employee/CommonEmployeeDDLForActiveInactive",
   SupervirorDashboardLanding: "/Dashboard/MidLevelDashboard",
   JobCardLandingNPDF: "/PdfAndExcelReport/GetJobCardAllReports",
+
+  UpdateLatePunishmentPolicy:
+    "/LatePunishmentPolicySetup/UpdateLatePunishmentPolicy",
+  LatePunishmentPolicyGetById:
+    "/LatePunishmentPolicySetup/LatePunishmentPolicyGetById",
+  CreateLatePunishmentPolicy:
+    "/LatePunishmentPolicySetup/CreateLatePunishmentPolicy",
+  LatePunishmentPolicyLanding:
+    "/LatePunishmentPolicySetup/LatePunishmentPolicyLanding",
+  DeleteLatePunishmentPolicy:
+    "/LatePunishmentPolicySetup/DeleteLatePunishmentPolicy",
+  GetLatePunishmentPoliciesDdl:
+    "/AssignLatePunishmentPolicy/GetLatePunishmentPoliciesDdl",
+  AssignEmployeeToLatePunishmentPolicy:
+    "/AssignLatePunishmentPolicy/AssignEmployeeToLatePunishmentPolicy",
 };
