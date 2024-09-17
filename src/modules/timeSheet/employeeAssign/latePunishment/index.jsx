@@ -120,7 +120,7 @@ const LatePunishment = () => {
                   ) : (
                     <h6 className="count">
                       {" "}
-                      Total {rowDto?.length > 0 ? pages.total : 0} Employees
+                      Total {rowDto?.length > 0 ? pages?.total : 0} Employees
                     </h6>
                   )}
                 </div>
@@ -179,7 +179,7 @@ const LatePunishment = () => {
                               setOpen(true);
                             }}
                           >
-                            Assign {pages.total}
+                            Assign {rowDto?.length}
                           </button>
                           {rowDto?.filter((item) => item?.isSelected).length >
                           0 ? (
@@ -198,7 +198,7 @@ const LatePunishment = () => {
                                   );
 
                                 let payload = [];
-                                rowDto?.forEach((item) => {
+                                checkedList?.forEach((item) => {
                                   if (item?.isSelected) {
                                     payload.push(item?.employeeId);
                                   }
@@ -562,6 +562,7 @@ const LatePunishment = () => {
                 }}
                 empIDString={empIDString}
                 setIsAddEditForm={setOpen}
+                setCheckedList={setCheckedList}
               />
             </>
           }

@@ -21,6 +21,7 @@ const AddEditForm = ({
   getData,
   empIDString,
   singleData,
+  setCheckedList,
 }) => {
   const dispatch = useDispatch();
 
@@ -34,6 +35,7 @@ const AddEditForm = ({
       resetForm();
       setIsAddEditForm(false);
       getData();
+      setCheckedList([]);
     };
     const payload = {
       latePunishmentPolicyId: values?.policy?.value,
