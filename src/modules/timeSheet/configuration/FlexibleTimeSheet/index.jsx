@@ -20,9 +20,10 @@ import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { fromToDateList } from "utility/createExcel";
 import { gray600 } from "utility/customColor";
-import { debounce } from "lodash";
+import { debounce, values } from "lodash";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { timeSheetSave } from "./helper";
 
 const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const MonthlyAttendanceReport = () => {
 
   const [, setFilterList] = useState({});
   const [rowDto, setRowDto] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [pages, setPages] = useState({
     current: 1,
@@ -137,62 +139,109 @@ const MonthlyAttendanceReport = () => {
   useEffect(() => {
     isOfficeAdmin && getEmployeDepartment();
     getCalendarDDL();
-  }, []);
+  }, [wgId]);
 
-  const updateRowDto = (fieldName, value, index) => {
-    const data = [...rowDto]; // Clone the current state of rowDto
+  useEffect(() => {
+    if (landingApi?.data?.length > 0) {
+      const modifiedRowDto = landingApi?.data?.map((i) => {
+        const modifiedDateLists = i?.dateLists?.map((item) => {
+          const newDate = moment(item?.dteAttendencedate).format("YYYY-MM-DD");
+          const dateLevel = moment(
+            item?.dteAttendencedate,
+            "YYYY-MM-DD"
+          ).format("DD MMM, YYYY");
 
-    // Ensure the row at the given index is initialized
-    if (!data[index]) {
-      data[index] = {}; // Initialize as an empty object if it doesn't exist
+          return {
+            ...item,
+            date: newDate,
+            level: dateLevel,
+          };
+        });
+        return {
+          ...i,
+          dateLists: modifiedDateLists,
+        };
+      });
+
+      setRowDto(modifiedRowDto);
     }
-
-    // Set the field and value for the corresponding index
-    data[index][fieldName] = value;
-
-    // Update the state with the modified data
-    setRowDto(data);
-  };
-
-
-  const handleSave = () => {
-    console.log("rowDto", rowDto);
-  };
+  }, [landingApi?.data]);
 
   useEffect(() => {
     landingApiCall();
   }, []);
+
+  const handleSave = (rec) => {
+    const allCalendarsSelected = rec?.dateLists?.every((item) => {
+      return item?.strCalenderName;
+    });
+    if (!allCalendarsSelected) {
+      return toast.warn("Please select all calendar names before saving.");
+    }
+
+    const payload = rec?.dateLists?.map((item) => {
+      return {
+        intEmployeeId: rec?.intEmployeeId || 0,
+        dteAttendencedate: item?.dteAttendencedate,
+        strType:
+          item?.strCalenderName === "Offday" ? "Offday" : "Calendar" || "",
+        intCalenderId:
+          item?.strCalenderName === "Offday" ? 174 : item?.intCalenderId || 0,
+      };
+    });
+
+    timeSheetSave(payload, setLoading, () => {});
+    // console.log(payload, "payload");
+  };
+
+  // Generate dynamic columns for dateLists
+ 
+  const dateColumns = rowDto?.[0]?.dateLists.map((date, idx) => ({
+    title: date?.level,
+    dataIndex: date,
+    render: (_, record, index) => {
+      const optionValue = record?.intCalenderId
+        ? {
+            value: record?.intCalenderId,
+            label: record?.strCalenderName,
+          }
+        : "";
+      const key = `${index}_${idx}_calendar`;
+      return (
+        <div>
+          <PSelect
+            onClear={true}
+            name={key}
+            placeholder="Select Calendar"
+            options={[
+              { value: 0, label: "Offday" },
+              ...(CommonCalendarDDL?.data || []),
+            ]}
+            value={optionValue}
+            onChange={(value, op) => {
+              const newDateLists = [...record?.dateLists];
+              newDateLists[idx] = {
+                ...newDateLists[idx],
+                intCalenderId: op?.value,
+                strCalenderName: op?.label,
+              };
+              const newRowDto = [...rowDto];
+              newRowDto[index] = {
+                ...newRowDto[index],
+                dateLists: newDateLists,
+              };
+              setRowDto(newRowDto);
+            }}
+          />
+        </div>
+      );
+    },
+    width: 150,
+  }));
+
   //   table column
-  const header = (updateRowDto, rowDto) => {
+  const header = (rowDto) => {
     const values = form.getFieldsValue(true);
-    const dateList = fromToDateList(
-      moment(values?.fromDate).format("YYYY-MM-DD"),
-      moment(values?.toDate).format("YYYY-MM-DD")
-    );
-    const d =
-      dateList?.length > 0 &&
-      dateList.map((item, idx) => ({
-        title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
-        render: (_, record, index) => { 
-          const key = `${index}_${idx}_calendar`;
-          return (
-          <div>
-            <PSelect
-              onClear={true}
-              name={key}
-              placeholder="Select Calendar"
-              options={CommonCalendarDDL?.data || []}
-              value={rowDto[key] || null} // Set value dynamically based on the state
-              onChange={(value, op) => {
-                updateRowDto(key, op, idx);
-                updateRowDto("isAdditionalCalendar", true, idx);
-                updateRowDto("additionalCalendarId", value, idx);
-              }}
-            />
-          </div>
-        )},
-        width: 200,
-      }));
 
     return [
       {
@@ -236,7 +285,7 @@ const MonthlyAttendanceReport = () => {
             </div>
           );
         },
-        fixed: "left",
+        // fixed: "left",
         width: 150,
       },
 
@@ -252,7 +301,7 @@ const MonthlyAttendanceReport = () => {
 
         width: 100,
       },
-      ...(d || []),
+      ...(dateColumns || []),
     ];
   };
   const searchFunc = debounce((value) => {
@@ -358,12 +407,12 @@ const MonthlyAttendanceReport = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={rowDto?.length > 0 ? rowDto : []}
             loading={landingApi?.loading}
-            header={header(updateRowDto, rowDto)}
+            header={header(rowDto)}
             pagination={{
               pageSize: pages?.pageSize,
-              total: landingApi?.data[0]?.totalCount,
+              total: rowDto[0]?.totalCount,
             }}
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
