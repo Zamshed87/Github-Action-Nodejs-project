@@ -37,11 +37,13 @@ import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/report
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
+import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import FlexibleTimeSheet from "modules/timeSheet/configuration/FlexibleTimeSheet";
+import LatePunishment from "modules/timeSheet/employeeAssign/latePunishment";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
@@ -1876,6 +1878,10 @@ export const routingList = [
     component: MultiCalendarAssign,
   },
   {
+    path: "/administration/configuration/latepunishmentassign",
+    component: LatePunishment,
+  },
+  {
     path: "/administration/timeManagement/holidayOffdaySwap/assign",
     component: HolidayOffdaySwapAssign,
   },
@@ -3061,6 +3067,10 @@ export const routingList = [
   {
     path: "/test/submission",
     component: SubmissionDetails,
+  },
+  {
+    path: "/administration/configuration/latepunishmentpolicy",
+    component: LatePunishmentPolicy,
   },
   // Trainnning and development ends
 
