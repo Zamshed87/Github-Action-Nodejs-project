@@ -112,7 +112,9 @@ const MonthlyAttendanceReport = () => {
       urlKey: "FlexibleTimesheetEmployeeLanding",
       method: "POST",
       payload: {
-        intSupervisorIdList: [values?.supervisor?.value || values?.supervisor || 0],
+        intSupervisorIdList: [
+          values?.supervisor?.value || values?.supervisor || 0,
+        ],
         dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         strSearchName: searchText,
@@ -220,11 +222,12 @@ const MonthlyAttendanceReport = () => {
             name={key}
             placeholder="Select Calendar"
             options={[
-              { value: 0, label: "Offday" },
+              { value: 1, label: "Offday" },
               ...(CommonCalendarDDL?.data || []),
             ]}
             value={optionValue}
             onChange={(value, op) => {
+              console.log("Selected value:", value, "Selected option:", op);
               newDateLists[idx] = {
                 ...newDateLists[idx],
                 intCalenderId: op?.value,
@@ -247,7 +250,9 @@ const MonthlyAttendanceReport = () => {
   const handleButtonClick = (record, rowIdx) => {
     const values = form.getFieldsValue(true);
     const payload = {
-      intSupervisorIdList: [values?.supervisor?.value || values?.supervisor || 0],
+      intSupervisorIdList: [
+        values?.supervisor?.value || values?.supervisor || 0,
+      ],
       dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
       dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
       intEmployeeIdList: [record?.intEmployeeId],
