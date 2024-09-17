@@ -1,11 +1,9 @@
 import { useApiRequest } from "Hooks";
-import { Avatar, Button, Col, Form, Input, Row } from "antd";
+import { Avatar, Button, Col, Form, Row } from "antd";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
 import {
   DataTable,
   PButton,
@@ -18,9 +16,7 @@ import {
 } from "Components";
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { fromToDateList } from "utility/createExcel";
-import { gray600 } from "utility/customColor";
-import { debounce, values } from "lodash";
+import { debounce } from "lodash";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
@@ -30,15 +26,7 @@ const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: {
-      buId,
-      wgId,
-      employeeId,
-      orgId,
-      wId,
-      isOfficeAdmin,
-      userName,
-    },
+    profileData: { buId, wgId, employeeId, wId, isOfficeAdmin, userName },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -97,6 +85,20 @@ const MonthlyAttendanceReport = () => {
       },
     });
   };
+
+  const getSupervisorListDDL = useApiRequest([]);
+  const getSuperUserList = () => {
+    const values = form.getFieldsValue(true);
+    getSupervisorListDDL?.action({
+      urlKey: "getSupervisorListDDL",
+      method: "GET",
+      params: {
+        intDepartmentId: values?.department || 0,
+        intWorkplaceId: wId,
+      },
+    });
+  };
+
   const CommonCalendarDDL = useApiRequest([]);
 
   // data call
@@ -110,7 +112,7 @@ const MonthlyAttendanceReport = () => {
       urlKey: "FlexibleTimesheetEmployeeLanding",
       method: "POST",
       payload: {
-        intSupervisorIdList: [values?.supervisor?.value],
+        intSupervisorIdList: [values?.supervisor?.value || values?.supervisor || 0],
         dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         strSearchName: searchText,
@@ -148,7 +150,7 @@ const MonthlyAttendanceReport = () => {
       });
 
       setRowDto(modifiedRowDto);
-      setHeaderDateList(modifiedRowDto?.[0])
+      setHeaderDateList(modifiedRowDto?.[0]);
     }
   }, [landingApi?.data]);
 
@@ -174,8 +176,6 @@ const MonthlyAttendanceReport = () => {
   useEffect(() => {
     landingApiCall();
   }, []);
-
-
 
   const handleSave = (rec) => {
     const allCalendarsSelected = rec?.dateLists?.every((item) => {
@@ -247,19 +247,19 @@ const MonthlyAttendanceReport = () => {
   const handleButtonClick = (record, rowIdx) => {
     const values = form.getFieldsValue(true);
     const payload = {
-      intSupervisorIdList: [values?.supervisor?.value],
+      intSupervisorIdList: [values?.supervisor?.value || values?.supervisor || 0],
       dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
       dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
       intEmployeeIdList: [record?.intEmployeeId],
       intCloneFrom: +emp || 0,
     };
     timeSheetClone(payload, setLoading, (resData) => {
-      const cloneEmpRow  =  resData?.[0] || [];
+      const cloneEmpRow = resData?.[0] || [];
       const copyPrvRowDto = [...rowDto];
       copyPrvRowDto[rowIdx] = {
         ...copyPrvRowDto[rowIdx],
         dateLists: cloneEmpRow?.dateLists,
-      }
+      };
       setRowDto(copyPrvRowDto);
     });
   };
@@ -336,7 +336,7 @@ const MonthlyAttendanceReport = () => {
               onChange={(e) => setEmp(e.target.value)}
             />
             <button
-            type="button"
+              type="button"
               onClick={() => handleButtonClick(record, rowIdx)}
               style={{
                 marginLeft: "10px",
@@ -397,7 +397,7 @@ const MonthlyAttendanceReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={12} xs={24} className="d-none">
+              <Col md={6} sm={12} xs={24}>
                 {isOfficeAdmin && (
                   <PSelect
                     options={empDepartmentDDL?.data || []}
@@ -405,17 +405,23 @@ const MonthlyAttendanceReport = () => {
                     label="Department"
                     placeholder="Select Department"
                     style={{ width: "300px" }}
-                    onSelect={(value, op) => {}}
+                    onSelect={(value, op) => {
+                      getSuperUserList();
+
+                      form.setFieldsValue({
+                        supervisor: "",
+                      });
+                    }}
                   />
                 )}
               </Col>
               <Col md={6} sm={12} xs={24}>
                 <PSelect
-                  options={[{ label: userName, value: employeeId }]}
+                  options={getSupervisorListDDL?.data || []}
                   name="supervisor"
                   label="Supervisor"
                   style={{ width: "300px" }}
-                  disabled="true"
+                  disabled={!isOfficeAdmin}
                   onSelect={(value, op) => {}}
                 />
               </Col>
