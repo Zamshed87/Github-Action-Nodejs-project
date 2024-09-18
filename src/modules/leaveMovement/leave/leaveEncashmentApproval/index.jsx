@@ -3,6 +3,7 @@
 import {
   Cancel,
   CheckCircle,
+  EditOutlined,
   InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
@@ -10,10 +11,19 @@ import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { getAllLeaveApplicatonListDataForApproval, leaveEncashmenApproveReject } from "./helper";
+import {
+  getAllLeaveApplicatonListDataForApproval,
+  leaveEncashmenApproveReject,
+} from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import FormikCheckBox from "common/FormikCheckbox";
-import { blackColor90, failColor, gray900, greenColor, successColor } from "utility/customColor";
+import {
+  blackColor90,
+  failColor,
+  gray900,
+  greenColor,
+  successColor,
+} from "utility/customColor";
 import AvatarComponent from "common/AvatarComponent";
 import { LightTooltip } from "common/LightTooltip";
 import Chips from "common/Chips";
@@ -30,7 +40,6 @@ import PopOverMasterFilter from "common/PopoverMasterFilter";
 import FilterModal from "../approval/component/FilterModal";
 import IConfirmModal from "common/IConfirmModal";
 import { dateFormatter } from "utility/dateFormatter";
-
 
 const initData = {
   searchString: "",
@@ -54,8 +63,10 @@ export default function LeaveEncashmentApproval() {
     value: 1,
     label: "Pending",
   });
-  
-  const [leaveEncashmentApplication, setLeaveEncashmentApplication] = useState([]);
+
+  const [leaveEncashmentApplication, setLeaveEncashmentApplication] = useState(
+    []
+  );
   const [applicationData, setApplicationData] = useState([]);
   const [viewModal, setViewModal] = useState(false);
   const [imageFile] = useState("");
@@ -77,6 +88,9 @@ export default function LeaveEncashmentApproval() {
   useEffect(() => {
     const array = [];
     filterData?.listData?.forEach((data) => {
+      if (data?.selectCheckbox === undefined) {
+        data.selectCheckbox = false;
+      }
       if (data?.selectCheckbox) {
         array.push({
           applicationId: data?.leaveEncashmentApplication?.intEncashmentId,
@@ -334,19 +348,22 @@ export default function LeaveEncashmentApproval() {
                   filterData?.listData?.every((item) => item?.selectCheckbox)
                 }
                 onChange={(e) => {
+                  const isChecked = e.target.checked;
                   setLeaveEncashmentApplication({
-                    listData: leaveEncashmentApplication?.listData?.map((item) => ({
-                      ...item,
-                      selectCheckbox: e.target.checked,
-                    })),
+                    listData: leaveEncashmentApplication?.listData?.map(
+                      (item) => ({
+                        ...item,
+                        selectCheckbox: isChecked,
+                      })
+                    ),
                   });
                   setFilterData({
                     listData: filterData?.listData?.map((item) => ({
                       ...item,
-                      selectCheckbox: e.target.checked,
+                      selectCheckbox: isChecked,
                     })),
                   });
-                  setFieldValue("allSelected", e.target.checked);
+                  setFieldValue("allSelected", isChecked);
                 }}
               />
             </div>
@@ -369,19 +386,20 @@ export default function LeaveEncashmentApproval() {
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
                   e.stopPropagation();
-                  const leaveAppData = leaveEncashmentApplication?.listData?.map(
-                    (item) => {
+                  const isChecked = e.target.checked;
+                  const leaveAppData =
+                    leaveEncashmentApplication?.listData?.map((item) => {
                       if (
                         item?.leaveEncashmentApplication?.intEncashmentId ===
                         record?.leaveEncashmentApplication?.intEncashmentId
                       ) {
                         return {
                           ...item,
-                          selectCheckbox: e.target.checked,
+                          selectCheckbox: isChecked,
                         };
                       } else return item;
-                    }
-                  );
+                    });
+                    console.log("filterData", filterData);
                   const data = filterData?.listData?.map((item) => {
                     if (
                       item?.leaveEncashmentApplication?.intEncashmentId ===
@@ -389,11 +407,14 @@ export default function LeaveEncashmentApproval() {
                     ) {
                       return {
                         ...item,
-                        selectCheckbox: e.target.checked,
+                        selectCheckbox: isChecked,
                       };
                     } else return item;
                   });
-                  setLeaveEncashmentApplication({ listData: [...leaveAppData] });
+                  setLeaveEncashmentApplication({
+                    listData: [...leaveAppData],
+                  });
+                  console.log("data", data);
                   setFilterData({ listData: [...data] });
                 }}
               />
@@ -480,60 +501,43 @@ export default function LeaveEncashmentApproval() {
             </LightTooltip>
             <div className="ml-2">
               {leaveType}{" "}
-              {record?.leaveEncashmentApplication?.isHalfDay ? "(Half Day)" : ""}
+              {record?.leaveEncashmentApplication?.isHalfDay
+                ? "(Half Day)"
+                : ""}
             </div>
-
           </div>
         ),
         filter: true,
         sorter: true,
       },
       {
-        title: "Main Days",
-        dataIndex: "intMainBalanceEncashmentDays",
-        render: (data, record) => (
-          <div>{record?.leaveEncashmentApplication?.intMainBalanceEncashmentDays?.toFixed(2) || 0} </div>
-        ),
-        sorter: false,
-        filter: false,
-        isNumber: true,
-      },
-      {
-        title: "Carry Days",
-        dataIndex: "intCarryBalanceEncashmentDays",
-        render: (data, record) => (
-          <div>{record?.leaveEncashmentApplication?.intCarryBalanceEncashmentDays?.toFixed(2) || 0} </div>
-        ),
-        sorter: false,
-        filter: false,
-        isNumber: true,
-      },
-      {
         title: "Effective Date",
-        render: (_,record) => (
+        render: (_, record) => (
           <div className="d-flex align-items-center">
-            <div>{dateFormatter(record?.leaveEncashmentApplication?.dteEffectiveDate)}</div>
+            <div>
+              {dateFormatter(
+                record?.leaveEncashmentApplication?.dteEffectiveDate
+              )}
+            </div>
           </div>
         ),
         filter: false,
         sorter: false,
       },
 
-      // {
-      //   title: "Remarks",
-      //   dataIndex: "strApprovalRemarks",
-      //   render: (_, record) => (
-      //     <div className="d-flex align-items-center">
-      //       <div>
-      //         {record?.leaveEncashmentApplication?.strApprovalRemarks}
-      //       </div>
-      //     </div>
-      //   ),
-     
-      //   filter: false,
-      //   sorter: false,
-      //   width: "130px",
-      // },
+      {
+        title: "Remarks",
+        dataIndex: "strApprovalRemarks",
+        render: (_, record) => (
+          <div className="d-flex align-items-center">
+            <div>{record?.leaveEncashmentApplication?.strApprovalRemarks}</div>
+          </div>
+        ),
+
+        filter: false,
+        sorter: false,
+        width: "130px",
+      },
       {
         title: "Waiting Stage",
         dataIndex: "waitingStage",
@@ -692,11 +696,13 @@ export default function LeaveEncashmentApproval() {
                           />
                           {permission?.isCreate ? (
                             <div className="table-card-styled table-responsive tableOne">
-                              {leaveEncashmentApplication?.listData?.length > 0 ? (
+                              {leaveEncashmentApplication?.listData?.length >
+                              0 ? (
                                 <>
                                   <AntTable
                                     data={
-                                      leaveEncashmentApplication?.listData?.length > 0
+                                      leaveEncashmentApplication?.listData
+                                        ?.length > 0
                                         ? leaveEncashmentApplication?.listData
                                         : []
                                     }
@@ -712,7 +718,8 @@ export default function LeaveEncashmentApproval() {
                                     setPage={setPage}
                                     setPaginationSize={setPaginationSize}
                                     rowKey={(record) =>
-                                      record?.leaveEncashmentApplication?.intEncashmentId
+                                      record?.leaveEncashmentApplication
+                                        ?.intEncashmentId
                                     }
                                     onRowClick={(record) => {
                                       setApplicationId(
@@ -765,13 +772,11 @@ export default function LeaveEncashmentApproval() {
                 </PopOverMasterFilter>
 
                 {/* View Form Modal */}
-               
               </div>
             </Form>
           </>
         )}
       </Formik>
-     
     </>
   );
 }

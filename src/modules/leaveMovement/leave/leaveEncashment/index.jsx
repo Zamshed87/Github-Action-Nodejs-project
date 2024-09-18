@@ -149,7 +149,7 @@ function LeaveEncashment() {
       getData(values?.employee?.value, values?.year?.value);
       setSingleData("");
       setIsEdit(false);
-      cb();
+      // cb();
     };
     const payload = {
       intEncashmentId: singleData ? singleData?.intEncashmentId || 0 : 0,
@@ -361,6 +361,7 @@ function LeaveEncashment() {
 
   return (
     <>
+    {loading && <Loading />}
       <Formik
         enableReinitialize={true}
         initialValues={{
