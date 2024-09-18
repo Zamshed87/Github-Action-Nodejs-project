@@ -3,7 +3,6 @@
 import {
   Cancel,
   CheckCircle,
-  EditOutlined,
   InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
@@ -490,6 +489,26 @@ export default function LeaveEncashmentApproval() {
         sorter: true,
       },
       {
+        title: "Main Days",
+        dataIndex: "intMainBalanceEncashmentDays",
+        render: (data, record) => (
+          <div>{record?.leaveEncashmentApplication?.intMainBalanceEncashmentDays?.toFixed(2) || 0} </div>
+        ),
+        sorter: false,
+        filter: false,
+        isNumber: true,
+      },
+      {
+        title: "Carry Days",
+        dataIndex: "intCarryBalanceEncashmentDays",
+        render: (data, record) => (
+          <div>{record?.leaveEncashmentApplication?.intCarryBalanceEncashmentDays?.toFixed(2) || 0} </div>
+        ),
+        sorter: false,
+        filter: false,
+        isNumber: true,
+      },
+      {
         title: "Effective Date",
         render: (_,record) => (
           <div className="d-flex align-items-center">
@@ -500,21 +519,21 @@ export default function LeaveEncashmentApproval() {
         sorter: false,
       },
 
-      {
-        title: "Remarks",
-        dataIndex: "strApprovalRemarks",
-        render: (_, record) => (
-          <div className="d-flex align-items-center">
-            <div>
-              {record?.leaveEncashmentApplication?.strApprovalRemarks}
-            </div>
-          </div>
-        ),
+      // {
+      //   title: "Remarks",
+      //   dataIndex: "strApprovalRemarks",
+      //   render: (_, record) => (
+      //     <div className="d-flex align-items-center">
+      //       <div>
+      //         {record?.leaveEncashmentApplication?.strApprovalRemarks}
+      //       </div>
+      //     </div>
+      //   ),
      
-        filter: false,
-        sorter: false,
-        width: "130px",
-      },
+      //   filter: false,
+      //   sorter: false,
+      //   width: "130px",
+      // },
       {
         title: "Waiting Stage",
         dataIndex: "waitingStage",

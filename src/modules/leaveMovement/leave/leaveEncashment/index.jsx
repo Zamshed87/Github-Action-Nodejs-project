@@ -144,6 +144,7 @@ function LeaveEncashment() {
   }, []);
 
   const demoPopup = (action, values, cb) => {
+    console.log("values", values);  
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
       setSingleData("");
@@ -203,7 +204,6 @@ function LeaveEncashment() {
     }
   });
   const demoPopupForDelete = (item, values) => {
-    console.log("item", item);
 
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
@@ -311,31 +311,35 @@ function LeaveEncashment() {
         className: "text-center",
         render: (data, record) => (
           <div className="d-flex justify-content-center">
-            {record?.strStatus === "Pending" && (
+            {/* {record?.strStatus === "Pending" && (
               <Tooltip title="Edit" arrow>
                 <button className="iconButton" type="button">
                   <EditOutlined
                     onClick={(e) => {
+                      console.log("record", record);
                       setIsEdit(true);
                       e.stopPropagation();
                       scrollRef.current.scrollIntoView({
                         behavior: "smooth",
                       });
                       setSingleData(record);
-                      console.log("record", record);
                       setValues({
                         ...values,
                         applicationDate: dateFormatterForInput(
                           record?.dteEffectiveDate
                         ),
-                        days: record?.intEncashmentDays,
-                        hour: (record?.intEncashmentDays * 8)?.toFixed(2) || 0,
+                        leaveType: {
+                          value: record?.intLeaveTypeId,
+                          label: record?.strLeaveType,
+                        },
+                        mainBalance: record?.intMainBalanceEncashmentDays,
+                        carryBalance: record?.intCarryBalanceEncashmentDays,
                       });
                     }}
                   />
                 </button>
               </Tooltip>
-            )}
+            )} */}
             {record?.strStatus === "Pending" && (
               <Tooltip title="Delete" arrow>
                 <button type="button" className="iconButton">
