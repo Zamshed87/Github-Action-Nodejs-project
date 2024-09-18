@@ -23,6 +23,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
 import Loading from "common/loading/Loading";
+import { getPeopleDeskAllDDL } from "common/api";
 
 const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,9 @@ const MonthlyAttendanceReport = () => {
   const [rowDto, setRowDto] = useState([]);
   const [loading, setLoading] = useState(false);
   const [emp, setEmp] = useState([]);
+  const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
+  const [selectedRoaster, setSelectedRoaster] = useState(null);
+  const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
 
   const [pages, setPages] = useState({
     current: 1,
@@ -129,6 +133,12 @@ const MonthlyAttendanceReport = () => {
     isOfficeAdmin && getEmployeDepartment();
     getCalendarDDL();
     getSuperUserList();
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RosterGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
+      "RosterGroupId",
+      "RosterGroupName",
+      setCalenderRoasterDDL
+    );
   }, [wgId, buId, wId]);
 
   useEffect(() => {
@@ -232,7 +242,9 @@ const MonthlyAttendanceReport = () => {
             allowClear
             options={[
               { value: 1, label: "Offday" },
-              ...(CommonCalendarDDL?.data || []),
+              ...(startingCalenderDDL?.length > 0
+                ? startingCalenderDDL
+                : CommonCalendarDDL?.data || []),
             ]}
             value={optionValue}
             onChange={(value, op) => {
@@ -256,9 +268,11 @@ const MonthlyAttendanceReport = () => {
   }));
 
   const handleButtonClick = (record, rowIdx) => {
-    if (!emp || emp.length === 0 || rowIdx) {
-      return toast.warn("Please enter employee id and row index");
-    }
+    // console.log("emp", emp);
+    // console.log("rowIdx", rowIdx);
+    // if (!emp || emp.length === 0 || rowIdx) {
+    //   return toast.warn("Please enter employee id and row index");
+    // }
 
     const values = form.getFieldsValue(true);
     const payload = {
@@ -336,9 +350,9 @@ const MonthlyAttendanceReport = () => {
         render: (_, rec) => {
           return (
             <div className="d-flex align-items-center">
-            <Avatar title={rec?.strEmployeeName} />
-            <span className="ml-2">{rec?.strEmployeeName}</span>
-          </div>
+              <Avatar title={rec?.strEmployeeName} />
+              <span className="ml-2">{rec?.strEmployeeName}</span>
+            </div>
           );
         },
         // fixed: "left",
@@ -384,6 +398,31 @@ const MonthlyAttendanceReport = () => {
               Clone
             </button>
           </div>
+        ),
+      },
+      {
+        title: "Roaster Group",
+        width: 250,
+        render: (text, record, rowIdx) => (
+          <PSelect
+            options={calenderRoasterDDL}
+            name={`roaster-${record.key}`}
+            placeholder="Select Roaster Group"
+            allowClear
+            onChange={(value, option) => {
+              setSelectedRoaster(value);
+              if (value) {
+                getPeopleDeskAllDDL(
+                  `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${option?.value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+                  "CalenderId",
+                  "CalenderName",
+                  setStartingCalenderDDL
+                );
+              } else {
+                getCalendarDDL();
+              }
+            }}
+          />
         ),
       },
       ...(dateColumns || []),
