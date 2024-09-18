@@ -215,7 +215,7 @@ export default function ApprovalList() {
           icon: remoteAttendance,
         });
       }
-      if (item?.pipelineCode === "BABBAPBANDNQNCBC") {
+      if (item?.pipelineCode === "BABBAPBANDNQNCBP") {
         arr.push({
           ...item,
           icon: allowancededuction,

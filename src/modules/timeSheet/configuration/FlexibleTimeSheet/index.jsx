@@ -19,7 +19,6 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { debounce } from "lodash";
 import {
   monthFirstDate,
-  monthLastDate,
   monthLastDate7,
 } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
