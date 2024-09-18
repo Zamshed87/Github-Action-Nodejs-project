@@ -7,6 +7,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { Tooltip } from "@mui/material";
 import {
   getPeopleDeskAllDDL,
+  getPeopleDeskAllDDLCustom,
   getPeopleDeskAllLanding,
   PeopleDeskSaasDDL,
 } from "common/api";
@@ -34,7 +35,6 @@ import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 import { yearDDLAction } from "utility/yearDDL";
 import LeaveEncashmentForm from "./encashmentForm/LeaveEncashmentForm";
-import LeaveEncashmentBalanceTable from "./components/LeaveBalanceTable";
 import { gray500 } from "utility/customColor";
 import AntTable from "common/AntTable";
 import NoResult from "common/NoResult";
@@ -45,6 +45,8 @@ const initData = {
   search: "",
   days: "",
   hour: "",
+  mainBalance: "",
+  carryBalance: "",
   applicationDate: todayDate(),
   year: { value: moment().year(), label: moment().year() },
 };
@@ -80,7 +82,6 @@ function LeaveEncashment() {
   const [carryHour, setCarryHour] = useState("");
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
 
-  console.log("leaveBalanceData", leaveBalanceData);
 
   const getEmpInfoDetails = (empId) => {
     getPeopleDeskAllLanding(
@@ -96,13 +97,14 @@ function LeaveEncashment() {
 
   useEffect(() => {
     getEmpInfoDetails();
-    getPeopleDeskAllDDL(
+    getPeopleDeskAllDDLCustom(
       `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeCode",
       setEmployeeDDL
     );
   }, [wgId]);
+
 
   const getData = (empId, year) => {
     getEmployeeLeaveBalanceAndHistory(
@@ -196,7 +198,7 @@ function LeaveEncashment() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30428) {
+    if (item?.menuReferenceId === 30430) {
       permission = item;
     }
   });
@@ -257,12 +259,22 @@ function LeaveEncashment() {
         className: "text-center",
       },
       {
-        title: "Days",
-        dataIndex: "intEncashmentDays",
+        title: "Main Encashment Days",
+        dataIndex: "intMainBalanceEncashmentDays",
         render: (data, record) => (
-          <div>{record?.intEncashmentDays?.toFixed(2) || 0} </div>
+          <div>{record?.intMainBalanceEncashmentDays?.toFixed(2) || 0} </div>
         ),
-        sorter: true,
+        sorter: false,
+        filter: false,
+        isNumber: true,
+      },
+      {
+        title: "Carry Encashment Days",
+        dataIndex: "intCarryBalanceEncashmentDays",
+        render: (data, record) => (
+          <div>{record?.intCarryBalanceEncashmentDays?.toFixed(2) || 0} </div>
+        ),
+        sorter: false,
         filter: false,
         isNumber: true,
       },
@@ -542,7 +554,6 @@ function LeaveEncashment() {
                             </h2>
                           </div>
                         </div>
-                        {console.log("leaveHistoryData", leaveHistoryData)}
 
                         <div
                           className="table-card-styled table-responsive tableOne mt-2"

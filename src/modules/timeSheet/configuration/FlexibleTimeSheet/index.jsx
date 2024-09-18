@@ -25,6 +25,7 @@ import {
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
+import Loading from "common/loading/Loading";
 
 const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -131,7 +132,7 @@ const MonthlyAttendanceReport = () => {
     isOfficeAdmin && getEmployeDepartment();
     getCalendarDDL();
     getSuperUserList();
-  }, []);
+  }, [wgId, buId, wId]);
 
   useEffect(() => {
     if (landingApi?.data?.length > 0) {
@@ -157,7 +158,7 @@ const MonthlyAttendanceReport = () => {
 
       setRowDto(modifiedRowDto);
       setHeaderDateList(modifiedRowDto?.[0]);
-    }else {
+    } else {
       setRowDto([]);
       setHeaderDateList([]);
     }
@@ -258,8 +259,8 @@ const MonthlyAttendanceReport = () => {
   }));
 
   const handleButtonClick = (record, rowIdx) => {
-    if (!emp || emp.length === 0) {
-      return toast.warn("Please enter employee id");
+    if (!emp || emp.length === 0 || rowIdx) {
+      return toast.warn("Please enter employee id and row index");
     }
 
     const values = form.getFieldsValue(true);
@@ -314,6 +315,22 @@ const MonthlyAttendanceReport = () => {
         dataIndex: "intEmployeeId",
         width: 70,
         fixed: "left",
+        render: (text) => (
+          <span
+            title="Click to copy"
+            onClick={() => {
+              navigator.clipboard.writeText(text);
+            }}
+            style={{ cursor: "pointer", color: "#34a853" }}
+          >
+            {text}
+          </span>
+        ),
+      },
+      {
+        title: "Employee Code",
+        dataIndex: "strEmployeeCode",
+        width: 70,
       },
 
       {
@@ -388,6 +405,7 @@ const MonthlyAttendanceReport = () => {
   // };
   return employeeFeature?.isView ? (
     <>
+      {loading && <Loading />}
       <PForm
         form={form}
         initialValues={{
@@ -426,7 +444,6 @@ const MonthlyAttendanceReport = () => {
                     style={{ width: "300px" }}
                     onSelect={(value, op) => {
                       getSuperUserList();
-
                       form.setFieldsValue({
                         supervisor: "",
                       });
