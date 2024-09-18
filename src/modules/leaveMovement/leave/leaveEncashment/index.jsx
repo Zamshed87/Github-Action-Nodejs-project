@@ -7,6 +7,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { Tooltip } from "@mui/material";
 import {
   getPeopleDeskAllDDL,
+  getPeopleDeskAllDDLCustom,
   getPeopleDeskAllLanding,
   PeopleDeskSaasDDL,
 } from "common/api";
@@ -34,7 +35,6 @@ import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 import { yearDDLAction } from "utility/yearDDL";
 import LeaveEncashmentForm from "./encashmentForm/LeaveEncashmentForm";
-import LeaveEncashmentBalanceTable from "./components/LeaveBalanceTable";
 import { gray500 } from "utility/customColor";
 import AntTable from "common/AntTable";
 import NoResult from "common/NoResult";
@@ -45,6 +45,8 @@ const initData = {
   search: "",
   days: "",
   hour: "",
+  mainBalance: "",
+  carryBalance: "",
   applicationDate: todayDate(),
   year: { value: moment().year(), label: moment().year() },
 };
@@ -80,7 +82,6 @@ function LeaveEncashment() {
   const [carryHour, setCarryHour] = useState("");
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
 
-  console.log("leaveBalanceData", leaveBalanceData);
 
   const getEmpInfoDetails = (empId) => {
     getPeopleDeskAllLanding(
@@ -96,13 +97,14 @@ function LeaveEncashment() {
 
   useEffect(() => {
     getEmpInfoDetails();
-    getPeopleDeskAllDDL(
+    getPeopleDeskAllDDLCustom(
       `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeCode",
       setEmployeeDDL
     );
   }, [wgId]);
+
 
   const getData = (empId, year) => {
     getEmployeeLeaveBalanceAndHistory(
@@ -142,11 +144,12 @@ function LeaveEncashment() {
   }, []);
 
   const demoPopup = (action, values, cb) => {
+    console.log("values", values);  
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
       setSingleData("");
       setIsEdit(false);
-      cb();
+      // cb();
     };
     const payload = {
       intEncashmentId: singleData ? singleData?.intEncashmentId || 0 : 0,
@@ -196,12 +199,11 @@ function LeaveEncashment() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30428) {
+    if (item?.menuReferenceId === 30430) {
       permission = item;
     }
   });
   const demoPopupForDelete = (item, values) => {
-    console.log("item", item);
 
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
@@ -257,12 +259,22 @@ function LeaveEncashment() {
         className: "text-center",
       },
       {
-        title: "Days",
-        dataIndex: "intEncashmentDays",
+        title: "Main Encashment Days",
+        dataIndex: "intMainBalanceEncashmentDays",
         render: (data, record) => (
-          <div>{record?.intEncashmentDays?.toFixed(2) || 0} </div>
+          <div>{record?.intMainBalanceEncashmentDays?.toFixed(2) || 0} </div>
         ),
-        sorter: true,
+        sorter: false,
+        filter: false,
+        isNumber: true,
+      },
+      {
+        title: "Carry Encashment Days",
+        dataIndex: "intCarryBalanceEncashmentDays",
+        render: (data, record) => (
+          <div>{record?.intCarryBalanceEncashmentDays?.toFixed(2) || 0} </div>
+        ),
+        sorter: false,
         filter: false,
         isNumber: true,
       },
@@ -299,31 +311,35 @@ function LeaveEncashment() {
         className: "text-center",
         render: (data, record) => (
           <div className="d-flex justify-content-center">
-            {record?.strStatus === "Pending" && (
+            {/* {record?.strStatus === "Pending" && (
               <Tooltip title="Edit" arrow>
                 <button className="iconButton" type="button">
                   <EditOutlined
                     onClick={(e) => {
+                      console.log("record", record);
                       setIsEdit(true);
                       e.stopPropagation();
                       scrollRef.current.scrollIntoView({
                         behavior: "smooth",
                       });
                       setSingleData(record);
-                      console.log("record", record);
                       setValues({
                         ...values,
                         applicationDate: dateFormatterForInput(
                           record?.dteEffectiveDate
                         ),
-                        days: record?.intEncashmentDays,
-                        hour: (record?.intEncashmentDays * 8)?.toFixed(2) || 0,
+                        leaveType: {
+                          value: record?.intLeaveTypeId,
+                          label: record?.strLeaveType,
+                        },
+                        mainBalance: record?.intMainBalanceEncashmentDays,
+                        carryBalance: record?.intCarryBalanceEncashmentDays,
                       });
                     }}
                   />
                 </button>
               </Tooltip>
-            )}
+            )} */}
             {record?.strStatus === "Pending" && (
               <Tooltip title="Delete" arrow>
                 <button type="button" className="iconButton">
@@ -345,6 +361,7 @@ function LeaveEncashment() {
 
   return (
     <>
+    {loading && <Loading />}
       <Formik
         enableReinitialize={true}
         initialValues={{
@@ -542,7 +559,6 @@ function LeaveEncashment() {
                             </h2>
                           </div>
                         </div>
-                        {console.log("leaveHistoryData", leaveHistoryData)}
 
                         <div
                           className="table-card-styled table-responsive tableOne mt-2"

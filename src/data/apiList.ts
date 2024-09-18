@@ -167,6 +167,8 @@ export const apiList = {
     "/Employee/CommonEmployeeDDLForActiveInactive",
   SupervirorDashboardLanding: "/Dashboard/MidLevelDashboard",
   JobCardLandingNPDF: "/PdfAndExcelReport/GetJobCardAllReports",
+  FlexibleTimesheetEmployeeLanding:
+    "/TimeSheet/FlexibleTimesheetEmployeeLanding",
 
   UpdateLatePunishmentPolicy:
     "/LatePunishmentPolicySetup/UpdateLatePunishmentPolicy",
@@ -182,4 +184,5 @@ export const apiList = {
     "/AssignLatePunishmentPolicy/GetLatePunishmentPoliciesDdl",
   AssignEmployeeToLatePunishmentPolicy:
     "/AssignLatePunishmentPolicy/AssignEmployeeToLatePunishmentPolicy",
+    getSupervisorListDDL: "/Employee/GetSupervisorList"
 };

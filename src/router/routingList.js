@@ -42,7 +42,7 @@ import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
-import HolidayOffdaySetup from "modules/timeSheet/configuration/HolidayOffdaySetup";
+import FlexibleTimeSheet from "modules/timeSheet/configuration/FlexibleTimeSheet";
 import LatePunishment from "modules/timeSheet/employeeAssign/latePunishment";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
@@ -3094,8 +3094,8 @@ export const routingList = [
 
   { path: "/components/test", component: Test },
   {
-    path: "/administration/timeManagement/holidayOffdaySetup",
-    component: HolidayOffdaySetup,
+    path: "/administration/timeManagement/flexibleTimesheet",
+    component: FlexibleTimeSheet,
   },
 ];
 

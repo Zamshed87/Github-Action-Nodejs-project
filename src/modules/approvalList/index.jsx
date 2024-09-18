@@ -215,6 +215,12 @@ export default function ApprovalList() {
           icon: remoteAttendance,
         });
       }
+      if (item?.pipelineCode === "BABBAPBANDNQNCBP") {
+        arr.push({
+          ...item,
+          icon: allowancededuction,
+        });
+      }
     });
     setNewTableData(arr);
     setNewTableAllData(arr);

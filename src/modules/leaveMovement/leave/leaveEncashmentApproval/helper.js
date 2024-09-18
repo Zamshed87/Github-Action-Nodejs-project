@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-export const getLeaveEncashmentApprovalData = async (
+export const getAllLeaveApplicatonListDataForApproval = async (
     payload,
     setter,
     setAllData,
@@ -10,7 +10,7 @@ export const getLeaveEncashmentApprovalData = async (
     setLoading(true);
     try {
       const res = await axios.post(
-        `/emp/LeaveMovement/GetAllLLeaveEncashmenListForApprove`,
+        `/ApprovalPipeline/LeaveEncashmentApplicationLanding`,
         payload
       );
       setAllData(res?.data)
@@ -27,7 +27,7 @@ export const getLeaveEncashmentApprovalData = async (
 
   export const leaveEncashmenApproveReject = async (payload,  cb) => {
     try {
-      const res = await axios.post(`/emp/LeaveMovement/LeaveEncashmenApprove`, payload);
+      const res = await axios.post(`/ApprovalPipeline/LeaveEncashmentApplicationApproval`, payload);
       cb && cb();
       toast.success(res?.data?.Result?.Message || "Submitted Successfully");
     } catch (error) {

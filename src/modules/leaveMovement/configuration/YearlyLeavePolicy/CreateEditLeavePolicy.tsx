@@ -218,22 +218,7 @@ const CreateEditLeavePolicy = () => {
   return (
     <>
       {loading && <Loading />}
-      <PForm
-        form={form}
-        // onFinish={(values) => {
-        //   saveHandler(
-        //     values,
-        //     form.resetFields,
-        //     policyApi,
-        //     tableData,
-        //     existingPolicies,
-        //     params,
-        //     history
-        //   );
-        // }}
-        onFinish={submitHandler}
-        initialValues={{}}
-      >
+      <PForm form={form} onFinish={submitHandler} initialValues={{}}>
         <PCard>
           <PCardHeader
             backButton
@@ -873,8 +858,8 @@ const CreateEditLeavePolicy = () => {
                                 layout="horizontal"
                                 name="isDependOnServiceLength"
                                 disabled={
-                                  intLeaveType?.label ===
-                                    "Earn Leave/Annual Leave" ||
+                                  // intLeaveType?.label ===
+                                  //   "Earn Leave/Annual Leave" ||
                                   intLeaveType?.label === "Compensatory Leave"
                                 }
                                 onChange={(e) => {
