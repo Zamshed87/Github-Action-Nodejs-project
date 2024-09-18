@@ -17,7 +17,11 @@ import {
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { debounce } from "lodash";
-import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
+import {
+  monthFirstDate,
+  monthLastDate,
+  monthLastDate7,
+} from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
@@ -73,8 +77,8 @@ const MonthlyAttendanceReport = () => {
       params: {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: wgId || 0,
+        IntWorkplaceId: wId || 0,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -86,6 +90,7 @@ const MonthlyAttendanceReport = () => {
     });
   };
 
+  const CommonCalendarDDL = useApiRequest([]);
   const getSupervisorListDDL = useApiRequest([]);
   const getSuperUserList = () => {
     const values = form.getFieldsValue(true);
@@ -94,12 +99,10 @@ const MonthlyAttendanceReport = () => {
       method: "GET",
       params: {
         intDepartmentId: values?.department || 0,
-        intWorkplaceId: wId,
+        intWorkplaceId: wId || 0,
       },
     });
   };
-
-  const CommonCalendarDDL = useApiRequest([]);
 
   // data call
   const landingApiCall = ({
@@ -119,7 +122,7 @@ const MonthlyAttendanceReport = () => {
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         strSearchName: searchText,
         intDepartmentIdList: [values?.department || 0],
-        intWorkplaceId: wId || 0,
+        intWorkplaceId: wId,
       },
     });
   };
@@ -127,6 +130,7 @@ const MonthlyAttendanceReport = () => {
   useEffect(() => {
     isOfficeAdmin && getEmployeDepartment();
     getCalendarDDL();
+    getSuperUserList();
   }, []);
 
   useEffect(() => {
@@ -153,6 +157,9 @@ const MonthlyAttendanceReport = () => {
 
       setRowDto(modifiedRowDto);
       setHeaderDateList(modifiedRowDto?.[0]);
+    }else {
+      setRowDto([]);
+      setHeaderDateList([]);
     }
   }, [landingApi?.data]);
 
@@ -176,8 +183,10 @@ const MonthlyAttendanceReport = () => {
     });
   };
   useEffect(() => {
-    landingApiCall();
-  }, []);
+    if (wId) {
+      landingApiCall();
+    }
+  }, [wId]);
 
   const handleSave = (rec) => {
     const allCalendarsSelected = rec?.dateLists?.every((item) => {
@@ -194,7 +203,9 @@ const MonthlyAttendanceReport = () => {
         strType:
           item?.strCalenderName === "Offday" ? "Offday" : "Calendar" || "",
         intCalenderId:
-          item?.strCalenderName === "Offday" ? 174 : item?.intCalenderId || 0,
+          item?.strCalenderName === "Offday"
+            ? CommonCalendarDDL?.data?.[0]?.value || 0
+            : item?.intCalenderId || 0,
       };
     });
 
@@ -227,7 +238,6 @@ const MonthlyAttendanceReport = () => {
             ]}
             value={optionValue}
             onChange={(value, op) => {
-              console.log("Selected value:", value, "Selected option:", op);
               newDateLists[idx] = {
                 ...newDateLists[idx],
                 intCalenderId: op?.value,
@@ -248,6 +258,10 @@ const MonthlyAttendanceReport = () => {
   }));
 
   const handleButtonClick = (record, rowIdx) => {
+    if (!emp || emp.length === 0) {
+      return toast.warn("Please enter employee id");
+    }
+
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [
@@ -298,7 +312,7 @@ const MonthlyAttendanceReport = () => {
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
-        width: 50,
+        width: 70,
         fixed: "left",
       },
 
@@ -366,19 +380,19 @@ const MonthlyAttendanceReport = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
+  // const disabledDate = (current) => {
+  //   const { fromDate } = form.getFieldsValue(true);
+  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
+  //   // Disable dates before fromDate and after next3daysForEmp
+  //   return current && current < fromDateMoment.startOf("day");
+  // };
   return employeeFeature?.isView ? (
     <>
       <PForm
         form={form}
         initialValues={{
           fromDate: moment(monthFirstDate()),
-          toDate: moment(monthLastDate()),
+          toDate: moment(monthLastDate7()),
           supervisor: { label: userName, value: employeeId },
         }}
         onFinish={() => {
@@ -449,7 +463,7 @@ const MonthlyAttendanceReport = () => {
                   name="toDate"
                   label="To Date"
                   placeholder="To Date"
-                  disabledDate={disabledDate}
+                  // disabledDate={disabledDate}
                   onChange={(value) => {
                     form.setFieldsValue({
                       toDate: value,
