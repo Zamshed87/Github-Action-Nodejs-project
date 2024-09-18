@@ -400,31 +400,31 @@ const MonthlyAttendanceReport = () => {
           </div>
         ),
       },
-      {
-        title: "Roaster Group",
-        width: 250,
-        render: (text, record, rowIdx) => (
-          <PSelect
-            options={calenderRoasterDDL}
-            name={`roaster-${record.key}`}
-            placeholder="Select Roaster Group"
-            allowClear
-            onChange={(value, option) => {
-              setSelectedRoaster(value);
-              if (value) {
-                getPeopleDeskAllDDL(
-                  `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${option?.value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
-                  "CalenderId",
-                  "CalenderName",
-                  setStartingCalenderDDL
-                );
-              } else {
-                getCalendarDDL();
-              }
-            }}
-          />
-        ),
-      },
+      // {
+      //   title: "Roaster Group",
+      //   width: 250,
+      //   render: (text, record, rowIdx) => (
+      //     <PSelect
+      //       options={calenderRoasterDDL}
+      //       name={`roaster-${record.key}`}
+      //       placeholder="Select Roaster Group"
+      //       allowClear
+      //       onChange={(value, option) => {
+      //         setSelectedRoaster(value);
+      //         if (value) {
+      //           getPeopleDeskAllDDL(
+      //             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${option?.value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+      //             "CalenderId",
+      //             "CalenderName",
+      //             setStartingCalenderDDL
+      //           );
+      //         } else {
+      //           getCalendarDDL();
+      //         }
+      //       }}
+      //     />
+      //   ),
+      // },
       ...(dateColumns || []),
     ];
   };
