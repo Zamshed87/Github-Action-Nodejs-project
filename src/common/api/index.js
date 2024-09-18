@@ -165,6 +165,25 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
   } catch (error) {}
 };
 
+export const getPeopleDeskAllDDLCustom = async (
+  apiUrl,
+  value,
+  label,
+  setter,
+  cb
+) => {
+  try {
+    const res = await axios.get(apiUrl);
+    const newDDL = res?.data?.map((itm) => ({
+      ...itm,
+      value: itm[value],
+      label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
+    }));
+    setter(newDDL);
+    cb && cb();
+  } catch (error) {}
+};
+
 export const getPeopleDeskAllDDLWithCode = async (
   apiUrl,
   value,
