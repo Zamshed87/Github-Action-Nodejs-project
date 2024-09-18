@@ -111,6 +111,13 @@ export const monthLastDate = (dt) => {
   return dateFormatterForInput(lastDay);
 };
 
+export const monthLastDate7 = (fromDate) => {
+  const date = fromDate ? new Date(fromDate) : new Date();
+  date.setDate(1);
+  date.setDate(date.getDate() + 6);
+  return dateFormatterForInput(date);
+};
+
 export const getMonthwithYear = (month) => {
   const value = month.split("-");
   let monthName = "";
@@ -260,14 +267,14 @@ export function calculateNextDateAntd(inputDate, n) {
 export function getPreviousDayDate(dateString, daysToSubtract) {
   // Convert the input date string to a Date object
   const date = new Date(dateString);
-  
+
   // Subtract the specified number of days
   date.setDate(date.getDate() - daysToSubtract);
-  
+
   // Format the resulting date to "YYYY-MM-DD"
   const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-  const day = date.getDate().toString().padStart(2, '0');
-  
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-indexed
+  const day = date.getDate().toString().padStart(2, "0");
+
   return `${year}-${month}-${day}`;
 }
