@@ -1,10 +1,11 @@
 import { useApiRequest } from "Hooks";
-import { Avatar, Button, Col, Form, Row } from "antd";
+import { Button, Col, Form, Row } from "antd";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
+  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -17,10 +18,7 @@ import {
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { debounce } from "lodash";
-import {
-  monthFirstDate,
-  monthLastDate7,
-} from "utility/dateFormatter";
+import { monthFirstDate, monthLastDate7 } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
@@ -229,9 +227,9 @@ const MonthlyAttendanceReport = () => {
       return (
         <div>
           <PSelectWithOutForm
-            onClear={true}
             name={key}
             placeholder="Select Calendar"
+            allowClear
             options={[
               { value: 1, label: "Offday" },
               ...(CommonCalendarDDL?.data || []),
@@ -338,9 +336,9 @@ const MonthlyAttendanceReport = () => {
         render: (_, rec) => {
           return (
             <div className="d-flex align-items-center">
-              <Avatar title={rec?.strEmployeeName} />
-              <span className="ml-2">{rec?.strEmployeeName}</span>
-            </div>
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
+          </div>
           );
         },
         // fixed: "left",
@@ -433,28 +431,32 @@ const MonthlyAttendanceReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={12} xs={24}>
-                {isOfficeAdmin && (
+              {isOfficeAdmin && (
+                <Col md={6} sm={12} xs={24}>
                   <PSelect
                     options={empDepartmentDDL?.data || []}
                     name="department"
                     label="Department"
                     placeholder="Select Department"
+                    allowClear
                     style={{ width: "300px" }}
                     onSelect={(value, op) => {
-                      getSuperUserList();
-                      form.setFieldsValue({
-                        supervisor: "",
-                      });
+                      if (value) {
+                        getSuperUserList();
+                      } else {
+                        getSuperUserList([]);
+                      }
                     }}
                   />
-                )}
-              </Col>
+                </Col>
+              )}
+
               <Col md={6} sm={12} xs={24}>
                 <PSelect
                   options={getSupervisorListDDL?.data || []}
                   name="supervisor"
                   label="Supervisor"
+                  allowClear
                   style={{ width: "300px" }}
                   disabled={!isOfficeAdmin}
                   onSelect={(value, op) => {}}
@@ -487,7 +489,6 @@ const MonthlyAttendanceReport = () => {
                   }}
                 />
               </Col>
-
               <Col
                 style={{
                   marginTop: "23px",
