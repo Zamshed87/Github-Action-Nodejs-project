@@ -1,5 +1,7 @@
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Alert } from "@mui/material";
 import axios from "axios";
 import DefaultInput from "common/DefaultInput";
 import { toast } from "react-toastify";
@@ -450,8 +452,23 @@ export const bulkLandingTbCol = (
     },
     {
       title: "Alert",
-      className: "text-start",
+      className: "text-center",
       dataIndex: "message",
+      render: (text, record, index) => {
+        return (
+          <Alert
+            icon={<InfoOutlinedIcon fontSize="inherit" />}
+            severity="warning"
+            style={{
+              position: "sticky",
+              top: "1px",
+              textAlign: "left !important",
+            }}
+          >
+            {record?.message}
+          </Alert>
+        );
+      },
       hidden: bulkLandingRowDto[0]?.afterApiResponse ? false : true,
     },
   ].filter((i) => !i?.hidden);
