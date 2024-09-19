@@ -1,10 +1,11 @@
 import { useApiRequest } from "Hooks";
-import { Avatar, Button, Col, Form, Row } from "antd";
+import { Button, Col, Form, Row } from "antd";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
+  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -17,10 +18,12 @@ import {
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { debounce } from "lodash";
-import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
+import { monthFirstDate, monthLastDate7 } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
+import Loading from "common/loading/Loading";
+import { getPeopleDeskAllDDL } from "common/api";
 
 const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -44,6 +47,9 @@ const MonthlyAttendanceReport = () => {
   const [rowDto, setRowDto] = useState([]);
   const [loading, setLoading] = useState(false);
   const [emp, setEmp] = useState([]);
+  const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
+  const [selectedRoaster, setSelectedRoaster] = useState(null);
+  const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
 
   const [pages, setPages] = useState({
     current: 1,
@@ -73,8 +79,8 @@ const MonthlyAttendanceReport = () => {
       params: {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: wgId || 0,
+        IntWorkplaceId: wId || 0,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -86,6 +92,7 @@ const MonthlyAttendanceReport = () => {
     });
   };
 
+  const CommonCalendarDDL = useApiRequest([]);
   const getSupervisorListDDL = useApiRequest([]);
   const getSuperUserList = () => {
     const values = form.getFieldsValue(true);
@@ -94,12 +101,10 @@ const MonthlyAttendanceReport = () => {
       method: "GET",
       params: {
         intDepartmentId: values?.department || 0,
-        intWorkplaceId: wId,
+        intWorkplaceId: wId || 0,
       },
     });
   };
-
-  const CommonCalendarDDL = useApiRequest([]);
 
   // data call
   const landingApiCall = ({
@@ -119,7 +124,7 @@ const MonthlyAttendanceReport = () => {
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         strSearchName: searchText,
         intDepartmentIdList: [values?.department || 0],
-        intWorkplaceId: wId || 0,
+        intWorkplaceId: wId,
       },
     });
   };
@@ -127,7 +132,14 @@ const MonthlyAttendanceReport = () => {
   useEffect(() => {
     isOfficeAdmin && getEmployeDepartment();
     getCalendarDDL();
-  }, []);
+    getSuperUserList();
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RosterGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
+      "RosterGroupId",
+      "RosterGroupName",
+      setCalenderRoasterDDL
+    );
+  }, [wgId, buId, wId]);
 
   useEffect(() => {
     if (landingApi?.data?.length > 0) {
@@ -153,6 +165,9 @@ const MonthlyAttendanceReport = () => {
 
       setRowDto(modifiedRowDto);
       setHeaderDateList(modifiedRowDto?.[0]);
+    } else {
+      setRowDto([]);
+      setHeaderDateList([]);
     }
   }, [landingApi?.data]);
 
@@ -176,8 +191,10 @@ const MonthlyAttendanceReport = () => {
     });
   };
   useEffect(() => {
-    landingApiCall();
-  }, []);
+    if (wId) {
+      landingApiCall();
+    }
+  }, [wId]);
 
   const handleSave = (rec) => {
     const allCalendarsSelected = rec?.dateLists?.every((item) => {
@@ -194,7 +211,9 @@ const MonthlyAttendanceReport = () => {
         strType:
           item?.strCalenderName === "Offday" ? "Offday" : "Calendar" || "",
         intCalenderId:
-          item?.strCalenderName === "Offday" ? 174 : item?.intCalenderId || 0,
+          item?.strCalenderName === "Offday"
+            ? CommonCalendarDDL?.data?.[0]?.value || 0
+            : item?.intCalenderId || 0,
       };
     });
 
@@ -218,16 +237,17 @@ const MonthlyAttendanceReport = () => {
       return (
         <div>
           <PSelectWithOutForm
-            onClear={true}
             name={key}
             placeholder="Select Calendar"
+            allowClear
             options={[
               { value: 1, label: "Offday" },
-              ...(CommonCalendarDDL?.data || []),
+              ...(startingCalenderDDL?.length > 0
+                ? startingCalenderDDL
+                : CommonCalendarDDL?.data || []),
             ]}
             value={optionValue}
             onChange={(value, op) => {
-              console.log("Selected value:", value, "Selected option:", op);
               newDateLists[idx] = {
                 ...newDateLists[idx],
                 intCalenderId: op?.value,
@@ -248,6 +268,12 @@ const MonthlyAttendanceReport = () => {
   }));
 
   const handleButtonClick = (record, rowIdx) => {
+    // console.log("emp", emp);
+    // console.log("rowIdx", rowIdx);
+    // if (!emp || emp.length === 0 || rowIdx) {
+    //   return toast.warn("Please enter employee id and row index");
+    // }
+
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [
@@ -298,8 +324,24 @@ const MonthlyAttendanceReport = () => {
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
-        width: 50,
+        width: 70,
         fixed: "left",
+        render: (text) => (
+          <span
+            title="Click to copy"
+            onClick={() => {
+              navigator.clipboard.writeText(text);
+            }}
+            style={{ cursor: "pointer", color: "#34a853" }}
+          >
+            {text}
+          </span>
+        ),
+      },
+      {
+        title: "Employee Code",
+        dataIndex: "strEmployeeCode",
+        width: 70,
       },
 
       {
@@ -358,6 +400,31 @@ const MonthlyAttendanceReport = () => {
           </div>
         ),
       },
+      // {
+      //   title: "Roaster Group",
+      //   width: 250,
+      //   render: (text, record, rowIdx) => (
+      //     <PSelect
+      //       options={calenderRoasterDDL}
+      //       name={`roaster-${record.key}`}
+      //       placeholder="Select Roaster Group"
+      //       allowClear
+      //       onChange={(value, option) => {
+      //         setSelectedRoaster(value);
+      //         if (value) {
+      //           getPeopleDeskAllDDL(
+      //             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${option?.value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+      //             "CalenderId",
+      //             "CalenderName",
+      //             setStartingCalenderDDL
+      //           );
+      //         } else {
+      //           getCalendarDDL();
+      //         }
+      //       }}
+      //     />
+      //   ),
+      // },
       ...(dateColumns || []),
     ];
   };
@@ -366,19 +433,20 @@ const MonthlyAttendanceReport = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
+  // const disabledDate = (current) => {
+  //   const { fromDate } = form.getFieldsValue(true);
+  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
+  //   // Disable dates before fromDate and after next3daysForEmp
+  //   return current && current < fromDateMoment.startOf("day");
+  // };
   return employeeFeature?.isView ? (
     <>
+      {loading && <Loading />}
       <PForm
         form={form}
         initialValues={{
           fromDate: moment(monthFirstDate()),
-          toDate: moment(monthLastDate()),
+          toDate: moment(monthLastDate7()),
           supervisor: { label: userName, value: employeeId },
         }}
         onFinish={() => {
@@ -402,29 +470,32 @@ const MonthlyAttendanceReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={12} xs={24}>
-                {isOfficeAdmin && (
+              {isOfficeAdmin && (
+                <Col md={6} sm={12} xs={24}>
                   <PSelect
                     options={empDepartmentDDL?.data || []}
                     name="department"
                     label="Department"
                     placeholder="Select Department"
+                    allowClear
                     style={{ width: "300px" }}
                     onSelect={(value, op) => {
-                      getSuperUserList();
-
-                      form.setFieldsValue({
-                        supervisor: "",
-                      });
+                      if (value) {
+                        getSuperUserList();
+                      } else {
+                        getSuperUserList([]);
+                      }
                     }}
                   />
-                )}
-              </Col>
+                </Col>
+              )}
+
               <Col md={6} sm={12} xs={24}>
                 <PSelect
                   options={getSupervisorListDDL?.data || []}
                   name="supervisor"
                   label="Supervisor"
+                  allowClear
                   style={{ width: "300px" }}
                   disabled={!isOfficeAdmin}
                   onSelect={(value, op) => {}}
@@ -449,7 +520,7 @@ const MonthlyAttendanceReport = () => {
                   name="toDate"
                   label="To Date"
                   placeholder="To Date"
-                  disabledDate={disabledDate}
+                  // disabledDate={disabledDate}
                   onChange={(value) => {
                     form.setFieldsValue({
                       toDate: value,
@@ -457,7 +528,6 @@ const MonthlyAttendanceReport = () => {
                   }}
                 />
               </Col>
-
               <Col
                 style={{
                   marginTop: "23px",
