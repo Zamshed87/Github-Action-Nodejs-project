@@ -12,6 +12,7 @@ import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import HistoryIcon from "@material-ui/icons/History";
 import AntTable from "../../../../common/AntTable";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import BackButton from "../../../../common/BackButton";
@@ -42,7 +43,6 @@ import {
 import {
   getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
-  inputHandler,
   leaveApproveReject,
 } from "../helper";
 import Loading from "./../../../../common/loading/Loading";
@@ -53,7 +53,6 @@ import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
 import ApproveRejectComp from "common/ApproveRejectComp";
-import FormikInput from "common/FormikInput";
 import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 
 const initData = {
@@ -514,17 +513,18 @@ export default function LeaveApproval() {
             >
               <InfoOutlined sx={{ color: gray900 }} />
             </LightTooltip>
+            
             <div className="ml-2">
               {leaveType}{" "}
               {record?.leaveApplication?.isHalfDay ? "(Half Day)" : ""}
             </div>
 
-            {record?.intDocumentFileId && (
+            {record?.leaveApplication?.intDocumentFileId && (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
                   dispatch(
-                    getDownlloadFileView_Action(record?.intDocumentFileId)
+                    getDownlloadFileView_Action(record?.leaveApplication?.intDocumentFileId)
                   );
                 }}
               >
@@ -585,9 +585,7 @@ export default function LeaveApproval() {
         dataIndex: "strApprovalRemarks",
         render: (_, record) => (
           <div className="d-flex align-items-center">
-            <div>
-              {record?.leaveApplication?.strApprovalRemarks}
-            </div>
+            <div>{record?.leaveApplication?.strApprovalRemarks}</div>
           </div>
         ),
         // render: (_, record, index) => (
@@ -679,7 +677,7 @@ export default function LeaveApproval() {
                   </Tooltip>
                   <Tooltip title="Reject">
                     <div
-                      className="muiIconHover  danger"
+                      className="muiIconHover danger"
                       onClick={(e) => {
                         e.stopPropagation();
                         singlePopup("reject", "Reject", record);
@@ -688,9 +686,26 @@ export default function LeaveApproval() {
                       <MuiIcon icon={<Cancel sx={{ color: failColor }} />} />
                     </div>
                   </Tooltip>
+                  <Tooltip title="Details">
+                    <div
+                      className="mx-2 muiIconHover success "
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setApplicationId(
+                          record?.leaveApplication?.intApplicationId
+                        );
+                        setViewModalRow(true);
+                      }}
+                    >
+                      <MuiIcon
+                        icon={<HistoryIcon sx={{ color: successColor }} />}
+                      />
+                    </div>
+                  </Tooltip>
                 </div>
               </>
             )}
+
             {status === "Rejected" && (
               <Chips label="Rejected" classess="danger" />
             )}
@@ -818,13 +833,13 @@ export default function LeaveApproval() {
                                     rowKey={(record) =>
                                       record?.leaveApplication?.intApplicationId
                                     }
-                                    onRowClick={(record) => {
-                                      setApplicationId(
-                                        record?.leaveApplication
-                                          ?.intApplicationId
-                                      );
-                                      setViewModalRow(true);
-                                    }}
+                                    // onRowClick={(record) => {
+                                    //   setApplicationId(
+                                    //     record?.leaveApplication
+                                    //       ?.intApplicationId
+                                    //   );
+                                    //   setViewModalRow(true);
+                                    // }}
                                   />
                                 </>
                               ) : (
