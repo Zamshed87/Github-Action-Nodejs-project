@@ -19,7 +19,12 @@ import NoResult from "common/NoResult";
 import PeopleDeskTable from "common/peopleDeskTable";
 import ViewModal from "common/ViewModal";
 import { createEditAllowanceAndDeduction } from "../helper";
-import { processDataFromExcelInAllowanceNDeduction, saveBulkUploadAction, initData, bulkLandingTbCol } from "./helperNew";
+import {
+  processDataFromExcelInAllowanceNDeduction,
+  saveBulkUploadAction,
+  initData,
+  bulkLandingTbCol,
+} from "./helperNew";
 import ExistsBulkModal from "./ExistsBulkModal";
 import { getEmployeeProfileLanding } from "modules/employeeProfile/employeeFeature/helper";
 
@@ -62,7 +67,7 @@ function bulkAssignCreate() {
   const [assignedBulkEmp, setAssignedBulkEmp] = useState([]);
   const [showExistModal, setShowExistModal] = useState(false);
 
-  console.log("bulkLandingRowDto",bulkLandingRowDto)
+  // console.log("bulkLandingRowDto",bulkLandingRowDto)
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
@@ -269,7 +274,9 @@ function bulkAssignCreate() {
                                   setShowExistModal,
                                   setAssignedBulkEmp,
                                   false,
-                                  false
+                                  false,
+                                  {},
+                                  setBulkLanding
                                 )
                               }
                             >
@@ -341,62 +348,61 @@ function bulkAssignCreate() {
                           </span>
                         )}
                       </p>
-                     
-                        <div className="d-flex">
-                          {checkedList?.length ? (
-                            <ResetButton
-                              classes="btn-filter-reset px-2"
-                              title="Reset"
-                              icon={
-                                <RefreshIcon
-                                  sx={{
-                                    marginRight: "4px",
-                                    fontSize: "12px",
-                                  }}
-                                />
-                              }
-                              onClick={() => {
-                                setFieldValue("searchString", "");
-                                setCheckedList([]);
-                                getData();
-                              }}
-                              styles={{ height: "auto", fontSize: "12px" }}
-                            />
-                          ) : (
-                            <></>
-                          )}
 
-                          <MasterFilter
-                            inputWidth="250px"
-                            width="250px"
-                            isHiddenFilter
-                            value={values?.searchString}
-                            setValue={(value) => {
-                              setFieldValue("searchString", value);
-                              debounce(() => {
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  values?.searchString
-                                );
-                              }, 500);
-                            }}
-                            cancelHandler={(e) => {
+                      <div className="d-flex">
+                        {checkedList?.length ? (
+                          <ResetButton
+                            classes="btn-filter-reset px-2"
+                            title="Reset"
+                            icon={
+                              <RefreshIcon
+                                sx={{
+                                  marginRight: "4px",
+                                  fontSize: "12px",
+                                }}
+                              />
+                            }
+                            onClick={() => {
                               setFieldValue("searchString", "");
-                              getData(
-                                { current: 1, pageSize: paginationSize },
-                                ""
-                              );
+                              setCheckedList([]);
+                              getData();
                             }}
-                            handleClick={(e) => {
-                              setFieldValue("searchString", "");
-                              getData(
-                                { current: 1, pageSize: paginationSize },
-                                ""
-                              );
-                            }}
+                            styles={{ height: "auto", fontSize: "12px" }}
                           />
-                        </div>
-                      
+                        ) : (
+                          <></>
+                        )}
+
+                        <MasterFilter
+                          inputWidth="250px"
+                          width="250px"
+                          isHiddenFilter
+                          value={values?.searchString}
+                          setValue={(value) => {
+                            setFieldValue("searchString", value);
+                            debounce(() => {
+                              getData(
+                                { current: 1, pageSize: paginationSize },
+                                values?.searchString
+                              );
+                            }, 500);
+                          }}
+                          cancelHandler={(e) => {
+                            setFieldValue("searchString", "");
+                            getData(
+                              { current: 1, pageSize: paginationSize },
+                              ""
+                            );
+                          }}
+                          handleClick={(e) => {
+                            setFieldValue("searchString", "");
+                            getData(
+                              { current: 1, pageSize: paginationSize },
+                              ""
+                            );
+                          }}
+                        />
+                      </div>
                     </div>
                     {isBulkAssign ? (
                       bulkLandingRowDto?.length > 0 ? (

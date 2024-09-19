@@ -169,7 +169,10 @@ export const getYearlyPolicyById = async (
             },
             intEndServiceLengthInYear: {
               value: itm?.intEndServiceLengthInYear,
-              label: itm?.intEndServiceLengthInYear,
+              label:
+                itm?.intEndServiceLengthInYear === 100
+                  ? "Above"
+                  : itm?.intEndServiceLengthInYear,
             },
           };
         })
