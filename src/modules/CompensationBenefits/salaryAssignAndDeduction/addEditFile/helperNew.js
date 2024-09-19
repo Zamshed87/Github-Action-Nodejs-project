@@ -1,3 +1,5 @@
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import axios from "axios";
 import DefaultInput from "common/DefaultInput";
 import { toast } from "react-toastify";
@@ -270,6 +272,30 @@ export const bulkLandingTbCol = (
       className: "text-center",
     },
     {
+      title: "",
+      render: (text, record, index) => {
+        return (
+          <div className="d-flex align-items-center">
+            {record?.afterApiResponse &&
+              (record?.message ? (
+                <CancelOutlinedIcon
+                  sx={{
+                    color: "red",
+                  }}
+                />
+              ) : (
+                <CheckCircleOutlineIcon
+                  sx={{
+                    color: "green",
+                  }}
+                />
+              ))}
+          </div>
+        );
+      },
+      hidden: bulkLandingRowDto[0]?.afterApiResponse ? false : true,
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       className: "text-start",
@@ -422,7 +448,13 @@ export const bulkLandingTbCol = (
       dataIndex: "numAmount",
       render: (text, record, index) => numberWithCommas(record?.numAmount),
     },
-  ];
+    {
+      title: "Alert",
+      className: "text-start",
+      dataIndex: "message",
+      hidden: bulkLandingRowDto[0]?.afterApiResponse ? false : true,
+    },
+  ].filter((i) => !i?.hidden);
 };
 export const assignedBulkTbleCol = (page, paginationSize) => {
   return [
@@ -503,6 +535,51 @@ export const assignedBulkTbleCol = (page, paginationSize) => {
   ];
 };
 
+const updateArData = (ar, response, message) => {
+  return ar.map((item) => {
+    // Find the corresponding employee in the response array
+    const matchedResponse = response.find(
+      (r) => r.strEmployeeCode == item.employeeCode
+    );
+
+    // If a match is found, update the fields
+    if (matchedResponse) {
+      return {
+        ...item,
+        "Employee Code": matchedResponse.strEmployeeCode,
+        "Employee Name":
+          matchedResponse.strEmployeeName || item?.["Employee Name"],
+        intEmployeeBasicInfoId: matchedResponse.intEmployeeBasicInfoId,
+        intGenderId: matchedResponse.intGenderId,
+        strGender: matchedResponse.strGender,
+        intReligionId: matchedResponse.intReligionId,
+        strReligion: matchedResponse.strReligion,
+        intDepartmentId: matchedResponse.intDepartmentId,
+        intSectionId: matchedResponse.intSectionId,
+        intDesignationId: matchedResponse.intDesignationId,
+        dteDateOfBirth: matchedResponse.dteDateOfBirth,
+        dteJoiningDate: matchedResponse.dteJoiningDate,
+        dteProbationaryCloseDate: matchedResponse.dteProbationaryCloseDate,
+        intSupervisorId: matchedResponse.intSupervisorId,
+        intLineManagerId: matchedResponse.intLineManagerId,
+        isSalaryHold: matchedResponse.isSalaryHold,
+        isActive: matchedResponse.isActive,
+        intWorkplaceId: matchedResponse.intWorkplaceId,
+        intBusinessUnitId: matchedResponse.intBusinessUnitId,
+        intEmploymentTypeId: matchedResponse.intEmploymentTypeId,
+        strEmploymentType: matchedResponse.strEmploymentType,
+        strReferenceId: matchedResponse.strReferenceId,
+        intWorkplaceGroupId: matchedResponse.intWorkplaceGroupId,
+        message: message,
+        afterApiResponse: true,
+      };
+    }
+
+    // Return the original item if no match is found
+    return { ...item, afterApiResponse: true };
+  });
+};
+
 export const saveBulkUploadAction = async (
   bulkLandingRowDto,
   setLoading,
@@ -510,8 +587,17 @@ export const saveBulkUploadAction = async (
   setAssignedBulkEmp,
   isForceAssign = false,
   isSkipNAssign = false,
-  cb
+  cb,
+  setBulkLanding
 ) => {
+  const msgList = [
+    "Invalid data list",
+    "Sorry, your organization information is not valid please try again",
+    "Unmatched employee data for current company",
+    "One or more selected additioin and deduction element(s) was not found",
+    "One or more selected employee already exists for this month",
+    "One or more selected employee already exists for this month or Auto Renew",
+  ];
   const error = bulkLandingRowDto?.some(
     (item) => item?.attendenceStatusRequired || item?.maxAmountRequired
   );
@@ -566,10 +652,23 @@ export const saveBulkUploadAction = async (
     toast.success(res?.data?.message || "Bulk Submitted successfully");
   } catch (error) {
     const res = error?.response?.data;
+
+    const isExist = msgList.filter((i) => i === res?.message);
+    console.log({ isExist });
     if (res?.message === "Exists" && !isForceAssign && !isSkipNAssign) {
       setLoading?.(false);
       setShowExistModal?.(true);
       setAssignedBulkEmp?.(res?.validationData);
+    } else if (isExist?.length > 0) {
+      const updatedAr = updateArData(
+        bulkLandingRowDto,
+        res?.validationData,
+        res?.message
+      );
+      setBulkLanding(updatedAr);
+      console.log({ updatedAr });
+
+      setLoading(false);
     } else {
       setLoading(false);
       toast.error(error?.response?.data?.message || "Bulk Submitted failed");
