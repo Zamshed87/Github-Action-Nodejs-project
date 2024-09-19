@@ -34,7 +34,7 @@ const UpdateExpenseApplication = () => {
   const dispatch = useDispatch();
   const debounce = useDebounce();
 
-  const { buId, wgId, employeeId, intWorkplaceId } = useSelector(
+  const { buId, orgId, wgId, employeeId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -287,7 +287,10 @@ const UpdateExpenseApplication = () => {
               columnData={expenseLandingTableColumn(
                 pages?.current,
                 pages?.pageSize,
-                history
+                history,
+                orgId,
+                setLoading,
+                buId
               )}
               pages={pages}
               rowDto={rowDto}
