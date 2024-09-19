@@ -17,13 +17,13 @@ import {
 } from "Components";
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import { monthFirstDate, monthLastDate7 } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
 import { PSelectWithOutForm } from "Components/PForm/Select/PSelectWithOutForm";
 import Loading from "common/loading/Loading";
-import { getPeopleDeskAllDDL } from "common/api";
+import { getPeopleDeskAllDDL, getPeopleDeskAllDDLnew } from "common/api";
 
 const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -220,7 +220,8 @@ const MonthlyAttendanceReport = () => {
     timeSheetSave(payload, setLoading, () => {});
     // console.log(payload, "payload");
   };
-
+  {console.log("rowDto", rowDto)}
+  console.log("startingCalenderDDL", startingCalenderDDL);
   const dateColumns = headerDateList?.dateLists?.map((date, idx) => ({
     title: date?.level,
     dataIndex: date,
@@ -242,8 +243,8 @@ const MonthlyAttendanceReport = () => {
             allowClear
             options={[
               { value: 1, label: "Offday" },
-              ...(startingCalenderDDL?.length > 0
-                ? startingCalenderDDL
+              ...(record?.startingCalenderDDL?.length > 0
+                ? record?.startingCalenderDDL || []
                 : CommonCalendarDDL?.data || []),
             ]}
             value={optionValue}
@@ -268,12 +269,7 @@ const MonthlyAttendanceReport = () => {
   }));
 
   const handleButtonClick = (record, rowIdx) => {
-    // console.log("emp", emp);
-    // console.log("rowIdx", rowIdx);
-    // if (!emp || emp.length === 0 || rowIdx) {
-    //   return toast.warn("Please enter employee id and row index");
-    // }
-
+    setEmp([]);
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [
@@ -292,6 +288,7 @@ const MonthlyAttendanceReport = () => {
         dateLists: cloneEmpRow?.dateLists,
       };
       setRowDto(copyPrvRowDto);
+      setEmp([]);
     });
   };
 
@@ -400,31 +397,39 @@ const MonthlyAttendanceReport = () => {
           </div>
         ),
       },
-      // {
-      //   title: "Roaster Group",
-      //   width: 250,
-      //   render: (text, record, rowIdx) => (
-      //     <PSelect
-      //       options={calenderRoasterDDL}
-      //       name={`roaster-${record.key}`}
-      //       placeholder="Select Roaster Group"
-      //       allowClear
-      //       onChange={(value, option) => {
-      //         setSelectedRoaster(value);
-      //         if (value) {
-      //           getPeopleDeskAllDDL(
-      //             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${option?.value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
-      //             "CalenderId",
-      //             "CalenderName",
-      //             setStartingCalenderDDL
-      //           );
-      //         } else {
-      //           getCalendarDDL();
-      //         }
-      //       }}
-      //     />
-      //   ),
-      // },
+      {
+        title: "Roaster Group",
+        width: 200,
+        render: (text, record, rowIdx) => (
+          <PSelect
+            options={calenderRoasterDDL}
+            name={`roaster-${record.key}`}
+            placeholder="Select Roaster Group"
+            allowClear
+            onChange={(value, op) => {
+              setStartingCalenderDDL([]);
+              const newRowDto = [...rowDto];
+              newRowDto[rowIdx].startingCalenderDDL = [];
+              setRowDto(newRowDto);
+              if (value) {
+                getPeopleDeskAllDDLnew(
+                  `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+                  "CalenderId",
+                  "CalenderName",
+                  setStartingCalenderDDL,
+                  (data) => {
+                    newRowDto[rowIdx].startingCalenderDDL = data;
+                    setRowDto(newRowDto);
+                  }
+                );
+              } else {
+                getCalendarDDL();
+                setStartingCalenderDDL([]);
+              }
+            }}
+          />
+        ),
+      },
       ...(dateColumns || []),
     ];
   };
