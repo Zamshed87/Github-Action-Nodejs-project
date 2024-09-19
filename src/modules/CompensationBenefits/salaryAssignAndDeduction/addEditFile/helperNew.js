@@ -666,6 +666,7 @@ export const saveBulkUploadAction = async (
     );
     setLoading(false);
     cb?.();
+    setBulkLanding([]);
     toast.success(res?.data?.message || "Bulk Submitted successfully");
   } catch (error) {
     const res = error?.response?.data;
