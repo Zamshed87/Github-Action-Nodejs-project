@@ -172,6 +172,22 @@ const MgmtDailyAttendance = () => {
   useEffect(() => {
     getWorkplaceGroup();
     landingApiCall();
+    workplace?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: employeeId,
+      },
+      onSuccess: (res: any) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
   }, []);
   const header: any = [
     {
