@@ -31,7 +31,7 @@ const LatePunishment = () => {
   );
 
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30430) {
+    if (item?.menuReferenceId === 30432) {
       permission = item;
     }
   });
