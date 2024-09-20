@@ -16,12 +16,15 @@ import moneyIcon from "../../../../assets/images/moneyIcon.png";
 import { getEmployeeProfileViewData } from "../../adjustmentIOUReport/helper";
 import Accordion from "./accordion";
 import { getExpenseApplicationById } from "./helper";
+import { getPDFAction } from "utility/downloadFile";
+import { Tooltip } from "antd";
+import { MdLocalPrintshop } from "react-icons/md";
 
 const MgtExpenseApplicationView = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const { buId, wgId } = useSelector(
+  const { buId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -76,6 +79,28 @@ const MgtExpenseApplicationView = () => {
             <div className="d-flex align-items-center">
               <BackButton />
               <h2>{`View Expense Application`}</h2>
+              <div>
+                {(orgId == 5 || orgId === 6) && (
+                  <Tooltip className="mx-2" placement="bottom" title="Print">
+                    <MdLocalPrintshop
+                      style={{
+                        // color: "gray",
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        getPDFAction(
+                          `/PdfAndExcelReport/EmpExpenseReportPdf?intExpenseId=${+params?.id}&businessUnitId=${buId}`,
+                          setLoading
+                        );
+                      }}
+                    ></MdLocalPrintshop>
+                  </Tooltip>
+                )}
+              </div>
             </div>
           </div>
           <div className="card-style">

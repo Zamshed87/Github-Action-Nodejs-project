@@ -1,12 +1,14 @@
 import { EditOutlined, InfoOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import axios from "axios";
+import { MdLocalPrintshop } from "react-icons/md";
+import { getPDFAction } from "utility/downloadFile";
+import AvatarComponent from "../../../common/AvatarComponent";
 import Chips from "../../../common/Chips";
 import { gray900 } from "../../../utility/customColor";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { LightTooltip } from "../../employeeProfile/LoanApplication/helper";
-import AvatarComponent from "../../../common/AvatarComponent";
-import axios from "axios";
 
 // export const empExpenceDtoCol = (history, page, paginationSize) => {
 //   return [
@@ -122,7 +124,14 @@ import axios from "axios";
 //   ];
 // };
 
-export const expenseLandingTableColumn = (page, paginationSize, history) => {
+export const expenseLandingTableColumn = (
+  page,
+  paginationSize,
+  history,
+  orgId,
+  setLoading,
+  buId
+) => {
   return [
     {
       title: "SL",
@@ -290,6 +299,28 @@ export const expenseLandingTableColumn = (page, paginationSize, history) => {
               </button>
             </Tooltip>
           )}
+          <div>
+            {(orgId == 5 || orgId === 6) && (
+              <Tooltip className="iconButton" placement="bottom" title="Print">
+                <MdLocalPrintshop
+                  style={{
+                    // color: "gray",
+                    width: "20px",
+                    height: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    getPDFAction(
+                      `/PdfAndExcelReport/EmpExpenseReportPdf?intExpenseId=${item?.expenseId}&businessUnitId=${buId}`,
+                      setLoading
+                    );
+                  }}
+                ></MdLocalPrintshop>
+              </Tooltip>
+            )}
+          </div>
         </div>
       ),
       sort: true,
