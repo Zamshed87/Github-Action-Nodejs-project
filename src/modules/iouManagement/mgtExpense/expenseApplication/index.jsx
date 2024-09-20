@@ -41,7 +41,7 @@ const MgtExpenseApplication = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, intWorkplaceId, wId } = useSelector(
+  const { buId, orgId, wgId, intWorkplaceId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -316,7 +316,10 @@ const MgtExpenseApplication = () => {
                 columnData={expenseLandingTableColumn(
                   pages?.current,
                   pages?.pageSize,
-                  history
+                  history,
+                  buId,
+                  setLoading,
+                  orgId
                 )}
                 pages={pages}
                 rowDto={rowDto}

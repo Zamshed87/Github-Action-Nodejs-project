@@ -75,7 +75,7 @@ const getDataApiCall = async (
         // setEmpLanding,
         setPages,
       });
-      setEmpIDString(res?.data?.loaderDataList?.map((i) => i?.employeeId));
+      setEmpIDString(res?.data?.employeeIdList);
 
       //   const modifiedData = res?.data?.loaderDataList?.map((item, index) => ({
       //     ...item,

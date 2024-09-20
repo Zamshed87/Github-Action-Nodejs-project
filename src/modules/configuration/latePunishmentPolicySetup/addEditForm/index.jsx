@@ -147,9 +147,9 @@ const AddEditForm = ({
     if (
       (values?.punishmentType?.label === "Leave" ||
         values?.thenEffectOn?.label === "Leave") &&
-      rowDto?.length < 3
+      rowDto?.length === 0
     ) {
-      return toast.warn("Select Atleast 3 Leave Types");
+      return toast.warn("Select Atleast 1 Leave Type");
     }
     const cb = () => {
       resetForm();
@@ -167,9 +167,9 @@ const AddEditForm = ({
       equalAbsentDays: values?.intEqualToAbsent,
       punishmentEffectOn: values?.punishmentType?.label,
       thenEffectOn: values?.thenEffectOn?.label,
-      leaveTypeId1: rowDto[0]?.value,
-      leaveTypeId2: rowDto[1]?.value,
-      leaveTypeId3: rowDto[2]?.value,
+      leaveTypeId1: rowDto[0]?.value ? rowDto[0]?.value : 0,
+      leaveTypeId2: rowDto[1]?.value ? rowDto[1]?.value : 0,
+      leaveTypeId3: rowDto[2]?.value ? rowDto[2]?.value : 0,
       amountDependOn: values?.dependsOn?.label,
       percentOfBasicOrGross:
         values?.dependsOn?.label === "Fixed Amount"
@@ -293,11 +293,11 @@ const AddEditForm = ({
                 ? res?.fixAmount
                 : res?.percentOfBasicOrGross,
           });
-          setRowDto([
-            res?.leaveTypeId1?.value && res?.leaveTypeId1,
-            res?.leaveTypeId2?.value && res?.leaveTypeId2,
-            res?.leaveTypeId3?.value && res?.leaveTypeId3,
-          ]);
+          setRowDto(
+            [res?.leaveTypeId1, res?.leaveTypeId2, res?.leaveTypeId3].filter(
+              (i) => i?.value
+            )
+          );
         },
       });
     }

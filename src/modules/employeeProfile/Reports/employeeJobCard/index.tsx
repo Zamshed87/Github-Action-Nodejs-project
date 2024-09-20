@@ -81,7 +81,7 @@ const EmployeeJobCard = () => {
       params: {
         accountId: orgId,
         workplaceId: 0,
-        businessUnitId:buId,
+        businessUnitId: buId,
         employeeId: values?.employee?.value,
         isForPdf: false,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -105,6 +105,7 @@ const EmployeeJobCard = () => {
         searchText: value,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: number) => {

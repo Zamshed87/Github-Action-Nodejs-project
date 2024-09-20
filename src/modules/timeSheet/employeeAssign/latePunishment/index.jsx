@@ -31,7 +31,7 @@ const LatePunishment = () => {
   );
 
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30430) {
+    if (item?.menuReferenceId === 30432) {
       permission = item;
     }
   });
@@ -96,7 +96,7 @@ const LatePunishment = () => {
   const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     validationSchema,
-    initialValues: { assigned: true },
+    initialValues: { assigned: { value: true, label: "Not Assigned" } },
 
     onSubmit: (values, { resetForm }) => {
       resetForm();
@@ -179,7 +179,7 @@ const LatePunishment = () => {
                               setOpen(true);
                             }}
                           >
-                            Assign {rowDto?.length}
+                            Assign {pages?.total}
                           </button>
                           {rowDto?.filter((item) => item?.isSelected).length >
                           0 ? (
@@ -243,7 +243,7 @@ const LatePunishment = () => {
                                 // );
                               }}
                             >
-                              Assign {checkedList.length}
+                              Assign {checkedList?.length}
                             </button>
                           ) : (
                             ""
@@ -297,7 +297,7 @@ const LatePunishment = () => {
                           { value: true, label: "Not Assigned" },
                           { value: false, label: "Assigned" },
                         ]}
-                        value={values?.year}
+                        value={values?.assigned}
                         onChange={(valueOption) => {
                           getData(
                             { current: 1, pageSize: paginationSize },

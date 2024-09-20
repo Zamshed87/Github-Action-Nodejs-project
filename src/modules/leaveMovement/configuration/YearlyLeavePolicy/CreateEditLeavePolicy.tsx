@@ -207,10 +207,15 @@ const CreateEditLeavePolicy = () => {
           history.push("/administration/leaveandmovement/yearlyLeavePolicy");
         }
       },
-      onError: (error) => {
-        toast.error(error?.message || "Something went wrong", {
-          toastId: "savePolicyError",
-        });
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "Something went wrong",
+          {
+            toastId: "savePolicyError",
+          }
+        );
       },
     });
   };
@@ -218,22 +223,7 @@ const CreateEditLeavePolicy = () => {
   return (
     <>
       {loading && <Loading />}
-      <PForm
-        form={form}
-        // onFinish={(values) => {
-        //   saveHandler(
-        //     values,
-        //     form.resetFields,
-        //     policyApi,
-        //     tableData,
-        //     existingPolicies,
-        //     params,
-        //     history
-        //   );
-        // }}
-        onFinish={submitHandler}
-        initialValues={{}}
-      >
+      <PForm form={form} onFinish={submitHandler} initialValues={{}}>
         <PCard>
           <PCardHeader
             backButton
@@ -873,8 +863,8 @@ const CreateEditLeavePolicy = () => {
                                 layout="horizontal"
                                 name="isDependOnServiceLength"
                                 disabled={
-                                  intLeaveType?.label ===
-                                    "Earn Leave/Annual Leave" ||
+                                  // intLeaveType?.label ===
+                                  //   "Earn Leave/Annual Leave" ||
                                   intLeaveType?.label === "Compensatory Leave"
                                 }
                                 onChange={(e) => {
