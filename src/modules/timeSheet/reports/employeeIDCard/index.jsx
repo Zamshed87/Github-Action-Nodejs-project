@@ -21,11 +21,13 @@ import { downloadFile } from "../../../../utility/downloadFile";
 import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 import { getPeopleDeskAllDDL } from "common/api";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import IdCardPdf from "./idCardTemplate";
 
 const EmployeeIdCardLanding = () => {
   const {
     permissionList,
-    profileData: { buId, wgName, wgId, wId, orgId, employeeId },
+    profileData: { buId, wgId, wId, orgId, employeeId },
   } = useSelector((state) => state?.auth, shallowEqual);
   // const [anchorEl, setAnchorEl] = React.useState(null);
   const [rowDto, setRowDto] = useState([]);
@@ -55,6 +57,8 @@ const EmployeeIdCardLanding = () => {
   });
   const [checkedList, setCheckedList] = useState([]);
   const [empIDString, setEmpIDString] = useState("");
+
+  const [employeePdfData, setEmployeePdfData] = useState({});
 
   const { values, setFieldValue } = useFormik({
     initialValues: {
@@ -107,17 +111,8 @@ const EmployeeIdCardLanding = () => {
         });
 
         setEmpIDString(res?.data?.EmployeeIdList);
-        const modifiedData = res?.data?.Data?.map((item, index) => ({
-          ...item,
-          initialSerialNumber: index + 1,
-          isSelected: checkedList?.find(
-            ({ EmployeeCode }) => item?.EmployeeCode === EmployeeCode
-          )
-            ? true
-            : false,
-        }));
 
-        setRowDto(modifiedData);
+        setRowDto(res?.data?.Data);
         setLandingLoading(false);
       } else {
         setRowDto([]);
@@ -137,6 +132,7 @@ const EmployeeIdCardLanding = () => {
     checkedHeaderList = { ...initHeaderList },
     isAssigned
   ) => {
+    setEmployeePdfData({});
     const modifiedPayload = createPayloadStructure({
       initHeaderList,
       currentFilterSelection,
@@ -195,8 +191,19 @@ const EmployeeIdCardLanding = () => {
     IConfirmModal(confirmObject);
   };
 
+  const selectedEmpIds = () => {
+    const modifyFilterRowDto = checkedList.filter(
+      (itm) => itm.isSelected === true
+    );
+    const empIdList = modifyFilterRowDto.map((data) => {
+      return data?.EmployeeId;
+    });
+    return empIdList.join(",");
+  };
+
   useEffect(() => {
     getData(pages);
+    setEmployeePdfData({});
     setCheckedList([]);
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
@@ -269,35 +276,30 @@ const EmployeeIdCardLanding = () => {
 
             <div className="table-card-head-right">
               <ul>
-                {checkedList.length > 1 && (
+                {employeePdfData?.employees?.length > 0 && (
                   <li>
-                    <ResetButton
-                      title="reset"
-                      icon={
-                        <SettingsBackupRestoreOutlined
-                          sx={{ marginRight: "10px" }}
+                    <PDFDownloadLink
+                      document={
+                        <IdCardPdf
+                          employeeAllData={employeePdfData}
+                          setIsLoading={setIsLoading}
                         />
                       }
-                      onClick={() => {
-                        getData(
-                          { current: 1, pageSize: paginationSize },
-                          "",
-                          [],
-                          -1,
-                          filterOrderList,
-                          checkedHeaderList
-                        );
-                        // setRowDto(allData);
-                        setCheckedList([]);
-                        setFieldValue("searchString", "");
-                      }}
-                    />
+                      fileName="employee_id_cards.pdf"
+                    >
+                      {({ loading }) =>
+                        loading
+                          ? "Generating PDF..."
+                          : "Download Employee ID Cards"
+                      }
+                    </PDFDownloadLink>
                   </li>
                 )}
                 <li>
                   {rowDto?.length > 0 && (
                     <div className="d-flex">
-                      <button
+                      {/* changed requirement to omit bulk download */}
+                      {/* <button
                         className="btn btn-green"
                         style={{
                           marginRight: "10px",
@@ -309,11 +311,18 @@ const EmployeeIdCardLanding = () => {
                           e.stopPropagation();
                           if (!permission?.isCreate)
                             return toast.warn("You don't have permission");
-                          downloadEmpIdCardZipFile(true);
+                          axios
+                            .get(
+                              `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=`
+                            )
+                            .then((res) => {
+                              setEmployeePdfData(res?.data);
+                            });
+                          // downloadEmpIdCardZipFile(true);
                         }}
                       >
                         Download {pages.total}
-                      </button>
+                      </button> */}
                       {rowDto?.filter((item) => item?.isSelected).length > 0 ? (
                         <button
                           className="btn btn-green"
@@ -326,7 +335,14 @@ const EmployeeIdCardLanding = () => {
                             e.stopPropagation();
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
-                            downloadEmpIdCardZipFile(false, {});
+                            axios
+                              .get(
+                                `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
+                              )
+                              .then((res) => {
+                                setEmployeePdfData(res?.data);
+                              });
+                            // downloadEmpIdCardZipFile(false, {});
                           }}
                         >
                           Download {checkedList.length}
@@ -455,8 +471,8 @@ const EmployeeIdCardLanding = () => {
                 checkedList,
                 setCheckedList,
                 headerList,
-                wgName,
-                downloadEmpIdCardZipFile
+                wId,
+                setEmployeePdfData
               )}
               pages={pages}
               rowDto={rowDto}
