@@ -245,10 +245,10 @@ const EmployeePdfLanding = () => {
                 fileName="employee_id_cards.pdf"
               >
                 {({ loading }) => {
-                  if (!loading) {
+                  if (!loading && employeePdfData?.employees?.length > 1) {
                     if (!showDownloadButton) {
                       // 30 sec delay to complete download all emp image inside pdf
-                      setTimeout(() => setShowDownloadButton(true), 30000);
+                      setTimeout(() => setShowDownloadButton(true), 20000);
                     }
                   }
 
