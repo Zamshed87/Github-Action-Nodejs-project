@@ -10,8 +10,8 @@ export const employeeIdCardLandingColumns = (
   checkedList,
   setCheckedList,
   headerList,
-  wgName,
-  downloadEmpIdCardZipFile
+  wId,
+  setEmployeePdfData
 ) =>
   [
     {
@@ -133,7 +133,14 @@ export const employeeIdCardLandingColumns = (
                     return toast.warn("You don't have permission");
                   // setSingleData([record]);
                   // setCreateModal(true);
-                  downloadEmpIdCardZipFile(false, record);
+                  // downloadEmpIdCardZipFile(false, record);
+                  axios
+                    .get(
+                      `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${record?.EmployeeId}`
+                    )
+                    .then((res) => {
+                      setEmployeePdfData(res?.data);
+                    });
                 }}
                 disabled={checkedList.length > 1}
               >

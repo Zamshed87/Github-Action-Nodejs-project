@@ -46,6 +46,7 @@ import HolidayOffdaySetup from "modules/timeSheet/configuration/HolidayOffdaySet
 import LatePunishment from "modules/timeSheet/employeeAssign/latePunishment";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
+import EmployeePdfLanding from "modules/timeSheet/reports/employeeIDCard";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
 import FoodAllowenceReport from "modules/timeSheet/reports/foodAllowenceReport";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
@@ -581,9 +582,7 @@ const DashboardCompPermissionCreate = lazy(() =>
     "../modules/configuration/dashboardComponentPermission/addEditForm.jsx"
   )
 );
-const EmployeeIdCardLanding = lazy(() =>
-  import("../modules/timeSheet/reports/employeeIDCard/index.jsx")
-);
+
 const DashboardComponentPermission = lazy(() =>
   import("../modules/configuration/dashboardComponentPermission/index.jsx")
 );
@@ -1514,7 +1513,7 @@ export const routingList = [
   },
   {
     path: "/profile/reports/emloyeeIDCard",
-    component: EmployeeIdCardLanding,
+    component: EmployeePdfLanding,
   },
   {
     path: "/profile/reports/emloyeeDataChecklist",
