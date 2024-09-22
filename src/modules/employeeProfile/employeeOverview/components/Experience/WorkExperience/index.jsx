@@ -665,52 +665,101 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                       color={gray900}
                                       fontSize={"18px"}
                                       options={[
-                                        ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [
-                                          {
-                                            value: 1,
-                                            label: "Edit",
-                                            icon: (
-                                              <ModeEditOutlined
-                                                sx={{
-                                                  marginRight: "10px",
-                                                  fontSize: "16px",
-                                                }}
-                                              />
-                                            ),
-                                            onClick: () => {
-                                              setStatus("input");
-                                              setIsCreateForm(true);
-                                              setSingleData({
-                                                companyName: item?.strCompanyName,
-                                                jobTitle: item?.strJobTitle,
-                                                location: item?.strLocation,
-                                                jobDescription: item?.strDescription,
-                                                fromDate: item?.dteFromDate,
-                                                toDate: item?.dteToDate,
-                                                intJobExperienceId: item?.intJobExperienceId,
-                                              });
-                                              setImageFile({
-                                                globalFileUrlId: item?.intNocUrlId,
-                                              });
-                                            },
-                                          },
-                                          {
-                                            value: 2,
-                                            label: "Delete",
-                                            icon: (
-                                              <DeleteOutline
-                                                sx={{
-                                                  marginRight: "10px",
-                                                  fontSize: "16px",
-                                                }}
-                                              />
-                                            ),
-                                            onClick: () => {
-                                              deleteHandler(item?.intJobExperienceId, item);
-                                            },
-                                          },
-                                        ] : []),
+                                        ...(intAccountId === 5
+                                          ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                            ? [
+                                                {
+                                                  value: 1,
+                                                  label: "Edit",
+                                                  icon: (
+                                                    <ModeEditOutlined
+                                                      sx={{
+                                                        marginRight: "10px",
+                                                        fontSize: "16px",
+                                                      }}
+                                                    />
+                                                  ),
+                                                  onClick: () => {
+                                                    setStatus("input");
+                                                    setIsCreateForm(true);
+                                                    setSingleData({
+                                                      companyName: item?.strCompanyName,
+                                                      jobTitle: item?.strJobTitle,
+                                                      location: item?.strLocation,
+                                                      jobDescription: item?.strDescription,
+                                                      fromDate: item?.dteFromDate,
+                                                      toDate: item?.dteToDate,
+                                                      intJobExperienceId: item?.intJobExperienceId,
+                                                    });
+                                                    setImageFile({
+                                                      globalFileUrlId: item?.intNocUrlId,
+                                                    });
+                                                  },
+                                                },
+                                                {
+                                                  value: 2,
+                                                  label: "Delete",
+                                                  icon: (
+                                                    <DeleteOutline
+                                                      sx={{
+                                                        marginRight: "10px",
+                                                        fontSize: "16px",
+                                                      }}
+                                                    />
+                                                  ),
+                                                  onClick: () => {
+                                                    deleteHandler(item?.intJobExperienceId, item);
+                                                  },
+                                                },
+                                              ]
+                                            : []
+                                          : [
+                                              {
+                                                value: 1,
+                                                label: "Edit",
+                                                icon: (
+                                                  <ModeEditOutlined
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  setStatus("input");
+                                                  setIsCreateForm(true);
+                                                  setSingleData({
+                                                    companyName: item?.strCompanyName,
+                                                    jobTitle: item?.strJobTitle,
+                                                    location: item?.strLocation,
+                                                    jobDescription: item?.strDescription,
+                                                    fromDate: item?.dteFromDate,
+                                                    toDate: item?.dteToDate,
+                                                    intJobExperienceId: item?.intJobExperienceId,
+                                                  });
+                                                  setImageFile({
+                                                    globalFileUrlId: item?.intNocUrlId,
+                                                  });
+                                                },
+                                              },
+                                              {
+                                                value: 2,
+                                                label: "Delete",
+                                                icon: (
+                                                  <DeleteOutline
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  deleteHandler(item?.intJobExperienceId, item);
+                                                },
+                                              },
+                                            ]),
                                       ]}
+                                      
                                       
                                     />
                                   </div>

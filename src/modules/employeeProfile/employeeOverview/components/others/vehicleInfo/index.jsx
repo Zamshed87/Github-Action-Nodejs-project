@@ -169,30 +169,64 @@ export default function VehicleInfo({ empId, buId, wgId }) {
                           color={gray900}
                           fontSize={"18px"}
                           options={[
-                            ...(isOfficeAdmin || (intAccountId === 5 && !vehicleNo.isMarkCompleted) ? [
-                              {
-                                value: 1,
-                                label: "Edit",
-                                icon: (
-                                  <EditOutlined
-                                    sx={{ marginRight: "10px", fontSize: "16px" }}
-                                  />
-                                ),
-                                onClick: () => {
-                                  setIsForm(true);
-                                  setFieldValue(
-                                    "vehicleNo",
-                                    vehicleNo?.employeeProfileLandingView?.vehicleNo
-                                  );
-                                  setFieldValue(
-                                    "autoId",
-                                    vehicleNo?.employeeProfileLandingView?.intEmployeeBasicInfoId
-                                  );
-                                },
-                              },
-                            ] : []),
+                            ...(intAccountId === 5
+                              ? !vehicleNo.isMarkCompleted || isOfficeAdmin
+                                ? [
+                                    {
+                                      value: 1,
+                                      label: "Edit",
+                                      icon: (
+                                        <EditOutlined
+                                          sx={{
+                                            marginRight: "10px",
+                                            fontSize: "16px",
+                                          }}
+                                        />
+                                      ),
+                                      onClick: () => {
+                                        setIsForm(true);
+                                        setFieldValue(
+                                          "vehicleNo",
+                                          vehicleNo?.employeeProfileLandingView
+                                            ?.vehicleNo
+                                        );
+                                        setFieldValue(
+                                          "autoId",
+                                          vehicleNo?.employeeProfileLandingView
+                                            ?.intEmployeeBasicInfoId
+                                        );
+                                      },
+                                    },
+                                  ]
+                                : []
+                              : [
+                                  {
+                                    value: 1,
+                                    label: "Edit",
+                                    icon: (
+                                      <EditOutlined
+                                        sx={{
+                                          marginRight: "10px",
+                                          fontSize: "16px",
+                                        }}
+                                      />
+                                    ),
+                                    onClick: () => {
+                                      setIsForm(true);
+                                      setFieldValue(
+                                        "vehicleNo",
+                                        vehicleNo?.employeeProfileLandingView
+                                          ?.vehicleNo
+                                      );
+                                      setFieldValue(
+                                        "autoId",
+                                        vehicleNo?.employeeProfileLandingView
+                                          ?.intEmployeeBasicInfoId
+                                      );
+                                    },
+                                  },
+                                ]),
                           ]}
-                          
                         />
                       </div>
                     )}
