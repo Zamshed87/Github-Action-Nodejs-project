@@ -17,7 +17,7 @@ import {
 } from "Components";
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { debounce, set } from "lodash";
+import { debounce } from "lodash";
 import { monthFirstDate, monthLastDate7 } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
@@ -48,7 +48,6 @@ const MonthlyAttendanceReport = () => {
   const [loading, setLoading] = useState(false);
   const [emp, setEmp] = useState([]);
   const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
-  const [selectedRoaster, setSelectedRoaster] = useState(null);
   const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
 
   const [pages, setPages] = useState({
@@ -220,7 +219,9 @@ const MonthlyAttendanceReport = () => {
     timeSheetSave(payload, setLoading, () => {});
     // console.log(payload, "payload");
   };
-  {console.log("rowDto", rowDto)}
+  {
+    console.log("rowDto", rowDto);
+  }
   console.log("startingCalenderDDL", startingCalenderDDL);
   const dateColumns = headerDateList?.dateLists?.map((date, idx) => ({
     title: date?.level,
