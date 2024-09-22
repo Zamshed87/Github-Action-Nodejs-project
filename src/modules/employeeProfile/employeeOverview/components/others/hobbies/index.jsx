@@ -133,9 +133,50 @@ export default function Hobbies({ empId, buId, wgId }) {
                       color={gray900}
                       fontSize={"18px"}
                       options={[
-                        ...(isOfficeAdmin ||
-                        (intAccountId === 5 && !rowDto.isMarkCompleted)
-                          ? [
+                        ...(intAccountId === 5
+                          ? !empBasic.isMarkCompleted || isOfficeAdmin
+                            ? [
+                                {
+                                  value: 1,
+                                  label: "Edit",
+                                  icon: (
+                                    <EditOutlined
+                                      sx={{
+                                        marginRight: "10px",
+                                        fontSize: "16px",
+                                      }}
+                                    />
+                                  ),
+                                  onClick: () => {
+                                    setIsForm(true);
+                                  },
+                                },
+                                {
+                                  value: 2,
+                                  label: "Delete",
+                                  icon: (
+                                    <DeleteOutlined
+                                      sx={{
+                                        marginRight: "10px",
+                                        fontSize: "16px",
+                                      }}
+                                    />
+                                  ),
+                                  onClick: () => {
+                                    saveHandler(
+                                      values,
+                                      () => {
+                                        resetForm(initData);
+                                        setIsForm(false);
+                                        getData();
+                                      },
+                                      true
+                                    );
+                                  },
+                                },
+                              ]
+                            : []
+                          : [
                               {
                                 value: 1,
                                 label: "Edit",
@@ -174,9 +215,9 @@ export default function Hobbies({ empId, buId, wgId }) {
                                   );
                                 },
                               },
-                            ]
-                          : []),
+                            ]),
                       ]}
+                      
                     />
                   </div>
                 )}

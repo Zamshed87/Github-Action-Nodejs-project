@@ -373,41 +373,84 @@ function WorkEmail({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    ...(isOfficeAdmin || (intAccountId === 5 && !rowDto.isMarkCompleted) ? [
-                                      {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setSingleData(rowDto?.employeeProfileLandingView?.strOfficeMail);
-                                          setStatus("input");
-                                          setIsCreateForm(true);
-                                        },
-                                      },
-                                      {
-                                        value: 2,
-                                        label: "Delete",
-                                        icon: (
-                                          <DeleteOutline
-                                            sx={{
-                                              marginRight: "10px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          deleteHandler(setFieldValue);
-                                        },
-                                      },
-                                    ] : []),
+                                    ...(intAccountId === 5
+                                      ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData(
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.strOfficeMail
+                                                );
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(setFieldValue);
+                                              },
+                                            },
+                                          ]
+                                        : []
+                                      : [
+                                          {
+                                            value: 1,
+                                            label: "Edit",
+                                            icon: (
+                                              <ModeEditOutlined
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              setSingleData(
+                                                rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.strOfficeMail
+                                              );
+                                              setStatus("input");
+                                              setIsCreateForm(true);
+                                            },
+                                          },
+                                          {
+                                            value: 2,
+                                            label: "Delete",
+                                            icon: (
+                                              <DeleteOutline
+                                                sx={{
+                                                  marginRight: "10px",
+                                                }}
+                                              />
+                                            ),
+                                            onClick: () => {
+                                              deleteHandler(setFieldValue);
+                                            },
+                                          },
+                                        ]),
                                   ]}
-                                  
                                 />
                               </div>
                             </div>

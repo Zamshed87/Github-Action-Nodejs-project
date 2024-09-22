@@ -378,10 +378,44 @@ function DrivingLicense({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    ...(isOfficeAdmin ||
-                                    (intAccountId === 5 &&
-                                      !rowDto.isMarkCompleted)
-                                      ? [
+                                    ...(intAccountId === 5
+                                      ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData(rowDto?.employeeProfileLandingView?.drivingLicenseNo);
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(setFieldValue);
+                                              },
+                                            },
+                                          ]
+                                        : []
+                                      : [
                                           {
                                             value: 1,
                                             label: "Edit",
@@ -394,11 +428,7 @@ function DrivingLicense({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(
-                                                rowDto
-                                                  ?.employeeProfileLandingView
-                                                  ?.drivingLicenseNo
-                                              );
+                                              setSingleData(rowDto?.employeeProfileLandingView?.drivingLicenseNo);
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -418,9 +448,9 @@ function DrivingLicense({ empId, buId, wgId }) {
                                               deleteHandler(setFieldValue);
                                             },
                                           },
-                                        ]
-                                      : []),
+                                        ]),
                                   ]}
+                                  
                                 />
                               </div>
                             </div>
