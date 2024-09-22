@@ -24,7 +24,6 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import "../aboutMe.css";
 import AccordionCom from "../accordion";
 import { empProfilePicUpload } from "../helper";
-import { toast } from "react-toastify";
 
 const Input = styled("input")({
   display: "none",
@@ -43,7 +42,6 @@ const ProfileCard = ({
   empId,
   strProfileImageUrl,
   getEmpData,
-  isMargin,
   isOfficeAdmin = false,
 }) => {
   // this component is used from about me and employee landing page

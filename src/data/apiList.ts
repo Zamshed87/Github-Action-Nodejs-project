@@ -184,5 +184,6 @@ export const apiList = {
     "/AssignLatePunishmentPolicy/GetLatePunishmentPoliciesDdl",
   AssignEmployeeToLatePunishmentPolicy:
     "/AssignLatePunishmentPolicy/AssignEmployeeToLatePunishmentPolicy",
-    getSupervisorListDDL: "/Employee/GetSupervisorList"
+  getSupervisorListDDL: "/Employee/GetSupervisorList",
+  GetEmployeeIdCardLanding: "/Employee/GetIdCardDetailsLanding",
 };

@@ -134,6 +134,9 @@ const JoineeAttendanceReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
+    const workplaceList = values?.workplace?.length
+      ? values.workplace.map((item: any) => item.value).join(",")
+      : 0;
 
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
@@ -141,8 +144,9 @@ const JoineeAttendanceReport = () => {
       params: {
         ReportType: "new_joinee_in_out_attendance_report_for_all_employee",
         AccountId: orgId,
+        businessUnitId: buId,
         WorkplaceGroupId: values?.workplaceGroup?.value || 0,
-        WorkplaceId: values?.workplace?.value || 0,
+        WorkplaceIdList: workplaceList || 0,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -184,27 +188,29 @@ const JoineeAttendanceReport = () => {
     //   }));
 
     // new code start from here
-    let d : any = [];
+    let d: any = [];
 
     if (values?.attendanceMonth) {
       // Extract the selected year and month from attendanceMonth
       const attendanceMonth = moment(values?.attendanceMonth);
       const selectedYear = attendanceMonth.year();
       const selectedMonth = attendanceMonth.month(); // Month is 0-based in moment.js
-    
+
       // Get the full month name
       const monthName = attendanceMonth.format("MMMM");
-    
+
       // Generate the full date list for the selected month
       const daysInMonth = attendanceMonth.daysInMonth();
       const dateList = Array.from({ length: daysInMonth }, (_, index) => {
-        const date = moment([selectedYear, selectedMonth, index + 1]).format("YYYY-MM-DD");
+        const date = moment([selectedYear, selectedMonth, index + 1]).format(
+          "YYYY-MM-DD"
+        );
         return {
           date,
           level: `${monthName} ${index + 1}`, // Label with the month name and day number
         };
       });
-    
+
       d = dateList.map((item: any) => ({
         title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
         render: (_: any, record: any) =>
@@ -328,17 +334,18 @@ const JoineeAttendanceReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+                  const workplaceList = values?.workplace?.length
+                    ? values.workplace.map((item: any) => item.value).join(",")
+                    : 0;
 
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=new_joinee_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
-                      values?.fromdate
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=new_joinee_in_out_attendance_report_for_all_employee&AccountId=${orgId}&businessUnitId=${buId}&DteFromDate=${moment(
+                      values?.fromDate
                     ).format("YYYY-MM-DD")}&DteToDate=${moment(
                       values?.toDate
                     ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
                       values?.workplaceGroup?.value
-                    }&WorkplaceId=${
-                      values?.workplace?.value
-                    }&PageNo=1&PageSize=10000000&IsPaginated=false&intYearId=${moment(
+                    }&WorkplaceIdList=${workplaceList}&PageNo=1&PageSize=10000000&IsPaginated=false&intYearId=${moment(
                       values?.attendanceMonth
                     ).format("YYYY")}&intMonthId=${moment(
                       values?.attendanceMonth
@@ -357,7 +364,7 @@ const JoineeAttendanceReport = () => {
                       };
                     });
                     createCommonExcelFile({
-                      titleWithDate: `Monthly Attendance Report - ${dateFormatter(
+                      titleWithDate: `Joinee Attendance Report - ${dateFormatter(
                         moment(values?.fromDate).format("YYYY-MM-DD")
                       )} to ${dateFormatter(
                         moment(values?.toDate).format("YYYY-MM-DD")
@@ -489,7 +496,7 @@ const JoineeAttendanceReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
-                  disabled={+id ? true : false}
+                  mode="multiple"
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,

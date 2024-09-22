@@ -124,7 +124,7 @@ export const setHeaderListDataDynamically = ({
   setPages,
 }) => {
   const allHeadData = response?.[headerListKey];
-   
+
   if (currentFilterSelection !== -1) {
     if (
       currentFilterSelection !== -1 &&
@@ -143,7 +143,7 @@ export const setHeaderListDataDynamically = ({
         setHeaderList({
           ...initialHeaderListData,
         });
-        const currentList2 = allHeadData?.[`${currentFilterSelection}List`]; // for reseting the column data 
+        const currentList2 = allHeadData?.[`${currentFilterSelection}List`]; // for reseting the column data
         setHeaderList({
           ...allHeadData,
           [`${currentFilterSelection}List`]: currentList2,

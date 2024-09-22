@@ -13,12 +13,15 @@ import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { gray700 } from "../../../utility/customColor";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
 import { getExpenseApplicationById } from "./helper";
+import { getPDFAction } from "utility/downloadFile";
+import { MdLocalPrintshop } from "react-icons/md";
+import { Tooltip } from "antd";
 
 const SelfExpenseApplicationView = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const { buId } = useSelector(
+  const { buId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -61,6 +64,28 @@ const SelfExpenseApplicationView = () => {
             <div className="d-flex align-items-center">
               <BackButton />
               <h2>{`View Expense Application`}</h2>
+              <div>
+                {(orgId == 5 || orgId === 6) && (
+                  <Tooltip className="mx-2" placement="bottom" title="Print">
+                    <MdLocalPrintshop
+                      style={{
+                        // color: "gray",
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        getPDFAction(
+                          `/PdfAndExcelReport/EmpExpenseReportPdf?intExpenseId=${+params?.id}&businessUnitId=${buId}`,
+                          setLoading
+                        );
+                      }}
+                    ></MdLocalPrintshop>
+                  </Tooltip>
+                )}
+              </div>
             </div>
           </div>
           <div className="card-style">
