@@ -151,12 +151,12 @@ const ReporterUpdation = () => {
         <DataTable
           header={header(actionObj)}
           bordered
-          data={BulkReporterLandinApi?.data?.data || []}
+          data={BulkReporterLandinApi?.data?.Data || []}
           loading={BulkReporterLandinApi?.loading}
           scroll={{ x: 1500 }}
           pagination={{
-            pageSize: BulkReporterLandinApi?.data?.pageSize,
-            total: BulkReporterLandinApi?.data?.totalCount,
+            pageSize: BulkReporterLandinApi?.data?.PageSize,
+            total: BulkReporterLandinApi?.data?.TotalCount,
           }}
           onChange={(pagination, filters, sorter, extra) => {
             // Return if sort function is called
