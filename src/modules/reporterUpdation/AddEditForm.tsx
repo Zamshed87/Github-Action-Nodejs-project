@@ -32,8 +32,8 @@ const AddEditForm = ({
       resetForm();
       setIsAddEditForm(false);
       getData({
-        currentPage: BulkReporterLandinApi?.data?.currentPage,
-        pageSize: BulkReporterLandinApi?.data?.pageSize,
+        currentPage: BulkReporterLandinApi?.data?.CurrentPage,
+        pageSize: BulkReporterLandinApi?.data?.PageSize,
       });
       setSelectedRow([]);
       setId("");
