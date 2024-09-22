@@ -751,10 +751,69 @@ function OtherAddress({ getData, rowDto, empId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    ...(isOfficeAdmin ||
-                                    (intAccountId === 5 &&
-                                      !rowDto.isMarkCompleted)
-                                      ? [
+                                    ...(intAccountId === 5
+                                      ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData({
+                                                  country: {
+                                                    value: rowDto?.otherAddress[0]?.intCountryId,
+                                                    label: rowDto?.otherAddress[0]?.strCountry,
+                                                  },
+                                                  division: {
+                                                    value: rowDto?.otherAddress[0]?.intDivisionId,
+                                                    label: rowDto?.otherAddress[0]?.strDivision,
+                                                  },
+                                                  district: {
+                                                    value: rowDto?.otherAddress[0]?.intDistrictOrStateId,
+                                                    label: rowDto?.otherAddress[0]?.strDistrictOrState,
+                                                  },
+                                                  policeStation: {
+                                                    value: rowDto?.permanentAddress[0]?.intThanaId,
+                                                    label: rowDto?.permanentAddress[0]?.strThana,
+                                                  },
+                                                  postOffice: {
+                                                    value: rowDto?.otherAddress[0]?.intPostOfficeId,
+                                                    label: rowDto?.otherAddress[0]?.strPostOffice,
+                                                  },
+                                                  postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
+                                                  address: rowDto?.otherAddress[0]?.strAddressDetails,
+                                                });
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(values, () => {
+                                                  resetForm(initData);
+                                                });
+                                              },
+                                            },
+                                          ]
+                                        : []
+                                      : [
                                           {
                                             value: 1,
                                             label: "Edit",
@@ -769,51 +828,27 @@ function OtherAddress({ getData, rowDto, empId }) {
                                             onClick: () => {
                                               setSingleData({
                                                 country: {
-                                                  value:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.intCountryId,
-                                                  label:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.strCountry,
+                                                  value: rowDto?.otherAddress[0]?.intCountryId,
+                                                  label: rowDto?.otherAddress[0]?.strCountry,
                                                 },
                                                 division: {
-                                                  value:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.intDivisionId,
-                                                  label:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.strDivision,
+                                                  value: rowDto?.otherAddress[0]?.intDivisionId,
+                                                  label: rowDto?.otherAddress[0]?.strDivision,
                                                 },
                                                 district: {
-                                                  value:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.intDistrictOrStateId,
-                                                  label:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.strDistrictOrState,
+                                                  value: rowDto?.otherAddress[0]?.intDistrictOrStateId,
+                                                  label: rowDto?.otherAddress[0]?.strDistrictOrState,
                                                 },
                                                 policeStation: {
-                                                  value:
-                                                    rowDto?.permanentAddress[0]
-                                                      ?.intThanaId,
-                                                  label:
-                                                    rowDto?.permanentAddress[0]
-                                                      ?.strThana,
+                                                  value: rowDto?.permanentAddress[0]?.intThanaId,
+                                                  label: rowDto?.permanentAddress[0]?.strThana,
                                                 },
                                                 postOffice: {
-                                                  value:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.intPostOfficeId,
-                                                  label:
-                                                    rowDto?.otherAddress[0]
-                                                      ?.strPostOffice,
+                                                  value: rowDto?.otherAddress[0]?.intPostOfficeId,
+                                                  label: rowDto?.otherAddress[0]?.strPostOffice,
                                                 },
-                                                postCode:
-                                                  rowDto?.permanentAddress[0]
-                                                    ?.strZipOrPostCode,
-                                                address:
-                                                  rowDto?.otherAddress[0]
-                                                    ?.strAddressDetails,
+                                                postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
+                                                address: rowDto?.otherAddress[0]?.strAddressDetails,
                                               });
                                               setStatus("input");
                                               setIsCreateForm(true);
@@ -836,9 +871,9 @@ function OtherAddress({ getData, rowDto, empId }) {
                                               });
                                             },
                                           },
-                                        ]
-                                      : []),
+                                        ]),
                                   ]}
+                                  
                                 />
                               </div>
                             </div>

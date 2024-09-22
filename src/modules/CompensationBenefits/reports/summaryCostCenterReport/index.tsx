@@ -13,13 +13,15 @@ import { Col, Form, Row, Tooltip } from "antd";
 import { getPeopleDeskAllDDL } from "common/api";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
 import { todayDate } from "utility/todayDate";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const SummaryCostCenterReport = () => {
+  const dispatch = useDispatch();
   const { orgId, buId, wgId, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
@@ -81,6 +83,23 @@ const SummaryCostCenterReport = () => {
       workPlaceId: (workplaceDDL || []).map((w: any) => w?.intWorkplaceId),
     });
   };
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { permissionList } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+
+  let permission = null;
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30410) {
+      permission = item;
+    }
+  });
   document.title = "Salary Summary Cost Center Report";
   return (
     <>

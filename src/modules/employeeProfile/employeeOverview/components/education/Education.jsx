@@ -725,18 +725,67 @@ function Education({
                                               color={gray900}
                                               fontSize={"18px"}
                                               options={[
-                                                ...(isOfficeAdmin ||
-                                                (intAccountId === 5 &&
-                                                  !rowDto.isMarkCompleted)
-                                                  ? [
+                                                ...(intAccountId === 5
+                                                  ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                                    ? [
+                                                        {
+                                                          value: 1,
+                                                          label: "Edit",
+                                                          icon: (
+                                                            <ModeEditOutlined
+                                                              sx={{
+                                                                marginRight: "10px",
+                                                                fontSize: "16px",
+                                                              }}
+                                                            />
+                                                          ),
+                                                          onClick: () => {
+                                                            setStatus("input");
+                                                            setIsCreateForm(true);
+                                                            setSingleData({
+                                                              isForeign: item?.isForeign,
+                                                              instituteName: item?.strInstituteName,
+                                                              degree: {
+                                                                value: item?.intEducationDegreeId,
+                                                                label: item?.strEducationDegree,
+                                                              },
+                                                              fieldOfStudy: item?.strEducationFieldOfStudy,
+                                                              cgpa: item?.strCgpa,
+                                                              outOf: item?.strOutOf,
+                                                              fromDate: item?.dteStartDate,
+                                                              toDate: item?.dteEndDate,
+                                                              intEmployeeEducationId: item?.intEmployeeEducationId,
+                                                            });
+                                                            setImageFile({
+                                                              globalFileUrlId: item?.intCertificateFileUrlId,
+                                                            });
+                                                          },
+                                                        },
+                                                        {
+                                                          value: 2,
+                                                          label: "Delete",
+                                                          icon: (
+                                                            <DeleteOutline
+                                                              sx={{
+                                                                marginRight: "10px",
+                                                                fontSize: "16px",
+                                                              }}
+                                                            />
+                                                          ),
+                                                          onClick: () => {
+                                                            deleteHandler(item?.intEmployeeEducationId, item);
+                                                          },
+                                                        },
+                                                      ]
+                                                    : []
+                                                  : [
                                                       {
                                                         value: 1,
                                                         label: "Edit",
                                                         icon: (
                                                           <ModeEditOutlined
                                                             sx={{
-                                                              marginRight:
-                                                                "10px",
+                                                              marginRight: "10px",
                                                               fontSize: "16px",
                                                             }}
                                                           />
@@ -745,31 +794,21 @@ function Education({
                                                           setStatus("input");
                                                           setIsCreateForm(true);
                                                           setSingleData({
-                                                            isForeign:
-                                                              item?.isForeign,
-                                                            instituteName:
-                                                              item?.strInstituteName,
+                                                            isForeign: item?.isForeign,
+                                                            instituteName: item?.strInstituteName,
                                                             degree: {
-                                                              value:
-                                                                item?.intEducationDegreeId,
-                                                              label:
-                                                                item?.strEducationDegree,
+                                                              value: item?.intEducationDegreeId,
+                                                              label: item?.strEducationDegree,
                                                             },
-                                                            fieldOfStudy:
-                                                              item?.strEducationFieldOfStudy,
+                                                            fieldOfStudy: item?.strEducationFieldOfStudy,
                                                             cgpa: item?.strCgpa,
-                                                            outOf:
-                                                              item?.strOutOf,
-                                                            fromDate:
-                                                              item?.dteStartDate,
-                                                            toDate:
-                                                              item?.dteEndDate,
-                                                            intEmployeeEducationId:
-                                                              item?.intEmployeeEducationId,
+                                                            outOf: item?.strOutOf,
+                                                            fromDate: item?.dteStartDate,
+                                                            toDate: item?.dteEndDate,
+                                                            intEmployeeEducationId: item?.intEmployeeEducationId,
                                                           });
                                                           setImageFile({
-                                                            globalFileUrlId:
-                                                              item?.intCertificateFileUrlId,
+                                                            globalFileUrlId: item?.intCertificateFileUrlId,
                                                           });
                                                         },
                                                       },
@@ -779,22 +818,18 @@ function Education({
                                                         icon: (
                                                           <DeleteOutline
                                                             sx={{
-                                                              marginRight:
-                                                                "10px",
+                                                              marginRight: "10px",
                                                               fontSize: "16px",
                                                             }}
                                                           />
                                                         ),
                                                         onClick: () => {
-                                                          deleteHandler(
-                                                            item?.intEmployeeEducationId,
-                                                            item
-                                                          );
+                                                          deleteHandler(item?.intEmployeeEducationId, item);
                                                         },
                                                       },
-                                                    ]
-                                                  : []),
+                                                    ]),
                                               ]}
+                                              
                                             />
                                           </div>
                                         )}
