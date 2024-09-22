@@ -13,7 +13,6 @@ import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -41,7 +40,7 @@ const MonthlyInOutReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId, buName, wId, wgName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -55,7 +54,6 @@ const MonthlyInOutReport = () => {
   //   const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
-  const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
@@ -147,9 +145,9 @@ const MonthlyInOutReport = () => {
         ReportType: "monthly_in_out_attendance_report_for_all_employee",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
+        WorkplaceGroupId: values?.workplaceGroup?.value || wgId,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceList: values?.workplaceGroup?.value ? workplaceList : `${wId}`,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -296,18 +294,22 @@ const MonthlyInOutReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_in_out_attendance_report_for_all_employee&DteFromDate=${moment(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?reportType=monthly_in_out_attendance_report_for_all_employee&accountId=${orgId}&dteFromDate=${moment(
                       values?.fromDate
-                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
+                    ).format("YYYY-MM-DD")}&dteToDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
+                    ).format("YYYY-MM-DD")}&employeeId=0&workplaceGroupId=${
+                      values?.workplaceGroup?.value || wgId
+                    }&WorkplaceList=${
                       values?.workplaceGroup?.value
-                    }&WorkplaceId=${
-                      values?.workplace?.value
-                    }&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
+                        ? values?.workplace
+                            ?.map((item: any) => item?.intWorkplaceId)
+                            .join(",")
+                        : wId
+                    }&pageNo=1&pageSize=1000&isPaginated=false&businessUnitId=${buId}`
                   );
+
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
@@ -328,10 +330,10 @@ const MonthlyInOutReport = () => {
                       )}`,
                       fromDate: "",
                       toDate: "",
-                      buAddress: (buDetails as any)?.strAddress,
-                      businessUnit: values?.workplaceGroup?.value
-                        ? (buDetails as any)?.strWorkplace
-                        : buName,
+                      buAddress: values?.workplaceGroup?.value
+                        ? values?.workplaceGroup?.label
+                        : wgName,
+                      businessUnit: buName,
                       tableHeader: montlyInOutXlCol(
                         moment(values?.fromDate).format("YYYY-MM-DD"),
                         moment(values?.toDate).format("YYYY-MM-DD")
@@ -443,7 +445,6 @@ const MonthlyInOutReport = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
-                    getWorkplaceDetails(value, setBuDetails);
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />

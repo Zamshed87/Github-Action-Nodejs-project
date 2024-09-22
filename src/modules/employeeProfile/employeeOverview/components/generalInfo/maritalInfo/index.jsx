@@ -412,15 +412,62 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                 </h4>
                                 <small>Marital Status</small>
                               </div>
+
                               <div className="col-lg-1">
                                 <ActionMenu
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    ...(isOfficeAdmin ||
-                                    (intAccountId === 5 &&
-                                      !rowDto.isMarkCompleted)
-                                      ? [
+                                    ...(intAccountId === 5
+                                      ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData({
+                                                  value:
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus ===
+                                                    "Single"
+                                                      ? 1
+                                                      : 2,
+                                                  label:
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus,
+                                                });
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(setFieldValue);
+                                              },
+                                            },
+                                          ]
+                                        : []
+                                      : [
                                           {
                                             value: 1,
                                             label: "Edit",
@@ -465,8 +512,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                               deleteHandler(setFieldValue);
                                             },
                                           },
-                                        ]
-                                      : []),
+                                        ]),
                                   ]}
                                 />
                               </div>

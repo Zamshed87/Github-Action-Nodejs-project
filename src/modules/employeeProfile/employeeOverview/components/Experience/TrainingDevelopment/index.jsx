@@ -669,10 +669,54 @@ function TrainingDevelopment({
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      ...(isOfficeAdmin ||
-                                      (intAccountId === 5 &&
-                                        !rowDto.isMarkCompleted)
-                                        ? [
+                                      ...(intAccountId === 5
+                                        ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                          ? [
+                                              {
+                                                value: 1,
+                                                label: "Edit",
+                                                icon: (
+                                                  <ModeEditOutlined
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  setStatus("input");
+                                                  setIsCreateForm(true);
+                                                  setSingleData({
+                                                    trainingTitle: item?.strTrainingTitle,
+                                                    issuingOrganization: item?.strInstituteName,
+                                                    fromDate: item?.dteStartDate,
+                                                    toDate: item?.dteEndDate,
+                                                    expirationDate: item?.dteExpiryDate,
+                                                    intTrainingId: item?.intTrainingId,
+                                                  });
+                                                  setImageFile({
+                                                    globalFileUrlId: item?.intTrainingFileUrlId,
+                                                  });
+                                                },
+                                              },
+                                              {
+                                                value: 2,
+                                                label: "Delete",
+                                                icon: (
+                                                  <DeleteOutline
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  deleteHandler(item?.intTrainingId, item);
+                                                },
+                                              },
+                                            ]
+                                          : []
+                                        : [
                                             {
                                               value: 1,
                                               label: "Edit",
@@ -688,20 +732,15 @@ function TrainingDevelopment({
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                                 setSingleData({
-                                                  trainingTitle:
-                                                    item?.strTrainingTitle,
-                                                  issuingOrganization:
-                                                    item?.strInstituteName,
+                                                  trainingTitle: item?.strTrainingTitle,
+                                                  issuingOrganization: item?.strInstituteName,
                                                   fromDate: item?.dteStartDate,
                                                   toDate: item?.dteEndDate,
-                                                  expirationDate:
-                                                    item?.dteExpiryDate,
-                                                  intTrainingId:
-                                                    item?.intTrainingId,
+                                                  expirationDate: item?.dteExpiryDate,
+                                                  intTrainingId: item?.intTrainingId,
                                                 });
                                                 setImageFile({
-                                                  globalFileUrlId:
-                                                    item?.intTrainingFileUrlId,
+                                                  globalFileUrlId: item?.intTrainingFileUrlId,
                                                 });
                                               },
                                             },
@@ -717,15 +756,12 @@ function TrainingDevelopment({
                                                 />
                                               ),
                                               onClick: () => {
-                                                deleteHandler(
-                                                  item?.intTrainingId,
-                                                  item
-                                                );
+                                                deleteHandler(item?.intTrainingId, item);
                                               },
                                             },
-                                          ]
-                                        : []),
+                                          ]),
                                     ]}
+                                    
                                   />
                                 </div>
                               </div>

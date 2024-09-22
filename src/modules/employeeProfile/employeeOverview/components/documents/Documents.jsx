@@ -447,10 +447,50 @@ function Documents({
                                         color={gray900}
                                         fontSize={"18px"}
                                         options={[
-                                          ...(isOfficeAdmin ||
-                                          (intAccountId === 5 &&
-                                            !rowDto.isMarkCompleted)
-                                            ? [
+                                          ...(intAccountId === 5
+                                            ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                              ? [
+                                                  {
+                                                    value: 1,
+                                                    label: "Edit",
+                                                    icon: (
+                                                      <ModeEditOutlined
+                                                        sx={{
+                                                          marginRight: "10px",
+                                                          fontSize: "16px",
+                                                        }}
+                                                      />
+                                                    ),
+                                                    onClick: () => {
+                                                      setStatus("input");
+                                                      setIsCreateForm(true);
+                                                      setSingleData({
+                                                        documentName: item?.strDocumentType,
+                                                        intDocumentManagementId: item?.intDocumentManagementId,
+                                                      });
+                                                      setImageFile({
+                                                        globalFileUrlId: item?.intFileUrlId,
+                                                      });
+                                                    },
+                                                  },
+                                                  {
+                                                    value: 2,
+                                                    label: "Delete",
+                                                    icon: (
+                                                      <DeleteOutline
+                                                        sx={{
+                                                          marginRight: "10px",
+                                                          fontSize: "16px",
+                                                        }}
+                                                      />
+                                                    ),
+                                                    onClick: () => {
+                                                      deleteHandler(item?.intDocumentManagementId);
+                                                    },
+                                                  },
+                                                ]
+                                              : []
+                                            : [
                                                 {
                                                   value: 1,
                                                   label: "Edit",
@@ -466,14 +506,11 @@ function Documents({
                                                     setStatus("input");
                                                     setIsCreateForm(true);
                                                     setSingleData({
-                                                      documentName:
-                                                        item?.strDocumentType,
-                                                      intDocumentManagementId:
-                                                        item?.intDocumentManagementId,
+                                                      documentName: item?.strDocumentType,
+                                                      intDocumentManagementId: item?.intDocumentManagementId,
                                                     });
                                                     setImageFile({
-                                                      globalFileUrlId:
-                                                        item?.intFileUrlId,
+                                                      globalFileUrlId: item?.intFileUrlId,
                                                     });
                                                   },
                                                 },
@@ -489,14 +526,12 @@ function Documents({
                                                     />
                                                   ),
                                                   onClick: () => {
-                                                    deleteHandler(
-                                                      item?.intDocumentManagementId
-                                                    );
+                                                    deleteHandler(item?.intDocumentManagementId);
                                                   },
                                                 },
-                                              ]
-                                            : []),
+                                              ]),
                                         ]}
+                                        
                                       />
                                     </div>
                                   </div>
