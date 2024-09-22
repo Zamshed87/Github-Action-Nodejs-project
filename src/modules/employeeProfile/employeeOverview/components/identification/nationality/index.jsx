@@ -443,10 +443,54 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      ...(isOfficeAdmin ||
-                                      (intAccountId === 5 &&
-                                        !rowDto.isMarkCompleted)
-                                        ? [
+                                      ...(intAccountId === 5
+                                        ? !rowDto.isMarkCompleted ||
+                                          isOfficeAdmin
+                                          ? [
+                                              {
+                                                value: 1,
+                                                label: "Edit",
+                                                icon: (
+                                                  <ModeEditOutlined
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  setSingleData({
+                                                    value:
+                                                      rowDto
+                                                        ?.empEmployeePhotoIdentity
+                                                        ?.strNationality,
+                                                    label:
+                                                      rowDto
+                                                        ?.empEmployeePhotoIdentity
+                                                        ?.strNationality,
+                                                  });
+                                                  setStatus("input");
+                                                  setIsCreateForm(true);
+                                                },
+                                              },
+                                              {
+                                                value: 2,
+                                                label: "Delete",
+                                                icon: (
+                                                  <DeleteOutline
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  deleteHandler(values);
+                                                },
+                                              },
+                                            ]
+                                          : []
+                                        : [
                                             {
                                               value: 1,
                                               label: "Edit",
@@ -488,8 +532,7 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                 deleteHandler(values);
                                               },
                                             },
-                                          ]
-                                        : []),
+                                          ]),
                                     ]}
                                   />
                                 </div>

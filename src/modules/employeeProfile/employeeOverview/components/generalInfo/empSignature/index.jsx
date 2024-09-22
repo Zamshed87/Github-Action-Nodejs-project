@@ -455,10 +455,57 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     color={gray900}
                                     fontSize={"18px"}
                                     options={[
-                                      ...(isOfficeAdmin ||
-                                      (intAccountId === 5 &&
-                                        !rowDto.isMarkCompleted)
-                                        ? [
+                                      ...(intAccountId === 5
+                                        ? !rowDto.isMarkCompleted ||
+                                          isOfficeAdmin
+                                          ? [
+                                              {
+                                                value: 1,
+                                                label: "Edit",
+                                                icon: (
+                                                  <ModeEditOutlined
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  setSingleData({
+                                                    value:
+                                                      rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strMaritalStatus ===
+                                                      "Single"
+                                                        ? 1
+                                                        : 2,
+                                                    label:
+                                                      rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strMaritalStatus,
+                                                  });
+                                                  setStatus("input");
+                                                  setIsCreateForm(true);
+                                                },
+                                              },
+                                              {
+                                                value: 2,
+                                                label: "Delete",
+                                                icon: (
+                                                  <DeleteOutline
+                                                    sx={{
+                                                      marginRight: "10px",
+                                                      fontSize: "16px",
+                                                    }}
+                                                  />
+                                                ),
+                                                onClick: () => {
+                                                  deleteHandler(setFieldValue);
+                                                },
+                                              },
+                                            ]
+                                          : []
+                                        : [
                                             {
                                               value: 1,
                                               label: "Edit",
@@ -472,56 +519,18 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                               ),
                                               onClick: () => {
                                                 setSingleData({
-                                                  value: rowDto
-                                                    ?.empEmployeePhotoIdentity
-                                                    ?.intSignatureFileUrlId
-                                                    ? rowDto
-                                                        ?.empEmployeePhotoIdentity
-                                                        ?.intSignatureFileUrlId
-                                                    : 0,
-                                                  label: rowDto
-                                                    ?.empEmployeePhotoIdentity
-                                                    ?.intSignatureFileUrlId
-                                                    ? rowDto
-                                                        ?.empEmployeePhotoIdentity
-                                                        ?.intSignatureFileUrlId
-                                                    : 0,
+                                                  value:
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus ===
+                                                    "Single"
+                                                      ? 1
+                                                      : 2,
+                                                  label:
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus,
                                                 });
-                                                if (
-                                                  rowDto
-                                                    ?.empEmployeePhotoIdentity
-                                                    ?.intSignatureFileUrlId
-                                                ) {
-                                                  const authSignatureImage = {
-                                                    lastModified: new Date(),
-                                                    lastModifiedDate:
-                                                      todayDate(),
-                                                    name: `Attachment 1`,
-                                                    response: [
-                                                      {
-                                                        fileName: `Attachment 1`,
-                                                        globalFileUrlId:
-                                                          rowDto
-                                                            ?.empEmployeePhotoIdentity
-                                                            ?.intSignatureFileUrlId,
-                                                        intAutoId: 1,
-                                                        isActive: true,
-                                                      },
-                                                    ],
-                                                    url: `${APIUrl}/Document/DownloadFile?id=${rowDto?.empEmployeePhotoIdentity?.intSignatureFileUrlId}`,
-                                                    status: "done",
-                                                    type: "image/jpeg",
-                                                    uid: `Attachment ${
-                                                      rowDto
-                                                        ?.empEmployeePhotoIdentity
-                                                        ?.intSignatureFileUrlId
-                                                    }-${1}`,
-                                                  };
-                                                  setAuthSignatureImage([
-                                                    authSignatureImage,
-                                                  ]);
-                                                }
-
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -538,11 +547,10 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                deleteHandler(values);
+                                                deleteHandler(setFieldValue);
                                               },
                                             },
-                                          ]
-                                        : []),
+                                          ]),
                                     ]}
                                   />
                                 </div>

@@ -374,10 +374,44 @@ function TinNo({ empId, buId, wgId }) {
                                   color={gray900}
                                   fontSize={"18px"}
                                   options={[
-                                    ...(isOfficeAdmin ||
-                                    (intAccountId === 5 &&
-                                      !rowDto.isMarkCompleted)
-                                      ? [
+                                    ...(intAccountId === 5
+                                      ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? [
+                                            {
+                                              value: 1,
+                                              label: "Edit",
+                                              icon: (
+                                                <ModeEditOutlined
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                setSingleData(rowDto?.employeeProfileLandingView?.tinNo);
+                                                setStatus("input");
+                                                setIsCreateForm(true);
+                                              },
+                                            },
+                                            {
+                                              value: 2,
+                                              label: "Delete",
+                                              icon: (
+                                                <DeleteOutline
+                                                  sx={{
+                                                    marginRight: "10px",
+                                                    fontSize: "16px",
+                                                  }}
+                                                />
+                                              ),
+                                              onClick: () => {
+                                                deleteHandler(values);
+                                              },
+                                            },
+                                          ]
+                                        : []
+                                      : [
                                           {
                                             value: 1,
                                             label: "Edit",
@@ -390,11 +424,7 @@ function TinNo({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(
-                                                rowDto
-                                                  ?.employeeProfileLandingView
-                                                  ?.tinNo
-                                              );
+                                              setSingleData(rowDto?.employeeProfileLandingView?.tinNo);
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -414,9 +444,9 @@ function TinNo({ empId, buId, wgId }) {
                                               deleteHandler(values);
                                             },
                                           },
-                                        ]
-                                      : []),
+                                        ]),
                                   ]}
+                                  
                                 />
                               </div>
                             </div>
