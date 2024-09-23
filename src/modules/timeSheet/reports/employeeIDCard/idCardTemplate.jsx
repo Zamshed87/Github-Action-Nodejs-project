@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Page, Text, View, Document, Image } from "@react-pdf/renderer";
+import { Page, Text, View, Document, Image, Font } from "@react-pdf/renderer";
 import { APIUrl } from "App";
 import profileImg from "../../../../assets/images/profile.jpg";
 import { styles } from "./cardStyle";
@@ -45,6 +45,8 @@ const IdCardPdf = ({ employeeAllData }) => {
     e.target.src = `data:image/png;base64, 0`; // Set fallback image on error
   };
 
+  Font.registerHyphenationCallback((word) => [word]);
+
   return (
     <Document>
       {paginatedEmployees.map((employee, index) => (
@@ -53,7 +55,7 @@ const IdCardPdf = ({ employeeAllData }) => {
             <View key={index} style={styles.idCard}>
               <View style={styles.leftColumn}>
                 <View style={styles.imageContainer}>
-                  <Image src={companyLogo} style={{ width: 70, height: 30 }} />
+                  <Image src={companyLogo} style={{ width: 50, height: 20 }} />
                 </View>
                 <View style={styles.employeeImage}>
                   {employee.profilePicUrlId ? (
@@ -94,17 +96,26 @@ const IdCardPdf = ({ employeeAllData }) => {
                   ))}
                 </View>
                 <View style={styles.signatureTable}>
-                  <Image
-                    src={
-                      employee.empSignUrlId
-                        ? `${APIUrl}/Document/DownloadFile?id=${employee.empSignUrlId}` ||
-                          `data:image/png;base64, ${companyInfo.authorySignUrl}`
-                        : `data:image/png;base64, ${companyInfo.authorySignUrl}`
-                    }
-                    style={styles.signatureImage}
-                    onError={handleImageError}
-                  />
-                  <Image src={companySignature} style={styles.signatureImage} />
+                  <View>
+                    <Image
+                      src={
+                        employee.empSignUrlId
+                          ? `${APIUrl}/Document/DownloadFile?id=${employee.empSignUrlId}` ||
+                            `data:image/png;base64, ${companyInfo.authorySignUrl}`
+                          : `data:image/png;base64, ${companyInfo.authorySignUrl}`
+                      }
+                      style={styles.signatureImage}
+                      onError={handleImageError}
+                    />
+                    <Text>Employee Sign</Text>
+                  </View>
+                  <View>
+                    <Image
+                      src={companySignature}
+                      style={styles.signatureImage}
+                    />
+                    <Text>Authorized Sign</Text>
+                  </View>
                 </View>
                 <View style={styles.noteContainer}>
                   <Text>{companyInfo.workplace}</Text>
@@ -125,14 +136,14 @@ const IdCardPdf = ({ employeeAllData }) => {
                   <Text style={{ marginTop: 4 }}>
                     If found please return to the following address
                   </Text>
-                  <Text style={{ marginVertical: 8, marginHorizontal: 4 }}>
+                  <Text style={{ marginVertical: 5 }}>
                     {companyInfo.workplaceGroup}
                   </Text>
                   <Text>{companyInfo.workplaceGroupAddress}</Text>
-                  <Text style={{ marginVertical: 8, marginHorizontal: 4 }}>
+                  <Text style={{ marginVertical: 5 }}>
                     Mobile: {companyInfo.workplaceGrouplMobile}
                   </Text>
-                  <Text style={{ marginVertical: 4 }}>
+                  <Text style={{ marginVertical: 2 }}>
                     Email:{" "}
                     {companyInfo.workplaceGroupEmail || "info@matador.com.bd"}
                   </Text>
