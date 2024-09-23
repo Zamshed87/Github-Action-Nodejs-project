@@ -34,6 +34,7 @@ import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddE
 
 import YearlyTaxReturnReport from "modules/CompensationBenefits/reports/YearlyTaxReturnReport";
 import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/reports/monthlyAllowanceDeduction";
+import AllowancePolicy from "modules/PayrollManagementSytem/SpecialAllowancePolicy";
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
@@ -2650,6 +2651,10 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/payrollElement",
     component: PayrollElement,
+  },
+  {
+    path: "/administration/payrollConfiguration/allowenceNDeductionPolicy",
+    component: AllowancePolicy,
   },
   // {
   //   path: "/administration/payrollConfiguration/salaryBreakdown",
