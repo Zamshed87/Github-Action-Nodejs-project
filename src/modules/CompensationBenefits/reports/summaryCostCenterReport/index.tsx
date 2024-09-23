@@ -14,7 +14,6 @@ import { getPeopleDeskAllDDL } from "common/api";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
 import { todayDate } from "utility/todayDate";
@@ -37,23 +36,12 @@ const SummaryCostCenterReport = () => {
 
   // apiStates
   const CostCenterReportLanding = useApiRequest([]);
-  const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
-    []
-  );
+  const [salaryCodeDDL, setSalaryCodeDDL] = useState([]);
   const [data, setData] = useState("");
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setWorkplaceDDL([]);
     setSalaryCodeDDL([]);
-    // setFieldValue("salaryCode", "");
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      "intWorkplaceId",
-      "strWorkplace",
-      setWorkplaceDDL
-    );
   }, [orgId, buId, employeeId, wgId]);
 
   // Functions
@@ -76,30 +64,11 @@ const SummaryCostCenterReport = () => {
     });
   };
 
-  const getSalaryCodeByFromDateAndWId = (month: any) => {
-    getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
-      fromDate: moment(month).startOf("month").format("YYYY-MM-DD"),
-      toDate: moment(month).endOf("month").format("YYYY-MM-DD"),
-      workPlaceId: (workplaceDDL || []).map((w: any) => w?.intWorkplaceId),
-    });
-  };
-
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { permissionList } = useSelector(
-    (state: any) => state?.auth,
-    shallowEqual
-  );
-
-  let permission = null;
-  permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30410) {
-      permission = item;
-    }
-  });
   document.title = "Salary Summary Cost Center Report";
   return (
     <>
@@ -124,8 +93,15 @@ const SummaryCostCenterReport = () => {
                   name="month"
                   placeholder="Select Month"
                   label="Select Month"
-                  onChange={(e: any) => {
-                    getSalaryCodeByFromDateAndWId(e);
+                  onChange={(value: any) => {
+                    getPeopleDeskAllDDL(
+                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriod&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${moment(
+                        value
+                      ).format("MM")}&IntYear=${moment(value).format("YYYY")}`,
+                      "SalaryCode",
+                      "SalaryCode",
+                      setSalaryCodeDDL
+                    );
                     form.setFieldsValue({ salaryCode: "" });
                     setData("");
                   }}
