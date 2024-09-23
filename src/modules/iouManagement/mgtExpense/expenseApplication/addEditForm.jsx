@@ -302,7 +302,7 @@ const MgtExpenseApplicationCreate = () => {
                       />
                     </div>
                     <div className="col-12"></div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-2">
                       <div className="input-field-main">
                         <label>From Date</label>
                         <FormikInput
@@ -319,7 +319,7 @@ const MgtExpenseApplicationCreate = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-2">
                       <div className="input-field-main">
                         <label>To Date</label>
                         <FormikInput
@@ -336,7 +336,7 @@ const MgtExpenseApplicationCreate = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-2">
                       <div className="input-field-main">
                         <label>Expense Amount</label>
                         <FormikInput
@@ -353,9 +353,9 @@ const MgtExpenseApplicationCreate = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-3 ">
                       <label>Expense Type</label>
-                      <div className="policy-category-ddl-wrapper">
+                      <div className="policy-category-ddl-wrapper ">
                         <FormikSelect
                           placeholder=" "
                           classes="input-sm"
@@ -369,18 +369,20 @@ const MgtExpenseApplicationCreate = () => {
                           errors={errors}
                           touched={touched}
                         />
-                        <div className="category-add">
-                          <button
-                            type="button"
-                            className="btn add-ddl-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setShow(true);
-                            }}
-                          >
-                            <AddOutlined sx={{ fontSize: "16px" }} />
-                          </button>
-                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-3 my-4">
+                      <div className="category-add">
+                        <button
+                          type="button"
+                          className="btn add-ddl-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShow(true);
+                          }}
+                        >
+                          <AddOutlined sx={{ fontSize: "16px" }} />
+                        </button>
                       </div>
                     </div>
                     <div className="col-lg-9">
