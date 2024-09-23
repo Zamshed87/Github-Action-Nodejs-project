@@ -43,6 +43,7 @@ const EmployeePdfLanding = () => {
     total: 0,
   });
   const [showDownloadButton, setShowDownloadButton] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   //   api states
   const workplaceGroup = useApiRequest([]);
@@ -226,6 +227,8 @@ const EmployeePdfLanding = () => {
     <PForm
       form={form}
       onFinish={() => {
+        setEmployeePdfData({});
+        setSelectedRow([]);
         getLandingData({
           pagination: {
             current: pages?.current,
@@ -248,7 +251,7 @@ const EmployeePdfLanding = () => {
                   if (!loading) {
                     if (!showDownloadButton) {
                       // 30 sec delay to complete download all emp image inside pdf
-                      setTimeout(() => setShowDownloadButton(true), 20000);
+                      setTimeout(() => setShowDownloadButton(true), 30000);
                     }
                   }
 
@@ -271,16 +274,17 @@ const EmployeePdfLanding = () => {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-
+                setLoading(true);
                 axios
                   .get(
                     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
                   )
                   .then((res) => {
                     setEmployeePdfData(res?.data);
+                    setLoading(false);
                   });
-                // downloadEmpIdCardZipFile(false, {});
               }}
+              disabled={loading}
             >
               Download {selectedRow?.length}
             </button>

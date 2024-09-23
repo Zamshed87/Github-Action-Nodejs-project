@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     width: "41%",
     height: 240,
     border: "1px solid #c1c1c1",
+    fontSize: 8,
   },
   imageContainer: {
     position: "absolute",
@@ -62,8 +63,9 @@ export const styles = StyleSheet.create({
     marginTop: 15,
   },
   signatureImage: {
-    maxWidth: 40,
-    height: 16,
+    maxWidth: 36,
+    height: 10,
+    marginLeft: 6,
   },
   noteContainer: {
     backgroundColor: "red",
