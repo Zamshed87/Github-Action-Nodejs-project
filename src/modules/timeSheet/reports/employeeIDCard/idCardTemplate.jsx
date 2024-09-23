@@ -133,7 +133,7 @@ const IdCardPdf = ({ employeeAllData }) => {
                   </Text>
                 </View>
                 <View style={styles.contactInfo}>
-                  <Text style={{ marginTop: 4 }}>
+                  <Text style={{ marginTop: 6 }}>
                     If found please return to the following address
                   </Text>
                   <Text style={{ marginVertical: 5 }}>
