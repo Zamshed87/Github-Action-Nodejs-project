@@ -148,12 +148,12 @@ const EmployeeList = () => {
       strEmploymentTypeList: filerList?.strEmploymentType || [],
       strSupervisorNameList: filerList?.strSupervisorName || [],
       strDottedSupervisorNameList: filerList?.strDottedSupervisorName || [],
-      strDivisionList: filerList?.strDivisionList || [],
+      strDivisionList: filerList?.strDivision || [],
       strPayrollGroupList: filerList?.strPayrollGroup || [],
       strDesignationList: filerList?.strDesignation || [],
       strHrPositionList: filerList?.strHrPosition || [],
       strBankList: filerList?.strBank || [],
-      strSectionList: filerList?.strSectionList || [],
+      strSectionList: filerList?.strSection || [],
       //   unnecesary
       wingNameList: [],
       soleDepoNameList: [],
@@ -551,14 +551,14 @@ const EmployeeList = () => {
                       (filterList as any)?.strSupervisorName || [],
                     strDottedSupervisorNameList:
                       (filterList as any)?.strDottedSupervisorName || [],
-                    strDivisionList: (filterList as any)?.strDivisionList || [],
+                    strDivisionList: (filterList as any)?.strDivision || [],
                     strPayrollGroupList:
                       (filterList as any)?.strPayrollGroup || [],
                     strDesignationList:
                       (filterList as any)?.strDesignation || [],
                     strHrPositionList: (filterList as any)?.strHrPosition || [],
                     strBankList: (filterList as any)?.strBank || [],
-                    strSectionList: (filterList as any)?.strSectionList || [],
+                    strSectionList: (filterList as any)?.strSection || [],
                     //   unnecesary
                     wingNameList: [],
                     soleDepoNameList: [],
