@@ -10,7 +10,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { getFilterDDL, getSearchEmployeeList } from "../../../../common/api";
+import { getSearchEmployeeList } from "../../../../common/api";
 import BackButton from "../../../../common/BackButton";
 import Chips from "../../../../common/Chips";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
@@ -136,8 +136,6 @@ function AddEditForm() {
   const [rowDto, setRowDto] = useState([]);
   const [allowanceAndDeductionDDL, setAllowanceAndDeductionDDL] =
     useState(false);
-  const [employeeDDL, setEmployeeDDL] = useState(false);
-  const [allDDL, setAllDDL] = useState([]);
   const [isFromOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
@@ -168,23 +166,8 @@ function AddEditForm() {
 
   useEffect(() => {
     getData();
-    getFilterDDL(buId, "", "", "", "", "", setAllDDL);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
-
-  useEffect(() => {
-    if (allDDL) {
-      // Employee DDL
-      const modifyEmployeeDDL = allDDL?.employeeList?.map((item) => {
-        return {
-          ...item,
-          value: item?.id,
-          label: item?.name,
-        };
-      });
-      setEmployeeDDL(modifyEmployeeDDL);
-    }
-  }, [allDDL]);
 
   const saveHandler = (values, cb) => {
     if (!values?.isAutoRenew && !values?.toMonth) {
