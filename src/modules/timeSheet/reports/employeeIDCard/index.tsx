@@ -251,7 +251,7 @@ const EmployeePdfLanding = () => {
                   if (!loading) {
                     if (!showDownloadButton) {
                       // 30 sec delay to complete download all emp image inside pdf
-                      setTimeout(() => setShowDownloadButton(true), 30000);
+                      setTimeout(() => setShowDownloadButton(true), 25000);
                     }
                   }
 

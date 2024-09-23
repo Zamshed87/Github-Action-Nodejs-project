@@ -55,7 +55,7 @@ const IdCardPdf = ({ employeeAllData }) => {
             <View key={index} style={styles.idCard}>
               <View style={styles.leftColumn}>
                 <View style={styles.imageContainer}>
-                  <Image src={companyLogo} style={{ width: 70, height: 30 }} />
+                  <Image src={companyLogo} style={{ width: 50, height: 20 }} />
                 </View>
                 <View style={styles.employeeImage}>
                   {employee.profilePicUrlId ? (
@@ -136,14 +136,14 @@ const IdCardPdf = ({ employeeAllData }) => {
                   <Text style={{ marginTop: 4 }}>
                     If found please return to the following address
                   </Text>
-                  <Text style={{ marginVertical: 8, marginHorizontal: 4 }}>
+                  <Text style={{ marginVertical: 5 }}>
                     {companyInfo.workplaceGroup}
                   </Text>
                   <Text>{companyInfo.workplaceGroupAddress}</Text>
-                  <Text style={{ marginVertical: 8, marginHorizontal: 3 }}>
+                  <Text style={{ marginVertical: 5 }}>
                     Mobile: {companyInfo.workplaceGrouplMobile}
                   </Text>
-                  <Text style={{ marginVertical: 4 }}>
+                  <Text style={{ marginVertical: 2 }}>
                     Email:{" "}
                     {companyInfo.workplaceGroupEmail || "info@matador.com.bd"}
                   </Text>
