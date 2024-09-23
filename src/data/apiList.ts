@@ -186,4 +186,14 @@ export const apiList = {
     "/AssignLatePunishmentPolicy/AssignEmployeeToLatePunishmentPolicy",
   getSupervisorListDDL: "/Employee/GetSupervisorList",
   GetEmployeeIdCardLanding: "/Employee/GetIdCardDetailsLanding",
+  GetPayrollElementConfigLanding:
+    "/PayrollElementConfig/GetPayrollElementConfigLanding",
+  DeletePayrollElementConfig:
+    "/PayrollElementConfig/DeletePayrollElementConfig",
+  GetAllSalaryElementByAccountIdDDL:
+    "/Payroll/GetAllSalaryElementByAccountIdDDL",
+  CreatePayrollElementConfig:
+    "/PayrollElementConfig/CreatePayrollElementConfig",
+  UpdatePayrollElementConfig:
+    "/PayrollElementConfig/UpdatePayrollElementConfig",
 };
