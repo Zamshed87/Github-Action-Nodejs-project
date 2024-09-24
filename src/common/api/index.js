@@ -160,12 +160,18 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
       value: itm[value],
       label: itm[label],
     }));
-    setter(newDDL);
+    setter && setter(newDDL);
     cb && cb();
   } catch (error) {}
 };
 
-export const getPeopleDeskAllDDLnew = async (apiUrl, value, label, setter, cb) => {
+export const getPeopleDeskAllDDLnew = async (
+  apiUrl,
+  value,
+  label,
+  setter,
+  cb
+) => {
   try {
     const res = await axios.get(apiUrl);
     const newDDL = res?.data?.map((itm) => ({
