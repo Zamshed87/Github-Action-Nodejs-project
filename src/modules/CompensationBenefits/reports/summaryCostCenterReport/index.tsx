@@ -56,7 +56,7 @@ const SummaryCostCenterReport = () => {
         intWorkplaceGroupId: wgId,
         intMonthId: moment(values?.month).format("MM"),
         intYearId: moment(values?.month).format("YYYY"),
-        strSalaryCode: values?.salaryCode?.strSalaryCode,
+        strSalaryCode: values?.salaryCode?.value,
       },
       onSuccess: (res) => {
         setData(res);
