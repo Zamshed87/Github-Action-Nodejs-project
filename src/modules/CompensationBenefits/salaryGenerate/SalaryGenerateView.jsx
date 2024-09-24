@@ -313,7 +313,6 @@ const SalaryGenerateView = () => {
     {
       title: "SL",
       dataIndex: "SL",
-      key: "SL",
       render: (text, record) =>
         record?.DeptName?.trim() ? <b>Department: {record.DeptName}</b> : text,
       onCell: (record) => ({
@@ -327,8 +326,6 @@ const SalaryGenerateView = () => {
         {
           title: "Employee ID",
           dataIndex: "EmployeeCode",
-          key: "EmployeeCode",
-          colSpan: 2,
           align: "center",
           render: (text, record) => (record?.DeptName?.trim() ? null : text),
           width: 80,
@@ -336,25 +333,24 @@ const SalaryGenerateView = () => {
         {
           title: "Employee Name",
           dataIndex: "EmployeeName",
-          key: "EmployeeName",
           align: "center",
           render: (text, record) =>
             record?.DeptName?.trim() ? null : (
               <div className="d-flex align-items-center">
-                <Avatar>{text[0]}</Avatar>
+                <Avatar title={text} />
                 <div className="ml-2">
                   <span>{text}</span>
                 </div>
               </div>
             ),
-          width: 120,
+          width: 150,
         },
         {
           title: "Designation",
           dataIndex: "DesignationName",
-          key: "DesignationName",
           align: "center",
           render: (text, record) => (record?.DeptName?.trim() ? null : text),
+          width: 150,
         },
       ],
     },
