@@ -35,6 +35,7 @@ import { customStyles } from "utility/selectCustomStyle";
 import FormikSelect from "common/FormikSelect";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { todayDate } from "utility/todayDate";
+import { Avatar, DataTable } from "Components";
 
 const initData = {
   search: "",
@@ -307,6 +308,159 @@ const SalaryGenerateView = () => {
 
   const [detailsData, setDetailsData] = useState("");
   const [detailsReportLoading, setDetailsReportLoading] = useState(false);
+
+  const columns = [
+    {
+      title: "SL",
+      dataIndex: "SL",
+      key: "SL",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? <b>Department: {record.DeptName}</b> : text,
+      onCell: (record) => ({
+        colSpan: record?.DeptName?.trim() ? 16 : 1,
+      }),
+      width: 30,
+    },
+    {
+      title: "Employee Information",
+      children: [
+        {
+          title: "Employee ID",
+          dataIndex: "EmployeeCode",
+          key: "EmployeeCode",
+          colSpan: 2,
+          align: "center",
+          render: (text, record) => (record?.DeptName?.trim() ? null : text),
+          width: 80,
+        },
+        {
+          title: "Employee Name",
+          dataIndex: "EmployeeName",
+          key: "EmployeeName",
+          align: "center",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : (
+              <div className="d-flex align-items-center">
+                <Avatar>{text[0]}</Avatar>
+                <div className="ml-2">
+                  <span>{text}</span>
+                </div>
+              </div>
+            ),
+          width: 120,
+        },
+        {
+          title: "Designation",
+          dataIndex: "DesignationName",
+          key: "DesignationName",
+          align: "center",
+          render: (text, record) => (record?.DeptName?.trim() ? null : text),
+        },
+      ],
+    },
+
+    {
+      title: "Gross Salary",
+      dataIndex: "GrossSalary",
+      key: "GrossSalary",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    {
+      title: "Total Allowance",
+      dataIndex: "TotalAllowance",
+      key: "TotalAllowance",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    {
+      title: "Total Deduction",
+      dataIndex: "TotalDeduction",
+      key: "TotalDeduction",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    orgId === 5
+      ? {
+          title: "PF Amount",
+          dataIndex: "PFAmount",
+          key: "PFAmount",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+        }
+      : {},
+    {
+      title: "Net Pay",
+      dataIndex: "NetPay",
+      key: "NetPay",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    {
+      title: "Bank Pay",
+      dataIndex: "BankPay",
+      key: "BankPay",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    {
+      title: "Digital Bank Pay",
+      dataIndex: "DegitalBankPay",
+      key: "DegitalBankPay",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    {
+      title: "Cash Pay",
+      dataIndex: "CashPay",
+      key: "CashPay",
+      align: "right",
+      render: (text, record) =>
+        record?.DeptName?.trim() ? null : numberWithCommas(text),
+    },
+    {
+      title: "Total Working Days",
+      dataIndex: "TotalWorkingDays",
+      key: "TotalWorkingDays",
+      align: "center",
+      render: (text, record) => (record?.DeptName?.trim() ? null : text),
+    },
+    {
+      title: "Total Attendance",
+      dataIndex: "PayableDays",
+      key: "PayableDays",
+      align: "center",
+      render: (text, record) => (record?.DeptName?.trim() ? null : text),
+    },
+    {
+      title: "Workplace",
+      dataIndex: "WorkplaceName",
+      key: "WorkplaceName",
+      align: "center",
+      render: (text, record) => (record?.DeptName?.trim() ? null : text),
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "WorkplaceGroupName",
+      key: "WorkplaceGroupName",
+      align: "center",
+      render: (text, record) => (record?.DeptName?.trim() ? null : text),
+    },
+    {
+      title: "Payroll Group",
+      dataIndex: "PayrollGroupName",
+      key: "PayrollGroupName",
+      align: "center",
+      render: (text, record) => (record?.DeptName?.trim() ? null : text),
+    },
+  ];
 
   return (
     <form onSubmit={handleSubmit}>
@@ -772,6 +926,13 @@ const SalaryGenerateView = () => {
             {values?.summary === "1" && (
               <>
                 {loading && <Loading />}
+                <DataTable
+                  data={rowDto}
+                  header={columns}
+                  rowKey={(record) => record.EmployeeCode}
+                  pagination={false}
+                  scroll={{ y: 500 }}
+                />
                 <ScrollableTable
                   classes="salary-process-table"
                   secondClasses="table-card-styled tableOne scroll-table-height"
