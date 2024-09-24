@@ -590,11 +590,10 @@ const MgmtDailyAttendance = () => {
                                             }`
                                           : ""
                                       }${
-                                        landingApi?.data?.data?.length !==
-                                          landingApi?.data?.totalCount ||
-                                        isFilter
-                                          ? `&EmployeeIdList=${list}`
-                                          : ""
+                                        // landingApi?.data?.data?.length !==
+                                        //   landingApi?.data?.totalCount ||
+                                        // isFilter
+                                        true ? `&EmployeeIdList=${list}` : ""
                                       }${
                                         workplace?.value
                                           ? `&IntWorkplaceId=${
