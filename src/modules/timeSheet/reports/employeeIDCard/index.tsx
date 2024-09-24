@@ -206,7 +206,7 @@ const EmployeePdfLanding = () => {
             }}
             onClick={() => {
               downloadFile(
-                `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${rec?.EmployeeId}&WorkplaceId=${wId}`,
+                `/PdfAndExcelReport/IdCardPdf?employeeIds=${rec?.EmployeeId}&workplaceId=${wId}`,
                 "Employee ID Cards",
                 "pdf",
                 setLoading
@@ -270,7 +270,7 @@ const EmployeePdfLanding = () => {
                 //     setLoading(false);
                 //   });
                 downloadFile(
-                  `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${selectedEmpIds()}&WorkplaceId=${wId}`,
+                  `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}`,
                   "Employee ID Cards",
                   "pdf",
                   setLoading
