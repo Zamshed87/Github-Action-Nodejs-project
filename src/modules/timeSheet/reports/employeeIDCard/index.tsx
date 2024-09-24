@@ -21,6 +21,8 @@ import MasterFilter from "common/MasterFilter";
 import useDebounce from "utility/customHooks/useDebounce";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import IdCardPdf from "./idCardTemplate";
+import { downloadFile } from "utility/downloadFile";
+import Loading from "common/loading/Loading";
 
 const EmployeePdfLanding = () => {
   // redux states
@@ -39,10 +41,11 @@ const EmployeePdfLanding = () => {
   const [filterListm, setFilterList] = useState({});
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 100,
+    pageSize: 25,
     total: 0,
   });
   const [showDownloadButton, setShowDownloadButton] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   //   api states
   const workplaceGroup = useApiRequest([]);
@@ -89,7 +92,7 @@ const EmployeePdfLanding = () => {
   };
 
   const getLandingData = ({
-    pagination = { current: 1, pageSize: 100 },
+    pagination = { current: 1, pageSize: 25 },
     searchText = "",
     filterList = filterListm,
   }: any) => {
@@ -202,13 +205,19 @@ const EmployeePdfLanding = () => {
               cursor: "pointer",
             }}
             onClick={() => {
-              axios
-                .get(
-                  `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${rec?.EmployeeId}`
-                )
-                .then((res) => {
-                  setEmployeePdfData(res?.data);
-                });
+              downloadFile(
+                `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${rec?.EmployeeId}&WorkplaceId=${wId}`,
+                "Employee ID Cards",
+                "pdf",
+                setLoading
+              );
+              // axios
+              //   .get(
+              //     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${rec?.EmployeeId}`
+              //   )
+              //   .then((res) => {
+              //     setEmployeePdfData(res?.data);
+              //   });
             }}
           />
         ),
@@ -226,6 +235,8 @@ const EmployeePdfLanding = () => {
     <PForm
       form={form}
       onFinish={() => {
+        setEmployeePdfData({});
+        setSelectedRow([]);
         getLandingData({
           pagination: {
             current: pages?.current,
@@ -234,33 +245,11 @@ const EmployeePdfLanding = () => {
         });
       }}
     >
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
           title={`Total ${landingApi?.data?.TotalCount || 0} employees`}
         >
-          {employeePdfData?.employees?.length > 0 && (
-            <li>
-              <PDFDownloadLink
-                document={<IdCardPdf employeeAllData={employeePdfData} />}
-                fileName="employee_id_cards.pdf"
-              >
-                {({ loading }) => {
-                  if (!loading) {
-                    if (!showDownloadButton) {
-                      // 30 sec delay to complete download all emp image inside pdf
-                      setTimeout(() => setShowDownloadButton(true), 20000);
-                    }
-                  }
-
-                  return loading
-                    ? "Generating PDF..."
-                    : showDownloadButton
-                    ? "Download Employee ID Cards"
-                    : "Please wait...";
-                }}
-              </PDFDownloadLink>
-            </li>
-          )}
           {selectedRow?.length > 0 && (
             <button
               className="btn btn-green"
@@ -271,16 +260,23 @@ const EmployeePdfLanding = () => {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-
-                axios
-                  .get(
-                    `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
-                  )
-                  .then((res) => {
-                    setEmployeePdfData(res?.data);
-                  });
-                // downloadEmpIdCardZipFile(false, {});
+                // setLoading(true);
+                // axios
+                //   .get(
+                //     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
+                //   )
+                //   .then((res) => {
+                //     setEmployeePdfData(res?.data);
+                //     setLoading(false);
+                //   });
+                downloadFile(
+                  `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${selectedEmpIds()}&WorkplaceId=${wId}`,
+                  "Employee ID Cards",
+                  "pdf",
+                  setLoading
+                );
               }}
+              disabled={loading}
             >
               Download {selectedRow?.length}
             </button>
@@ -374,6 +370,7 @@ const EmployeePdfLanding = () => {
             if (extra.action === "sort") return;
             setFilterList(filters);
             setEmployeePdfData({});
+            setSelectedRow([]);
             getLandingData({
               pagination,
               searchText: form.getFieldValue("search"),
