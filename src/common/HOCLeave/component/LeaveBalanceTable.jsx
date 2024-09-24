@@ -9,6 +9,9 @@ import { failColor, gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Divider, Popover } from "antd";
+import { getLeaveTypeData } from "../utils";
+import { shallowEqual, useSelector } from "react-redux";
+import Loading from "common/loading/Loading";
 
 const LeaveBalanceTable = ({
   leaveBalanceData = [],
@@ -23,7 +26,16 @@ const LeaveBalanceTable = ({
       (item) => item?.isLveBalanceShowForSelfService
     );
   }
+
+  console.log("values", values);
+  const {
+    profileData: { buId },
+    permissionList,
+  } = useSelector((state) => state?.auth, shallowEqual);
+
   const [isView, setIsView] = useState(false);
+  const [leaveData, setLeaveData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [singleObjList, getSingleObjDataAPI, , setSingleObjList] = useAxiosGet(
     {}
@@ -34,27 +46,36 @@ const LeaveBalanceTable = ({
 
   // 🔥🔥 leave balance table is also used in supervisor dashboard. for any kind of change please consider that.
 
-  const punishmentPopupContent = (LvePunishment, type) => {
+  const punishmentPopupContent = (leaveData) => {
     return (
       <div>
         <div>
-          <p>
-            <b>{type} leave taken details</b>
-          </p>
           <Divider style={{ margin: "5px 0 0 0" }} />
-          {LvePunishment?.map((item, index) => (
-            <div className="mt-2" key={index}>
-              <p className="fontWeight600">
-                {item?.isFromApplication
-                  ? "Leave Consumed"
-                  : "Leave Punishment"}
-              </p>
-              <p className="pl-3">
-                {item?.strMonth}:{" "}
-                <span className="fontWeight600">{item?.intLeaveCount}</span>
-              </p>
-            </div>
-          ))}
+          <div className="mt-2">
+            <p className="fontWeight600">Leave Consumed</p>
+            {/* Filter and map through the leaveData for Casual Leave */}
+            {leaveData
+              ?.filter((item) => item?.MonthNameFull === "Casual Leave")
+              .map((item, index) => (
+                <p key={index} className="pl-3">
+                  {item?.MonthNameFull}:{" "}
+                  <span className="fontWeight600">{item?.LeaveDay}</span>
+                </p>
+              ))}
+          </div>
+
+          <div className="mt-2">
+            <p className="fontWeight600">Leave Punishment</p>
+            {/* Filter and map through the leaveData for months other than Casual Leave */}
+            {leaveData
+              ?.filter((item) => item?.MonthNameFull !== "Casual Leave")
+              .map((item, index) => (
+                <p key={index} className="pl-3">
+                  {item?.MonthNameFull}:{" "}
+                  <span className="fontWeight600">{item?.LeaveDay}</span>
+                </p>
+              ))}
+          </div>
         </div>
       </div>
     );
@@ -119,18 +140,27 @@ const LeaveBalanceTable = ({
         <>
           <p>
             {data}
-            {show && record?.strLeaveType === "Sick Leave" && (
-              <Popover
-                placement="bottom"
-                content={punishmentPopupContent(medicalLvePunishment, "Sick")}
-                trigger="hover"
-              >
-                <InfoCircleOutlined
-                  style={{ color: failColor, marginLeft: "2px" }}
-                />
-              </Popover>
-            )}
-            {show && record?.strLeaveType === "Casual Leave" && (
+            <Popover
+              placement="bottom"
+              content={punishmentPopupContent(leaveData)}
+              onClick={() => {
+                getLeaveTypeData(
+                  "EmployeeLeavePunishmentData",
+                  buId,
+                  values?.employee?.value,
+                  values?.year || moment().format("YYYY"),
+                  setLoading,
+                  record?.intLeaveTypeId || 0,
+                  setLeaveData
+                );
+              }}
+              trigger="click"
+            >
+              <InfoCircleOutlined
+                style={{ color: failColor, marginLeft: "2px" }}
+              />
+            </Popover>
+            {/* {show && record?.strLeaveType === "Casual Leave" && (
               <Popover
                 placement="bottom"
                 content={punishmentPopupContent(casualLvePunishment, "Casual")}
@@ -140,7 +170,7 @@ const LeaveBalanceTable = ({
                   style={{ color: failColor, marginLeft: "2px" }}
                 />
               </Popover>
-            )}
+            )} */}
           </p>
         </>
       ),
@@ -172,70 +202,73 @@ const LeaveBalanceTable = ({
   ];
 
   return (
-    <div>
-      <PCardBody styles={{ minHeight: "240px" }}>
-        <DataTable
-          header={header}
-          nodataStyle={{ marginTop: "-35px", height: "175px" }}
-          // bordered
-          data={leaves?.length > 0 ? leaves : []}
-        />
-      </PCardBody>
-      <ViewModal
-        size="lg"
-        title="Compensatory Leave History"
-        backdrop="static"
-        classes="default-modal preview-modal"
-        show={isView}
-        onHide={() => {
-          setIsView(false);
-          // setSingleObjList({});
-        }}
-      >
-        <div className="card-style" style={{ minHeight: "213px" }}>
-          <div className="d-flex align-items-center justify-content-between px-3">
-            <p>Leave Type: {singleObjList?.leaveTypeName}</p>
-            <p>Balance: {singleObjList?.totalLeaveBalance}</p>
-            <p>Taken: {singleObjList?.totalLeaveTaken}</p>
-            <p className="mr-3">Total: {singleObjList?.totalLeaveAmount}</p>
+    <>
+    {loading && <Loading />}
+      <div>
+        <PCardBody styles={{ minHeight: "240px" }}>
+          <DataTable
+            header={header}
+            nodataStyle={{ marginTop: "-35px", height: "175px" }}
+            // bordered
+            data={leaves?.length > 0 ? leaves : []}
+          />
+        </PCardBody>
+        <ViewModal
+          size="lg"
+          title="Compensatory Leave History"
+          backdrop="static"
+          classes="default-modal preview-modal"
+          show={isView}
+          onHide={() => {
+            setIsView(false);
+            // setSingleObjList({});
+          }}
+        >
+          <div className="card-style" style={{ minHeight: "213px" }}>
+            <div className="d-flex align-items-center justify-content-between px-3">
+              <p>Leave Type: {singleObjList?.leaveTypeName}</p>
+              <p>Balance: {singleObjList?.totalLeaveBalance}</p>
+              <p>Taken: {singleObjList?.totalLeaveTaken}</p>
+              <p className="mr-3">Total: {singleObjList?.totalLeaveAmount}</p>
+            </div>
+            <div className="table-card-styled tableOne">
+              <table className="table">
+                <thead>
+                  <tr
+                    style={{
+                      borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                    }}
+                  >
+                    <th>Attendance Date</th>
+                    <th className="text-center">Expiry Date</th>
+                    <th className="text-center">Reason</th>
+                    <th className="text-center">Working Hours</th>
+                    <th className="text-center">Taken</th>
+                    <th className="text-center">Expired</th>
+                    <th className="text-center">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {singleObjList?.compensatoryLeaveHistory?.length > 0 &&
+                    singleObjList?.compensatoryLeaveHistory?.map((item) => (
+                      <tr key={item?.dteAttendenceDate}>
+                        <td>{item?.dteAttendenceDate}</td>
+                        <td className="text-center">{item?.dteExpiryDate}</td>
+                        <td className="text-center">{item?.strReason}</td>
+                        <td className="text-center">{item?.strWorkingHour}</td>
+                        <td className="text-center">{item?.lveTaken}</td>
+                        <td className="text-center">{item?.lveExpired}</td>
+                        <td className="text-center">{item?.lveAmount}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="table-card-styled tableOne">
-            <table className="table">
-              <thead>
-                <tr
-                  style={{
-                    borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                  }}
-                >
-                  <th>Attendance Date</th>
-                  <th className="text-center">Expiry Date</th>
-                  <th className="text-center">Reason</th>
-                  <th className="text-center">Working Hours</th>
-                  <th className="text-center">Taken</th>
-                  <th className="text-center">Expired</th>
-                  <th className="text-center">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {singleObjList?.compensatoryLeaveHistory?.length > 0 &&
-                  singleObjList?.compensatoryLeaveHistory?.map((item) => (
-                    <tr key={item?.dteAttendenceDate}>
-                      <td>{item?.dteAttendenceDate}</td>
-                      <td className="text-center">{item?.dteExpiryDate}</td>
-                      <td className="text-center">{item?.strReason}</td>
-                      <td className="text-center">{item?.strWorkingHour}</td>
-                      <td className="text-center">{item?.lveTaken}</td>
-                      <td className="text-center">{item?.lveExpired}</td>
-                      <td className="text-center">{item?.lveAmount}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </ViewModal>
-      {/* </div> */}
-    </div>
+        </ViewModal>
+        {/* </div> */}
+      </div>
+    </>
   );
 };
 
