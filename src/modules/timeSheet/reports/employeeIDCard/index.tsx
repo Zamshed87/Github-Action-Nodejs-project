@@ -374,7 +374,7 @@ const EmployeePdfLanding = () => {
             getLandingData({
               pagination,
               searchText: form.getFieldValue("search"),
-              filerList: filters,
+              filterList: filters,
             });
           }}
         />

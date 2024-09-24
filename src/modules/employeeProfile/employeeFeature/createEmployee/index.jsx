@@ -1495,16 +1495,32 @@ const CreateAndEditEmploye = () => {
                   <PInput
                     name="officeEmail"
                     type="email"
-                    placeholder="Office Email"
-                    label="Office Email"
+                    placeholder={
+                      intAccountId === 1
+                        ? "Personal/Office Email"
+                        : "Office Email"
+                    }
+                    label={
+                      intAccountId === 1
+                        ? "Personal/Office Email"
+                        : "Office Email"
+                    }
                   />
                 </Col>
                 <Col md={6} sm={24}>
                   <PInput
                     name="officePhone"
                     type="text"
-                    placeholder="Office Contact No."
-                    label="Office Contact No."
+                    placeholder={
+                      intAccountId === 1
+                        ? "Personal/Office Contact No."
+                        : "Office Contact No."
+                    }
+                    label={
+                      intAccountId === 1
+                        ? "Personal/Office Contact No."
+                        : "Office Contact No."
+                    }
                   />
                 </Col>
                 <Col md={6} sm={24} className="d-none">

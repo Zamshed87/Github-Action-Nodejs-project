@@ -229,3 +229,26 @@ export const getLvePunishmentData = async (
     setLoading && setLoading(false);
   }
 };
+
+export const getLeaveTypeData = async (
+  tableName,
+  buId,
+  empId,
+  yearId,
+  setLoading,
+  id,
+  setter
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${buId}&EmpId=${empId}&YearId=${yearId}&leaveTypeId=${id}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
