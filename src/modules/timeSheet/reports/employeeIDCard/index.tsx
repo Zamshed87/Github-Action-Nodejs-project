@@ -1,5 +1,4 @@
 import { Col, Form, Row } from "antd";
-import axios from "axios";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   Avatar,
@@ -19,8 +18,6 @@ import { getSerial } from "Utils";
 import { MdPrint } from "react-icons/md";
 import MasterFilter from "common/MasterFilter";
 import useDebounce from "utility/customHooks/useDebounce";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import IdCardPdf from "./idCardTemplate";
 import { downloadFile } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
 
@@ -37,14 +34,12 @@ const EmployeePdfLanding = () => {
 
   // States
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
-  const [employeePdfData, setEmployeePdfData] = useState<any>({});
   const [filterListm, setFilterList] = useState({});
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 25,
     total: 0,
   });
-  const [showDownloadButton, setShowDownloadButton] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   //   api states
@@ -96,7 +91,6 @@ const EmployeePdfLanding = () => {
     searchText = "",
     filterList = filterListm,
   }: any) => {
-    setEmployeePdfData({});
     const { workplaceGroup, workplace, search } = form.getFieldsValue(true);
     const payload = {
       accountId: orgId,
@@ -131,7 +125,6 @@ const EmployeePdfLanding = () => {
     // api calls
     getWorkplaceGroup();
     getLandingData({});
-    setEmployeePdfData({});
   }, [buId, wgId, wId]);
 
   //   table rows
@@ -235,7 +228,6 @@ const EmployeePdfLanding = () => {
     <PForm
       form={form}
       onFinish={() => {
-        setEmployeePdfData({});
         setSelectedRow([]);
         getLandingData({
           pagination: {
@@ -355,7 +347,6 @@ const EmployeePdfLanding = () => {
             type: "checkbox",
             selectedRowKeys: selectedRow.map((item) => item?.key),
             onChange: (selectedRowKeys, selectedRows) => {
-              setEmployeePdfData({});
               setSelectedRow(selectedRows);
             },
           }}
@@ -369,7 +360,6 @@ const EmployeePdfLanding = () => {
             // Return if sort function is called
             if (extra.action === "sort") return;
             setFilterList(filters);
-            setEmployeePdfData({});
             setSelectedRow([]);
             getLandingData({
               pagination,
