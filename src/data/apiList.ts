@@ -202,9 +202,9 @@ export const apiList = {
   DesignationIdAll: "/PeopleDeskDdl/DesignationIdAll",
   DepartmentIdAll: "PeopleDeskDdl/DepartmentIdAll",
   SectionIdAll: "PeopleDeskDdl/SectionIdAll",
-  WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
   WorkplaceGroupIdAll: "PeopleDeskDdl/WorkplaceGroupIdAll",
   WorkplaceIdAll: "PeopleDeskDdl/WorkplaceIdAll",
+  WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
   WorkplaceGroupWithRoleExtension:
     "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
 };
