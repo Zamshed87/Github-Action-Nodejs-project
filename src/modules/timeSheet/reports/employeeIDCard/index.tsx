@@ -196,18 +196,11 @@ const EmployeePdfLanding = () => {
             }}
             onClick={() => {
               downloadFile(
-                `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${rec?.EmployeeId}&WorkplaceId=${wId}`,
+                `/PdfAndExcelReport/IdCardPdf?employeeIds=${rec?.EmployeeId}&workplaceId=${wId}`,
                 "Employee ID Cards",
                 "pdf",
                 setLoading
               );
-              // axios
-              //   .get(
-              //     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${rec?.EmployeeId}`
-              //   )
-              //   .then((res) => {
-              //     setEmployeePdfData(res?.data);
-              //   });
             }}
           />
         ),
@@ -252,7 +245,7 @@ const EmployeePdfLanding = () => {
                     content: "Download",
                     onClick: () => {
                       downloadFile(
-                        `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${selectedEmpIds()}&WorkplaceId=${wId}`,
+                        `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}`,
                         "Employee ID Cards",
                         "pdf",
                         setLoading
