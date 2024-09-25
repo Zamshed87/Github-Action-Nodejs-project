@@ -16,8 +16,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 import { MdPrint } from "react-icons/md";
-import MasterFilter from "common/MasterFilter";
-import useDebounce from "utility/customHooks/useDebounce";
 import { downloadFile } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
 
@@ -30,7 +28,6 @@ const EmployeePdfLanding = () => {
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const debounce = useDebounce();
 
   // States
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
@@ -241,56 +238,32 @@ const EmployeePdfLanding = () => {
       <PCard>
         <PCardHeader
           title={`Total ${landingApi?.data?.TotalCount || 0} employees`}
-        >
-          {selectedRow?.length > 0 && (
-            <button
-              className="btn btn-green"
-              style={{
-                height: "30px",
-                minWidth: "120px",
-                fontSize: "12px",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                // setLoading(true);
-                // axios
-                //   .get(
-                //     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
-                //   )
-                //   .then((res) => {
-                //     setEmployeePdfData(res?.data);
-                //     setLoading(false);
-                //   });
-                downloadFile(
-                  `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${selectedEmpIds()}&WorkplaceId=${wId}`,
-                  "Employee ID Cards",
-                  "pdf",
-                  setLoading
-                );
-              }}
-              disabled={loading}
-            >
-              Download {selectedRow?.length}
-            </button>
-          )}
-          {/* @ts-ignore */}
-          <MasterFilter
-            isHiddenFilter
-            value={form.getFieldValue("search") || ""}
-            setValue={(value: any) => {
-              form.setFieldValue("search", value);
-              debounce(() => {
-                getLandingData({ pages, searchText: value });
-              }, 500);
-            }}
-            cancelHandler={() => {
-              form.setFieldValue("search", "");
-              getLandingData({ pages, searchText: "" });
-            }}
-            width="200px"
-            inputWidth="200px"
-          />
-        </PCardHeader>
+          onSearch={(e) => {
+            form.setFieldsValue({
+              search: e?.target?.value,
+            });
+            getLandingData({ pages, searchText: e.target.value });
+          }}
+          buttonList={
+            selectedRow?.length > 0
+              ? [
+                  {
+                    type: "primary",
+                    content: "Download",
+                    onClick: () => {
+                      downloadFile(
+                        `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${selectedEmpIds()}&WorkplaceId=${wId}`,
+                        "Employee ID Cards",
+                        "pdf",
+                        setLoading
+                      );
+                    },
+                  },
+                ]
+              : []
+          }
+        />
+
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
             <Col md={5} sm={12} xs={24}>
