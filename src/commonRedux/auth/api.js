@@ -44,12 +44,12 @@ export function geBuDDL(accId, buId, employeeId) {
   );
 }
 
-export function getWGDDL(orgId, employeeId) {
+export function getWGDDL(orgId, buId, wgId, employeeId) {
   return axios.get(
     // PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${
     //   employeeId || 0
     // }
-    `PeopleDeskDdl/WorkplaceGroupWithRoleExtension?intAccountId=${orgId}&intEmpId=${employeeId}`
+    `PeopleDeskDdl/WorkplaceGroupWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`
   );
 }
 export function getWDDL(orgId, buId, wgId, employeeId) {
@@ -57,7 +57,7 @@ export function getWDDL(orgId, buId, wgId, employeeId) {
     // `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
     //   employeeId || 0
     // }`
-    `PeopleDeskDdl/WorkplaceWithRoleExtension?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intEmpId=${employeeId}`
+    `PeopleDeskDdl/WorkplaceWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`
   );
 }
 

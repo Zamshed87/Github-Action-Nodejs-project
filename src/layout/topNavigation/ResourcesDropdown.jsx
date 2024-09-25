@@ -94,7 +94,7 @@ export default function ResourcesDropdown() {
 
   useEffect(() => {
     dispatch(getBuDDLAction(orgId, buId, employeeId));
-    dispatch(getWGDDLAction(orgId, employeeId));
+    dispatch(getWGDDLAction(orgId, buId, wgId, employeeId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
