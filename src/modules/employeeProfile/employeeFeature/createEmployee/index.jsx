@@ -298,13 +298,17 @@ const CreateAndEditEmploye = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplaceDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        // DDLType: "Workplace",
+        // BusinessUnitId: buId,
+        // WorkplaceGroupId: workplaceGroup?.value,
+        // intId: employeeId,
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+        intWorkplaceGroupId: workplaceGroup?.value,
+        intEmpId: employeeId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -450,13 +454,15 @@ const CreateAndEditEmploye = () => {
 
   const commonConfigurationDDL = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        // DDLType: "WorkplaceGroup",
+        // BusinessUnitId: buId,
+        // WorkplaceGroupId: wgId, // This should be removed
+        // intId: employeeId,
+        intAccountId: orgId,
+        intEmpId: employeeId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {

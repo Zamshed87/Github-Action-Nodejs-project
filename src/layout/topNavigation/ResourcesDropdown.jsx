@@ -78,12 +78,7 @@ export default function ResourcesDropdown() {
         filterData?.[0]?.WorkplaceGroupName
       )
     );
-    dispatch(
-      updateWAction(
-        0,
-        ""
-      )
-    );
+    dispatch(updateWAction(0, ""));
   };
   const handleWResources = (event) => {
     const filterData = workplaceDDL?.filter(
@@ -99,11 +94,11 @@ export default function ResourcesDropdown() {
 
   useEffect(() => {
     dispatch(getBuDDLAction(orgId, buId, employeeId));
-    dispatch(getWGDDLAction(buId, wgId, employeeId));
+    dispatch(getWGDDLAction(orgId, employeeId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    dispatch(getWDDLAction(buId, wgId, employeeId));
+    dispatch(getWDDLAction(orgId, buId, wgId, employeeId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId, buId]);
 

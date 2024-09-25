@@ -196,4 +196,10 @@ export const apiList = {
     "/PayrollElementConfig/CreatePayrollElementConfig",
   UpdatePayrollElementConfig:
     "/PayrollElementConfig/UpdatePayrollElementConfig",
+
+  //updated ddls
+
+  WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
+  WorkplaceGroupWithRoleExtension:
+    "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
 };
