@@ -598,13 +598,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       : "",
                 });
 
-              (value === 1 || value === 2 || value === 3) &&
-                // Modal.confirm({
-                //   title: "Are you sure to update attendance?",
-                //   onOk: submitHandler,
-                // });
-
-                setOpenModal(true);
+              (value === 1 || value === 2 || value === 3) && setOpenModal(true);
             }}
             disabled={!selectedRow.length}
           />
