@@ -2,7 +2,7 @@ import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "antd";
 
 import { shallowEqual, useSelector } from "react-redux";
@@ -19,6 +19,7 @@ export default function AddEditForm({
   // const debounce = useDebounce();
   const payrollElementDDL = useApiRequest({});
   const saveApi = useApiRequest({});
+  const [payrollDDL, setPayrollDDL] = useState([]);
   const divideByDDL = [
     { value: "Fix Days", label: "Fix Days" },
 
@@ -32,20 +33,44 @@ export default function AddEditForm({
   // states
 
   // ddls
-  useEffect(() => {
+  const getPayroll = () => {
+    const { salaryType } = form.getFieldsValue(true);
     payrollElementDDL.action({
-      urlKey: "GetAllSalaryElementByAccountIdDDL",
+      urlKey: "GetAllPayrollElementType",
       method: "GET",
       params: {
         accountId: orgId,
         workplaceGroupId: wgId,
         workplaceId: wId,
+        businessUnitId: buId,
+      },
+      onSuccess: (res) => {
+        const additionDDL = res
+          ?.filter((item) => item?.isAddition && !item?.isPrimarySalary)
+          .map((itm) => {
+            return {
+              ...itm,
+              value: itm?.intPayrollElementTypeId,
+              label: itm?.strPayrollElementName,
+            };
+          });
+        const deductionDDL = res
+          ?.filter((item) => item?.isDeduction)
+          .map((itm) => {
+            return {
+              ...itm,
+              value: itm?.intPayrollElementTypeId,
+              label: itm?.strPayrollElementName,
+            };
+          });
+        if (salaryType?.value === 1) {
+          setPayrollDDL(additionDDL);
+        } else {
+          setPayrollDDL(deductionDDL);
+        }
       },
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId, wgId]);
-  // Pages Start From Here code from above will be removed soon
+  };
 
   // Form Instance
   const [form] = Form.useForm();
@@ -69,6 +94,7 @@ export default function AddEditForm({
       dividedBy: values?.divideBy?.value,
       dividedByDays: values?.days,
       actionBy: employeeId,
+      isAddition: values?.salaryType?.value === 1 ? true : false,
     };
 
     saveApi.action({
@@ -89,12 +115,19 @@ export default function AddEditForm({
           value: singleData?.payrollElementTypeId,
           label: singleData?.payrollElementType,
         },
+        salaryType: {
+          value: singleData?.salaryType === "Addition" ? 1 : 2,
+          label: singleData?.salaryType,
+        },
         days: singleData?.dividedByDays,
+
         divideBy:
           singleData?.dividedBy === "Fix Days"
             ? divideByDDL[0]
             : divideByDDL[1],
       });
+
+      getPayroll();
     }
   }, [singleData]);
   return (
@@ -116,11 +149,33 @@ export default function AddEditForm({
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
             <PSelect
-              options={
-                payrollElementDDL?.data?.length > 0
-                  ? payrollElementDDL?.data
-                  : []
-              }
+              options={[
+                {
+                  value: 1,
+                  label: "Addition",
+                },
+                {
+                  value: 2,
+                  label: "Deduction",
+                },
+              ]}
+              name="salaryType"
+              label="Salary Type"
+              showSearch
+              filterOption={true}
+              placeholder="Salary Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  salaryType: op,
+                });
+                getPayroll();
+              }}
+              rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={payrollDDL || []}
               name="payrollElement"
               label="Payroll Element"
               showSearch
