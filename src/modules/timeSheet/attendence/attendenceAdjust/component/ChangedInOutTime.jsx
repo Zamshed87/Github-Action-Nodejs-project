@@ -14,7 +14,7 @@ const ChangedInOutTimeEmpListModal = ({
   setRowDto,
   value,
 }) => {
-  const { orgId, buId, wgId, wId, employeeId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -184,7 +184,6 @@ const ChangedInOutTimeEmpListModal = ({
                   record?.officeClosingTime,
                   datetime
                 );
-                console.log(record);
                 updateRowDto("intimeUpdate", e, idx);
               }}
               format={"hh:mm A"}
@@ -288,7 +287,7 @@ const ChangedInOutTimeEmpListModal = ({
             />
           </div>
         ),
-        hidden: orgId === 6 ? false : true,
+        hidden: true,
       },
       {
         title: () => {

@@ -3,6 +3,7 @@ import React from "react";
 
 interface IAttendanceStatus {
   status: string;
+  rounded?: boolean;
 }
 
 const statusColors: { [key: string]: string } = {
@@ -23,13 +24,21 @@ const statusColors: { [key: string]: string } = {
   "Halfday Leave": "purple",
 };
 
-const AttendanceStatus: React.FC<IAttendanceStatus> = ({ status }) => {
+const AttendanceStatus: React.FC<IAttendanceStatus> = ({
+  status,
+  rounded = false,
+}) => {
   const color = statusColors[status];
 
   if (status === "Holiday") {
     return (
       <Tag
-        style={{ color: "grey", border: "1px solid lightGrey" }}
+        style={{
+          color: "grey",
+          border: "1px solid lightGrey",
+          borderRadius: rounded ? "50px" : "",
+          fontWeight: 500,
+        }}
         color={color}
       >
         {status}
@@ -37,7 +46,14 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({ status }) => {
     );
   }
   if (color) {
-    return <Tag color={color}>{status}</Tag>;
+    return (
+      <Tag
+        color={color}
+        style={{ fontWeight: 500, borderRadius: rounded ? "50px" : "" }}
+      >
+        {status}
+      </Tag>
+    );
   }
 
   // Handling unknown status
@@ -50,6 +66,8 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({ status }) => {
         backgroundColor: "#e1f5fe",
         color: "#0091ea",
         border: "1px solid #0091ea",
+        borderRadius: rounded ? "50px" : "",
+        fontWeight: 500,
       }}
     >
       {status}

@@ -56,6 +56,7 @@ import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -1145,9 +1146,9 @@ const UserRoleExtentionLanding = lazy(() =>
 const AttendanceApproval = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceApproval/index.jsx")
 );
-const AttendanceApprovalRequest = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceApprovalRequest/index.jsx")
-);
+// const AttendanceApprovalRequest = lazy(() =>
+//   import("../modules/timeSheet/attendence/attendanceApprovalRequest/index.jsx")
+// );
 const AttendenceAdjust = lazy(() =>
   import("../modules/timeSheet/attendence/attendenceAdjust/index.jsx")
 );
@@ -2038,9 +2039,13 @@ export const routingList = [
     path: "/administration/configuration/taxChallanConfig ",
     component: TaxChallanConfigLanding,
   },
+  // {
+  //   path: "/SelfService/timeManagement/attendenceAdjustRequest",
+  //   component: AttendanceApprovalRequest,
+  // },
   {
     path: "/SelfService/timeManagement/attendenceAdjustRequest",
-    component: AttendanceApprovalRequest,
+    component: SelfAttendenceAdjust,
   },
   {
     path: "/SelfService/timeManagement/overTimeRequisition",

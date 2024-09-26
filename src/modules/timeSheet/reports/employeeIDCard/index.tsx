@@ -1,5 +1,4 @@
 import { Col, Form, Row } from "antd";
-import axios from "axios";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   Avatar,
@@ -17,10 +16,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 import { MdPrint } from "react-icons/md";
-import MasterFilter from "common/MasterFilter";
-import useDebounce from "utility/customHooks/useDebounce";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import IdCardPdf from "./idCardTemplate";
 import { downloadFile } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
 
@@ -33,19 +28,17 @@ const EmployeePdfLanding = () => {
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const debounce = useDebounce();
 
   // States
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
-  const [employeePdfData, setEmployeePdfData] = useState<any>({});
   const [filterListm, setFilterList] = useState({});
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 25,
     total: 0,
   });
-  const [showDownloadButton, setShowDownloadButton] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [rowDto, setRowDto] = useState([]);
 
   //   api states
   const workplaceGroup = useApiRequest([]);
@@ -96,7 +89,6 @@ const EmployeePdfLanding = () => {
     searchText = "",
     filterList = filterListm,
   }: any) => {
-    setEmployeePdfData({});
     const { workplaceGroup, workplace, search } = form.getFieldsValue(true);
     const payload = {
       accountId: orgId,
@@ -120,6 +112,14 @@ const EmployeePdfLanding = () => {
           pageSize: res?.PageSize,
           total: res?.TotalCount,
         });
+
+        const modifiedData = res?.Data?.map((item: any) => {
+          return {
+            ...item,
+            key: item?.EmployeeId,
+          };
+        });
+        setRowDto(modifiedData);
       },
     });
   };
@@ -131,7 +131,6 @@ const EmployeePdfLanding = () => {
     // api calls
     getWorkplaceGroup();
     getLandingData({});
-    setEmployeePdfData({});
   }, [buId, wgId, wId]);
 
   //   table rows
@@ -206,18 +205,11 @@ const EmployeePdfLanding = () => {
             }}
             onClick={() => {
               downloadFile(
-                `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${rec?.EmployeeId}&WorkplaceId=${wId}`,
+                `/PdfAndExcelReport/IdCardPdf?employeeIds=${rec?.EmployeeId}&workplaceId=${wId}`,
                 "Employee ID Cards",
                 "pdf",
                 setLoading
               );
-              // axios
-              //   .get(
-              //     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${rec?.EmployeeId}`
-              //   )
-              //   .then((res) => {
-              //     setEmployeePdfData(res?.data);
-              //   });
             }}
           />
         ),
@@ -235,7 +227,6 @@ const EmployeePdfLanding = () => {
     <PForm
       form={form}
       onFinish={() => {
-        setEmployeePdfData({});
         setSelectedRow([]);
         getLandingData({
           pagination: {
@@ -249,56 +240,32 @@ const EmployeePdfLanding = () => {
       <PCard>
         <PCardHeader
           title={`Total ${landingApi?.data?.TotalCount || 0} employees`}
-        >
-          {selectedRow?.length > 0 && (
-            <button
-              className="btn btn-green"
-              style={{
-                height: "30px",
-                minWidth: "120px",
-                fontSize: "12px",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                // setLoading(true);
-                // axios
-                //   .get(
-                //     `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
-                //   )
-                //   .then((res) => {
-                //     setEmployeePdfData(res?.data);
-                //     setLoading(false);
-                //   });
-                downloadFile(
-                  `/PdfAndExcelReport/IdCardPdf?EmployeeIds=${selectedEmpIds()}&WorkplaceId=${wId}`,
-                  "Employee ID Cards",
-                  "pdf",
-                  setLoading
-                );
-              }}
-              disabled={loading}
-            >
-              Download {selectedRow?.length}
-            </button>
-          )}
-          {/* @ts-ignore */}
-          <MasterFilter
-            isHiddenFilter
-            value={form.getFieldValue("search") || ""}
-            setValue={(value: any) => {
-              form.setFieldValue("search", value);
-              debounce(() => {
-                getLandingData({ pages, searchText: value });
-              }, 500);
-            }}
-            cancelHandler={() => {
-              form.setFieldValue("search", "");
-              getLandingData({ pages, searchText: "" });
-            }}
-            width="200px"
-            inputWidth="200px"
-          />
-        </PCardHeader>
+          onSearch={(e) => {
+            form.setFieldsValue({
+              search: e?.target?.value,
+            });
+            getLandingData({ pages, searchText: e.target.value });
+          }}
+          buttonList={
+            selectedRow?.length > 0
+              ? [
+                  {
+                    type: "primary",
+                    content: `Download ${selectedRow?.length}`,
+                    onClick: () => {
+                      downloadFile(
+                        `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}`,
+                        "Employee ID Cards",
+                        "pdf",
+                        setLoading
+                      );
+                    },
+                  },
+                ]
+              : []
+          }
+        />
+
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
             <Col md={5} sm={12} xs={24}>
@@ -349,13 +316,13 @@ const EmployeePdfLanding = () => {
         <DataTable
           header={header}
           bordered
-          data={landingApi?.data?.Data || []}
+          data={rowDto || []}
           loading={landingApi?.loading}
           rowSelection={{
             type: "checkbox",
             selectedRowKeys: selectedRow.map((item) => item?.key),
+            preserveSelectedRowKeys: true,
             onChange: (selectedRowKeys, selectedRows) => {
-              setEmployeePdfData({});
               setSelectedRow(selectedRows);
             },
           }}
@@ -369,8 +336,6 @@ const EmployeePdfLanding = () => {
             // Return if sort function is called
             if (extra.action === "sort") return;
             setFilterList(filters);
-            setEmployeePdfData({});
-            setSelectedRow([]);
             getLandingData({
               pagination,
               searchText: form.getFieldValue("search"),
