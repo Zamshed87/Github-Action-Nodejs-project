@@ -142,10 +142,10 @@ export const topSheet = (
                   : values?.bank?.label === "Dhaka Bank Limited "
                   ? "Imamganj Branch Dhaka"
                   : values?.bank?.label === "DUTCH-BANGLA BANK LTD"
-                  ? "Tejgaon Branch Dhaka"
+                  ? "Local Office Branch, Dilkusha Dhaka."
                   : values?.bank?.label === "Dutch Bangla Bank Agent Banking"
                   ? "47, Motijheel C/A (20th Floor),Dhaka-1000."
-                  : "Local Office Branch, Dilkusha Dhaka.",
+                  : "Tejgaon Branch Dhaka",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
