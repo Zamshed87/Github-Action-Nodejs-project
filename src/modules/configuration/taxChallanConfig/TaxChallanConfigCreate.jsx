@@ -131,17 +131,15 @@ export default function AddEditForm({
       });
     }
   }, [singleData]);
-console.log({singleData});
+  console.log({ singleData });
 
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -155,13 +153,12 @@ console.log({singleData});
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -191,40 +188,38 @@ console.log({singleData});
         initialValues={{}}
       >
         <Row gutter={[10, 2]}>
-        <Col  sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={
-                    [
-                        { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
-                />
-              </Col>
-              <Col  sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                    });
-                  }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
+          <Col sm={12} xs={24}>
+            <PSelect
+              options={workplaceGroup?.data || []}
+              name="workplaceGroup"
+              label="Workplace Group"
+              placeholder="Workplace Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplaceGroup: op,
+                  workplace: undefined,
+                });
+                getWorkplace();
+              }}
+              rules={[
+                { required: true, message: "Workplace Group is required" },
+              ]}
+            />
+          </Col>
+          <Col sm={12} xs={24}>
+            <PSelect
+              options={workplace?.data || []}
+              name="workplace"
+              label="Workplace"
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
           <Col md={12} sm={24}>
             <PSelect
               options={yearDDLAction(5, 100)}

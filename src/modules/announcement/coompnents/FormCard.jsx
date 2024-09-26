@@ -24,7 +24,7 @@ const FormCard = ({ propsObj }) => {
     initData,
     params,
   } = propsObj;
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -55,7 +55,8 @@ const FormCard = ({ propsObj }) => {
       values?.workGroup.length > 0 &&
         values?.workGroup?.forEach((options) => {
           getAllWorkPlace(
-            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${options?.value}&intId=${employeeId}`,
+            // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${options?.value}&intId=${employeeId}`,
+            `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${options?.value}`,
             "intWorkplaceId",
             "strWorkplace",
             setWorkplaceDDL
@@ -66,7 +67,8 @@ const FormCard = ({ propsObj }) => {
       // setFieldValue("workPlace", "");
       values?.workGroup?.forEach((options) => {
         getAllWorkPlace(
-          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${options?.value}&intId=${employeeId}`,
+          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${options?.value}&intId=${employeeId}`,
+          `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${options?.value}`,
           "intWorkplaceId",
           "strWorkplace",
           setWorkplaceDDL
@@ -80,21 +82,24 @@ const FormCard = ({ propsObj }) => {
   // all ddl load
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${buId}`,
       "intWorkplaceGroupId",
       "strWorkplaceGroup",
       setWorkplaceGroupDDL
     );
     getDDLForAnnouncement(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
-      "DepartmentId",
-      "DepartmentName",
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
+      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      "intDepartmentId",
+      "strDepartment",
       setDepartmentDDL
     );
     getDDLForAnnouncement(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
-      "DesignationId",
-      "DesignationName",
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
+      `PeopleDeskDdl/DesignationIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      "designationId",
+      "designationName",
       setDesignationDDL
     );
     getDDLForAnnouncement(

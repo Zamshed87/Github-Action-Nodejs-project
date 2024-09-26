@@ -201,6 +201,8 @@ export const apiList = {
   //updated ddls
 
   BusinessUnitWithRoleExtension: "/PeopleDeskDdl/BusinessUnitWithRoleExtension",
+  BusinessUnitIdAll: "/PeopleDeskDdl/BusinessUnitIdAll",
+
   DesignationIdAll: "/PeopleDeskDdl/DesignationIdAll",
   DepartmentIdAll: "PeopleDeskDdl/DepartmentIdAll",
   SectionIdAll: "PeopleDeskDdl/SectionIdAll",
