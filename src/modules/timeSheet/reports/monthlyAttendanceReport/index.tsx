@@ -41,7 +41,7 @@ const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId, buName, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -136,6 +136,10 @@ const MonthlyAttendanceReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    const workplaceList = `${values?.workplace
+      ?.map((item: any) => item?.intWorkplaceId)
+      .join(",")}`;
+
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
@@ -143,8 +147,9 @@ const MonthlyAttendanceReport = () => {
         ReportType: "monthly_attendance_report_for_all_employee",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+        // WorkplaceId: values?.workplace?.value,
+        WorkplaceList: values?.workplaceGroup?.value ? workplaceList : `${wId}`,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -299,9 +304,13 @@ const MonthlyAttendanceReport = () => {
                       values?.toDate
                     ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
                       values?.workplaceGroup?.value
-                    }&WorkplaceId=${
-                      values?.workplace?.value
-                    }&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
+                    }&WorkplaceList=${
+                      values?.workplaceGroup?.value
+                        ? values?.workplace
+                            ?.map((item: any) => item?.intWorkplaceId)
+                            .join(",")
+                        : wId
+                    }&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false&businessUnitId=${buId}`
                   );
                   if (res?.data) {
                     setExcelLoading(false);
@@ -432,6 +441,7 @@ const MonthlyAttendanceReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  mode="multiple"
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
