@@ -50,4 +50,5 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/BankAdviceReport10MS",
   "/PdfAndExcelReport/EmployeeFullYearTaxReport",
   "/PdfAndExcelReport/EmpExpenseReportPdf",
+  "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
 ];
