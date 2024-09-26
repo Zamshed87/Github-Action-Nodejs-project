@@ -267,7 +267,7 @@ const ChangedInOutTimeEmpListModal = ({
             />
           </div>
         ),
-        hidden: orgId === 6 ? false : true,
+        hidden: true,
       },
       {
         title: "Reason (optional)",
