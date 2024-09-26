@@ -57,10 +57,14 @@ const LeaveBalanceTable = ({
             {leaveData
               ?.filter((item) => item?.MonthNameFull === "Casual Leave")
               .map((item, index) => (
-                <p key={index} className="pl-3">
-                  {item?.MonthNameFull}:{" "}
-                  <span className="fontWeight600">{item?.LeaveDay}</span>
-                </p>
+                <>
+                  {item?.LeaveDay > 0 && (
+                    <p key={index} className="pl-3">
+                      {item?.MonthNameFull}:{" "}
+                      <span className="fontWeight600">{item?.LeaveDay}</span>
+                    </p>
+                  )}
+                </>
               ))}
           </div>
 
@@ -70,10 +74,14 @@ const LeaveBalanceTable = ({
             {leaveData
               ?.filter((item) => item?.MonthNameFull !== "Casual Leave")
               .map((item, index) => (
-                <p key={index} className="pl-3">
-                  {item?.MonthNameFull}:{" "}
-                  <span className="fontWeight600">{item?.LeaveDay}</span>
-                </p>
+                <>
+                  {item?.LeaveDay > 0 && (
+                    <p key={index} className="pl-3">
+                      {item?.MonthNameFull}:{" "}
+                      <span className="fontWeight600">{item?.LeaveDay}</span>
+                    </p>
+                  )}
+                </>
               ))}
           </div>
         </div>
@@ -203,7 +211,7 @@ const LeaveBalanceTable = ({
 
   return (
     <>
-    {loading && <Loading />}
+      {loading && <Loading />}
       <div>
         <PCardBody styles={{ minHeight: "240px" }}>
           <DataTable
