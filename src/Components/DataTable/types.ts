@@ -15,6 +15,7 @@ export type TDataTableProps = {
   rowClassName?: (record: any, index: number) => string;
   rowSelection?: {
     isActive?: boolean;
+    preserveSelectedRowKeys?: boolean;
     type?: "checkbox" | "radio";
     hideSelectAll?: boolean;
     onChange?: (selectedRowKeys: any, selectedRows: any) => any;

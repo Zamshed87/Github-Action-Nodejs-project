@@ -141,7 +141,6 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
     {
       title: "Gross Salary",
       dataIndex: "intGrossSalary",
-      sorter: true,
       width: "100px",
     },
     // {
