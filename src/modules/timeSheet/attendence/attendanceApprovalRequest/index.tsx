@@ -340,25 +340,25 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
     {
       title: "In Time",
       dataIndex: "",
-      render: (data: any) => `${data?.InTime || "N/A"}`,
+      render: (data: any) => `${data?.InTime || "-"}`,
       width: 100,
     },
     {
       title: "Out Time",
       dataIndex: "",
-      render: (data: any) => `${data?.OutTime || "N/A"}`,
+      render: (data: any) => `${data?.OutTime || "-"}`,
       width: 100,
     },
     {
       title: "Manual In-Time",
       dataIndex: "",
-      render: (data: any) => `${data?.ManulInTime || "N/A"}`,
+      render: (data: any) => `${data?.ManulInTime || "-"}`,
       width: 120,
     },
     {
       title: "Manual Out-Time",
       dataIndex: "",
-      render: (data: any) => `${data?.ManulOutTime || "N/A"}`,
+      render: (data: any) => `${data?.ManulOutTime || "-"}`,
       width: 120,
     },
     {
