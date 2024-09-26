@@ -37,6 +37,7 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({
           color: "grey",
           border: "1px solid lightGrey",
           borderRadius: rounded ? "50px" : "",
+          fontWeight: 500,
         }}
         color={color}
       >
@@ -46,7 +47,10 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({
   }
   if (color) {
     return (
-      <Tag color={color} style={{ borderRadius: rounded ? "50px" : "" }}>
+      <Tag
+        color={color}
+        style={{ fontWeight: 500, borderRadius: rounded ? "50px" : "" }}
+      >
         {status}
       </Tag>
     );
@@ -63,6 +67,7 @@ const AttendanceStatus: React.FC<IAttendanceStatus> = ({
         color: "#0091ea",
         border: "1px solid #0091ea",
         borderRadius: rounded ? "50px" : "",
+        fontWeight: 500,
       }}
     >
       {status}
