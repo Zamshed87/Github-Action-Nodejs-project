@@ -143,6 +143,8 @@ export const topSheet = (
                   ? "Imamganj Branch Dhaka"
                   : values?.bank?.label === "DUTCH-BANGLA BANK LTD"
                   ? "Local Office Branch, Dilkusha Dhaka."
+                  : values?.bank?.label === "Dutch-Bangla Bank PLC."
+                  ? "Local Office Branch, Dilkusha Dhaka."
                   : values?.bank?.label === "Dutch Bangla Bank Agent Banking"
                   ? "47, Motijheel C/A (20th Floor),Dhaka-1000."
                   : "Tejgaon Branch Dhaka",
