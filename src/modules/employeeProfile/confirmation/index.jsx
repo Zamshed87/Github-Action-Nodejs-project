@@ -112,20 +112,10 @@ function Confirmation() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  // const [viewModal, setViewModal] = useState(null);
-  // const openModal = Boolean(viewModal);
-  // const openId = openModal ? "simple-popover" : undefined;
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Confirmation";
   }, [dispatch]);
-
-  const handleClick = () => {
-    // setViewModal(event.currentTarget);
-  };
-  // const handleClose = () => {
-  //   setViewModal(null);
-  // };
 
   const handleChangePage = (event, newPage, values) => {
     setPages((prev) => {
@@ -390,7 +380,6 @@ function Confirmation() {
                               );
                               setFieldValue("search", "");
                             }}
-                            handleClick={handleClick}
                           />
                         </li>
                       </ul>

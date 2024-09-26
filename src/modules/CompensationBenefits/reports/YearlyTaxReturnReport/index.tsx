@@ -1,4 +1,5 @@
 import {
+  DataTable,
   PButton,
   PCard,
   PCardHeader,
@@ -27,18 +28,24 @@ const YearlyTaxReturnReport = () => {
 
   // form
   const [form] = Form.useForm();
+  const landingApi = useApiRequest([]);
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
     const workplaceList = values?.workplace?.map((i: any) => i?.value);
-    const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
-
-    downloadFile(
-      url,
-      `Yearly Tax Return Report- ${todayDate()}`,
-      "xlsx",
-      setLoading
-    );
+    landingApi?.action({
+      method: "get",
+      urlKey: "EmployeeFullYearTaxReportAPI",
+      params: {
+        workPlaceGroupId: values?.workplaceGroup?.value,
+        FiscalYearId: values?.fiscalYear?.value,
+        strWorkPlaceList: workplaceList?.length > 0 ? `${workplaceList}` : 0,
+        status: values?.status?.value,
+      },
+      // onSuccess: (res) => {
+      //   setData(res);
+      // },
+    });
   };
   const [loading, setLoading] = useState(false);
 
@@ -102,6 +109,52 @@ const YearlyTaxReturnReport = () => {
   }, [orgId, buId, employeeId, wgId]);
 
   document.title = "Yearly Tax Return Report";
+
+  const header = [
+    // {
+    //   title: "SL",
+    //   render: (_: any, rec: any, index: number) => index + 1,
+    //   width: "30px",
+    // },
+    {
+      title: "Workplace Group Name",
+      dataIndex: "WorkPlaceGroupName",
+    },
+    {
+      title: "Workplace Name",
+      dataIndex: "WorkPlaceName",
+    },
+    {
+      title: "Department Name",
+      dataIndex: "DepartmentName",
+    },
+    {
+      title: "Designation Name",
+      dataIndex: "DesignationName",
+    },
+    {
+      title: "Employee Code",
+      dataIndex: "EmployeeCode",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "EmployeeName",
+    },
+    {
+      title: "Amount",
+      dataIndex: "Amount",
+      sorter: true, // For sorting based on amount
+    },
+    {
+      title: "Month",
+      dataIndex: "MonthName",
+    },
+    {
+      title: "Year",
+      dataIndex: "YearId",
+    },
+  ];
+
   return (
     <>
       <PForm
@@ -196,9 +249,9 @@ const YearlyTaxReturnReport = () => {
             </Row>
           </div>
         </PCard>
-        {/* <div>
-          {data && (
-            <ul className="d-flex flex-wrap align-items-center justify-content-start">
+        <div>
+          {landingApi?.data?.length > 0 && (
+            <ul className="d-flex flex-row-reverse my-3 align-items-center justify-content-start">
               <li className="pr-2">
                 <Tooltip title="Download as Excel">
                   <button
@@ -207,15 +260,15 @@ const YearlyTaxReturnReport = () => {
                     onClick={(e) => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
+                      const workplaceList = values?.workplace?.map(
+                        (i: any) => i?.value
+                      );
 
-                      const url = `PdfAndExcelReport/GetSalaryAllowanceNDeductionReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
-                        values?.month
-                      ).format("MM")}&intYearId=${moment(values?.month).format(
-                        "YYYY"
-                      )}&strSalaryCode=${values?.salaryCode?.strSalaryCode}`;
+                      const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
+
                       downloadFile(
                         url,
-                        `Monthly Allowance & Deduction Report- ${todayDate()}`,
+                        `Yearly Tax Return Report- ${todayDate()}`,
                         "xlsx",
                         setLoading
                       );
@@ -237,7 +290,7 @@ const YearlyTaxReturnReport = () => {
                   </button>
                 </Tooltip>
               </li>
-              <li>
+              {/* <li>
                 <Tooltip title="Print as PDF">
                   <button
                     className="btn-save"
@@ -270,18 +323,17 @@ const YearlyTaxReturnReport = () => {
                     />
                   </button>
                 </Tooltip>
-              </li>
+              </li> */}
             </ul>
           )}
-        </div> */}
+        </div>
 
-        {/* <div style={{ overflow: "scroll" }} className="mt-3 w-100">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: data,
-            }}
-          />
-        </div> */}
+        <DataTable
+          bordered
+          data={landingApi?.data?.length > 0 ? landingApi.data : []}
+          loading={landingApi?.loading}
+          header={header}
+        />
       </PForm>
     </>
   );

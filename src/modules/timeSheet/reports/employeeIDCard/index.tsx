@@ -38,6 +38,7 @@ const EmployeePdfLanding = () => {
     total: 0,
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [rowDto, setRowDto] = useState([]);
 
   //   api states
   const workplaceGroup = useApiRequest([]);
@@ -111,6 +112,14 @@ const EmployeePdfLanding = () => {
           pageSize: res?.PageSize,
           total: res?.TotalCount,
         });
+
+        const modifiedData = res?.Data?.map((item: any) => {
+          return {
+            ...item,
+            key: item?.EmployeeId,
+          };
+        });
+        setRowDto(modifiedData);
       },
     });
   };
@@ -242,7 +251,7 @@ const EmployeePdfLanding = () => {
               ? [
                   {
                     type: "primary",
-                    content: "Download",
+                    content: `Download ${selectedRow?.length}`,
                     onClick: () => {
                       downloadFile(
                         `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}`,
@@ -307,11 +316,12 @@ const EmployeePdfLanding = () => {
         <DataTable
           header={header}
           bordered
-          data={landingApi?.data?.Data || []}
+          data={rowDto || []}
           loading={landingApi?.loading}
           rowSelection={{
             type: "checkbox",
             selectedRowKeys: selectedRow.map((item) => item?.key),
+            preserveSelectedRowKeys: true,
             onChange: (selectedRowKeys, selectedRows) => {
               setSelectedRow(selectedRows);
             },
@@ -326,7 +336,6 @@ const EmployeePdfLanding = () => {
             // Return if sort function is called
             if (extra.action === "sort") return;
             setFilterList(filters);
-            setSelectedRow([]);
             getLandingData({
               pagination,
               searchText: form.getFieldValue("search"),

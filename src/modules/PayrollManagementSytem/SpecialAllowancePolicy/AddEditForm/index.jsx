@@ -103,6 +103,8 @@ export default function AddEditForm({
         : "CreatePayrollElementConfig",
       method: singleData?.id ? "PUT" : "POST",
       payload: payload,
+      toast: true,
+
       onSuccess: () => {
         cb();
       },
@@ -235,7 +237,9 @@ export default function AddEditForm({
                           },
                           {
                             message: "Range is between 1 to 31",
-                            pattern: new RegExp(/^([1-9]|[12][0-9]|3[01])$/),
+                            pattern: new RegExp(
+                              /^([1-9]|[12][0-9]|3[01])(\.\d+)?$/
+                            ),
                           },
                         ]}
                       />
@@ -252,6 +256,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
+          loading={saveApi?.loading}
         />
       </PForm>
     </>

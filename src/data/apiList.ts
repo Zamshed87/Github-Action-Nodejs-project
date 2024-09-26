@@ -196,7 +196,8 @@ export const apiList = {
     "/PayrollElementConfig/CreatePayrollElementConfig",
   UpdatePayrollElementConfig:
     "/PayrollElementConfig/UpdatePayrollElementConfig",
-
+  EmployeeFullYearTaxReportAPI:
+    "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
   //updated ddls
 
   BusinessUnitWithRoleExtension: "/PeopleDeskDdl/BusinessUnitWithRoleExtension",
