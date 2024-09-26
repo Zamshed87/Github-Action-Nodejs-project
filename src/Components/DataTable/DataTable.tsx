@@ -119,7 +119,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
             columns={columnsModify}
             dataSource={data?.map((itm: any, index: number) => ({
               ...itm,
-              key: index,
+              key: itm?.key || index,
               sl: index + 1,
             }))}
             loading={loading}
