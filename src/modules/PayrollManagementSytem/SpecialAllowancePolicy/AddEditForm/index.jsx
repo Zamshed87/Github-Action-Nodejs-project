@@ -103,6 +103,8 @@ export default function AddEditForm({
         : "CreatePayrollElementConfig",
       method: singleData?.id ? "PUT" : "POST",
       payload: payload,
+      toast: true,
+
       onSuccess: () => {
         cb();
       },
