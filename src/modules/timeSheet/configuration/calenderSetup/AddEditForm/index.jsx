@@ -91,7 +91,8 @@ const CalendarSetupModal = ({
   // DDL
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      `/PeopleDeskDdl/WorkplaceWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkPlaceDDL

@@ -58,13 +58,11 @@ const YearlyTaxReturnReport = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -78,13 +76,12 @@ const YearlyTaxReturnReport = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {

@@ -34,14 +34,13 @@ export default function AddEditForm({
   // ddls
   useEffect(() => {
     getBUnitDDL.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "BusinessUnitWithRoleExtension",
       method: "GET",
       params: {
-        id: singleData?.intBusinessUnitId,
-        DDLType: "BusinessUnit",
-        WorkplaceGroupId: wgId,
-        BusinessUnitId: buId,
-        intId: employeeId || 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        empId: employeeId || 0,
+        accountId: orgId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
