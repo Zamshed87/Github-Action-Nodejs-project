@@ -122,12 +122,11 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
 
     WorkplaceDDL?.action({
       method: "get",
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
       },
       onSuccess: (data) => {
         data?.forEach((item: any, idx: number) => {

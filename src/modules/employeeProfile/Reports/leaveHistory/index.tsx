@@ -34,7 +34,7 @@ const EmLeaveHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, buName },
+    profileData: { orgId, buId, wgId, employeeId, buName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -76,13 +76,13 @@ const EmLeaveHistory = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -96,13 +96,13 @@ const EmLeaveHistory = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {

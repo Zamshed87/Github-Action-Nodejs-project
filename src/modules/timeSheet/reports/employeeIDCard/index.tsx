@@ -48,13 +48,13 @@ const EmployeePdfLanding = () => {
   //   Api calls
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -67,13 +67,13 @@ const EmployeePdfLanding = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {

@@ -198,4 +198,17 @@ export const apiList = {
     "/PayrollElementConfig/UpdatePayrollElementConfig",
   EmployeeFullYearTaxReportAPI:
     "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
+  //updated ddls
+
+  BusinessUnitWithRoleExtension: "/PeopleDeskDdl/BusinessUnitWithRoleExtension",
+  BusinessUnitIdAll: "/PeopleDeskDdl/BusinessUnitIdAll",
+
+  DesignationIdAll: "/PeopleDeskDdl/DesignationIdAll",
+  DepartmentIdAll: "PeopleDeskDdl/DepartmentIdAll",
+  SectionIdAll: "PeopleDeskDdl/SectionIdAll",
+  WorkplaceGroupIdAll: "PeopleDeskDdl/WorkplaceGroupIdAll",
+  WorkplaceIdAll: "PeopleDeskDdl/WorkplaceIdAll",
+  WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
+  WorkplaceGroupWithRoleExtension:
+    "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
 };

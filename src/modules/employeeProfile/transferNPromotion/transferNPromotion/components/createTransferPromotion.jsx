@@ -306,7 +306,7 @@ function CreateTransferPromotion() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+      `/PeopleDeskDdl/BusinessUnitWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
@@ -331,7 +331,9 @@ function CreateTransferPromotion() {
         wgId
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=0`,
+        // /PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=0`,
+
+        `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${buId}`,
         "intWorkplaceGroupId",
         "strWorkplaceGroup",
         setWorkplaceGroupDDL
@@ -346,11 +348,14 @@ function CreateTransferPromotion() {
         0
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
-          state?.singleData?.intBusinessUnitId
-        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
-        "DepartmentId",
-        "DepartmentName",
+        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+        //   state?.singleData?.intBusinessUnitId
+        // }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
+        `/PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${
+          state?.singleData?.intWorkplaceGroupId || wgId
+        }&workplaceId=${state?.singleData?.intWorkplaceId || wId}`,
+        "intDepartmentId",
+        "strDepartment",
         setDepartmentDDL
       );
       getPeopleDeskWithoutAllDDL(
@@ -363,22 +368,28 @@ function CreateTransferPromotion() {
       );
 
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
-          state?.singleData?.intBusinessUnitId
-        }&WorkplaceGroupId=${
+        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+        //   state?.singleData?.intBusinessUnitId
+        // }&WorkplaceGroupId=${
+        //   state?.singleData?.intWorkplaceGroupId || wgId
+        // }&intWorkplaceId=${wId || 0}`,
+        `PeopleDeskDdl/DesignationIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${
           state?.singleData?.intWorkplaceGroupId || wgId
-        }&intWorkplaceId=${wId || 0}`,
-        "DesignationId",
-        "DesignationName",
+        }&workplaceId=${wId || 0}`,
+        "designationId",
+        "designationName",
         setDesignationDDL
       );
 
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${
-          state?.singleData?.intBusinessUnitId
-        }&WorkplaceGroupId=${
+        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${
+        //   state?.singleData?.intBusinessUnitId
+        // }&WorkplaceGroupId=${
+        //   state?.singleData?.intWorkplaceGroupId || wgId
+        // }&intId=${employeeId}`,
+        `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${
           state?.singleData?.intWorkplaceGroupId || wgId
-        }&intId=${employeeId}`,
+        }`,
         "intWorkplaceId",
         "strWorkplace",
         setWorkplaceDDL
@@ -504,7 +515,6 @@ function CreateTransferPromotion() {
 
     addEditTransferAndPromotion(payload, callBack, setLoading);
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-2">
@@ -702,7 +712,8 @@ function CreateTransferPromotion() {
                       }));
                       if (valueOption?.value === "Promotion") {
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${empBasic?.employeeProfileLandingView?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${empBasic?.employeeProfileLandingView?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                          `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${buId}`,
                           "intWorkplaceGroupId",
                           "strWorkplaceGroup",
                           setWorkplaceGroupDDL
@@ -718,24 +729,37 @@ function CreateTransferPromotion() {
                           0
                         );
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${empBasic?.employeeProfileLandingView?.intBusinessUnitId}&WorkplaceGroupId=${empBasic?.employeeProfileLandingView?.intWorkplaceGroupId}&intId=${employeeId}`,
+                          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${empBasic?.employeeProfileLandingView?.intBusinessUnitId}&WorkplaceGroupId=${empBasic?.employeeProfileLandingView?.intWorkplaceGroupId}&intId=${employeeId}`,
+                          `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${
+                            empBasic?.employeeProfileLandingView
+                              ?.intWorkplaceGroupId || wgId
+                          }`,
                           "intWorkplaceId",
                           "strWorkplace",
                           setWorkplaceDDL
                         );
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
-                            empBasic?.employeeProfileLandingView
-                              ?.intBusinessUnitId
-                          }&WorkplaceGroupId=${
+                          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                          //   empBasic?.employeeProfileLandingView
+                          //     ?.intBusinessUnitId
+                          // }&WorkplaceGroupId=${
+                          //   empBasic?.employeeProfileLandingView
+                          //     ?.intWorkplaceGroupId || wgId
+                          // }&intWorkplaceId=${
+                          //   empBasic?.employeeProfileLandingView
+                          //     ?.intWorkplaceId || 0
+                          // }`,
+                          `PeopleDeskDdl/DesignationIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${
                             empBasic?.employeeProfileLandingView
                               ?.intWorkplaceGroupId || wgId
-                          }&intWorkplaceId=${
+                          }&workplaceId=${
                             empBasic?.employeeProfileLandingView
-                              ?.intWorkplaceId || 0
+                              ?.intWorkplaceId ||
+                            wId ||
+                            0
                           }`,
-                          "DesignationId",
-                          "DesignationName",
+                          "designationId",
+                          "designationName",
                           setDesignationDDL
                         );
                         getPeopleDeskAllDDL(
@@ -769,18 +793,27 @@ function CreateTransferPromotion() {
                           setHrPositionDDL
                         );
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
-                            empBasic?.employeeProfileLandingView
-                              ?.intBusinessUnitId
-                          }&WorkplaceGroupId=${
+                          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+                          //   empBasic?.employeeProfileLandingView
+                          //     ?.intBusinessUnitId
+                          // }&WorkplaceGroupId=${
+                          //   empBasic?.employeeProfileLandingView
+                          //     ?.intWorkplaceGroupId || wgId
+                          // }&intWorkplaceId=${
+                          //   empBasic?.employeeProfileLandingView
+                          //     ?.intWorkplaceId || 0
+                          // }`,
+                          `/PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${
                             empBasic?.employeeProfileLandingView
                               ?.intWorkplaceGroupId || wgId
-                          }&intWorkplaceId=${
+                          }&workplaceId=${
                             empBasic?.employeeProfileLandingView
-                              ?.intWorkplaceId || 0
+                              ?.intWorkplaceId ||
+                            wId ||
+                            0
                           }`,
-                          "DepartmentId",
-                          "DepartmentName",
+                          "intDepartmentId",
+                          "strDepartment",
                           setDepartmentDDL
                         );
                       }
@@ -841,7 +874,8 @@ function CreateTransferPromotion() {
                     value={values?.businessUnit}
                     onChange={(valueOption) => {
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                        `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${valueOption?.value}`,
                         "intWorkplaceGroupId",
                         "strWorkplaceGroup",
                         setWorkplaceGroupDDL
@@ -908,7 +942,8 @@ function CreateTransferPromotion() {
                         employmentType: "",
                       }));
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                        `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${values?.businessUnit?.value}&workplaceGroupId=${valueOption?.value}`,
                         "intWorkplaceId",
                         "strWorkplace",
                         setWorkplaceDDL
@@ -948,13 +983,19 @@ function CreateTransferPromotion() {
                       }));
                       if (valueOption) {
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+                          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+                          //   values?.businessUnit?.value
+                          // }&WorkplaceGroupId=${
+                          //   values?.workplaceGroup?.value || wgId
+                          // }&intWorkplaceId=${valueOption?.value || 0}`,
+
+                          `/PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${
                             values?.businessUnit?.value
-                          }&WorkplaceGroupId=${
-                            values?.workplaceGroup?.value || wgId
-                          }&intWorkplaceId=${valueOption?.value || 0}`,
-                          "DepartmentId",
-                          "DepartmentName",
+                          }&workplaceGroupId=${
+                            values?.workplaceGroup?.value
+                          }&workplaceId=${valueOption?.value || 0}`,
+                          "intDepartmentId",
+                          "strDepartment",
                           setDepartmentDDL
                         );
                       }
@@ -965,13 +1006,19 @@ function CreateTransferPromotion() {
                         valueOption?.value
                       ) {
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                          // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                          //   values?.businessUnit?.value
+                          // }&WorkplaceGroupId=${
+                          //   values?.workplaceGroup?.value || wgId
+                          // }&intWorkplaceId=${valueOption?.value || 0}`,
+
+                          `PeopleDeskDdl/DesignationIdAll?accountId=${orgId}&businessUnitId=${
                             values?.businessUnit?.value
-                          }&WorkplaceGroupId=${
+                          }&workplaceGroupId=${
                             values?.workplaceGroup?.value || wgId
-                          }&intWorkplaceId=${valueOption?.value || 0}`,
-                          "DesignationId",
-                          "DesignationName",
+                          }&workplaceId=${valueOption?.value || 0}`,
+                          "designationId",
+                          "designationName",
                           setDesignationDDL
                         );
                         getPeopleDeskAllDDL(

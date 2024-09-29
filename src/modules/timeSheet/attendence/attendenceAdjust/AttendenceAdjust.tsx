@@ -229,19 +229,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   // workplace wise
   const getEmployeDepartment = () => {
     empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
-        DDLType: "EmpDepartment",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        intId: 0,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+        accountId: orgId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: number) => {
-          res[i].label = item?.DepartmentName;
-          res[i].value = item?.DepartmentId;
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });

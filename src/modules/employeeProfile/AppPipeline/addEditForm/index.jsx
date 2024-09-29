@@ -60,15 +60,11 @@ export default function AddEditForm({
   // ddls
   useEffect(() => {
     getWgDDL.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        // id: singleData?.intBusinessUnitId,
-        DDLType: "WorkplaceGroup",
-        WorkplaceGroupId: wgId,
-        BusinessUnitId: buId,
-        intId: employeeId || 0,
-        // intWorkplaceId: wId,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -78,15 +74,12 @@ export default function AddEditForm({
       },
     });
     getWDDL.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       method: "GET",
       params: {
-        // id: singleData?.intBusinessUnitId,
-        DDLType: "Workplace",
-        WorkplaceGroupId: wgId,
-        BusinessUnitId: buId,
-        intId: employeeId || 0,
-        // intWorkplaceId: wId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -323,15 +316,12 @@ export default function AddEditForm({
                 workplace: undefined,
               });
               getWDDL.action({
-                urlKey: "PeopleDeskAllDDL",
+                urlKey: "WorkplaceIdAll",
                 method: "GET",
                 params: {
-                  // id: singleData?.intBusinessUnitId,
-                  DDLType: "Workplace",
-                  WorkplaceGroupId: op?.value,
-                  BusinessUnitId: buId,
-                  intId: employeeId || 0,
-                  // intWorkplaceId: wId,
+                  accountId: orgId,
+                  businessUnitId: buId,
+                  workplaceGroupId: value,
                 },
                 onSuccess: (res) => {
                   res.forEach((item, i) => {
