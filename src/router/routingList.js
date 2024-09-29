@@ -44,7 +44,7 @@ import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import FlexibleTimeSheet from "modules/timeSheet/configuration/FlexibleTimeSheet";
-import LatePunishment from "modules/timeSheet/employeeAssign/latePunishment";
+import { LatePunishmentAssign } from "modules/timeSheet/employeeAssign/latePunishment";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeePdfLanding from "modules/timeSheet/reports/employeeIDCard";
@@ -1880,7 +1880,7 @@ export const routingList = [
   },
   {
     path: "/administration/configuration/latepunishmentassign",
-    component: LatePunishment,
+    component: LatePunishmentAssign,
   },
   {
     path: "/administration/timeManagement/holidayOffdaySwap/assign",
