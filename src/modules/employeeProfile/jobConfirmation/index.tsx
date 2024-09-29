@@ -274,7 +274,7 @@ const JobConfirmationReport = () => {
           landingApiCall({
             pagination: {
               current: pages?.current,
-              pageSize: landingApi?.data[0]?.totalCount,
+              pageSize: pages?.pageSize,
             },
           });
         }}
