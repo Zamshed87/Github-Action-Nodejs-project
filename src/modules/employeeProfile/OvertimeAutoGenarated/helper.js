@@ -47,7 +47,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
     {
       title: "SL",
       dataIndex: "sl",
-      render: (data, record, index) => (
+      render: (data, record) => (
         <div style={{ minWidth: "80px" }}>
           <FormikCheckBox
             styleObj={{
@@ -158,8 +158,6 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
       render: (data) => dateFormatter(data),
       isDate: true,
       key: "dteAttendanceDate",
-      sorter: true,
-      filter: true,
       width: "100px",
     },
     {
