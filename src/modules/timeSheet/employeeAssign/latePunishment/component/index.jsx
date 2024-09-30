@@ -88,7 +88,7 @@ const AddEditForm = ({
         }}
       >
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={24}>
+          <Col md={12} sm={24}>
             <PSelect
               options={policyDDLApi?.data?.length > 0 ? policyDDLApi?.data : []}
               name="policy"
