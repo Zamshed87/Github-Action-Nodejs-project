@@ -39,6 +39,7 @@ import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/T
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
+import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
@@ -708,9 +709,9 @@ const BulkUploadEntry = lazy(() =>
 const BulkUploadHistory = lazy(() =>
   import("../modules/employeeProfile/bulkUploadHistory/index.jsx")
 );
-const Confirmation = lazy(() =>
-  import("../modules/employeeProfile/confirmation/index.jsx")
-);
+// const Confirmation = lazy(() =>
+//   import("../modules/employeeProfile/confirmation/index.jsx")
+// );
 const ContactBook = lazy(() =>
   import("../modules/employeeProfile/contactBook/index.jsx")
 );
