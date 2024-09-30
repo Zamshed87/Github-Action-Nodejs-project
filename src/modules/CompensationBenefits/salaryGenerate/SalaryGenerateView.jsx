@@ -7,11 +7,9 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import AvatarComponent from "../../../common/AvatarComponent";
 import BackButton from "../../../common/BackButton";
 import FormikRadio from "../../../common/FormikRadio";
 import PrimaryButton from "../../../common/PrimaryButton";
-import ScrollableTable from "../../../common/ScrollableTable";
 import Loading from "../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600, greenColor, success500 } from "../../../utility/customColor";
@@ -226,24 +224,6 @@ const SalaryGenerateView = () => {
   };
 
   const getDetailsReport = (partName) => {
-    /*   getSalaryReport(
-        "DynamicSalaryColumnList",
-        orgId,
-        buId,
-        wgId,
-        !state?.data ? state?.intMonth : state?.data?.intMonth, // values?.monthId,
-        !state?.data ? state?.intYear : state?.data?.intYear, // values?.yearId,
-        !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode, // values?.yearId,
-        +id,
-        0,
-        employeeId,
-        setDetailsReport,
-        setAllData,
-        setTableColumn,
-        setLoading,
-        setTableAllowanceHead,
-        setTableDeductionHead
-      ); */
     getWorkplaceNhrPosition(
       `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${orgId}&strSalaryCode=${
         !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
@@ -309,31 +289,49 @@ const SalaryGenerateView = () => {
   const [detailsData, setDetailsData] = useState("");
   const [detailsReportLoading, setDetailsReportLoading] = useState(false);
 
+  const sharedOnCell = (record) => {
+    if (record?.DeptName) {
+      return { colSpan: 0 };
+    }
+
+    return {};
+  };
+
   const columns = [
     {
       title: "SL",
       dataIndex: "SL",
       render: (text, record) =>
-        record?.DeptName?.trim() ? <b>Department: {record.DeptName}</b> : text,
+        record?.DeptName?.trim() ? (
+          <p style={{ fontSize: "13px", fontWeight: 500, padding: "5px 0" }}>
+            Department: {record.DeptName}
+          </p>
+        ) : (
+          text
+        ),
       onCell: (record) => ({
-        colSpan: record?.DeptName?.trim() ? 16 : 1,
+        colSpan: record?.DeptName?.trim() ? 9 : 1,
       }),
-      width: 30,
+      width: 40,
+      fixed: "left",
     },
     {
       title: "Employee Information",
+      colSpan: 3,
       children: [
         {
           title: "Employee ID",
           dataIndex: "EmployeeCode",
           align: "center",
-          render: (text, record) => (record?.DeptName?.trim() ? null : text),
-          width: 80,
+          render: (text) => text,
+          onCell: sharedOnCell,
+          fixed: "left",
+          width: 120,
         },
         {
           title: "Employee Name",
           dataIndex: "EmployeeName",
-          align: "center",
+          align: "left",
           render: (text, record) =>
             record?.DeptName?.trim() ? null : (
               <div className="d-flex align-items-center">
@@ -343,14 +341,18 @@ const SalaryGenerateView = () => {
                 </div>
               </div>
             ),
-          width: 150,
+          onCell: sharedOnCell,
+          fixed: "left",
+          width: 180,
         },
         {
           title: "Designation",
           dataIndex: "DesignationName",
-          align: "center",
-          render: (text, record) => (record?.DeptName?.trim() ? null : text),
-          width: 150,
+          align: "left",
+          render: (text) => text,
+          onCell: sharedOnCell,
+          fixed: "left",
+          width: 120,
         },
       ],
     },
@@ -360,87 +362,197 @@ const SalaryGenerateView = () => {
       dataIndex: "GrossSalary",
       key: "GrossSalary",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(
+              getRowTotal(rowDto, "GrossSalary").toFixed(2)
+            );
+          },
+          dataIndex: "GrossSalary",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
     },
     {
       title: "Total Allowance",
       dataIndex: "TotalAllowance",
       key: "TotalAllowance",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(
+              getRowTotal(rowDto, "TotalAllowance").toFixed(2)
+            );
+          },
+          dataIndex: "TotalAllowance",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
     },
     {
       title: "Total Deduction",
       dataIndex: "TotalDeduction",
       key: "TotalDeduction",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
-    },
-    orgId === 5
-      ? {
-          title: "PF Amount",
-          dataIndex: "PFAmount",
-          key: "PFAmount",
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(
+              getRowTotal(rowDto, "TotalDeduction").toFixed(2)
+            );
+          },
+          dataIndex: "TotalDeduction",
           align: "right",
           render: (text, record) =>
             record?.DeptName?.trim() ? null : numberWithCommas(text),
-        }
-      : {},
+          onCell: sharedOnCell,
+        },
+      ],
+    },
+    {
+      title: "PF Amount",
+      dataIndex: "PFAmount",
+      key: "PFAmount",
+      align: "right",
+      hidden: orgId === 5 ? false : true,
+      onCell: sharedOnCell,
+      children: [
+        {
+          hidden: orgId === 5 ? false : true,
+          title: () => {
+            return numberWithCommas(getRowTotal(rowDto, "PFAmount").toFixed(2));
+          },
+          dataIndex: "PFAmount",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
+    },
     {
       title: "Net Pay",
       dataIndex: "NetPay",
       key: "NetPay",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(getRowTotal(rowDto, "NetPay").toFixed(2));
+          },
+          dataIndex: "NetPay",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
     },
     {
       title: "Bank Pay",
       dataIndex: "BankPay",
       key: "BankPay",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(getRowTotal(rowDto, "BankPay").toFixed(2));
+          },
+          dataIndex: "BankPay",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
     },
     {
       title: "Digital Bank Pay",
       dataIndex: "DegitalBankPay",
       key: "DegitalBankPay",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(
+              getRowTotal(rowDto, "DegitalBankPay").toFixed(2)
+            );
+          },
+          dataIndex: "DegitalBankPay",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
     },
     {
       title: "Cash Pay",
       dataIndex: "CashPay",
       key: "CashPay",
       align: "right",
-      render: (text, record) =>
-        record?.DeptName?.trim() ? null : numberWithCommas(text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: () => {
+            return numberWithCommas(getRowTotal(rowDto, "CashPay").toFixed(2));
+          },
+          dataIndex: "CashPay",
+          align: "right",
+          render: (text, record) =>
+            record?.DeptName?.trim() ? null : numberWithCommas(text),
+          onCell: sharedOnCell,
+        },
+      ],
     },
     {
-      title: "Total Working Days",
-      dataIndex: "TotalWorkingDays",
-      key: "TotalWorkingDays",
+      title: "Attendance",
       align: "center",
-      render: (text, record) => (record?.DeptName?.trim() ? null : text),
+      onCell: sharedOnCell,
+      children: [
+        {
+          title: "Total Working Days",
+          dataIndex: "TotalWorkingDays",
+          key: "TotalWorkingDays",
+          align: "center",
+          onCell: sharedOnCell,
+          render: (text, record) => (record?.DeptName?.trim() ? null : text),
+          width: 150,
+        },
+        {
+          title: "Total Attendance",
+          dataIndex: "PayableDays",
+          key: "PayableDays",
+          align: "center",
+          onCell: sharedOnCell,
+          render: (text, record) => (record?.DeptName?.trim() ? null : text),
+          width: 150,
+        },
+      ],
     },
-    {
-      title: "Total Attendance",
-      dataIndex: "PayableDays",
-      key: "PayableDays",
-      align: "center",
-      render: (text, record) => (record?.DeptName?.trim() ? null : text),
-    },
+
     {
       title: "Workplace",
       dataIndex: "WorkplaceName",
       key: "WorkplaceName",
       align: "center",
       render: (text, record) => (record?.DeptName?.trim() ? null : text),
+      onCell: sharedOnCell,
+      width: 200,
     },
     {
       title: "Workplace Group",
@@ -448,6 +560,8 @@ const SalaryGenerateView = () => {
       key: "WorkplaceGroupName",
       align: "center",
       render: (text, record) => (record?.DeptName?.trim() ? null : text),
+      onCell: sharedOnCell,
+      width: 150,
     },
     {
       title: "Payroll Group",
@@ -455,8 +569,10 @@ const SalaryGenerateView = () => {
       key: "PayrollGroupName",
       align: "center",
       render: (text, record) => (record?.DeptName?.trim() ? null : text),
+      onCell: sharedOnCell,
+      width: 150,
     },
-  ];
+  ].filter((item) => !item.hidden);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -537,7 +653,7 @@ const SalaryGenerateView = () => {
                         }}
                         styles={{
                           ...customStyles,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "auto",
                             height:
@@ -551,7 +667,7 @@ const SalaryGenerateView = () => {
                               borderColor: `${gray600}!important`,
                             },
                           }),
-                          valueContainer: (provided, state) => ({
+                          valueContainer: (provided) => ({
                             ...provided,
                             height:
                               values?.hrPosition?.length > 1 ? "auto" : "auto",
@@ -645,7 +761,7 @@ const SalaryGenerateView = () => {
                     <button
                       className="btn-green"
                       style={{ minWidth: "" }}
-                      onClick={(e) => {
+                      onClick={() => {
                         const valueArrayHRPosition = values?.hrPosition?.length
                           ? values.hrPosition.map((obj) => obj.value)
                           : "";
@@ -927,189 +1043,9 @@ const SalaryGenerateView = () => {
                   header={columns}
                   rowKey={(record) => record.EmployeeCode}
                   pagination={false}
-                  scroll={{ y: 500 }}
+                  scroll={{ x: 2500, y: 500 }}
+                  bordered
                 />
-                <ScrollableTable
-                  classes="salary-process-table"
-                  secondClasses="table-card-styled tableOne scroll-table-height"
-                  customClass="salary-summary-custom"
-                >
-                  <thead>
-                    <tr>
-                      <th rowSpan="2" style={{ minWidth: "200px" }}>
-                        SL
-                      </th>
-                      <th colSpan={3} className="text-center">
-                        Employee Information
-                      </th>
-                      <th style={{ textAlign: "right" }} className="mr-2">
-                        Gross Salary
-                      </th>
-                      <th style={{ textAlign: "right" }} className=" mr-2">
-                        Total Allowance
-                      </th>
-                      <th style={{ textAlign: "right" }} className="mr-2">
-                        Total Deduction
-                      </th>
-                      {orgId === 5 && (
-                        <th style={{ textAlign: "right" }} className="mr-2">
-                          PF Amount
-                        </th>
-                      )}
-
-                      <th
-                        style={{ textAlign: "right" }}
-                        className="th-inner-table mr-2"
-                      >
-                        Net Pay
-                      </th>
-                      <th style={{ textAlign: "right" }} className=" mr-2">
-                        Bank Pay
-                      </th>
-                      <th style={{ textAlign: "right" }} className="mr-2">
-                        Digital Bank Pay
-                      </th>
-                      <th style={{ textAlign: "right" }} className="mr-2">
-                        Cash Pay
-                      </th>
-                      <th colSpan={2} className="text-center">
-                        Attendance
-                      </th>
-                      <th rowSpan="2">Workplace</th>
-                      <th rowSpan="2">Workplace Group</th>
-                      <th rowSpan="2">Payroll Group</th>
-                    </tr>
-                    <tr>
-                      <th className="text-center" style={{ minWidth: "122px" }}>
-                        Employee ID
-                      </th>
-                      <th className="text-center">Employee Name</th>
-                      <th className="text-center">Designation</th>
-                      <th className="text-right">
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "GrossSalary").toFixed(2)
-                        )}
-                      </th>
-                      <th className="text-right">
-                        {" "}
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "TotalAllowance").toFixed(2)
-                        )}
-                      </th>
-                      <th className="text-right">
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "TotalDeduction").toFixed(2)
-                        )}
-                      </th>
-                      {orgId === 5 && (
-                        <th className="text-right">
-                          {numberWithCommas(
-                            getRowTotal(rowDto, "PFAmount").toFixed(2)
-                          )}
-                        </th>
-                      )}
-
-                      <th className="text-right">
-                        {" "}
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "NetPay").toFixed(2)
-                        )}
-                      </th>
-                      <th className="text-right">
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "BankPay").toFixed(2)
-                        )}
-                      </th>
-                      <th className="text-right">
-                        {" "}
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "DegitalBankPay").toFixed(2)
-                        )}
-                      </th>
-                      <th className="text-right">
-                        {" "}
-                        {numberWithCommas(
-                          getRowTotal(rowDto, "CashPay").toFixed(2)
-                        )}
-                      </th>
-                      <th className="text-center">Total Working Days</th>
-                      <th className="text-center">Total Attendance</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rowDto?.map((item, index) => (
-                      <>
-                        {loading && <Loading />}
-                        <tr
-                          key={index}
-                          colSpan={!item?.DeptName?.trim() ? 16 : 1}
-                        >
-                          <td>
-                            {item?.DeptName?.trim() ? (
-                              <b>Depertment: {item?.DeptName}</b>
-                            ) : (
-                              <>{item?.SL}</>
-                            )}
-                          </td>
-                          {!item?.DeptName?.trim() && (
-                            <>
-                              <td>{item?.EmployeeCode}</td>
-                              <td>
-                                <div className="d-flex align-items-center">
-                                  <div className="emp-avatar">
-                                    <AvatarComponent
-                                      classess=""
-                                      letterCount={1}
-                                      label={item?.EmployeeName}
-                                    />
-                                  </div>
-                                  <div className="ml-2">
-                                    <span className="tableBody-title">
-                                      {item?.EmployeeName}
-                                    </span>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>{item?.DesignationName}</td>
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.GrossSalary) || "-"}
-                              </td>
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.TotalAllowance) || "-"}
-                              </td>
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.TotalDeduction) || "-"}
-                              </td>
-                              {orgId === 5 && (
-                                <td style={{ textAlign: "right" }}>
-                                  {numberWithCommas(item?.PFAmount) || "-"}
-                                </td>
-                              )}
-
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.NetPay) || "-"}
-                              </td>
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.BankPay) || "-"}
-                              </td>
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.DegitalBankPay) || "-"}
-                              </td>
-                              <td style={{ textAlign: "right" }}>
-                                {numberWithCommas(item?.CashPay) || "-"}
-                              </td>
-                              <td>{item?.TotalWorkingDays}</td>
-                              <td>{item?.PayableDays}</td>
-                              <td>{item?.WorkplaceName}</td>
-                              <td>{item?.WorkplaceGroupName}</td>
-                              <td>{item?.PayrollGroupName}</td>
-                            </>
-                          )}
-                        </tr>
-                      </>
-                    ))}
-                  </tbody>
-                </ScrollableTable>
               </>
             )}
             {values?.summary === "2" && (
