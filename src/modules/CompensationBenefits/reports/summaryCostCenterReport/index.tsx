@@ -12,7 +12,7 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tooltip } from "antd";
 import { getPeopleDeskAllDDL } from "common/api";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
