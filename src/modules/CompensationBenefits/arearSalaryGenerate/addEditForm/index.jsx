@@ -84,8 +84,10 @@ export default function ArearSalaryGenerateForm() {
   const getEmpList = (pagination, searchText = "") => {
     getEligibleEmployee(
       `/Payroll/ArearSalarySelectQueryAll?partName=EligibleEmployeeListForArearSalaryGenerate&intAccountId=${orgId}&intBusinessUnitId=${+values
-        ?.businessUnit?.value}&intWorkplaceGroupId=${wgId}&dteEffectiveFrom=${values?.fromDate
-      }&dteEffectiveTo=${values?.toDate}&IntPageNo=${pagination?.current
+        ?.businessUnit?.value}&intWorkplaceGroupId=${wgId}&dteEffectiveFrom=${
+        values?.fromDate
+      }&dteEffectiveTo=${values?.toDate}&IntPageNo=${
+        pagination?.current
       }&IntPageSize=${pagination?.pageSize}&searchText=${searchText}`,
       // `/Payroll/ArearSalarySelectQueryAll?partName=EligibleEmployeeListForArearSalaryGenerate&intAccountId=${orgId}&intBusinessUnitId=${+values
       //   ?.businessUnit?.value}&dteEffectiveFrom=${
@@ -134,7 +136,8 @@ export default function ArearSalaryGenerateForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+      `/PeopleDeskDdl/BusinessUnitIdAll?accountId=${orgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL

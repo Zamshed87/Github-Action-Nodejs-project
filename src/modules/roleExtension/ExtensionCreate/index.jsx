@@ -294,6 +294,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                             setFieldValue("orgName", "");
                             setFieldValue("orgType", valueOption);
                             setOrganizationDDLFunc(
+                              orgId,
                               wgId,
                               buId,
                               employeeId,

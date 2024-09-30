@@ -111,6 +111,7 @@ export const getAllAppliedSalaryBreakdownList = async (
 };
 
 export const getWorkplaceDDL = async (
+  orgId,
   buId,
   workplaceGroupId,
   employeeId,
@@ -118,7 +119,8 @@ export const getWorkplaceDDL = async (
 ) => {
   try {
     const res = await axios.get(
-      `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&intId=${employeeId}`
+      // `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&intId=${employeeId}`
+      `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${workplaceGroupId}`
     );
     if (res?.status === 200) {
       const data = res?.data?.map((itm) => {

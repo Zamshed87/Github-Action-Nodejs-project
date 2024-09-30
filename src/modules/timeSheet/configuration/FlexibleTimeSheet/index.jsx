@@ -311,14 +311,14 @@ const MonthlyAttendanceReport = () => {
         width: 80, // Adjust width as needed
         align: "center",
       },
-      {
-        title: "SL",
-        render: (_, rec, index) =>
-          (pages?.current - 1) * pages?.pageSize + index + 1,
-        fixed: "left",
-        width: 45,
-        align: "center",
-      },
+      // {
+      //   title: "SL",
+      //   render: (_, rec, index) =>
+      //     (pages?.current - 1) * pages?.pageSize + index + 1,
+      //   fixed: "left",
+      //   width: 45,
+      //   align: "center",
+      // },
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
@@ -336,11 +336,7 @@ const MonthlyAttendanceReport = () => {
           </span>
         ),
       },
-      {
-        title: "Employee Code",
-        dataIndex: "strEmployeeCode",
-        width: 70,
-      },
+  
 
       {
         title: "Employee Name",
@@ -353,8 +349,13 @@ const MonthlyAttendanceReport = () => {
             </div>
           );
         },
-        // fixed: "left",
+        fixed: "left",
         width: 150,
+      },
+      {
+        title: "Employee Code",
+        dataIndex: "strEmployeeCode",
+        width: 100,
       },
 
       {
@@ -363,11 +364,11 @@ const MonthlyAttendanceReport = () => {
 
         width: 100,
       },
-      {
-        title: "Department",
-        dataIndex: "strDepartmentName",
-        width: 100,
-      },
+      // {
+      //   title: "Department",
+      //   dataIndex: "strDepartmentName",
+      //   width: 100,
+      // },
       {
         title: "Copy From (Emp ID)",
         width: 250,

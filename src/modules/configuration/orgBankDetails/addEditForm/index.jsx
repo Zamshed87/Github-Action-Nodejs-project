@@ -36,14 +36,10 @@ export default function AddEditForm({
   useEffect(() => {
     // }&intWorkplaceId=${wId || 0}${year ? `&intYear=${year}` : ""}`
     getBUnitDDL.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "BusinessUnitIdAll",
       method: "GET",
       params: {
-        DDLType: "BusinessUnit",
-        WorkplaceGroupId: wgId,
-        BusinessUnitId: buId,
-        intId: employeeId || 0,
-        intWorkplaceId: wId,
+        accountId: orgId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -53,13 +49,11 @@ export default function AddEditForm({
       },
     });
     getWGDDL.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        WorkplaceGroupId: 0,
-        BusinessUnitId: buId,
-        intId: employeeId || 0,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -122,7 +116,7 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
-      workplaceId: values?.workplace?.value ,
+      workplaceId: values?.workplace?.value,
       workplaceName: values?.workplace?.label,
       workplaceGroupId: values?.workplaceGroup?.value,
       workplaceGroupName: values?.workplaceGroup?.label,
@@ -172,13 +166,12 @@ export default function AddEditForm({
   useEffect(() => {
     if (singleData?.intAccountBankDetailsId) {
       getWDDL.action({
-        urlKey: "PeopleDeskAllDDL",
+        urlKey: "WorkplaceIdAll",
         method: "GET",
         params: {
-          DDLType: "Workplace",
-          WorkplaceGroupId: singleData?.workplaceGroupId,
-          BusinessUnitId: buId,
-          intId: employeeId || 0,
+          accountId: orgId,
+          businessUnitId: buId,
+          workplaceGroupId: singleData?.workplaceGroupId,
         },
         onSuccess: (res) => {
           res.forEach((item, i) => {
@@ -361,10 +354,9 @@ export default function AddEditForm({
                   urlKey: "PeopleDeskAllDDL",
                   method: "GET",
                   params: {
-                    DDLType: "Workplace",
-                    WorkplaceGroupId: value,
-                    BusinessUnitId: buId,
-                    intId: employeeId || 0,
+                    accountId: orgId,
+                    businessUnitId: buId,
+                    workplaceGroupId: value,
                   },
                   onSuccess: (res) => {
                     res.forEach((item, i) => {
