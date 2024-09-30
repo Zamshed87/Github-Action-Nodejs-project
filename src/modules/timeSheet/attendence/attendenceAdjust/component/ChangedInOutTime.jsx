@@ -14,7 +14,7 @@ const ChangedInOutTimeEmpListModal = ({
   setRowDto,
   value,
 }) => {
-  const { orgId, buId, wgId } = useSelector(
+  const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );

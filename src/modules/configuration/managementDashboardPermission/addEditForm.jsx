@@ -18,7 +18,7 @@ import { gray600, greenColor } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import {
   createManagementDashPermission,
-  getManagementDashPermissionById
+  getManagementDashPermissionById,
 } from "./helper";
 
 const initData = {
@@ -108,16 +108,16 @@ export default function ManagementDashboardPermissionCreate() {
     createManagementDashPermission(payload, setLoading, callback);
   };
 
-  useEffect(() => {
-    PeopleDeskSaasDDL(
-      "Account",
-      wgId,
-      buId,
-      setAccountDDL,
-      "intAccountId",
-      "strAccountName"
-    );
-  }, [buId, wgId]);
+  // useEffect(() => {
+  //   PeopleDeskSaasDDL(
+  //     "Account",
+  //     wgId,
+  //     buId,
+  //     setAccountDDL,
+  //     "intAccountId",
+  //     "strAccountName"
+  //   );
+  // }, [buId, wgId]);
 
   const singleSelectHandler = (e, index) => {
     let data = [...rowDto];
