@@ -310,7 +310,7 @@ const SalaryGenerateView = () => {
           text
         ),
       onCell: (record) => ({
-        colSpan: record?.DeptName?.trim() ? 9 : 1,
+        colSpan: record?.DeptName?.trim() ? 10 : 1,
       }),
       width: 40,
       fixed: "left",
