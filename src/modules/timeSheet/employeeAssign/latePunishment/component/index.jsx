@@ -20,11 +20,9 @@ const AddEditForm = ({
   setIsAddEditForm,
   getData,
   empIDString,
-  singleData,
   setCheckedList,
 }) => {
   const dispatch = useDispatch();
-
   const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -68,12 +66,6 @@ const AddEditForm = ({
         AccountId: orgId,
         BusinessUnitId: buId,
       },
-      onSuccess: (res) => {
-        // res.forEach((item, i) => {
-        //   res[i].label = item?.LeaveType;
-        //   res[i].value = item?.LeaveTypeId;
-        // });
-      },
     });
   };
 
@@ -96,7 +88,7 @@ const AddEditForm = ({
         }}
       >
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={24}>
+          <Col md={12} sm={24}>
             <PSelect
               options={policyDDLApi?.data?.length > 0 ? policyDDLApi?.data : []}
               name="policy"
@@ -121,6 +113,7 @@ const AddEditForm = ({
           onCancel={() => {
             setIsAddEditForm(false);
             getData();
+            setCheckedList([]);
           }}
           submitAction="submit"
           //loading={loading}

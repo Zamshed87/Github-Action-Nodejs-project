@@ -198,6 +198,9 @@ export const apiList = {
     "/PayrollElementConfig/UpdatePayrollElementConfig",
   EmployeeFullYearTaxReportAPI:
     "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
+  LatePunishmentPolicyAssignLoader:
+    "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
+
   //updated ddls
 
   BusinessUnitWithRoleExtension: "/PeopleDeskDdl/BusinessUnitWithRoleExtension",
