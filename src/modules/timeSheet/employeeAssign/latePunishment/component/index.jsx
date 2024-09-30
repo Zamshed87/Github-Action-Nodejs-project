@@ -1,20 +1,10 @@
 import { Form } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import {
-  DataTable,
-  PButton,
-  PForm,
-  PInput,
-  PSelect,
-  TableButton,
-} from "Components";
+import { PForm, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { shallowEqual, useSelector } from "react-redux";
 
 const AddEditForm = ({
   setIsAddEditForm,
@@ -22,7 +12,6 @@ const AddEditForm = ({
   empIDString,
   setCheckedList,
 }) => {
-  const dispatch = useDispatch();
   const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -51,8 +40,6 @@ const AddEditForm = ({
   };
 
   const [form] = Form.useForm();
-
-  const [loading, setLoading] = useState(false);
 
   const policyDDLApi = useApiRequest({});
 
