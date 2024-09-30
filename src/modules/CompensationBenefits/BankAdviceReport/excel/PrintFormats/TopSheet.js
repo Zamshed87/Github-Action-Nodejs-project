@@ -142,8 +142,12 @@ export const topSheet = (
                   : values?.bank?.label === "Dhaka Bank Limited "
                   ? "Imamganj Branch Dhaka"
                   : values?.bank?.label === "DUTCH-BANGLA BANK LTD"
-                  ? "Tejgaon Branch Dhaka"
-                  : "Local Office Branch, Dilkusha Dhaka.",
+                  ? "Local Office Branch, Dilkusha Dhaka."
+                  : values?.bank?.label === "Dutch-Bangla Bank PLC."
+                  ? "Local Office Branch, Dilkusha Dhaka."
+                  : values?.bank?.label === "Dutch Bangla Bank Agent Banking"
+                  ? "47, Motijheel C/A (20th Floor),Dhaka-1000."
+                  : "Tejgaon Branch Dhaka",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -173,7 +177,9 @@ export const topSheet = (
           ],
           [
             {
-              text: `Subject : REQUEST TO DISBURSE EMPLOYEE ${values?.bankAdviceFor?.value === 2 ? "BONUS" : "SALARY"} ${comapanyNameHeader.toUpperCase()}`,
+              text: `Subject : REQUEST TO DISBURSE EMPLOYEE ${
+                values?.bankAdviceFor?.value === 2 ? "BONUS" : "SALARY"
+              } ${comapanyNameHeader.toUpperCase()}`,
               fontSize: 10,
               bold: true,
               underline: true,
@@ -195,7 +201,11 @@ export const topSheet = (
           ],
           [
             {
-              text: `With due respect, please disburse the net payable amount BDT ${total} (${totalInWords} Only) as Employee ${values?.bankAdviceFor?.value === 2 ? "bonus" : "salary"} ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${values?.account?.AccountNo} `,
+              text: `With due respect, please disburse the net payable amount BDT ${total} (${totalInWords} Only) as Employee ${
+                values?.bankAdviceFor?.value === 2 ? "bonus" : "salary"
+              } ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${
+                values?.account?.AccountNo
+              } `,
               fontSize: 9,
               cellRange: "A2:H1",
               merge: true,

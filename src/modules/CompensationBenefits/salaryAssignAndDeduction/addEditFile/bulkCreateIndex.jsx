@@ -362,9 +362,10 @@ function BulkAddEditForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
-      "DepartmentId",
-      "DepartmentName",
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      "intDepartmentId",
+      "strDepartment",
       setDepartmentDDL
     );
     getPeopleDeskAllDDL(
@@ -380,9 +381,10 @@ function BulkAddEditForm() {
       setHRTypeDDL
     );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
-      "DesignationId",
-      "DesignationName",
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      `PeopleDeskDdl/DesignationIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      "designationId",
+      "designationName",
       setDesignationDDL
     );
     setSelectedRow([]);

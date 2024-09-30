@@ -62,7 +62,7 @@ export default function PolicyUpload() {
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
 
-  const { orgId, buId, buName, employeeId, wgId } = useSelector(
+  const { orgId, buId, buName, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -76,15 +76,17 @@ export default function PolicyUpload() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDdl/BusinessUnitIdAll?accountId=${orgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
     );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      "DepartmentId",
-      "DepartmentName",
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      "intDepartmentId",
+      "strDepartment",
       setDepartmentDDL
     );
     getPolicyCategoryDDL(orgId, setPolicyCategoryDDL);

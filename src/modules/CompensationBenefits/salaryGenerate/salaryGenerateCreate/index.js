@@ -129,17 +129,18 @@ const SalaryGenerateCreate = () => {
   // for initial
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkplaceDDL
     );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+    //   "intBusinessUnitId",
+    //   "strBusinessUnit",
+    //   setBusinessUnitDDL
+    // );
   }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
@@ -573,7 +574,7 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3 d-none">
+                  {/* <div className="col-lg-3 d-none">
                     <div className="input-field-main">
                       <label>Business Unit</label>
                       <FormikSelect
@@ -596,7 +597,7 @@ const SalaryGenerateCreate = () => {
                         isDisabled={singleData}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-lg-3">
                     <div className="input-field-main">
                       <label>Payroll Month</label>

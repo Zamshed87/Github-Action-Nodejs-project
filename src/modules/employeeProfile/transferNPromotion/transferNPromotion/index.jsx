@@ -118,12 +118,12 @@ export default function TransferAndPromotion() {
 
   useEffect(() => {
     getData();
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
-      "EmployeeId",
-      "EmployeeName",
-      setSubstituteEmployeeDDL
-    );
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
+    //   "EmployeeId",
+    //   "EmployeeName",
+    //   setSubstituteEmployeeDDL
+    // );
   }, [buId, wgId, wId]);
 
   const releaseHandler = (values) => {

@@ -55,39 +55,37 @@ const HolidayOffdaySwapAssign = () => {
 
   const getEmployeDepartment = () => {
     empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
-        DDLType: "EmpDepartment",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        intId: 0,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+
+        accountId: orgId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
-          res[i].label = item?.DepartmentName;
-          res[i].value = item?.DepartmentId;
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });
   };
   const getEmployeDesignation = () => {
     empDesignationDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "DesignationIdAll",
       method: "GET",
       params: {
-        DDLType: "EmpDesignation",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        intId: 0,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
-          res[i].label = item?.DesignationName;
-          res[i].value = item?.DesignationId;
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
         });
       },
     });
