@@ -470,7 +470,6 @@ export const salaryDetailsExcelData = (tableHeader, tableRow) => {
 export const getEditDDLs = ({
   singleData,
   getPeopleDeskWithoutAllDDL,
-  orgId,
   buId,
   wgId,
   setWingDDL,
