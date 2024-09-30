@@ -200,6 +200,8 @@ export const apiList = {
     "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
   LatePunishmentPolicyAssignLoader:
     "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
+  EmployeeBasicForConfirmation:
+    "/EmployeeAllLanding/EmployeeBasicForConfirmation",
 
   //updated ddls
 
