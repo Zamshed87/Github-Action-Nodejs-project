@@ -202,6 +202,7 @@ export const apiList = {
     "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
   EmployeeBasicForConfirmation:
     "/EmployeeAllLanding/EmployeeBasicForConfirmation",
+  GetIOULanding: "/Employee/GetIOULanding",
 
   //updated ddls
 
