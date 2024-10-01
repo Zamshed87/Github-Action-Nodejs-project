@@ -197,7 +197,7 @@ const CreateAndEditEmploye = () => {
       params: {
         accountId: intAccountId,
         businessUnitId: buId,
-        // departmentId: department?.value || 0,
+        departmentId: department?.value || 0,
         workplaceGroupId: workplaceGroup?.value,
         workplaceId: workplace?.value,
       },
