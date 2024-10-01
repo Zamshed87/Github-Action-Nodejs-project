@@ -316,7 +316,8 @@ const AttendanceReport = () => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    const endDateMoment = fromDateMoment.clone().add(30 - 1, "days");
+    const daysInMonth = fromDateMoment.daysInMonth();
+    const endDateMoment = fromDateMoment.clone().add(daysInMonth - 1, "days");
 
     // Disable dates before fromDate and after next30daysForEmp
     return (
