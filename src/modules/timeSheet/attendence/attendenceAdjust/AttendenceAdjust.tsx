@@ -842,7 +842,9 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
 
               // getCheckboxProps: (rec) => {
               //   return {
-              //     disabled: rec?.ApplicationStatus === "Approved",
+              //     disabled: moment(rec?.AttendanceDate, "YYYY-MM-DD").isAfter(
+              //       moment().format("YYYY-MM-DD")
+              //     ),
               //   };
               // },
             }}
