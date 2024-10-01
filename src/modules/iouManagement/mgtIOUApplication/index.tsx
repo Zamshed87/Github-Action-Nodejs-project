@@ -3,7 +3,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import type { RangePickerProps } from "antd/es/date-picker";
@@ -30,12 +30,14 @@ import { numberWithCommas } from "utility/numberWithCommas";
 import { LightTooltip } from "common/LightTooltip";
 import { InfoOutlined } from "@ant-design/icons";
 import { stripHtml } from "utility/stripHTML";
-import { title } from "process";
-
+import { PModal } from "Components/Modal";
+import AddEditForm from "./AddEditForm/index.jsx";
 export const MgtIOUApplicationLanding = () => {
   // hook
   const dispatch = useDispatch();
   const history = useHistory();
+  const [id, setId] = useState("");
+  const [open, setOpen] = useState(false);
 
   // redux
   const { orgId, buId, wgId, wId } = useSelector(
@@ -368,6 +370,17 @@ export const MgtIOUApplicationLanding = () => {
                 search: e?.target?.value,
               });
             }}
+            buttonList={[
+              {
+                type: "primary",
+                content: `Request IOU`,
+                icon: "plus",
+
+                onClick: () => {
+                  // setOpen(true);
+                },
+              },
+            ]}
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
@@ -433,6 +446,27 @@ export const MgtIOUApplicationLanding = () => {
           />
         </PCard>
       </PForm>
+      <PModal
+        open={open}
+        title={id ? "Edit Designation" : "Create Designation"}
+        width=""
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <AddEditForm
+              getData={landingApiCall}
+              setIsAddEditForm={setOpen}
+              isEdit={id ? true : false}
+              singleData={id}
+              setId={setId}
+            />
+          </>
+        }
+      />
     </>
   ) : (
     <NotPermittedPage />

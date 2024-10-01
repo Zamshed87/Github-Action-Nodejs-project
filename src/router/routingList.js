@@ -961,9 +961,9 @@ const MgtExpenseApplication = lazy(() =>
 const MgtExpenseApplicationView = lazy(() =>
   import("../modules/iouManagement/mgtExpense/expenseApplication/viewForm.jsx")
 );
-const MgtIOUApplicationCreate = lazy(() =>
-  import("../modules/iouManagement/mgtIOUApplication/addEditForm.jsx")
-);
+// const MgtIOUApplicationCreate = lazy(() =>
+//   import("../modules/iouManagement/mgtIOUApplication/addEditForm.jsx")
+// );
 // const MgtIOUApplication = lazy(() =>
 //   import("../modules/iouManagement/mgtIOUApplication/index.jsx")
 // );
@@ -1562,14 +1562,14 @@ export const routingList = [
     component: PFSelfLanding,
   },
   //PF Management start for selfService
-  {
-    path: "/profile/iOU/application/create",
-    component: MgtIOUApplicationCreate,
-  },
-  {
-    path: "/profile/iOU/application/edit/:id",
-    component: MgtIOUApplicationCreate,
-  },
+  // {
+  //   path: "/profile/iOU/application/create",
+  //   component: MgtIOUApplicationCreate,
+  // },
+  // {
+  //   path: "/profile/iOU/application/edit/:id",
+  //   component: MgtIOUApplicationCreate,
+  // },
   {
     path: "/administration/logHistory/shiftManagementLog",
     component: ShiftManagementLog,
