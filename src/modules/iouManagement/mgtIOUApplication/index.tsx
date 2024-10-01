@@ -40,7 +40,7 @@ export const MgtIOUApplicationLanding = () => {
   const [open, setOpen] = useState(false);
 
   // redux
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -332,10 +332,8 @@ export const MgtIOUApplicationLanding = () => {
               {
                 type: "edit",
                 onClick: () => {
-                  history.push({
-                    pathname: `/profile/iOU/application/edit/${rec?.iouId}`,
-                    state: {},
-                  });
+                  setOpen(true);
+                  setId(rec);
                 },
               },
             ]}
@@ -377,7 +375,7 @@ export const MgtIOUApplicationLanding = () => {
                 icon: "plus",
 
                 onClick: () => {
-                  // setOpen(true);
+                  setOpen(true);
                 },
               },
             ]}
@@ -448,7 +446,7 @@ export const MgtIOUApplicationLanding = () => {
       </PForm>
       <PModal
         open={open}
-        title={id ? "Edit Designation" : "Create Designation"}
+        title={id ? "Edit IOU Request" : "Create IOU Request"}
         width=""
         onCancel={() => {
           setId("");
