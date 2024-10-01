@@ -131,7 +131,7 @@ export const incomeTaxColumnData = (
     },
     {
       title: "Slab Amount",
-      dataIndex: "slabWiseTAX",
+      dataIndex: "slabWiseTax",
       sort: true,
       filter: false,
       fieldType: "number",

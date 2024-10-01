@@ -1,5 +1,6 @@
 import { Tooltip } from "antd";
 import axios from "axios";
+import moment from "moment";
 import { MdPrint } from "react-icons/md";
 import { toast } from "react-toastify";
 import { getPDFAction } from "utility/downloadFile";
@@ -25,7 +26,7 @@ export const confirmationEmpAction = async (
     const payload = {
       employeeId: singleData?.employeeId,
       // designationId: singleData?.designationId,
-      confirmationDate: values?.confirmDate,
+      confirmationDate: moment(values?.confirmDate).format("YYYY-MM-DD"),
       // pinNo: values?.pinNo,
     };
     setLoading(true);
