@@ -32,8 +32,7 @@ import { InfoOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
 import { getPDFAction } from "utility/downloadFile";
 import { toast } from "react-toastify";
-import { ClassNames } from "@emotion/react";
-// import AddEditForm from "./AddEditForm/index.jsx";
+import AddEditForm from "./AddEditForm/index.jsx";
 export const MgtExpenseApplicationLanding = () => {
   // hook
   const dispatch = useDispatch();
@@ -178,20 +177,6 @@ export const MgtExpenseApplicationLanding = () => {
       render: (_: any, rec: any) => dateFormatter(rec?.dteExpenseToDate),
     },
 
-    // {
-    //   title: "IOU",
-    //   dataIndex: "numIouAmount",
-    //   className: "text-right",
-    //   width: 45,
-
-    //   filter: false,
-    // },
-    // {
-    //   title: "Adjusted",
-    //   dataIndex: "numAdjustedAmount",
-    //   className: "text-right",
-    //   filter: false,
-    // },
     {
       title: "Expense Amount",
       dataIndex: "numExpenseAmount",
@@ -271,6 +256,8 @@ export const MgtExpenseApplicationLanding = () => {
               history.push(
                 `/profile/expense/expenseApplication/edit/${rec?.expenseId}`
               );
+              //   setOpen(true);
+              //   setId(rec);
             },
           },
           (orgId == 5 || orgId === 6) && {
@@ -408,13 +395,13 @@ export const MgtExpenseApplicationLanding = () => {
         maskClosable={false}
         components={
           <>
-            {/* <AddEditForm
+            <AddEditForm
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
               singleData={id}
               setId={setId}
-            /> */}
+            />
           </>
         }
       />
