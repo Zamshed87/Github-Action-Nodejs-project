@@ -28,7 +28,7 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import {
   columns,
   confirmationEmpAction,
-  getEmployeeSalaryInfo,
+  //   getEmployeeSalaryInfo,
 } from "./helper";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
 import { getWorkplaceDetails } from "common/api";
@@ -36,8 +36,8 @@ import { getSerial } from "Utils";
 import { todayDate } from "utility/todayDate";
 import { getPDFAction } from "utility/downloadFile";
 import { MdPrint } from "react-icons/md";
-import ViewModal from "common/ViewModal";
-import ViewForm from "./ViewForm";
+// import ViewModal from "common/ViewModal";
+// import ViewForm from "./ViewForm";
 
 export const Confirmation = () => {
   // hook
@@ -68,9 +68,9 @@ export const Confirmation = () => {
   const [excelLoading, setExcelLoading] = useState(false);
   const [buDetails, setBuDetails] = useState({});
   const [loading, setLoading] = useState(false);
-  const [openRow, setOpenRow] = useState<string | null>(null); // Use state to track open popover for each row
-  const [isAddEditForm, setIsAddEditForm] = useState(false);
-  const [singleSalaryData, setSingleSalaryData] = useState([]);
+  const [openRow, setOpenRow] = useState<string | null>(null);
+  //   const [isAddEditForm, setIsAddEditForm] = useState(false);
+  //   const [singleSalaryData, setSingleSalaryData] = useState([]);
 
   const hide = () => {
     setOpenRow(null);
