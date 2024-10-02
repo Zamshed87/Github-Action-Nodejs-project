@@ -196,8 +196,6 @@ export const apiList = {
     "/PayrollElementConfig/CreatePayrollElementConfig",
   UpdatePayrollElementConfig:
     "/PayrollElementConfig/UpdatePayrollElementConfig",
-  EmployeeFullYearTaxReportAPI:
-    "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
   LatePunishmentPolicyAssignLoader:
     "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
   EmployeeBasicForConfirmation:
