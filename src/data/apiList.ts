@@ -207,6 +207,9 @@ export const apiList = {
   IOULandingForAccounts: "/Employee/IOULandingForAccounts",
   ExpenseApplicationLandingDataPaginetion:
     "/Employee/ExpenseApplicationLandingDataPaginetion",
+  ExpenseApplicationCreateEdit: "/Employee/ExpenseApplicationCreateEdit",
+  GetExpenseById: "/Employee/GetExpenseById",
+  GetExpenseDocList: "/Employee/GetExpenseDocList",
 
   //updated ddls
 
