@@ -40,6 +40,8 @@ import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
+import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
+import { MgtExpenseApplicationLanding } from "modules/iouManagement/mgtExpense/expenseApplication";
 import { MgtIOUApplicationLanding } from "modules/iouManagement/mgtIOUApplication";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
@@ -941,9 +943,9 @@ const GrievanceManagementSelf = lazy(() =>
 const AdjustmentIOUApproval = lazy(() =>
   import("../modules/iouManagement/adjustmentApproval/index.jsx")
 );
-const AdjustmentIOUReport = lazy(() =>
-  import("../modules/iouManagement/adjustmentIOUReport/index.jsx")
-);
+// const AdjustmentIOUReport = lazy(() =>
+//   import("../modules/iouManagement/adjustmentIOUReport/index.jsx")
+// );
 const AdjustmentIOUReportView = lazy(() =>
   import("../modules/iouManagement/adjustmentIOUReport/viewForm.jsx")
 );
@@ -955,9 +957,9 @@ const MgtExpenseApplicationCreate = lazy(() =>
     "../modules/iouManagement/mgtExpense/expenseApplication/addEditForm.jsx"
   )
 );
-const MgtExpenseApplication = lazy(() =>
-  import("../modules/iouManagement/mgtExpense/expenseApplication/index.jsx")
-);
+// const MgtExpenseApplication = lazy(() =>
+//   import("../modules/iouManagement/mgtExpense/expenseApplication/index.jsx")
+// );
 const MgtExpenseApplicationView = lazy(() =>
   import("../modules/iouManagement/mgtExpense/expenseApplication/viewForm.jsx")
 );
@@ -1588,7 +1590,7 @@ export const routingList = [
   },
   {
     path: "/profile/iOU/adjustmentReport",
-    component: AdjustmentIOUReport,
+    component: AdjustmentIOUReportLanding,
   },
   {
     path: "/profile/reports/employeeList",
@@ -1716,7 +1718,7 @@ export const routingList = [
   },
   {
     path: "/profile/expense/expenseApplication",
-    component: MgtExpenseApplication,
+    component: MgtExpenseApplicationLanding,
   },
   {
     path: "/profile/remoteLocation/employeeLocation",

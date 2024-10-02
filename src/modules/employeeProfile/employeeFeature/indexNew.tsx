@@ -75,6 +75,7 @@ function EmployeeFeatureNew() {
       searchTxt: searchText || "",
       salartType: "",
       hrPosition: 0,
+      strBloodGroupList: filerList?.strBloodGroup || [],
       strDepartmentList: filerList?.strDepartment || [],
       strWorkplaceGroupList: filerList?.strWorkplaceGroup || [],
       strWorkplaceList: filerList?.strWorkplace || [],
@@ -270,6 +271,9 @@ function EmployeeFeatureNew() {
       title: "Blood Group",
       dataIndex: "strBloodGroup",
       sorter: true,
+      filterKey: "strBloodGroupList",
+      filter: true,
+
       width: 35,
     },
     {
@@ -391,6 +395,7 @@ function EmployeeFeatureNew() {
                     isPaginated: false,
                     isHeaderNeed: false,
                     searchTxt: search || "",
+                    strBloodGroupList: filterList?.strBloodGroup || [],
                     strDepartmentList: filterList?.strDepartment || [],
                     strWorkplaceGroupList: filterList?.strWorkplaceGroup || [],
                     strWorkplaceList: filterList?.strWorkplace || [],
