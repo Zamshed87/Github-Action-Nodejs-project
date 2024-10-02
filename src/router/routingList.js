@@ -40,6 +40,7 @@ import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
+import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
 import { MgtIOUApplicationLanding } from "modules/iouManagement/mgtIOUApplication";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
@@ -941,9 +942,9 @@ const GrievanceManagementSelf = lazy(() =>
 const AdjustmentIOUApproval = lazy(() =>
   import("../modules/iouManagement/adjustmentApproval/index.jsx")
 );
-const AdjustmentIOUReport = lazy(() =>
-  import("../modules/iouManagement/adjustmentIOUReport/index.jsx")
-);
+// const AdjustmentIOUReport = lazy(() =>
+//   import("../modules/iouManagement/adjustmentIOUReport/index.jsx")
+// );
 const AdjustmentIOUReportView = lazy(() =>
   import("../modules/iouManagement/adjustmentIOUReport/viewForm.jsx")
 );
@@ -1588,7 +1589,7 @@ export const routingList = [
   },
   {
     path: "/profile/iOU/adjustmentReport",
-    component: AdjustmentIOUReport,
+    component: AdjustmentIOUReportLanding,
   },
   {
     path: "/profile/reports/employeeList",

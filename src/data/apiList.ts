@@ -206,6 +206,7 @@ export const apiList = {
   IOUApplicationCreateEdit: "Employee/IOUApplicationCreateEdit",
   IOULandingById: "Employee/IOULandingById",
   IouDocList: "/Employee/IouDocList",
+  IOULandingForAccounts: "/Employee/IOULandingForAccounts",
 
   //updated ddls
 
