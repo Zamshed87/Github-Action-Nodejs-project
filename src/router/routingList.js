@@ -40,6 +40,7 @@ import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
+import { MgtIOUApplicationLanding } from "modules/iouManagement/mgtIOUApplication";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
@@ -960,12 +961,12 @@ const MgtExpenseApplication = lazy(() =>
 const MgtExpenseApplicationView = lazy(() =>
   import("../modules/iouManagement/mgtExpense/expenseApplication/viewForm.jsx")
 );
-const MgtIOUApplicationCreate = lazy(() =>
-  import("../modules/iouManagement/mgtIOUApplication/addEditForm.jsx")
-);
-const MgtIOUApplication = lazy(() =>
-  import("../modules/iouManagement/mgtIOUApplication/index.jsx")
-);
+// const MgtIOUApplicationCreate = lazy(() =>
+//   import("../modules/iouManagement/mgtIOUApplication/addEditForm.jsx")
+// );
+// const MgtIOUApplication = lazy(() =>
+//   import("../modules/iouManagement/mgtIOUApplication/index.jsx")
+// );
 const MgtIOUApplicationView = lazy(() =>
   import("../modules/iouManagement/mgtIOUApplication/viewForm.jsx")
 );
@@ -1561,14 +1562,14 @@ export const routingList = [
     component: PFSelfLanding,
   },
   //PF Management start for selfService
-  {
-    path: "/profile/iOU/application/create",
-    component: MgtIOUApplicationCreate,
-  },
-  {
-    path: "/profile/iOU/application/edit/:id",
-    component: MgtIOUApplicationCreate,
-  },
+  // {
+  //   path: "/profile/iOU/application/create",
+  //   component: MgtIOUApplicationCreate,
+  // },
+  // {
+  //   path: "/profile/iOU/application/edit/:id",
+  //   component: MgtIOUApplicationCreate,
+  // },
   {
     path: "/administration/logHistory/shiftManagementLog",
     component: ShiftManagementLog,
@@ -1579,7 +1580,7 @@ export const routingList = [
   },
   {
     path: "/profile/iOU/application",
-    component: MgtIOUApplication,
+    component: MgtIOUApplicationLanding,
   },
   {
     path: "/profile/iOU/adjustmentReport/:id",
