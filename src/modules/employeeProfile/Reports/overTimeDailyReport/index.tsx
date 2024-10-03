@@ -398,7 +398,7 @@ const EmOverTimeDailyReport = () => {
                 search: e?.target?.value,
               });
             }}
-            printIcon={true}
+            printIcon={landingApi?.data?.length > 0 ? true : false}
             pdfExport={() => {
               reactToPrintFn();
             }}
