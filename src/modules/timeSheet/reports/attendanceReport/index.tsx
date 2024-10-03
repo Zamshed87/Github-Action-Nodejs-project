@@ -82,13 +82,13 @@ const AttendanceReport = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -102,13 +102,13 @@ const AttendanceReport = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -316,7 +316,8 @@ const AttendanceReport = () => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    const endDateMoment = fromDateMoment.clone().add(30 - 1, "days");
+    const daysInMonth = fromDateMoment.daysInMonth();
+    const endDateMoment = fromDateMoment.clone().add(daysInMonth - 1, "days");
 
     // Disable dates before fromDate and after next30daysForEmp
     return (

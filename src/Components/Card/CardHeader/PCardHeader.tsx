@@ -27,6 +27,7 @@ type PCardHeaderType = {
   submitIcon?: React.ReactNode;
   buttonList?: Array<{
     content: string;
+    className?: string;
     type: buttonType;
     onClick?: () => void;
     disabled?: boolean;
@@ -34,6 +35,7 @@ type PCardHeaderType = {
     info?: { isInfo?: boolean; infoTitle?: string; infoColor?: any };
   }>;
   children?: React.ReactNode;
+  buttonListRightLeft?: boolean;
 };
 export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
   const {
@@ -49,6 +51,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
     submitIcon,
     buttonList,
     children,
+    buttonListRightLeft = true,
   } = props;
 
   const isShowExportIcon = typeof exportIcon === "boolean" && exportIcon;
@@ -99,6 +102,36 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         {text ? <div className="text">{text}</div> : undefined}
       </div>
       <div className="header_right">
+        {/* Button List */}
+        {!buttonListRightLeft && buttonList
+          ? buttonList.map((button, index) => (
+              <div key={index} className="d-flex align-items-center">
+                {button?.info?.isInfo && (
+                  <LightTooltip title={button?.info?.infoTitle} arrow>
+                    {" "}
+                    <InfoOutlined
+                      sx={{
+                        color: button?.info?.infoColor || failColor,
+                        width: 16,
+                        cursor: "pointer",
+                        mr: 1,
+                      }}
+                    />
+                  </LightTooltip>
+                )}
+                <PButton
+                  // key={index}
+                  content={button.content}
+                  type={button.type}
+                  parentClassName={button.className}
+                  onClick={button.onClick}
+                  icon={button.icon === "plus" ? <PlusOutlined /> : button.icon}
+                  disabled={button.disabled}
+                />
+              </div>
+            ))
+          : undefined}
+        {children}
         {/* Search Input */}
         {onSearch ? (
           <PInput
@@ -111,7 +144,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
           />
         ) : undefined}
         {/* Button List */}
-        {buttonList
+        {buttonListRightLeft && buttonList
           ? buttonList.map((button, index) => (
               <div key={index} className="d-flex align-items-center">
                 {button?.info?.isInfo && (
@@ -138,7 +171,6 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
               </div>
             ))
           : undefined}
-        {children}
         {/* Submit Button */}
         {submitText !== undefined ? (
           <PButton

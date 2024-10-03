@@ -190,23 +190,23 @@ const CreateAndEditEmploye = () => {
 
   // section wise ddl
   const getEmployeeSection = () => {
-    const { department, workplace } = form.getFieldsValue(true);
+    const { department, workplace, workplaceGroup } = form.getFieldsValue(true);
     empSectionDDL?.action({
-      urlKey: "SectionDDL",
+      urlKey: "SectionIdAll",
       method: "GET",
       params: {
-        AccountId: intAccountId,
-        BusinessUnitId: buId,
-        DepartmentId: department?.value || 0,
-        WorkplaceId: workplace?.value,
+        accountId: intAccountId,
+        businessUnitId: buId,
+        departmentId: department?.value || 0,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
       },
-      // onSuccess: (res) => {
-      //   console.log("res", res);
-      //   res.forEach((item, i) => {
-      //     res[i].label = item?.label;
-      //     res[i].value = item?.value;
-      //   });
-      // },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strSectionName;
+          res[i].value = item?.intSectionId;
+        });
+      },
     });
   };
 
@@ -298,13 +298,16 @@ const CreateAndEditEmploye = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplaceDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        // DDLType: "Workplace",
+        // BusinessUnitId: buId,
+        // WorkplaceGroupId: workplaceGroup?.value,
+        // intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -361,19 +364,19 @@ const CreateAndEditEmploye = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
-        DDLType: "EmpDepartment",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+
+        accountId: orgId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.DepartmentName;
-          res[i].value = item?.DepartmentId;
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -383,20 +386,18 @@ const CreateAndEditEmploye = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDesignationDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "DesignationIdAll",
       method: "GET",
       params: {
-        DDLType: "EmpDesignation",
-        AccountId: intAccountId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
+        accountId: intAccountId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.DesignationName;
-          res[i].value = item?.DesignationId;
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
         });
       },
     });
@@ -450,13 +451,15 @@ const CreateAndEditEmploye = () => {
 
   const commonConfigurationDDL = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        // DDLType: "WorkplaceGroup",
+        // BusinessUnitId: buId,
+        // WorkplaceGroupId: wgId, // This should be removed
+        // intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -851,6 +854,7 @@ const CreateAndEditEmploye = () => {
                         getEmployeePosition();
                         getEmploymentType();
                         getCalendarDDL();
+                        getEmployeeSection();
                         getHolidayGroupDDL();
                       }
                     }}

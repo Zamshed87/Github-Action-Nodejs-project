@@ -220,14 +220,16 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                         ]}
                         onChange={(date) => {
                           if (date && fromDate) {
-                            const totalLeaves = `${
-                              +fromDateToDateDiff(
-                                moment(fromDate).format("YYYY-MM-DD"),
-                                moment(date).format("YYYY-MM-DD")
-                              )?.split(" ")[0] + 1
-                            } `;
+                            const fDate = moment(fromDate, "YYYY-MM-DD");
+                            const toDate = moment(date, "YYYY-MM-DD");
+                            // const totalLeaves = `${
+                            //   +fromDateToDateDiff(
+                            //     moment(fromDate).format("YYYY-MM-DD"),
+                            //     moment(date).format("YYYY-MM-DD")
+                            //   )?.split(" ")[0] + 1
+                            // } `;
                             form.setFieldsValue({
-                              leaveDays: totalLeaves,
+                              leaveDays: toDate.diff(fDate, "days") + 1,
                             });
                           } else {
                             form.setFieldsValue({

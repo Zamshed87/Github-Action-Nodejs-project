@@ -196,6 +196,32 @@ export const apiList = {
     "/PayrollElementConfig/CreatePayrollElementConfig",
   UpdatePayrollElementConfig:
     "/PayrollElementConfig/UpdatePayrollElementConfig",
-  EmployeeFullYearTaxReportAPI:
-    "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
+  LatePunishmentPolicyAssignLoader:
+    "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
+  EmployeeBasicForConfirmation:
+    "/EmployeeAllLanding/EmployeeBasicForConfirmation",
+  GetIOULanding: "/Employee/GetIOULanding",
+  IOUApplicationCreateEdit: "Employee/IOUApplicationCreateEdit",
+  IOULandingById: "Employee/IOULandingById",
+  IouDocList: "/Employee/IouDocList",
+  IOULandingForAccounts: "/Employee/IOULandingForAccounts",
+  ExpenseApplicationLandingDataPaginetion:
+    "/Employee/ExpenseApplicationLandingDataPaginetion",
+  ExpenseApplicationCreateEdit: "/Employee/ExpenseApplicationCreateEdit",
+  GetExpenseById: "/Employee/GetExpenseById",
+  GetExpenseDocList: "/Employee/GetExpenseDocList",
+
+  //updated ddls
+
+  BusinessUnitWithRoleExtension: "/PeopleDeskDdl/BusinessUnitWithRoleExtension",
+  BusinessUnitIdAll: "/PeopleDeskDdl/BusinessUnitIdAll",
+
+  DesignationIdAll: "/PeopleDeskDdl/DesignationIdAll",
+  DepartmentIdAll: "PeopleDeskDdl/DepartmentIdAll",
+  SectionIdAll: "PeopleDeskDdl/SectionIdAll",
+  WorkplaceGroupIdAll: "PeopleDeskDdl/WorkplaceGroupIdAll",
+  WorkplaceIdAll: "PeopleDeskDdl/WorkplaceIdAll",
+  WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
+  WorkplaceGroupWithRoleExtension:
+    "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
 };

@@ -16,8 +16,22 @@ export const organizationTypeList = [
     value: 3,
   },
 ];
-
+const getWorkplaceWithGroup = async (apiUrl, value, label, setter, cb) => {
+  try {
+    const res = await axios.get(apiUrl);
+    const newDDL = res?.data?.map((itm) => ({
+      ...itm,
+      value: itm[value],
+      label: itm?.strWorkplaceGroup
+        ? `${itm[label]}-[${itm.strWorkplaceGroup}]`
+        : itm[label],
+    }));
+    setter && setter(newDDL);
+    cb && cb();
+  } catch (error) {}
+};
 export const setOrganizationDDLFunc = (
+  orgId,
   wgId,
   buId,
   employeeId,
@@ -26,23 +40,26 @@ export const setOrganizationDDLFunc = (
 ) => {
   return valueOption?.value === 1
     ? getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+        `/PeopleDeskDdl/BusinessUnitWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
         "intBusinessUnitId",
         "strBusinessUnit",
         setOrganizationDDL
       )
     : valueOption?.value === 2
     ? getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+        `/PeopleDeskDdl/WorkplaceGroupWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
         "intWorkplaceGroupId",
         "strWorkplaceGroup",
         setOrganizationDDL
       )
     : valueOption?.value === 3
-    ? getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceWithGroupName&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+    ? getWorkplaceWithGroup(
+        // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceWithGroupName&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+        `/PeopleDeskDdl/WorkplaceWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
         "intWorkplaceId",
-        "Column1",
+        "strWorkplace",
         setOrganizationDDL
       )
     : null;

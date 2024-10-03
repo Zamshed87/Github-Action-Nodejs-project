@@ -41,39 +41,18 @@ const EmployeePdfLanding = () => {
   const [rowDto, setRowDto] = useState([]);
 
   //   api states
-  const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const landingApi = useApiRequest({});
 
-  //   Api calls
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
   const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -89,10 +68,9 @@ const EmployeePdfLanding = () => {
     searchText = "",
     filterList = filterListm,
   }: any) => {
-    const { workplaceGroup, workplace, search } = form.getFieldsValue(true);
+    const { workplace, search } = form.getFieldsValue(true);
     const payload = {
       accountId: orgId,
-      workplaceGroupId: workplaceGroup?.value || wgId,
       workplaceId: workplace?.value || wId,
       pageNo: pagination?.current,
       pageSize: pagination?.pageSize,
@@ -125,12 +103,12 @@ const EmployeePdfLanding = () => {
   };
 
   useEffect(() => {
+    const { workplace } = form.getFieldsValue(true);
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Employee ID Card";
 
-    // api calls
-    getWorkplaceGroup();
-    getLandingData({});
+    getWorkplace();
+    !workplace?.value && getLandingData({});
   }, [buId, wgId, wId]);
 
   //   table rows
@@ -268,26 +246,6 @@ const EmployeePdfLanding = () => {
 
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={workplaceGroup?.data || []}
-                name="workplaceGroup"
-                label="Workplace Group"
-                placeholder="Workplace Group"
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    workplaceGroup: op,
-                    workplace: undefined,
-                  });
-                  getWorkplace();
-                }}
-                rules={
-                  [
-                    //   { required: true, message: "Workplace Group is required" },
-                  ]
-                }
-              />
-            </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
                 options={workplace?.data || []}

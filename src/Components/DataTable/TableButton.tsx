@@ -8,6 +8,7 @@ import {
   CalendarOutlined,
   DollarOutlined,
   ReloadOutlined,
+  PrinterFilled,
 } from "@ant-design/icons";
 import React from "react";
 import { TableButtonType, buttonList, buttonType } from "./types";
@@ -25,6 +26,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     calender: <CalendarOutlined />,
     reload: <ReloadOutlined />,
     dollar: <DollarOutlined />,
+    print: <PrinterFilled />,
   };
 
   const renderButton = (type: buttonType) => {

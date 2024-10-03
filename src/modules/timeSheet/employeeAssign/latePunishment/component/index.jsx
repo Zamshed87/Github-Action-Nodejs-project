@@ -1,30 +1,17 @@
 import { Form } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import {
-  DataTable,
-  PButton,
-  PForm,
-  PInput,
-  PSelect,
-  TableButton,
-} from "Components";
+import { PForm, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { shallowEqual, useSelector } from "react-redux";
 
 const AddEditForm = ({
   setIsAddEditForm,
   getData,
   empIDString,
-  singleData,
   setCheckedList,
 }) => {
-  const dispatch = useDispatch();
-
   const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -54,8 +41,6 @@ const AddEditForm = ({
 
   const [form] = Form.useForm();
 
-  const [loading, setLoading] = useState(false);
-
   const policyDDLApi = useApiRequest({});
 
   const PolicyAssignApi = useApiRequest({});
@@ -67,12 +52,6 @@ const AddEditForm = ({
       params: {
         AccountId: orgId,
         BusinessUnitId: buId,
-      },
-      onSuccess: (res) => {
-        // res.forEach((item, i) => {
-        //   res[i].label = item?.LeaveType;
-        //   res[i].value = item?.LeaveTypeId;
-        // });
       },
     });
   };
@@ -96,7 +75,7 @@ const AddEditForm = ({
         }}
       >
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={24}>
+          <Col md={12} sm={24}>
             <PSelect
               options={policyDDLApi?.data?.length > 0 ? policyDDLApi?.data : []}
               name="policy"
@@ -121,6 +100,7 @@ const AddEditForm = ({
           onCancel={() => {
             setIsAddEditForm(false);
             getData();
+            setCheckedList([]);
           }}
           submitAction="submit"
           //loading={loading}

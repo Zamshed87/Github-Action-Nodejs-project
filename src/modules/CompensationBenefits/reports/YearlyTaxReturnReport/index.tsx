@@ -29,22 +29,24 @@ const YearlyTaxReturnReport = () => {
   // form
   const [form] = Form.useForm();
   const landingApi = useApiRequest([]);
+  const [data, setData] = useState("");
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
     const workplaceList = values?.workplace?.map((i: any) => i?.value);
     landingApi?.action({
       method: "get",
-      urlKey: "EmployeeFullYearTaxReportAPI",
+      urlKey: "EmployeeFullYearTaxReport",
       params: {
+        strType: "htmlView",
         workPlaceGroupId: values?.workplaceGroup?.value,
         FiscalYearId: values?.fiscalYear?.value,
         strWorkPlaceList: workplaceList?.length > 0 ? `${workplaceList}` : 0,
         status: values?.status?.value,
       },
-      // onSuccess: (res) => {
-      //   setData(res);
-      // },
+      onSuccess: (res) => {
+        setData(res);
+      },
     });
   };
   const [loading, setLoading] = useState(false);
@@ -58,13 +60,11 @@ const YearlyTaxReturnReport = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -78,13 +78,12 @@ const YearlyTaxReturnReport = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -109,51 +108,6 @@ const YearlyTaxReturnReport = () => {
   }, [orgId, buId, employeeId, wgId]);
 
   document.title = "Yearly Tax Return Report";
-
-  const header = [
-    // {
-    //   title: "SL",
-    //   render: (_: any, rec: any, index: number) => index + 1,
-    //   width: "30px",
-    // },
-    {
-      title: "Workplace Group Name",
-      dataIndex: "WorkPlaceGroupName",
-    },
-    {
-      title: "Workplace Name",
-      dataIndex: "WorkPlaceName",
-    },
-    {
-      title: "Department Name",
-      dataIndex: "DepartmentName",
-    },
-    {
-      title: "Designation Name",
-      dataIndex: "DesignationName",
-    },
-    {
-      title: "Employee Code",
-      dataIndex: "EmployeeCode",
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "EmployeeName",
-    },
-    {
-      title: "Amount",
-      dataIndex: "Amount",
-      sorter: true, // For sorting based on amount
-    },
-    {
-      title: "Month",
-      dataIndex: "MonthName",
-    },
-    {
-      title: "Year",
-      dataIndex: "YearId",
-    },
-  ];
 
   return (
     <>
@@ -250,9 +204,9 @@ const YearlyTaxReturnReport = () => {
           </div>
         </PCard>
         <div>
-          {landingApi?.data?.length > 0 && (
-            <ul className="d-flex flex-row-reverse my-3 align-items-center justify-content-start">
-              <li className="pr-2">
+          {data && (
+            <ul className="d-flex flex-row-reverse mt-3 align-items-center justify-content-start">
+              <li className="pr-2 ml-2">
                 <Tooltip title="Download as Excel">
                   <button
                     className="btn-save"
@@ -264,7 +218,7 @@ const YearlyTaxReturnReport = () => {
                         (i: any) => i?.value
                       );
 
-                      const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
+                      const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?strType=excelView&workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
 
                       downloadFile(
                         url,
@@ -290,7 +244,7 @@ const YearlyTaxReturnReport = () => {
                   </button>
                 </Tooltip>
               </li>
-              {/* <li>
+              <li>
                 <Tooltip title="Print as PDF">
                   <button
                     className="btn-save"
@@ -298,11 +252,11 @@ const YearlyTaxReturnReport = () => {
                     onClick={(e) => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
-                      const url = `PdfAndExcelReport/GetSalaryAllowanceNDeductionReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
-                        values?.month
-                      ).format("MM")}&intYearId=${moment(values?.month).format(
-                        "YYYY"
-                      )}&strSalaryCode=${values?.salaryCode?.strSalaryCode}`;
+                      const workplaceList = values?.workplace?.map(
+                        (i: any) => i?.value
+                      );
+
+                      const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?strType=pdfView&workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
 
                       getPDFAction(url, setLoading);
                     }}
@@ -323,17 +277,18 @@ const YearlyTaxReturnReport = () => {
                     />
                   </button>
                 </Tooltip>
-              </li> */}
+              </li>
             </ul>
           )}
         </div>
 
-        <DataTable
-          bordered
-          data={landingApi?.data?.length > 0 ? landingApi.data : []}
-          loading={landingApi?.loading}
-          header={header}
-        />
+        <div style={{ overflow: "scroll" }} className=" w-100">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: data,
+            }}
+          />
+        </div>
       </PForm>
     </>
   );

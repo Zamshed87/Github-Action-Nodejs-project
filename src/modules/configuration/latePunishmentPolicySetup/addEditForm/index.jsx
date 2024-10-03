@@ -56,92 +56,6 @@ const AddEditForm = ({
     shallowEqual
   );
   const [rowDto, setRowDto] = useState([]);
-  //   {
-  //     "latePunishmentPolicyId": 0,
-  //     "latePunishmentPolicyName": "string",
-  //     "howMuchLateDaysForPenalty": 0,
-  //     "equalAbsent": 0,
-  //     "firstPriority": "string",
-  //     "secondPriority": "string",
-  //     "thirdPriority": "string",
-  //     "amountDeductionDependsOn": "string",
-  //     "amountForFixedAmount": 0,
-  //     "workplaceIdList": [
-  //       0
-  //     ],
-  //     "actionBy": 0
-  //   }
-
-  //   {
-  //     "strLatePunishment": "new Amount",
-  //     "intHowMuchLateDays": 10,
-  //     "intEqualToAbsent": 2,
-  //     "punishmentType": {
-  //         "value": 1,
-  //         "label": "Leave"
-  //     },
-  //     "workplaceDDL": [
-  //         {
-  //             "intWorkplaceId": 3,
-  //             "strWorkplace": "Matador Writing Instruments Ltd.(MWIL)",
-  //             "strWorkplaceCode": "MWIL",
-  //             "label": "Matador Writing Instruments Ltd.(MWIL)",
-  //             "value": 3
-  //         },
-  //         {
-  //             "intWorkplaceId": 4,
-  //             "strWorkplace": "Matador Plastic & Rubber Industries Ltd.(MPRIL)",
-  //             "strWorkplaceCode": "MPRIL",
-  //             "label": "Matador Plastic & Rubber Industries Ltd.(MPRIL)",
-  //             "value": 4
-  //         }
-  //     ],
-  //     "leavetypeddl": 1,
-  //     "leavetype": {
-  //         "LeaveTypeId": 1,
-  //         "LeaveType": "Casual Leave",
-  //         "label": "Casual Leave",
-  //         "value": 1
-  //     }
-  // }
-
-  // {
-  //   "strLatePunishment": "new Punishment",
-  //   "intHowMuchLateDays": 5,
-  //   "intEqualToAbsent": 5,
-  //   "punishmentType": {
-  //       "value": 2,
-  //       "label": "Amount"
-  //   },
-  //   "leavetypeddl": 1,
-  //   "leavetype": {
-  //       "LeaveTypeId": 1,
-  //       "LeaveType": "Casual Leave",
-  //       "label": "Casual Leave",
-  //       "value": 1
-  //   },
-  //   "dependsOnDDL": {
-  //       "value": 3,
-  //       "label": "Fixed Amount"
-  //   },
-  //   "intFixedAmount": 5,
-  //   "workplaceDDL": [
-  //       {
-  //           "intWorkplaceId": 3,
-  //           "strWorkplace": "Matador Writing Instruments Ltd.(MWIL)",
-  //           "strWorkplaceCode": "MWIL",
-  //           "label": "Matador Writing Instruments Ltd.(MWIL)",
-  //           "value": 3
-  //       },
-  //       {
-  //           "intWorkplaceId": 4,
-  //           "strWorkplace": "Matador Plastic & Rubber Industries Ltd.(MPRIL)",
-  //           "strWorkplaceCode": "MPRIL",
-  //           "label": "Matador Plastic & Rubber Industries Ltd.(MPRIL)",
-  //           "value": 4
-  //       }
-  //   ]
-  // }
 
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
     if (
@@ -238,38 +152,6 @@ const AddEditForm = ({
           PunishmentPolicyId: singleData?.id,
         },
 
-        //   {
-        //     "res": {
-        //         "latePunishmentPolicyId": 1,
-        //         "latePunishmentPolicyName": "New Punishment Policy",
-        //         "latePunishmentPolicyCode": "",
-        //         "howMuchLateDaysForPenalty": 3,
-        //         "equalAbsent": 1,
-        //         "firstPriority": "SL",
-        //         "secondPriority": "",
-        //         "thirdPriority": "",
-        //         "amountDeductionDependsOn": "",
-        //         "amountForFixedAmount": 0,
-        //         "latePunishmentPolicyRow": [
-        //             {
-        //                 "workPlaceId": 5,
-        //                 "workplaceName": "Matador Pearl Harbour(MPH)"
-        //             },
-        //             {
-        //                 "workPlaceId": 6,
-        //                 "workplaceName": "Matador Food & Allied Industries Ltd.(MFAIL)"
-        //             },
-        //             {
-        //                 "workPlaceId": 7,
-        //                 "workplaceName": "Matador Electrical & Electronics Ltd.(MEEL)"
-        //             },
-        //             {
-        //                 "workPlaceId": 8,
-        //                 "workplaceName": "Uniplas Limited(UPL)"
-        //             }
-        //         ]
-        //     }
-        // }
         onSuccess: (res) => {
           form.setFieldsValue({
             strLatePunishment: res?.policyName,
