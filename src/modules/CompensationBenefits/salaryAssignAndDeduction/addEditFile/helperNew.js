@@ -668,7 +668,10 @@ export const saveBulkUploadAction = async (
     cb?.();
     setBulkLanding([]);
     toast.success(res?.data?.message || "Bulk Submitted successfully");
+    console.log({ res });
   } catch (error) {
+    console.log({ error });
+
     const res = error?.response?.data;
 
     const isExist = msgList.filter((i) => i === res?.message);
