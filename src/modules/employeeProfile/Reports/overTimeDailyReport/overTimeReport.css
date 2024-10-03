@@ -52,3 +52,10 @@
   width: 5%; /* Adjust this value as needed */
   padding: 5px; /* Adjust this value as needed */
 }
+
+@media print {
+  html,
+  body {
+    height: 90%;
+  }
+}
