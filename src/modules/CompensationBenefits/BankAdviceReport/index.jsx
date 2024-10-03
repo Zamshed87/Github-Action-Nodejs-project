@@ -834,7 +834,6 @@ const BankAdviceReport = () => {
                                       )
                                       .toFixed(2)
                                   );
-
                                   generateTopSheetAction(
                                     monthYearFormatter(values?.monthYear),
                                     "",

@@ -116,6 +116,8 @@ export const topSheet = (
                 values?.bank?.label === "Standard Chartered Bank" ||
                 values?.bank?.label === "Dhaka Bank Limited "
                   ? "Branch Manager"
+                  : values?.bank?.label === "Dutch Bangla Bank Agent Banking"
+                  ? "The Head of Agent Banking"
                   : "The Manager",
               fontSize: 10,
               bold: true,
@@ -126,7 +128,10 @@ export const topSheet = (
           ],
           [
             {
-              text: values?.bank?.label,
+              text:
+                values?.bank?.label === "Dutch Bangla Bank Agent Banking"
+                  ? "DBBL PLC Head Office"
+                  : values?.bank?.label,
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -146,7 +151,7 @@ export const topSheet = (
                   : values?.bank?.label === "Dutch-Bangla Bank PLC."
                   ? "Local Office Branch, Dilkusha Dhaka."
                   : values?.bank?.label === "Dutch Bangla Bank Agent Banking"
-                  ? "47, Motijheel C/A (20th Floor),Dhaka-1000."
+                  ? "47, Motijheel C/A"
                   : "Tejgaon Branch Dhaka",
               fontSize: 10,
               cellRange: "A1:F1",
@@ -159,6 +164,8 @@ export const topSheet = (
               text:
                 values?.bank?.label === "Standard Chartered Bank"
                   ? "House 6, Road 5, Dhanmondi R/A, Dhaka-1209."
+                  : values?.bank?.label === "Dutch Bangla Bank Agent Banking"
+                  ? "Dhaka-1000."
                   : "",
               fontSize: 10,
               cellRange: "A1:F1",
