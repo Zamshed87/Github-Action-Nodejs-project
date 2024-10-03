@@ -128,7 +128,10 @@ export const topSheet = (
           ],
           [
             {
-              text: values?.bank?.label,
+              text:
+                values?.bank?.label === "Dutch Bangla Bank Agent Banking"
+                  ? "DBBL PLC Head Office"
+                  : values?.bank?.label,
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
