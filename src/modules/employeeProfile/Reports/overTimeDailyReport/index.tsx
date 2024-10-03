@@ -60,7 +60,6 @@ const EmOverTimeDailyReport = () => {
       "@media print{body { -webkit-print-color-adjust: exact; }@page {size: landscape ! important}}",
     documentTitle: `Overtime Daily Report ${todayDate()}`,
   });
-  const [isView, setIsView] = useState(false);
 
   const [pages, setPages] = useState({
     current: 1,
