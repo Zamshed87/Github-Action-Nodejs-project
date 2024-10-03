@@ -18,7 +18,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
@@ -28,6 +28,8 @@ import axios from "axios";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
+import { useReactToPrint } from "react-to-print";
+import "./overTimeReport.css";
 // import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/monthlyAttendanceReport/helper";
 
 const EmOverTimeDailyReport = () => {
@@ -50,6 +52,16 @@ const EmOverTimeDailyReport = () => {
   const [filterList, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    pageStyle:
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: landscape ! important}}",
+    documentTitle: `Overtime Daily Report ${todayDate()}`,
+  });
+  const [isView, setIsView] = useState(false);
+
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -58,6 +70,7 @@ const EmOverTimeDailyReport = () => {
   // Form Instance
   const [form] = Form.useForm();
   //   api states
+
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const departmentDDL = useApiRequest([]);
@@ -385,6 +398,10 @@ const EmOverTimeDailyReport = () => {
                 search: e?.target?.value,
               });
             }}
+            printIcon={true}
+            pdfExport={() => {
+              reactToPrintFn();
+            }}
             onExport={() => {
               const excelLanding = async () => {
                 setExcelLoading(true);
@@ -690,6 +707,81 @@ const EmOverTimeDailyReport = () => {
             scroll={{ x: 2000 }}
           />
         </PCard>
+
+        <div style={{ display: "none" }}>
+          <div className="pdf-container " ref={contentRef}>
+            <div className="pdf-title">
+              <h2 style={{ marginTop: "50px", fontSize: "30px" }}>{buName}</h2>
+              <h3 style={{ fontSize: "20px", marginTop: "20px" }}>
+                Daily Overtime Report -
+                {dateFormatter(
+                  moment(form.getFieldValue("fromDate")).format("YYYY-MM-DD")
+                )}{" "}
+              </h3>
+            </div>
+            <table className="pdf-table">
+              <thead>
+                <tr>
+                  <th>SL</th>
+                  <th>Workplace</th>
+                  <th>Department</th>
+                  <th>Section</th>
+                  <th>ID NO</th>
+                  <th>Name</th>
+                  <th>Designation</th>
+                  <th>Basic</th>
+                  <th>Gross</th>
+                  <th className="calendar-name">Calendar Name</th>
+                  <th>In Time</th>
+                  <th>Out Time</th>
+                  <th>Late</th>
+                  <th>OT Hour</th>
+                  <th>OT Rate</th>
+                  <th>Net Payable</th>
+                  <th>Signature</th>
+                </tr>
+              </thead>
+              {landingApi?.data?.length > 0 && (
+                <tbody>
+                  {landingApi?.data?.map((item: any, index: any) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{item?.strWorkplace}</td>
+                      <td>{item?.strDepartment}</td>
+                      <td>{item?.strSectionName}</td>
+                      <td>{item?.strEmployeeCode}</td>
+                      <td>{item?.strEmployeeName}</td>
+                      <td>{item?.strDesignation}</td>
+                      <td>{item?.numBasicORGross}</td>
+                      <td>{item?.numGrossSalary}</td>
+                      <td className="calendar-name">{item?.strCalenderName}</td>
+                      <td>{item?.tmeInTime ? item?.tmeInTime : "-"}</td>
+                      <td>
+                        {item?.tmeLastOutTime ? item?.tmeLastOutTime : "-"}
+                      </td>
+                      <td>{item?.lateHour ? item?.lateHour : "-"}</td>
+                      <td>{item?.numHours}</td>
+                      <td>{item?.numPerHourRate}</td>
+                      <td>{item?.numTotalAmount}</td>
+                      <td>{item?.strSignature}</td>
+                    </tr>
+                  ))}
+                  <tr className="totals-row">
+                    <td colSpan={15}>Total:</td>
+                    <td>
+                      {landingApi?.data?.reduce(
+                        (acc: any, i: any) => acc + i?.numTotalAmount,
+                        0
+                      )}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              )}
+            </table>
+            <div className="footer">System Generated Report {todayDate()}</div>
+          </div>
+        </div>
       </PForm>
     </>
   ) : (
