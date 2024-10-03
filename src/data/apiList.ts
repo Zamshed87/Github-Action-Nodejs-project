@@ -196,8 +196,6 @@ export const apiList = {
     "/PayrollElementConfig/CreatePayrollElementConfig",
   UpdatePayrollElementConfig:
     "/PayrollElementConfig/UpdatePayrollElementConfig",
-  EmployeeFullYearTaxReportAPI:
-    "/PdfAndExcelReport/EmployeeFullYearTaxReportAPI",
   LatePunishmentPolicyAssignLoader:
     "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
   EmployeeBasicForConfirmation:
@@ -206,6 +204,12 @@ export const apiList = {
   IOUApplicationCreateEdit: "Employee/IOUApplicationCreateEdit",
   IOULandingById: "Employee/IOULandingById",
   IouDocList: "/Employee/IouDocList",
+  IOULandingForAccounts: "/Employee/IOULandingForAccounts",
+  ExpenseApplicationLandingDataPaginetion:
+    "/Employee/ExpenseApplicationLandingDataPaginetion",
+  ExpenseApplicationCreateEdit: "/Employee/ExpenseApplicationCreateEdit",
+  GetExpenseById: "/Employee/GetExpenseById",
+  GetExpenseDocList: "/Employee/GetExpenseDocList",
 
   //updated ddls
 
