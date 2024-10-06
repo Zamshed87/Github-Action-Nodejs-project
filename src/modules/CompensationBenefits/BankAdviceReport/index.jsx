@@ -76,6 +76,20 @@ const BankAdviceReport = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
+    useFormik({
+      enableReinitialize: true,
+      validationSchema: bankAdviceValidationSchema,
+      initialValues: bankAdviceInitialValues,
+      onSubmit: () => {
+        if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
+          tenMsBALanding("htmlView", values);
+        } else {
+          saveHandler(values);
+        }
+      },
+    });
   const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -126,19 +140,6 @@ const BankAdviceReport = () => {
       },
     });
   };
-  const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
-    useFormik({
-      enableReinitialize: true,
-      validationSchema: bankAdviceValidationSchema,
-      initialValues: bankAdviceInitialValues,
-      onSubmit: () => {
-        if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
-          tenMsBALanding("htmlView", values);
-        } else {
-          saveHandler(values);
-        }
-      },
-    });
 
   // on form submit
   const saveHandler = (values) => {
