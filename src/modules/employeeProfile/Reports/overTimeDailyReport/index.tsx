@@ -687,80 +687,90 @@ const EmOverTimeDailyReport = () => {
           />
         </PCard>
 
-        <div>
+        <table style={{ display: "none" }}>
           <div className="pdf-container " ref={contentRef}>
-            <div className="pdf-title">
-              <h2 style={{ marginTop: "50px", fontSize: "30px" }}>{buName}</h2>
-              <h3 style={{ fontSize: "20px", marginTop: "20px" }}>
+            <thead className="pdf-title ">
+              <h2 style={{ marginTop: "30px", fontSize: "30px" }}>{buName}</h2>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
                 Daily Overtime Report -
                 {dateFormatter(
                   moment(form.getFieldValue("fromDate")).format("YYYY-MM-DD")
                 )}{" "}
               </h3>
-            </div>
-            <table className="pdf-table">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>Workplace</th>
-                  <th>Department</th>
-                  <th>Section</th>
-                  <th>ID NO</th>
-                  <th>Name</th>
-                  <th>Designation</th>
-                  <th>Basic</th>
-                  <th>Gross</th>
-                  <th className="calendar-name">Calendar Name</th>
-                  <th>In Time</th>
-                  <th>Out Time</th>
-                  <th>Late</th>
-                  <th>OT Hour</th>
-                  <th>OT Rate</th>
-                  <th>Net Payable</th>
-                  <th>Signature</th>
-                </tr>
-              </thead>
-              {landingApi?.data?.length > 0 && (
-                <tbody>
-                  {landingApi?.data?.map((item: any, index: any) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{item?.strWorkplace}</td>
-                      <td>{item?.strDepartment}</td>
-                      <td>{item?.strSectionName}</td>
-                      <td>{item?.strEmployeeCode}</td>
-                      <td>{item?.strEmployeeName}</td>
-                      <td>{item?.strDesignation}</td>
-                      <td>{item?.numBasicORGross}</td>
-                      <td>{item?.numGrossSalary}</td>
-                      <td className="calendar-name">{item?.strCalenderName}</td>
-                      <td>{item?.tmeInTime ? item?.tmeInTime : "-"}</td>
-                      <td>
-                        {item?.tmeLastOutTime ? item?.tmeLastOutTime : "-"}
-                      </td>
-                      <td>{item?.lateHour ? item?.lateHour : "-"}</td>
-                      <td>{item?.numHours}</td>
-                      <td>{item?.numPerHourRate}</td>
-                      <td>{item?.numTotalAmount}</td>
-                      <td>{item?.strSignature}</td>
-                    </tr>
-                  ))}
-                  <tr className="totals-row">
-                    <td colSpan={15}>Total:</td>
-                    <td>
-                      {landingApi?.data?.reduce(
-                        (acc: any, i: any) => acc + i?.numTotalAmount,
-                        0
-                      )}
-                    </td>
-                    <td></td>
+            </thead>
+            <tbody className="mt-2">
+              <table className="pdf-table">
+                <thead>
+                  <tr>
+                    <th>SL</th>
+                    <th>Workplace</th>
+                    <th>Department</th>
+                    <th>Section</th>
+                    <th>ID NO</th>
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Basic</th>
+                    <th>Gross</th>
+                    <th className="calendar-name">Calendar Name</th>
+                    <th>In Time</th>
+                    <th>Out Time</th>
+                    <th>Late</th>
+                    <th>OT Hour</th>
+                    <th>OT Rate</th>
+                    <th>Net Payable</th>
+                    <th>Signature</th>
                   </tr>
-                </tbody>
-              )}
-            </table>
+                </thead>
+                {landingApi?.data?.length > 0 && (
+                  <tbody>
+                    {landingApi?.data?.map((item: any, index: any) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{item?.strWorkplace}</td>
+                        <td>{item?.strDepartment}</td>
+                        <td>{item?.strSectionName}</td>
+                        <td>{item?.strEmployeeCode}</td>
+                        <td>{item?.strEmployeeName}</td>
+                        <td>{item?.strDesignation}</td>
+                        <td>{item?.numBasicORGross}</td>
+                        <td>{item?.numGrossSalary}</td>
+                        <td className="calendar-name">
+                          {item?.strCalenderName}
+                        </td>
+                        <td>{item?.tmeInTime ? item?.tmeInTime : "-"}</td>
+                        <td>
+                          {item?.tmeLastOutTime ? item?.tmeLastOutTime : "-"}
+                        </td>
+                        <td>{item?.lateHour ? item?.lateHour : "-"}</td>
+                        <td>{item?.numHours}</td>
+                        <td>{item?.numPerHourRate}</td>
+                        <td>{item?.numTotalAmount}</td>
+                        <td>{item?.strSignature}</td>
+                      </tr>
+                    ))}
+                    <tr className="totals-row">
+                      <td colSpan={15}>Total:</td>
+                      <td>
+                        {landingApi?.data?.reduce(
+                          (acc: any, i: any) => acc + i?.numTotalAmount,
+                          0
+                        )}
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                )}
+              </table>
+            </tbody>
             <div className="footer">System Generated Report {todayDate()}</div>
           </div>
-        </div>
+        </table>
       </PForm>
     </>
   ) : (
