@@ -208,26 +208,6 @@ const EmOverTimeDailyReport = () => {
       attendanceDate: values?.fromDate
         ? moment(values?.fromDate).format("YYYY-MM-DD")
         : null,
-
-      //   strDepartmentList: filerList?.strDepartment || [],
-      //   strWorkplaceGroupList: filerList?.strWorkplaceGroup || [],
-      //   strWorkplaceList: filerList?.strWorkplace || [],
-      //   strLinemanagerList: filerList?.strLinemanager || [],
-      //   strEmploymentTypeList: filerList?.strEmploymentType || [],
-      //   strSupervisorNameList: filerList?.strSupervisorName || [],
-      //   strDottedSupervisorNameList: filerList?.strDottedSupervisorName || [],
-      //   strDivisionList: filerList?.strDivisionList || [],
-      //   strPayrollGroupList: filerList?.strPayrollGroup || [],
-      //   strDesignationList: filerList?.strDesignation || [],
-      //   strHrPositionList: filerList?.strHrPosition || [],
-      //   strBankList: filerList?.strBank || [],
-      //   strSectionList: filerList?.strSectionList || [],
-      //   //   unnecesary
-      //   wingNameList: [],
-      //   soleDepoNameList: [],
-      //   regionNameList: [],
-      //   areaNameList: [],
-      //   territoryNameList: [],
     };
     landingApi.action({
       urlKey: "GetDailyOvertimeEmployeeList",
