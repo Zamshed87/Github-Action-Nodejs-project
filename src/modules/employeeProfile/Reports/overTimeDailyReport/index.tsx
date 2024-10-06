@@ -208,26 +208,6 @@ const EmOverTimeDailyReport = () => {
       attendanceDate: values?.fromDate
         ? moment(values?.fromDate).format("YYYY-MM-DD")
         : null,
-
-      //   strDepartmentList: filerList?.strDepartment || [],
-      //   strWorkplaceGroupList: filerList?.strWorkplaceGroup || [],
-      //   strWorkplaceList: filerList?.strWorkplace || [],
-      //   strLinemanagerList: filerList?.strLinemanager || [],
-      //   strEmploymentTypeList: filerList?.strEmploymentType || [],
-      //   strSupervisorNameList: filerList?.strSupervisorName || [],
-      //   strDottedSupervisorNameList: filerList?.strDottedSupervisorName || [],
-      //   strDivisionList: filerList?.strDivisionList || [],
-      //   strPayrollGroupList: filerList?.strPayrollGroup || [],
-      //   strDesignationList: filerList?.strDesignation || [],
-      //   strHrPositionList: filerList?.strHrPosition || [],
-      //   strBankList: filerList?.strBank || [],
-      //   strSectionList: filerList?.strSectionList || [],
-      //   //   unnecesary
-      //   wingNameList: [],
-      //   soleDepoNameList: [],
-      //   regionNameList: [],
-      //   areaNameList: [],
-      //   territoryNameList: [],
     };
     landingApi.action({
       urlKey: "GetDailyOvertimeEmployeeList",
@@ -707,7 +687,7 @@ const EmOverTimeDailyReport = () => {
           />
         </PCard>
 
-        <div style={{ display: "none" }}>
+        <div>
           <div className="pdf-container " ref={contentRef}>
             <div className="pdf-title">
               <h2 style={{ marginTop: "50px", fontSize: "30px" }}>{buName}</h2>

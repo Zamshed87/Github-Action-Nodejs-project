@@ -1,7 +1,4 @@
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import {} from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Tooltip } from "@mui/material";
@@ -15,7 +12,6 @@ import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { monthYearFormatter } from "../../../utility/dateFormatter";
@@ -46,7 +42,7 @@ import BtnActionMenu from "common/BtnActionMenu";
 import { DownloadOutlined } from "@ant-design/icons";
 import { MdPrint } from "react-icons/md";
 import { SiMicrosoftexcel } from "react-icons/si";
-import TopSheetReport from "./TopSheetReport";
+import { TopSheetReport } from "./TopSheetReport";
 import { useReactToPrint } from "react-to-print";
 import MasterFilter from "common/MasterFilter";
 
@@ -59,6 +55,7 @@ const BankAdviceReport = () => {
   const [bankDDL, setBankDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tenMsdata, setTenMsdata] = useState("");
+  const [pdfDto, setPdfDto] = useState([]);
 
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
@@ -929,9 +926,9 @@ const BankAdviceReport = () => {
                             },
                             {
                               value: 3,
-                              label: "Advice List as PDF",
+                              label: "Top Sheet as PDF",
                               icon: (
-                                <SiMicrosoftexcel
+                                <MdPrint
                                   style={{
                                     marginRight: "5px",
                                     color: gray500,
@@ -945,18 +942,9 @@ const BankAdviceReport = () => {
                                     toastId: 3,
                                   });
                                 }
-                                const total = excelGenerate(values, (res) => {
-                                  return Number(
-                                    res
-                                      ?.reduce(
-                                        (acc, item) =>
-                                          acc + item?.numNetPayable,
-                                        0
-                                      )
-                                      .toFixed(2)
-                                  );
+                                excelGenerate(values, (res) => {
+                                  setPdfDto(res);
                                 });
-                                console.log(total);
                                 topSheetPrintFn();
                               },
                             },
@@ -1107,8 +1095,13 @@ const BankAdviceReport = () => {
           <TopSheetReport
             dataProp={{
               strBusinessUnit,
-              // total: convert_number_to_word(total),
+              total: Number(
+                pdfDto
+                  ?.reduce((acc, item) => acc + item?.numNetPayable, 0)
+                  .toFixed(2)
+              ),
               businessUnitAddress: businessUnitDDL[0]?.BusinessUnitAddress,
+              values,
             }}
           />
         </div>
