@@ -1,29 +1,22 @@
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import {} from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import { IconButton, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { getPeopleDeskAllDDL, getWorkplaceDetails } from "../../../common/api";
+import { getPeopleDeskAllDDL } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { monthYearFormatter } from "../../../utility/dateFormatter";
 import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
-import {
-  convert_number_to_word,
-  withDecimal,
-} from "../../../utility/numberToWord";
+import { convert_number_to_word } from "../../../utility/numberToWord";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
@@ -45,20 +38,25 @@ import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { todayDate } from "utility/todayDate";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { useApiRequest } from "Hooks";
+import BtnActionMenu from "common/BtnActionMenu";
+import { DownloadOutlined } from "@ant-design/icons";
+import { MdPrint } from "react-icons/md";
+import { SiMicrosoftexcel } from "react-icons/si";
+import { TopSheetReport } from "./TopSheetReport";
+import { useReactToPrint } from "react-to-print";
+import MasterFilter from "common/MasterFilter";
+import moment from "moment";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
   const debounce = useDebounce();
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [totalInWords, setTotalInWords] = useState("");
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [bankDDL, setBankDDL] = useState([]);
-  const [accountDDL, setAccountDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [buDetails, setBuDetails] = useState(false);
   const [tenMsdata, setTenMsdata] = useState("");
+  const [pdfDto, setPdfDto] = useState([]);
 
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
@@ -78,8 +76,38 @@ const BankAdviceReport = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
+    useFormik({
+      enableReinitialize: true,
+      validationSchema: bankAdviceValidationSchema,
+      initialValues: bankAdviceInitialValues,
+      onSubmit: () => {
+        if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
+          tenMsBALanding("htmlView", values);
+        } else {
+          saveHandler(values);
+        }
+      },
+    });
   const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  const topSheetRef = useRef();
+  const bankAdviceListRef = useRef();
+
+  const topSheetPrintFn = useReactToPrint({
+    contentRef: topSheetRef,
+    pageStyle:
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: A4 ! important}}",
+    documentTitle: `${values?.bank?.label} Top Sheet-${moment().format("ll")}`,
+  });
+  const bankAdviceListFn = useReactToPrint({
+    contentRef: bankAdviceListRef,
+    pageStyle:
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: A4 ! important}}",
+    documentTitle: `Overtime Daily Report ${todayDate()}`,
+  });
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -112,19 +140,6 @@ const BankAdviceReport = () => {
       },
     });
   };
-  const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
-    useFormik({
-      enableReinitialize: true,
-      validationSchema: bankAdviceValidationSchema,
-      initialValues: bankAdviceInitialValues,
-      onSubmit: () => {
-        if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
-          tenMsBALanding("htmlView", values);
-        } else {
-          saveHandler(values);
-        }
-      },
-    });
 
   // on form submit
   const saveHandler = (values) => {
@@ -188,8 +203,7 @@ const BankAdviceReport = () => {
         setLoading,
         "",
         true,
-        cb,
-        setTotal
+        cb
       );
     }
   };
@@ -359,6 +373,7 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <form onSubmit={handleSubmit}>
       {(loading || tenMsBankAdvice?.loading) && <Loading />}
@@ -652,7 +667,6 @@ const BankAdviceReport = () => {
                             "label",
                             setBankDDL
                           );
-                          getWorkplaceDetails(valueOption?.value, setBuDetails);
                         }
                         setFieldValue("workplace", valueOption);
                         setFieldValue("bank", "");
@@ -811,13 +825,32 @@ const BankAdviceReport = () => {
                 <div>
                   <ul className="d-flex flex-wrap">
                     {!!rowDto?.length && (
-                      <>
-                        <li className="pr-2">
-                          <Tooltip title="Export Top Sheet" arrow>
-                            <IconButton
-                              style={{ color: "#101828" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
+                      <li className="mt-1 mr-2">
+                        <BtnActionMenu
+                          className="btn btn-default flex-center btn-deafult-create-job"
+                          icon={
+                            <DownloadOutlined
+                              style={{
+                                marginRight: "5px",
+                                fontSize: "15px",
+                              }}
+                            />
+                          }
+                          label="Download"
+                          options={[
+                            {
+                              value: 1,
+                              label: "Top Sheet as Excel",
+                              icon: (
+                                <SiMicrosoftexcel
+                                  style={{
+                                    marginRight: "5px",
+                                    color: gray500,
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              ),
+                              onClick: () => {
                                 if (rowDto?.length <= 0) {
                                   return toast.warning("Data is empty !!!!", {
                                     toastId: 1,
@@ -850,21 +883,24 @@ const BankAdviceReport = () => {
                                     businessUnitDDL[0]?.BusinessUnitAddress
                                   );
                                 });
-                              }}
-                            >
-                              <DownloadIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </li>
-                        <li className="pr-2">
-                          <Tooltip title="Export Details CSV" arrow>
-                            <IconButton
-                              style={{ color: "#101828" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
+                              },
+                            },
+                            {
+                              value: 2,
+                              label: "Advice List as Excel",
+                              icon: (
+                                <SiMicrosoftexcel
+                                  style={{
+                                    marginRight: "5px",
+                                    color: gray500,
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              ),
+                              onClick: () => {
                                 if (rowDto?.length <= 0) {
                                   return toast.warning("Data is empty !!!!", {
-                                    toastId: 1,
+                                    toastId: 2,
                                   });
                                 }
 
@@ -895,85 +931,47 @@ const BankAdviceReport = () => {
                                     businessUnitDDL[0]?.BusinessUnitAddress
                                   );
                                 });
-                              }}
-                            >
-                              <DownloadIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </li>
-                      </>
-                    )}
-                    {values?.search && (
-                      <li className="pt-1">
-                        <ResetButton
-                          classes="btn-filter-reset"
-                          title="Reset"
-                          icon={<SettingsBackupRestoreOutlined />}
-                          onClick={() => {
-                            setFieldValue("search", "");
-                            if (values?.bankAdviceFor?.value === 2) {
-                              if (!values?.bonusCode?.length > 0)
-                                return toast.warning(
-                                  "Please select Bonus Code"
-                                );
-                              getBankAdviceBonusRequestLanding(
-                                orgId,
-                                buId,
-                                wgId,
-                                {
-                                  current: 1,
-                                  pageSize: pages?.pageSize,
-                                  total: pages?.total,
-                                },
-                                values,
-                                setPages,
-                                setRowDto,
-                                setLoading,
-                                ""
-                              );
-                            } else if (values?.bankAdviceFor?.value === 1) {
-                              if (!values?.adviceName?.value)
-                                return toast.warning(
-                                  "Please select Salary Code"
-                                );
-                              getBankAdviceRequestLanding(
-                                orgId,
-                                buId,
-                                wgId,
-                                {
-                                  current: 1,
-                                  pageSize: pages?.pageSize,
-                                  total: pages?.total,
-                                },
-                                values,
-                                setPages,
-                                setRowDto,
-                                setLoading,
-                                ""
-                              );
-                            }
-                          }}
+                              },
+                            },
+                            {
+                              value: 3,
+                              label: "Top Sheet as PDF",
+                              icon: (
+                                <MdPrint
+                                  style={{
+                                    marginRight: "5px",
+                                    color: gray500,
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              ),
+                              onClick: () => {
+                                if (rowDto?.length <= 0) {
+                                  return toast.warning("Data is empty !!!!", {
+                                    toastId: 3,
+                                  });
+                                }
+                                excelGenerate(values, (res) => {
+                                  setPdfDto(res);
+                                });
+                                topSheetPrintFn();
+                              },
+                            },
+                          ]}
                         />
                       </li>
                     )}
-                    <li>
-                      <DefaultInput
-                        classes="search-input fixed-width mt-1 tableCardHeaderSeach"
-                        inputClasses="search-inner-input"
-                        placeholder="Search"
+                    <li className="pt-1">
+                      <MasterFilter
+                        isHiddenFilter
+                        styles={{
+                          marginRight: "0px",
+                        }}
+                        inputWidth="250px"
+                        width="250px"
                         value={values?.search}
-                        name="search"
-                        type="text"
-                        trailicon={
-                          <SearchOutlined
-                            sx={{
-                              color: "#323232",
-                              fontSize: "18px",
-                            }}
-                          />
-                        }
-                        onChange={(e) => {
-                          setFieldValue("search", e.target.value);
+                        setValue={(value) => {
+                          setFieldValue("search", value);
                           debounce(() => {
                             if (values?.bankAdviceFor?.value === 2) {
                               if (!values?.bonusCode?.length > 0)
@@ -993,7 +991,7 @@ const BankAdviceReport = () => {
                                 setPages,
                                 setRowDto,
                                 setLoading,
-                                e.target.value
+                                value
                               );
                             } else if (values?.bankAdviceFor?.value === 1) {
                               if (!values?.adviceName?.value)
@@ -1013,13 +1011,51 @@ const BankAdviceReport = () => {
                                 setPages,
                                 setRowDto,
                                 setLoading,
-                                e.target.value
+                                value
                               );
                             }
                           }, 500);
                         }}
-                        errors={errors}
-                        touched={touched}
+                        cancelHandler={() => {
+                          setFieldValue("search", "");
+                          if (values?.bankAdviceFor?.value === 2) {
+                            if (!values?.bonusCode?.length > 0)
+                              return toast.warning("Please select Bonus Code");
+                            getBankAdviceBonusRequestLanding(
+                              orgId,
+                              buId,
+                              wgId,
+                              {
+                                current: 1,
+                                pageSize: pages?.pageSize,
+                                total: pages?.total,
+                              },
+                              values,
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              ""
+                            );
+                          } else if (values?.bankAdviceFor?.value === 1) {
+                            if (!values?.adviceName?.value)
+                              return toast.warning("Please select Salary Code");
+                            getBankAdviceRequestLanding(
+                              orgId,
+                              buId,
+                              wgId,
+                              {
+                                current: 1,
+                                pageSize: pages?.pageSize,
+                                total: pages?.total,
+                              },
+                              values,
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              ""
+                            );
+                          }
+                        }}
                       />
                     </li>
                   </ul>
@@ -1062,6 +1098,23 @@ const BankAdviceReport = () => {
       ) : (
         <NotPermittedPage />
       )}
+
+      <div style={{ display: "none" }}>
+        <div ref={topSheetRef}>
+          <TopSheetReport
+            dataProp={{
+              strBusinessUnit,
+              total: Number(
+                pdfDto
+                  ?.reduce((acc, item) => acc + item?.numNetPayable, 0)
+                  .toFixed(2)
+              ),
+              businessUnitAddress: businessUnitDDL[0]?.BusinessUnitAddress,
+              values,
+            }}
+          />
+        </div>
+      </div>
     </form>
   );
 };
