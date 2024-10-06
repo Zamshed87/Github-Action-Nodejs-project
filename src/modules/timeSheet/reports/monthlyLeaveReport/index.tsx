@@ -263,8 +263,8 @@ const MonthlyLeaveReport = () => {
       },
       {
         title: "From Date",
-        dataIndex: "StartDate",
-        render: (_: any, item: any) => dateFormatter(item?.StartDate),
+        dataIndex: "LeaveStartDate",
+        render: (_: any, item: any) => dateFormatter(item?.LeaveStartDate),
         width: 100,
       },
       {
@@ -275,8 +275,8 @@ const MonthlyLeaveReport = () => {
       },
       {
         title: "To Date",
-        dataIndex: "EndDate",
-        render: (_: any, item: any) => dateFormatter(item?.EndDate),
+        dataIndex: "LeaveEndDate",
+        render: (_: any, item: any) => dateFormatter(item?.LeaveEndDate),
 
         width: 100,
       },
