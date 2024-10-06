@@ -10,6 +10,7 @@
   border-collapse: collapse;
   /* overflow-x: hidden; */
   /* box-sizing: border-box; */
+  font-size: 11px !important;
 }
 
 .pdf-title {
@@ -25,12 +26,12 @@
 
 .pdf-table th {
   border: 1px solid #000;
-  padding: 8px;
+  padding: 4px;
   text-align: center;
 }
 .pdf-table td {
   border: 1px solid #000;
-  padding: 5px;
+  padding: 4px;
   text-align: center;
 }
 
@@ -50,7 +51,7 @@
 .pdf-table th.calendar-name,
 .pdf-table td.calendar-name {
   width: 5%; /* Adjust this value as needed */
-  padding: 5px; /* Adjust this value as needed */
+  padding: 4px; /* Adjust this value as needed */
 }
 
 @media print {
