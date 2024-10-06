@@ -27,7 +27,7 @@ import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 
 export const origin = window.location.origin;
-export const prodUrl = "https://devapp.peopledesk.io";
+export const prodUrl = "https://app.peopledesk.io";
 
 export const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
@@ -45,7 +45,7 @@ export const domainUrl =
 
 Axios.interceptors.request.use(
   (config: any) => {
-    if (isDevServer) return config;
+    if (!isDevServer) return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
