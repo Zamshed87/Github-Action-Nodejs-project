@@ -1,0 +1,48 @@
+.languageDropdownWraper {
+    width: 100px;
+    height: 22px;
+    overflow: hidden;
+}
+
+.languageDropdownWraper .goog-te-combo {
+    width: 100%;
+}
+
+.languageDropdownWraper .goog-te-gadget .goog-te-combo {
+    margin: 0;
+}
+
+.languageDropdownWraper select {
+    padding: 0px 2px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    appearance: none;
+    cursor: pointer;
+}
+
+
+.languageDropdownWraper select:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+}
+
+.languageDropdownWraper::after {
+    content: '\25BC';
+    /* Downward arrow */
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.languageDropdownWraper {
+    position: relative;
+    display: inline-block;
+}

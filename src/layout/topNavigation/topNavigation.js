@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import authLogo from "../../assets/images/logo.svg";
 // import { getTotalNotificationsCount } from "./helper";
 import AutoCompleteWithHint from "./AutoComplete";
+import LanguageDropdown from "./LanguageDropdown";
 import NotificationMenu from "./NotificationMenu";
 import ProfileMenu from "./ProfileMenu";
 import QuickAccess from "./QuickAccess";
@@ -114,6 +115,7 @@ export default function TopNavigation({
         <div className="top-menu">
           {!isHideDropdown && (
             <>
+              <LanguageDropdown />
               <AutoCompleteWithHint />
 
               <ResourcesDropdown />
