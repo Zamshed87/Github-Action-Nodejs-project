@@ -94,19 +94,12 @@ const BankAdviceReport = () => {
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   const topSheetRef = useRef();
-  const bankAdviceListRef = useRef();
 
   const topSheetPrintFn = useReactToPrint({
     contentRef: topSheetRef,
     pageStyle:
       "@media print{body { -webkit-print-color-adjust: exact; }@page {size: A4 ! important}}",
     documentTitle: `${values?.bank?.label} Top Sheet-${moment().format("ll")}`,
-  });
-  const bankAdviceListFn = useReactToPrint({
-    contentRef: bankAdviceListRef,
-    pageStyle:
-      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: A4 ! important}}",
-    documentTitle: `Overtime Daily Report ${todayDate()}`,
   });
 
   let permission = null;

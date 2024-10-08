@@ -18,24 +18,33 @@ const styles = {
   },
 };
 
+export const Header = ({ strBusinessUnit, businessUnitAddress }) => {
+  return (
+    <center style={{ marginTop: "10%" }}>
+      <h1 style={styles.header}>
+        <u>{strBusinessUnit}</u>
+      </h1>
+      <h1 style={styles.subHeader}>
+        {" "}
+        <u>{businessUnitAddress}</u>{" "}
+      </h1>
+      <h1 style={styles.subHeader}>
+        {" "}
+        <u>Bank Advice Report</u>{" "}
+      </h1>
+    </center>
+  );
+};
+
 export const TopSheetReport = ({ dataProp }) => {
   const { strBusinessUnit, total, businessUnitAddress, values } = dataProp;
 
   return (
     <>
-      <center style={{ marginTop: "10%" }}>
-        <h1 style={styles.header}>
-          <u>{strBusinessUnit}</u>
-        </h1>
-        <h1 style={styles.subHeader}>
-          {" "}
-          <u>{businessUnitAddress}</u>{" "}
-        </h1>
-        <h1 style={styles.subHeader}>
-          {" "}
-          <u>Bank Advice Report</u>{" "}
-        </h1>
-      </center>
+      <Header
+        strBusinessUnit={strBusinessUnit}
+        businessUnitAddress={businessUnitAddress}
+      />
 
       <div className="mt-5">
         <p className="bold" style={styles.text}>
