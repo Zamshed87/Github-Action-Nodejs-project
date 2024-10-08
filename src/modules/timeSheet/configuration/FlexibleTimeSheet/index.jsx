@@ -129,7 +129,7 @@ const MonthlyAttendanceReport = () => {
   };
 
   useEffect(() => {
-    isOfficeAdmin && getEmployeDepartment();
+    isOfficeAdmin && wgId && wId && getEmployeDepartment();
     getCalendarDDL();
     getSuperUserList();
     getPeopleDeskAllDDL(
@@ -336,7 +336,6 @@ const MonthlyAttendanceReport = () => {
           </span>
         ),
       },
-  
 
       {
         title: "Employee Name",
@@ -483,6 +482,7 @@ const MonthlyAttendanceReport = () => {
                     options={empDepartmentDDL?.data || []}
                     name="department"
                     label="Department"
+                    showSearch
                     placeholder="Select Department"
                     allowClear
                     style={{ width: "300px" }}
