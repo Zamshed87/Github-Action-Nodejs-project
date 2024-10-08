@@ -169,6 +169,7 @@ export default function AddEditForm({
               onChange={(value, op) => {
                 form.setFieldsValue({
                   salaryType: op,
+                  payrollElement: undefined,
                 });
                 getPayroll();
               }}
@@ -236,9 +237,9 @@ export default function AddEditForm({
                             message: "Divided By Days is required",
                           },
                           {
-                            message: "Range is between 1 to 31",
+                            message: "Range is between 0 to 31",
                             pattern: new RegExp(
-                              /^([1-9]|[12][0-9]|3[01])(\.\d+)?$/
+                              /^(30(\.[0-9])?|[12]?[0-9](\.[0-9])?|31)$/
                             ),
                           },
                         ]}
