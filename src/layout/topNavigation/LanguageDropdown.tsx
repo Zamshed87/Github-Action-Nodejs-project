@@ -14,7 +14,7 @@ function LanguageDropdown() {
     new window.google.translate.TranslateElement(
       {
         pageLanguage: "en",
-        includedLanguages: "en,bn,hi,ar",
+        includedLanguages: "en,bn",
         autoDisplay: false,
       },
       "hireDesk_google_translate"
@@ -59,8 +59,6 @@ function LanguageDropdown() {
   const handleLanguageDropdown = () => {
     const languageMap: any = {
       bn: "Bengali",
-      ar: "Arabic",
-      hi: "Hindi",
       en: "English",
     };
     const select: any = document.querySelector(".goog-te-combo");

@@ -67,12 +67,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         reason: singleData?.Reason,
         leaveDays: singleData?.HalfDay
           ? "0.5 "
-          : `${
-              +fromDateToDateDiff(
-                dateFormatterForInput(singleData?.AppliedFromDate),
-                dateFormatterForInput(singleData?.AppliedToDate)
-              )?.split(" ")[0] + 1
-            } ` || "",
+          : `${singleData?.TotalDays} ` || "",
       });
     }
   }, [singleData]);
