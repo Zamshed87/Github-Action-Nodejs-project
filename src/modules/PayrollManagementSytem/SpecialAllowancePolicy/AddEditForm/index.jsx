@@ -209,7 +209,7 @@ export default function AddEditForm({
                 } else {
                   form.setFieldsValue({
                     divideBy: op,
-                    days: 30,
+                    days: null,
                   });
                 }
               }}
