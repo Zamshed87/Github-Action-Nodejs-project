@@ -129,8 +129,8 @@ const MonthlyAttendanceReport = () => {
   };
 
   useEffect(() => {
-    isOfficeAdmin && getEmployeDepartment();
-    getCalendarDDL();
+    isOfficeAdmin && wgId && wId && getEmployeDepartment();
+    wgId && wId && getCalendarDDL();
     getSuperUserList();
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RosterGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
@@ -138,6 +138,9 @@ const MonthlyAttendanceReport = () => {
       "RosterGroupName",
       setCalenderRoasterDDL
     );
+    form.setFieldsValue({
+      department: undefined,
+    });
   }, [wgId, buId, wId]);
 
   useEffect(() => {
@@ -234,7 +237,7 @@ const MonthlyAttendanceReport = () => {
             value: obj?.intCalenderId,
             label: obj?.strCalenderName,
           }
-        : "";
+        : undefined;
       const key = `${index}_${idx}_calendar`;
       return (
         <div>
@@ -271,6 +274,9 @@ const MonthlyAttendanceReport = () => {
 
   const handleButtonClick = (record, rowIdx) => {
     setEmp([]);
+    form.setFieldsValue({
+      [`roaster-${record.key}`]: undefined,
+    });
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [
@@ -279,7 +285,7 @@ const MonthlyAttendanceReport = () => {
       dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
       dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
       intEmployeeIdList: [record?.intEmployeeId],
-      intCloneFrom: +emp || 0,
+      intCloneFrom: +emp || +record?.copyId || 0,
     };
     timeSheetClone(payload, setLoading, (resData) => {
       const cloneEmpRow = resData?.[0] || [];
@@ -292,7 +298,13 @@ const MonthlyAttendanceReport = () => {
       setEmp([]);
     });
   };
+  const updateRowDto = (fieldName, value, index) => {
+    const data = [...rowDto];
 
+    data[index][fieldName] = value;
+
+    setRowDto(data);
+  };
   //   table column
   const header = () => {
     return [
@@ -336,7 +348,6 @@ const MonthlyAttendanceReport = () => {
           </span>
         ),
       },
-  
 
       {
         title: "Employee Name",
@@ -378,12 +389,22 @@ const MonthlyAttendanceReport = () => {
               type="text"
               name={`empId-${record.key}`}
               placeholder="Enter Emp ID"
-              value={record.intEmployeeId}
-              onChange={(e) => setEmp(e.target.value)}
+              value={record?.copyId}
+              onChange={(e) => {
+                setEmp(e.target.value);
+                updateRowDto("copyId", e.target.value, rowIdx);
+              }}
             />
             <button
               type="button"
-              onClick={() => handleButtonClick(record, rowIdx)}
+              onClick={() => {
+                setStartingCalenderDDL([]);
+
+                const newRowDto = [...rowDto];
+                newRowDto[rowIdx].startingCalenderDDL = [];
+                setRowDto(newRowDto);
+                handleButtonClick(record, rowIdx);
+              }}
               style={{
                 marginLeft: "10px",
                 padding: "5px 10px",
@@ -412,6 +433,14 @@ const MonthlyAttendanceReport = () => {
               setStartingCalenderDDL([]);
               const newRowDto = [...rowDto];
               newRowDto[rowIdx].startingCalenderDDL = [];
+              newRowDto[rowIdx].dateLists = newRowDto[rowIdx].dateLists?.map(
+                (date) => {
+                  return {
+                    ...date,
+                    intCalenderId: null,
+                  };
+                }
+              );
               setRowDto(newRowDto);
               if (value) {
                 getPeopleDeskAllDDLnew(
@@ -483,10 +512,14 @@ const MonthlyAttendanceReport = () => {
                     options={empDepartmentDDL?.data || []}
                     name="department"
                     label="Department"
+                    showSearch
                     placeholder="Select Department"
                     allowClear
                     style={{ width: "300px" }}
                     onSelect={(value, op) => {
+                      form.setFieldsValue({
+                        supervisor: undefined,
+                      });
                       if (value) {
                         getSuperUserList();
                       } else {
