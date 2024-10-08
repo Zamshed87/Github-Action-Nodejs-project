@@ -138,6 +138,9 @@ const MonthlyAttendanceReport = () => {
       "RosterGroupName",
       setCalenderRoasterDDL
     );
+    form.setFieldsValue({
+      department: undefined,
+    });
   }, [wgId, buId, wId]);
 
   useEffect(() => {
@@ -271,6 +274,9 @@ const MonthlyAttendanceReport = () => {
 
   const handleButtonClick = (record, rowIdx) => {
     setEmp([]);
+    form.setFieldsValue({
+      [`roaster-${record.key}`]: undefined,
+    });
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [
