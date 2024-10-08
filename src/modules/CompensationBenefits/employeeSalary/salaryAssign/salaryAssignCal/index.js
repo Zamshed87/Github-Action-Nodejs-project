@@ -1123,11 +1123,11 @@ export const bangJinNotAssignCal = (res, grossSalaryAmount) => {
       modifyObj = {
         [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
           (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-          1.6
+          1.5
         ).toFixed(2),
         numAmount: (
           (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-          1.6
+          1.5
         ).toFixed(2),
       };
     }
