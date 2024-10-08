@@ -97,7 +97,7 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveReason: item?.Reason,
         addressDuetoLeave: item?.AddressDuetoLeave,
         // insertBy: employeeId,
-        workplaceGroupId: wgId,
+        workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
         isSelfService: values?.isSelfService,
       };
 
@@ -189,7 +189,6 @@ const withLeaveApplication = (WrappedComponent) => {
     };
 
     const getData = (empId, year) => {
-      
       PeopleDeskSaasDDL(
         "EmployeeLeaveType",
         wgId,
