@@ -275,7 +275,7 @@ function bulkAssignCreate() {
                                   setAssignedBulkEmp,
                                   false,
                                   false,
-                                  {},
+                                  () => {},
                                   setBulkLanding
                                 )
                               }

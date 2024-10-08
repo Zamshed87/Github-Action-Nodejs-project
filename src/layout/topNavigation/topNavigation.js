@@ -114,6 +114,7 @@ export default function TopNavigation({
         <div className="top-menu">
           {!isHideDropdown && (
             <>
+              {/* <LanguageDropdown /> */}
               <AutoCompleteWithHint />
 
               <ResourcesDropdown />

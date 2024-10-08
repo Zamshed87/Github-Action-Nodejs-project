@@ -81,8 +81,7 @@ export default function EmOvertimeEntry() {
         toDate: values?.filterToDate,
       },
       setRowDto,
-      setLoading,
-      () => {}
+      setLoading
     );
   };
 
@@ -112,8 +111,7 @@ export default function EmOvertimeEntry() {
         toDate: todayDate(),
       },
       setRowDto,
-      setLoading,
-      () => {}
+      setLoading
     );
   }, [buId, employeeId, wgId, wId]);
 
@@ -132,7 +130,7 @@ export default function EmOvertimeEntry() {
       formDate: values?.filterFromDate,
       toDate: values?.filterToDate,
     };
-    getOvertimeLandingData(payload, setRowDto, setLoading, () => {});
+    getOvertimeLandingData(payload, setRowDto, setLoading);
   };
 
   // Advanced Filter
@@ -171,7 +169,7 @@ export default function EmOvertimeEntry() {
   });
 
   const deleteHandler = (item) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to delete ?`,
       yesAlertFunc: () => {
@@ -192,11 +190,10 @@ export default function EmOvertimeEntry() {
               toDate: item?.toDate,
             },
             setRowDto,
-            setLoading,
-            () => {}
+            setLoading
           );
         };
-        let payload = {
+        const payload = {
           partType: "Overtime",
           employeeId: item?.EmployeeId,
           autoId: item?.OvertimeId,
@@ -223,7 +220,7 @@ export default function EmOvertimeEntry() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -236,7 +233,6 @@ export default function EmOvertimeEntry() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
