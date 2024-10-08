@@ -191,7 +191,7 @@ const CreateLoanApplicationModal = ({
     );
   }, [wgId, buId]);
 
-  const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
+  const [getForView] = useAxiosGet([]);
 
   useEffect(() => {
     if (singleData?.loanApplicationId) {
@@ -478,7 +478,7 @@ const CreateLoanApplicationModal = ({
                       }}
                       styles={{
                         ...customStyles,
-                        control: (provided, state) => ({
+                        control: (provided) => ({
                           ...provided,
                           minHeight: "auto",
                           height:
@@ -492,7 +492,7 @@ const CreateLoanApplicationModal = ({
                             borderColor: `${gray600}!important`,
                           },
                         }),
-                        valueContainer: (provided, state) => ({
+                        valueContainer: (provided) => ({
                           ...provided,
                           height:
                             values?.guarantor?.length > 1 ? "auto" : "auto",
@@ -1095,7 +1095,6 @@ const CreateLoanApplicationModal = ({
                   className="btn btn-green btn-green-disable"
                   style={{ width: "auto" }}
                   type="submit"
-                  disabled={isLoan}
                 >
                   Save
                 </button>
