@@ -281,6 +281,9 @@ export const getSalaryAssignDDLUpdate2 = ({
       grossSalaryAmount
     );
     setBreakDownList(res || []);
+  } else if (accId === 7) {
+    const res = bangJinNotAssignCal({ data: breakDownList }, grossSalaryAmount);
+    setBreakDownList(res || []);
   } else {
     const modifyData = [];
     breakDownList?.forEach((itm) => {
@@ -345,6 +348,9 @@ export const getByIdSalaryAssignDDLUpdate2 = (
       basicSalaryObj,
       grossSalaryAmount
     );
+    setter(update || []);
+  } else if (accId === 7) {
+    const update = bangJinAssignedCal(res, grossSalaryAmount);
     setter(update || []);
   } else {
     const breakdownList = res?.data || [];
@@ -1034,4 +1040,224 @@ export const getByIdSalaryAssignDDLUpdate = (
     }
   });
   setter(list);
+};
+
+// ------------7
+export const bangJinNotAssignCal = (res, grossSalaryAmount) => {
+  const conveyanceAmount = res?.data?.filter(
+    (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
+  );
+
+  let modifyData = [];
+  modifyData = res?.data?.map((itm) => {
+    let modifyObj;
+
+    if (itm?.strBasedOn === "Amount" && !itm?.isBasicSalary) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+          itm?.numAmount,
+        numAmount: itm?.numAmount,
+      };
+    }
+
+    if (itm?.strBasedOn === "Amount" && itm?.isBasicSalary) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
+          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+          1.5
+        ).toFixed(2),
+        numAmount: (
+          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+          1.5
+        ).toFixed(2),
+      };
+    }
+
+    if (itm?.strBasedOn === "Percentage" && !itm?.isBasicSalary) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
+          (itm?.numNumberOfPercent * grossSalaryAmount) /
+          100
+        ).toFixed(2),
+        numAmount: (
+          (itm?.numNumberOfPercent * grossSalaryAmount) /
+          100
+        ).toFixed(2),
+      };
+    }
+
+    return {
+      ...itm,
+      ...modifyObj,
+      showPercentage:
+        itm?.strDependOn === "Basic"
+          ? itm?.numNumberOfPercent
+          : itm?.numNumberOfPercent,
+      levelVariable: itm?.strPayrollElementName
+        .toLowerCase()
+        .split(" ")
+        .join(""),
+    };
+  });
+
+  const basicAmount = modifyData?.filter(
+    (itm) => itm?.strBasedOn === "Amount" && itm?.isBasicSalary
+  );
+
+  const finalModify = modifyData?.map((itm) => {
+    let modifyObj;
+
+    if (itm?.strBasedOn === "Amount" && !itm?.isBasicSalary) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+          itm?.numAmount,
+        numAmount: itm?.numAmount,
+      };
+    }
+
+    if (
+      itm?.strBasedOn === "Amount" &&
+      itm?.isBasicSalary &&
+      itm?.numAmount > 0
+    ) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
+          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+          1.6
+        ).toFixed(2),
+        numAmount: (
+          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+          1.6
+        ).toFixed(2),
+      };
+    }
+
+    if (
+      itm?.strBasedOn === "Amount" &&
+      itm?.isBasicSalary &&
+      itm?.numAmount <= 0
+    ) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: 0,
+        numAmount: 0,
+      };
+    }
+
+    if (
+      itm?.strBasedOn === "Percentage" &&
+      !itm?.isBasicSalary &&
+      basicAmount[0]?.numAmount > 0
+    ) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
+          (itm?.numNumberOfPercent * basicAmount[0]?.numAmount) /
+          100
+        ).toFixed(2),
+        numAmount: (
+          (itm?.numNumberOfPercent * basicAmount[0]?.numAmount) /
+          100
+        ).toFixed(2),
+      };
+    }
+
+    if (
+      itm?.strBasedOn === "Percentage" &&
+      !itm?.isBasicSalary &&
+      basicAmount[0]?.numAmount <= 0
+    ) {
+      modifyObj = {
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: 0,
+        numAmount: 0,
+      };
+    }
+
+    return {
+      ...itm,
+      ...modifyObj,
+      showPercentage:
+        itm?.strDependOn === "Basic"
+          ? itm?.numNumberOfPercent
+          : itm?.numNumberOfPercent,
+      levelVariable: itm?.strPayrollElementName
+        .toLowerCase()
+        .split(" ")
+        .join(""),
+    };
+  });
+
+  return finalModify;
+};
+export const bangJinAssignedCal = (res, grossSalaryAmount) => {
+  const conveyanceAmount = res?.data?.filter(
+    (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
+  );
+
+  let modifyData = [];
+  modifyData = res?.data?.map((itm) => {
+    return {
+      ...itm,
+      [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+        itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
+          ? itm?.numAmount
+          : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
+          ? (
+              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+              1.5
+            ).toFixed(2)
+          : ((itm?.numNumberOfPercent * grossSalaryAmount) / 100).toFixed(2),
+      numAmount:
+        itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
+          ? itm?.numAmount
+          : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
+          ? (
+              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+              1.5
+            ).toFixed(2)
+          : ((itm?.numNumberOfPercent * grossSalaryAmount) / 100).toFixed(2),
+      showPercentage:
+        itm?.strDependOn === "Basic"
+          ? itm?.numNumberOfPercent
+          : itm?.numNumberOfPercent,
+      levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
+      strPayrollElementName: itm?.strSalaryElement,
+      intPayrollElementTypeId: itm?.intSalaryElementId,
+      intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
+    };
+  });
+
+  const basicAmount = modifyData?.filter(
+    (itm) => itm?.strBasedOn === "Amount" && itm?.isBasicSalary
+  );
+
+  const finalModify = modifyData?.map((itm) => {
+    return {
+      ...itm,
+      [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+        itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
+          ? itm?.numAmount
+          : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
+          ? (
+              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+              1.5
+            ).toFixed(2)
+          : (
+              (itm?.numNumberOfPercent * basicAmount[0]?.numAmount) /
+              100
+            ).toFixed(2),
+      numAmount:
+        itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
+          ? itm?.numAmount
+          : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
+          ? (
+              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+              1.5
+            ).toFixed(2)
+          : (
+              (itm?.numNumberOfPercent * basicAmount[0]?.numAmount) /
+              100
+            ).toFixed(2),
+    };
+  });
+
+  return finalModify;
 };
