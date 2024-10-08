@@ -164,6 +164,7 @@ export default function AddEditForm({
               name="salaryType"
               label="Salary Type"
               showSearch
+              disabled={singleData?.id}
               filterOption={true}
               placeholder="Salary Type"
               onChange={(value, op) => {
@@ -182,6 +183,7 @@ export default function AddEditForm({
               name="payrollElement"
               label="Payroll Element"
               showSearch
+              disabled={singleData?.id}
               filterOption={true}
               placeholder="Payroll Element"
               onChange={(value, op) => {
