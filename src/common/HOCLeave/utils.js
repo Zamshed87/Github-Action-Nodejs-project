@@ -3,13 +3,9 @@ import axios from "axios";
 import { TableButton } from "Components";
 import PBadge from "Components/Badge";
 import moment from "moment";
-import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 import * as Yup from "yup";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
-import {
-  dateFormatter,
-  dateFormatterForInput,
-} from "../../utility/dateFormatter";
+import { dateFormatter } from "../../utility/dateFormatter";
 
 export const initDataForLeaveApplication = {
   search: "",
@@ -114,14 +110,7 @@ export const empMgmtLeaveApplicationDto = (
         return record?.HalfDay ? (
           "0.5"
         ) : (
-          <span>
-            {`${
-              +fromDateToDateDiff(
-                dateFormatterForInput(record?.AppliedFromDate),
-                dateFormatterForInput(record?.AppliedToDate)
-              )?.split(" ")[0] + 1
-            } Days`}{" "}
-          </span>
+          <span>{`${record?.TotalDays} Days`} </span>
         );
       },
     },

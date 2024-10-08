@@ -8,11 +8,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 // import "./styles.css";
 import moment from "moment";
-import {
-  calculateNextDateAntd,
-  dateFormatterForInput,
-  getDateOfYear,
-} from "utility/dateFormatter";
+import { calculateNextDateAntd, getDateOfYear } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
@@ -67,12 +63,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         reason: singleData?.Reason,
         leaveDays: singleData?.HalfDay
           ? "0.5 "
-          : `${
-              +fromDateToDateDiff(
-                dateFormatterForInput(singleData?.AppliedFromDate),
-                dateFormatterForInput(singleData?.AppliedToDate)
-              )?.split(" ")[0] + 1
-            } ` || "",
+          : `${singleData?.TotalDays} ` || "",
       });
     }
   }, [singleData]);
