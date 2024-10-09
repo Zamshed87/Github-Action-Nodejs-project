@@ -2,6 +2,7 @@ import React from "react";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
 
 const HistoryTransferTable = ({ historyData }) => {
+  console.log(historyData);
   return (
     <table className="table table-bordered mt-3">
       <thead>
@@ -71,7 +72,7 @@ const HistoryTransferTable = ({ historyData }) => {
               backgroundColor: "rgba(247, 220, 92, 1)",
             }}
           >
-            <div>B.Unit & Workplace</div>
+            <div>B.Unit & Workplace Group & Workplace</div>
           </td>
           <td
             style={{
@@ -85,7 +86,7 @@ const HistoryTransferTable = ({ historyData }) => {
               backgroundColor: "rgba(129, 225, 255, 1)",
             }}
           >
-            B.Unit & Workplace
+            B.Unit & Workplace Group & Workplace
           </td>
           <td
             style={{
@@ -120,6 +121,7 @@ const HistoryTransferTable = ({ historyData }) => {
                 className=" "
               >
                 <div>{item?.businessUnitNameFrom}</div>
+                <div>{item?.workplaceGroupNameFrom}</div>
                 <div>{item?.workplaceNameFrom}</div>
               </div>
             </td>
@@ -149,6 +151,7 @@ const HistoryTransferTable = ({ historyData }) => {
                 className=""
               >
                 <div>{item?.businessUnitName}</div>
+                <div>{item?.workplaceGroupName}</div>
                 <div>{item?.workplaceName}</div>
               </div>
             </td>
