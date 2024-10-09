@@ -2,7 +2,6 @@ import React from "react";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
 
 const HistoryTransferTable = ({ historyData }) => {
-  console.log(historyData);
   return (
     <table className="table table-bordered mt-3">
       <thead>
