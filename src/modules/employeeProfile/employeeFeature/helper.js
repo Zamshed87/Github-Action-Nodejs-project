@@ -43,6 +43,7 @@ export const createEditEmpAction = async (
       strEmployeeCode: String(values?.employeeCode),
       strCardNumber: String(values?.employeeCode),
       strEmployeeName: values?.fullName,
+      strEmployeeNameBn: values?.fullNameInBn || "",
       intGenderId: values?.gender?.value,
       strGender: values?.gender?.label,
       intReligionId: values?.religion?.value,
@@ -734,12 +735,7 @@ export const userExistValidation = async (payload, setter, cb) => {
   }
 };
 
-export const markAsComplete = async (
-  empId,
-  isComplete,
-  setLoading,
-  cb
-) => {
+export const markAsComplete = async (empId, isComplete, setLoading, cb) => {
   try {
     setLoading(true);
 
