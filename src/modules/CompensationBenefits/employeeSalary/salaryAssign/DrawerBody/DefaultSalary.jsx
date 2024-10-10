@@ -743,7 +743,14 @@ const DefaultSalary = ({ propsObj }) => {
                                       // touched={touched}
                                       disabled={
                                         itm?.strBasedOn === "Percentage" ||
-                                        itm?.isCustomPayrollFor10ms
+                                        itm?.isCustomPayrollFor10ms ||
+                                        (orgId === 7 &&
+                                          (itm?.strSalaryBreakdownTitle?.includes(
+                                            "1.5"
+                                          ) ||
+                                            itm?.strSalaryBreakdownHeaderTitle?.includes(
+                                              "1.5"
+                                            )))
                                       }
                                     />
                                   </div>
