@@ -592,6 +592,7 @@ export const tenMsNotAssignCal = (res, grossSalaryAmount) => {
 export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
   let modifyData = [];
   const basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
+  console.log({ grossSalaryAmount });
 
   modifyData = res?.data?.map((itm) => {
     let modifyObj;
@@ -599,7 +600,6 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     // for corporate
     if (itm?.strSalaryBreakdownTitle === "Corporate") {
       console.log("t");
-      console.log({ itm });
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
         modifyObj = {
@@ -692,8 +692,32 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
         .join(""),
     };
   });
+  console.log({ modifyData });
+  let totalSum = 0;
 
-  return modifyData;
+  modifyData.forEach((item) => {
+    if (item.levelVariable !== "specialsalaryallowance") {
+      totalSum += item.numAmount || 0;
+    }
+  });
+  console.log({ totalSum });
+  // Calculate the specialsalaryallowance amount
+  const specialSalaryAmount = grossSalaryAmount - totalSum;
+  console.log({ specialSalaryAmount });
+
+  // Find and update specialsalaryallowance if it exists, otherwise return data as is
+  const updatedData = modifyData.map((item) => {
+    if (item.levelVariable === "specialsalaryallowance") {
+      return {
+        ...item,
+        numAmount: specialSalaryAmount,
+        specialsalaryallowance: specialSalaryAmount,
+      };
+    }
+    return item;
+  });
+  console.log({ updatedData });
+  return updatedData;
 };
 export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
   console.log({ res });
