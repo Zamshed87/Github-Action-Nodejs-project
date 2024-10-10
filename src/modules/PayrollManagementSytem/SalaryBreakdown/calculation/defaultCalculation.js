@@ -4,7 +4,7 @@ import { todayDate } from "./../../../../utility/todayDate";
 import { isUniq } from "./../../../../utility/uniqChecker";
 
 export const defaultSetter = (values, dynamicForm, payload, setDynamicForm) => {
-  console.log({dynamicForm})
+  console.log({ dynamicForm });
   // basic element check
   if (
     values?.dependsOn?.value === 2 &&
@@ -15,16 +15,16 @@ export const defaultSetter = (values, dynamicForm, payload, setDynamicForm) => {
   }
 
   if (values?.dependsOn?.value === 2 && values?.basedOn?.value === 1) {
-    const withBasicElement = dynamicForm.filter((itm) => itm?.isBasic === true);
+    // const withBasicElement = dynamicForm.filter((itm) => itm?.isBasic === true);
 
-    if (withBasicElement?.length <= 0) {
-      return toast.warn("Basic Element must be provide!!!");
-    }
+    // if (withBasicElement?.length <= 0) {
+    //   return toast.warn("Basic Element must be provide!!!");
+    // }
 
     const withBasicAmount = dynamicForm.filter(
       (itm) => itm?.isBasic === true && itm?.strBasedOn === "Amount"
     );
-
+    console.log({ withBasicAmount });
     if (withBasicAmount?.length > 0) {
       return toast.warn("Payroll Element must be amount!!!");
     }

@@ -16,7 +16,6 @@ import React, { useEffect, useMemo } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { dateFormatterForInput } from "utility/dateFormatter";
 
 const PricingSetupForm = () => {
   const {
@@ -42,7 +41,7 @@ const PricingSetupForm = () => {
   const workplace = useApiRequest([]);
   const designation = useApiRequest([]);
   const cafeApi = useApiRequest([]);
-  const cafeEditApi = useApiRequest([]);
+  const   cafeEditApi = useApiRequest([]);
   const [rowDto, setRowDto] = React.useState<any[]>([]);
   // workplace wise
   const getWorkplaceGroup = () => {
@@ -645,6 +644,7 @@ const PricingSetupForm = () => {
       toast.error("max amount must be greater than min amount");
       return;
     }
+
     const payload = rowDto.map((item: any, idx: number) => {
       return {
         sl: rec?.sl || idx,
@@ -656,6 +656,8 @@ const PricingSetupForm = () => {
         monOwnContribution: item?.ownContribution,
         monTotalCost: item?.TotalCost,
         monCompanyContribution: item?.companyContribution,
+        minAmount: item?.minAmount,
+        maxAmount: item?.maxAmount,
         isActive: true,
         intMealConsumePlaceId: 0,
         mealTypeId: mealType?.value,
@@ -664,24 +666,35 @@ const PricingSetupForm = () => {
         workPlaceGroupId: item?.workplaceGroup?.value,
         pricingMatrixTypeId: pricingMatrixType?.value,
         pricingMatrixTypeName: pricingMatrixType?.label,
-        minAmount: item?.minAmount,
-        maxAmount: item?.maxAmount,
         returnAllSalaryRangeData: true,
-        intMonthId:
-          mealType?.value === 2
-            ? moment(date)?.format("l").split("/")?.[0]
-            : null,
+        intMonthId: mealType?.value === 2 ? moment(date)?.format("l").split("/")?.[0] : null,
         intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
-        strMonthName:
-          mealType?.value === 2 ? moment(date).format("MMMM") : null,
+        strMonthName: mealType?.value === 2 ? moment(date).format("MMMM") : null,
+        // New fields added to the payload
+        rowId: rec?.intConfigId || 0, // Assuming you're assigning or have rowId
       };
     });
-
+    
+    const newPayload = {
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      workPlaceId: payload[0]?.workPlaceId || 0,
+      workPlaceGroupId: payload[0]?.workPlaceGroupId || 0,
+      pricingMatrixTypeId: pricingMatrixType?.value || 0,
+      pricingMatrixTypeName: pricingMatrixType?.label || "",
+      intMealConsumePlaceId: 0,
+      mealTypeId: mealType?.value || 0,
+      mealTypeName: mealType?.label || "",
+      isActive: true,
+      rows: payload, // Array of row objects
+      headerId: rec?.intConfigId || 0, // Assuming headerId is similar to intConfigId
+    };
+    
     if (rec?.intConfigId) {
       cafeEditApi.action({
         urlKey: "EditCafeteriaConfig",
         method: "PUT",
-        payload: payload[0],
+        payload: newPayload,
         onSuccess: () => {
           cb();
           history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
@@ -692,7 +705,7 @@ const PricingSetupForm = () => {
       cafeApi.action({
         urlKey: "CreateCafeteriaConfig",
         method: "POST",
-        payload: payload,
+        payload: newPayload,
         onSuccess: () => {
           cb();
           history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
@@ -700,6 +713,63 @@ const PricingSetupForm = () => {
         toast: true,
       });
     }
+    
+
+    // const payload = rowDto.map((item: any, idx: number) => {
+    //   return {
+    //     sl: rec?.sl || idx,
+    //     intConfigId: rec?.intConfigId || 0,
+    //     intAccountId: orgId,
+    //     intBusinessUnitId: buId,
+    //     intDesignationId: item?.designation?.value || 0,
+    //     strDesignationName: item?.designation?.label || "",
+    //     monOwnContribution: item?.ownContribution,
+    //     monTotalCost: item?.TotalCost,
+    //     monCompanyContribution: item?.companyContribution,
+    //     isActive: true,
+    //     intMealConsumePlaceId: 0,
+    //     mealTypeId: mealType?.value,
+    //     mealTypeName: mealType?.label,
+    //     workPlaceId: item?.workplace?.value,
+    //     workPlaceGroupId: item?.workplaceGroup?.value,
+    //     pricingMatrixTypeId: pricingMatrixType?.value,
+    //     pricingMatrixTypeName: pricingMatrixType?.label,
+    //     minAmount: item?.minAmount,
+    //     maxAmount: item?.maxAmount,
+    //     returnAllSalaryRangeData: true,
+    //     intMonthId:
+    //       mealType?.value === 2
+    //         ? moment(date)?.format("l").split("/")?.[0]
+    //         : null,
+    //     intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
+    //     strMonthName:
+    //       mealType?.value === 2 ? moment(date).format("MMMM") : null,
+    //   };
+    // });
+
+    // if (rec?.intConfigId) {
+    //   cafeEditApi.action({
+    //     urlKey: "EditCafeteriaConfig",
+    //     method: "PUT",
+    //     payload: payload[0],
+    //     onSuccess: () => {
+    //       cb();
+    //       history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+    //     },
+    //     toast: true,
+    //   });
+    // } else {
+    //   cafeApi.action({
+    //     urlKey: "CreateCafeteriaConfig",
+    //     method: "POST",
+    //     payload: payload,
+    //     onSuccess: () => {
+    //       cb();
+    //       history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+    //     },
+    //     toast: true,
+    //   });
+    // }
   };
 
   return (
@@ -877,7 +947,7 @@ const PricingSetupForm = () => {
                             rules={[
                               {
                                 required: true,
-                                message: "Off Day is required",
+                                message: "Designation is required",
                               },
                             ]}
                           />

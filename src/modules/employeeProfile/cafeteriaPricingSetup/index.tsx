@@ -31,13 +31,13 @@ const CafeteriaPricingLanding = () => {
       urlKey: "CafeteriaConfigLanding",
       method: "GET",
       params: {
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        SearchTxt: "",
-        PageNo: 1,
-        PageSize: 1000000,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        intWorkplaceId: wId,
+        searchTxt: "",
+        pageNo: 1,
+        pageSize: 1000000,
       },
     });
   };
