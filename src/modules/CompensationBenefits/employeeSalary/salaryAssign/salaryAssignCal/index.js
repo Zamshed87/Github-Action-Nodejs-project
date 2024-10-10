@@ -604,8 +604,8 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
         modifyObj = {
           [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-            basicSalaryObj.basicSalary || 11,
-          numAmount: basicSalaryObj.basicSalary || 11,
+            basicSalaryObj.basicSalary || 0,
+          numAmount: basicSalaryObj.basicSalary || 0,
           showPercentage: basicSalaryObj.numPercentageOfGross || 50,
         };
       }
