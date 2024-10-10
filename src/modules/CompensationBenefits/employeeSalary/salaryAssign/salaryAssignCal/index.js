@@ -692,7 +692,6 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
         .join(""),
     };
   });
-  console.log({ modifyData });
   let totalSum = 0;
 
   modifyData.forEach((item) => {
@@ -700,10 +699,8 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
       totalSum += item.numAmount || 0;
     }
   });
-  console.log({ totalSum });
   // Calculate the specialsalaryallowance amount
   const specialSalaryAmount = grossSalaryAmount - totalSum;
-  console.log({ specialSalaryAmount });
 
   // Find and update specialsalaryallowance if it exists, otherwise return data as is
   const updatedData = modifyData.map((item) => {
@@ -716,7 +713,6 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     }
     return item;
   });
-  console.log({ updatedData });
   return updatedData;
 };
 export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
