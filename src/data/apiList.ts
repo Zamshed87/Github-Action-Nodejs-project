@@ -112,11 +112,11 @@ export const apiList = {
   BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
   ExtendedDesignationDDL: "/Cafeteria/ExtendedDesignationDDL",
   CheckCafeteriaConfig: "/Cafeteria/CheckCafeteriaConfig",
-  CafeteriaConfigLanding: "/Cafeteria/CafeteriaConfigLanding",
-
-  CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  CafeteriaConfigLanding: "/Cafeteria/CafeteriaSetupLanding",
+  // CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaSetup",
   GetAttendanceDetailsReport: "/Employee/GetAttendanceDetailsReport",
-  EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
+  EditCafeteriaConfig: "/Cafeteria/EditCafeteriaSetup",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
   MonthlyRosterReportForSingleEmployee:
     "/TimeSheetReport/MonthlyRosterReportForSingleEmployee",
