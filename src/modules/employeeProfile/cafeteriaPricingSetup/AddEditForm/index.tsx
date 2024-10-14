@@ -12,7 +12,7 @@ import {
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -34,15 +34,15 @@ const PricingSetupForm = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { rec } = location?.state || ({} as any);
-
   //   api states
   const workplaceGroup = useApiRequest([]);
+  const Cafeteria = useApiRequest([]);
   const workplace = useApiRequest([]);
   const designation = useApiRequest([]);
   const cafeApi = useApiRequest([]);
-  const   cafeEditApi = useApiRequest([]);
-  const [rowDto, setRowDto] = React.useState<any[]>([]);
+  const cafeEditApi = useApiRequest([]);
+  const [rowDto, setRowDto] = useState<any>({});
+
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -59,6 +59,18 @@ const PricingSetupForm = () => {
           res[i].label = item?.strWorkplaceGroup;
           res[i].value = item?.intWorkplaceGroupId;
         });
+      },
+    });
+  };
+  const getById = () => {
+    Cafeteria?.action({
+      urlKey: "Cafeteria",
+      method: "GET",
+      params: {
+        headerId: +id || 0,
+      },
+      onSuccess: (res) => {
+        setRowDto(res);
       },
     });
   };
@@ -102,54 +114,45 @@ const PricingSetupForm = () => {
   };
   useEffect(() => {
     getWorkplaceGroup();
-  }, []);
+    if (+id) {
+      getById();
+    }
+  }, [id]);
+
   useEffect(() => {
     if (+id) {
       form.setFieldsValue({
-        ...rec,
-        date: moment().month(rec?.strMonthName),
+        date: moment(rowDto.dteCreatedAt), // You can format this if needed
         workplaceGroup: {
-          label: rec?.strWorkPlaceGroupName,
-          value: rec?.workPlaceId,
+          label: rowDto.workPlaceGroupId, // Assuming you want the ID for label
+          value: rowDto.workPlaceGroupId,
         },
         workplace: {
-          label: rec?.strWorkPlaceName,
-          value: rec?.intWorkplaceId,
+          label: rowDto.workPlaceId, // Same for workplace
+          value: rowDto.workPlaceId,
         },
-        designationDDL: [
-          { label: rec?.strDesignationName, value: rec?.intDesignationId },
-        ],
         pricingMatrixType: {
-          label: rec?.pricingMatrixTypeName,
-          value: rec?.pricingMatrixTypeId,
+          label: rowDto.pricingMatrixTypeName,
+          value: rowDto.pricingMatrixTypeId,
         },
         mealType: {
-          label: rec?.mealTypeName,
-          value: rec?.mealTypeId,
+          label: rowDto.mealTypeName,
+          value: rowDto.mealTypeId,
         },
       });
-      setRowDto([
-        {
-          ...rec,
-          minAmount: rec?.minAmount,
-          maxAmount: rec?.maxAmount,
-          ownContribution: rec?.monOwnContribution,
-          companyContribution: rec?.monCompanyContribution,
-          TotalCost: rec?.monTotalCost,
-          designation: {
-            label: rec?.strDesignationName,
-            value: rec?.intDesignationId,
-          },
-          workplace: {
-            label: rec?.strWorkPlaceName,
-            value: rec?.workPlaceId,
-          },
-          workplaceGroup: {
-            label: rec?.strWorkPlaceGroupName,
-            value: rec?.workPlaceGroupId,
-          },
+      const updatedData = rowDto?.rows?.map((row: any) => ({
+        minAmount: row?.minAmount,
+        maxAmount: row?.maxAmount,
+        ownContribution: row?.monOwnContribution,
+        companyContribution: row?.monCompanyContribution,
+        totalCost: row?.monTotalCost,
+        designation: {
+          label: row?.strDesignationName,
+          value: row?.intDesignationId,
         },
-      ]);
+      }));
+
+      setRowDto(updatedData);
       getDesignation();
     }
   }, [id]);
@@ -159,7 +162,7 @@ const PricingSetupForm = () => {
     rowIndex: number,
     property: string
   ) => {
-    setRowDto((prevRows) => {
+    setRowDto((prevRows: any) => {
       const updatedRows = [...prevRows];
       updatedRows[rowIndex][property] = value;
 
@@ -613,7 +616,7 @@ const PricingSetupForm = () => {
                   {
                     type: "plus",
                     onClick: () => {
-                      setRowDto((prev) => [
+                      setRowDto((prev: any) => [
                         ...prev,
                         {
                           workplace: prev[0]?.workplace,
@@ -631,13 +634,14 @@ const PricingSetupForm = () => {
     },
   ];
   const submitHandler = (rowDto: any) => {
-    const { pricingMatrixType, mealType, date } = form.getFieldsValue(true);
+    const { pricingMatrixType, mealType, date, workplace, workplaceGroup } =
+      form.getFieldsValue(true);
     const cb = () => {
       form.resetFields();
     };
 
     if (
-      rec?.intConfigId &&
+      rowDto?.intConfigId &&
       rowDto[0]?.minAmount &&
       rowDto[0]?.minAmount >= rowDto[0]?.maxAmount
     ) {
@@ -647,10 +651,8 @@ const PricingSetupForm = () => {
 
     const payload = rowDto.map((item: any, idx: number) => {
       return {
-        sl: rec?.sl || idx,
-        intConfigId: rec?.intConfigId || 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
+        sl: rowDto?.sl || idx,
+        intConfigId: rowDto?.intConfigId || 0,
         intDesignationId: item?.designation?.value || 0,
         strDesignationName: item?.designation?.label || "",
         monOwnContribution: item?.ownContribution,
@@ -659,27 +661,23 @@ const PricingSetupForm = () => {
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
         isActive: true,
-        intMealConsumePlaceId: 0,
-        mealTypeId: mealType?.value,
-        mealTypeName: mealType?.label,
-        workPlaceId: item?.workplace?.value,
-        workPlaceGroupId: item?.workplaceGroup?.value,
-        pricingMatrixTypeId: pricingMatrixType?.value,
-        pricingMatrixTypeName: pricingMatrixType?.label,
-        returnAllSalaryRangeData: true,
-        intMonthId: mealType?.value === 2 ? moment(date)?.format("l").split("/")?.[0] : null,
+        intMonthId:
+          mealType?.value === 2
+            ? moment(date)?.format("l").split("/")?.[0]
+            : null,
         intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
-        strMonthName: mealType?.value === 2 ? moment(date).format("MMMM") : null,
+        strMonthName:
+          mealType?.value === 2 ? moment(date).format("MMMM") : null,
         // New fields added to the payload
-        rowId: rec?.intConfigId || 0, // Assuming you're assigning or have rowId
+        rowId: rowDto?.intConfigId || 0, // Assuming you're assigning or have rowId
       };
     });
-    
+
     const newPayload = {
       intAccountId: orgId,
       intBusinessUnitId: buId,
-      workPlaceId: payload[0]?.workPlaceId || 0,
-      workPlaceGroupId: payload[0]?.workPlaceGroupId || 0,
+      workPlaceId: workplace?.value || 0,
+      workPlaceGroupId: workplaceGroup?.value || 0,
       pricingMatrixTypeId: pricingMatrixType?.value || 0,
       pricingMatrixTypeName: pricingMatrixType?.label || "",
       intMealConsumePlaceId: 0,
@@ -687,38 +685,48 @@ const PricingSetupForm = () => {
       mealTypeName: mealType?.label || "",
       isActive: true,
       rows: payload, // Array of row objects
-      headerId: rec?.intConfigId || 0, // Assuming headerId is similar to intConfigId
+      headerId: rowDto?.intConfigId || 0, // Assuming headerId is similar to intConfigId
     };
-    
-    if (rec?.intConfigId) {
+
+    if (rowDto?.intConfigId) {
       cafeEditApi.action({
         urlKey: "EditCafeteriaConfig",
         method: "PUT",
         payload: newPayload,
-        onSuccess: () => {
-          cb();
-          history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+        onSuccess: (res) => {
+          if (res?.statusCode === 406) {
+            return toast.warn(res?.message);
+          }
+          if (res?.statusCode === 200) {
+            cb();
+            history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+          }
         },
-        toast: true,
+        // toast: true,
       });
     } else {
       cafeApi.action({
         urlKey: "CreateCafeteriaConfig",
         method: "POST",
         payload: newPayload,
-        onSuccess: () => {
-          cb();
-          history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+        onSuccess: (res) => {
+          if (res?.statusCode === 406) {
+            return toast.warn(res?.message);
+          }
+          if (res?.statusCode === 200) {
+            cb();
+            history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+            return toast.success(res?.message);
+          }
         },
-        toast: true,
+        // toast: true,
       });
     }
-    
 
     // const payload = rowDto.map((item: any, idx: number) => {
     //   return {
-    //     sl: rec?.sl || idx,
-    //     intConfigId: rec?.intConfigId || 0,
+    //     sl: rowDto?.sl || idx,
+    //     intConfigId: rowDto?.intConfigId || 0,
     //     intAccountId: orgId,
     //     intBusinessUnitId: buId,
     //     intDesignationId: item?.designation?.value || 0,
@@ -747,7 +755,7 @@ const PricingSetupForm = () => {
     //   };
     // });
 
-    // if (rec?.intConfigId) {
+    // if (rowDto?.intConfigId) {
     //   cafeEditApi.action({
     //     urlKey: "EditCafeteriaConfig",
     //     method: "PUT",
@@ -1003,6 +1011,7 @@ const PricingSetupForm = () => {
             </Col>
           </Row>
         </PCardBody>
+
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { pricingMatrixType } = form.getFieldsValue();
@@ -1013,13 +1022,13 @@ const PricingSetupForm = () => {
                   <DataTable
                     header={headerForDesignation}
                     bordered
-                    data={rowDto || []}
+                    data={id ? rowDto?.rows : rowDto || []}
                   />
                 ) : pricingMatrixType?.value === 2 ? (
                   <DataTable
                     header={headerForSalary}
                     bordered
-                    data={rowDto || []}
+                    data={id ? rowDto?.rows : rowDto || []}
                   />
                 ) : undefined}
               </>
