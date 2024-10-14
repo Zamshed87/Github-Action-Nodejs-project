@@ -102,6 +102,16 @@ const PricingSetupForm = () => {
               label: row?.strDesignationName,
               value: row?.intDesignationId,
             },
+            rowId: row?.rowId,
+            workplace: {
+              label: res.workPlaceName,
+              value: res.workPlaceId,
+            },
+            workplaceGroup: {
+              label: res.workPlaceGroupName,
+              value: res.workPlaceGroupId,
+            },
+
           }));
 
           setRowDto(updatedData);
@@ -719,9 +729,13 @@ const PricingSetupForm = () => {
           if (res?.statusCode === 406) {
             return toast.warn(res?.message);
           }
+          if (res?.statusCode === 400) {
+            return toast.warn(res?.message);
+          }
           if (res?.statusCode === 200) {
             cb();
             history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+            toast.success(res?.message);
           }
         },
         // toast: true,
@@ -735,10 +749,13 @@ const PricingSetupForm = () => {
           if (res?.statusCode === 406) {
             return toast.warn(res?.message);
           }
+          if (res?.statusCode === 400) {
+            return toast.warn(res?.message);
+          }
           if (res?.statusCode === 200) {
             cb();
             history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
-            return toast.success(res?.message);
+            toast.success(res?.message);
           }
         },
         // toast: true,
