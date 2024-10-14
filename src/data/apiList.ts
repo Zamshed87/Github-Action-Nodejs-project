@@ -224,4 +224,5 @@ export const apiList = {
   WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
   WorkplaceGroupWithRoleExtension:
     "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
+  Cafeteria: "/Cafeteria/GetCafeteriaSetupById",
 };
