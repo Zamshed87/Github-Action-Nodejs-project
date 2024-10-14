@@ -1596,6 +1596,38 @@ const CreateAndEditEmploye = () => {
                     placeholder="Present Address"
                   />
                 </Col>
+                {orgId === 7 && (
+                  <>
+                    <Col md={12} sm={24}>
+                      <PInput
+                        type="text"
+                        name="permanentAddressBn"
+                        label="Permanent Address (বাংলা)"
+                        placeholder="Permanent Address (বাংলা)"
+                        rules={[
+                          {
+                            message: "This Field Must be in Bangla",
+                            pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                          },
+                        ]}
+                      />
+                    </Col>{" "}
+                    <Col md={12} sm={24}>
+                      <PInput
+                        type="text"
+                        name="presentAddressBn"
+                        label="Present Address (বাংলা)"
+                        placeholder="Present Address (বাংলা)"
+                        rules={[
+                          {
+                            message: "This Field Must be in Bangla",
+                            pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                          },
+                        ]}
+                      />
+                    </Col>
+                  </>
+                )}
               </Row>
             </PCardBody>
           </div>

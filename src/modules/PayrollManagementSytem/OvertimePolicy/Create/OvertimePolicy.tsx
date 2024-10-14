@@ -11,7 +11,7 @@ import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -25,6 +25,7 @@ import {
 } from "../Utils";
 import "../style.scss";
 import { getPeopleDeskAllDDL } from "common/api";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
@@ -45,6 +46,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   });
 
   const history = useHistory();
+  const dispatch = useDispatch();
   const { state }: any = useLocation();
 
   // States
@@ -183,6 +185,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       },
     });
   };
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
