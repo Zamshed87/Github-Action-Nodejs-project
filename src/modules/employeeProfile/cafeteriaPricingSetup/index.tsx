@@ -68,32 +68,32 @@ const CafeteriaPricingLanding = () => {
       width: 55,
     },
 
-    {
-      title: "Designation",
-      dataIndex: "strDesignationName",
-      width: 40,
-    },
+    // {
+    //   title: "Designation",
+    //   dataIndex: "strDesignationName",
+    //   width: 40,
+    // },
 
-    {
-      title: "Min Amount",
-      dataIndex: "minAmount",
-      width: 50,
-    },
-    {
-      title: "Max Amount",
-      dataIndex: "maxAmount",
-      width: 50,
-    },
-    {
-      title: "Own Contribution",
-      dataIndex: "monOwnContribution",
-      width: 50,
-    },
-    {
-      title: "Company Contribution",
-      dataIndex: "monCompanyContribution",
-      width: 60,
-    },
+    // {
+    //   title: "Min Amount",
+    //   dataIndex: "minAmount",
+    //   width: 50,
+    // },
+    // {
+    //   title: "Max Amount",
+    //   dataIndex: "maxAmount",
+    //   width: 50,
+    // },
+    // {
+    //   title: "Own Contribution",
+    //   dataIndex: "monOwnContribution",
+    //   width: 50,
+    // },
+    // {
+    //   title: "Company Contribution",
+    //   dataIndex: "monCompanyContribution",
+    //   width: 60,
+    // },
 
     {
       title: "Total Cost",
