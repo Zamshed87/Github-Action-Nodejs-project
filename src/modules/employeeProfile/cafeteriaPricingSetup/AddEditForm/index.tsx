@@ -1,3 +1,5 @@
+import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   DataTable,
   PButton,
@@ -41,7 +43,7 @@ const PricingSetupForm = () => {
   const designation = useApiRequest([]);
   const cafeApi = useApiRequest([]);
   const cafeEditApi = useApiRequest([]);
-  const [rowDto, setRowDto] = useState<any>({});
+  const [rowDto, setRowDto] = useState<any>([]);
 
   // workplace wise
   const getWorkplaceGroup = () => {
@@ -70,7 +72,41 @@ const PricingSetupForm = () => {
         headerId: +id || 0,
       },
       onSuccess: (res) => {
-        setRowDto(res);
+        if (+id) {
+          form.setFieldsValue({
+            date: moment(res.dteCreatedAt), // You can format this if needed
+            workplaceGroup: {
+              label: res.workPlaceGroupName, // Assuming you want the ID for label
+              value: res.workPlaceGroupId,
+            },
+            workplace: {
+              label: res.workPlaceName, // Same for workplace
+              value: res.workPlaceId,
+            },
+            pricingMatrixType: {
+              label: res.pricingMatrixTypeName,
+              value: res.pricingMatrixTypeId,
+            },
+            mealType: {
+              label: res.mealTypeName,
+              value: res.mealTypeId,
+            },
+          });
+          const updatedData = res?.rows?.map((row: any) => ({
+            minAmount: row?.minAmount,
+            maxAmount: row?.maxAmount,
+            ownContribution: row?.monOwnContribution,
+            companyContribution: row?.monCompanyContribution,
+            TotalCost: row?.monTotalCost,
+            designation: {
+              label: row?.strDesignationName,
+              value: row?.intDesignationId,
+            },
+          }));
+
+          setRowDto(updatedData);
+          getDesignation();
+        }
       },
     });
   };
@@ -119,43 +155,6 @@ const PricingSetupForm = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    if (+id) {
-      form.setFieldsValue({
-        date: moment(rowDto.dteCreatedAt), // You can format this if needed
-        workplaceGroup: {
-          label: rowDto.workPlaceGroupId, // Assuming you want the ID for label
-          value: rowDto.workPlaceGroupId,
-        },
-        workplace: {
-          label: rowDto.workPlaceId, // Same for workplace
-          value: rowDto.workPlaceId,
-        },
-        pricingMatrixType: {
-          label: rowDto.pricingMatrixTypeName,
-          value: rowDto.pricingMatrixTypeId,
-        },
-        mealType: {
-          label: rowDto.mealTypeName,
-          value: rowDto.mealTypeId,
-        },
-      });
-      const updatedData = rowDto?.rows?.map((row: any) => ({
-        minAmount: row?.minAmount,
-        maxAmount: row?.maxAmount,
-        ownContribution: row?.monOwnContribution,
-        companyContribution: row?.monCompanyContribution,
-        totalCost: row?.monTotalCost,
-        designation: {
-          label: row?.strDesignationName,
-          value: row?.intDesignationId,
-        },
-      }));
-
-      setRowDto(updatedData);
-      getDesignation();
-    }
-  }, [id]);
   // Table Header
   const handleIsPerDayChange = (
     value: number,
@@ -168,6 +167,11 @@ const PricingSetupForm = () => {
 
       return updatedRows;
     });
+  };
+  const handleDeleteRow = (index: number) => {
+    setRowDto((prevRowDto: any) =>
+      prevRowDto.filter((_: any, i: any) => i !== index)
+    );
   };
 
   const headerForDesignation: any = [
@@ -333,6 +337,18 @@ const PricingSetupForm = () => {
     {
       title: "Total Cost/Meal ",
       render: (value: any, row: any) => row?.TotalCost,
+    },
+    {
+      title: "Action",
+      render: (value: any, row: any, index: number) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Delete" arrow>
+            <button type="button" className="iconButton">
+              <DeleteOutlineOutlined onClick={() => handleDeleteRow(index)} />
+            </button>
+          </Tooltip>
+        </div>
+      ),
     },
   ];
   const headerForSalary: any = [
@@ -606,32 +622,40 @@ const PricingSetupForm = () => {
       render: (value: any, row: any) => row?.TotalCost,
     },
     {
-      width: 20,
-      align: "center",
-      render: () => (
-        <TableButton
-          buttonsList={
-            +!id
-              ? [
-                  {
-                    type: "plus",
-                    onClick: () => {
-                      setRowDto((prev: any) => [
-                        ...prev,
-                        {
-                          workplace: prev[0]?.workplace,
-                          workplaceGroup: prev[0]?.workplaceGroup,
-                        },
-                      ]);
-                    },
-                  },
-                ]
-              : []
-          }
-          parentStyle={{ color: "green" }}
-        />
+      title: "Action",
+      render: (value: any, row: any, index: number) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Delete" arrow>
+            <button type="button" className="iconButton">
+              <DeleteOutlineOutlined onClick={() => handleDeleteRow(index)} />
+            </button>
+          </Tooltip>
+        </div>
       ),
     },
+    // {
+    //   width: 20,
+    //   align: "center",
+    //   render: () => (
+    //     <TableButton
+    //       buttonsList={[
+    //         {
+    //           type: "plus",
+    //           onClick: () => {
+    //             setRowDto((prev: any) => [
+    //               ...prev,
+    //               {
+    //                 workplace: prev[0]?.workplace,
+    //                 workplaceGroup: prev[0]?.workplaceGroup,
+    //               },
+    //             ]);
+    //           },
+    //         },
+    //       ]}
+    //       parentStyle={{ color: "green" }}
+    //     />
+    //   ),
+    // },
   ];
   const submitHandler = (rowDto: any) => {
     const { pricingMatrixType, mealType, date, workplace, workplaceGroup } =
@@ -641,7 +665,7 @@ const PricingSetupForm = () => {
     };
 
     if (
-      rowDto?.intConfigId &&
+      +id &&
       rowDto[0]?.minAmount &&
       rowDto[0]?.minAmount >= rowDto[0]?.maxAmount
     ) {
@@ -651,8 +675,7 @@ const PricingSetupForm = () => {
 
     const payload = rowDto.map((item: any, idx: number) => {
       return {
-        sl: rowDto?.sl || idx,
-        intConfigId: rowDto?.intConfigId || 0,
+        // intConfigId: +id || 0,
         intDesignationId: item?.designation?.value || 0,
         strDesignationName: item?.designation?.label || "",
         monOwnContribution: item?.ownContribution,
@@ -661,15 +684,14 @@ const PricingSetupForm = () => {
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
         isActive: true,
-        intMonthId:
-          mealType?.value === 2
-            ? moment(date)?.format("l").split("/")?.[0]
-            : null,
-        intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
-        strMonthName:
-          mealType?.value === 2 ? moment(date).format("MMMM") : null,
-        // New fields added to the payload
-        rowId: rowDto?.intConfigId || 0, // Assuming you're assigning or have rowId
+        // intMonthId:
+        //   mealType?.value === 2
+        //     ? moment(date)?.format("l").split("/")?.[0]
+        //     : null,
+        // intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
+        // strMonthName:
+        //   mealType?.value === 2 ? moment(date).format("MMMM") : null,
+        rowId: item?.rowId || 0, // Assuming you're assigning or have rowId
       };
     });
 
@@ -685,10 +707,10 @@ const PricingSetupForm = () => {
       mealTypeName: mealType?.label || "",
       isActive: true,
       rows: payload, // Array of row objects
-      headerId: rowDto?.intConfigId || 0, // Assuming headerId is similar to intConfigId
+      headerId: +id || 0,
     };
 
-    if (rowDto?.intConfigId) {
+    if (+id) {
       cafeEditApi.action({
         urlKey: "EditCafeteriaConfig",
         method: "PUT",
@@ -944,7 +966,7 @@ const PricingSetupForm = () => {
                             name="designationDDL"
                             label="Designation"
                             placeholder="Designation"
-                            disabled={+id ? true : false}
+                            // disabled={+id ? true : false}
                             onChange={(value, op) => {
                               form.setFieldsValue({
                                 designationDDL: op,
@@ -982,9 +1004,19 @@ const PricingSetupForm = () => {
                     workplaceGroup,
                     pricingMatrixType,
                   } = form.getFieldsValue(true);
+                  if (
+                    pricingMatrixType?.value === 1 &&
+                    (!designationDDL || designationDDL.length === 0)
+                  ) {
+                    toast.warn(
+                      "Please select at least one designation before adding."
+                    );
+                    return; // Exit early if no designation is selected
+                  }
                   if (pricingMatrixType?.value === 1) {
-                    setRowDto(
-                      designationDDL?.map((item: any) => {
+                    setRowDto((prevRowDto: any) => [
+                      ...prevRowDto,
+                      ...designationDDL?.map((item: any) => {
                         return {
                           workplace,
                           workplaceGroup,
@@ -993,10 +1025,11 @@ const PricingSetupForm = () => {
                           companyContribution: 0,
                           TotalCost: 0,
                         };
-                      })
-                    );
+                      }),
+                    ]);
                   } else {
-                    setRowDto([
+                    setRowDto((prevRowDto: any) => [
+                      ...prevRowDto,
                       {
                         workplace,
                         workplaceGroup,
@@ -1022,13 +1055,13 @@ const PricingSetupForm = () => {
                   <DataTable
                     header={headerForDesignation}
                     bordered
-                    data={id ? rowDto?.rows : rowDto || []}
+                    data={rowDto || []}
                   />
                 ) : pricingMatrixType?.value === 2 ? (
                   <DataTable
                     header={headerForSalary}
                     bordered
-                    data={id ? rowDto?.rows : rowDto || []}
+                    data={rowDto || []}
                   />
                 ) : undefined}
               </>
