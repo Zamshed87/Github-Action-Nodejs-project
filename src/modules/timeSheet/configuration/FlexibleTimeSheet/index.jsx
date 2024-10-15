@@ -242,6 +242,7 @@ const MonthlyAttendanceReport = () => {
       return (
         <div>
           <PSelectWithOutForm
+            showSearch
             name={key}
             placeholder="Select Calendar"
             allowClear
