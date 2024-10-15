@@ -37,7 +37,7 @@ const CafeteriaPricingLanding = () => {
         intWorkplaceId: wId,
         searchTxt: "",
         pageNo: 1,
-        pageSize: 1000000,
+        pageSize: 10000,
       },
     });
   };
