@@ -281,7 +281,10 @@ export const getSalaryAssignDDLUpdate2 = ({
       grossSalaryAmount
     );
     setBreakDownList(res || []);
-  } else if (accId === 7) {
+  } else if (
+    accId === 7 &&
+    breakDownList?.[0]?.strSalaryBreakdownTitle?.includes("1.5")
+  ) {
     const res = bangJinNotAssignCal({ data: breakDownList }, grossSalaryAmount);
     setBreakDownList(res || []);
   } else {
@@ -338,7 +341,6 @@ export const getByIdSalaryAssignDDLUpdate2 = (
   accId,
   basicSalaryObj
 ) => {
-  // console.log(res?.data)
   if (res?.data?.[0]?.isCustomPayrollFor10ms) {
     const update = tenMsAssignedCal(res, grossSalaryAmount);
     setter(update || []);
@@ -349,7 +351,10 @@ export const getByIdSalaryAssignDDLUpdate2 = (
       grossSalaryAmount
     );
     setter(update || []);
-  } else if (accId === 7) {
+  } else if (
+    accId === 7 &&
+    res?.data?.[0]?.strSalaryBreakdownHeaderTitle?.includes("1.5")
+  ) {
     const update = bangJinAssignedCal(res, grossSalaryAmount);
     setter(update || []);
   } else {
@@ -587,6 +592,7 @@ export const tenMsNotAssignCal = (res, grossSalaryAmount) => {
 export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
   let modifyData = [];
   const basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
+  console.log({ grossSalaryAmount });
 
   modifyData = res?.data?.map((itm) => {
     let modifyObj;
@@ -594,13 +600,12 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     // for corporate
     if (itm?.strSalaryBreakdownTitle === "Corporate") {
       console.log("t");
-      console.log({ itm });
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
         modifyObj = {
           [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-            basicSalaryObj.basicSalary || 11,
-          numAmount: basicSalaryObj.basicSalary || 11,
+            basicSalaryObj.basicSalary || 0,
+          numAmount: basicSalaryObj.basicSalary || 0,
           showPercentage: basicSalaryObj.numPercentageOfGross || 50,
         };
       }
@@ -687,8 +692,28 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
         .join(""),
     };
   });
+  let totalSum = 0;
 
-  return modifyData;
+  modifyData.forEach((item) => {
+    if (item.levelVariable !== "specialsalaryallowance") {
+      totalSum += item.numAmount || 0;
+    }
+  });
+  // Calculate the specialsalaryallowance amount
+  const specialSalaryAmount = grossSalaryAmount - totalSum;
+
+  // Find and update specialsalaryallowance if it exists, otherwise return data as is
+  const updatedData = modifyData.map((item) => {
+    if (item.levelVariable === "specialsalaryallowance") {
+      return {
+        ...item,
+        numAmount: specialSalaryAmount,
+        specialsalaryallowance: specialSalaryAmount,
+      };
+    }
+    return item;
+  });
+  return updatedData;
 };
 export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
   console.log({ res });
@@ -1044,10 +1069,9 @@ export const getByIdSalaryAssignDDLUpdate = (
 
 // ------------7
 export const bangJinNotAssignCal = (res, grossSalaryAmount) => {
-  const conveyanceAmount = res?.data?.filter(
-    (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
-  );
-
+  const conveyanceAmount = res?.data
+    ?.filter((itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary)
+    ?.reduce((acc, i) => acc + i?.numAmount, 0);
   let modifyData = [];
   modifyData = res?.data?.map((itm) => {
     let modifyObj;
@@ -1063,13 +1087,10 @@ export const bangJinNotAssignCal = (res, grossSalaryAmount) => {
     if (itm?.strBasedOn === "Amount" && itm?.isBasicSalary) {
       modifyObj = {
         [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
-          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+          (grossSalaryAmount - conveyanceAmount) /
           1.5
         ).toFixed(2),
-        numAmount: (
-          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-          1.5
-        ).toFixed(2),
+        numAmount: ((grossSalaryAmount - conveyanceAmount) / 1.5).toFixed(2),
       };
     }
 
@@ -1122,13 +1143,10 @@ export const bangJinNotAssignCal = (res, grossSalaryAmount) => {
     ) {
       modifyObj = {
         [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (
-          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
+          (grossSalaryAmount - conveyanceAmount) /
           1.5
         ).toFixed(2),
-        numAmount: (
-          (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-          1.5
-        ).toFixed(2),
+        numAmount: ((grossSalaryAmount - conveyanceAmount) / 1.5).toFixed(2),
       };
     }
 
@@ -1188,9 +1206,9 @@ export const bangJinNotAssignCal = (res, grossSalaryAmount) => {
   return finalModify;
 };
 export const bangJinAssignedCal = (res, grossSalaryAmount) => {
-  const conveyanceAmount = res?.data?.filter(
-    (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
-  );
+  const conveyanceAmount = res?.data
+    ?.filter((itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary)
+    ?.reduce((acc, i) => acc + i?.numAmount, 0);
 
   let modifyData = [];
   modifyData = res?.data?.map((itm) => {
@@ -1200,19 +1218,13 @@ export const bangJinAssignedCal = (res, grossSalaryAmount) => {
         itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
           ? itm?.numAmount
           : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
-          ? (
-              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-              1.5
-            ).toFixed(2)
+          ? ((grossSalaryAmount - conveyanceAmount) / 1.5).toFixed(2)
           : ((itm?.numNumberOfPercent * grossSalaryAmount) / 100).toFixed(2),
       numAmount:
         itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
           ? itm?.numAmount
           : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
-          ? (
-              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-              1.5
-            ).toFixed(2)
+          ? ((grossSalaryAmount - conveyanceAmount) / 1.5).toFixed(2)
           : ((itm?.numNumberOfPercent * grossSalaryAmount) / 100).toFixed(2),
       showPercentage:
         itm?.strDependOn === "Basic"
@@ -1236,10 +1248,7 @@ export const bangJinAssignedCal = (res, grossSalaryAmount) => {
         itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
           ? itm?.numAmount
           : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
-          ? (
-              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-              1.5
-            ).toFixed(2)
+          ? ((grossSalaryAmount - conveyanceAmount) / 1.5).toFixed(2)
           : (
               (itm?.numNumberOfPercent * basicAmount[0]?.numAmount) /
               100
@@ -1248,10 +1257,7 @@ export const bangJinAssignedCal = (res, grossSalaryAmount) => {
         itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
           ? itm?.numAmount
           : itm?.strBasedOn === "Amount" && itm?.isBasicSalary
-          ? (
-              (grossSalaryAmount - conveyanceAmount[0]?.numAmount) /
-              1.5
-            ).toFixed(2)
+          ? ((grossSalaryAmount - conveyanceAmount) / 1.5).toFixed(2)
           : (
               (itm?.numNumberOfPercent * basicAmount[0]?.numAmount) /
               100

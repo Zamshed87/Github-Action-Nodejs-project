@@ -34,6 +34,8 @@ export const createEditEmpAction = async (
     let payload = {
       presentAddress: values?.presentAddress,
       permanentAddress: values?.permanentAddress,
+      presentAddressBn: values?.presentAddressBn,
+      permanentAddressBn: values?.permanentAddressBn,
       intPayscaleGradeId: values?.payScaleGrade?.value,
       strPayscaleGradeName: values?.payScaleGrade?.label,
       intSalaryTypeId: values?.salaryType?.value,
@@ -43,6 +45,7 @@ export const createEditEmpAction = async (
       strEmployeeCode: String(values?.employeeCode),
       strCardNumber: String(values?.employeeCode),
       strEmployeeName: values?.fullName,
+      strEmployeeNameBn: values?.fullNameInBn || "",
       intGenderId: values?.gender?.value,
       strGender: values?.gender?.label,
       intReligionId: values?.religion?.value,
@@ -396,6 +399,15 @@ export const getEmployeeProfileViewData = async (
           permanentAddress: empBasic?.empEmployeeAddress?.find(
             (i) => i?.strAddressType === "Permanent"
           )?.strAddressDetails,
+
+          presentAddressBn: empBasic?.empEmployeeAddress?.find(
+            (i) => i?.strAddressType === "Present"
+          )?.strAddressDetailsBn,
+
+          permanentAddressBn: empBasic?.empEmployeeAddress?.find(
+            (i) => i?.strAddressType === "Permanent"
+          )?.strAddressDetailsBn,
+
           tinNo: empBasic?.employeeProfileLandingView?.tinNo,
           nid: empBasic?.empEmployeePhotoIdentity?.strNid,
           empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
@@ -734,12 +746,7 @@ export const userExistValidation = async (payload, setter, cb) => {
   }
 };
 
-export const markAsComplete = async (
-  empId,
-  isComplete,
-  setLoading,
-  cb
-) => {
+export const markAsComplete = async (empId, isComplete, setLoading, cb) => {
   try {
     setLoading(true);
 

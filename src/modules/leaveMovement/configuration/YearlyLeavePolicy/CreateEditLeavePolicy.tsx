@@ -446,7 +446,7 @@ const CreateEditLeavePolicy = () => {
                               <PSelect
                                 // mode="multiple"
                                 allowClear
-                                options={[...buDDL] || []}
+                                options={[...buDDL]}
                                 name="bu"
                                 disabled={params?.id}
                                 label="Business Unit"
