@@ -33,6 +33,7 @@ import { getEmployeeProfileViewData } from "./../../../employeeFeature/helper";
 
 const initData = {
   name: "",
+  relativesNameBn: "",
   relationship: "",
   mobileNumber: "",
   email: "",
@@ -56,6 +57,10 @@ const validationSchema = Yup.object().shape({
     /^(?:\+?88|0088)?01[1-9]\d{8}$/,
     "Mobile Number is invalid"
   ),
+  relativesNameBn: Yup.string().matches(
+    /^[\u0980-\u09FF\s]*$/,
+    "This field should be in Bangla"
+  ),
 });
 
 function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
@@ -66,10 +71,8 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
   const [empSpecialContact, setEmpSpecialContact] = useState({});
   const [singleData, setSingleData] = useState();
 
-  const { employeeId, buId, wgId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, buId, wgId, intAccountId, isOfficeAdmin, orgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const getData = () => {
     getEmployeeProfileViewData(
@@ -94,6 +97,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
       insertByEmpId: employeeId,
       isActive: isDelete ? true : true,
       name: values?.name,
+      relativesNameBn: values?.relativesNameBn || "",
       relationId: values?.relationship?.value || 0,
       relationName: values?.relationship?.label || "",
       phone: values?.mobileNumber || "",
@@ -184,6 +188,23 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                         classes="input-sm"
                       />
                     </div>
+                    {orgId === 7 && (
+                      <div>
+                        <FormikInput
+                          value={values?.relativesNameBn}
+                          name="relativesNameBn"
+                          onChange={(e) =>
+                            setFieldValue("relativesNameBn", e.target.value)
+                          }
+                          type="text"
+                          className="form-control"
+                          errors={errors}
+                          touched={touched}
+                          placeholder="Relatives Name (Bangla)"
+                          classes="input-sm"
+                        />
+                      </div>
+                    )}
                     <div>
                       <FormikSelect
                         name="relationship"
@@ -385,7 +406,8 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             item={item}
                             options={[
                               ...(intAccountId === 5
-                                ? !empSpecialContact.isMarkCompleted || isOfficeAdmin
+                                ? !empSpecialContact.isMarkCompleted ||
+                                  isOfficeAdmin
                                   ? [
                                       {
                                         value: 1,
@@ -401,22 +423,35 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                         onClick: (e) => {
                                           setValues({
                                             ...values,
-                                            name: singleData?.strRelativesName || "",
+                                            name:
+                                              singleData?.strRelativesName ||
+                                              "",
+                                            relativesNameBn:
+                                              singleData?.strRelativesNameBn ||
+                                              "",
                                             relationship: {
-                                              value: singleData?.intRelationShipId,
-                                              label: singleData?.strRelationship,
+                                              value:
+                                                singleData?.intRelationShipId,
+                                              label:
+                                                singleData?.strRelationship,
                                             },
                                             mobileNumber: singleData?.strPhone,
                                             email: singleData?.strEmail,
                                             nid: singleData?.strNid,
-                                            dateOfBirth: singleData?.dteDateOfBirth
-                                              ? dateFormatterForInput(singleData?.dteDateOfBirth)
-                                              : null,
+                                            dateOfBirth:
+                                              singleData?.dteDateOfBirth
+                                                ? dateFormatterForInput(
+                                                    singleData?.dteDateOfBirth
+                                                  )
+                                                : null,
                                             remarks: singleData?.strRemarks,
                                             address: singleData?.strAddress,
-                                            isEmergencyContact: singleData?.isEmergencyContact,
-                                            birthCertificate: singleData?.strBirthId,
-                                            autoId: singleData?.intEmployeeRelativesContactId,
+                                            isEmergencyContact:
+                                              singleData?.isEmergencyContact,
+                                            birthCertificate:
+                                              singleData?.strBirthId,
+                                            autoId:
+                                              singleData?.intEmployeeRelativesContactId,
                                           });
                                           setEmergencyContact("input");
                                           setAnchorEl(null);
@@ -464,22 +499,33 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                       onClick: (e) => {
                                         setValues({
                                           ...values,
-                                          name: singleData?.strRelativesName || "",
+                                          name:
+                                            singleData?.strRelativesName || "",
+                                          relativesNameBn:
+                                            singleData?.strRelativesNameBn ||
+                                            "",
                                           relationship: {
-                                            value: singleData?.intRelationShipId,
+                                            value:
+                                              singleData?.intRelationShipId,
                                             label: singleData?.strRelationship,
                                           },
                                           mobileNumber: singleData?.strPhone,
                                           email: singleData?.strEmail,
                                           nid: singleData?.strNid,
-                                          dateOfBirth: singleData?.dteDateOfBirth
-                                            ? dateFormatterForInput(singleData?.dteDateOfBirth)
-                                            : null,
+                                          dateOfBirth:
+                                            singleData?.dteDateOfBirth
+                                              ? dateFormatterForInput(
+                                                  singleData?.dteDateOfBirth
+                                                )
+                                              : null,
                                           remarks: singleData?.strRemarks,
                                           address: singleData?.strAddress,
-                                          isEmergencyContact: singleData?.isEmergencyContact,
-                                          birthCertificate: singleData?.strBirthId,
-                                          autoId: singleData?.intEmployeeRelativesContactId,
+                                          isEmergencyContact:
+                                            singleData?.isEmergencyContact,
+                                          birthCertificate:
+                                            singleData?.strBirthId,
+                                          autoId:
+                                            singleData?.intEmployeeRelativesContactId,
                                         });
                                         setEmergencyContact("input");
                                         setAnchorEl(null);
@@ -512,8 +558,6 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                     },
                                   ]),
                             ]}
-                            
-                            
                           />
                         </div>
                         <div className="row mb-3">
