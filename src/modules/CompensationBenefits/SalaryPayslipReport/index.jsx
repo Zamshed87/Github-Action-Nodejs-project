@@ -185,7 +185,7 @@ const SalaryPayslipReport = () => {
                           );
                           if (e.target.value && values?.employee?.value) {
                             getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&WorkplaceGroupId=${wgId}&intId=${
+                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
                                 values?.employee?.value
                               }&IntMonth=${+e.target.value
                                 .split("")
