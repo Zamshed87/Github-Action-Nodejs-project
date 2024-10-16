@@ -561,6 +561,7 @@ export default function LeaveApproval() {
         ),
         filter: false,
         sorter: false,
+        width: 120,
       },
       {
         title: "Total",
@@ -630,7 +631,7 @@ export default function LeaveApproval() {
         // ),
         filter: false,
         sorter: false,
-        width: "130px",
+        width: 100  ,
       },
       {
         title: "Waiting Stage",
@@ -726,7 +727,7 @@ export default function LeaveApproval() {
         ),
         filter: true,
         sorter: true,
-        width: 120,
+        width: 180,
       },
     ];
   };
