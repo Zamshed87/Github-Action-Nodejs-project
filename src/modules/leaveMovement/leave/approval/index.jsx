@@ -561,6 +561,7 @@ export default function LeaveApproval() {
         ),
         filter: false,
         sorter: false,
+        width: 120,
       },
       {
         title: "Total",
@@ -570,12 +571,9 @@ export default function LeaveApproval() {
             "0.5"
           ) : (
             <span>
-              {`${
-                +fromDateToDateDiff(
-                  dateFormatterForInput(record?.leaveApplication?.dteFromDate),
-                  dateFormatterForInput(record?.leaveApplication?.dteToDate)
-                )?.split(" ")[0] + 1
-              } Days`}{" "}
+              {`${record?.totalDays} ${
+                record?.totalDays === 1 ? " Day" : " Days"
+              }`}{" "}
             </span>
           );
         },
@@ -630,7 +628,7 @@ export default function LeaveApproval() {
         // ),
         filter: false,
         sorter: false,
-        width: "130px",
+        width: 100  ,
       },
       {
         title: "Waiting Stage",
@@ -726,7 +724,7 @@ export default function LeaveApproval() {
         ),
         filter: true,
         sorter: true,
-        width: 120,
+        width: 180,
       },
     ];
   };
