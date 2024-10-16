@@ -571,12 +571,9 @@ export default function LeaveApproval() {
             "0.5"
           ) : (
             <span>
-              {`${
-                +fromDateToDateDiff(
-                  dateFormatterForInput(record?.leaveApplication?.dteFromDate),
-                  dateFormatterForInput(record?.leaveApplication?.dteToDate)
-                )?.split(" ")[0] + 1
-              } Days`}{" "}
+              {`${record?.totalDays} ${
+                record?.totalDays === 1 ? " Day" : " Days"
+              }`}{" "}
             </span>
           );
         },
