@@ -90,6 +90,7 @@ export const empMgmtLeaveApplicationDto = (
       title: "Application Date",
       dataIndex: "ApplicationDate",
       render: (date) => dateFormatter(date),
+      width: 50,
     },
     {
       title: "Half Day",
@@ -102,9 +103,11 @@ export const empMgmtLeaveApplicationDto = (
     {
       title: "Reason",
       dataIndex: "Reason",
+      width: 70,
     },
     {
       title: "Total",
+      width: 30,
       dataIndex: "",
       render: (_, record) => {
         return record?.HalfDay ? (
@@ -113,6 +116,7 @@ export const empMgmtLeaveApplicationDto = (
           <span>{`${record?.TotalDays} Days`} </span>
         );
       },
+      align: "center",
     },
     {
       title: "Status",
