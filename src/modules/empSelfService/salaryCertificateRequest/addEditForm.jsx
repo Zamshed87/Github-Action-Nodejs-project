@@ -62,6 +62,8 @@ const SelfSalaryCertificateRequestCreate = () => {
     );
   };
 
+  console.log("initMonth",initMonth)
+
   const getData = () => {
     params?.id &&
       getCertificateDetail(
