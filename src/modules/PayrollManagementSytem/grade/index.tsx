@@ -98,12 +98,12 @@ const GradeLanding: React.FC<TJobGrade> = () => {
                 setOpen(true);
               },
             },
-            {
-              type: "delete",
-              onClick: () => {
-                deleteGradeById(item);
-              },
-            },
+            // {
+            //   type: "delete",
+            //   onClick: () => {
+            //     deleteGradeById(item);
+            //   },
+            // },
           ]}
         />
       ),

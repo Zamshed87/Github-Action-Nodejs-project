@@ -102,12 +102,12 @@ const JobLevelLanding: React.FC<TJobLvel> = () => {
                 setOpen(true);
               },
             },
-            {
-              type: "delete",
-              onClick: () => {
-                deleteJobLevelById(item);
-              },
-            },
+            // {
+            //   type: "delete",
+            //   onClick: () => {
+            //     deleteJobLevelById(item);
+            //   },
+            // },
           ]}
         />
       ),
