@@ -2,6 +2,33 @@ import axios from "axios";
 import * as Yup from "yup";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 
+export const adviceTypeDDL = [
+  {
+    value: "IBBL",
+    label: "IBBL",
+  },
+  {
+    value: "BFTN",
+    label: "BFTN",
+  },
+  {
+    value: "DBL",
+    label: "DBL",
+  },
+  {
+    value: "SCB",
+    label: "SCB",
+  },
+  {
+    value: "CityBank",
+    label: "City Bank",
+  },
+  {
+    value: "DBBL",
+    label: "DBBL",
+  },
+];
+
 export const bankAdviceInitialValues = {
   businessUnit: "",
   workplaceGroup: "",
@@ -17,6 +44,7 @@ export const bankAdviceInitialValues = {
   search: "",
   bank: "",
   account: "",
+  adviceType: "",
 
   // new 08-06-2024
   bankAdviceFor: "",
@@ -57,6 +85,12 @@ export const bankAdviceValidationSchema = Yup.object().shape({
       label: Yup.string().required("Bank is required"),
     })
     .typeError("Bank is required"),
+  adviceType: Yup.object()
+    .shape({
+      value: Yup.string().required("This Field is required"),
+      label: Yup.string().required("This Field is required"),
+    })
+    .typeError("This Field is required"),
   monthYear: Yup.date().required("Payroll month is required"),
 });
 
@@ -87,11 +121,11 @@ export const getBankAdviceRequestLanding = async (
       intSalaryGenerateRequestId: values?.adviceName?.value,
       bankAccountNo: values?.account?.AccountNo,
       intBankOrWalletType: 1,
-      strAdviceType: "",
       isForXl: isForXl,
       searchTxt: searchTxt,
       pageNo: pages?.current,
       pageSize: pages?.pageSize,
+      strAdviceType: values?.adviceType?.value,
     };
 
     const res = await axios.post(`/Payroll/BankAdvaiceReport`, payload);
@@ -129,7 +163,7 @@ export const getBankAdviceBonusRequestLanding = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    const concatBonusCode = values?.bonusCode?.map((item) => item?.value)
+    const concatBonusCode = values?.bonusCode?.map((item) => item?.value);
     const payload = {
       intAccountId: orgId,
       intBusinessUnitId: buId,
@@ -141,11 +175,11 @@ export const getBankAdviceBonusRequestLanding = async (
       intSalaryGenerateRequestId: values?.adviceName?.value || 0,
       bankAccountNo: values?.account?.AccountNo,
       intBankOrWalletType: 1,
-      strAdviceType: "",
       isForXl: isForXl,
       searchTxt: searchTxt,
       pageNo: pages?.current,
       pageSize: pages?.pageSize,
+      strAdviceType: values?.adviceType?.value,
       intBonunHeaderList: concatBonusCode || [],
     };
 
