@@ -210,6 +210,21 @@ export const apiList = {
   ExpenseApplicationCreateEdit: "/Employee/ExpenseApplicationCreateEdit",
   GetExpenseById: "/Employee/GetExpenseById",
   GetExpenseDocList: "/Employee/GetExpenseDocList",
+  JobClassLanding: "/MasterJobClass/JobClassLanding",
+  DeleteJobClass: "/MasterJobClass/DeleteJobClass",
+  CreateJobClass: "/MasterJobClass/CreateJobClass",
+  UpdateJobClass: "/MasterJobClass/UpdateJobClass",
+  JobGradeLanding: "/MasterJobGrade/JobGradeLanding",
+  DeleteJobGrade: "/MasterJobGrade/DeleteJobGrade",
+  CreateJobGrade: "/MasterJobGrade/CreateJobGrade",
+  UpdateJobGrade: "/MasterJobGrade/UpdateJobGrade",
+  JobLevelLanding: "/MasterJobLevel/JobLevelLanding",
+  DeleteJobLevel: "/MasterJobLevel/DeleteJobLevel",
+  CreateJobLevel: "/MasterJobLevel/CreateJobLevel",
+  UpdateJobLevel: "/MasterJobLevel/UpdateJobLevel",
+  GetJobClassDdl: "/MasterJobLevel/GetJobClassDdl",
+  GetJobGradeDdl: "/MasterJobLevel/GetJobGradeDdl",
+  GetJobLevelDdl: "/MasterJobLevel/GetJobLevelDdl",
 
   //updated ddls
 

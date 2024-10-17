@@ -11,7 +11,7 @@ import {
 } from "Components";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
+import { Col, Form, Row } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";

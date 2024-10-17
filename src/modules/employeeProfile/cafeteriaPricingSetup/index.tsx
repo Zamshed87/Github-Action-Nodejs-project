@@ -34,7 +34,7 @@ const CafeteriaPricingLanding = () => {
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: wgId,
-        intWorkplaceId: wId,
+        intWorkplaceId: 0,
         searchTxt: "",
         pageNo: 1,
         pageSize: 10000,
@@ -56,6 +56,10 @@ const CafeteriaPricingLanding = () => {
         }),
       width: 15,
       align: "center",
+    },
+    {
+      title: "Workplace Name",
+      dataIndex: "strWorkPlaceName",
     },
 
     {

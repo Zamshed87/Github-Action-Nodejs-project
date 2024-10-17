@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import ReactToPrint from "react-to-print";
+// import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
+
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import { PrintOutlined } from "@mui/icons-material";
 import { shallowEqual, useSelector } from "react-redux";
@@ -28,11 +30,17 @@ const ManagementSeparationHistoryView = ({
   setOpenModal,
   empBasicInfo,
 }) => {
-  const printRef = useRef();
+  const contentRef = useRef();
   const { orgId, intAccountId, buId, wgId, wId, intEmployeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    pageStyle:
+      "@page { !important width: 100% } @media print { .tab-panel { display: none } .historyPrintView { display: block!important } }",
+    documentTitle: `Separation History View`,
+  });
 
   const [value, setValue] = useState(0);
   const [empBasic, setEmpBasic] = useState({});
@@ -121,7 +129,7 @@ const ManagementSeparationHistoryView = ({
     <>
       {loading && <Loading />}
       <div className="mb-2 d-flex justify-content-end">
-        <ReactToPrint
+        {/* <ReactToPrint
           documentTitle={"Separation History View"}
           trigger={() => (
             <Button
@@ -150,14 +158,38 @@ const ManagementSeparationHistoryView = ({
           pageStyle={
             "@page { !important width: 100% } @media print { .tab-panel { display: none } .historyPrintView { display: block!important } }"
           }
-        />
+        /> */}
+        <Button
+          variant="outlined"
+          sx={{
+            borderColor: "rgba(0, 0, 0, 0.6)",
+            color: "rgba(0, 0, 0, 0.6)",
+            fontSize: "12px",
+            fontWeight: "bold",
+            letterSpacing: "1.15px",
+            "&:hover": {
+              borderColor: "rgba(0, 0, 0, 0.6)",
+            },
+          }}
+          onClick={reactToPrintFn}
+          startIcon={
+            <PrintOutlined
+              sx={{ color: "rgba(0, 0, 0, 0.6)" }}
+              className="emp-print-icon"
+            />
+          }
+        >
+          Print
+        </Button>
       </div>
-      <div ref={printRef}>
+      <div ref={contentRef}>
         <h2
           className="historyPrintView text-center mb-3"
           style={{ display: "none", fontSize: "30px" }}
         >
-          {type === "dueAmount" || type === "dueView" ? "Full & Final Settlement" : "Separation"}
+          {type === "dueAmount" || type === "dueView"
+            ? "Full & Final Settlement"
+            : "Separation"}
         </h2>
         <EmpBasicInfo empBasic={empBasic} />
         <div className="tab-panel">
