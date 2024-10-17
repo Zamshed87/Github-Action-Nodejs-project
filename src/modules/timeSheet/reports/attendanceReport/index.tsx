@@ -272,31 +272,31 @@ const AttendanceReport = () => {
 
       width: 100,
     },
-    {
-      title: "Casual Leave",
-      dataIndex: "casualLeave",
-      width: 80,
-    },
-    {
-      title: "Sick Leave",
-      dataIndex: "casualLeave",
-      width: 80,
-    },
-    {
-      title: "Earn Leave",
-      dataIndex: "casualLeave",
-      width: 80,
-    },
-    {
-      title: "Medical Leave",
-      dataIndex: "medicalLeave",
-      width: 80,
-    },
-    {
-      title: "Special Leave",
-      dataIndex: "medicalLeave",
-      width: 80,
-    },
+    // {
+    //   title: "Casual Leave",
+    //   dataIndex: "casualLeave",
+    //   width: 80,
+    // },
+    // {
+    //   title: "Sick Leave",
+    //   dataIndex: "casualLeave",
+    //   width: 80,
+    // },
+    // {
+    //   title: "Earn Leave",
+    //   dataIndex: "casualLeave",
+    //   width: 80,
+    // },
+    // {
+    //   title: "Medical Leave",
+    //   dataIndex: "medicalLeave",
+    //   width: 80,
+    // },
+    // {
+    //   title: "Special Leave",
+    //   dataIndex: "medicalLeave",
+    //   width: 80,
+    // },
     {
       title: "Off Day",
       dataIndex: "weekend",

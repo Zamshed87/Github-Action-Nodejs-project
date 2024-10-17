@@ -32,12 +32,17 @@ import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import CafeteriaPricingLanding from "modules/employeeProfile/cafeteriaPricingSetup";
 import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddEditForm";
 
+import SalaryV2 from "modules/CompensationBenefits/employeeSalary/salaryupdate";
 import YearlyTaxReturnReport from "modules/CompensationBenefits/reports/YearlyTaxReturnReport";
 import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/reports/monthlyAllowanceDeduction";
 import AllowancePolicy from "modules/PayrollManagementSytem/SpecialAllowancePolicy";
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
+import GradeLanding from "modules/PayrollManagementSytem/grade";
+import JobLevelLanding from "modules/PayrollManagementSytem/jobLevel";
+import JobClassLanding from "modules/PayrollManagementSytem/jobclass";
+import PayscaleLanding from "modules/PayrollManagementSytem/payscale";
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
 import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
@@ -2343,6 +2348,10 @@ export const routingList = [
     component: IncomeTaxAssign,
   },
   {
+    path: "/compensationAndBenefits/employeeSalary/salaryAssignv2",
+    component: SalaryV2,
+  },
+  {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign",
     component: SalaryAssign,
   },
@@ -2660,6 +2669,22 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/payrollElement",
     component: PayrollElement,
+  },
+  {
+    path: "/administration/payrollConfiguration/payscale",
+    component: PayscaleLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/jobClass",
+    component: JobClassLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/jobGrade",
+    component: GradeLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/jobLevel",
+    component: JobLevelLanding,
   },
   {
     path: "/administration/payrollConfiguration/allowenceNDeductionPolicy",
