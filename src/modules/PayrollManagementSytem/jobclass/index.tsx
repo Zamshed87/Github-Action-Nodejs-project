@@ -94,12 +94,12 @@ const JobClassLanding: React.FC<TJobClass> = () => {
                 setOpen(true);
               },
             },
-            {
-              type: "delete",
-              onClick: () => {
-                deleteJobClassById(item);
-              },
-            },
+            // {
+            //   type: "delete",
+            //   onClick: () => {
+            //     deleteJobClassById(item);
+            //   },
+            // },
           ]}
         />
       ),

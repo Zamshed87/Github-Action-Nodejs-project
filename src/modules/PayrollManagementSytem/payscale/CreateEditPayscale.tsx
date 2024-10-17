@@ -156,6 +156,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           jobClass: op,
+                          grade: undefined,
+                          jobLevel: undefined,
                         });
                         getGradeDDL();
                       }}
@@ -218,6 +220,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           grade: op,
+                          jobLevel: undefined,
                         });
                         getJobLevelDDL();
                       }}
