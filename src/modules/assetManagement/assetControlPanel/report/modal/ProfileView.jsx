@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PrintOutlined } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import { gray700 } from "utility/customColor";
 import Chips from "common/Chips";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
@@ -20,7 +20,7 @@ import { dateFormatter } from "utility/dateFormatter";
 import { APIUrl } from "App";
 
 const ProfileView = ({ assetId }) => {
-  const printRef = useRef();
+  const contentRef = useRef();
   const dispatch = useDispatch();
   const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -31,6 +31,13 @@ const ProfileView = ({ assetId }) => {
   const [maintenanceRowDto, setMaintenanceRowDto] = useState([]);
   const [usesHistoryRowDto, setUsesHistoryRowDto] = useState([]);
   const [documentsRowDto, setDocumentsRowDto] = useState([]);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    pageStyle:
+      "@page { !important width: 100% } @media print { .name-about-info {font-size: 24px!important} .documents{ display: none!important} .printDateTime{display: block!important} }",
+    documentTitle: `Asset Profile`,
+  });
 
   useEffect(() => {
     if (assetId) {
@@ -50,7 +57,7 @@ const ProfileView = ({ assetId }) => {
   return (
     <>
       <div className="mb-2 d-flex justify-content-end">
-        <ReactToPrint
+        {/* <ReactToPrint
           documentTitle={"Asset Profile"}
           trigger={() => (
             <Button
@@ -75,13 +82,35 @@ const ProfileView = ({ assetId }) => {
               Print/PDF
             </Button>
           )}
-          content={() => printRef.current}
+          content={() => contentRef.current}
           pageStyle={
             "@page { !important width: 100% } @media print { .name-about-info {font-size: 24px!important} .documents{ display: none!important} .printDateTime{display: block!important} }"
           }
-        />
+        /> */}
+        <Button
+          variant="outlined"
+          sx={{
+            borderColor: "rgba(0, 0, 0, 0.6)",
+            color: "rgba(0, 0, 0, 0.6)",
+            fontSize: "12px",
+            fontWeight: "bold",
+            letterSpacing: "1.15px",
+            "&:hover": {
+              borderColor: "rgba(0, 0, 0, 0.6)",
+            },
+          }}
+          onClick={reactToPrintFn}
+          startIcon={
+            <PrintOutlined
+              sx={{ color: "rgba(0, 0, 0, 0.6)" }}
+              className="emp-print-icon"
+            />
+          }
+        >
+          Print/PDF
+        </Button>
       </div>
-      <div ref={printRef}>
+      <div ref={contentRef}>
         <div className="card-about-info-main about-info-card">
           <div className="d-flex justify-content-between">
             <div style={{ width: "70%" }}>
