@@ -75,7 +75,7 @@ export default function NotificationConfigCreate() {
       return {
         categoryId: item?.categoryId,
         categoryName: item?.categoryName,
-        notificationCategoriesViewModel: item[item?.levelVariable]?.map(
+        notificationCategoriesViewModelType: item[item?.levelVariable]?.map(
           (itm) => {
             return {
               categoryTypeId: itm?.categoryTypeId,
@@ -302,7 +302,7 @@ export default function NotificationConfigCreate() {
                                           minHeight: "auto",
                                           height:
                                             item[item?.levelVariable]?.length >
-                                              1
+                                            1
                                               ? "auto"
                                               : "30px",
                                           borderRadius: "4px",
@@ -318,7 +318,7 @@ export default function NotificationConfigCreate() {
                                           ...provided,
                                           height:
                                             item[item?.levelVariable]?.length >
-                                              1
+                                            1
                                               ? "auto"
                                               : "30px",
                                           padding: "0 6px",

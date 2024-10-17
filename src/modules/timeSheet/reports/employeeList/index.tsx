@@ -33,7 +33,7 @@ const EmployeeList = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId },
+    profileData: { orgId, buId, wgId, employeeId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -70,13 +70,13 @@ const EmployeeList = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -90,13 +90,13 @@ const EmployeeList = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -148,12 +148,12 @@ const EmployeeList = () => {
       strEmploymentTypeList: filerList?.strEmploymentType || [],
       strSupervisorNameList: filerList?.strSupervisorName || [],
       strDottedSupervisorNameList: filerList?.strDottedSupervisorName || [],
-      strDivisionList: filerList?.strDivisionList || [],
+      strDivisionList: filerList?.strDivision || [],
       strPayrollGroupList: filerList?.strPayrollGroup || [],
       strDesignationList: filerList?.strDesignation || [],
       strHrPositionList: filerList?.strHrPosition || [],
       strBankList: filerList?.strBank || [],
-      strSectionList: filerList?.strSectionList || [],
+      strSectionList: filerList?.strSection || [],
       //   unnecesary
       wingNameList: [],
       soleDepoNameList: [],
@@ -551,14 +551,14 @@ const EmployeeList = () => {
                       (filterList as any)?.strSupervisorName || [],
                     strDottedSupervisorNameList:
                       (filterList as any)?.strDottedSupervisorName || [],
-                    strDivisionList: (filterList as any)?.strDivisionList || [],
+                    strDivisionList: (filterList as any)?.strDivision || [],
                     strPayrollGroupList:
                       (filterList as any)?.strPayrollGroup || [],
                     strDesignationList:
                       (filterList as any)?.strDesignation || [],
                     strHrPositionList: (filterList as any)?.strHrPosition || [],
                     strBankList: (filterList as any)?.strBank || [],
-                    strSectionList: (filterList as any)?.strSectionList || [],
+                    strSectionList: (filterList as any)?.strSection || [],
                     //   unnecesary
                     wingNameList: [],
                     soleDepoNameList: [],

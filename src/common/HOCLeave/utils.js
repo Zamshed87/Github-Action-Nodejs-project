@@ -3,13 +3,9 @@ import axios from "axios";
 import { TableButton } from "Components";
 import PBadge from "Components/Badge";
 import moment from "moment";
-import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 import * as Yup from "yup";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
-import {
-  dateFormatter,
-  dateFormatterForInput,
-} from "../../utility/dateFormatter";
+import { dateFormatter } from "../../utility/dateFormatter";
 
 export const initDataForLeaveApplication = {
   search: "",
@@ -94,6 +90,7 @@ export const empMgmtLeaveApplicationDto = (
       title: "Application Date",
       dataIndex: "ApplicationDate",
       render: (date) => dateFormatter(date),
+      width: 50,
     },
     {
       title: "Half Day",
@@ -106,24 +103,20 @@ export const empMgmtLeaveApplicationDto = (
     {
       title: "Reason",
       dataIndex: "Reason",
+      width: 70,
     },
     {
       title: "Total",
+      width: 30,
       dataIndex: "",
       render: (_, record) => {
         return record?.HalfDay ? (
           "0.5"
         ) : (
-          <span>
-            {`${
-              +fromDateToDateDiff(
-                dateFormatterForInput(record?.AppliedFromDate),
-                dateFormatterForInput(record?.AppliedToDate)
-              )?.split(" ")[0] + 1
-            } Days`}{" "}
-          </span>
+          <span>{`${record?.TotalDays} Days`} </span>
         );
       },
+      align: "center",
     },
     {
       title: "Status",
@@ -220,6 +213,29 @@ export const getLvePunishmentData = async (
   try {
     const res = await axios.get(
       `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${buId}&EmpId=${empId}&YearId=${yearId}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
+export const getLeaveTypeData = async (
+  tableName,
+  buId,
+  empId,
+  yearId,
+  setLoading,
+  id,
+  setter
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${buId}&EmpId=${empId}&YearId=${yearId}&leaveTypeId=${id}`
     );
     if (res?.data) {
       setter(res?.data);

@@ -1,3 +1,5 @@
+import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   DataTable,
   PButton,
@@ -12,11 +14,10 @@ import {
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { dateFormatterForInput } from "utility/dateFormatter";
 
 const PricingSetupForm = () => {
   const {
@@ -35,15 +36,15 @@ const PricingSetupForm = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { rec } = location?.state || ({} as any);
-
   //   api states
   const workplaceGroup = useApiRequest([]);
+  const Cafeteria = useApiRequest([]);
   const workplace = useApiRequest([]);
   const designation = useApiRequest([]);
   const cafeApi = useApiRequest([]);
   const cafeEditApi = useApiRequest([]);
-  const [rowDto, setRowDto] = React.useState<any[]>([]);
+  const [rowDto, setRowDto] = useState<any>([]);
+
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -60,6 +61,61 @@ const PricingSetupForm = () => {
           res[i].label = item?.strWorkplaceGroup;
           res[i].value = item?.intWorkplaceGroupId;
         });
+      },
+    });
+  };
+  const getById = () => {
+    Cafeteria?.action({
+      urlKey: "Cafeteria",
+      method: "GET",
+      params: {
+        headerId: +id || 0,
+      },
+      onSuccess: (res) => {
+        if (+id) {
+          form.setFieldsValue({
+            date: moment(res.dteCreatedAt), // You can format this if needed
+            workplaceGroup: {
+              label: res.workPlaceGroupName, // Assuming you want the ID for label
+              value: res.workPlaceGroupId,
+            },
+            workplace: {
+              label: res.workPlaceName, // Same for workplace
+              value: res.workPlaceId,
+            },
+            pricingMatrixType: {
+              label: res.pricingMatrixTypeName,
+              value: res.pricingMatrixTypeId,
+            },
+            mealType: {
+              label: res.mealTypeName,
+              value: res.mealTypeId,
+            },
+          });
+          const updatedData = res?.rows?.map((row: any) => ({
+            minAmount: row?.minAmount,
+            maxAmount: row?.maxAmount,
+            ownContribution: row?.monOwnContribution,
+            companyContribution: row?.monCompanyContribution,
+            TotalCost: row?.monTotalCost,
+            designation: {
+              label: row?.strDesignationName,
+              value: row?.intDesignationId,
+            },
+            rowId: row?.rowId,
+            workplace: {
+              label: res.workPlaceName,
+              value: res.workPlaceId,
+            },
+            workplaceGroup: {
+              label: res.workPlaceGroupName,
+              value: res.workPlaceGroupId,
+            },
+          }));
+
+          setRowDto(updatedData);
+          getDesignation();
+        }
       },
     });
   };
@@ -103,69 +159,28 @@ const PricingSetupForm = () => {
   };
   useEffect(() => {
     getWorkplaceGroup();
-  }, []);
-  useEffect(() => {
     if (+id) {
-      form.setFieldsValue({
-        ...rec,
-        date: moment().month(rec?.strMonthName),
-        workplaceGroup: {
-          label: rec?.strWorkPlaceGroupName,
-          value: rec?.workPlaceId,
-        },
-        workplace: {
-          label: rec?.strWorkPlaceName,
-          value: rec?.intWorkplaceId,
-        },
-        designationDDL: [
-          { label: rec?.strDesignationName, value: rec?.intDesignationId },
-        ],
-        pricingMatrixType: {
-          label: rec?.pricingMatrixTypeName,
-          value: rec?.pricingMatrixTypeId,
-        },
-        mealType: {
-          label: rec?.mealTypeName,
-          value: rec?.mealTypeId,
-        },
-      });
-      setRowDto([
-        {
-          ...rec,
-          minAmount: rec?.minAmount,
-          maxAmount: rec?.maxAmount,
-          ownContribution: rec?.monOwnContribution,
-          companyContribution: rec?.monCompanyContribution,
-          TotalCost: rec?.monTotalCost,
-          designation: {
-            label: rec?.strDesignationName,
-            value: rec?.intDesignationId,
-          },
-          workplace: {
-            label: rec?.strWorkPlaceName,
-            value: rec?.workPlaceId,
-          },
-          workplaceGroup: {
-            label: rec?.strWorkPlaceGroupName,
-            value: rec?.workPlaceGroupId,
-          },
-        },
-      ]);
-      getDesignation();
+      getById();
     }
   }, [id]);
+
   // Table Header
   const handleIsPerDayChange = (
     value: number,
     rowIndex: number,
     property: string
   ) => {
-    setRowDto((prevRows) => {
+    setRowDto((prevRows: any) => {
       const updatedRows = [...prevRows];
       updatedRows[rowIndex][property] = value;
 
       return updatedRows;
     });
+  };
+  const handleDeleteRow = (index: number) => {
+    setRowDto((prevRowDto: any) =>
+      prevRowDto.filter((_: any, i: any) => i !== index)
+    );
   };
 
   const headerForDesignation: any = [
@@ -331,6 +346,18 @@ const PricingSetupForm = () => {
     {
       title: "Total Cost/Meal ",
       render: (value: any, row: any) => row?.TotalCost,
+    },
+    {
+      title: "Action",
+      render: (value: any, row: any, index: number) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Delete" arrow>
+            <button type="button" className="iconButton">
+              <DeleteOutlineOutlined onClick={() => handleDeleteRow(index)} />
+            </button>
+          </Tooltip>
+        </div>
+      ),
     },
   ];
   const headerForSalary: any = [
@@ -604,102 +631,191 @@ const PricingSetupForm = () => {
       render: (value: any, row: any) => row?.TotalCost,
     },
     {
-      width: 20,
-      align: "center",
-      render: () => (
-        <TableButton
-          buttonsList={
-            +!id
-              ? [
-                  {
-                    type: "plus",
-                    onClick: () => {
-                      setRowDto((prev) => [
-                        ...prev,
-                        {
-                          workplace: prev[0]?.workplace,
-                          workplaceGroup: prev[0]?.workplaceGroup,
-                        },
-                      ]);
-                    },
-                  },
-                ]
-              : []
-          }
-          parentStyle={{ color: "green" }}
-        />
+      title: "Action",
+      render: (value: any, row: any, index: number) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Delete" arrow>
+            <button type="button" className="iconButton">
+              <DeleteOutlineOutlined onClick={() => handleDeleteRow(index)} />
+            </button>
+          </Tooltip>
+        </div>
       ),
     },
+    // {
+    //   width: 20,
+    //   align: "center",
+    //   render: () => (
+    //     <TableButton
+    //       buttonsList={[
+    //         {
+    //           type: "plus",
+    //           onClick: () => {
+    //             setRowDto((prev: any) => [
+    //               ...prev,
+    //               {
+    //                 workplace: prev[0]?.workplace,
+    //                 workplaceGroup: prev[0]?.workplaceGroup,
+    //               },
+    //             ]);
+    //           },
+    //         },
+    //       ]}
+    //       parentStyle={{ color: "green" }}
+    //     />
+    //   ),
+    // },
   ];
   const submitHandler = (rowDto: any) => {
-    const { pricingMatrixType, mealType, date } = form.getFieldsValue(true);
+    const { pricingMatrixType, mealType, date, workplace, workplaceGroup } =
+      form.getFieldsValue(true);
     const cb = () => {
       form.resetFields();
     };
 
     if (
-      rec?.intConfigId &&
+      +id &&
       rowDto[0]?.minAmount &&
       rowDto[0]?.minAmount >= rowDto[0]?.maxAmount
     ) {
       toast.error("max amount must be greater than min amount");
       return;
     }
+
     const payload = rowDto.map((item: any, idx: number) => {
       return {
-        sl: rec?.sl || idx,
-        intConfigId: rec?.intConfigId || 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
+        // intConfigId: +id || 0,
         intDesignationId: item?.designation?.value || 0,
         strDesignationName: item?.designation?.label || "",
         monOwnContribution: item?.ownContribution,
         monTotalCost: item?.TotalCost,
         monCompanyContribution: item?.companyContribution,
-        isActive: true,
-        intMealConsumePlaceId: 0,
-        mealTypeId: mealType?.value,
-        mealTypeName: mealType?.label,
-        workPlaceId: item?.workplace?.value,
-        workPlaceGroupId: item?.workplaceGroup?.value,
-        pricingMatrixTypeId: pricingMatrixType?.value,
-        pricingMatrixTypeName: pricingMatrixType?.label,
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
-        returnAllSalaryRangeData: true,
-        intMonthId:
-          mealType?.value === 2
-            ? moment(date)?.format("l").split("/")?.[0]
-            : null,
-        intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
-        strMonthName:
-          mealType?.value === 2 ? moment(date).format("MMMM") : null,
+        isActive: true,
+        // intMonthId:
+        //   mealType?.value === 2
+        //     ? moment(date)?.format("l").split("/")?.[0]
+        //     : null,
+        // intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
+        // strMonthName:
+        //   mealType?.value === 2 ? moment(date).format("MMMM") : null,
+        rowId: item?.rowId || 0, // Assuming you're assigning or have rowId
       };
     });
 
-    if (rec?.intConfigId) {
+    const newPayload = {
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      workPlaceId: workplace?.value || 0,
+      workPlaceGroupId: workplaceGroup?.value || 0,
+      pricingMatrixTypeId: pricingMatrixType?.value || 0,
+      pricingMatrixTypeName: pricingMatrixType?.label || "",
+      intMealConsumePlaceId: 0,
+      mealTypeId: mealType?.value || 0,
+      mealTypeName: mealType?.label || "",
+      isActive: true,
+      rows: payload, // Array of row objects
+      headerId: +id || 0,
+    };
+
+    if (+id) {
       cafeEditApi.action({
         urlKey: "EditCafeteriaConfig",
         method: "PUT",
-        payload: payload[0],
-        onSuccess: () => {
-          cb();
-          history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+        payload: newPayload,
+        onSuccess: (res) => {
+          if (res?.statusCode === 406) {
+            return toast.warn(res?.message);
+          }
+          if (res?.statusCode === 400) {
+            return toast.warn(res?.message);
+          }
+          if (res?.statusCode === 200) {
+            cb();
+            history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+            toast.success(res?.message);
+          }
         },
-        toast: true,
+        // toast: true,
       });
     } else {
       cafeApi.action({
         urlKey: "CreateCafeteriaConfig",
         method: "POST",
-        payload: payload,
-        onSuccess: () => {
-          cb();
-          history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+        payload: newPayload,
+        onSuccess: (res) => {
+          if (res?.statusCode === 406) {
+            return toast.warn(res?.message);
+          }
+          if (res?.statusCode === 400) {
+            return toast.warn(res?.message);
+          }
+          if (res?.statusCode === 200) {
+            cb();
+            history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+            toast.success(res?.message);
+          }
         },
-        toast: true,
+        // toast: true,
       });
     }
+
+    // const payload = rowDto.map((item: any, idx: number) => {
+    //   return {
+    //     sl: rowDto?.sl || idx,
+    //     intConfigId: rowDto?.intConfigId || 0,
+    //     intAccountId: orgId,
+    //     intBusinessUnitId: buId,
+    //     intDesignationId: item?.designation?.value || 0,
+    //     strDesignationName: item?.designation?.label || "",
+    //     monOwnContribution: item?.ownContribution,
+    //     monTotalCost: item?.TotalCost,
+    //     monCompanyContribution: item?.companyContribution,
+    //     isActive: true,
+    //     intMealConsumePlaceId: 0,
+    //     mealTypeId: mealType?.value,
+    //     mealTypeName: mealType?.label,
+    //     workPlaceId: item?.workplace?.value,
+    //     workPlaceGroupId: item?.workplaceGroup?.value,
+    //     pricingMatrixTypeId: pricingMatrixType?.value,
+    //     pricingMatrixTypeName: pricingMatrixType?.label,
+    //     minAmount: item?.minAmount,
+    //     maxAmount: item?.maxAmount,
+    //     returnAllSalaryRangeData: true,
+    //     intMonthId:
+    //       mealType?.value === 2
+    //         ? moment(date)?.format("l").split("/")?.[0]
+    //         : null,
+    //     intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
+    //     strMonthName:
+    //       mealType?.value === 2 ? moment(date).format("MMMM") : null,
+    //   };
+    // });
+
+    // if (rowDto?.intConfigId) {
+    //   cafeEditApi.action({
+    //     urlKey: "EditCafeteriaConfig",
+    //     method: "PUT",
+    //     payload: payload[0],
+    //     onSuccess: () => {
+    //       cb();
+    //       history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+    //     },
+    //     toast: true,
+    //   });
+    // } else {
+    //   cafeApi.action({
+    //     urlKey: "CreateCafeteriaConfig",
+    //     method: "POST",
+    //     payload: payload,
+    //     onSuccess: () => {
+    //       cb();
+    //       history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
+    //     },
+    //     toast: true,
+    //   });
+    // }
   };
 
   return (
@@ -724,7 +840,7 @@ const PricingSetupForm = () => {
                 form.resetFields();
                 // setSelectedRow([]);
               },
-              // disabled: true,
+              disabled: +id ? true : false,
               //   icon: <AddOutlined />,
             },
           ]}
@@ -866,7 +982,7 @@ const PricingSetupForm = () => {
                             name="designationDDL"
                             label="Designation"
                             placeholder="Designation"
-                            disabled={+id ? true : false}
+                            // disabled={+id ? true : false}
                             onChange={(value, op) => {
                               form.setFieldsValue({
                                 designationDDL: op,
@@ -877,7 +993,7 @@ const PricingSetupForm = () => {
                             rules={[
                               {
                                 required: true,
-                                message: "Off Day is required",
+                                message: "Designation is required",
                               },
                             ]}
                           />
@@ -904,21 +1020,56 @@ const PricingSetupForm = () => {
                     workplaceGroup,
                     pricingMatrixType,
                   } = form.getFieldsValue(true);
+
+                  if (
+                    pricingMatrixType?.value === 1 &&
+                    (!designationDDL || designationDDL.length === 0)
+                  ) {
+                    toast.warn(
+                      "Please select at least one designation before adding."
+                    );
+                    return; // Exit early if no designation is selected
+                  }
+
                   if (pricingMatrixType?.value === 1) {
-                    setRowDto(
-                      designationDDL?.map((item: any) => {
-                        return {
+                    setRowDto((prevRowDto: any) => {
+                      // Create a set of existing designation IDs for quick lookup
+                      const existingDesignationIds = new Set(
+                        prevRowDto.map(
+                          (item: any) => item.designation.designationId
+                        )
+                      );
+
+                      // Check for duplicates
+                      const duplicates = designationDDL?.filter((item: any) =>
+                        existingDesignationIds.has(item.designationId)
+                      );
+
+                      if (duplicates?.length > 0) {
+                        toast.warn(
+                          `The following designations are already added: ${duplicates
+                            .map((d: any) => d.designationName)
+                            .join(", ")}`
+                        );
+                        return prevRowDto; // Return the previous state without changes
+                      }
+
+                      // Map new designations
+                      return [
+                        ...prevRowDto,
+                        ...(designationDDL?.map((item: any) => ({
                           workplace,
                           workplaceGroup,
                           designation: item,
                           ownContribution: 0,
                           companyContribution: 0,
                           TotalCost: 0,
-                        };
-                      })
-                    );
+                        })) || []),
+                      ];
+                    });
                   } else {
-                    setRowDto([
+                    setRowDto((prevRowDto: any) => [
+                      ...prevRowDto,
                       {
                         workplace,
                         workplaceGroup,
@@ -933,6 +1084,7 @@ const PricingSetupForm = () => {
             </Col>
           </Row>
         </PCardBody>
+
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { pricingMatrixType } = form.getFieldsValue();

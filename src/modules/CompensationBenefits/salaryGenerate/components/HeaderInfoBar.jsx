@@ -44,7 +44,7 @@ const HeaderInfoBar = ({ data, setLoading }) => {
 
   return (
     <div className="row border-top pb-3 pt-2">
-      <div className="col-lg-2">
+      <div className="col-lg-3">
         <CircleButton
           icon={<BusinessCenterIcon style={{ fontSize: "24px" }} />}
           title={data?.strBusinessUnit || "-"}

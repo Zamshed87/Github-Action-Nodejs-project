@@ -152,9 +152,9 @@ export const getBuDDLAction = (accId, buId, employeeId) => (dispatch) => {
     });
 };
 
-export const getWGDDLAction = (buId, wgId, employeeId) => (dispatch) => {
+export const getWGDDLAction = (orgId, buId, wgId, employeeId) => (dispatch) => {
   requestFromServer
-    .getWGDDL(buId, wgId, employeeId)
+    .getWGDDL(orgId, buId, wgId, employeeId)
     .then((res) => {
       dispatch(slice.setWGDDL(res?.data));
     })
@@ -163,9 +163,9 @@ export const getWGDDLAction = (buId, wgId, employeeId) => (dispatch) => {
     });
 };
 
-export const getWDDLAction = (buId, wgId, employeeId) => (dispatch) => {
+export const getWDDLAction = (orgId, buId, wgId, employeeId) => (dispatch) => {
   requestFromServer
-    .getWDDL(buId, wgId, employeeId)
+    .getWDDL(orgId, buId, wgId, employeeId)
     .then((res) => {
       dispatch(slice.setWDDL(res?.data));
     })

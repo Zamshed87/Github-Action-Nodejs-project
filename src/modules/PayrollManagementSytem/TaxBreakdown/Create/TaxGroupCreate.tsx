@@ -65,7 +65,8 @@ const TaxGroupCreate: React.FC<TOvertimePolicy> = () => {
 
   useEffect(() => {
     getPeopleDeskWithoutAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=0`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=0`,
+      `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${buId}`,
       "intWorkplaceGroupId",
       "strWorkplaceGroup",
       setWorkplaceGroupDDL
@@ -75,6 +76,7 @@ const TaxGroupCreate: React.FC<TOvertimePolicy> = () => {
   useEffect(() => {
     if (state?.intSalaryBreakdownHeaderId) {
       getWorkplaceDDL(
+        orgId,
         buId,
         state?.intWorkplaceGroupId || 0,
         employeeId,
@@ -140,7 +142,6 @@ const TaxGroupCreate: React.FC<TOvertimePolicy> = () => {
       });
     }
   }, [orgId, state]);
-  console.log("state", state);
 
   const onFinish = () => {
     const values = form.getFieldsValue();
@@ -320,7 +321,13 @@ const TaxGroupCreate: React.FC<TOvertimePolicy> = () => {
                     form.setFieldsValue({
                       payScale: option,
                     });
-                    getWorkplaceDDL(buId, value, employeeId, setWorkplace);
+                    getWorkplaceDDL(
+                      orgId,
+                      buId,
+                      value,
+                      employeeId,
+                      setWorkplace
+                    );
                   }}
                   rules={[
                     {

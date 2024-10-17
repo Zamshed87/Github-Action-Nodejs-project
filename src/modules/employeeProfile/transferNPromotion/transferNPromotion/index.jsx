@@ -118,12 +118,12 @@ export default function TransferAndPromotion() {
 
   useEffect(() => {
     getData();
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
-      "EmployeeId",
-      "EmployeeName",
-      setSubstituteEmployeeDDL
-    );
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
+    //   "EmployeeId",
+    //   "EmployeeName",
+    //   setSubstituteEmployeeDDL
+    // );
   }, [buId, wgId, wId]);
 
   const releaseHandler = (values) => {
@@ -208,7 +208,7 @@ export default function TransferAndPromotion() {
               children: (
                 <div>
                   <div>{rec?.departmentNameFrom}</div>
-                  <div>{rec?.sectionNameFrom}</div>
+                  <div>{rec?.sectionNameFrom || "N/A"}</div>
                   <div>{rec?.designationNameFrom}</div>
                 </div>
               ),
@@ -259,7 +259,7 @@ export default function TransferAndPromotion() {
               children: (
                 <div>
                   <div>{rec?.departmentName}</div>
-                  <div>{rec?.sectionNameFrom}</div>
+                  <div>{rec?.sectionNameFrom || "N/A"}</div>
                   <div>{rec?.designationNameFrom}</div>
                 </div>
               ),

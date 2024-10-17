@@ -17,7 +17,7 @@ import {
 } from "Components";
 import { paginationSize } from "common/AntTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { debounce, set } from "lodash";
+import { debounce } from "lodash";
 import { monthFirstDate, monthLastDate7 } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { timeSheetClone, timeSheetSave } from "./helper";
@@ -48,7 +48,6 @@ const MonthlyAttendanceReport = () => {
   const [loading, setLoading] = useState(false);
   const [emp, setEmp] = useState([]);
   const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
-  const [selectedRoaster, setSelectedRoaster] = useState(null);
   const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
 
   const [pages, setPages] = useState({
@@ -130,8 +129,8 @@ const MonthlyAttendanceReport = () => {
   };
 
   useEffect(() => {
-    isOfficeAdmin && getEmployeDepartment();
-    getCalendarDDL();
+    isOfficeAdmin && wgId && wId && getEmployeDepartment();
+    wgId && wId && getCalendarDDL();
     getSuperUserList();
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RosterGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
@@ -139,6 +138,9 @@ const MonthlyAttendanceReport = () => {
       "RosterGroupName",
       setCalenderRoasterDDL
     );
+    form.setFieldsValue({
+      department: undefined,
+    });
   }, [wgId, buId, wId]);
 
   useEffect(() => {
@@ -220,7 +222,9 @@ const MonthlyAttendanceReport = () => {
     timeSheetSave(payload, setLoading, () => {});
     // console.log(payload, "payload");
   };
-  {console.log("rowDto", rowDto)}
+  {
+    console.log("rowDto", rowDto);
+  }
   console.log("startingCalenderDDL", startingCalenderDDL);
   const dateColumns = headerDateList?.dateLists?.map((date, idx) => ({
     title: date?.level,
@@ -233,11 +237,12 @@ const MonthlyAttendanceReport = () => {
             value: obj?.intCalenderId,
             label: obj?.strCalenderName,
           }
-        : "";
+        : undefined;
       const key = `${index}_${idx}_calendar`;
       return (
         <div>
           <PSelectWithOutForm
+            showSearch
             name={key}
             placeholder="Select Calendar"
             allowClear
@@ -270,6 +275,9 @@ const MonthlyAttendanceReport = () => {
 
   const handleButtonClick = (record, rowIdx) => {
     setEmp([]);
+    form.setFieldsValue({
+      [`roaster-${record.key}`]: undefined,
+    });
     const values = form.getFieldsValue(true);
     const payload = {
       intSupervisorIdList: [
@@ -278,7 +286,7 @@ const MonthlyAttendanceReport = () => {
       dteFromdate: moment(values?.fromDate).format("YYYY-MM-DD"),
       dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
       intEmployeeIdList: [record?.intEmployeeId],
-      intCloneFrom: +emp || 0,
+      intCloneFrom: +emp || +record?.copyId || 0,
     };
     timeSheetClone(payload, setLoading, (resData) => {
       const cloneEmpRow = resData?.[0] || [];
@@ -291,7 +299,13 @@ const MonthlyAttendanceReport = () => {
       setEmp([]);
     });
   };
+  const updateRowDto = (fieldName, value, index) => {
+    const data = [...rowDto];
 
+    data[index][fieldName] = value;
+
+    setRowDto(data);
+  };
   //   table column
   const header = () => {
     return [
@@ -310,14 +324,14 @@ const MonthlyAttendanceReport = () => {
         width: 80, // Adjust width as needed
         align: "center",
       },
-      {
-        title: "SL",
-        render: (_, rec, index) =>
-          (pages?.current - 1) * pages?.pageSize + index + 1,
-        fixed: "left",
-        width: 45,
-        align: "center",
-      },
+      // {
+      //   title: "SL",
+      //   render: (_, rec, index) =>
+      //     (pages?.current - 1) * pages?.pageSize + index + 1,
+      //   fixed: "left",
+      //   width: 45,
+      //   align: "center",
+      // },
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
@@ -335,11 +349,6 @@ const MonthlyAttendanceReport = () => {
           </span>
         ),
       },
-      {
-        title: "Employee Code",
-        dataIndex: "strEmployeeCode",
-        width: 70,
-      },
 
       {
         title: "Employee Name",
@@ -352,8 +361,13 @@ const MonthlyAttendanceReport = () => {
             </div>
           );
         },
-        // fixed: "left",
+        fixed: "left",
         width: 150,
+      },
+      {
+        title: "Employee Code",
+        dataIndex: "strEmployeeCode",
+        width: 100,
       },
 
       {
@@ -362,11 +376,11 @@ const MonthlyAttendanceReport = () => {
 
         width: 100,
       },
-      {
-        title: "Department",
-        dataIndex: "strDepartmentName",
-        width: 100,
-      },
+      // {
+      //   title: "Department",
+      //   dataIndex: "strDepartmentName",
+      //   width: 100,
+      // },
       {
         title: "Copy From (Emp ID)",
         width: 250,
@@ -376,12 +390,22 @@ const MonthlyAttendanceReport = () => {
               type="text"
               name={`empId-${record.key}`}
               placeholder="Enter Emp ID"
-              value={record.intEmployeeId}
-              onChange={(e) => setEmp(e.target.value)}
+              value={record?.copyId}
+              onChange={(e) => {
+                setEmp(e.target.value);
+                updateRowDto("copyId", e.target.value, rowIdx);
+              }}
             />
             <button
               type="button"
-              onClick={() => handleButtonClick(record, rowIdx)}
+              onClick={() => {
+                setStartingCalenderDDL([]);
+
+                const newRowDto = [...rowDto];
+                newRowDto[rowIdx].startingCalenderDDL = [];
+                setRowDto(newRowDto);
+                handleButtonClick(record, rowIdx);
+              }}
               style={{
                 marginLeft: "10px",
                 padding: "5px 10px",
@@ -410,6 +434,14 @@ const MonthlyAttendanceReport = () => {
               setStartingCalenderDDL([]);
               const newRowDto = [...rowDto];
               newRowDto[rowIdx].startingCalenderDDL = [];
+              newRowDto[rowIdx].dateLists = newRowDto[rowIdx].dateLists?.map(
+                (date) => {
+                  return {
+                    ...date,
+                    intCalenderId: null,
+                  };
+                }
+              );
               setRowDto(newRowDto);
               if (value) {
                 getPeopleDeskAllDDLnew(
@@ -481,10 +513,14 @@ const MonthlyAttendanceReport = () => {
                     options={empDepartmentDDL?.data || []}
                     name="department"
                     label="Department"
+                    showSearch
                     placeholder="Select Department"
                     allowClear
                     style={{ width: "300px" }}
                     onSelect={(value, op) => {
+                      form.setFieldsValue({
+                        supervisor: undefined,
+                      });
                       if (value) {
                         getSuperUserList();
                       } else {

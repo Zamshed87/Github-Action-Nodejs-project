@@ -4,18 +4,21 @@ import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { gray600, gray700 } from "../../../utility/customColor";
 import { APIUrl } from "../../../App";
 import ProfileImg from "../../../assets/images/profile.jpg";
-import { useEffect } from "react";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import BackButton from "../../../common/BackButton";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import NoResult from "../../../common/NoResult";
+import { Tooltip } from "@mui/material";
+import { getPDFAction } from "utility/downloadFile";
 
 const SelfSalaryCertificateView = () => {
   const params = useParams();
 
-  const { orgId, employeeId, wgId } = useSelector(
+  const { orgId, employeeId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -34,10 +37,17 @@ const SelfSalaryCertificateView = () => {
       .reduce((sum, item) => sum + item[property], 0);
   };
 
+  const [dataInfo, setData] = useState([]);
+  const [salarayGenerateRequestIdInfo, setSalarayGenerateRequestId] =
+    useState(0);
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
   }, []);
+  const [salaryHeaderData, getSalaryHeader, loadingSalaryHeader] =
+    useAxiosGet();
 
   useEffect(() => {
     getEmployeeInfo(`/Employee/EmployeeProfileView?employeeId=${employeeId}`);
@@ -45,12 +55,17 @@ const SelfSalaryCertificateView = () => {
       getSingleSalaryInfo(
         `/Employee/SalaryCertificateApplication?strPartName=SalaryCertificateByID&intAccountId=${orgId}&intEmployeeId=${employeeId}&intSalaryCertificateRequestId=${params?.id}`,
         (data) => {
+          setData(data);
           getGenerateRequestId(
-            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&intId=${employeeId}&IntMonth=${data[0]?.intPayRollMonth}&IntYear=${data[0]?.intPayRollYear}&WorkplaceGroupId=${wgId}`,
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&intId=${employeeId}&IntMonth=${data[0]?.intPayRollMonth}&IntYear=${data[0]?.intPayRollYear}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
             (res) => {
               if (res[0]?.SalaryGenerateRequestId) {
+                setSalarayGenerateRequestId(res[0]?.SalaryGenerateRequestId);
                 getViewPaySlipData(
-                  `/Payroll/SalarySelectQueryAll?partName=SalaryPaySlipByEmployeeId&intMonthId=${data[0]?.intPayRollMonth}&intYearId=${data[0]?.intPayRollYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${res[0]?.SalaryGenerateRequestId}&intWorkplaceGroupId=${wgId}`
+                  `/Payroll/SalarySelectQueryAll?partName=SalaryPaySlipByEmployeeId&intMonthId=${data[0]?.intPayRollMonth}&intYearId=${data[0]?.intPayRollYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${res[0]?.SalaryGenerateRequestId}&intWorkplaceGroupId=${wgId}&intBusinessUnitId=${buId}`
+                );
+                getSalaryHeader(
+                  `/Payroll/SalarySelectQueryAll?partName=SalaryGenerateHeaderByEmployeeId&intMonthId=${data[0]?.intPayRollMonth}&intBusinessUnitId=${buId}&intYearId=${data[0]?.intPayRollYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${res[0]?.SalaryGenerateRequestId}&intWorkplaceGroupId=${wgId}`
                 );
               }
             }
@@ -62,6 +77,7 @@ const SelfSalaryCertificateView = () => {
   return (
     <>
       {(loadingOnSalaryInfoFetching ||
+        loading ||
         loadingViewPaySlipData ||
         loadingGenerateRequestIdData) && <Loading />}
       <form>
@@ -70,6 +86,42 @@ const SelfSalaryCertificateView = () => {
             <div className="d-flex align-items-center">
               <BackButton />
               <h2>{`Salary Certificate Info`}</h2>
+              {viewPaySlipData && (
+                <Tooltip title="Print" arrow>
+                  <button
+                    className="btn-save ml-2"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      getPDFAction(
+                        `/PdfAndExcelReport/EmployeeSalaryCertificate?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${employeeId}&intMonthId=${
+                          dataInfo[0]?.intPayRollMonth
+                        }&intYearId=${
+                          dataInfo[0]?.intPayRollYear
+                        }&intSalaryGenerateRequestId=${
+                          salarayGenerateRequestIdInfo || 0
+                        }`,
+                        setLoading
+                      );
+                    }}
+                    disabled={viewPaySlipData?.length <= 0}
+                    style={{
+                      border: "transparent",
+                      width: "30px",
+                      height: "30px",
+                      background: "#f2f2f7",
+                      borderRadius: "100px",
+                    }}
+                  >
+                    <LocalPrintshopIcon
+                      sx={{
+                        color: "#637381",
+                        fontSize: "16px",
+                      }}
+                    />
+                  </button>
+                </Tooltip>
+              )}
             </div>
           </div>
           <div className="table-card-body">
@@ -189,7 +241,7 @@ const SelfSalaryCertificateView = () => {
                           A. Benefits:
                         </p>
                       </th>
-                      <th>
+                      <th colSpan="3">
                         <p style={thStyles}></p>
                       </th>
                     </tr>
@@ -201,11 +253,20 @@ const SelfSalaryCertificateView = () => {
                           <td>
                             <p>{item?.strPayrollElement}</p>
                           </td>
-                          <td style={{ textAlign: "right" }}>
+                          <td colSpan="3" style={{ textAlign: "right" }}>
                             <p>{item?.numAmount}</p>
                           </td>
                         </tr>
                       ))}
+
+                    <tr>
+                      <td>
+                        <p>Overtime</p>
+                      </td>
+                      <td colSpan="3" style={{ textAlign: "right" }}>
+                        <p>{salaryHeaderData[0]?.numOverTimeAmount || 0}</p>
+                      </td>
+                    </tr>
 
                     <tr>
                       <th>
@@ -247,6 +308,31 @@ const SelfSalaryCertificateView = () => {
                       ))}
 
                     <tr>
+                      <td style={{ textAlign: "left" }}>
+                        <p>Tax</p>
+                      </td>
+                      <td style={{ textAlign: "right" }} colSpan="3">
+                        <p>{salaryHeaderData[0]?.numTaxAmount || 0}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ textAlign: "lef" }}>
+                        <p>Loan</p>
+                      </td>
+                      <td style={{ textAlign: "right" }} colSpan="3">
+                        <p>{salaryHeaderData[0]?.numLoanAmount || 0}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ textAlign: "left" }}>
+                        <p>Provident Fund</p>
+                      </td>
+                      <td style={{ textAlign: "right" }} colSpan="3">
+                        <p>{salaryHeaderData[0]?.numPFAmount || 0}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
                       <th>
                         <p style={thStyles} className="pl-1">
                           Total deductions
@@ -255,7 +341,10 @@ const SelfSalaryCertificateView = () => {
                       <th style={{ textAlign: "right" }}>
                         <p style={thStyles}>
                           {numberWithCommas(
-                            numTotal(viewPaySlipData, "numAmount", 0)
+                            numTotal(viewPaySlipData, "numAmount", 0) +
+                              (salaryHeaderData[0]?.numTaxAmount || 0) +
+                              (salaryHeaderData[0]?.numLoanAmount || 0) +
+                              (salaryHeaderData[0]?.numPFAmount || 0)
                           )}
                         </p>
                       </th>
@@ -270,8 +359,12 @@ const SelfSalaryCertificateView = () => {
                       <th style={{ textAlign: "right" }}>
                         <p style={thStyles}>
                           {numberWithCommas(
-                            numTotal(viewPaySlipData, "numAmount", 1) -
-                            numTotal(viewPaySlipData, "numAmount", 0)
+                            (numTotal(viewPaySlipData, "numTotal", 1) +
+                              salaryHeaderData[0]?.numOverTimeAmount || 0) -
+                              (numTotal(viewPaySlipData, "numAmount", 0) +
+                                (salaryHeaderData[0]?.numTaxAmount || 0) +
+                                (salaryHeaderData[0]?.numLoanAmount || 0) +
+                                (salaryHeaderData[0]?.numPFAmount || 0))
                           )}
                         </p>
                       </th>

@@ -18,7 +18,7 @@ export const processBulkUploadEmployeeAction = async (
       strDepartment: item["Department"] || "",
       isTakeHomePay: item["Take Home Pay"],
       numGrossSalary: item["Gross Salary"] || "",
-      numTaxAmount: item["Tax Amount"] || "",
+      numTaxAmount: item["Tax Amount"] || 0,
       intAccountId: orgId,
       isActive: true,
       dteCreatedAt: todayDate(),

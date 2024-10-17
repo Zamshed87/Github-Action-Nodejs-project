@@ -1,4 +1,5 @@
 import {
+  DataTable,
   PButton,
   PCard,
   PCardHeader,
@@ -27,18 +28,26 @@ const YearlyTaxReturnReport = () => {
 
   // form
   const [form] = Form.useForm();
+  const landingApi = useApiRequest([]);
+  const [data, setData] = useState("");
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
     const workplaceList = values?.workplace?.map((i: any) => i?.value);
-    const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
-
-    downloadFile(
-      url,
-      `Yearly Tax Return Report- ${todayDate()}`,
-      "xlsx",
-      setLoading
-    );
+    landingApi?.action({
+      method: "get",
+      urlKey: "EmployeeFullYearTaxReport",
+      params: {
+        strType: "htmlView",
+        workPlaceGroupId: values?.workplaceGroup?.value,
+        FiscalYearId: values?.fiscalYear?.value,
+        strWorkPlaceList: workplaceList?.length > 0 ? `${workplaceList}` : 0,
+        status: values?.status?.value,
+      },
+      onSuccess: (res) => {
+        setData(res);
+      },
+    });
   };
   const [loading, setLoading] = useState(false);
 
@@ -51,13 +60,11 @@ const YearlyTaxReturnReport = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -71,13 +78,12 @@ const YearlyTaxReturnReport = () => {
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceIdAll",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -102,6 +108,7 @@ const YearlyTaxReturnReport = () => {
   }, [orgId, buId, employeeId, wgId]);
 
   document.title = "Yearly Tax Return Report";
+
   return (
     <>
       <PForm
@@ -196,10 +203,10 @@ const YearlyTaxReturnReport = () => {
             </Row>
           </div>
         </PCard>
-        {/* <div>
+        <div>
           {data && (
-            <ul className="d-flex flex-wrap align-items-center justify-content-start">
-              <li className="pr-2">
+            <ul className="d-flex flex-row-reverse mt-3 align-items-center justify-content-start">
+              <li className="pr-2 ml-2">
                 <Tooltip title="Download as Excel">
                   <button
                     className="btn-save"
@@ -207,15 +214,15 @@ const YearlyTaxReturnReport = () => {
                     onClick={(e) => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
+                      const workplaceList = values?.workplace?.map(
+                        (i: any) => i?.value
+                      );
 
-                      const url = `PdfAndExcelReport/GetSalaryAllowanceNDeductionReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
-                        values?.month
-                      ).format("MM")}&intYearId=${moment(values?.month).format(
-                        "YYYY"
-                      )}&strSalaryCode=${values?.salaryCode?.strSalaryCode}`;
+                      const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?strType=excelView&workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
+
                       downloadFile(
                         url,
-                        `Monthly Allowance & Deduction Report- ${todayDate()}`,
+                        `Yearly Tax Return Report- ${todayDate()}`,
                         "xlsx",
                         setLoading
                       );
@@ -245,11 +252,11 @@ const YearlyTaxReturnReport = () => {
                     onClick={(e) => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
-                      const url = `PdfAndExcelReport/GetSalaryAllowanceNDeductionReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
-                        values?.month
-                      ).format("MM")}&intYearId=${moment(values?.month).format(
-                        "YYYY"
-                      )}&strSalaryCode=${values?.salaryCode?.strSalaryCode}`;
+                      const workplaceList = values?.workplace?.map(
+                        (i: any) => i?.value
+                      );
+
+                      const url = `/PdfAndExcelReport/EmployeeFullYearTaxReport?strType=pdfView&workPlaceGroupId=${values?.workplaceGroup?.value}&FiscalYearId=${values?.fiscalYear?.value}&strWorkPlaceList=${workplaceList}&status=${values?.status?.value}`;
 
                       getPDFAction(url, setLoading);
                     }}
@@ -273,15 +280,15 @@ const YearlyTaxReturnReport = () => {
               </li>
             </ul>
           )}
-        </div> */}
+        </div>
 
-        {/* <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+        <div style={{ overflow: "scroll" }} className=" w-100">
           <div
             dangerouslySetInnerHTML={{
               __html: data,
             }}
           />
-        </div> */}
+        </div>
       </PForm>
     </>
   );

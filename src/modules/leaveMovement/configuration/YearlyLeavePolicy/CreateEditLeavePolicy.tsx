@@ -95,13 +95,15 @@ const CreateEditLeavePolicy = () => {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+      `/PeopleDeskDdl/BusinessUnitWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBuDDL
     );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${0}&intId=${employeeId}`,
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${0}&intId=${employeeId}`,
+      `/PeopleDeskDdl/WorkplaceWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkplaceDDL
@@ -444,7 +446,7 @@ const CreateEditLeavePolicy = () => {
                               <PSelect
                                 // mode="multiple"
                                 allowClear
-                                options={[...buDDL] || []}
+                                options={[...buDDL]}
                                 name="bu"
                                 disabled={params?.id}
                                 label="Business Unit"
@@ -462,7 +464,8 @@ const CreateEditLeavePolicy = () => {
                                   //   setWorkplaceGroupDDL
                                   // );
                                   getPeopleDeskAllDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${op?.value}&intId=${employeeId}`,
+                                    // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${op?.value}&intId=${employeeId}`,
+                                    `/PeopleDeskDdl/WorkplaceGroupWithRoleExtension?accountId=${orgId}&businessUnitId=${op?.value}&workplaceGroupId=${wgId}&empId=${employeeId}`,
                                     "intWorkplaceGroupId",
                                     "strWorkplaceGroup",
                                     setWorkplaceGroupDDL
@@ -543,7 +546,8 @@ const CreateEditLeavePolicy = () => {
                                   //   // }
                                   // );
                                   getYearlyPolicyPopUpDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${bu?.value}&WorkplaceGroupId=${op?.value}&intId=${employeeId}`,
+                                    // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${bu?.value}&WorkplaceGroupId=${op?.value}&intId=${employeeId}`,
+                                    `/PeopleDeskDdl/WorkplaceWithRoleExtension?accountId=${orgId}&businessUnitId=${bu?.value}&workplaceGroupId=${op?.value}&empId=${employeeId}`,
                                     "intWorkplaceId",
                                     "strWorkplace",
                                     setWorkplaceDDL

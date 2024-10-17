@@ -93,13 +93,13 @@ const ContactClosingReport = () => {
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceGroupWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -109,37 +109,37 @@ const ContactClosingReport = () => {
       },
     });
   };
-  const getDesignation = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-    designation?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmpDesignation",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.DesignationName;
-          res[i].value = item?.DesignationId;
-        });
-      },
-    });
-  };
+  // const getDesignation = () => {
+  //   const { workplaceGroup, workplace } = form.getFieldsValue(true);
+  //   designation?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "EmpDesignation",
+  //       AccountId: orgId,
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: workplaceGroup?.value,
+  //       IntWorkplaceId: workplace?.value,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.DesignationName;
+  //         res[i].value = item?.DesignationId;
+  //       });
+  //     },
+  //   });
+  // };
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -183,7 +183,7 @@ const ContactClosingReport = () => {
 
   useEffect(() => {
     getWorkplaceGroup();
-    getDesignation();
+    // getDesignation();
     landingApiCall();
   }, []);
 
@@ -439,7 +439,7 @@ const ContactClosingReport = () => {
                       workplace: undefined,
                     });
                     getWorkplace();
-                    getDesignation();
+                    // getDesignation();
                   }}
                   rules={
                     [
@@ -459,7 +459,7 @@ const ContactClosingReport = () => {
                       workplace: op,
                     });
                     getWorkplaceDetails(value, setBuDetails);
-                    getDesignation();
+                    // getDesignation();
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />

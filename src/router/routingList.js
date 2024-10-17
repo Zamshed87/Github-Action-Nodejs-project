@@ -32,18 +32,28 @@ import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import CafeteriaPricingLanding from "modules/employeeProfile/cafeteriaPricingSetup";
 import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddEditForm";
 
+import SalaryV2 from "modules/CompensationBenefits/employeeSalary/salaryupdate";
 import YearlyTaxReturnReport from "modules/CompensationBenefits/reports/YearlyTaxReturnReport";
 import MonthlyAllowanceDeductionReport from "modules/CompensationBenefits/reports/monthlyAllowanceDeduction";
+import AllowancePolicy from "modules/PayrollManagementSytem/SpecialAllowancePolicy";
 import TaxGroupCreate from "modules/PayrollManagementSytem/TaxBreakdown/Create/TaxGroupCreate";
 import TaxBreakdown from "modules/PayrollManagementSytem/TaxBreakdown/indexN";
 import TaxBreakdownDetails from "modules/PayrollManagementSytem/TaxBreakdown/singleView";
+import GradeLanding from "modules/PayrollManagementSytem/grade";
+import JobLevelLanding from "modules/PayrollManagementSytem/jobLevel";
+import JobClassLanding from "modules/PayrollManagementSytem/jobclass";
+import PayscaleLanding from "modules/PayrollManagementSytem/payscale";
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
+import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
+import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
+import { MgtExpenseApplicationLanding } from "modules/iouManagement/mgtExpense/expenseApplication";
+import { MgtIOUApplicationLanding } from "modules/iouManagement/mgtIOUApplication";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import FlexibleTimeSheet from "modules/timeSheet/configuration/FlexibleTimeSheet";
-import LatePunishment from "modules/timeSheet/employeeAssign/latePunishment";
+import { LatePunishmentAssign } from "modules/timeSheet/employeeAssign/latePunishment";
 import AttendanceLog from "modules/timeSheet/reports/attendanceLog";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeePdfLanding from "modules/timeSheet/reports/employeeIDCard";
@@ -55,6 +65,7 @@ import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -706,9 +717,9 @@ const BulkUploadEntry = lazy(() =>
 const BulkUploadHistory = lazy(() =>
   import("../modules/employeeProfile/bulkUploadHistory/index.jsx")
 );
-const Confirmation = lazy(() =>
-  import("../modules/employeeProfile/confirmation/index.jsx")
-);
+// const Confirmation = lazy(() =>
+//   import("../modules/employeeProfile/confirmation/index.jsx")
+// );
 const ContactBook = lazy(() =>
   import("../modules/employeeProfile/contactBook/index.jsx")
 );
@@ -937,9 +948,9 @@ const GrievanceManagementSelf = lazy(() =>
 const AdjustmentIOUApproval = lazy(() =>
   import("../modules/iouManagement/adjustmentApproval/index.jsx")
 );
-const AdjustmentIOUReport = lazy(() =>
-  import("../modules/iouManagement/adjustmentIOUReport/index.jsx")
-);
+// const AdjustmentIOUReport = lazy(() =>
+//   import("../modules/iouManagement/adjustmentIOUReport/index.jsx")
+// );
 const AdjustmentIOUReportView = lazy(() =>
   import("../modules/iouManagement/adjustmentIOUReport/viewForm.jsx")
 );
@@ -951,18 +962,18 @@ const MgtExpenseApplicationCreate = lazy(() =>
     "../modules/iouManagement/mgtExpense/expenseApplication/addEditForm.jsx"
   )
 );
-const MgtExpenseApplication = lazy(() =>
-  import("../modules/iouManagement/mgtExpense/expenseApplication/index.jsx")
-);
+// const MgtExpenseApplication = lazy(() =>
+//   import("../modules/iouManagement/mgtExpense/expenseApplication/index.jsx")
+// );
 const MgtExpenseApplicationView = lazy(() =>
   import("../modules/iouManagement/mgtExpense/expenseApplication/viewForm.jsx")
 );
-const MgtIOUApplicationCreate = lazy(() =>
-  import("../modules/iouManagement/mgtIOUApplication/addEditForm.jsx")
-);
-const MgtIOUApplication = lazy(() =>
-  import("../modules/iouManagement/mgtIOUApplication/index.jsx")
-);
+// const MgtIOUApplicationCreate = lazy(() =>
+//   import("../modules/iouManagement/mgtIOUApplication/addEditForm.jsx")
+// );
+// const MgtIOUApplication = lazy(() =>
+//   import("../modules/iouManagement/mgtIOUApplication/index.jsx")
+// );
 const MgtIOUApplicationView = lazy(() =>
   import("../modules/iouManagement/mgtIOUApplication/viewForm.jsx")
 );
@@ -1144,9 +1155,9 @@ const UserRoleExtentionLanding = lazy(() =>
 const AttendanceApproval = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceApproval/index.jsx")
 );
-const AttendanceApprovalRequest = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceApprovalRequest/index.jsx")
-);
+// const AttendanceApprovalRequest = lazy(() =>
+//   import("../modules/timeSheet/attendence/attendanceApprovalRequest/index.jsx")
+// );
 const AttendenceAdjust = lazy(() =>
   import("../modules/timeSheet/attendence/attendenceAdjust/index.jsx")
 );
@@ -1558,14 +1569,14 @@ export const routingList = [
     component: PFSelfLanding,
   },
   //PF Management start for selfService
-  {
-    path: "/profile/iOU/application/create",
-    component: MgtIOUApplicationCreate,
-  },
-  {
-    path: "/profile/iOU/application/edit/:id",
-    component: MgtIOUApplicationCreate,
-  },
+  // {
+  //   path: "/profile/iOU/application/create",
+  //   component: MgtIOUApplicationCreate,
+  // },
+  // {
+  //   path: "/profile/iOU/application/edit/:id",
+  //   component: MgtIOUApplicationCreate,
+  // },
   {
     path: "/administration/logHistory/shiftManagementLog",
     component: ShiftManagementLog,
@@ -1576,7 +1587,7 @@ export const routingList = [
   },
   {
     path: "/profile/iOU/application",
-    component: MgtIOUApplication,
+    component: MgtIOUApplicationLanding,
   },
   {
     path: "/profile/iOU/adjustmentReport/:id",
@@ -1584,7 +1595,7 @@ export const routingList = [
   },
   {
     path: "/profile/iOU/adjustmentReport",
-    component: AdjustmentIOUReport,
+    component: AdjustmentIOUReportLanding,
   },
   {
     path: "/profile/reports/employeeList",
@@ -1712,7 +1723,7 @@ export const routingList = [
   },
   {
     path: "/profile/expense/expenseApplication",
-    component: MgtExpenseApplication,
+    component: MgtExpenseApplicationLanding,
   },
   {
     path: "/profile/remoteLocation/employeeLocation",
@@ -1878,7 +1889,7 @@ export const routingList = [
   },
   {
     path: "/administration/configuration/latepunishmentassign",
-    component: LatePunishment,
+    component: LatePunishmentAssign,
   },
   {
     path: "/administration/timeManagement/holidayOffdaySwap/assign",
@@ -2037,9 +2048,13 @@ export const routingList = [
     path: "/administration/configuration/taxChallanConfig ",
     component: TaxChallanConfigLanding,
   },
+  // {
+  //   path: "/SelfService/timeManagement/attendenceAdjustRequest",
+  //   component: AttendanceApprovalRequest,
+  // },
   {
     path: "/SelfService/timeManagement/attendenceAdjustRequest",
-    component: AttendanceApprovalRequest,
+    component: SelfAttendenceAdjust,
   },
   {
     path: "/SelfService/timeManagement/overTimeRequisition",
@@ -2331,6 +2346,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxassign",
     component: IncomeTaxAssign,
+  },
+  {
+    path: "/compensationAndBenefits/employeeSalary/salaryAssignv2",
+    component: SalaryV2,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign",
@@ -2650,6 +2669,26 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/payrollElement",
     component: PayrollElement,
+  },
+  {
+    path: "/administration/payrollConfiguration/payscale",
+    component: PayscaleLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/jobClass",
+    component: JobClassLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/jobGrade",
+    component: GradeLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/jobLevel",
+    component: JobLevelLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/allowenceNDeductionPolicy",
+    component: AllowancePolicy,
   },
   // {
   //   path: "/administration/payrollConfiguration/salaryBreakdown",

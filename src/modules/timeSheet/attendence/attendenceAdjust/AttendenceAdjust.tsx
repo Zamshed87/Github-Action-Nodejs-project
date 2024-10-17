@@ -229,19 +229,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   // workplace wise
   const getEmployeDepartment = () => {
     empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
-        DDLType: "EmpDepartment",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        intId: 0,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+        accountId: orgId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: number) => {
-          res[i].label = item?.DepartmentName;
-          res[i].value = item?.DepartmentId;
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -298,7 +297,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 ? "Leave"
                 : "Absent",
               requestStatus: values?.attendanceAdujust?.label,
-              remarks: item?.reasonUpdate || "By HR",
+              remarks: item?.reasonUpdate || "",
               isApproved: true,
               isActive: true,
               isManagement: true,
@@ -347,7 +346,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 ? "Leave"
                 : "Absent",
               requestStatus: values?.attendanceAdujust?.label,
-              remarks: item?.strReason || "By HR",
+              remarks: item?.strReason || "",
               isApproved: true,
               isActive: true,
               isManagement: true,
@@ -598,13 +597,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       : "",
                 });
 
-              (value === 1 || value === 2 || value === 3) &&
-                // Modal.confirm({
-                //   title: "Are you sure to update attendance?",
-                //   onOk: submitHandler,
-                // });
-
-                setOpenModal(true);
+              (value === 1 || value === 2 || value === 3) && setOpenModal(true);
             }}
             disabled={!selectedRow.length}
           />
@@ -849,7 +842,9 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
 
               // getCheckboxProps: (rec) => {
               //   return {
-              //     disabled: rec?.ApplicationStatus === "Approved",
+              //     disabled: moment(rec?.AttendanceDate, "YYYY-MM-DD").isAfter(
+              //       moment().format("YYYY-MM-DD")
+              //     ),
               //   };
               // },
             }}

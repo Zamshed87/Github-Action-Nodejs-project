@@ -1,5 +1,4 @@
 import { Col, Form, Row } from "antd";
-import axios from "axios";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   Avatar,
@@ -17,10 +16,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 import { MdPrint } from "react-icons/md";
-import MasterFilter from "common/MasterFilter";
-import useDebounce from "utility/customHooks/useDebounce";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import IdCardPdf from "./idCardTemplate";
+import { downloadFile } from "utility/downloadFile";
+import Loading from "common/loading/Loading";
 
 const EmployeePdfLanding = () => {
   // redux states
@@ -31,53 +28,31 @@ const EmployeePdfLanding = () => {
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const debounce = useDebounce();
 
   // States
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
-  const [employeePdfData, setEmployeePdfData] = useState<any>({});
   const [filterListm, setFilterList] = useState({});
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 100,
+    pageSize: 25,
     total: 0,
   });
-  const [showDownloadButton, setShowDownloadButton] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [rowDto, setRowDto] = useState([]);
 
   //   api states
-  const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const landingApi = useApiRequest({});
 
-  //   Api calls
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
   const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "WorkplaceWithRoleExtension",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -89,15 +64,13 @@ const EmployeePdfLanding = () => {
   };
 
   const getLandingData = ({
-    pagination = { current: 1, pageSize: 100 },
+    pagination = { current: 1, pageSize: 25 },
     searchText = "",
     filterList = filterListm,
   }: any) => {
-    setEmployeePdfData({});
-    const { workplaceGroup, workplace, search } = form.getFieldsValue(true);
+    const { workplace, search } = form.getFieldsValue(true);
     const payload = {
       accountId: orgId,
-      workplaceGroupId: workplaceGroup?.value || wgId,
       workplaceId: workplace?.value || wId,
       pageNo: pagination?.current,
       pageSize: pagination?.pageSize,
@@ -117,18 +90,25 @@ const EmployeePdfLanding = () => {
           pageSize: res?.PageSize,
           total: res?.TotalCount,
         });
+
+        const modifiedData = res?.Data?.map((item: any) => {
+          return {
+            ...item,
+            key: item?.EmployeeId,
+          };
+        });
+        setRowDto(modifiedData);
       },
     });
   };
 
   useEffect(() => {
+    const { workplace } = form.getFieldsValue(true);
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Employee ID Card";
 
-    // api calls
-    getWorkplaceGroup();
-    getLandingData({});
-    setEmployeePdfData({});
+    getWorkplace();
+    !workplace?.value && getLandingData({});
   }, [buId, wgId, wId]);
 
   //   table rows
@@ -202,13 +182,12 @@ const EmployeePdfLanding = () => {
               cursor: "pointer",
             }}
             onClick={() => {
-              axios
-                .get(
-                  `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${rec?.EmployeeId}`
-                )
-                .then((res) => {
-                  setEmployeePdfData(res?.data);
-                });
+              downloadFile(
+                `/PdfAndExcelReport/IdCardPdf?employeeIds=${rec?.EmployeeId}&workplaceId=${wId}`,
+                "Employee ID Cards",
+                "pdf",
+                setLoading
+              );
             }}
           />
         ),
@@ -226,6 +205,7 @@ const EmployeePdfLanding = () => {
     <PForm
       form={form}
       onFinish={() => {
+        setSelectedRow([]);
         getLandingData({
           pagination: {
             current: pages?.current,
@@ -234,97 +214,38 @@ const EmployeePdfLanding = () => {
         });
       }}
     >
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
           title={`Total ${landingApi?.data?.TotalCount || 0} employees`}
-        >
-          {employeePdfData?.employees?.length > 0 && (
-            <li>
-              <PDFDownloadLink
-                document={<IdCardPdf employeeAllData={employeePdfData} />}
-                fileName="employee_id_cards.pdf"
-              >
-                {({ loading }) => {
-                  if (!loading && employeePdfData?.employees?.length > 1) {
-                    if (!showDownloadButton) {
-                      // 30 sec delay to complete download all emp image inside pdf
-                      setTimeout(() => setShowDownloadButton(true), 20000);
-                    }
-                  }
+          onSearch={(e) => {
+            form.setFieldsValue({
+              search: e?.target?.value,
+            });
+            getLandingData({ pages, searchText: e.target.value });
+          }}
+          buttonList={
+            selectedRow?.length > 0
+              ? [
+                  {
+                    type: "primary",
+                    content: `Download ${selectedRow?.length}`,
+                    onClick: () => {
+                      downloadFile(
+                        `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}`,
+                        "Employee ID Cards",
+                        "pdf",
+                        setLoading
+                      );
+                    },
+                  },
+                ]
+              : []
+          }
+        />
 
-                  return loading
-                    ? "Generating PDF..."
-                    : showDownloadButton
-                    ? "Download Employee ID Cards"
-                    : "Please wait...";
-                }}
-              </PDFDownloadLink>
-            </li>
-          )}
-          {selectedRow?.length > 0 && (
-            <button
-              className="btn btn-green"
-              style={{
-                height: "30px",
-                minWidth: "120px",
-                fontSize: "12px",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-
-                axios
-                  .get(
-                    `/PdfAndExcelReport/IdCardPdfData?workplaceId=${wId}&employeeIds=${selectedEmpIds()}`
-                  )
-                  .then((res) => {
-                    setEmployeePdfData(res?.data);
-                  });
-                // downloadEmpIdCardZipFile(false, {});
-              }}
-            >
-              Download {selectedRow?.length}
-            </button>
-          )}
-          {/* @ts-ignore */}
-          <MasterFilter
-            isHiddenFilter
-            value={form.getFieldValue("search") || ""}
-            setValue={(value: any) => {
-              form.setFieldValue("search", value);
-              debounce(() => {
-                getLandingData({ pages, searchText: value });
-              }, 500);
-            }}
-            cancelHandler={() => {
-              form.setFieldValue("search", "");
-              getLandingData({ pages, searchText: "" });
-            }}
-            width="200px"
-            inputWidth="200px"
-          />
-        </PCardHeader>
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={workplaceGroup?.data || []}
-                name="workplaceGroup"
-                label="Workplace Group"
-                placeholder="Workplace Group"
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    workplaceGroup: op,
-                    workplace: undefined,
-                  });
-                  getWorkplace();
-                }}
-                rules={
-                  [
-                    //   { required: true, message: "Workplace Group is required" },
-                  ]
-                }
-              />
-            </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
                 options={workplace?.data || []}
@@ -353,13 +274,13 @@ const EmployeePdfLanding = () => {
         <DataTable
           header={header}
           bordered
-          data={landingApi?.data?.Data || []}
+          data={rowDto || []}
           loading={landingApi?.loading}
           rowSelection={{
             type: "checkbox",
             selectedRowKeys: selectedRow.map((item) => item?.key),
+            preserveSelectedRowKeys: true,
             onChange: (selectedRowKeys, selectedRows) => {
-              setEmployeePdfData({});
               setSelectedRow(selectedRows);
             },
           }}
@@ -373,11 +294,10 @@ const EmployeePdfLanding = () => {
             // Return if sort function is called
             if (extra.action === "sort") return;
             setFilterList(filters);
-            setEmployeePdfData({});
             getLandingData({
               pagination,
               searchText: form.getFieldValue("search"),
-              filerList: filters,
+              filterList: filters,
             });
           }}
         />

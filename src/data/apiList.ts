@@ -112,11 +112,11 @@ export const apiList = {
   BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
   ExtendedDesignationDDL: "/Cafeteria/ExtendedDesignationDDL",
   CheckCafeteriaConfig: "/Cafeteria/CheckCafeteriaConfig",
-  CafeteriaConfigLanding: "/Cafeteria/CafeteriaConfigLanding",
-
-  CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  CafeteriaConfigLanding: "/Cafeteria/CafeteriaSetupLanding",
+  // CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaSetup",
   GetAttendanceDetailsReport: "/Employee/GetAttendanceDetailsReport",
-  EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
+  EditCafeteriaConfig: "/Cafeteria/EditCafeteriaSetup",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
   MonthlyRosterReportForSingleEmployee:
     "/TimeSheetReport/MonthlyRosterReportForSingleEmployee",
@@ -186,4 +186,58 @@ export const apiList = {
     "/AssignLatePunishmentPolicy/AssignEmployeeToLatePunishmentPolicy",
   getSupervisorListDDL: "/Employee/GetSupervisorList",
   GetEmployeeIdCardLanding: "/Employee/GetIdCardDetailsLanding",
+  GetPayrollElementConfigLanding:
+    "/PayrollElementConfig/GetPayrollElementConfigLanding",
+  DeletePayrollElementConfig:
+    "/PayrollElementConfig/DeletePayrollElementConfig",
+  GetAllSalaryElementByAccountIdDDL:
+    "/Payroll/GetAllSalaryElementByAccountIdDDL",
+  CreatePayrollElementConfig:
+    "/PayrollElementConfig/CreatePayrollElementConfig",
+  UpdatePayrollElementConfig:
+    "/PayrollElementConfig/UpdatePayrollElementConfig",
+  LatePunishmentPolicyAssignLoader:
+    "/AssignLatePunishmentPolicy/LatePunishmentPolicyAssignLoader",
+  EmployeeBasicForConfirmation:
+    "/EmployeeAllLanding/EmployeeBasicForConfirmation",
+  GetIOULanding: "/Employee/GetIOULanding",
+  IOUApplicationCreateEdit: "Employee/IOUApplicationCreateEdit",
+  IOULandingById: "Employee/IOULandingById",
+  IouDocList: "/Employee/IouDocList",
+  IOULandingForAccounts: "/Employee/IOULandingForAccounts",
+  ExpenseApplicationLandingDataPaginetion:
+    "/Employee/ExpenseApplicationLandingDataPaginetion",
+  ExpenseApplicationCreateEdit: "/Employee/ExpenseApplicationCreateEdit",
+  GetExpenseById: "/Employee/GetExpenseById",
+  GetExpenseDocList: "/Employee/GetExpenseDocList",
+  JobClassLanding: "/MasterJobClass/JobClassLanding",
+  DeleteJobClass: "/MasterJobClass/DeleteJobClass",
+  CreateJobClass: "/MasterJobClass/CreateJobClass",
+  UpdateJobClass: "/MasterJobClass/UpdateJobClass",
+  JobGradeLanding: "/MasterJobGrade/JobGradeLanding",
+  DeleteJobGrade: "/MasterJobGrade/DeleteJobGrade",
+  CreateJobGrade: "/MasterJobGrade/CreateJobGrade",
+  UpdateJobGrade: "/MasterJobGrade/UpdateJobGrade",
+  JobLevelLanding: "/MasterJobLevel/JobLevelLanding",
+  DeleteJobLevel: "/MasterJobLevel/DeleteJobLevel",
+  CreateJobLevel: "/MasterJobLevel/CreateJobLevel",
+  UpdateJobLevel: "/MasterJobLevel/UpdateJobLevel",
+  GetJobClassDdl: "/MasterJobLevel/GetJobClassDdl",
+  GetJobGradeDdl: "/MasterJobLevel/GetJobGradeDdl",
+  GetJobLevelDdl: "/MasterJobLevel/GetJobLevelDdl",
+
+  //updated ddls
+
+  BusinessUnitWithRoleExtension: "/PeopleDeskDdl/BusinessUnitWithRoleExtension",
+  BusinessUnitIdAll: "/PeopleDeskDdl/BusinessUnitIdAll",
+
+  DesignationIdAll: "/PeopleDeskDdl/DesignationIdAll",
+  DepartmentIdAll: "PeopleDeskDdl/DepartmentIdAll",
+  SectionIdAll: "PeopleDeskDdl/SectionIdAll",
+  WorkplaceGroupIdAll: "PeopleDeskDdl/WorkplaceGroupIdAll",
+  WorkplaceIdAll: "PeopleDeskDdl/WorkplaceIdAll",
+  WorkplaceWithRoleExtension: "PeopleDeskDdl/WorkplaceWithRoleExtension",
+  WorkplaceGroupWithRoleExtension:
+    "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
+  Cafeteria: "/Cafeteria/GetCafeteriaSetupById",
 };

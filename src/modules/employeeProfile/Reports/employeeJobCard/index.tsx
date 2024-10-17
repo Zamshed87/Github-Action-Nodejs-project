@@ -227,7 +227,9 @@ const EmployeeJobCard = () => {
           toDate: moment(monthLastDate()),
         }}
         onFinish={() => {
+          const { employee } = form.getFieldsValue(true);
           landingApiCall();
+          empBasicInfo(buId, orgId, employee?.value, setEmpInfo, setLoading);
         }}
       >
         <PCard>
@@ -285,7 +287,6 @@ const EmployeeJobCard = () => {
                     form.setFieldsValue({
                       employee: op,
                     });
-                    empBasicInfo(buId, orgId, value, setEmpInfo, setLoading);
                   }}
                   onSearch={(value) => {
                     getEmployee(value);

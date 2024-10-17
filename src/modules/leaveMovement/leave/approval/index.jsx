@@ -513,30 +513,43 @@ export default function LeaveApproval() {
             >
               <InfoOutlined sx={{ color: gray900 }} />
             </LightTooltip>
-            
+
             <div className="ml-2">
               {leaveType}{" "}
               {record?.leaveApplication?.isHalfDay ? "(Half Day)" : ""}
             </div>
-
-            {record?.leaveApplication?.intDocumentFileId && (
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(
-                    getDownlloadFileView_Action(record?.leaveApplication?.intDocumentFileId)
-                  );
-                }}
-              >
-                <div className="text-decoration-none file text-primary">
-                  <Attachment /> attachment
-                </div>
-              </div>
-            )}
           </div>
         ),
         filter: true,
         sorter: true,
+      },
+      {
+        title: "Attachment",
+        dataIndex: "intDocumentFileId",
+        render: (_, record) => (
+          <div className="leave-application-document ml-1">
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                if (record?.leaveApplication?.intDocumentFileId !== 0) {
+                  dispatch(
+                    getDownlloadFileView_Action(
+                      record?.leaveApplication?.intDocumentFileId
+                    )
+                  );
+                }
+              }}
+            >
+              {record?.leaveApplication?.intDocumentFileId !== 0 && (
+                <div style={{ color: "green", cursor: "pointer" }}>
+                  <Attachment /> attachment
+                </div>
+              )}
+            </span>
+          </div>
+        ),
+        filter: false,
+        sorter: false,
       },
       {
         title: "Date Range",
@@ -548,6 +561,7 @@ export default function LeaveApproval() {
         ),
         filter: false,
         sorter: false,
+        width: 120,
       },
       {
         title: "Total",
@@ -557,12 +571,9 @@ export default function LeaveApproval() {
             "0.5"
           ) : (
             <span>
-              {`${
-                +fromDateToDateDiff(
-                  dateFormatterForInput(record?.leaveApplication?.dteFromDate),
-                  dateFormatterForInput(record?.leaveApplication?.dteToDate)
-                )?.split(" ")[0] + 1
-              } Days`}{" "}
+              {`${record?.totalDays} ${
+                record?.totalDays === 1 ? " Day" : " Days"
+              }`}{" "}
             </span>
           );
         },
@@ -617,7 +628,7 @@ export default function LeaveApproval() {
         // ),
         filter: false,
         sorter: false,
-        width: "130px",
+        width: 100  ,
       },
       {
         title: "Waiting Stage",
@@ -713,7 +724,7 @@ export default function LeaveApproval() {
         ),
         filter: true,
         sorter: true,
-        width: 120,
+        width: 180,
       },
     ];
   };
