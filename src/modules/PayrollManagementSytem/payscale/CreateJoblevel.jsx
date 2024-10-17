@@ -141,6 +141,7 @@ export default function CreateJobLevel({
               onChange={(value, op) => {
                 form.setFieldsValue({
                   jobClass: op,
+                  grade: undefined,
                 });
                 getGradeDDL();
               }}
