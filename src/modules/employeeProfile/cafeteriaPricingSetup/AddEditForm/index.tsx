@@ -111,7 +111,6 @@ const PricingSetupForm = () => {
               label: res.workPlaceGroupName,
               value: res.workPlaceGroupId,
             },
-
           }));
 
           setRowDto(updatedData);
@@ -1010,6 +1009,7 @@ const PricingSetupForm = () => {
                 marginTop: "23px",
               }}
             >
+            
               <PButton
                 type="primary"
                 action="submit"
@@ -1021,29 +1021,38 @@ const PricingSetupForm = () => {
                     workplaceGroup,
                     pricingMatrixType,
                   } = form.getFieldsValue(true);
-                  if (
-                    pricingMatrixType?.value === 1 &&
-                    (!designationDDL || designationDDL.length === 0)
-                  ) {
-                    toast.warn(
-                      "Please select at least one designation before adding."
-                    );
+                  
+                  if (pricingMatrixType?.value === 1 && (!designationDDL || designationDDL.length === 0)) {
+                    toast.warn("Please select at least one designation before adding.");
                     return; // Exit early if no designation is selected
                   }
+                
                   if (pricingMatrixType?.value === 1) {
-                    setRowDto((prevRowDto: any) => [
-                      ...prevRowDto,
-                      ...designationDDL?.map((item: any) => {
-                        return {
+                    setRowDto((prevRowDto: any) => {
+                      // Create a set of existing designation IDs for quick lookup
+                      const existingDesignationIds = new Set(prevRowDto.map((item:any) => item.designation.designationId));
+                
+                      // Check for duplicates
+                      const duplicates = designationDDL?.filter((item: any) => existingDesignationIds.has(item.designationId));
+                      
+                      if (duplicates?.length > 0) {
+                        toast.warn(`The following designations are already added: ${duplicates.map((d:any) => d.designationName).join(", ")}`);
+                        return prevRowDto; // Return the previous state without changes
+                      }
+                
+                      // Map new designations
+                      return [
+                        ...prevRowDto,
+                        ...designationDDL?.map((item: any) => ({
                           workplace,
                           workplaceGroup,
                           designation: item,
                           ownContribution: 0,
                           companyContribution: 0,
                           TotalCost: 0,
-                        };
-                      }),
-                    ]);
+                        })) || [],
+                      ];
+                    });
                   } else {
                     setRowDto((prevRowDto: any) => [
                       ...prevRowDto,
@@ -1057,6 +1066,8 @@ const PricingSetupForm = () => {
                     ]);
                   }
                 }}
+                
+                
               />
             </Col>
           </Row>
