@@ -24,6 +24,7 @@ import {
   salaryAdviceExcelData,
 } from "./excel/excelStyle";
 import {
+  adviceTypeDDL,
   bankAdviceColumnData,
   bankAdviceInitialValues,
   bankAdviceValidationSchema,
@@ -127,6 +128,7 @@ const BankAdviceReport = () => {
         IntYearId: values?.yearId,
         IntBankId: values?.bank?.value,
         IntSalaryGenerateRequestId: values?.adviceName?.value,
+        strAdviceType: values?.adviceType?.value,
       },
       onSuccess: (res) => {
         setTenMsdata(res);
@@ -682,6 +684,7 @@ const BankAdviceReport = () => {
                       value={values?.bank}
                       onChange={(valueOption) => {
                         setFieldValue("bank", valueOption);
+                        setFieldValue("adviceType", "");
                         setFieldValue("account", "");
                         if (valueOption?.value) {
                           getPeopleDeskAllDDL(
@@ -691,6 +694,23 @@ const BankAdviceReport = () => {
                             setBankAccountDDL
                           );
                         }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Advice Type</label>
+                    <FormikSelect
+                      name="adviceType"
+                      options={adviceTypeDDL || []}
+                      value={values?.adviceType}
+                      onChange={(valueOption) => {
+                        setFieldValue("adviceType", valueOption);
                       }}
                       placeholder=""
                       styles={customStyles}
