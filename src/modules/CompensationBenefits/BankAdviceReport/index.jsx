@@ -970,6 +970,29 @@ const BankAdviceReport = () => {
                                 topSheetPrintFn();
                               },
                             },
+                            {
+                              value: 3,
+                              label: "Top Sheet and Datails as Excel",
+                              icon: (
+                                <SiMicrosoftexcel
+                                  style={{
+                                    marginRight: "5px",
+                                    color: gray500,
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              ),
+                              onClick: () => {
+                                const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}`;
+
+                                downloadFile(
+                                  url,
+                                  "Top Sheet and Details Report",
+                                  "xlsx",
+                                  setLoading
+                                );
+                              },
+                            },
                           ]}
                         />
                       </li>
