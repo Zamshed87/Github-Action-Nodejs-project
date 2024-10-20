@@ -964,9 +964,6 @@ const BankAdviceReport = () => {
                                     toastId: 3,
                                   });
                                 }
-                                // const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}8&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=SCB`;
-
-                                // getPDFAction(url, setLoading);
                                 excelGenerate(values, (res) => {
                                   setPdfDto(res);
                                 });
@@ -991,8 +988,6 @@ const BankAdviceReport = () => {
                                     toastId: 3,
                                   });
                                 }
-                                // const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}8&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=SCB`;
-
                                 excelGenerate(values, (res) => {
                                   setPdfDto(res);
                                 });
