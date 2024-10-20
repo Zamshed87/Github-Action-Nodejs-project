@@ -983,15 +983,14 @@ const BankAdviceReport = () => {
                                 />
                               ),
                               onClick: () => {
-                                if (rowDto?.length <= 0) {
-                                  return toast.warning("Data is empty !!!!", {
-                                    toastId: 3,
-                                  });
-                                }
-                                excelGenerate(values, (res) => {
-                                  setPdfDto(res);
-                                });
-                                topSheetPrintFn();
+                                const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}`;
+
+                                downloadFile(
+                                  url,
+                                  "Top Sheet and Details Report",
+                                  "xlsx",
+                                  setLoading
+                                );
                               },
                             },
                           ]}
