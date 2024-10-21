@@ -125,7 +125,7 @@ export const apiList = {
   GetLateReport: "/TimeSheetReport/GetLateReport",
   GetAssignedSalaryDetailsReport_Matador:
     "/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador",
-
+  MovementDetailsHistory: "/PdfAndExcelReport/MovementDetailsHistory",
   TimeManagementDynamicPIVOTReport:
     "/TimeSheetReport/TimeManagementDynamicPIVOTReport",
   PeopleDeskAllLanding: "/Employee/PeopleDeskAllLanding",
