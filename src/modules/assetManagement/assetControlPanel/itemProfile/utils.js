@@ -92,7 +92,7 @@ const itemProfileColumn = (
                   getDeleteMessage(
                     `/AssetManagement/CheckIfItemAssignOrNot?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&itemId=${record?.itemId}`,
                     (data) => {
-                      setDeleteMessage(data?.message || "false");
+                      setDeleteMessage(data);
                     }
                   );
                   handlePopup(
@@ -103,8 +103,6 @@ const itemProfileColumn = (
                     employeeId,
                     wId,
                     wgId,
-                    getDeleteMessage,
-                    setDeleteMessage,
                     deleteMessage,
                     () => {
                       getData(
@@ -285,19 +283,15 @@ const handlePopup = (
   employeeId,
   wId,
   wgId,
-  getDeleteMessage,
-  setDeleteMessage,
   deleteMessage,
   cb
 ) => {
-  {
-    console.log("deleteMessage", deleteMessage);
-  }
+  console.log("deleteMessage", deleteMessage);
 
   const confirmObject = {
     closeOnClickOutside: false,
     message: `${
-      deleteMessage === "true"
+      deleteMessage?.message === true
         ? "This item is assigned. However do you want to delete this Item?"
         : "Do you want to delete this item?"
     }`,
