@@ -262,7 +262,7 @@ const CreateEditLeavePolicy = () => {
                       <PInput
                         type="text"
                         name="strDisplayName"
-                        label="Leave Display Name"
+                        label="Display Name"
                         placeholder="Display Name"
                       />
                     </Col>
@@ -326,8 +326,8 @@ const CreateEditLeavePolicy = () => {
                       <PSelect
                         options={[{ value: 0, label: "None" }, ...leaveTypeDDL]}
                         name="inPreviousLveTypeEnd"
-                        label="Previous Leave Type Availability After End"
-                        placeholder="Previous Leave Type Availability After End"
+                        label="Availability After End"
+                        placeholder="Availability After End"
                         onChange={(value, op) => {
                           form.setFieldsValue({
                             inPreviousLveTypeEnd: op,
@@ -359,8 +359,8 @@ const CreateEditLeavePolicy = () => {
                                     : dependsOnDDL
                                 }
                                 name="intLeaveDependOn"
-                                label="Leave Depened on"
-                                placeholder="Leave Depened on"
+                                label="Depeneds on"
+                                placeholder="Depeneds on"
                                 onChange={(value, op) => {
                                   if (value == 2) {
                                     form.setFieldsValue({
@@ -590,8 +590,8 @@ const CreateEditLeavePolicy = () => {
                                 type="number"
                                 min={0}
                                 name="intAllocatedLveInDay"
-                                label="Allocated Leave in Day"
-                                placeholder="Allocated Leave in Day"
+                                label="Allocated Leave(Day)"
+                                placeholder="Allocated Leave(Day)"
                                 rules={[
                                   {
                                     required: !(
@@ -602,11 +602,11 @@ const CreateEditLeavePolicy = () => {
                                         "Compensatory Leave"
                                     ),
                                     message:
-                                      " Allocated Leave in Day is required",
+                                      " Allocated Leave(Day) is required",
                                   },
                                   {
                                     message:
-                                      "Allocated Leave in Day must be positive",
+                                      "Allocated Leave(Day) must be positive",
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
@@ -648,6 +648,11 @@ const CreateEditLeavePolicy = () => {
                                     </div>
                                   </th>
                                   <th>
+                                    <div className="d-flex align-items-center">
+                                      Depends on
+                                    </div>
+                                  </th>
+                                  <th>
                                     <div className="d-flex align-items-center justify-content-end">
                                       Action
                                     </div>
@@ -676,6 +681,9 @@ const CreateEditLeavePolicy = () => {
                                                   " years "}
                                             </td>
                                             <td>{item?.intLveInDay}</td>
+                                            <td>
+                                              {item?.showLveIndays?.label}
+                                            </td>
                                             <td>
                                               <div className="d-flex align-items-end justify-content-end">
                                                 <IconButton
@@ -713,7 +721,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                       )}
                     </Col>
-                    <Col md={12} sm={24}>
+                    {/* <Col md={12} sm={24}>
                       <PInput
                         type="number"
                         name="intMaxLveDaySelf"
@@ -726,8 +734,8 @@ const CreateEditLeavePolicy = () => {
                           },
                         ]}
                       />
-                    </Col>
-                    <Col md={12} sm={24}>
+                    </Col> */}
+                    {/* <Col md={12} sm={24}>
                       <PInput
                         type="number"
                         name="intMaxLveApplicationSelfInMonth"
@@ -740,7 +748,7 @@ const CreateEditLeavePolicy = () => {
                           },
                         ]}
                       />
-                    </Col>
+                    </Col> */}
                     <Col md={12} sm={24}>
                       <PInput
                         type="number"
@@ -756,6 +764,30 @@ const CreateEditLeavePolicy = () => {
                       />
                     </Col>
                   </>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { intLeaveType } = form.getFieldsValue();
+                      // const empType = employeeType?.label;
+
+                      return (
+                        <>
+                          <Col className="mt-4" md={12} sm={24}>
+                            <PInput
+                              label="Is Prodata Basis?"
+                              type="checkbox"
+                              layout="horizontal"
+                              name="isProdataBasis"
+                              disabled={
+                                intLeaveType?.value === 4 ||
+                                intLeaveType?.value === 5
+                              }
+                            />
+                          </Col>
+                        </>
+                      );
+                    }}
+                  </Form.Item>
+
                   {/* Organization Configuration */}
                   <Divider
                     style={{
@@ -1132,16 +1164,16 @@ const CreateEditLeavePolicy = () => {
                     <PInput
                       type="number"
                       name="intActiveFromJoiningdayInDay"
-                      label="Active From Joining day In Day"
-                      placeholder="Active From Joining day In Day"
+                      label="Active From Joining day(Day)"
+                      placeholder="Active From Joining day(Day)"
                       rules={[
                         // {
                         //   required: true,
-                        //   message: "Active From Joining day In Day is required",
+                        //   message: "Active From Joining day(Day) is required",
                         // },
                         {
                           message:
-                            "Active From Joining day In Day must be positive",
+                            "Active From Joining day(Day) must be positive",
                           pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                         },
                       ]}
@@ -1151,17 +1183,17 @@ const CreateEditLeavePolicy = () => {
                     <PInput
                       type="number"
                       name="intActiveFromConfirmationInDay"
-                      label="Active From Confirmation In Day"
-                      placeholder="Active From Confirmation In Day"
+                      label="Active From Confirmation(Day)"
+                      placeholder="Active From Confirmation(Day)"
                       rules={[
                         // {
                         //   required: true,
                         //   message:
-                        //     "Active From Confirmation In Day is required",
+                        //     "Active From Confirmation(Day) is required",
                         // },
                         {
                           message:
-                            "Active From Confirmation In Day must be positive",
+                            "Active From Confirmation(Day) must be positive",
                           pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                         },
                       ]}
@@ -1642,7 +1674,7 @@ const CreateEditLeavePolicy = () => {
                             <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isCarryForward}
-                                label="Is Carry Will Be Counted?"
+                                label="Add previous year carry balance"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isCarryWillBeCounted"
@@ -1920,6 +1952,14 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                             <Col md={12} sm={24}>
                               <PInput
+                                label="Is Auto Renewable?"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isAutoRenewable"
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
                                 label="Bridge Leave Include Offday"
                                 type="checkbox"
                                 layout="horizontal"
@@ -1966,15 +2006,8 @@ const CreateEditLeavePolicy = () => {
                                 name="isApplicableBeforeAndAfterHoliday"
                               />
                             </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                label="Is Auto Renewable?"
-                                type="checkbox"
-                                layout="horizontal"
-                                name="isAutoRenewable"
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
+
+                            {/* <Col md={12} sm={24}>
                               <PInput
                                 label="Is Prodata Basis?"
                                 type="checkbox"
@@ -1986,7 +2019,7 @@ const CreateEditLeavePolicy = () => {
                                   intLeaveType?.label === "Compensatory Leave"
                                 }
                               />
-                            </Col>
+                            </Col> */}
                             <Col md={12} sm={24}>
                               {/* <PInput
                                 label="Do you want assign right now?"
