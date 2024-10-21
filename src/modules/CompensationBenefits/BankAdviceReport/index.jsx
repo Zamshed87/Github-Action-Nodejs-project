@@ -1,7 +1,3 @@
-import {} from "@mui/icons-material";
-import DownloadIcon from "@mui/icons-material/Download";
-import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -15,7 +11,7 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { monthYearFormatter } from "../../../utility/dateFormatter";
-import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
+import { downloadFile } from "../../../utility/downloadFile";
 import { convert_number_to_word } from "../../../utility/numberToWord";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { generateExcelAction } from "./excel/excelConvert";
@@ -84,11 +80,12 @@ const BankAdviceReport = () => {
       validationSchema: bankAdviceValidationSchema,
       initialValues: bankAdviceInitialValues,
       onSubmit: () => {
-        if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
-          tenMsBALanding("htmlView", values);
-        } else {
-          saveHandler(values);
-        }
+        // if (orgId === 4 && values?.bankAdviceFor?.value === 1) {
+        //   tenMsBALanding("htmlView", values);
+        // } else {
+        //   saveHandler(values);
+        // }
+        saveHandler(values);
       },
     });
   const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
