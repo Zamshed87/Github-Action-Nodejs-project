@@ -191,7 +191,7 @@ const CreateEditLeavePolicy = () => {
   };
 
   const submitHandler = () => {
-    const values = form.getFieldsValue();
+    const values = form.getFieldsValue(true);
     const payload = generatePayload(values, tableData, existingPolicies);
     policyApi?.action({
       method: "POST",
@@ -239,6 +239,26 @@ const CreateEditLeavePolicy = () => {
             backButton
             title={params?.id ? "Edit Leave Policy" : "Create Leave Policy"}
             submitText="Save"
+            submitType="primary-outline"
+            buttonList={[
+              {
+                type: "primary",
+                content: "Assign",
+                onClick: () => {
+                  form.setFieldsValue({
+                    isGenerate: true,
+                  });
+                  form
+                    .validateFields()
+                    .then(() => {
+                      submitHandler();
+                    })
+                    .catch(() => {
+                      console.log();
+                    });
+                },
+              },
+            ]}
           />
           <PCardBody>
             <Row gutter={[30, 2]}>
@@ -2020,38 +2040,6 @@ const CreateEditLeavePolicy = () => {
                                 }
                               />
                             </Col> */}
-                            <Col md={12} sm={24}>
-                              {/* <PInput
-                                label="Do you want assign right now?"
-                                type="checkbox"
-                                layout="horizontal"
-                                name="isGenerate"
-                              /> */}
-                              <div
-                                style={{
-                                  marginBlock: "4px",
-                                  marginTop: "6px",
-                                  fontSize: "12px",
-                                  fontWeight: 700,
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "5px",
-                                  }}
-                                >
-                                  <PInput
-                                    label=""
-                                    type="checkbox"
-                                    layout="horizontal"
-                                    name="isGenerate"
-                                  />
-                                  <span>Do you want assign right now?</span>
-                                </div>
-                              </div>
-                            </Col>
                           </>
                         );
                       }}
