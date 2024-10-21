@@ -66,6 +66,7 @@ import { lazy } from "react";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
+import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -1529,6 +1530,10 @@ export const routingList = [
   {
     path: "/profile/reports/emloyeeDataChecklist",
     component: EmpCheckList,
+  },
+  {
+    path: "/profile/reports/movementDetailsHistory",
+    component: MovementHistoryDetails,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
