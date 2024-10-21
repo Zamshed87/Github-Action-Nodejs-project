@@ -24,6 +24,7 @@ type PCardHeaderType = {
   backButton?: boolean | string;
   onSearch?: (e: any) => void;
   submitText?: string;
+  submitType?: buttonType;
   submitIcon?: React.ReactNode;
   buttonList?: Array<{
     content: string;
@@ -48,6 +49,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
     backButton,
     onSearch,
     submitText,
+    submitType,
     submitIcon,
     buttonList,
     children,
@@ -175,7 +177,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         {submitText !== undefined ? (
           <PButton
             content={submitText || "Save"}
-            type={"primary"}
+            type={submitType || "primary"}
             action="submit"
             icon={submitIcon}
           />
