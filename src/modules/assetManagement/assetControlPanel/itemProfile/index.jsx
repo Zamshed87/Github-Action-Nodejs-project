@@ -35,6 +35,8 @@ const AssetItemProfile = () => {
     total: 0,
   });
   const [rowDto, getLandingData, loading, setRowDto] = useAxiosGet([]);
+  const [deleteMessage, getDeleteMessage, loadingForMessage, setDeleteMessage] =
+    useAxiosGet({});
   const [, saveDeleteHandler, deleteLoading] = useAxiosPost({});
 
   const { values, setFieldValue, handleSubmit } = useFormik({
@@ -212,7 +214,10 @@ const AssetItemProfile = () => {
                   wId,
                   wgId,
                   pages,
-                  setPages
+                  setPages,
+                  getDeleteMessage,
+                  setDeleteMessage,
+                  deleteMessage
                 )}
                 pages={pages}
                 rowDto={rowDto}

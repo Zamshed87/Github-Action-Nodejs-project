@@ -20,7 +20,10 @@ const itemProfileColumn = (
   wId,
   wgId,
   pages,
-  setPages
+  setPages,
+  getDeleteMessage,
+  setDeleteMessage,
+  deleteMessage
 ) => {
   return [
     {
@@ -86,6 +89,12 @@ const itemProfileColumn = (
               <DeleteOutlineOutlined
                 onClick={(e) => {
                   e.stopPropagation();
+                  getDeleteMessage(
+                    `/AssetManagement/CheckIfItemAssignOrNot?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&itemId=${record?.itemId}`,
+                    (data) => {
+                      setDeleteMessage(data?.message || "false");
+                    }
+                  );
                   handlePopup(
                     saveDeleteHandler,
                     record,
@@ -94,6 +103,9 @@ const itemProfileColumn = (
                     employeeId,
                     wId,
                     wgId,
+                    getDeleteMessage,
+                    setDeleteMessage,
+                    deleteMessage,
                     () => {
                       getData(
                         getLandingData,
@@ -273,11 +285,22 @@ const handlePopup = (
   employeeId,
   wId,
   wgId,
+  getDeleteMessage,
+  setDeleteMessage,
+  deleteMessage,
   cb
 ) => {
+  {
+    console.log("deleteMessage", deleteMessage);
+  }
+
   const confirmObject = {
     closeOnClickOutside: false,
-    message: "Do you want to delete this item?",
+    message: `${
+      deleteMessage === "true"
+        ? "This item is assigned. However do you want to delete this Item?"
+        : "Do you want to delete this item?"
+    }`,
     yesAlertFunc: () => {
       const payload = {
         itemId: data ? data?.itemId : 0,
@@ -593,6 +616,5 @@ export {
   itemSubCategoryColumn,
   saveItemProfileHandler,
   uomColumn,
-  validationSchema
+  validationSchema,
 };
-
