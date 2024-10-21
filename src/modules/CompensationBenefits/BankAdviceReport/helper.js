@@ -8,7 +8,7 @@ export const adviceTypeDDL = [
     label: "IBBL",
   },
   {
-    value: "BFTN",
+    value: 0,
     label: "BFTN",
   },
   {
@@ -16,15 +16,15 @@ export const adviceTypeDDL = [
     label: "DBL",
   },
   {
-    value: "SCB",
+    value: 41,
     label: "SCB",
   },
   {
-    value: "CityBank",
+    value: 43,
     label: "City Bank",
   },
   {
-    value: "DBBL",
+    value: 16,
     label: "DBBL",
   },
 ];
