@@ -7,6 +7,7 @@ import { AddOutlined } from "@mui/icons-material";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  dependsOnDDL,
   getYearlyPolicyById,
   getYearlyPolicyPopUpDDL,
   isPolicyExist,
@@ -225,7 +226,14 @@ const CreateEditLeavePolicy = () => {
   return (
     <>
       {loading && <Loading />}
-      <PForm form={form} onFinish={submitHandler} initialValues={{}}>
+      <PForm
+        form={form}
+        onFinish={submitHandler}
+        initialValues={{
+          showLveIndays: dependsOnDDL[0],
+          intLeaveDependOn: dependsOnDDL[0],
+        }}
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -269,12 +277,16 @@ const CreateEditLeavePolicy = () => {
                             isProdataBasis: false,
                             isDependOnServiceLength: false,
                             isEarnLeave: false,
+                            intLwpamountOrPercentage: undefined,
+                            intLwpbasedOn: undefined,
+                            isCarryWillBeCounted: undefined,
                             isCompensatoryLve: false,
                             intLeaveType: op,
                             isEarnLveIncludeOffday: false,
                             isEarnLveIncludeHoliday: false,
                             intDayForOneEarnLve: undefined,
                             intEarnLveInDay: undefined,
+                            intLeaveDependOn: undefined,
                             intCompensatoryLveExpireInDays: undefined,
                             isCompensatoryLveExpire: false,
                           });
@@ -331,12 +343,247 @@ const CreateEditLeavePolicy = () => {
                     </Col>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const { isDependOnServiceLength, intLeaveType } =
-                          form.getFieldsValue();
-
+                        const { intLeaveType } = form.getFieldsValue();
                         // const empType = employeeType?.label;
 
                         return (
+                          <>
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={
+                                  [4, 5].includes(intLeaveType?.value)
+                                    ? [
+                                        ...dependsOnDDL,
+                                        { value: 3, label: "Calculation" },
+                                      ]
+                                    : dependsOnDDL
+                                }
+                                name="intLeaveDependOn"
+                                label="Leave Depened on"
+                                placeholder="Leave Depened on"
+                                onChange={(value, op) => {
+                                  if (value == 2) {
+                                    form.setFieldsValue({
+                                      isDependOnServiceLength: true,
+                                      intLeaveDependOn: op,
+                                      intLveInDay: undefined,
+                                      intEndServiceLengthInYear: undefined,
+                                      intStartServiceLengthInYear: undefined,
+                                      showLveIndays: dependsOnDDL[0],
+                                    });
+                                  } else {
+                                    setTableData([]);
+                                    form.setFieldsValue({
+                                      intLeaveDependOn: op,
+                                      isDependOnServiceLength: false,
+                                    });
+                                  }
+                                }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Leave Depend On is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          </>
+                        );
+                      }}
+                    </Form.Item>
+
+                    <Form.Item shouldUpdate noStyle>
+                      {() => {
+                        const {
+                          showLveIndays,
+                          intLeaveDependOn,
+                          isDependOnServiceLength,
+                          intStartServiceLengthInYear,
+                          intLveInDay,
+                          intEndServiceLengthInYear,
+                          intLeaveType,
+                        } = form.getFieldsValue(true);
+                        // const empType = employeeType?.label;
+
+                        return intLeaveDependOn?.value === 2 ? (
+                          <>
+                            <Col md={12}></Col>
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={[
+                                  { value: 0, label: "0" },
+                                  { value: 1, label: "1" },
+                                  { value: 2, label: "2" },
+                                  { value: 3, label: "3" },
+                                  { value: 4, label: "4" },
+                                  { value: 5, label: "5" },
+                                  { value: 6, label: "6" },
+                                  { value: 7, label: "7" },
+                                  { value: 8, label: "8" },
+                                  { value: 9, label: "9" },
+                                  { value: 10, label: "10" },
+                                  { value: 11, label: "11" },
+                                  { value: 12, label: "12" },
+                                  { value: 13, label: "13" },
+                                  { value: 14, label: "14" },
+                                  { value: 15, label: "15" },
+                                  { value: 16, label: "16" },
+                                  { value: 17, label: "17" },
+                                  { value: 18, label: "18" },
+                                  { value: 19, label: "19" },
+                                  { value: 20, label: "20" },
+                                ]}
+                                name="intStartServiceLengthInYear"
+                                label=" Starting Service Length In Years"
+                                disabled={!isDependOnServiceLength}
+                                placeholder="Starting Service Length In Years"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    intStartServiceLengthInYear: op,
+                                  });
+                                }}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={[
+                                  { value: 100, label: "Above" },
+                                  { value: 1, label: "1" },
+                                  { value: 2, label: "2" },
+                                  { value: 3, label: "3" },
+                                  { value: 4, label: "4" },
+                                  { value: 5, label: "5" },
+                                  { value: 6, label: "6" },
+                                  { value: 7, label: "7" },
+                                  { value: 8, label: "8" },
+                                  { value: 9, label: "9" },
+                                  { value: 10, label: "10" },
+                                  { value: 11, label: "11" },
+                                  { value: 12, label: "12" },
+                                  { value: 13, label: "13" },
+                                  { value: 14, label: "14" },
+                                  { value: 15, label: "15" },
+                                  { value: 16, label: "16" },
+                                  { value: 17, label: "17" },
+                                  { value: 18, label: "18" },
+                                  { value: 19, label: "19" },
+                                  { value: 20, label: "20" },
+                                ]}
+                                name="intEndServiceLengthInYear"
+                                label="End Service Length in Years"
+                                disabled={!isDependOnServiceLength}
+                                placeholder="End Service Length in Years"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    intEndServiceLengthInYear: op,
+                                  });
+                                }}
+                              />
+                            </Col>
+                            <Col
+                              md={
+                                showLveIndays?.value === 3 || !showLveIndays
+                                  ? 10
+                                  : 12
+                              }
+                              sm={24}
+                            >
+                              <PSelect
+                                options={
+                                  [4, 5].includes(intLeaveType?.value)
+                                    ? [
+                                        { value: 1, label: "Standard" },
+
+                                        { value: 3, label: "Calculation" },
+                                      ]
+                                    : [{ value: 1, label: "Standard" }]
+                                }
+                                name="showLveIndays"
+                                label="Depened on"
+                                placeholder="Depened on"
+                                onChange={(value, op) => {
+                                  if (value == 3) {
+                                    form.setFieldsValue({
+                                      showLveIndays: op,
+                                      intLveInDay: 0,
+                                    });
+                                  } else {
+                                    form.setFieldsValue({
+                                      showLveIndays: op,
+                                      intLveInDay: undefined,
+                                    });
+                                  }
+                                }}
+                                // rules={[
+                                //   {
+                                //     required: false,
+                                //     message: "Leave Type is required",
+                                //   },
+                                // ]}
+                              />
+                            </Col>
+                            {showLveIndays?.value === 1 && (
+                              <Col md={10} sm={22}>
+                                <PInput
+                                  disabled={!isDependOnServiceLength}
+                                  type="number"
+                                  name="intLveInDay"
+                                  label="Leave Days"
+                                  placeholder="Leave Days"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message: "Leave Days must be positive",
+                                      pattern: new RegExp(
+                                        /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                      ),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            <Col span={2} className="mt-1">
+                              <button
+                                type="button"
+                                className="mt-4  btn add-ddl-btn "
+                                style={{
+                                  margin: "0.4em 0 0 0.7em",
+                                  padding: "0.2em",
+                                }}
+                                onClick={() => {
+                                  if (
+                                    intEndServiceLengthInYear === undefined ||
+                                    intLveInDay === undefined ||
+                                    intStartServiceLengthInYear === undefined
+                                  ) {
+                                    return toast.warn(
+                                      "Please fill up the fields"
+                                    );
+                                  }
+                                  setTableData((prev: any) => [
+                                    ...prev,
+                                    {
+                                      intStartServiceLengthInYear:
+                                        intStartServiceLengthInYear,
+                                      intEndServiceLengthInYear:
+                                        intEndServiceLengthInYear,
+                                      intLveInDay: intLveInDay,
+                                      showLveIndays: showLveIndays,
+                                    },
+                                  ]);
+                                  form.setFieldsValue({
+                                    intLveInDay: undefined,
+                                    intEndServiceLengthInYear: undefined,
+                                    intStartServiceLengthInYear: undefined,
+                                    showLveIndays: undefined,
+                                  });
+                                }}
+                              >
+                                <AddOutlined sx={{ fontSize: "16px" }} />
+                              </button>
+                            </Col>
+                          </>
+                        ) : (
                           <>
                             <Col md={12} sm={24}>
                               <PInput
@@ -366,10 +613,10 @@ const CreateEditLeavePolicy = () => {
                                   },
                                 ]}
                                 disabled={
-                                  isDependOnServiceLength ||
-                                  intLeaveType?.label ===
-                                    "Earn Leave/Annual Leave" ||
-                                  intLeaveType?.label === "Compensatory Leave"
+                                  // isDependOnServiceLength ||
+                                  (intLeaveType?.value === 4 ||
+                                    intLeaveType?.value === 5) &&
+                                  intLeaveDependOn?.value === 3
                                 }
                               />
                             </Col>
@@ -377,6 +624,95 @@ const CreateEditLeavePolicy = () => {
                         );
                       }}
                     </Form.Item>
+                    <Col md={15} sm={24}>
+                      {tableData?.length > 0 && (
+                        <div
+                          className="table-card-body pt-3 "
+                          style={{ marginLeft: "-.8em" }}
+                        >
+                          <div
+                            className=" table-card-styled tableOne"
+                            style={{ padding: "0px 12px" }}
+                          >
+                            <table className="table align-middle">
+                              <thead style={{ color: "#212529" }}>
+                                <tr>
+                                  <th>
+                                    <div className="d-flex align-items-center">
+                                      Service Duration
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div className="d-flex align-items-center">
+                                      Leave in Days
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div className="d-flex align-items-center justify-content-end">
+                                      Action
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tableData?.length > 0 && (
+                                  <>
+                                    {tableData.map(
+                                      (item: any, index: number) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td>
+                                              {item?.intStartServiceLengthInYear
+                                                ?.label ===
+                                              item?.intEndServiceLengthInYear
+                                                ?.label
+                                                ? `${item?.intEndServiceLengthInYear?.label}
+                                              years`
+                                                : item
+                                                    ?.intStartServiceLengthInYear
+                                                    ?.label +
+                                                  " - " +
+                                                  `${item?.intEndServiceLengthInYear?.label}` +
+                                                  " years "}
+                                            </td>
+                                            <td>{item?.intLveInDay}</td>
+                                            <td>
+                                              <div className="d-flex align-items-end justify-content-end">
+                                                <IconButton
+                                                  type="button"
+                                                  style={{
+                                                    height: "25px",
+                                                    width: "25px",
+                                                  }}
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    remover(index);
+                                                    // deleteRow(item?.intWorkplaceId);
+                                                  }}
+                                                >
+                                                  <Tooltip title="Delete">
+                                                    <DeleteOutline
+                                                      sx={{
+                                                        height: "25px",
+                                                        width: "25px",
+                                                      }}
+                                                    />
+                                                  </Tooltip>
+                                                </IconButton>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        );
+                                      }
+                                    )}
+                                  </>
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                    </Col>
                     <Col md={12} sm={24}>
                       <PInput
                         type="number"
@@ -832,318 +1168,117 @@ const CreateEditLeavePolicy = () => {
                     />
                   </Col>
 
-                  <Form.Item shouldUpdate noStyle>
-                    {() => {
-                      const {
-                        intLeaveType,
-                        isDependOnServiceLength,
-                        intLveInDay,
-                        intEndServiceLengthInYear,
-                        intStartServiceLengthInYear,
-                      } = form.getFieldsValue();
+                  {/* LWP Configuration  */}
 
-                      // const empType = employeeType?.label;
+                  <>
+                    <Form.Item shouldUpdate noStyle>
+                      {() => {
+                        const { intLeaveType, intLwpbasedOn } =
+                          form.getFieldsValue(true);
 
-                      return (
-                        <>
-                          <Divider
-                            style={{
-                              marginBlock: "4px",
-                              marginTop: "6px",
-                              fontSize: "14px",
-                              fontWeight: 600,
-                            }}
-                            orientation="left"
-                          >
-                            <div
+                        // const empType = employeeType?.label;
+
+                        return intLeaveType?.value === 6 ? (
+                          <>
+                            <Divider
                               style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "5px",
+                                marginBlock: "4px",
+                                marginTop: "6px",
+                                fontSize: "14px",
+                                fontWeight: 600,
                               }}
+                              orientation="left"
                             >
-                              <PInput
-                                type="checkbox"
-                                layout="horizontal"
-                                name="isDependOnServiceLength"
-                                disabled={
-                                  // intLeaveType?.label ===
-                                  //   "Earn Leave/Annual Leave" ||
-                                  intLeaveType?.label === "Compensatory Leave"
-                                }
-                                onChange={(e) => {
-                                  setTableData([]);
-                                  if (e.target.checked) {
-                                    form.setFieldsValue({
-                                      intAllocatedLveInDay: undefined,
-                                    });
-                                  } else {
-                                    form.setFieldsValue({
-                                      intLveInDay: undefined,
-                                      intEndServiceLengthInYear: undefined,
-                                      intStartServiceLengthInYear: undefined,
-                                    });
-                                  }
+                              Leave Without Pay Configuration
+                            </Divider>
+
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={[
+                                  { value: 1, label: "Basic" },
+                                  { value: 2, label: "Gross" },
+                                  { value: 3, label: "Fixed Amount" },
+                                ]}
+                                name="intLwpbasedOn"
+                                label="Based On"
+                                placeholder="Based On"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    intLwpbasedOn: op,
+                                    intLwpamountOrPercentage: undefined,
+                                  });
                                 }}
+                                // rules={[
+                                //   {
+                                //     required: intLeaveType?.value === 6,
+                                //     message: `Based On is required`,
+                                //   },
+                                // ]}
                               />
-                              <span>Depends on Service Length</span>
-                            </div>
-                          </Divider>
-                          {/* <Col md={12} sm={24}>
-                            <PInput
-                              label="Depends on Service Length"
-                              type="checkbox"
-                              layout="horizontal"
-                              name="isDependOnServiceLength"
-                              disabled={
-                                intLeaveType?.label ===
-                                  "Earn Leave/Annual Leave" ||
-                                intLeaveType?.label === "Compensatory Leave"
-                              }
-                              onChange={(e) => {
-                                setTableData([]);
-                                if (e.target.checked) {
-                                  form.setFieldsValue({
-                                    intAllocatedLveInDay: undefined,
-                                  });
-                                } else {
-                                  form.setFieldsValue({
-                                    intLveInDay: undefined,
-                                    intEndServiceLengthInYear: undefined,
-                                    intStartServiceLengthInYear: undefined,
-                                  });
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                type="number"
+                                name="intLwpamountOrPercentage"
+                                label={
+                                  intLwpbasedOn?.value === 3
+                                    ? "Amount"
+                                    : "Percentage"
                                 }
-                              }}
-                            />
-                          </Col> */}
-                          <Col md={12} sm={24}>
-                            <PSelect
-                              options={[
-                                { value: 0, label: "0" },
-                                { value: 1, label: "1" },
-                                { value: 2, label: "2" },
-                                { value: 3, label: "3" },
-                                { value: 4, label: "4" },
-                                { value: 5, label: "5" },
-                                { value: 6, label: "6" },
-                                { value: 7, label: "7" },
-                                { value: 8, label: "8" },
-                                { value: 9, label: "9" },
-                                { value: 10, label: "10" },
-                                { value: 11, label: "11" },
-                                { value: 12, label: "12" },
-                                { value: 13, label: "13" },
-                                { value: 14, label: "14" },
-                                { value: 15, label: "15" },
-                                { value: 16, label: "16" },
-                                { value: 17, label: "17" },
-                                { value: 18, label: "18" },
-                                { value: 19, label: "19" },
-                                { value: 20, label: "20" },
-                              ]}
-                              name="intStartServiceLengthInYear"
-                              label=" Starting Service Length In Years"
-                              disabled={!isDependOnServiceLength}
-                              placeholder="Starting Service Length In Years"
-                              onChange={(value, op) => {
-                                form.setFieldsValue({
-                                  intStartServiceLengthInYear: op,
-                                });
-                              }}
-                            />
-                          </Col>
-                          <Col md={12} sm={24}>
-                            <PSelect
-                              options={[
-                                { value: 100, label: "Above" },
-                                { value: 1, label: "1" },
-                                { value: 2, label: "2" },
-                                { value: 3, label: "3" },
-                                { value: 4, label: "4" },
-                                { value: 5, label: "5" },
-                                { value: 6, label: "6" },
-                                { value: 7, label: "7" },
-                                { value: 8, label: "8" },
-                                { value: 9, label: "9" },
-                                { value: 10, label: "10" },
-                                { value: 11, label: "11" },
-                                { value: 12, label: "12" },
-                                { value: 13, label: "13" },
-                                { value: 14, label: "14" },
-                                { value: 15, label: "15" },
-                                { value: 16, label: "16" },
-                                { value: 17, label: "17" },
-                                { value: 18, label: "18" },
-                                { value: 19, label: "19" },
-                                { value: 20, label: "20" },
-                              ]}
-                              name="intEndServiceLengthInYear"
-                              label="End Service Length in Years"
-                              disabled={!isDependOnServiceLength}
-                              placeholder="End Service Length in Years"
-                              onChange={(value, op) => {
-                                form.setFieldsValue({
-                                  intEndServiceLengthInYear: op,
-                                });
-                              }}
-                            />
-                          </Col>
-                          <Col md={10} sm={22}>
-                            <PInput
-                              disabled={!isDependOnServiceLength}
-                              type="number"
-                              name="intLveInDay"
-                              label="Leave Days"
-                              placeholder="Leave Days"
-                              size="small"
-                              rules={[
-                                {
-                                  message: "Leave Days must be positive",
-                                  pattern: new RegExp(
-                                    /^[+]?([.]\d+|\d+([.]\d+)?)$/
-                                  ),
-                                },
-                              ]}
-                            />
-                          </Col>
-                          <Col span={2} className="mt-1">
-                            <button
-                              type="button"
-                              className="mt-4  btn add-ddl-btn "
-                              style={{
-                                margin: "0.4em 0 0 0.7em",
-                                padding: "0.2em",
-                              }}
-                              onClick={() => {
-                                if (
-                                  intEndServiceLengthInYear === undefined ||
-                                  intLveInDay === undefined ||
-                                  intStartServiceLengthInYear === undefined
-                                ) {
-                                  return toast.warn(
-                                    "Please fill up the fields"
-                                  );
+                                placeholder={
+                                  intLwpbasedOn?.value === 3
+                                    ? "Amount"
+                                    : "Percentage"
                                 }
-                                setTableData((prev: any) => [
-                                  ...prev,
+                                size="small"
+                                rules={[
                                   {
-                                    intStartServiceLengthInYear:
-                                      intStartServiceLengthInYear,
-                                    intEndServiceLengthInYear:
-                                      intEndServiceLengthInYear,
-                                    intLveInDay: intLveInDay,
+                                    required: intLwpbasedOn?.value
+                                      ? true
+                                      : false,
+                                    message: `${
+                                      intLwpbasedOn?.value === 3
+                                        ? "Amount"
+                                        : "Percentage"
+                                    } is required`,
                                   },
-                                ]);
-                                form.setFieldsValue({
-                                  intLveInDay: undefined,
-                                  intEndServiceLengthInYear: undefined,
-                                  intStartServiceLengthInYear: undefined,
-                                });
-                              }}
-                            >
-                              <AddOutlined sx={{ fontSize: "16px" }} />
-                            </button>
-                          </Col>
-                        </>
-                      );
-                    }}
-                  </Form.Item>
-                  <Col md={15} sm={24}>
-                    {tableData?.length > 0 && (
-                      <div
-                        className="table-card-body pt-3 "
-                        style={{ marginLeft: "-.8em" }}
-                      >
-                        <div
-                          className=" table-card-styled tableOne"
-                          style={{ padding: "0px 12px" }}
-                        >
-                          <table className="table align-middle">
-                            <thead style={{ color: "#212529" }}>
-                              <tr>
-                                <th>
-                                  <div className="d-flex align-items-center">
-                                    Service Duration
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center">
-                                    Leave in Days
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center justify-content-end">
-                                    Action
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {tableData?.length > 0 && (
-                                <>
-                                  {tableData.map((item: any, index: number) => {
-                                    return (
-                                      <tr key={index}>
-                                        <td>
-                                          {item?.intStartServiceLengthInYear
-                                            ?.label ===
-                                          item?.intEndServiceLengthInYear?.label
-                                            ? `${item?.intEndServiceLengthInYear?.label}
-                                              years`
-                                            : item?.intStartServiceLengthInYear
-                                                ?.label +
-                                              " - " +
-                                              `${item?.intEndServiceLengthInYear?.label}` +
-                                              " years "}
-                                        </td>
-                                        <td>{item?.intLveInDay}</td>
-                                        <td>
-                                          <div className="d-flex align-items-end justify-content-end">
-                                            <IconButton
-                                              type="button"
-                                              style={{
-                                                height: "25px",
-                                                width: "25px",
-                                              }}
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                remover(index);
-                                                // deleteRow(item?.intWorkplaceId);
-                                              }}
-                                            >
-                                              <Tooltip title="Delete">
-                                                <DeleteOutline
-                                                  sx={{
-                                                    height: "25px",
-                                                    width: "25px",
-                                                  }}
-                                                />
-                                              </Tooltip>
-                                            </IconButton>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    )}
-                  </Col>
+                                  {
+                                    message: `${
+                                      intLwpbasedOn?.value === 3
+                                        ? "Amount"
+                                        : "Percentage"
+                                    } be positive`,
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          </>
+                        ) : null;
+                      }}
+                    </Form.Item>
+                  </>
+
                   {/* Compensatory Leave Configuration  */}
 
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const { intLeaveType, isCompensatoryLveExpire } =
-                          form.getFieldsValue();
+                        const {
+                          intLeaveType,
+                          intLeaveDependOn,
+                          isCompensatoryLveExpire,
+                        } = form.getFieldsValue(true);
 
                         // const empType = employeeType?.label;
 
-                        return intLeaveType?.label === "Compensatory Leave" ? (
+                        return intLeaveType?.value === 5 &&
+                          (intLeaveDependOn?.value === 3 ||
+                            tableData?.filter(
+                              (i: any) => i?.showLveIndays?.value === 3
+                            )?.length > 0) ? (
                           <>
                             <Divider
                               style={{
@@ -1246,11 +1381,15 @@ const CreateEditLeavePolicy = () => {
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const { intLeaveType } = form.getFieldsValue();
+                        const { intLeaveType, intLeaveDependOn } =
+                          form.getFieldsValue(true);
                         // const empType = employeeType?.label;
 
-                        return intLeaveType?.label ===
-                          "Earn Leave/Annual Leave" ? (
+                        return intLeaveType?.value === 4 &&
+                          (intLeaveDependOn?.value === 3 ||
+                            tableData?.filter(
+                              (i: any) => i?.showLveIndays?.value === 3
+                            )?.length > 0) ? (
                           <>
                             <>
                               <div
@@ -1488,6 +1627,7 @@ const CreateEditLeavePolicy = () => {
                               intCarryForwardMaxInDay: undefined,
                               intCarryForwarExpiryDay: undefined,
                               intCarryForwarExpiryMonth: undefined,
+                              isCarryWillBeCounted: undefined,
                             });
                           }}
                         />
@@ -1499,6 +1639,15 @@ const CreateEditLeavePolicy = () => {
                         const { isCarryForward } = form.getFieldsValue();
                         return (
                           <>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                disabled={!isCarryForward}
+                                label="Is Carry Will Be Counted?"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isCarryWillBeCounted"
+                              />
+                            </Col>
                             <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isCarryForward}
