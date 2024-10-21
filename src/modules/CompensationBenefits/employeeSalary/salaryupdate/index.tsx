@@ -30,7 +30,64 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   );
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
-  const [rowDto, setRowDto] = React.useState<any[]>([]);
+  const [rowDto, setRowDto] = React.useState<any[]>([
+    {
+      intSalaryBreakdownHeaderId: 28,
+      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
+      intPayrollElementTypeId: 233,
+      strPayrollElementName: "Basic Salary",
+      strBasedOn: "Amount",
+      strDependOn: "Basic",
+      isBasicSalary: true,
+      numNumberOfPercent: 0,
+      numAmount: 10,
+      intSalaryBreakdownHeaderId1: 28,
+      intSalaryBreakdownRowId: 104,
+      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
+    },
+    {
+      intSalaryBreakdownHeaderId: 28,
+      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
+      intPayrollElementTypeId: 234,
+      strPayrollElementName: "House Rent",
+      strBasedOn: "Percentage",
+      strDependOn: "Basic",
+      isBasicSalary: false,
+      numNumberOfPercent: 50,
+      numAmount: 20,
+      intSalaryBreakdownHeaderId1: 28,
+      intSalaryBreakdownRowId: 102,
+      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
+    },
+    {
+      intSalaryBreakdownHeaderId: 28,
+      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
+      intPayrollElementTypeId: 235,
+      strPayrollElementName: "Medical Allowance",
+      strBasedOn: "Percentage",
+      strDependOn: "Basic",
+      isBasicSalary: false,
+      numNumberOfPercent: 10,
+      numAmount: 0,
+      intSalaryBreakdownHeaderId1: 28,
+      intSalaryBreakdownRowId: 103,
+      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
+    },
+    {
+      intSalaryBreakdownHeaderId: 28,
+      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
+      intPayrollElementTypeId: 236,
+      strPayrollElementName: "Conveyance",
+      strBasedOn: "Amount",
+      strDependOn: "Basic",
+      isBasicSalary: false,
+      numNumberOfPercent: 0,
+      numAmount: 2500,
+      intSalaryBreakdownHeaderId1: 28,
+      intSalaryBreakdownRowId: 105,
+      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
+    },
+  ]);
   const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
 
   // Form Instance
@@ -38,12 +95,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
   // Api Actions
   const bulkLandingAPI = useApiRequest([]);
-  const employmentTypeDDL = useApiRequest([]);
-  const empDepartmentDDL = useApiRequest([]);
-  const workG = useApiRequest([]);
-  const workP = useApiRequest([]);
-  const positionDDL = useApiRequest([]);
-  const empDesignationDDL = useApiRequest([]);
+  // const employmentTypeDDL = useApiRequest([]);
+  // const empDepartmentDDL = useApiRequest([]);
+  // const workG = useApiRequest([]);
+  // const workP = useApiRequest([]);
+  // const positionDDL = useApiRequest([]);
+  // const empDesignationDDL = useApiRequest([]);
   const payrollGroupDDL = useApiRequest([]);
 
   const dispatch = useDispatch();
@@ -104,129 +161,129 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
   };
 
-  const getEmploymentType = () => {
-    const { workplaceGroup, wp } = form.getFieldsValue(true);
+  // const getEmploymentType = () => {
+  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
 
-    employmentTypeDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmploymentType",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: wp?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.EmploymentType;
-          res[i].value = item?.Id;
-        });
-      },
-    });
-  };
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workG?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId, // This should be removed
-        intId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workP?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
-  const getEmployeDepartment = () => {
-    const { workplaceGroup, wp } = form.getFieldsValue(true);
+  //   employmentTypeDDL?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "EmploymentType",
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: workplaceGroup?.value,
+  //       IntWorkplaceId: wp?.value,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.EmploymentType;
+  //         res[i].value = item?.Id;
+  //       });
+  //     },
+  //   });
+  // };
+  // // workplace wise
+  // const getWorkplaceGroup = () => {
+  //   workG?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "WorkplaceGroup",
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: wgId, // This should be removed
+  //       intId: employeeId,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.strWorkplaceGroup;
+  //         res[i].value = item?.intWorkplaceGroupId;
+  //       });
+  //     },
+  //   });
+  // };
+  // const getWorkplace = () => {
+  //   const { workplaceGroup } = form.getFieldsValue(true);
+  //   workP?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "Workplace",
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: workplaceGroup?.value,
+  //       intId: employeeId,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.strWorkplace;
+  //         res[i].value = item?.intWorkplaceId;
+  //       });
+  //     },
+  //   });
+  // };
+  // const getEmployeDepartment = () => {
+  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
 
-    empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmpDepartment",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: wp?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.DepartmentName;
-          res[i].value = item?.DepartmentId;
-        });
-      },
-    });
-  };
-  const getEmployeDesignation = () => {
-    const { workplaceGroup, wp } = form.getFieldsValue(true);
+  //   empDepartmentDDL?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "EmpDepartment",
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: workplaceGroup?.value,
+  //       IntWorkplaceId: wp?.value,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.DepartmentName;
+  //         res[i].value = item?.DepartmentId;
+  //       });
+  //     },
+  //   });
+  // };
+  // const getEmployeDesignation = () => {
+  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
 
-    empDesignationDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmpDesignation",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: wp?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.DesignationName;
-          res[i].value = item?.DesignationId;
-        });
-      },
-    });
-  };
-  const getEmployeePosition = () => {
-    const { workplaceGroup, wp } = form.getFieldsValue(true);
+  //   empDesignationDDL?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "EmpDesignation",
+  //       AccountId: orgId,
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: workplaceGroup?.value,
+  //       IntWorkplaceId: wp?.value,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.DesignationName;
+  //         res[i].value = item?.DesignationId;
+  //       });
+  //     },
+  //   });
+  // };
+  // const getEmployeePosition = () => {
+  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
 
-    positionDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Position",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: wp?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.PositionName;
-          res[i].value = item?.PositionId;
-        });
-      },
-    });
-  };
+  //   positionDDL?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "Position",
+  //       BusinessUnitId: buId,
+  //       WorkplaceGroupId: workplaceGroup?.value,
+  //       IntWorkplaceId: wp?.value,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.PositionName;
+  //         res[i].value = item?.PositionId;
+  //       });
+  //     },
+  //   });
+  // };
   //   export const getBreakdownPolicyDDL = async (
 
   const getPayrollGroupDDL = () => {
@@ -334,231 +391,283 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       // fixed: "left",
     },
     {
-      title: "Employee ID",
-      dataIndex: "strEmployeeCode",
-      // fixed: "left",
+      title: "Payroll Element",
+      dataIndex: "strPayrollElementName",
     },
     {
-      title: "Employee Name",
-      dataIndex: "strEmployeeName",
-      // fixed: "left",
+      title: "Based On",
+      dataIndex: "strBasedOn",
     },
     {
-      title: "Designation",
-      dataIndex: "strDesignationName",
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartmentName",
-    },
-
-    {
-      title: "Per Day Salary",
-      render: (value: any, row: any, index: number) => (
+      title: "Amount/Percentage",
+      render: (value: any, row: any) => (
         <>
-          <PSelect
-            name={`isPerDay_${index}`}
-            options={[
-              { value: 1, label: "Yes" },
-              { value: 0, label: "No" },
-            ]}
-            onChange={(value) => handleIsPerDayChange(value, index, "isPerDay")}
-            defaultValue={{ value: 1, label: "Yes" }}
-            // rules={[{ required: true, message: "Per Day Salary is required" }]}
-          />
+          {row?.strBasedOn === "Amount"
+            ? row?.numAmount
+            : row?.numNumberOfPercent}
         </>
       ),
     },
     {
-      title: "Total Gross Salary",
+      title: "Net Amount",
       render: (value: any, row: any, index: number) => (
         <>
           <PInput
             type="number"
-            name={`TGS_${index}`}
+            // name={`numAmount_${index}`}
+            value={row?.numAmount}
             placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const TGS = parseFloat(value);
-                  const isExit = selectedRow.find(
-                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
-                  );
-                  if (isExit && isNaN(TGS)) {
-                    callback("Amount Is Required");
-                  } else if (TGS < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
-                },
-              },
-            ]}
+            disabled={row?.strBasedOn !== "Amount"}
+            // rules={[
+            //   // { required: true, message: "Amount Is Required" },
+            //   {
+            //     validator: (_, value, callback) => {
+            //       const isExit = selectedRow.find(
+            //         (item: any) => item?.intEmployeeId === row?.intEmployeeId
+            //       );
+            //       const CA = parseFloat(value);
+            //       const BA = parseFloat(form.getFieldValue(`BA_${index}`) || 0);
+            //       const MFS = parseFloat(
+            //         form.getFieldValue(`MFS_${index}`) || 0
+            //       );
+            //       const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
+            //       if (isExit) {
+            //         if (isNaN(CA) || CA < 0) {
+            //           callback("Amount Is Required");
+            //         } else if (CA + BA + MFS !== TGS) {
+            //           callback("CA + BA + MFS must equal TGS");
+            //         } else {
+            //           callback();
+            //         }
+            //       }
+            //     },
+            //   },
+            // ]}
             // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "TGS");
-              handleIsPerDayChange(e, index, "CA");
-              handleIsPerDayChange(0, index, "BA");
-              handleIsPerDayChange(0, index, "MFS");
-              const property = `CA_${index}`;
-              const property2 = `BA_${index}`;
-              const property3 = `MFS_${index}`;
-              form.setFieldsValue({
-                [property]: e,
-                [property2]: 0,
-                [property3]: 0,
-              });
-            }}
-          />
-        </>
-      ),
-    },
-    ...dynamicHeader,
-    {
-      title: "Net Salary Amount",
-      dataIndex: "TGS",
-    },
-    {
-      title: "Bank Amount",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`BA_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const BA = parseFloat(value);
-                  const isExit = selectedRow.find(
-                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
-                  );
-                  if (isExit && isNaN(BA)) {
-                    callback("Amount Is Required");
-                  } else if (BA < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
-                },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              // const property1 = `MFS_${index}`;
-              handleIsPerDayChange(e, index, "BA");
+            // onChange={(e: any) => {
+            //   handleIsPerDayChange(e, index, "CA");
+            //   handleIsPerDayChange(0, index, "BA");
+            //   handleIsPerDayChange(0, index, "MFS");
 
-              handleIsPerDayChange(row?.TGS - e - row?.MFS, index, "CA");
-              // handleIsPerDayChange(e, index, "BA");
-              // handleIsPerDayChange(row?.TGS - e, index, "CA");
-              const property2 = `CA_${index}`;
-              form.setFieldsValue({
-                // [property1]: row?.TGS - e,
-                [property2]: row?.TGS - e - row?.MFS,
-              });
-            }}
+            //   const property1 = `BA_${index}`;
+            //   const property2 = `MFS_${index}`;
+            //   form.setFieldsValue({
+            //     [property1]: 0,
+            //     [property2]: 0,
+            //   });
+            // }}
           />
         </>
       ),
     },
-    {
-      title: "MFS Amount",
-      render: (_: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`MFS_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const MFS = parseFloat(value);
-                  const isExit = selectedRow.find(
-                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
-                  );
-                  if (isExit && isNaN(MFS)) {
-                    callback("Amount Is Required");
-                  } else if (MFS < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
-                },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "MFS");
 
-              handleIsPerDayChange(row?.TGS - e - row?.BA, index, "CA");
-              // handleIsPerDayChange(row?.TGS - row?.CA, index, "BA");
-              // const property1 = `BA_${index}`;
-              const property2 = `CA_${index}`;
-              form.setFieldsValue({
-                [property2]: row?.TGS - e - row?.BA,
-                // [property1]: row?.TGS - row?.CA,
-              });
-            }}
-          />
-        </>
-      ),
-    },
-    {
-      title: "Cash Amount",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`CA_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const isExit = selectedRow.find(
-                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
-                  );
-                  const CA = parseFloat(value);
-                  const BA = parseFloat(form.getFieldValue(`BA_${index}`) || 0);
-                  const MFS = parseFloat(
-                    form.getFieldValue(`MFS_${index}`) || 0
-                  );
-                  const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
-                  if (isExit) {
-                    if (isNaN(CA) || CA < 0) {
-                      callback("Amount Is Required");
-                    } else if (CA + BA + MFS !== TGS) {
-                      callback("CA + BA + MFS must equal TGS");
-                    } else {
-                      callback();
-                    }
-                  }
-                },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "CA");
-              handleIsPerDayChange(0, index, "BA");
-              handleIsPerDayChange(0, index, "MFS");
+    // {
+    //   title: "Per Day Salary",
+    //   render: (value: any, row: any, index: number) => (
+    //     <>
+    //       <PSelect
+    //         name={`isPerDay_${index}`}
+    //         options={[
+    //           { value: 1, label: "Yes" },
+    //           { value: 0, label: "No" },
+    //         ]}
+    //         onChange={(value) => handleIsPerDayChange(value, index, "isPerDay")}
+    //         defaultValue={{ value: 1, label: "Yes" }}
+    //         // rules={[{ required: true, message: "Per Day Salary is required" }]}
+    //       />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   title: "Total Gross Salary",
+    //   render: (value: any, row: any, index: number) => (
+    //     <>
+    //       <PInput
+    //         type="number"
+    //         name={`TGS_${index}`}
+    //         placeholder="Amount"
+    //         rules={[
+    //           // { required: true, message: "Amount Is Required" },
+    //           {
+    //             validator: (_, value, callback) => {
+    //               const TGS = parseFloat(value);
+    //               const isExit = selectedRow.find(
+    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
+    //               );
+    //               if (isExit && isNaN(TGS)) {
+    //                 callback("Amount Is Required");
+    //               } else if (TGS < 0) {
+    //                 callback("Cant be Negative");
+    //               } else {
+    //                 callback();
+    //               }
+    //             },
+    //           },
+    //         ]}
+    //         // disabled={true}
+    //         onChange={(e: any) => {
+    //           handleIsPerDayChange(e, index, "TGS");
+    //           handleIsPerDayChange(e, index, "CA");
+    //           handleIsPerDayChange(0, index, "BA");
+    //           handleIsPerDayChange(0, index, "MFS");
+    //           const property = `CA_${index}`;
+    //           const property2 = `BA_${index}`;
+    //           const property3 = `MFS_${index}`;
+    //           form.setFieldsValue({
+    //             [property]: e,
+    //             [property2]: 0,
+    //             [property3]: 0,
+    //           });
+    //         }}
+    //       />
+    //     </>
+    //   ),
+    // },
+    // ...dynamicHeader,
+    // {
+    //   title: "Net Salary Amount",
+    //   dataIndex: "TGS",
+    // },
+    // {
+    //   title: "Bank Amount",
+    //   render: (value: any, row: any, index: number) => (
+    //     <>
+    //       <PInput
+    //         type="number"
+    //         name={`BA_${index}`}
+    //         placeholder="Amount"
+    //         rules={[
+    //           // { required: true, message: "Amount Is Required" },
+    //           {
+    //             validator: (_, value, callback) => {
+    //               const BA = parseFloat(value);
+    //               const isExit = selectedRow.find(
+    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
+    //               );
+    //               if (isExit && isNaN(BA)) {
+    //                 callback("Amount Is Required");
+    //               } else if (BA < 0) {
+    //                 callback("Cant be Negative");
+    //               } else {
+    //                 callback();
+    //               }
+    //             },
+    //           },
+    //         ]}
+    //         // disabled={true}
+    //         onChange={(e: any) => {
+    //           // const property1 = `MFS_${index}`;
+    //           handleIsPerDayChange(e, index, "BA");
 
-              const property1 = `BA_${index}`;
-              const property2 = `MFS_${index}`;
-              form.setFieldsValue({
-                [property1]: 0,
-                [property2]: 0,
-              });
-            }}
-          />
-        </>
-      ),
-    },
+    //           handleIsPerDayChange(row?.TGS - e - row?.MFS, index, "CA");
+    //           // handleIsPerDayChange(e, index, "BA");
+    //           // handleIsPerDayChange(row?.TGS - e, index, "CA");
+    //           const property2 = `CA_${index}`;
+    //           form.setFieldsValue({
+    //             // [property1]: row?.TGS - e,
+    //             [property2]: row?.TGS - e - row?.MFS,
+    //           });
+    //         }}
+    //       />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   title: "MFS Amount",
+    //   render: (_: any, row: any, index: number) => (
+    //     <>
+    //       <PInput
+    //         type="number"
+    //         name={`MFS_${index}`}
+    //         placeholder="Amount"
+    //         rules={[
+    //           // { required: true, message: "Amount Is Required" },
+    //           {
+    //             validator: (_, value, callback) => {
+    //               const MFS = parseFloat(value);
+    //               const isExit = selectedRow.find(
+    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
+    //               );
+    //               if (isExit && isNaN(MFS)) {
+    //                 callback("Amount Is Required");
+    //               } else if (MFS < 0) {
+    //                 callback("Cant be Negative");
+    //               } else {
+    //                 callback();
+    //               }
+    //             },
+    //           },
+    //         ]}
+    //         // disabled={true}
+    //         onChange={(e: any) => {
+    //           handleIsPerDayChange(e, index, "MFS");
+
+    //           handleIsPerDayChange(row?.TGS - e - row?.BA, index, "CA");
+    //           // handleIsPerDayChange(row?.TGS - row?.CA, index, "BA");
+    //           // const property1 = `BA_${index}`;
+    //           const property2 = `CA_${index}`;
+    //           form.setFieldsValue({
+    //             [property2]: row?.TGS - e - row?.BA,
+    //             // [property1]: row?.TGS - row?.CA,
+    //           });
+    //         }}
+    //       />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   title: "Cash Amount",
+    //   render: (value: any, row: any, index: number) => (
+    //     <>
+    //       <PInput
+    //         type="number"
+    //         name={`CA_${index}`}
+    //         placeholder="Amount"
+    //         rules={[
+    //           // { required: true, message: "Amount Is Required" },
+    //           {
+    //             validator: (_, value, callback) => {
+    //               const isExit = selectedRow.find(
+    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
+    //               );
+    //               const CA = parseFloat(value);
+    //               const BA = parseFloat(form.getFieldValue(`BA_${index}`) || 0);
+    //               const MFS = parseFloat(
+    //                 form.getFieldValue(`MFS_${index}`) || 0
+    //               );
+    //               const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
+    //               if (isExit) {
+    //                 if (isNaN(CA) || CA < 0) {
+    //                   callback("Amount Is Required");
+    //                 } else if (CA + BA + MFS !== TGS) {
+    //                   callback("CA + BA + MFS must equal TGS");
+    //                 } else {
+    //                   callback();
+    //                 }
+    //               }
+    //             },
+    //           },
+    //         ]}
+    //         // disabled={true}
+    //         onChange={(e: any) => {
+    //           handleIsPerDayChange(e, index, "CA");
+    //           handleIsPerDayChange(0, index, "BA");
+    //           handleIsPerDayChange(0, index, "MFS");
+
+    //           const property1 = `BA_${index}`;
+    //           const property2 = `MFS_${index}`;
+    //           form.setFieldsValue({
+    //             [property1]: 0,
+    //             [property2]: 0,
+    //           });
+    //         }}
+    //       />
+    //     </>
+    //   ),
+    // },
   ];
   useEffect(() => {
-    getWorkplaceGroup();
+    // getWorkplaceGroup();
   }, [wgId, buId, wId]);
   // console.log({ rowDto });
 
@@ -665,7 +774,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             <PSelect
               options={[
                 { value: 1, label: "Gross" },
-                { value: 2, label: "basic" },
+                { value: 2, label: "Basic" },
               ]}
               name="basedOn"
               label="Based On"
@@ -678,6 +787,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               rules={[{ required: true, message: "Based On is required" }]}
             />
           </Col>
+
           {/* <Col md={6} sm={12} xs={24}>
             <PSelect
               options={employmentTypeDDL?.data || []}
@@ -764,34 +874,99 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             />
           </Col> */}
 
-          <Col
+          {/* <Col
             style={{
               marginTop: "23px",
             }}
           >
             <PButton type="primary" content="View" onClick={viewHandler} />
-          </Col>
+          </Col> */}
         </Row>
-        {bulkLandingAPI?.data ? (
+        <Row>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { basedOn } = form.getFieldsValue(true);
+              if (basedOn?.value === 2) {
+                return (
+                  <Col md={6} sm={12} xs={24}>
+                    <PInput
+                      type="number"
+                      name="basicAmount"
+                      label="Basic"
+                      placeholder="Basic"
+                      rules={[
+                        {
+                          required: basedOn?.value === 2,
+                          message: "Basic is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                );
+              } else
+                return (
+                  <Col md={6} sm={12} xs={24}>
+                    <PInput
+                      type="number"
+                      name="grossAmount"
+                      label="Gross"
+                      placeholder="Gross"
+                      rules={[
+                        {
+                          required: basedOn?.value === 1,
+                          message: "Gross is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                );
+            }}
+          </Form.Item>
+          <Col xs={12}></Col>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { grossAmount, basicAmount } = form.getFieldsValue(true);
+
+              return (
+                <Col md={6} sm={12} xs={24}>
+                  <PInput
+                    type="number"
+                    label="Gross Amount"
+                    value={grossAmount}
+                    placeholder="GROSS"
+                    disabled={true}
+                    // rules={[
+                    //   {
+                    //     required: basedOn?.value === 2,
+                    //     message: "Basic is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+              );
+            }}
+          </Form.Item>
+        </Row>
+        {true ? (
           <DataTable
             header={header}
             bordered
             data={rowDto || []}
             loading={bulkLandingAPI?.loading}
-            scroll={{ x: 1500 }}
-            rowSelection={{
-              type: "checkbox",
-              selectedRowKeys: selectedRow.map((item) => item?.key),
-              onChange: (selectedRowKeys, selectedRows) => {
-                setSelectedRow(selectedRows);
-              },
-              getCheckboxProps: () => {
-                // console.log(rec);
-                // return {
-                //   disabled: rec?.ApplicationStatus === "Approved",
-                // };
-              },
-            }}
+            // scroll={{ x: 1500 }}
+            // rowSelection={{
+            //   type: "checkbox",
+            //   selectedRowKeys: selectedRow.map((item) => item?.key),
+            //   onChange: (selectedRowKeys, selectedRows) => {
+            //     setSelectedRow(selectedRows);
+            //   },
+            //   getCheckboxProps: () => {
+            //     // console.log(rec);
+            //     // return {
+            //     //   disabled: rec?.ApplicationStatus === "Approved",
+            //     // };
+            //   },
+            // }}
           />
         ) : (
           <NoResult title="No Result Found" para="" />
