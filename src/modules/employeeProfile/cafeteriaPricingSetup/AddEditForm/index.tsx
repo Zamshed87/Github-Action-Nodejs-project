@@ -9,7 +9,6 @@ import {
   PForm,
   PInput,
   PSelect,
-  TableButton,
 } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
@@ -33,7 +32,6 @@ const PricingSetupForm = () => {
   const [form] = Form.useForm();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id }: any = useParams();
-  const location = useLocation();
   const history = useHistory();
 
   //   api states
@@ -923,6 +921,7 @@ const PricingSetupForm = () => {
                 placeholder="Workplace"
                 disabled={+id ? true : false}
                 onChange={(value, op) => {
+                  setRowDto([])
                   form.setFieldsValue({
                     workplace: op,
                   });
