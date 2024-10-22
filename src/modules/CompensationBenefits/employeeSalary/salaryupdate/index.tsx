@@ -20,6 +20,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { gray200, gray700, gray900 } from "utility/customColor";
 import { APIUrl } from "App";
 import { MovingOutlined } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -96,19 +97,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const [accountsDto, setAccountsDto] = React.useState<any[]>([
     {
       accounts: "Bank Pay (0%)",
+      key: "Bank Pay",
       numAmount: 0,
     },
     {
       accounts: "Digital/MFS Pay (0%)",
+      key: "Digital/MFS Pay",
       numAmount: 0,
     },
     {
       accounts: "Cash Pay (0%)",
+      key: "Cash Pay",
+
       numAmount: 0,
     },
     {
       accounts: "Others/Additional Amount Transfer Into (0%)",
       numAmount: 0,
+      key: "Others/Additional Amount Transfer Into",
     },
   ]);
   const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
@@ -404,7 +410,56 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       });
     }
   };
+  const updateDtoHandler = (e: number, row: any, index: number): any => {
+    let total = accountsDto.reduce((acc: any, i: any) => acc + i?.numAmount, 0);
+    const { grossAmount } = form.getFieldsValue(true);
+    if (grossAmount < e) {
+      return toast.warn(`${row?.key} cant be greater than gross `);
+    }
+    if (e < 0) {
+      return toast.warn(`${row?.key} cant be negative `);
+    }
+    if (
+      total === grossAmount &&
+      e !== 0 &&
+      accountsDto[2].numAmount === 0 &&
+      index !== 2
+    ) {
+      return toast.warn(`full amount is already assigned `);
+    }
+    let temp = [...accountsDto];
+    temp[index].numAmount = e;
+    temp[index].accounts =
+      temp[index].key +
+      " " +
+      `(${
+        (e * 100) / grossAmount > 0 ? ((e * 100) / grossAmount)?.toFixed(6) : 0
+      }%) `;
 
+    if (index !== 2) {
+      temp[2].numAmount =
+        grossAmount - temp[0].numAmount - temp[1].numAmount - temp[3].numAmount;
+      temp[2].accounts =
+        temp[2].key +
+        " " +
+        `(${
+          (temp[2].numAmount * 100) / grossAmount > 0
+            ? ((temp[2].numAmount * 100) / grossAmount)?.toFixed(6)
+            : 0
+        }%) `;
+    }
+    if (temp[2].numAmount < 0) {
+      return toast.warn(`cash amount cant be negative `);
+    }
+    setAccountsDto(temp);
+
+    // temp[2].accounts = accounts;
+    // temp[2].numAmount = e;
+    // (values?.bankPay * 100) /
+    //               values?.totalGrossSalary
+    //             )?.toFixed(6)
+    console.log(e, row, index);
+  };
   const header: any = [
     {
       title: "SL",
@@ -700,10 +755,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         <>
           <PInput
             type="number"
-            // name={`numAmount_${index}`}
+            onChange={(e: any) => {
+              updateDtoHandler(e, row, index);
+            }}
             value={row?.numAmount}
             placeholder="Amount"
-            disabled={row?.strBasedOn !== "Amount"}
+            disabled={index === 2}
           />
         </>
       ),
@@ -1184,6 +1241,111 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           orientation="left"
         ></Divider>
         <DataTable header={headerAccount} bordered data={accountsDto || []} />
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "16px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        ></Divider>
+        <Row gutter={[10, 2]}>
+          <Col md={5}>Bank Name</Col>
+          <Col md={12}>
+            {" "}
+            <PSelect
+              options={[]}
+              name="salaryType"
+              placeholder="Salary Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  salaryType: op,
+                });
+              }}
+              rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={5}>Branch Name</Col>
+          <Col md={12}>
+            {" "}
+            <PSelect
+              options={[]}
+              name="salaryType"
+              placeholder="Salary Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  salaryType: op,
+                });
+              }}
+              rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={5}>Routing No</Col>
+          <Col md={12}>
+            <PInput
+              type="number"
+              name="basicAmount"
+              placeholder="Basic"
+              rules={[
+                {
+                  // required: basedOn?.value === 2,
+                  message: "Basic is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={5}>Swift Code</Col>
+          <Col md={12}>
+            {" "}
+            <PInput
+              type="number"
+              name="basicAmount"
+              placeholder="Basic"
+              rules={[
+                {
+                  // required: basedOn?.value === 2,
+                  message: "Basic is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={5}>Account Name</Col>
+          <Col md={12}>
+            {" "}
+            <PInput
+              type="number"
+              name="basicAmount"
+              placeholder="Basic"
+              rules={[
+                {
+                  // required: basedOn?.value === 2,
+                  message: "Basic is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={5}>Account No</Col>
+          <Col md={12}>
+            <PInput
+              type="number"
+              name="basicAmount"
+              placeholder="Basic"
+              rules={[
+                {
+                  // required: basedOn?.value === 2,
+                  message: "Basic is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+        </Row>
       </PCard>
     </PForm>
   ) : (
