@@ -195,7 +195,7 @@ export const getYearlyPolicyById = async (
           value: res?.data?.intWorkplaceGroupId,
           label: res?.data?.strWorkplaceGroupName,
         },
-
+        IntMaxEncashableLveInDay: res?.data?.intMaxEncashableLveInDay,
         intGender: res?.data?.genderListDto?.map((itm) => {
           return {
             ...itm,

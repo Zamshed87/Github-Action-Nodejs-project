@@ -10,7 +10,7 @@ import {
 import profileImg from "../../../../assets/images/profile.jpg";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Divider, Form, Row } from "antd";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -93,6 +93,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
     },
   ]);
+  const [accountsDto, setAccountsDto] = React.useState<any[]>([
+    {
+      accounts: "Bank Pay (0%)",
+      numAmount: 0,
+    },
+    {
+      accounts: "Digital/MFS Pay (0%)",
+      numAmount: 0,
+    },
+    {
+      accounts: "Cash Pay (0%)",
+      numAmount: 0,
+    },
+    {
+      accounts: "Others/Additional Amount Transfer Into (0%)",
+      numAmount: 0,
+    },
+  ]);
   const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
 
   // Form Instance
@@ -115,7 +133,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    document.title = "Bulk Salary Assign";
+    document.title = "Salary Assign";
   }, []);
 
   const getSalaryLanding = () => {
@@ -671,6 +689,26 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     //   ),
     // },
   ];
+  const headerAccount: any = [
+    {
+      title: "Accounts",
+      dataIndex: "accounts",
+    },
+    {
+      title: "Net Amount",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            // name={`numAmount_${index}`}
+            value={row?.numAmount}
+            placeholder="Amount"
+            disabled={row?.strBasedOn !== "Amount"}
+          />
+        </>
+      ),
+    },
+  ];
   useEffect(() => {
     // getWorkplaceGroup();
   }, [wgId, buId, wId]);
@@ -1063,6 +1101,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="grossAmount"
                       label="Gross"
                       placeholder="Gross"
+                      // onChange={(e:any)=>
+                      //   setAccountsDto([...accountsDto,accountsDto[0].accounts=])
+                      // }
                       rules={[
                         {
                           required: basedOn?.value === 1,
@@ -1123,6 +1164,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         ) : (
           <NoResult title="No Result Found" para="" />
         )}
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "16px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        ></Divider>
+        <DataTable header={headerAccount} bordered data={accountsDto || []} />
       </PCard>
     </PForm>
   ) : (

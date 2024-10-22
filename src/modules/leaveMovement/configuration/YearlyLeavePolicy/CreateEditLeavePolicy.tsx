@@ -1847,7 +1847,7 @@ const CreateEditLeavePolicy = () => {
                                 rules={[
                                   {
                                     required: false,
-                                    message: "Carry Forward is required",
+                                    message: "Encashable is required",
                                   },
                                 ]}
                               />
