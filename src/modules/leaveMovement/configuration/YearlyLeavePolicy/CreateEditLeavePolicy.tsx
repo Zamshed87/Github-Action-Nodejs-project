@@ -7,6 +7,7 @@ import { AddOutlined } from "@mui/icons-material";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  commonDDL,
   dependsOnDDL,
   getYearlyPolicyById,
   getYearlyPolicyPopUpDDL,
@@ -232,6 +233,14 @@ const CreateEditLeavePolicy = () => {
         initialValues={{
           showLveIndays: dependsOnDDL[0],
           intLeaveDependOn: dependsOnDDL[0],
+          isProdataBasis: commonDDL[1]?.value,
+          isHalfDayLeave: commonDDL[0]?.value,
+          isCarryForward: commonDDL[0]?.value,
+          isEncashable: commonDDL[0]?.value,
+          isLveBalanceApplyForSelfService: commonDDL[1]?.value,
+          isLveBalanceShowForSelfService: commonDDL[1]?.value,
+          isIncludeHoliday: commonDDL[1]?.value,
+          isIncludeOffday: commonDDL[1]?.value,
         }}
       >
         <PCard>
@@ -243,7 +252,7 @@ const CreateEditLeavePolicy = () => {
             buttonList={[
               {
                 type: "primary",
-                content: "Assign",
+                content: "Save & Assign",
                 onClick: () => {
                   form.setFieldsValue({
                     isGenerate: true,
@@ -268,6 +277,25 @@ const CreateEditLeavePolicy = () => {
               >
                 <Row gutter={[10, 2]}>
                   {/* leave config */}
+                  <Divider
+                    style={{
+                      marginBlock: "4px",
+                      marginTop: "6px",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                    }}
+                    orientation="left"
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                      }}
+                    >
+                      <span>General Configuration</span>
+                    </div>
+                  </Divider>
                   <>
                     <Col md={12} sm={24}>
                       <PInput
@@ -347,7 +375,7 @@ const CreateEditLeavePolicy = () => {
                         options={[{ value: 0, label: "None" }, ...leaveTypeDDL]}
                         name="inPreviousLveTypeEnd"
                         label="Availability After End"
-                        placeholder="Availability After End"
+                        placeholder="Leave Type"
                         onChange={(value, op) => {
                           form.setFieldsValue({
                             inPreviousLveTypeEnd: op,
@@ -390,6 +418,7 @@ const CreateEditLeavePolicy = () => {
                                       intEndServiceLengthInYear: undefined,
                                       intStartServiceLengthInYear: undefined,
                                       showLveIndays: dependsOnDDL[0],
+                                      isProdataBasis: false,
                                     });
                                   } else {
                                     setTableData([]);
@@ -745,11 +774,11 @@ const CreateEditLeavePolicy = () => {
                       <PInput
                         type="number"
                         name="intMaxLveDaySelf"
-                        label="Max Leave Available from Self"
-                        placeholder="Max Leave Available from Self"
+                        label="Max  Available from Self"
+                        placeholder="Max  Available from Self"
                         rules={[
                           {
-                            message: "Max Leave Available must be positive",
+                            message: "Max  Available must be positive",
                             pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                           },
                         ]}
@@ -759,11 +788,11 @@ const CreateEditLeavePolicy = () => {
                       <PInput
                         type="number"
                         name="intMaxLveApplicationSelfInMonth"
-                        label="Max Leave Application In Month"
-                        placeholder="Max Leave Application In Month"
+                        label="Max Application In Month"
+                        placeholder="Max Application In Month"
                         rules={[
                           {
-                            message: " Max Leave Application must be positive",
+                            message: " Max Application must be positive",
                             pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                           },
                         ]}
@@ -773,11 +802,11 @@ const CreateEditLeavePolicy = () => {
                       <PInput
                         type="number"
                         name="intMaxLveApplicationSelfInYear"
-                        label="Max Leave Application In Year"
-                        placeholder="Max Leave Application In Year"
+                        label="Max Application In Year"
+                        placeholder="Max Application In Year"
                         rules={[
                           {
-                            message: "Max Leave Application must be positive",
+                            message: "Max Application must be positive",
                             pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                           },
                         ]}
@@ -786,28 +815,39 @@ const CreateEditLeavePolicy = () => {
                   </>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { intLeaveType } = form.getFieldsValue();
+                      const { intLeaveDependOn, showLveIndays } =
+                        form.getFieldsValue(true);
                       // const empType = employeeType?.label;
 
                       return (
                         <>
-                          <Col className="mt-4" md={12} sm={24}>
-                            <PInput
-                              label="Is Prodata Basis?"
-                              type="checkbox"
-                              layout="horizontal"
+                          <Col md={12} sm={24}>
+                            <PSelect
+                              options={commonDDL as any}
                               name="isProdataBasis"
+                              label="Prodata Basis"
+                              placeholder="Prodata Basis"
                               disabled={
-                                intLeaveType?.value === 4 ||
-                                intLeaveType?.value === 5
+                                intLeaveDependOn?.value !== 1 ||
+                                showLveIndays?.value !== 1
                               }
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  isProdataBasis: value,
+                                });
+                              }}
+                              rules={[
+                                {
+                                  required: false,
+                                  message: "Prodata Basis is required",
+                                },
+                              ]}
                             />
                           </Col>
                         </>
                       );
                     }}
                   </Form.Item>
-
                   {/* Organization Configuration */}
                   <Divider
                     style={{
@@ -1041,7 +1081,6 @@ const CreateEditLeavePolicy = () => {
                       );
                     }}
                   </Form.Item>
-
                   {/* Employee Configuration */}
                   <Divider
                     style={{
@@ -1149,7 +1188,6 @@ const CreateEditLeavePolicy = () => {
                       ]}
                     />
                   </Col>
-
                   <Col md={12} sm={24}>
                     <PSelect
                       options={yearDDLAction()}
@@ -1179,13 +1217,12 @@ const CreateEditLeavePolicy = () => {
                       ]}
                     />
                   </Col>
-
                   <Col md={12} sm={24}>
                     <PInput
                       type="number"
                       name="intActiveFromJoiningdayInDay"
-                      label="Active From Joining day(Day)"
-                      placeholder="Active From Joining day(Day)"
+                      label="Active From Joining date (Day)"
+                      placeholder="Days"
                       rules={[
                         // {
                         //   required: true,
@@ -1193,7 +1230,7 @@ const CreateEditLeavePolicy = () => {
                         // },
                         {
                           message:
-                            "Active From Joining day(Day) must be positive",
+                            "Active From Joining date (Day) must be positive",
                           pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                         },
                       ]}
@@ -1203,8 +1240,8 @@ const CreateEditLeavePolicy = () => {
                     <PInput
                       type="number"
                       name="intActiveFromConfirmationInDay"
-                      label="Active From Confirmation(Day)"
-                      placeholder="Active From Confirmation(Day)"
+                      label="Active From Confirmation date (Day)"
+                      placeholder="Days"
                       rules={[
                         // {
                         //   required: true,
@@ -1213,15 +1250,13 @@ const CreateEditLeavePolicy = () => {
                         // },
                         {
                           message:
-                            "Active From Confirmation(Day) must be positive",
+                            "Active From Confirmation date (Day) must be positive",
                           pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                         },
                       ]}
                     />
                   </Col>
-
                   {/* LWP Configuration  */}
-
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
@@ -1312,9 +1347,7 @@ const CreateEditLeavePolicy = () => {
                       }}
                     </Form.Item>
                   </>
-
                   {/* Compensatory Leave Configuration  */}
-
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
@@ -1429,7 +1462,6 @@ const CreateEditLeavePolicy = () => {
                     </Form.Item>
                   </>
                   {/* Earn Leave Configuration  */}
-
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
@@ -1443,18 +1475,25 @@ const CreateEditLeavePolicy = () => {
                               (i: any) => i?.showLveIndays?.value === 3
                             )?.length > 0) ? (
                           <>
-                            <>
+                            <Divider
+                              style={{
+                                marginBlock: "4px",
+                                marginTop: "6px",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                              }}
+                              orientation="left"
+                            >
                               <div
-                                className="col-12 mt-3"
-                                style={{ marginLeft: "-0.8em" }}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "5px",
+                                }}
                               >
-                                <h2>Earn Leave Configuration</h2>
+                                <span>Earn Leave Configuration</span>
                               </div>
-                              <div
-                                className="col-12"
-                                style={{ marginBottom: "12px" }}
-                              ></div>
-                            </>
+                            </Divider>
                             <Col md={12} sm={24}>
                               <PInput
                                 label="Earn Leave Include Offday"
@@ -1499,13 +1538,13 @@ const CreateEditLeavePolicy = () => {
                               <PInput
                                 type="number"
                                 name="intDayForOneEarnLve"
-                                label="Day For One Earn Leave"
-                                placeholder="Day For One Earn Leave"
+                                label="One Earn Leave Generated By (Day)"
+                                placeholder="Day"
                                 size="small"
                                 rules={[
                                   {
                                     message:
-                                      "Day For One Earn Leave must be positive",
+                                      "One Earn Leave Generated By (Day) must be positive",
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
@@ -1517,13 +1556,13 @@ const CreateEditLeavePolicy = () => {
                               <PInput
                                 type="number"
                                 name="intEarnLveInDay"
-                                label=" Earn Leave In Day"
-                                placeholder=" Earn Leave In Day"
+                                label=" One Earn Leave Value"
+                                placeholder="Days"
                                 size="small"
                                 rules={[
                                   {
                                     message:
-                                      "Earn Leave In Day must be positive",
+                                      "One Earn Leave Value must be positive",
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
@@ -1537,73 +1576,67 @@ const CreateEditLeavePolicy = () => {
                     </Form.Item>
                   </>
 
-                  {/* Half Leave Configuration  */}
-
+                  {/*other  Configuration  */}
                   <>
+                    <Divider
+                      style={{
+                        marginBlock: "4px",
+                        marginTop: "6px",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                      orientation="left"
+                    >
+                      Other Configuration
+                    </Divider>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const { isHalfDayLeave } = form.getFieldsValue();
+                        const {
+                          isMonthWiseExpired,
+                          isAdvanceLeave,
+                          intLeaveType,
+                          isHalfDayLeave,
+                          isCarryForward,
+                          isEncashable,
+                        } = form.getFieldsValue();
 
                         // const empType = employeeType?.label;
 
                         return (
                           <>
-                            <Divider
-                              style={{
-                                marginBlock: "4px",
-                                marginTop: "6px",
-                                fontSize: "14px",
-                                fontWeight: 600,
-                              }}
-                              orientation="left"
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "5px",
-                                }}
-                              >
-                                <PInput
-                                  type="checkbox"
-                                  layout="horizontal"
-                                  name="isHalfDayLeave"
-                                  onChange={() => {
-                                    form.setFieldsValue({
-                                      intHalfdayMaxInMonth: undefined,
-                                      intHalfdayMaxInYear: undefined,
-                                    });
-                                  }}
-                                />
-                                <span>Half Day Leave</span>
-                              </div>
-                            </Divider>
-                            {/* <Col md={12} sm={24}>
-                              <PInput
-                                label="Half Day Leave"
-                                type="checkbox"
-                                layout="horizontal"
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={commonDDL as any}
                                 name="isHalfDayLeave"
-                                onChange={() => {
+                                label="Half Day"
+                                placeholder="Half Day"
+                                onChange={(value, op) => {
                                   form.setFieldsValue({
+                                    isHalfDayLeave: value,
                                     intHalfdayMaxInMonth: undefined,
                                     intHalfdayMaxInYear: undefined,
                                   });
                                 }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: "Half Day is required",
+                                  },
+                                ]}
                               />
-                            </Col> */}
+                            </Col>
                             <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isHalfDayLeave}
                                 type="number"
-                                name="intHalfdayMaxInMonth"
-                                label="Max Half Day Availability in Month"
-                                placeholder="Max Half Day Availability in Month"
+                                name="intHalfdayMaxInYear"
+                                label=" Max Half Day Availability (Year)"
+                                placeholder=" Max Half Day Availability (Year)"
                                 size="small"
                                 rules={[
                                   {
                                     message:
-                                      "Max Half Day Availability in Month must be positive",
+                                      "Max Half Day Availability in Year must be positive",
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
@@ -1615,14 +1648,14 @@ const CreateEditLeavePolicy = () => {
                               <PInput
                                 disabled={!isHalfDayLeave}
                                 type="number"
-                                name="intHalfdayMaxInYear"
-                                label=" Max Half Day Availability in Year"
-                                placeholder=" Max Half Day Availability in Year"
+                                name="intHalfdayMaxInMonth"
+                                label="Max Half Day Availability (Month)"
+                                placeholder="Max Half Day Availability (Month)"
                                 size="small"
                                 rules={[
                                   {
                                     message:
-                                      "Max Half Day Availability in Year must be positive",
+                                      "Max Half Day Availability in Month must be positive",
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
@@ -1637,8 +1670,8 @@ const CreateEditLeavePolicy = () => {
                                   ...leaveTypeDDL,
                                 ]}
                                 name="intHalfdayPreviousLveTypeEnd"
-                                label="Previous Half Day Leave Type Availability After End"
-                                placeholder="Previous Half Day Leave Type Availability After End"
+                                label="Half Day Availability After End"
+                                placeholder="Half Day Availability After End"
                                 disabled={!isHalfDayLeave}
                                 onChange={(value, op) => {
                                   form.setFieldsValue({
@@ -1647,51 +1680,52 @@ const CreateEditLeavePolicy = () => {
                                 }}
                               />
                             </Col>
-                          </>
-                        );
-                      }}
-                    </Form.Item>
-                  </>
-                  {/* Carry Forward Configuration  */}
-                  <>
-                    <Divider
-                      style={{
-                        marginBlock: "4px",
-                        marginTop: "6px",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                      }}
-                      orientation="left"
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "5px",
-                        }}
-                      >
-                        <PInput
-                          type="checkbox"
-                          layout="horizontal"
-                          name="isCarryForward"
-                          onChange={() => {
-                            form.setFieldsValue({
-                              intCarryForwardMaxInDay: undefined,
-                              intCarryForwarExpiryDay: undefined,
-                              intCarryForwarExpiryMonth: undefined,
-                              isCarryWillBeCounted: undefined,
-                            });
-                          }}
-                        />
-                        <span>Is Carry Forward?</span>
-                      </div>
-                    </Divider>
-                    <Form.Item shouldUpdate noStyle>
-                      {() => {
-                        const { isCarryForward } = form.getFieldsValue();
-                        return (
-                          <>
+
                             <Col md={12} sm={24}>
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isCarryForward"
+                                label="Carry Forward"
+                                placeholder="Carry Forward"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isCarryForward: value,
+                                    intCarryForwardMaxInDay: undefined,
+                                    intCarryForwarExpiryDay: undefined,
+                                    intCarryForwarExpiryMonth: undefined,
+                                    isCarryWillBeCounted: undefined,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: "Carry Forward is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isCarryWillBeCounted"
+                                label="Add previous year carry balance"
+                                placeholder="Add previous year carry balance"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isCarryWillBeCounted: value,
+                                  });
+                                }}
+                                disabled={!isCarryForward}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Add previous year carry balance is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            {/* <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isCarryForward}
                                 label="Add previous year carry balance"
@@ -1699,7 +1733,7 @@ const CreateEditLeavePolicy = () => {
                                 layout="horizontal"
                                 name="isCarryWillBeCounted"
                               />
-                            </Col>
+                            </Col> */}
                             <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isCarryForward}
@@ -1715,6 +1749,34 @@ const CreateEditLeavePolicy = () => {
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+
+                            <Col md={12} sm={24}>
+                              <PInput
+                                disabled={!isCarryForward}
+                                type="number"
+                                name="intCarryForwarExpiryMonth"
+                                label="Expiry Month Of Carry Forward"
+                                placeholder="Expiry Month Of Carry Forward"
+                                size="small"
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Expiry Month Of Carry Forward must be positive",
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                  {
+                                    type: "number",
+                                    min: 1, // Minimum value allowed
+                                    max: 12, // Maximum value allowed
+                                    message:
+                                      "Expiry Month Of Carry Forward must be between 1 and 12",
                                   },
                                 ]}
                               />
@@ -1747,88 +1809,26 @@ const CreateEditLeavePolicy = () => {
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isCarryForward}
-                                type="number"
-                                name="intCarryForwarExpiryMonth"
-                                label="Expiry Month Of Carry Forward"
-                                placeholder="Expiry Month Of Carry Forward"
-                                size="small"
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isEncashable"
+                                label="Encashable"
+                                placeholder="Encashable"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isEncashable: value,
+                                    IntMaxEncashableLveInDay: undefined,
+                                    intEncashableMonth: undefined,
+                                  });
+                                }}
                                 rules={[
                                   {
                                     required: false,
-                                    message:
-                                      "Expiry Month Of Carry Forward must be positive",
-                                    pattern: new RegExp(
-                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
-                                    ),
-                                  },
-                                  {
-                                    type: "number",
-                                    min: 1, // Minimum value allowed
-                                    max: 12, // Maximum value allowed
-                                    message:
-                                      "Expiry Month Of Carry Forward must be between 1 and 12",
+                                    message: "Carry Forward is required",
                                   },
                                 ]}
                               />
                             </Col>
-                          </>
-                        );
-                      }}
-                    </Form.Item>
-                  </>
-                  {/*Encashable  Configuration  */}
-
-                  <>
-                    <Divider
-                      style={{
-                        marginBlock: "4px",
-                        marginTop: "6px",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                      }}
-                      orientation="left"
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "5px",
-                        }}
-                      >
-                        <PInput
-                          type="checkbox"
-                          layout="horizontal"
-                          name="isEncashable"
-                          onChange={() => {
-                            form.setFieldsValue({
-                              IntMaxEncashableLveInDay: undefined,
-                            });
-                          }}
-                        />
-                        <span>Is Encashable?</span>
-                      </div>
-                    </Divider>
-                    <Form.Item shouldUpdate noStyle>
-                      {() => {
-                        const { isEncashable } = form.getFieldsValue();
-
-                        return (
-                          <>
-                            {/* <Col md={12} sm={24}>
-                              <PInput
-                                label="Encashable"
-                                type="checkbox"
-                                layout="horizontal"
-                                name="isEncashable"
-                                onChange={() => {
-                                  form.setFieldsValue({
-                                    IntMaxEncashableLveInDay: undefined,
-                                  });
-                                }}
-                              />
-                            </Col> */}
                             <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isEncashable}
@@ -1867,38 +1867,7 @@ const CreateEditLeavePolicy = () => {
                                 ]}
                               />
                             </Col>
-                          </>
-                        );
-                      }}
-                    </Form.Item>
-                  </>
-                  {/*other  Configuration  */}
-
-                  <>
-                    <Divider
-                      style={{
-                        marginBlock: "4px",
-                        marginTop: "6px",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                      }}
-                      orientation="left"
-                    >
-                      Other Configuration
-                    </Divider>
-                    <Form.Item shouldUpdate noStyle>
-                      {() => {
-                        const {
-                          isMonthWiseExpired,
-                          isAdvanceLeave,
-                          intLeaveType,
-                        } = form.getFieldsValue();
-
-                        // const empType = employeeType?.label;
-
-                        return (
-                          <>
-                            <Col md={12} sm={24}>
+                            {/* <Col md={12} sm={24}>
                               <PInput
                                 label="Is Month Wise Expired?"
                                 type="checkbox"
@@ -1929,8 +1898,8 @@ const CreateEditLeavePolicy = () => {
                                   },
                                 ]}
                               />
-                            </Col>
-                            <Col md={12} sm={24}>
+                            </Col> */}
+                            {/* <Col md={12} sm={24}>
                               <PInput
                                 label="Max Advance Leave in Year"
                                 type="checkbox"
@@ -1941,6 +1910,26 @@ const CreateEditLeavePolicy = () => {
                                     intMaxForAdvLveInYear: undefined,
                                   });
                                 }}
+                              />
+                            </Col> */}
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isAdvanceLeave"
+                                label="Advance Leave"
+                                placeholder="Advance Leave"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isAdvanceLeave: value,
+                                    intMaxForAdvLveInYear: undefined,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: "Advance Leave is required",
+                                  },
+                                ]}
                               />
                             </Col>
                             <Col md={12} sm={24}>
@@ -1962,71 +1951,213 @@ const CreateEditLeavePolicy = () => {
                                 ]}
                               />
                             </Col>
+
                             <Col md={12} sm={24}>
-                              <PInput
-                                label="Is Minute Based? "
-                                type="checkbox"
-                                layout="horizontal"
-                                name="isMinuteBased"
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                label="Is Auto Renewable?"
-                                type="checkbox"
-                                layout="horizontal"
-                                name="isAutoRenewable"
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                label="Bridge Leave Include Offday"
+                              {/* <PInput
+                                label=" Bridge Leave/Apply Offday as Leave"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isIncludeOffday"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isIncludeOffday"
+                                label="Bridge Leave/Apply Offday as Leave"
+                                placeholder="Bridge Leave/Apply Offday as Leave"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isIncludeOffday: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Bridge Leave/Apply Offday as Leave is required",
+                                  },
+                                ]}
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
-                                label="Bridge Leave Include Holiday"
+                              {/* <PInput
+                                label="Bridge Leave/Apply holiday as Leave"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isIncludeHoliday"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isIncludeHoliday"
+                                label="Bridge Leave/Apply holiday as Leave"
+                                placeholder="Bridge Leave/Apply holiday as Leave"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isIncludeHoliday: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Bridge Leave/Apply holiday as Leave is required",
+                                  },
+                                ]}
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
-                                label="Balance Show From ESS"
+                              {/* <PInput
+                                label="Balance Show From Self Service"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isLveBalanceShowForSelfService"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isLveBalanceShowForSelfService"
+                                label="Balance Show From Self Service"
+                                placeholder="Balance Show From Self Service"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isLveBalanceShowForSelfService: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Balance Show From Self Service is required",
+                                  },
+                                ]}
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
-                                label="Leave Apply From ESS"
+                              {/* <PInput
+                                label="Leave Apply From Self Service"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isLveBalanceApplyForSelfService"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isLveBalanceApplyForSelfService"
+                                label="Leave Apply From Self Service"
+                                placeholder="Leave Apply From Self Service"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isLveBalanceApplyForSelfService: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Leave Apply From Self Service is required",
+                                  },
+                                ]}
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
+                              {/* <PInput
                                 label="Applicable Before And After Offday"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isApplicableBeforeAndAfterOffday"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isApplicableBeforeAndAfterOffday"
+                                label="Applicable Before And After Offday"
+                                placeholder="Applicable Before And After Offday"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isApplicableBeforeAndAfterOffday: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Applicable Before And After Offday is required",
+                                  },
+                                ]}
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
+                              {/* <PInput
                                 label="Applicable Before And After Holiday"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isApplicableBeforeAndAfterHoliday"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isApplicableBeforeAndAfterHoliday"
+                                label="Applicable Before And After Holiday"
+                                placeholder="Applicable Before And After Holiday"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isApplicableBeforeAndAfterHoliday: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message:
+                                      "Applicable Before And After Holiday is required",
+                                  },
+                                ]}
                               />
                             </Col>
-
+                            <Col md={12} sm={24}>
+                              {/* <PInput
+                                label="Is Minute Based? "
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isMinuteBased"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isMinuteBased"
+                                label="Is Minute Based"
+                                placeholder="Is Minute Based"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isMinuteBased: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: "Is Minute Based is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              {/* <PInput
+                                label="Is Auto Renewable?"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isAutoRenewable"
+                              /> */}
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isAutoRenewable"
+                                label="Is Auto Renewable"
+                                placeholder="Is Auto Renewable"
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isAutoRenewable: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: "Is Auto Renewable is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
                             {/* <Col md={12} sm={24}>
                               <PInput
                                 label="Is Prodata Basis?"
