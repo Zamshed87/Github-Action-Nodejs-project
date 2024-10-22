@@ -9,7 +9,6 @@ export const adviceTypeDDL = [
   },
   {
     value: "BFTN",
-    valueFordown:0,
     label: "BFTN",
   },
   {
@@ -18,18 +17,19 @@ export const adviceTypeDDL = [
   },
   {
     value: "SCB",
-    valueFordown: 41,
     label: "SCB",
   },
   {
     value: "CityBank",
     label: "City Bank",
-    valueFordown: 43,
   },
   {
     value: "DBBL",
-    valueFordown: 16,
     label: "DBBL",
+  },
+  {
+    value: "DigitalPayment",
+    label: "Digital Payment",
   },
 ];
 
