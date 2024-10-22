@@ -741,7 +741,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                       )}
                     </Col>
-                    {/* <Col md={12} sm={24}>
+                    <Col md={12} sm={24}>
                       <PInput
                         type="number"
                         name="intMaxLveDaySelf"
@@ -754,8 +754,8 @@ const CreateEditLeavePolicy = () => {
                           },
                         ]}
                       />
-                    </Col> */}
-                    {/* <Col md={12} sm={24}>
+                    </Col>
+                    <Col md={12} sm={24}>
                       <PInput
                         type="number"
                         name="intMaxLveApplicationSelfInMonth"
@@ -768,7 +768,7 @@ const CreateEditLeavePolicy = () => {
                           },
                         ]}
                       />
-                    </Col> */}
+                    </Col>
                     <Col md={12} sm={24}>
                       <PInput
                         type="number"
