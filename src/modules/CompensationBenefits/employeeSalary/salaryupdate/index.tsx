@@ -1101,9 +1101,19 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="grossAmount"
                       label="Gross"
                       placeholder="Gross"
-                      // onChange={(e:any)=>
-                      //   setAccountsDto([...accountsDto,accountsDto[0].accounts=])
-                      // }
+                      onChange={(e: any) => {
+                        console.log(e);
+                        const accounts = `Cash Pay (${100}%)`;
+                        const temp = [...accountsDto];
+                        temp[2].accounts = accounts;
+                        temp[2].numAmount = e;
+
+                        // (values?.bankPay * 100) /
+                        //               values?.totalGrossSalary
+                        //             )?.toFixed(6)
+
+                        setAccountsDto([...temp]);
+                      }}
                       rules={[
                         {
                           required: basedOn?.value === 1,
