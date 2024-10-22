@@ -237,14 +237,15 @@ const CreateEditLeavePolicy = () => {
           isHalfDayLeave: commonDDL[0]?.value,
           isCarryForward: commonDDL[0]?.value,
           isEncashable: commonDDL[0]?.value,
-          isApplicableBeforeAndAfterOffday: commonDDL[0]?.value,
-          isApplicableBeforeAndAfterHoliday: commonDDL[0]?.value,
+          isApplicableBeforeAndAfterOffday: commonDDL[1]?.value,
+          isApplicableBeforeAndAfterHoliday: commonDDL[1]?.value,
           isMinuteBased: commonDDL[0]?.value,
           isAutoRenewable: commonDDL[0]?.value,
           isLveBalanceApplyForSelfService: commonDDL[1]?.value,
           isLveBalanceShowForSelfService: commonDDL[1]?.value,
           isIncludeHoliday: commonDDL[1]?.value,
           isIncludeOffday: commonDDL[1]?.value,
+          isAdvanceLeave: commonDDL[0]?.value,
         }}
       >
         <PCard>
