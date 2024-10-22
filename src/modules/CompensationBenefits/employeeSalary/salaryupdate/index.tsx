@@ -111,11 +111,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
       numAmount: 0,
     },
-    {
-      accounts: "Others/Additional Amount Transfer Into (0%)",
-      numAmount: 0,
-      key: "Others/Additional Amount Transfer Into",
-    },
+    // {
+    //   accounts: "Others/Additional Amount Transfer Into (0%)",
+    //   numAmount: 0,
+    //   key: "Others/Additional Amount Transfer Into",
+    // },
   ]);
   const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
 
@@ -124,6 +124,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
   // Api Actions
   const bulkLandingAPI = useApiRequest([]);
+  const bankDDL = useApiRequest([]);
+  const branchDDL = useApiRequest([]);
   // const employmentTypeDDL = useApiRequest([]);
   // const empDepartmentDDL = useApiRequest([]);
   // const workG = useApiRequest([]);
@@ -437,8 +439,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       }%) `;
 
     if (index !== 2) {
-      temp[2].numAmount =
-        grossAmount - temp[0].numAmount - temp[1].numAmount - temp[3].numAmount;
+      temp[2].numAmount = grossAmount - temp[0].numAmount - temp[1].numAmount;
       temp[2].accounts =
         temp[2].key +
         " " +
@@ -766,8 +767,39 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       ),
     },
   ];
+  const getBankDDL = () => {
+    bankDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Bank",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.BankName;
+          res[i].value = item?.BankID;
+        });
+      },
+    });
+  };
+  const getBranchDDL = () => {
+    const { bank } = form.getFieldsValue(true);
+    branchDDL?.action({
+      urlKey: "BankBranchDDL",
+      method: "GET",
+      params: {
+        BankId: bank?.value,
+        AccountID: orgId,
+        DistrictId: 0,
+      },
+    });
+  };
   useEffect(() => {
     // getWorkplaceGroup();
+    getBankDDL();
   }, [wgId, buId, wId]);
   // console.log({ rowDto });
 
@@ -1251,43 +1283,51 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           orientation="left"
         ></Divider>
         <Row gutter={[10, 2]}>
-          <Col md={5}>Bank Name</Col>
-          <Col md={12}>
+          <Col md={3} className="mt-2">
+            Bank Name
+          </Col>
+          <Col md={12} className="mt-2">
             {" "}
             <PSelect
-              options={[]}
-              name="salaryType"
-              placeholder="Salary Type"
+              options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
+              name="bank"
+              placeholder="Bank"
               onChange={(value, op) => {
                 form.setFieldsValue({
-                  salaryType: op,
+                  bank: op,
                 });
+                getBranchDDL();
               }}
-              rules={[{ required: true, message: "Salary Type is required" }]}
+              // rules={[{ required: true, message: "Salary Type is required" }]}
             />
           </Col>
           <Col md={7}></Col>
-          <Col md={5}>Branch Name</Col>
-          <Col md={12}>
+          <Col md={3} className="mt-2">
+            Branch Name
+          </Col>
+          <Col md={12} className="mt-2">
             {" "}
             <PSelect
-              options={[]}
-              name="salaryType"
-              placeholder="Salary Type"
+              options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
+              name="branch"
+              placeholder="Branch"
               onChange={(value, op) => {
                 form.setFieldsValue({
-                  salaryType: op,
+                  branch: op,
+                  routing: (op as any)?.name,
                 });
               }}
-              rules={[{ required: true, message: "Salary Type is required" }]}
+              // rules={[{ required: true, message: "Salary Type is required" }]}
             />
           </Col>
           <Col md={7}></Col>
-          <Col md={5}>Routing No</Col>
-          <Col md={12}>
+          <Col md={3} className="mt-2">
+            Routing No
+          </Col>
+          <Col md={12} className="mt-2">
             <PInput
               type="number"
-              name="basicAmount"
+              name="routing"
               placeholder="Basic"
               rules={[
                 {
@@ -1298,50 +1338,57 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             />
           </Col>
           <Col md={7}></Col>
-          <Col md={5}>Swift Code</Col>
-          <Col md={12}>
+          <Col md={3} className="mt-2">
+            Swift Code
+          </Col>
+          <Col md={12} className="mt-2">
             {" "}
             <PInput
               type="number"
-              name="basicAmount"
+              name="swift"
+              disabled={true}
               placeholder="Basic"
-              rules={[
-                {
-                  // required: basedOn?.value === 2,
-                  message: "Basic is required",
-                },
-              ]}
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
             />
           </Col>
           <Col md={7}></Col>
-          <Col md={5}>Account Name</Col>
-          <Col md={12}>
+          <Col md={3} className="mt-2">
+            Account Name
+          </Col>
+          <Col md={12} className="mt-2">
             {" "}
             <PInput
-              type="number"
-              name="basicAmount"
-              placeholder="Basic"
-              rules={[
-                {
-                  // required: basedOn?.value === 2,
-                  message: "Basic is required",
-                },
-              ]}
+              type="text"
+              name="account"
+              placeholder="Account Name"
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
             />
           </Col>
           <Col md={7}></Col>
-          <Col md={5}>Account No</Col>
-          <Col md={12}>
+          <Col md={3} className="mt-2">
+            Account No
+          </Col>
+          <Col md={12} className="mt-2">
             <PInput
               type="number"
-              name="basicAmount"
-              placeholder="Basic"
-              rules={[
-                {
-                  // required: basedOn?.value === 2,
-                  message: "Basic is required",
-                },
-              ]}
+              name="accountNo"
+              placeholder="Account No"
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
             />
           </Col>
           <Col md={7}></Col>
