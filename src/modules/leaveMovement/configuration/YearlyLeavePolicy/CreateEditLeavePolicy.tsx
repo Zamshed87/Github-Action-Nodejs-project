@@ -237,6 +237,10 @@ const CreateEditLeavePolicy = () => {
           isHalfDayLeave: commonDDL[0]?.value,
           isCarryForward: commonDDL[0]?.value,
           isEncashable: commonDDL[0]?.value,
+          isApplicableBeforeAndAfterOffday: commonDDL[0]?.value,
+          isApplicableBeforeAndAfterHoliday: commonDDL[0]?.value,
+          isMinuteBased: commonDDL[0]?.value,
+          isAutoRenewable: commonDDL[0]?.value,
           isLveBalanceApplyForSelfService: commonDDL[1]?.value,
           isLveBalanceShowForSelfService: commonDDL[1]?.value,
           isIncludeHoliday: commonDDL[1]?.value,
@@ -425,6 +429,7 @@ const CreateEditLeavePolicy = () => {
                                     form.setFieldsValue({
                                       intLeaveDependOn: op,
                                       isDependOnServiceLength: false,
+                                      showLveIndays: undefined,
                                     });
                                   }
                                 }}
@@ -633,43 +638,45 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                           </>
                         ) : (
-                          <>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                type="number"
-                                min={0}
-                                name="intAllocatedLveInDay"
-                                label="Allocated Leave(Day)"
-                                placeholder="Allocated Leave(Day)"
-                                rules={[
-                                  {
-                                    required: !(
-                                      isDependOnServiceLength ||
-                                      intLeaveType?.label ===
-                                        "Earn Leave/Annual Leave" ||
-                                      intLeaveType?.label ===
-                                        "Compensatory Leave"
-                                    ),
-                                    message:
-                                      " Allocated Leave(Day) is required",
-                                  },
-                                  {
-                                    message:
-                                      "Allocated Leave(Day) must be positive",
-                                    pattern: new RegExp(
-                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
-                                    ),
-                                  },
-                                ]}
-                                disabled={
-                                  // isDependOnServiceLength ||
-                                  (intLeaveType?.value === 4 ||
-                                    intLeaveType?.value === 5) &&
-                                  intLeaveDependOn?.value === 3
-                                }
-                              />
-                            </Col>
-                          </>
+                          intLeaveDependOn?.value === 1 && (
+                            <>
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  type="number"
+                                  min={0}
+                                  name="intAllocatedLveInDay"
+                                  label="Allocated Leave(Day)"
+                                  placeholder="Allocated Leave(Day)"
+                                  rules={[
+                                    {
+                                      required: !(
+                                        isDependOnServiceLength ||
+                                        intLeaveType?.label ===
+                                          "Earn Leave/Annual Leave" ||
+                                        intLeaveType?.label ===
+                                          "Compensatory Leave"
+                                      ),
+                                      message:
+                                        " Allocated Leave(Day) is required",
+                                    },
+                                    {
+                                      message:
+                                        "Allocated Leave(Day) must be positive",
+                                      pattern: new RegExp(
+                                        /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                      ),
+                                    },
+                                  ]}
+                                  disabled={
+                                    // isDependOnServiceLength ||
+                                    (intLeaveType?.value === 4 ||
+                                      intLeaveType?.value === 5) &&
+                                    intLeaveDependOn?.value === 3
+                                  }
+                                />
+                              </Col>
+                            </>
+                          )
                         );
                       }}
                     </Form.Item>
@@ -822,29 +829,32 @@ const CreateEditLeavePolicy = () => {
 
                       return (
                         <>
-                          <Col md={12} sm={24}>
-                            <PSelect
-                              options={commonDDL as any}
-                              name="isProdataBasis"
-                              label="Prodata Basis"
-                              placeholder="Prodata Basis"
-                              disabled={
-                                intLeaveDependOn?.value !== 1 ||
-                                showLveIndays?.value !== 1
-                              }
-                              onChange={(value, op) => {
-                                form.setFieldsValue({
-                                  isProdataBasis: value,
-                                });
-                              }}
-                              rules={[
-                                {
-                                  required: false,
-                                  message: "Prodata Basis is required",
-                                },
-                              ]}
-                            />
-                          </Col>
+                          {(intLeaveDependOn?.value === 1 ||
+                            showLveIndays?.value === 1) && (
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={commonDDL as any}
+                                name="isProdataBasis"
+                                label="Prodata Basis"
+                                placeholder="Prodata Basis"
+                                // disabled={
+                                //   intLeaveDependOn?.value !== 1 ||
+                                //   showLveIndays?.value !== 1
+                                // }
+                                onChange={(value, op) => {
+                                  form.setFieldsValue({
+                                    isProdataBasis: value,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: "Prodata Basis is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          )}
                         </>
                       );
                     }}
@@ -1616,58 +1626,72 @@ const CreateEditLeavePolicy = () => {
                                 ]}
                               />
                             </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isHalfDayLeave}
-                                type="number"
-                                name="intHalfdayMaxInYear"
-                                label=" Max Half Day Availability (Year)"
-                                placeholder=" Max Half Day Availability (Year)"
-                                size="small"
-                                rules={[
-                                  {
-                                    message:
-                                      "Max Half Day Availability in Year must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                ]}
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isHalfDayLeave}
-                                type="number"
-                                name="intHalfdayMaxInMonth"
-                                label="Max Half Day Availability (Month)"
-                                placeholder="Max Half Day Availability (Month)"
-                                size="small"
-                                rules={[
-                                  {
-                                    message:
-                                      "Max Half Day Availability in Month must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                ]}
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
-                              <PSelect
-                                options={[
-                                  { value: 0, label: "None" },
-                                  ...leaveTypeDDL,
-                                ]}
-                                name="intHalfdayPreviousLveTypeEnd"
-                                label="Half Day Availability After End"
-                                placeholder="Half Day Availability After End"
-                                disabled={!isHalfDayLeave}
-                                onChange={(value, op) => {
-                                  form.setFieldsValue({
-                                    intHalfdayPreviousLveTypeEnd: op,
-                                  });
-                                }}
-                              />
-                            </Col>
-
+                            {isHalfDayLeave && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isHalfDayLeave}
+                                  type="number"
+                                  name="intHalfdayMaxInYear"
+                                  label=" Max Half Day Availability (Year)"
+                                  placeholder=" Max Half Day Availability (Year)"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message:
+                                        "Max Half Day Availability in Year must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            {isHalfDayLeave && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isHalfDayLeave}
+                                  type="number"
+                                  name="intHalfdayMaxInMonth"
+                                  label="Max Half Day Availability (Month)"
+                                  placeholder="Max Half Day Availability (Month)"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message:
+                                        "Max Half Day Availability in Month must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            {isHalfDayLeave && (
+                              <Col md={12} sm={24}>
+                                <PSelect
+                                  options={[
+                                    { value: 0, label: "None" },
+                                    ...leaveTypeDDL,
+                                  ]}
+                                  name="intHalfdayPreviousLveTypeEnd"
+                                  label="Half Day Availability After End"
+                                  placeholder="Leave Type"
+                                  disabled={!isHalfDayLeave}
+                                  onChange={(value, op) => {
+                                    form.setFieldsValue({
+                                      intHalfdayPreviousLveTypeEnd: op,
+                                    });
+                                  }}
+                                />
+                              </Col>
+                            )}
+                            <Divider
+                              style={{
+                                marginBlock: "4px",
+                                marginTop: "6px",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                              }}
+                              orientation="left"
+                            ></Divider>
                             <Col md={12} sm={24}>
                               <PSelect
                                 options={commonDDL as any}
@@ -1691,27 +1715,29 @@ const CreateEditLeavePolicy = () => {
                                 ]}
                               />
                             </Col>
-                            <Col md={12} sm={24}>
-                              <PSelect
-                                options={commonDDL as any}
-                                name="isCarryWillBeCounted"
-                                label="Add previous year carry balance"
-                                placeholder="Add previous year carry balance"
-                                onChange={(value, op) => {
-                                  form.setFieldsValue({
-                                    isCarryWillBeCounted: value,
-                                  });
-                                }}
-                                disabled={!isCarryForward}
-                                rules={[
-                                  {
-                                    required: false,
-                                    message:
-                                      "Add previous year carry balance is required",
-                                  },
-                                ]}
-                              />
-                            </Col>
+                            {isCarryForward && (
+                              <Col md={12} sm={24}>
+                                <PSelect
+                                  options={commonDDL as any}
+                                  name="isCarryWillBeCounted"
+                                  label="Add previous year carry balance"
+                                  placeholder="Add previous year carry balance"
+                                  onChange={(value, op) => {
+                                    form.setFieldsValue({
+                                      isCarryWillBeCounted: value,
+                                    });
+                                  }}
+                                  disabled={!isCarryForward}
+                                  rules={[
+                                    {
+                                      required: false,
+                                      message:
+                                        "Add previous year carry balance is required",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
                             {/* <Col md={12} sm={24}>
                               <PInput
                                 disabled={!isCarryForward}
@@ -1721,74 +1747,89 @@ const CreateEditLeavePolicy = () => {
                                 name="isCarryWillBeCounted"
                               />
                             </Col> */}
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isCarryForward}
-                                type="number"
-                                name="intCarryForwardMaxInDay"
-                                label="Max Carry Forward In Year"
-                                placeholder="Max Carry Forward In Year"
-                                size="small"
-                                rules={[
-                                  {
-                                    message:
-                                      "Max Carry Forward In Year must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                ]}
-                              />
-                            </Col>
+                            {isCarryForward && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isCarryForward}
+                                  type="number"
+                                  name="intCarryForwardMaxInDay"
+                                  label="Max Carry Forward In Year"
+                                  placeholder="Max Carry Forward In Year"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message:
+                                        "Max Carry Forward In Year must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
 
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isCarryForward}
-                                type="number"
-                                name="intCarryForwarExpiryMonth"
-                                label="Expiry Month Of Carry Forward"
-                                placeholder="Expiry Month Of Carry Forward"
-                                size="small"
-                                rules={[
-                                  {
-                                    required: false,
-                                    message:
-                                      "Expiry Month Of Carry Forward must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                  {
-                                    type: "number",
-                                    min: 1, // Minimum value allowed
-                                    max: 12, // Maximum value allowed
-                                    message:
-                                      "Expiry Month Of Carry Forward must be between 1 and 12",
-                                  },
-                                ]}
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isCarryForward}
-                                type="number"
-                                name="intCarryForwarExpiryDay"
-                                label=" Carry Forward Expiry Day"
-                                placeholder=" Carry Forward Expiry Day"
-                                size="small"
-                                rules={[
-                                  {
-                                    required: false,
-                                    message:
-                                      "Carry Forward Expiry Day must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                  {
-                                    type: "number",
-                                    min: 1, // Minimum value allowed
-                                    max: 31, // Maximum value allowed
-                                    message:
-                                      "Carry Forward Expiry Day must be between 1 and 31",
-                                  },
-                                ]}
-                              />
-                            </Col>
+                            {isCarryForward && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isCarryForward}
+                                  type="number"
+                                  name="intCarryForwarExpiryMonth"
+                                  label="Expiry Month Of Carry Forward"
+                                  placeholder="Expiry Month Of Carry Forward"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      required: false,
+                                      message:
+                                        "Expiry Month Of Carry Forward must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                    {
+                                      type: "number",
+                                      min: 1, // Minimum value allowed
+                                      max: 12, // Maximum value allowed
+                                      message:
+                                        "Expiry Month Of Carry Forward must be between 1 and 12",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            {isCarryForward && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isCarryForward}
+                                  type="number"
+                                  name="intCarryForwarExpiryDay"
+                                  label=" Carry Forward Expiry Day"
+                                  placeholder=" Carry Forward Expiry Day"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      required: false,
+                                      message:
+                                        "Carry Forward Expiry Day must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                    {
+                                      type: "number",
+                                      min: 1, // Minimum value allowed
+                                      max: 31, // Maximum value allowed
+                                      message:
+                                        "Carry Forward Expiry Day must be between 1 and 31",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            <Divider
+                              style={{
+                                marginBlock: "4px",
+                                marginTop: "6px",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                              }}
+                              orientation="left"
+                            ></Divider>
                             <Col md={12} sm={24}>
                               <PSelect
                                 options={commonDDL as any}
@@ -1810,40 +1851,53 @@ const CreateEditLeavePolicy = () => {
                                 ]}
                               />
                             </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isEncashable}
-                                type="number"
-                                name="IntMaxEncashableLveInDay"
-                                label="Max Encashable (In Days)"
-                                placeholder="Max Encashable (In Days)"
-                                size="small"
-                                rules={[
-                                  {
-                                    message:
-                                      "Max Encashable (In Days) must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                ]}
-                              />
-                            </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isEncashable}
-                                type="number"
-                                name="intEncashableMonth"
-                                label=" Encashable Month"
-                                placeholder=" Encashable Month"
-                                size="small"
-                                rules={[
-                                  {
-                                    message:
-                                      "Encashable Month must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                ]}
-                              />
-                            </Col>
+                            {isEncashable && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isEncashable}
+                                  type="number"
+                                  name="IntMaxEncashableLveInDay"
+                                  label="Max Encashable (In Days)"
+                                  placeholder="Max Encashable (In Days)"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message:
+                                        "Max Encashable (In Days) must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            {isEncashable && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isEncashable}
+                                  type="number"
+                                  name="intEncashableMonth"
+                                  label=" Encashable Month"
+                                  placeholder=" Encashable Month"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message:
+                                        "Encashable Month must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            <Divider
+                              style={{
+                                marginBlock: "4px",
+                                marginTop: "6px",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                              }}
+                              orientation="left"
+                            ></Divider>
                             {/* <Col md={12} sm={24}>
                               <PInput
                                 label="Is Month Wise Expired?"
@@ -1909,24 +1963,34 @@ const CreateEditLeavePolicy = () => {
                                 ]}
                               />
                             </Col>
-                            <Col md={12} sm={24}>
-                              <PInput
-                                disabled={!isAdvanceLeave}
-                                type="number"
-                                name="intMaxForAdvLveInYear"
-                                label="Max Advance Leave in Year"
-                                placeholder="Max Advance Leave in Year"
-                                size="small"
-                                rules={[
-                                  {
-                                    message:
-                                      "Max Advance Leave must be positive",
-                                    pattern: new RegExp(/^[+]?\d+$/),
-                                  },
-                                ]}
-                              />
-                            </Col>
-
+                            {isAdvanceLeave && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  disabled={!isAdvanceLeave}
+                                  type="number"
+                                  name="intMaxForAdvLveInYear"
+                                  label="Max Advance Leave in Year"
+                                  placeholder="Max Advance Leave in Year"
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message:
+                                        "Max Advance Leave must be positive",
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            <Divider
+                              style={{
+                                marginBlock: "4px",
+                                marginTop: "6px",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                              }}
+                              orientation="left"
+                            ></Divider>
                             <Col md={12} sm={24}>
                               {/* <PInput
                                 label=" Bridge Leave/Apply Offday as Leave"
