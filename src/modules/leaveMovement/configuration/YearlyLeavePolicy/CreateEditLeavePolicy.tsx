@@ -322,6 +322,7 @@ const CreateEditLeavePolicy = () => {
                       <PSelect
                         options={leaveTypeDDL || []}
                         name="intLeaveType"
+                        disabled={params?.id}
                         label="Leave Type"
                         placeholder="  Leave Type"
                         onChange={(value: number, op: any) => {
