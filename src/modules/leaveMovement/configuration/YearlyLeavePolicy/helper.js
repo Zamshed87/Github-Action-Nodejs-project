@@ -484,3 +484,7 @@ export const dependsOnDDL = [
   { value: 1, label: "Standard" },
   { value: 2, label: "Service Length" },
 ];
+export const commonDDL = [
+  { value: false, label: "Not Applicable" },
+  { value: true, label: "Applicable" },
+];
