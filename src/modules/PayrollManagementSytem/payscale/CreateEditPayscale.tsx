@@ -608,7 +608,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   label="Based On"
                   placeholder="Based On"
                   options={
-                    element?.label === "Basic"
+                    element?.isBasic
                       ? [{ value: 1, label: "Amount" }]
                       : [
                           { value: 1, label: "Amount" },
