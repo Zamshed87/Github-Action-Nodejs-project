@@ -1,6 +1,7 @@
-import { Col, Form, Row } from "antd";
+import { Col, Divider, Form, Row, Space } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
+  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -12,40 +13,55 @@ import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { customFields } from "../utils";
+import { toast } from "react-toastify";
+import { PlusOutlined } from "@ant-design/icons";
 
-const atValues = [
-  { id: "", value: "[First Name]" },
-  { id: 2, value: "[Last Name]" },
-  { id: 3, value: "[Position Name]" },
-  { id: 4, value: "[Company Name]" },
-];
 const modules = {
   mention: {
     allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
     mentionDenotationChars: ["@"],
     source: function (searchTerm: any, renderList: any, mentionChar: any) {
-      let values;
+      let MentionValue: any[] = [];
 
       if (mentionChar === "@") {
-        values = atValues;
+        MentionValue = customFields;
       }
 
       if (searchTerm.length === 0) {
-        renderList(values, searchTerm);
+        renderList(MentionValue, searchTerm);
       } else {
         const matches = [];
-        //@ts-ignore
-        for (let i = 0; i < values.length; i++)
+        for (let i = 0; i < MentionValue.length; i++)
           if (
-            //@ts-ignore
-            ~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())
+            ~MentionValue[i].value
+              .toLowerCase()
+              .indexOf(searchTerm.toLowerCase())
           )
-            //@ts-ignore
-            //@ts-ignore
-            matches.push(values[i]);
+            matches.push(MentionValue[i]);
         renderList(matches, searchTerm);
       }
     },
+  },
+  toolbar: [
+    { header: [1, 2, 3, false] },
+    "bold",
+    "italic",
+    "underline",
+    "blockquote",
+    { list: "ordered" },
+    { list: "bullet" },
+    { indent: "-1" },
+    { indent: "+1" },
+    { color: [] },
+    { background: [] },
+    { align: [] },
+    "link",
+    "",
+    "",
+  ],
+  clipboard: {
+    matchVisual: true,
   },
 };
 
@@ -95,7 +111,31 @@ const LetterConfigAddEdit = () => {
               content: "Save",
               icon: "plus",
               disabled: loading,
-              onClick: () => {},
+              onClick: () => {
+                const values = form.getFieldsValue(true);
+
+                form
+                  .validateFields()
+                  .then(() => {
+                    if (!values?.letter) {
+                      return toast.warning("Please add letter template");
+                    }
+                    const transformedHTML = document.createElement("div");
+                    transformedHTML.innerHTML = values?.letter;
+                    const mentions =
+                      transformedHTML.querySelectorAll("span.mention");
+                    mentions.forEach((mention) => {
+                      const mentionElement = mention as HTMLElement;
+                      mention.outerHTML = `@${mentionElement.dataset.value}`;
+                    });
+                    const modifiedLetter = transformedHTML.innerHTML;
+
+                    console.log(modifiedLetter);
+                  })
+                  .catch(() => {
+                    console.log();
+                  });
+              },
             },
           ]}
         />
@@ -113,6 +153,25 @@ const LetterConfigAddEdit = () => {
                     message: "Letter Type is required",
                   },
                 ]}
+                dropdownRender={(menu: any) => (
+                  <>
+                    {menu}
+                    <Divider style={{ margin: "8px 0" }} />
+                    <Space style={{ padding: "0 8px 4px" }}>
+                      <PInput
+                        type="text"
+                        name="newLetterName"
+                        placeholder="New Letter"
+                      />
+                      <PButton
+                        type="primary-text"
+                        content={"Add New"}
+                        icon={<PlusOutlined />}
+                        // onClick={viewHandler}
+                      />
+                    </Space>
+                  </>
+                )}
               />
             </Col>
             <Col md={6} sm={24}>
@@ -124,14 +183,66 @@ const LetterConfigAddEdit = () => {
                 rules={[{ required: true, message: "Letter Name is required" }]}
               />
             </Col>
-            <Col className="custom_quill quilJob" md={24} sm={24}>
-              <ReactQuill
-                placeholder="Write your mail body..."
-                value={form.getFieldValue("letter")}
-                modules={modules}
-                onChange={(value) => form.setFieldValue("letter", value)}
-              />
-            </Col>
+          </Row>
+          <Row gutter={[10, 2]}>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { letter } = form.getFieldsValue(true);
+
+                return (
+                  <>
+                    <Col className="custom_quill quilJob" md={18} sm={24}>
+                      <label>
+                        <span style={{ color: "red" }}>*</span>{" "}
+                        <span style={{ fontSize: "12px", fontWeight: 500 }}>
+                          Letter Body
+                        </span>
+                      </label>
+                      <ReactQuill
+                        preserveWhitespace={true}
+                        placeholder="Write your letter body..."
+                        value={letter}
+                        modules={modules}
+                        onChange={(value) =>
+                          form.setFieldValue("letter", value)
+                        }
+                      />
+                    </Col>
+                    <Col md={6} sm={24}>
+                      <div
+                        style={{
+                          marginTop: "21px",
+                          backgroundColor: "var(--secondary-bg)",
+                          height: "350px",
+                          overflow: "scroll",
+                        }}
+                      >
+                        {customFields?.map((dto: any, index: number) => (
+                          <div key={index}>
+                            <div
+                              style={{
+                                cursor: "pointer",
+                                backgroundColor: "greenyellow",
+                                margin: "5px",
+                                padding: "3px",
+                              }}
+                              onClick={() => {
+                                const text = `${form.getFieldValue(
+                                  "letter"
+                                )} @${dto?.value}`;
+                                form.setFieldValue("letter", text);
+                              }}
+                            >
+                              {dto?.label}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Col>
+                  </>
+                );
+              }}
+            </Form.Item>
           </Row>
         </PCardBody>
       </PCard>
