@@ -70,7 +70,6 @@ const LetterConfigLanding = () => {
     filters = filterList,
     searchText = "",
   }: TLandingApi) => {
-    console.log(filters);
     const payload = {
       accountId: orgId,
       businessUnitId: buId,
@@ -147,8 +146,8 @@ const LetterConfigLanding = () => {
     },
     {
       title: "Action",
-      dataIndex: "letterType",
-      render: () => (
+      dataIndex: "templateId",
+      render: (templateId: number, rec: any) => (
         <Flex justify="center">
           <EditOutlined
             style={{
@@ -156,6 +155,12 @@ const LetterConfigLanding = () => {
               fontSize: "14px",
               cursor: "pointer",
               marginRight: "5px",
+            }}
+            onClick={() => {
+              history.push({
+                pathname: `/profile/customReportsBuilder/letterConfiguration/createLetter/${templateId}`,
+                state: rec,
+              });
             }}
           />
           <EyeOutlined
@@ -201,7 +206,6 @@ const LetterConfigLanding = () => {
             }}
             filterData={landingApi?.data?.filters}
             onChange={(pagination, filters) => {
-              console.log(filters);
               setFilterList(filters);
               landingApiCall({
                 pagination,

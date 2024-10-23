@@ -63,24 +63,25 @@ export const getLetterTypeDDL = async (
 export const createNEditLetterTemplate = async (
   form,
   profileData,
-  setLoading
+  setLoading,
+  letterData
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
 
     const payload = {
-      templateId: 0,
+      templateId: letterData?.templateId || 0,
       letterTypeId: values?.letterType?.value,
       letterType: values?.letterType?.label,
       letterName: values?.letterName,
       letterBody: values?.letter,
-      accountId: orgId,
-      businessUnitId: buId,
-      workplaceGroupId: wgId,
-      workplaceId: wId,
-      createdBy: employeeId,
-      createdAt: todayDate(),
+      accountId: letterData?.accountId || orgId,
+      businessUnitId: letterData?.businessUnitId || buId,
+      workplaceGroupId: letterData?.workplaceGroupId || wgId,
+      workplaceId: letterData?.workplaceId || wId,
+      createdBy: letterData?.createdBy || employeeId,
+      createdAt: letterData?.createdAt || todayDate(),
     };
     setLoading(true);
     const res = await axios.post(

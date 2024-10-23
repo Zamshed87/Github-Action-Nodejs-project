@@ -19,7 +19,7 @@ import {
 import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { customFields } from "../utils";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
@@ -81,6 +81,9 @@ const modules = {
 const LetterConfigAddEdit = () => {
   // Router state
   const { letterId }: any = useParams();
+  const location = useLocation();
+  const letterData: any = location?.state;
+  console.log(location);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -114,7 +117,13 @@ const LetterConfigAddEdit = () => {
     <PForm
       formName="tempCreate"
       form={form}
-      initialValues={{ letterType: "", letterName: "", letter: "" }}
+      initialValues={{
+        letterType: letterData?.letterType
+          ? { label: letterData?.letterType, value: letterData?.letterTypeId }
+          : "",
+        letterName: letterData?.letterName || "",
+        letter: letterData?.letterBody || "",
+      }}
     >
       <PCard>
         <PCardHeader
@@ -146,7 +155,12 @@ const LetterConfigAddEdit = () => {
                     const modifiedLetter = transformedHTML.innerHTML;
                     form.setFieldValue("letter", modifiedLetter);
 
-                    createNEditLetterTemplate(form, profileData, setLoading);
+                    createNEditLetterTemplate(
+                      form,
+                      profileData,
+                      setLoading,
+                      letterData
+                    );
                   })
                   .catch(() => {
                     console.log();
