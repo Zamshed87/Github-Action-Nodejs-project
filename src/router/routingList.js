@@ -67,6 +67,9 @@ import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
+import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
+import LetterGenerateLanding from "modules/employeeProfile/reportBuilder/LetterGenerate";
+import LetterConfigAddEdit from "modules/employeeProfile/reportBuilder/letterConfiguration/letterConfigAddEdit.tsx";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3114,6 +3117,18 @@ export const routingList = [
   {
     path: "/administration/configuration/latepunishmentpolicy",
     component: LatePunishmentPolicy,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterConfiguration",
+    component: LetterConfigLanding,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterConfiguration/createLetter",
+    component: LetterConfigAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterGenerate",
+    component: LetterGenerateLanding,
   },
   // Trainnning and development ends
 
