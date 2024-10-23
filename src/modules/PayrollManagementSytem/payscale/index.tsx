@@ -11,7 +11,7 @@ import CreateEditPayscale from "./CreateEditPayscale";
 type TPayscale = never;
 const PayscaleLanding: React.FC<TPayscale> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { orgId, buId, wgId, wId, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -26,7 +26,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   // Api Actions
   const GetAllPayrollElementType = useApiRequest([]);
   const IsSalaryElementById = useApiRequest({});
-  const DeletePayrollElementTypeById = useApiRequest({});
+  const deletePayScale = useApiRequest({});
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -38,9 +38,14 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   // Landing Api
   const landingApi = () => {
     GetAllPayrollElementType?.action({
-      urlKey: "GetAllPayrollElementType",
+      urlKey: "GetPayScaleSetupLanding",
       method: "get",
-      params: { accountId: orgId, workplaceId: wId },
+      params: {
+        businessUnitId: buId,
+        pageNo: 1,
+        pageSize: 150,
+        accountId: orgId,
+      },
     });
   };
 
@@ -68,11 +73,12 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   };
   //  Delete Element
   const deleteElement = (item: any) => {
-    DeletePayrollElementTypeById?.action({
-      urlKey: "DeletePayrollElementTypeById",
-      method: "get",
+    deletePayScale?.action({
+      urlKey: "DeletePayScaleSetup",
+      method: "delete",
       params: {
-        id: item?.intPayrollElementTypeId,
+        id: item?.id,
+        actionBy: employeeId,
       },
       toast: true,
       onSuccess: () => {
@@ -97,28 +103,21 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
     },
     {
       title: "PayScale Name",
-      dataIndex: "",
+      dataIndex: "payScaleName",
     },
     {
       title: "Job Class",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "YES" : "NO"}</div>,
+      dataIndex: "jobClassName",
     },
     {
       title: "Job Grade",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "YES" : "NO"}</div>,
+      dataIndex: "jobGradeName",
     },
     {
       title: "Job Level",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "Addition" : "Deduction"}</div>,
+      dataIndex: "jobLevelName",
     },
-    {
-      title: "Approval Status",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "YES" : "NO"}</div>,
-    },
+
     {
       title: "Action",
       align: "center",
@@ -128,13 +127,13 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
             {
               type: "edit",
               onClick: () => {
-                checkUsage(item, "edit");
+                // checkUsage(item, "edit");
               },
             },
             {
               type: "delete",
               onClick: () => {
-                checkUsage(item, "delete");
+                deleteElement(item);
               },
             },
           ]}
@@ -163,7 +162,9 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
             <DataTable
               header={header}
               bordered
-              data={GetAllPayrollElementType?.data || []}
+              data={
+                GetAllPayrollElementType?.data?.payScaleSetupLandingData || []
+              }
               loading={GetAllPayrollElementType?.loading}
             />
           </PCard>

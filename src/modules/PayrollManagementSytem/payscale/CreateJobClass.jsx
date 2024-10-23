@@ -106,7 +106,7 @@ export default function CreateJobClass({
           </Col>
           {!modalFooter && (
             <>
-              <Col span={5} className="my-3 pt-1">
+              <Col span={3} className="my-3 pt-1">
                 <PButton
                   type="secondary"
                   action="button"
