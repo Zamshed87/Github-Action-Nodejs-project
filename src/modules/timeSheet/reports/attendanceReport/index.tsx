@@ -257,7 +257,11 @@ const AttendanceReport = () => {
     {
       title: "Absent",
       dataIndex: "absent",
-
+      width: 100,
+    },
+    {
+      title: "Leave",
+      dataIndex: "leave",
       width: 100,
     },
 
