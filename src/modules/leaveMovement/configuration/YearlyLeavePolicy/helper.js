@@ -238,7 +238,8 @@ export const getYearlyPolicyById = async (
             : res?.data?.intLeaveDependOn === 2
             ? dependsOnDDL[1]
             : { value: 3, label: "Calculation" },
-
+        intLwpbasedOn:
+          res?.data?.intLwpbasedOn > 0 ? res?.data?.intLwpbasedOn : undefined,
         intHalfdayPreviousLveTypeEnd: res?.data?.intHalfdayPreviousLveTypeEnd
           ?.intLeaveTypeId && {
           ...res?.data?.intHalfdayPreviousLveTypeEnd,

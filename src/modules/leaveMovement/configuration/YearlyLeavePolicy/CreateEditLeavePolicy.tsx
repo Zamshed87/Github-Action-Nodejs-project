@@ -1291,7 +1291,25 @@ const CreateEditLeavePolicy = () => {
                             >
                               Leave Without Pay Configuration
                             </Divider>
-
+                            <Col span={24}>
+                              <Alert
+                                icon={<InfoOutlinedIcon fontSize="inherit" />}
+                                severity="warning"
+                                style={
+                                  {
+                                    // width: "27rem",
+                                    // position: "sticky",
+                                    // top: "1px",
+                                  }
+                                }
+                              >
+                                <p>
+                                  {" "}
+                                  A per-day salary will be deducted. If you want
+                                  to change this, configure it.
+                                </p>
+                              </Alert>
+                            </Col>
                             <Col md={12} sm={24}>
                               <PSelect
                                 options={[
@@ -1300,8 +1318,8 @@ const CreateEditLeavePolicy = () => {
                                   { value: 3, label: "Fixed Amount" },
                                 ]}
                                 name="intLwpbasedOn"
-                                label="Based On"
-                                placeholder="Based On"
+                                label="Per Day Amount Based On "
+                                placeholder="Per Day Amount Based On "
                                 onChange={(value, op) => {
                                   form.setFieldsValue({
                                     intLwpbasedOn: op,
@@ -1323,12 +1341,12 @@ const CreateEditLeavePolicy = () => {
                                 label={
                                   intLwpbasedOn?.value === 3
                                     ? "Amount"
-                                    : "Percentage"
+                                    : "Per Day Percentage"
                                 }
                                 placeholder={
                                   intLwpbasedOn?.value === 3
                                     ? "Amount"
-                                    : "Percentage"
+                                    : "Per Day Percentage"
                                 }
                                 size="small"
                                 rules={[
@@ -1339,14 +1357,14 @@ const CreateEditLeavePolicy = () => {
                                     message: `${
                                       intLwpbasedOn?.value === 3
                                         ? "Amount"
-                                        : "Percentage"
+                                        : "Per Day Percentage"
                                     } is required`,
                                   },
                                   {
                                     message: `${
                                       intLwpbasedOn?.value === 3
                                         ? "Amount"
-                                        : "Percentage"
+                                        : "Per Day Percentage"
                                     } be positive`,
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/

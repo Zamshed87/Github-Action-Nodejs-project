@@ -20,6 +20,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { gray200, gray700, gray900 } from "utility/customColor";
 import { APIUrl } from "App";
 import { MovingOutlined } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -96,20 +97,25 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const [accountsDto, setAccountsDto] = React.useState<any[]>([
     {
       accounts: "Bank Pay (0%)",
+      key: "Bank Pay",
       numAmount: 0,
     },
     {
       accounts: "Digital/MFS Pay (0%)",
+      key: "Digital/MFS Pay",
       numAmount: 0,
     },
     {
       accounts: "Cash Pay (0%)",
+      key: "Cash Pay",
+
       numAmount: 0,
     },
-    {
-      accounts: "Others/Additional Amount Transfer Into (0%)",
-      numAmount: 0,
-    },
+    // {
+    //   accounts: "Others/Additional Amount Transfer Into (0%)",
+    //   numAmount: 0,
+    //   key: "Others/Additional Amount Transfer Into",
+    // },
   ]);
   const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
 
@@ -118,6 +124,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
   // Api Actions
   const bulkLandingAPI = useApiRequest([]);
+  const bankDDL = useApiRequest([]);
+  const branchDDL = useApiRequest([]);
   // const employmentTypeDDL = useApiRequest([]);
   // const empDepartmentDDL = useApiRequest([]);
   // const workG = useApiRequest([]);
@@ -404,7 +412,55 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       });
     }
   };
+  const updateDtoHandler = (e: number, row: any, index: number): any => {
+    let total = accountsDto.reduce((acc: any, i: any) => acc + i?.numAmount, 0);
+    const { grossAmount } = form.getFieldsValue(true);
+    if (grossAmount < e) {
+      return toast.warn(`${row?.key} cant be greater than gross `);
+    }
+    if (e < 0) {
+      return toast.warn(`${row?.key} cant be negative `);
+    }
+    if (
+      total === grossAmount &&
+      e !== 0 &&
+      accountsDto[2].numAmount === 0 &&
+      index !== 2
+    ) {
+      return toast.warn(`full amount is already assigned `);
+    }
+    let temp = [...accountsDto];
+    temp[index].numAmount = e;
+    temp[index].accounts =
+      temp[index].key +
+      " " +
+      `(${
+        (e * 100) / grossAmount > 0 ? ((e * 100) / grossAmount)?.toFixed(6) : 0
+      }%) `;
 
+    if (index !== 2) {
+      temp[2].numAmount = grossAmount - temp[0].numAmount - temp[1].numAmount;
+      temp[2].accounts =
+        temp[2].key +
+        " " +
+        `(${
+          (temp[2].numAmount * 100) / grossAmount > 0
+            ? ((temp[2].numAmount * 100) / grossAmount)?.toFixed(6)
+            : 0
+        }%) `;
+    }
+    if (temp[2].numAmount < 0) {
+      return toast.warn(`cash amount cant be negative `);
+    }
+    setAccountsDto(temp);
+
+    // temp[2].accounts = accounts;
+    // temp[2].numAmount = e;
+    // (values?.bankPay * 100) /
+    //               values?.totalGrossSalary
+    //             )?.toFixed(6)
+    console.log(e, row, index);
+  };
   const header: any = [
     {
       title: "SL",
@@ -700,17 +756,50 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         <>
           <PInput
             type="number"
-            // name={`numAmount_${index}`}
+            onChange={(e: any) => {
+              updateDtoHandler(e, row, index);
+            }}
             value={row?.numAmount}
             placeholder="Amount"
-            disabled={row?.strBasedOn !== "Amount"}
+            disabled={index === 2}
           />
         </>
       ),
     },
   ];
+  const getBankDDL = () => {
+    bankDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Bank",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.BankName;
+          res[i].value = item?.BankID;
+        });
+      },
+    });
+  };
+  const getBranchDDL = () => {
+    const { bank } = form.getFieldsValue(true);
+    branchDDL?.action({
+      urlKey: "BankBranchDDL",
+      method: "GET",
+      params: {
+        BankId: bank?.value,
+        AccountID: orgId,
+        DistrictId: 0,
+      },
+    });
+  };
   useEffect(() => {
     // getWorkplaceGroup();
+    getBankDDL();
   }, [wgId, buId, wId]);
   // console.log({ rowDto });
 
@@ -1184,6 +1273,126 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           orientation="left"
         ></Divider>
         <DataTable header={headerAccount} bordered data={accountsDto || []} />
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "16px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        ></Divider>
+        <Row gutter={[10, 2]}>
+          <Col md={3} className="mt-2">
+            Bank Name
+          </Col>
+          <Col md={12} className="mt-2">
+            {" "}
+            <PSelect
+              options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
+              name="bank"
+              placeholder="Bank"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  bank: op,
+                });
+                getBranchDDL();
+              }}
+              // rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={3} className="mt-2">
+            Branch Name
+          </Col>
+          <Col md={12} className="mt-2">
+            {" "}
+            <PSelect
+              options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
+              name="branch"
+              placeholder="Branch"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  branch: op,
+                  routing: (op as any)?.name,
+                });
+              }}
+              // rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={3} className="mt-2">
+            Routing No
+          </Col>
+          <Col md={12} className="mt-2">
+            <PInput
+              type="number"
+              name="routing"
+              placeholder="Basic"
+              rules={[
+                {
+                  // required: basedOn?.value === 2,
+                  message: "Basic is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={3} className="mt-2">
+            Swift Code
+          </Col>
+          <Col md={12} className="mt-2">
+            {" "}
+            <PInput
+              type="number"
+              name="swift"
+              disabled={true}
+              placeholder="Basic"
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={3} className="mt-2">
+            Account Name
+          </Col>
+          <Col md={12} className="mt-2">
+            {" "}
+            <PInput
+              type="text"
+              name="account"
+              placeholder="Account Name"
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+          <Col md={3} className="mt-2">
+            Account No
+          </Col>
+          <Col md={12} className="mt-2">
+            <PInput
+              type="number"
+              name="accountNo"
+              placeholder="Account No"
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
+            />
+          </Col>
+          <Col md={7}></Col>
+        </Row>
       </PCard>
     </PForm>
   ) : (
