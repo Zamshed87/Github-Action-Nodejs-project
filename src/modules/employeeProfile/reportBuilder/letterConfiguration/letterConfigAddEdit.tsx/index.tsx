@@ -1,3 +1,10 @@
+/*
+ * Title: Letter Config Landing
+ * Author: Khurshida Meem
+ * Date: 23-10-2024
+ *
+ */
+
 import { Col, Divider, Form, Row, Space } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {

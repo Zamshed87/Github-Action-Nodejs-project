@@ -3127,6 +3127,10 @@ export const routingList = [
     component: LetterConfigAddEdit,
   },
   {
+    path: "/profile/customReportsBuilder/letterConfiguration/createLetter/:letterId",
+    component: LetterConfigAddEdit,
+  },
+  {
     path: "/profile/customReportsBuilder/letterGenerate",
     component: LetterGenerateLanding,
   },

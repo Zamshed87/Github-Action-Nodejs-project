@@ -1,3 +1,10 @@
+/*
+ * Title: Letter Config Landing
+ * Author: Khurshida Meem
+ * Date: 23-10-2024
+ *
+ */
+
 import axios from "axios";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
