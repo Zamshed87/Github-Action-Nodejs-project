@@ -1322,7 +1322,7 @@ const CreateEditLeavePolicy = () => {
                                 placeholder="Per Day Amount Based On "
                                 onChange={(value, op) => {
                                   form.setFieldsValue({
-                                    intLwpbasedOn: op,
+                                    intLwpbasedOn: value,
                                     intLwpamountOrPercentage: undefined,
                                   });
                                 }}
@@ -1339,30 +1339,28 @@ const CreateEditLeavePolicy = () => {
                                 type="number"
                                 name="intLwpamountOrPercentage"
                                 label={
-                                  intLwpbasedOn?.value === 3
+                                  intLwpbasedOn === 3
                                     ? "Amount"
                                     : "Per Day Percentage"
                                 }
                                 placeholder={
-                                  intLwpbasedOn?.value === 3
+                                  intLwpbasedOn === 3
                                     ? "Amount"
                                     : "Per Day Percentage"
                                 }
                                 size="small"
                                 rules={[
                                   {
-                                    required: intLwpbasedOn?.value
-                                      ? true
-                                      : false,
+                                    required: intLwpbasedOn ? true : false,
                                     message: `${
-                                      intLwpbasedOn?.value === 3
+                                      intLwpbasedOn === 3
                                         ? "Amount"
                                         : "Per Day Percentage"
                                     } is required`,
                                   },
                                   {
                                     message: `${
-                                      intLwpbasedOn?.value === 3
+                                      intLwpbasedOn === 3
                                         ? "Amount"
                                         : "Per Day Percentage"
                                     } be positive`,

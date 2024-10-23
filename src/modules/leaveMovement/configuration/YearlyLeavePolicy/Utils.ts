@@ -128,7 +128,7 @@ export const generatePayload = (
     intMinWorkingHourForComl: +values?.intMinWorkingHourForComl || null,
     intLeaveDependOn: +values?.intLeaveDependOn?.value || null,
     isCarryWillBeCounted: values?.isCarryWillBeCounted || null,
-    intLwpbasedOn: +values?.intLwpbasedOn?.value || null,
+    intLwpbasedOn: +values?.intLwpbasedOn || null,
     intLwpamountOrPercentage: +values?.intLwpamountOrPercentage,
   };
   return payload;
