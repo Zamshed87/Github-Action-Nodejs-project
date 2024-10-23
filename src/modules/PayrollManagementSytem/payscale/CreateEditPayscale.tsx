@@ -631,14 +631,12 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             type="primary"
             onClick={() => {
               const values = form.getFieldsValue(true);
-              const isExist = elementDto?.filter(
-                (i: any) => i?.payrollElementName === "Basic"
-              );
+              const isExist = elementDto?.filter((i: any) => i?.isBasic);
               const isDuplicate = elementDto?.filter(
                 (i: any) => i?.payrollElementName === values?.element?.label
               );
 
-              if (isExist?.length === 0 && values?.element?.label !== "Basic") {
+              if (isExist?.length === 0 && !values?.element?.isBasic) {
                 return toast.warn("Basic needs to be selected first");
               }
               if (isDuplicate?.length > 0) {
@@ -649,6 +647,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                 return [
                   ...prev,
                   {
+                    ...values?.element,
                     payrollElementName: values?.element?.label,
 
                     element: values?.element?.label,
