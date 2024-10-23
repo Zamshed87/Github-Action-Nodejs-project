@@ -16,6 +16,8 @@ import { useParams } from "react-router-dom";
 import { customFields } from "../utils";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
+import { createLetterType, getLetterTypeDDL } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const modules = {
   mention: {
@@ -88,14 +90,16 @@ const LetterConfigAddEdit = () => {
   });
 
   useEffect(() => {
+    getLetterTypeDDL(profileData, setLoading, setLetterTypeDDL);
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //   states
-  const [loading, selLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [letterTypeDDL, setLetterTypeDDL] = useState([]);
 
-  return (
+  return letterConfigPermission?.isCreate ? (
     <PForm
       formName="tempCreate"
       form={form}
@@ -143,7 +147,7 @@ const LetterConfigAddEdit = () => {
           <Row gutter={[10, 2]}>
             <Col md={6} sm={24}>
               <PSelect
-                options={[]}
+                options={letterTypeDDL}
                 name="letterType"
                 label="Letter Type"
                 placeholder="Letter Type"
@@ -167,7 +171,15 @@ const LetterConfigAddEdit = () => {
                         type="primary-text"
                         content={"Add New"}
                         icon={<PlusOutlined />}
-                        // onClick={viewHandler}
+                        onClick={() => {
+                          createLetterType(
+                            form.getFieldsValue(true),
+                            profileData,
+                            setLoading,
+                            setLetterTypeDDL
+                          );
+                          form.setFieldValue("newLetterName", "");
+                        }}
                       />
                     </Space>
                   </>
@@ -247,6 +259,8 @@ const LetterConfigAddEdit = () => {
         </PCardBody>
       </PCard>
     </PForm>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

@@ -1,0 +1,53 @@
+import axios from "axios";
+import { toast } from "react-toastify";
+
+export const createLetterType = async (
+  values,
+  profileData,
+  setLoading,
+  setLetterTypeDDL
+) => {
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+
+    const payload = [
+      {
+        letterTypeId: 0,
+        letterType: values?.newLetterName,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+        createdBy: employeeId,
+      },
+    ];
+    setLoading(true);
+    const res = await axios.post(`/LetterBuilder/CreateLetterType`, payload);
+    setLetterTypeDDL(res?.data?.typeList);
+    setLoading(false);
+    toast.success(res?.data?.message, { toastId: 1 });
+  } catch (error) {
+    setLoading(false);
+    toast.warn(error?.response?.data?.message, { toastId: 1 });
+  }
+};
+
+export const getLetterTypeDDL = async (
+  profileData,
+  setLoading,
+  setLetterTypeDDL
+) => {
+  try {
+    setLoading(true);
+    const { orgId, buId, wgId, wId } = profileData;
+
+    const res = await axios.get(
+      `/LetterBuilder/GetLetterTypeList?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`
+    );
+
+    setLetterTypeDDL((prev) => [...prev, ...res?.data]);
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+  }
+};
