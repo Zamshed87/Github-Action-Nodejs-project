@@ -191,7 +191,7 @@ const CreateLoanApplicationModal = ({
     );
   }, [wgId, buId]);
 
-  const [getForView] = useAxiosGet([]);
+  const [forView, getForView] = useAxiosGet([]);
 
   useEffect(() => {
     if (singleData?.loanApplicationId) {
