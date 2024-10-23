@@ -1,13 +1,21 @@
-import { PForm, PInput, PSelect } from "Components";
+import {
+  DataTable,
+  PButton,
+  PForm,
+  PInput,
+  PSelect,
+  TableButton,
+} from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
-import React, { useEffect } from "react";
+import { Col, Divider, Form, Row } from "antd";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import CreateJobClass from "./CreateJobClass";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import CreateGrade from "./CreateGrade";
 import CreateJobLevel from "./CreateJoblevel";
+import { toast } from "react-toastify";
 
 type CreateEditPayscaleType = {
   rowData: any;
@@ -29,7 +37,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   const jobClassDDL = useApiRequest({});
   const gradeDDL = useApiRequest({});
   const jobLevelDDL = useApiRequest({});
-
+  const elementDDL = useApiRequest({});
+  const [elementDto, setElementDto] = useState([]);
   const getJobClassDDL = () => {
     jobClassDDL?.action({
       urlKey: "GetJobClassDdl",
@@ -105,7 +114,90 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     //   },
     // });
   };
+  const elementDtoHandler = (e: number, row: any, index: number) => {
+    let temp: any = [...elementDto];
+    temp[index].amountOrPercentage = e;
 
+    if (row?.basedOn === "Amount") {
+      temp[index].netAmount = e;
+    } else {
+      temp[index].netAmount = (e * temp[0].netAmount) / 100;
+    }
+    setElementDto(temp);
+  };
+  const header: any = [
+    {
+      title: "SL",
+      align: "center",
+      render: (text: any, record: any, index: number) => index + 1,
+    },
+    {
+      title: "Payroll Element",
+      dataIndex: "element",
+    },
+    {
+      title: "Based On",
+      dataIndex: "basedOn",
+    },
+
+    {
+      title: "Amount/Percentage",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            // name={`amountOrPercentage_${index}`}
+            value={row?.amountOrPercentage}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  if (row?.basedOn === "Percentage" && value > 100) {
+                    callback("Percentage can not be greater than 100");
+                  } else if (value < 0) {
+                    callback("must be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              elementDtoHandler(e, row, index);
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      title: "Net Amount",
+      dataIndex: "netAmount",
+    },
+    {
+      title: "Action",
+      align: "center",
+      render: (_: any, item: any) => (
+        <TableButton
+          buttonsList={[
+            {
+              type: "edit",
+              onClick: () => {
+                // checkUsage(item, "edit");
+              },
+            },
+            {
+              type: "delete",
+              onClick: () => {
+                // checkUsage(item, "delete");
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ];
   return (
     <PForm form={form} onFinish={onFinish}>
       <Row gutter={[10, 2]}>
@@ -317,7 +409,95 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               );
           }}
         </Form.Item>
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        ></Divider>
+        <Col md={10} sm={24}>
+          <PSelect
+            name="element"
+            label="Payroll Element"
+            placeholder="Select Element"
+            options={elementDDL?.data?.length > 0 ? elementDDL?.data : []}
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                element: op,
+              });
+            }}
+            filterOption={false}
+          />
+        </Col>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { element } = form.getFieldsValue(true);
+            return (
+              <Col md={10} sm={24}>
+                <PSelect
+                  name="basedOn"
+                  label="Based On"
+                  placeholder="Based On"
+                  options={
+                    element?.label === "Basic"
+                      ? [{ value: 1, label: "Amount" }]
+                      : [
+                          { value: 1, label: "Amount" },
+                          { value: 2, label: "Percentage" },
+                        ]
+                  }
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      basedOn: op,
+                    });
+                  }}
+                  filterOption={false}
+                />
+              </Col>
+            );
+          }}
+        </Form.Item>
+        <Col md={3} className="my-3 pt-1">
+          <PButton
+            type="primary"
+            onClick={() => {
+              const values = form.getFieldsValue(true);
+              const isExist = elementDto?.filter(
+                (i: any) => i?.element === "Basic"
+              );
+              const isDuplicate = elementDto?.filter(
+                (i: any) => i?.elementId === values?.element?.value
+              );
+
+              if (isExist?.length === 0 && values?.element?.label !== "Basic") {
+                return toast.warn("Basic needs to be selected first");
+              }
+              if (isDuplicate?.length > 0) {
+                return toast.warn("Element is Already selected");
+              }
+
+              setElementDto((prev): any => {
+                return [
+                  ...prev,
+                  {
+                    element: values?.element?.label,
+                    elementId: values?.element?.value,
+                    basedOn: values?.basedOn?.label,
+                    netAmount: 0,
+                    amountOrPercentage: 0,
+                  },
+                ];
+              });
+            }}
+            content="Add"
+          />
+        </Col>
       </Row>
+      <DataTable header={header} bordered data={elementDto || []} />
+
       <ModalFooter
         submitAction="submit"
         loading={savePayscale?.loading}

@@ -170,7 +170,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
           <PModal
             title={`${rowData ? "Edit" : "Create"} Payroll Element`}
             open={open}
-            width={500}
+            width={900}
             onCancel={() => {
               setOpen(false);
             }}
