@@ -10,6 +10,7 @@ import { Form, Switch } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
+import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -17,6 +18,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
+import TemplateViewModal from "./templateViewModal";
 
 const LetterConfigLanding = () => {
   // router states
@@ -53,6 +55,8 @@ const LetterConfigLanding = () => {
 
   // states
   const [filterList, setFilterList] = useState({});
+  const [open, setOpen] = useState(false);
+  const [singleData, setSingleData] = useState({});
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -165,6 +169,10 @@ const LetterConfigLanding = () => {
           />
           <EyeOutlined
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            onClick={() => {
+              setSingleData(rec);
+              setOpen(true);
+            }}
           />
         </Flex>
       ),
@@ -173,49 +181,61 @@ const LetterConfigLanding = () => {
   ];
 
   return letterConfigPermission?.isView ? (
-    <PForm form={form}>
-      <PCard>
-        <PCardHeader
-          title={`Total ${landingApi?.data?.totalCount} templates`}
-          buttonList={[
-            {
-              type: "primary",
-              content: "Configure Letter",
-              icon: "plus",
-              onClick: () => {
-                if (letterConfigPermission?.isCreate) {
-                  history.push(
-                    "/profile/customReportsBuilder/letterConfiguration/createLetter"
-                  );
-                } else {
-                  toast.warn("You don't have permission");
-                }
+    <>
+      <PForm form={form}>
+        <PCard>
+          <PCardHeader
+            title={`Total ${landingApi?.data?.totalCount} templates`}
+            buttonList={[
+              {
+                type: "primary",
+                content: "Configure Letter",
+                icon: "plus",
+                onClick: () => {
+                  if (letterConfigPermission?.isCreate) {
+                    history.push(
+                      "/profile/customReportsBuilder/letterConfiguration/createLetter"
+                    );
+                  } else {
+                    toast.warn("You don't have permission");
+                  }
+                },
               },
-            },
-          ]}
-        />
-        <div className="mb-3">
-          <DataTable
-            bordered
-            data={landingApi?.data?.data || []}
-            loading={landingApi?.loading}
-            header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
-            filterData={landingApi?.data?.filters}
-            onChange={(pagination, filters) => {
-              setFilterList(filters);
-              landingApiCall({
-                pagination,
-                filters: filters,
-              });
-            }}
+            ]}
           />
-        </div>
-      </PCard>
-    </PForm>
+          <div className="mb-3">
+            <DataTable
+              bordered
+              data={landingApi?.data?.data || []}
+              loading={landingApi?.loading}
+              header={header}
+              pagination={{
+                pageSize: landingApi?.data?.pageSize,
+                total: landingApi?.data?.totalCount,
+              }}
+              filterData={landingApi?.data?.filters}
+              onChange={(pagination, filters) => {
+                setFilterList(filters);
+                landingApiCall({
+                  pagination,
+                  filters: filters,
+                });
+              }}
+            />
+          </div>
+        </PCard>
+      </PForm>
+      <PModal
+        title="View Template"
+        open={open}
+        onCancel={() => {
+          setOpen(false);
+          setSingleData({});
+        }}
+        components={<TemplateViewModal singleData={singleData} />}
+        width={1000}
+      />
+    </>
   ) : (
     <NotPermittedPage />
   );
