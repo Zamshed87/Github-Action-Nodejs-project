@@ -16,7 +16,11 @@ import { useParams } from "react-router-dom";
 import { customFields } from "../utils";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
-import { createLetterType, getLetterTypeDDL } from "./helper";
+import {
+  createLetterType,
+  createNEditLetterTemplate,
+  getLetterTypeDDL,
+} from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const modules = {
@@ -133,8 +137,9 @@ const LetterConfigAddEdit = () => {
                       mention.outerHTML = `@${mentionElement.dataset.value}`;
                     });
                     const modifiedLetter = transformedHTML.innerHTML;
+                    form.setFieldValue("letter", modifiedLetter);
 
-                    console.log(modifiedLetter);
+                    createNEditLetterTemplate(form, profileData, setLoading);
                   })
                   .catch(() => {
                     console.log();
@@ -151,6 +156,11 @@ const LetterConfigAddEdit = () => {
                 name="letterType"
                 label="Letter Type"
                 placeholder="Letter Type"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    letterType: op,
+                  });
+                }}
                 rules={[
                   {
                     required: true,

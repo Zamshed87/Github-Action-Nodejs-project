@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 export const createLetterType = async (
   values,
@@ -49,5 +50,41 @@ export const getLetterTypeDDL = async (
     setLoading(false);
   } catch (error) {
     setLoading(false);
+  }
+};
+
+export const createNEditLetterTemplate = async (
+  form,
+  profileData,
+  setLoading
+) => {
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+
+    const payload = {
+      templateId: 0,
+      letterTypeId: values?.letterType?.value,
+      letterType: values?.letterType?.label,
+      letterName: values?.letterName,
+      letterBody: values?.letter,
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      createdBy: employeeId,
+      createdAt: todayDate(),
+    };
+    setLoading(true);
+    const res = await axios.post(
+      `/LetterBuilder/CreateAndEditLetterTemplate`,
+      payload
+    );
+    setLoading(false);
+    form.resetFields();
+    toast.success(res?.data?.message, { toastId: 1 });
+  } catch (error) {
+    setLoading(false);
+    toast.warn(error?.response?.data?.message, { toastId: 1 });
   }
 };
