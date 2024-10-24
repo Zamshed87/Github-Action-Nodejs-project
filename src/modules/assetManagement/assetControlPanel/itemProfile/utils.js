@@ -87,38 +87,41 @@ const itemProfileColumn = (
           <Tooltip title="Delete" arrow>
             <button type="button" className="iconButton">
               <DeleteOutlineOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  getDeleteMessage(
-                    `/AssetManagement/CheckIfItemAssignOrNot?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&itemId=${record?.itemId}`,
-                    (data) => {
-                      setDeleteMessage(data);
-                    }
-                  );
-                  handlePopup(
-                    saveDeleteHandler,
-                    record,
-                    orgId,
-                    buId,
-                    employeeId,
-                    wId,
-                    wgId,
-                    deleteMessage,
-                    () => {
-                      getData(
-                        getLandingData,
-                        setRowDto,
-                        orgId,
-                        buId,
-                        wId,
-                        wgId,
-                        pages,
-                        setPages,
-                        ""
-                      );
-                    }
-                  );
-                }}
+              onClick={(e) => {
+                e.stopPropagation();
+                getDeleteMessage(
+                  `/AssetManagement/CheckIfItemAssignOrNot?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&itemId=${record?.itemId}`,
+                  (data) => {
+                    setDeleteMessage(data);
+              
+                    // Move handlePopup here to ensure deleteMessage is updated before calling it
+                    handlePopup(
+                      saveDeleteHandler,
+                      record,
+                      orgId,
+                      buId,
+                      employeeId,
+                      wId,
+                      wgId,
+                      data, // Use the newly set data directly
+                      () => {
+                        getData(
+                          getLandingData,
+                          setRowDto,
+                          orgId,
+                          buId,
+                          wId,
+                          wgId,
+                          pages,
+                          setPages,
+                          ""
+                        );
+                      }
+                    );
+                  }
+                );
+              }}
+              
               />
             </button>
           </Tooltip>
