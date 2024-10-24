@@ -257,9 +257,19 @@ const LetterConfigAddEdit = () => {
                           backgroundColor: "#F4F9F5",
                           height: "350px",
                           overflow: "scroll",
-                          padding: "8px 5px",
                         }}
                       >
+                        <div
+                          style={{
+                            backgroundColor: "darkgray",
+                            padding: "5px",
+                            position: "sticky",
+                            top: 0,
+                          }}
+                        >
+                          <p style={{ color: "white" }}>Field Lists</p>
+                        </div>
+                        <div style={{ padding: "0 5px" }}></div>
                         {customFields?.map((dto: any, index: number) => (
                           <div key={index}>
                             <button
@@ -269,7 +279,7 @@ const LetterConfigAddEdit = () => {
                                 backgroundColor: "#DDF7E1",
                                 borderRadius: "50px",
                                 margin: "5px",
-                                padding: "4px 6px",
+                                padding: "2px 6px",
                                 fontSize: "12px",
                               }}
                               onClick={() => {
