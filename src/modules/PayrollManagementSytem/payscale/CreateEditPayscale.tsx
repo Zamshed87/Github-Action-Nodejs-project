@@ -387,7 +387,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           setDesignationDto(res?.designationList);
           const temp: any = [];
           for (let i = 0; i < res?.extendedIncrementSlabCount; i++) {
-            const incrementAmount = res?.extendedIncrementAmount * (i + 1);
+            const incrementAmount = res?.extendedIncrementAmount;
             temp.push({
               incrementAmount,
             });
@@ -396,7 +396,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
 
           const tempIncrement: any = [];
           for (let i = 0; i < res?.incrementSlabCount; i++) {
-            const incrementAmount = res?.incrementAmount * (i + 1);
+            const incrementAmount = res?.incrementAmount;
             tempIncrement.push({ incrementAmount });
           }
 
@@ -765,7 +765,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               const values = form.getFieldsValue(true);
               let temp: any = [];
               for (let i = 0; i < values?.incrementSlab; i++) {
-                const incrementAmount = values?.increment * (i + 1);
+                const incrementAmount = values?.increment;
                 temp.push({ incrementAmount });
               }
 
@@ -839,8 +839,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       const values = form.getFieldsValue(true);
                       let temp: any = [];
                       for (let i = 0; i < values?.efficiencySlab; i++) {
-                        const incrementAmount =
-                          values?.incrementExtended * (i + 1);
+                        const incrementAmount = values?.incrementExtended;
                         temp.push({
                           incrementAmount,
                         });
