@@ -16,7 +16,7 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
@@ -83,6 +83,7 @@ const LetterConfigAddEdit = () => {
   const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
+  const quillRef: any = useRef(null);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -111,6 +112,15 @@ const LetterConfigAddEdit = () => {
   //   states
   const [loading, setLoading] = useState(false);
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
+
+  const handleInsertField = (fieldValue: any) => {
+    const quill = quillRef?.current?.getEditor(); // Get the Quill editor instance
+    const cursorPosition = quill.getSelection().index; // Get current cursor position
+    const currentContent = quill.getText(); // Get current content if needed
+
+    // Insert the field value at the cursor position
+    quill.insertText(cursorPosition, `@${fieldValue}`);
+  };
 
   return letterConfigPermission?.isCreate ? (
     <PForm
@@ -241,6 +251,7 @@ const LetterConfigAddEdit = () => {
                         </span>
                       </label>
                       <ReactQuill
+                        ref={quillRef}
                         preserveWhitespace={true}
                         placeholder="Write your letter body..."
                         value={letter}
@@ -283,10 +294,11 @@ const LetterConfigAddEdit = () => {
                                 fontSize: "12px",
                               }}
                               onClick={() => {
-                                const text = `${form.getFieldValue(
-                                  "letter"
-                                )} @${dto?.value}`;
-                                form.setFieldValue("letter", text);
+                                handleInsertField(dto?.value);
+                                // const text = `${form.getFieldValue(
+                                //   "letter"
+                                // )} @${dto?.value}`;
+                                // form.setFieldValue("letter", text);
                               }}
                             >
                               {dto?.label}
