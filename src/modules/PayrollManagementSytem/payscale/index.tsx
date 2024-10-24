@@ -49,28 +49,6 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
     });
   };
 
-  const checkUsage = (item: any, type: "delete" | "edit") => {
-    IsSalaryElementById?.action({
-      urlKey: "IsSalaryElementById",
-      method: "get",
-      params: {
-        accountId: orgId,
-        bussinessUnitId: buId,
-        workplaceId: wId,
-        typeId: item?.intPayrollElementTypeId,
-      },
-      onSuccess: (res: any) => {
-        if (res?.isSalary || res?.isAllowance)
-          return toast.warning("This element is used in salary or allowance");
-
-        if (type === "delete") deleteElement(item);
-        else if (type === "edit") {
-          setRowData(item);
-          setOpen(true);
-        }
-      },
-    });
-  };
   //  Delete Element
   const deleteElement = (item: any) => {
     deletePayScale?.action({
@@ -100,26 +78,33 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
       title: "SL",
       align: "center",
       render: (text: any, record: any, index: number) => index + 1,
+      width: 20,
     },
     {
       title: "PayScale Name",
       dataIndex: "payScaleName",
+      width: 50,
     },
     {
-      title: "Job Class",
+      title: "Payscale Class",
       dataIndex: "jobClassName",
+      width: 50,
     },
     {
-      title: "Job Grade",
+      title: "Payscale Grade",
       dataIndex: "jobGradeName",
+      width: 50,
     },
     {
-      title: "Job Level",
+      title: "Payscale Level",
       dataIndex: "jobLevelName",
+      width: 50,
     },
 
     {
-      title: "Action",
+      title: "",
+      width: 20,
+
       align: "center",
       render: (_: any, item: any) => (
         <TableButton
@@ -128,6 +113,8 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
               type: "edit",
               onClick: () => {
                 // checkUsage(item, "edit");
+                setRowData(item);
+                setOpen(true);
               },
             },
             {
@@ -147,7 +134,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
         <>
           <PCard>
             <PCardHeader
-              title="Payscale Grade"
+              title="Payscale"
               buttonList={[
                 {
                   type: "primary",
@@ -169,7 +156,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
             />
           </PCard>
           <PModal
-            title={`${rowData ? "Edit" : "Create"} Payroll Element`}
+            title={`${rowData ? "Edit" : "Create"} Payscale`}
             open={open}
             width={900}
             onCancel={() => {

@@ -133,8 +133,8 @@ export default function CreateJobLevel({
           <Col md={12} sm={24}>
             <PSelect
               name="jobClass"
-              label="Job Class"
-              placeholder="Select Job Class "
+              label="Payscale Class"
+              placeholder="Select Payscale Class "
               options={jobClassDDL?.data?.length > 0 ? jobClassDDL?.data : []}
               loading={jobClassDDL?.loading}
               disabled={singleData?.id}
@@ -149,7 +149,7 @@ export default function CreateJobLevel({
               rules={[
                 {
                   required: true,
-                  message: "Job Class is required",
+                  message: "Payscale Class is required",
                 },
               ]}
             />
@@ -157,8 +157,8 @@ export default function CreateJobLevel({
           <Col md={12} sm={24}>
             <PSelect
               name="grade"
-              label="Grade Name"
-              placeholder="Select Grade"
+              label="Payscale Grade "
+              placeholder="Select Payscale Grade"
               disabled={singleData?.id}
               options={gradeDDL?.data?.length > 0 ? gradeDDL?.data : []}
               loading={gradeDDL?.loading}
@@ -171,7 +171,7 @@ export default function CreateJobLevel({
               rules={[
                 {
                   required: true,
-                  message: "Grade Type is required",
+                  message: "Payscale Grade is required",
                 },
               ]}
             />
@@ -180,13 +180,13 @@ export default function CreateJobLevel({
             <PInput
               type="text"
               name="joblevel"
-              label="Create Job Level"
+              label="Payscale Level"
               min={0}
-              placeholder="Job Level"
+              placeholder="Payscale Level"
               rules={[
                 {
                   required: true,
-                  message: "Job Level is required",
+                  message: "Payscale Level is required",
                 },
               ]}
             />

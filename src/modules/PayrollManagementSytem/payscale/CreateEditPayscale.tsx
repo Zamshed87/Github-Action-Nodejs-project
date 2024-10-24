@@ -130,6 +130,12 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   //   Functions
   const onFinish = () => {
     const values = form.getFieldsValue(true);
+    if (elementDto?.length === 0) {
+      return toast.warn("Payroll elements are not selected");
+    }
+    if (designationDto?.length === 0) {
+      return toast.warn("Designations are not selected");
+    }
     const payload = {
       id: rowData?.id ? rowData?.id : 0,
 
@@ -241,12 +247,12 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       render: (_: any, item: any, index: number) => (
         <TableButton
           buttonsList={[
-            {
-              type: "edit",
-              onClick: () => {
-                // checkUsage(item, "edit");
-              },
-            },
+            // {
+            //   type: "edit",
+            //   onClick: () => {
+            //     // checkUsage(item, "edit");
+            //   },
+            // },
             {
               type: "delete",
               onClick: () => {
@@ -403,8 +409,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   <Col md={12} sm={24}>
                     <PSelect
                       name="jobClass"
-                      label="Job Class"
-                      placeholder="Select Job Class "
+                      label="Payscale Class"
+                      placeholder="Select Payscale Class "
                       options={
                         jobClassDDL?.data?.length > 0 ? jobClassDDL?.data : []
                       }
@@ -421,7 +427,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       rules={[
                         {
                           required: true,
-                          message: "Job Class is required",
+                          message: "Payscale Class is required",
                         },
                       ]}
                     />
@@ -469,8 +475,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   <Col md={12} sm={24}>
                     <PSelect
                       name="grade"
-                      label="Grade Name"
-                      placeholder="Select Grade"
+                      label="Payscale Grade"
+                      placeholder="Select Payscale Grade"
                       options={gradeDDL?.data?.length > 0 ? gradeDDL?.data : []}
                       loading={gradeDDL?.loading}
                       onChange={(value, op) => {
@@ -484,7 +490,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       rules={[
                         {
                           required: true,
-                          message: "Grade Type is required",
+                          message: "Payscale Grade is required",
                         },
                       ]}
                     />
@@ -532,8 +538,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   <Col md={12} sm={24}>
                     <PSelect
                       name="jobLevel"
-                      label="Job Level"
-                      placeholder="Select Job Level"
+                      label="Payscale Level"
+                      placeholder="Select Payscale Level"
                       options={
                         jobLevelDDL?.data?.length > 0 ? jobLevelDDL?.data : []
                       }
@@ -547,7 +553,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       rules={[
                         {
                           required: true,
-                          message: "Job Level is required",
+                          message: "Payscale Level is required",
                         },
                       ]}
                     />
@@ -690,6 +696,12 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             label="Increment Amount"
             name="increment"
             min={0}
+            rules={[
+              {
+                required: true,
+                message: "Increment Amount is required",
+              },
+            ]}
           />
         </Col>
 
@@ -699,6 +711,12 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             name="incrementSlab"
             label="Slabs Count"
             min={0}
+            rules={[
+              {
+                required: true,
+                message: "Slabs Count is required",
+              },
+            ]}
           />
         </Col>
         <Col md={3} className="my-3 pt-1">

@@ -93,13 +93,13 @@ export default function CreateJobClass({
             <PInput
               type="text"
               name="jobclassName"
-              label="Job Class"
+              label="Payscale Class"
               min={0}
-              placeholder="Job Class Name"
+              placeholder="Payscale Class Name"
               rules={[
                 {
                   required: true,
-                  message: "Job Class Name is required",
+                  message: "Payscale Class Name is required",
                 },
               ]}
             />

@@ -112,8 +112,8 @@ export default function CreateGrade({
           <Col md={24} sm={24}>
             <PSelect
               name="jobClass"
-              label="Job Class"
-              placeholder="Select Job Class "
+              label="Payscale Class"
+              placeholder="Select Payscale Class "
               options={jobClassDDL?.data?.length > 0 ? jobClassDDL?.data : []}
               loading={jobClassDDL?.loading}
               disabled={singleData?.id}
@@ -126,7 +126,7 @@ export default function CreateGrade({
               rules={[
                 {
                   required: true,
-                  message: "Job Class is required",
+                  message: "Payscale Class is required",
                 },
               ]}
             />
@@ -135,13 +135,13 @@ export default function CreateGrade({
             <PInput
               type="text"
               name="grade"
-              label="Grade Name"
+              label="Payscale Grade"
               min={0}
-              placeholder="Grade Name"
+              placeholder="Payscale Grade"
               rules={[
                 {
                   required: true,
-                  message: "Grade Name is required",
+                  message: "Payscale Grade is required",
                 },
               ]}
             />
