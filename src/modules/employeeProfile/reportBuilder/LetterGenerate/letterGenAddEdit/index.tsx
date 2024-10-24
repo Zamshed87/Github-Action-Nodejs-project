@@ -11,8 +11,9 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
-import { getLetterNameDDL } from "./helper";
+import { createNEditLetterGenerate, getLetterNameDDL } from "./helper";
 import {
+  Flex,
   PButton,
   PCard,
   PCardBody,
@@ -24,12 +25,16 @@ import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
+import { modules } from "../../letterConfiguration/utils";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 const LetterGenAddEdit = () => {
   // Router state
   const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
+
+  console.log(letterData);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -91,7 +96,13 @@ const LetterGenAddEdit = () => {
           ? { label: letterData?.letterType, value: letterData?.letterTypeId }
           : "",
         letterName: letterData?.letterName || "",
-        letter: letterData?.letterBody || "",
+        letter: letterData?.generatedLetterBody || "",
+        employee: letterData?.issuedEmployeeId
+          ? {
+              label: letterData?.issuedEmployeeName,
+              value: letterData?.issuedEmployeeId,
+            }
+          : "",
       }}
     >
       <PCard>
@@ -102,7 +113,6 @@ const LetterGenAddEdit = () => {
             {
               type: "primary",
               content: "Save",
-              icon: "plus",
               disabled: loading,
               onClick: () => {
                 const values = form.getFieldsValue(true);
@@ -113,13 +123,7 @@ const LetterGenAddEdit = () => {
                     if (!values?.letter) {
                       return toast.warning("Please add letter template");
                     }
-
-                    // createNEditLetterTemplate(
-                    //   form,
-                    //   profileData,
-                    //   setLoading,
-                    //   letterData
-                    // );
+                    createNEditLetterGenerate(form, profileData, setLoading);
                   })
                   .catch(() => {
                     console.log();
@@ -147,12 +151,6 @@ const LetterGenAddEdit = () => {
                     value
                   );
                 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Letter Type is required",
-                  },
-                ]}
               />
             </Col>
             <Col md={6} sm={24}>
@@ -166,12 +164,6 @@ const LetterGenAddEdit = () => {
                     letterName: op,
                   });
                 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Letter Name is required",
-                  },
-                ]}
               />
             </Col>
             <Col md={6} sm={24}>
@@ -191,45 +183,46 @@ const LetterGenAddEdit = () => {
                 }}
                 showSearch
                 filterOption={false}
+                allowClear={true}
               />
             </Col>
-            <Col
-              style={{
-                marginTop: "23px",
-              }}
-            >
-              <PButton type="primary" action="submit" content="Preview" />
-            </Col>
-          </Row>
-          <Row gutter={[10, 2]}>
-            <Form.Item shouldUpdate noStyle>
-              {() => {
-                const { letter } = form.getFieldsValue(true);
-
-                return (
-                  <>
-                    <Col className="custom_quill quilJob" md={24} sm={24}>
-                      <label>
-                        <span style={{ color: "red" }}>*</span>{" "}
-                        <span style={{ fontSize: "12px", fontWeight: 500 }}>
-                          Letter Body
-                        </span>
-                      </label>
-                      <ReactQuill
-                        preserveWhitespace={true}
-                        placeholder="Write your letter body..."
-                        value={letter}
-                        onChange={(value) =>
-                          form.setFieldValue("letter", value)
-                        }
-                      />
-                    </Col>
-                  </>
-                );
-              }}
-            </Form.Item>
           </Row>
         </PCardBody>
+        <Flex className="my-2" justify="flex-end">
+          <PButton
+            type="primary"
+            action="button"
+            content="Preview"
+            onClick={(e: any) => {
+              e.stopPropagation();
+              dispatch(getDownlloadFileView_Action(24275));
+            }}
+          />
+        </Flex>
+        <Row gutter={[10, 2]}>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { letter } = form.getFieldsValue(true);
+
+              return (
+                <>
+                  <Col className="custom_quill quilJob" md={24} sm={24}>
+                    <ReactQuill
+                      preserveWhitespace={true}
+                      placeholder="letter body..."
+                      value={letter}
+                      modules={{
+                        toolbar: modules.toolbar,
+                        clipboard: modules.clipboard,
+                      }}
+                      onChange={(value) => form.setFieldValue("letter", value)}
+                    />
+                  </Col>
+                </>
+              );
+            }}
+          </Form.Item>
+        </Row>
       </PCard>
     </PForm>
   ) : (
