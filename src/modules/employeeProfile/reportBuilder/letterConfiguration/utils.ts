@@ -1,3 +1,10 @@
+/*
+ * Title: Letter Config
+ * Author: Khurshida Meem
+ * Date: 23-10-2024
+ *
+ */
+
 export const customFields = [
   { id: "", value: "[Employee Name]", label: "Employee Name" },
   { id: 2, value: "[Employee Code]", label: "Employee Code" },

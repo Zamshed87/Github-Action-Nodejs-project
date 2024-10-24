@@ -70,6 +70,7 @@ import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDet
 import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
 import LetterGenerateLanding from "modules/employeeProfile/reportBuilder/LetterGenerate";
 import LetterConfigAddEdit from "modules/employeeProfile/reportBuilder/letterConfiguration/letterConfigAddEdit.tsx";
+import LetterGenAddEdit from "modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3133,6 +3134,14 @@ export const routingList = [
   {
     path: "/profile/customReportsBuilder/letterGenerate",
     component: LetterGenerateLanding,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterGenerate/generateLetter",
+    component: LetterGenAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterGenerate/generateLetter/:letterId",
+    component: LetterGenAddEdit,
   },
   // Trainnning and development ends
 

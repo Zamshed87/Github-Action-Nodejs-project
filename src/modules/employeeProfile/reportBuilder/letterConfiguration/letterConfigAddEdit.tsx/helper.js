@@ -1,5 +1,5 @@
 /*
- * Title: Letter Config Landing
+ * Title: Letter Config funcs
  * Author: Khurshida Meem
  * Date: 23-10-2024
  *

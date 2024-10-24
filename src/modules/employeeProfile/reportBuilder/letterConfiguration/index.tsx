@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
+import axios from "axios";
 
 const LetterConfigLanding = () => {
   // router states
@@ -34,7 +35,7 @@ const LetterConfigLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId, buId, wgId, wId } = profileData;
+  const { orgId, buId, wgId, wId, employeeId } = profileData;
 
   // menu permission
   let letterConfigPermission: any = null;
@@ -141,9 +142,19 @@ const LetterConfigLanding = () => {
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
-      render: (data: any) => (
+      render: (data: any, rec: any) => (
         <>
-          <Switch size="small" checked={data === "Active" ? true : false} />{" "}
+          <Switch
+            size="small"
+            defaultChecked={data === "Active" ? true : false}
+            onChange={(checked) => {
+              axios.post("/LetterBuilder/LetterTemplateStatusUpdate", {
+                templateId: rec?.templateId,
+                isActive: checked,
+                updatedBy: employeeId,
+              });
+            }}
+          />{" "}
         </>
       ),
       align: "center",
