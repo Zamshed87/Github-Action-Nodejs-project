@@ -411,7 +411,7 @@ export default function AddEditForm({
                   label: "SCB",
                 },
                 {
-                  value: "CityBank",
+                  value: "CITY",
                   label: "City Bank",
                 },
                 {
