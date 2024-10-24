@@ -627,7 +627,7 @@ export const demoPopup = (action, array, cb, setLandingLoading, history) => {
     yesAlertFunc: () => {
       if (array.length) {
         leavePolicyAssign(array, cb, setLandingLoading);
-        history.push(`/administration/leaveandmovement/yearlyLeavePolicy`);
+        // history.push(`/administration/leaveandmovement/yearlyLeavePolicy`);
       }
     },
     noAlertFunc: () => {},
