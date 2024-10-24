@@ -31,7 +31,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   // Life Cycle Hooks
   useEffect(() => {
     landingApi();
-    document.title = "Payscale";
+    document.title = "Payscale Setup";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
@@ -68,7 +68,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   // menu permission check
   let payrollElement: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30259) {
+    if (item?.menuReferenceId === 30442) {
       payrollElement = item;
     }
   });
@@ -134,7 +134,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
         <>
           <PCard>
             <PCardHeader
-              title="Payscale"
+              title="Payscale Setup"
               buttonList={[
                 {
                   type: "primary",

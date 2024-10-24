@@ -152,7 +152,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       extendedIncrementSlabCount: values?.efficiencySlab,
       extendedIncrementAmount: values?.incrementExtended,
       payScaleElements: elementDto,
-      designationList: designationDto?.map((i: any) => i?.value),
+      designationList: designationDto?.map((i: any) => i?.id),
       actionBy: employeeId,
     };
     savePayscale?.action({
@@ -167,6 +167,13 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     });
   };
   const elementDtoHandler = (e: number, row: any, index: number) => {
+    if (e < 0) {
+      return toast.warn("number must be positive");
+    }
+    if (row?.basedOn === "Percentage" && e > 100) {
+      return toast.warn("Percentage cant be greater than 100");
+    }
+
     let temp: any = [...elementDto];
     temp[index].amountOrPercentage = e;
 
@@ -210,30 +217,57 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       title: "Amount/Percentage",
       render: (value: any, row: any, index: number) => (
         <>
-          <PInput
-            type="number"
-            name={`amountOrPercentage_${index}`}
-            value={row?.amountOrPercentage}
-            placeholder="Amount"
-            rules={[
-              { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  if (row?.basedOn === "Percentage" && value > 100) {
-                    callback("Percentage can not be greater than 100");
-                  } else if (value < 0) {
-                    callback("must be Negative");
-                  } else {
-                    callback();
-                  }
+          {row?.id ? (
+            <PInput
+              type="number"
+              // name={`amountOrPercentage_${index}`}
+              value={row?.amountOrPercentage}
+              placeholder="Amount"
+              rules={[
+                { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    if (row?.basedOn === "Percentage" && value > 100) {
+                      callback("Percentage can not be greater than 100");
+                    } else if (value < 0) {
+                      callback("must be Positive");
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              elementDtoHandler(e, row, index);
-            }}
-          />
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                elementDtoHandler(e, row, index);
+              }}
+            />
+          ) : (
+            <PInput
+              type="number"
+              name={`amountOrPercentage_${index}`}
+              value={row?.amountOrPercentage}
+              placeholder="Amount"
+              rules={[
+                { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    if (row?.basedOn === "Percentage" && value > 100) {
+                      callback("Percentage can not be greater than 100");
+                    } else if (value < 0) {
+                      callback("must be Positive");
+                    } else {
+                      callback();
+                    }
+                  },
+                },
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                elementDtoHandler(e, row, index);
+              }}
+            />
+          )}
         </>
       ),
     },
@@ -363,6 +397,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           }
 
           setIncrementDto(tempIncrement);
+          setElementDto(res?.payScaleElements);
         },
       });
     }
@@ -655,7 +690,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   {
                     ...values?.element,
                     payrollElementName: values?.element?.label,
-
+                    isBasic: values?.element?.isBasic,
                     element: values?.element?.label,
                     elementId: values?.element?.value,
                     payrollElementId: values?.element?.value,
@@ -870,6 +905,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   {
                     ...values.designation,
                     designationName: values.designation?.label,
+                    id: values.designation?.value,
                   },
                 ];
               });
