@@ -233,7 +233,7 @@ const LetterConfigAddEdit = () => {
 
                 return (
                   <>
-                    <Col className="custom_quill quilJob" md={18} sm={24}>
+                    <Col className="custom_quill quilJob" md={20} sm={24}>
                       <label>
                         <span style={{ color: "red" }}>*</span>{" "}
                         <span style={{ fontSize: "12px", fontWeight: 500 }}>
@@ -250,23 +250,27 @@ const LetterConfigAddEdit = () => {
                         }
                       />
                     </Col>
-                    <Col md={6} sm={24}>
+                    <Col md={4} sm={24}>
                       <div
                         style={{
                           marginTop: "21px",
-                          backgroundColor: "var(--secondary-bg)",
+                          backgroundColor: "#F4F9F5",
                           height: "350px",
                           overflow: "scroll",
+                          padding: "8px 5px",
                         }}
                       >
                         {customFields?.map((dto: any, index: number) => (
                           <div key={index}>
-                            <div
+                            <button
+                              type="button"
                               style={{
                                 cursor: "pointer",
-                                backgroundColor: "greenyellow",
+                                backgroundColor: "#DDF7E1",
+                                borderRadius: "50px",
                                 margin: "5px",
-                                padding: "3px",
+                                padding: "4px 6px",
+                                fontSize: "12px",
                               }}
                               onClick={() => {
                                 const text = `${form.getFieldValue(
@@ -276,7 +280,7 @@ const LetterConfigAddEdit = () => {
                               }}
                             >
                               {dto?.label}
-                            </div>
+                            </button>
                           </div>
                         ))}
                       </div>
