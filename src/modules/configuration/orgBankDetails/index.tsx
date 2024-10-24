@@ -11,7 +11,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import ViewFormComponent from "./viewForm";
 
