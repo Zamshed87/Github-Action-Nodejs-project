@@ -54,6 +54,7 @@ const BankAdviceReport = () => {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tenMsdata, setTenMsdata] = useState("");
   const [pdfDto, setPdfDto] = useState([]);
+  const [adviceType, setAdviceType] = useState([]);
 
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
@@ -684,6 +685,7 @@ const BankAdviceReport = () => {
                         setFieldValue("adviceType", "");
                         setFieldValue("account", "");
                         if (valueOption?.value) {
+                          setAdviceType(JSON.parse(valueOption?.strBankAdvice));
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BankAccountListofBankAdvicebyBankId&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&intWorkplaceId=${values?.workplace?.value}&intId=${valueOption?.value}`,
                             "value",
@@ -704,7 +706,7 @@ const BankAdviceReport = () => {
                     <label>Advice Type</label>
                     <FormikSelect
                       name="adviceType"
-                      options={adviceTypeDDL || []}
+                      options={adviceType || []}
                       value={values?.adviceType}
                       onChange={(valueOption) => {
                         setFieldValue("adviceType", valueOption);

@@ -4,8 +4,7 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Switch } from "antd";
 import { useEffect, useState } from "react";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { todayDate } from "utility/todayDate";
+import { shallowEqual, useSelector } from "react-redux";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -15,7 +14,6 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
   // const debounce = useDebounce();
 
   const saveOrgBank = useApiRequest({});
@@ -90,7 +88,7 @@ export default function AddEditForm({
   const [form] = Form.useForm();
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
-    console.log({ values });
+ 
     const cb = () => {
       resetForm();
       setIsAddEditForm(false);
@@ -120,6 +118,7 @@ export default function AddEditForm({
       workplaceName: values?.workplace?.label,
       workplaceGroupId: values?.workplaceGroup?.value,
       workplaceGroupName: values?.workplaceGroup?.label,
+      strBankAdvice: JSON.stringify(values?.bankAdvice || []),
     };
     saveOrgBank.action({
       urlKey: "AccountBankDetailsCRUD",
@@ -155,6 +154,11 @@ export default function AddEditForm({
           value: singleData?.workplaceId,
           label: singleData?.workplaceName,
         },
+        bankAdvice: JSON.parse(singleData?.strBankAdvice)?.map((itm) => {
+          return {
+            ...itm,
+          };
+        }),
         routingNo: singleData?.strRoutingNo,
         districtName: singleData?.strDistrict,
         swiftCode: singleData?.strSwiftCode,
@@ -351,7 +355,7 @@ export default function AddEditForm({
                   workplaceGroup: op,
                 });
                 getWDDL.action({
-                  urlKey: "PeopleDeskAllDDL",
+                  urlKey: "WorkplaceIdAll",
                   method: "GET",
                   params: {
                     accountId: orgId,
@@ -385,6 +389,53 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={[
+                {
+                  value: "IBBL",
+                  label: "IBBL",
+                },
+                {
+                  value: "BFTN",
+                  label: orgId === 4 ? "City Life" : "BFTN",
+                },
+                {
+                  value: "DBL",
+                  label: "DBL",
+                },
+                {
+                  value: "SCB",
+                  label: "SCB",
+                },
+                {
+                  value: "CITY",
+                  label: "City Bank",
+                },
+                {
+                  value: "DBBL",
+                  label: "DBBL",
+                },
+                {
+                  value: "DigitalPayment",
+
+                  label: "Digital Payment",
+                },
+              ]}
+              name="bankAdvice"
+              label="Bank Advice"
+              showSearch
+              mode="multiple"
+              filterOption={true}
+              placeholder="Bank Advic"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  bankAdvice: op,
+                });
+              }}
+              rules={[{ required: true, message: "Bank Advice is required" }]}
             />
           </Col>
 
