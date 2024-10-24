@@ -114,9 +114,9 @@ const LetterConfigAddEdit = () => {
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
 
   const handleInsertField = (fieldValue: any) => {
-    const quill = quillRef?.current?.getEditor(); // Get the Quill editor instance
-    const cursorPosition = quill.getSelection().index; // Get current cursor position
-    const currentContent = quill.getText(); // Get current content if needed
+    const quill = quillRef?.current?.getEditor();
+    const cursorPosition = quill.getSelection().index;
+    // const currentContent = quill.getText();
 
     // Insert the field value at the cursor position
     quill.insertText(cursorPosition, `@${fieldValue}`);
