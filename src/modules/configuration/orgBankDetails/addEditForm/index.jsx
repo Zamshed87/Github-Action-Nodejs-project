@@ -88,9 +88,7 @@ export default function AddEditForm({
   const [form] = Form.useForm();
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
-    // console.log({ values });
-    // const strBankAdviceModify = values?.bankAdvice.map(item => `${item.val}, ${item.value}, ${item.label}`).join(", ");
-
+ 
     const cb = () => {
       resetForm();
       setIsAddEditForm(false);
@@ -357,7 +355,7 @@ export default function AddEditForm({
                   workplaceGroup: op,
                 });
                 getWDDL.action({
-                  urlKey: "PeopleDeskAllDDL",
+                  urlKey: "WorkplaceIdAll",
                   method: "GET",
                   params: {
                     accountId: orgId,
