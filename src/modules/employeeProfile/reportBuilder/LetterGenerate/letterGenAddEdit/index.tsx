@@ -11,7 +11,11 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
-import { createNEditLetterGenerate, getLetterNameDDL } from "./helper";
+import {
+  createNEditLetterGenerate,
+  getLetterNameDDL,
+  getLetterPreview,
+} from "./helper";
 import {
   Flex,
   PButton,
@@ -26,15 +30,13 @@ import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
 import { modules } from "../../letterConfiguration/utils";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { getPDFAction } from "utility/downloadFile";
 
 const LetterGenAddEdit = () => {
   // Router state
   const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
-
-  console.log(letterData);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -95,7 +97,9 @@ const LetterGenAddEdit = () => {
         letterType: letterData?.letterType
           ? { label: letterData?.letterType, value: letterData?.letterTypeId }
           : "",
-        letterName: letterData?.letterName || "",
+        letterName: letterData?.letterName
+          ? { label: letterData?.letterName, value: letterData?.letterName }
+          : "",
         letter: letterData?.generatedLetterBody || "",
         employee: letterData?.issuedEmployeeId
           ? {
@@ -123,7 +127,12 @@ const LetterGenAddEdit = () => {
                     if (!values?.letter) {
                       return toast.warning("Please add letter template");
                     }
-                    createNEditLetterGenerate(form, profileData, setLoading);
+                    createNEditLetterGenerate(
+                      form,
+                      profileData,
+                      setLoading,
+                      letterData
+                    );
                   })
                   .catch(() => {
                     console.log();
@@ -163,6 +172,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     letterName: op,
                   });
+                  getLetterPreview(profileData, setLoading, form);
                 }}
               />
             </Col>
@@ -177,6 +187,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     employee: op,
                   });
+                  getLetterPreview(profileData, setLoading, form);
                 }}
                 onSearch={(value) => {
                   getEmployee(value);
@@ -194,8 +205,14 @@ const LetterGenAddEdit = () => {
             action="button"
             content="Preview"
             onClick={(e: any) => {
+              const { employee, letterId } = form.getFieldsValue(true);
               e.stopPropagation();
-              dispatch(getDownlloadFileView_Action(24275));
+              getPDFAction(
+                `/LetterBuilder/GetGeneratedLetterPreviewPDF?isForPreview=true&issuedEmployeeId=${
+                  employee?.value || 0
+                }&templateId=${letterId}&letterGenerateId=${letterId || 0}`,
+                setLoading
+              );
             }}
           />
         </Flex>

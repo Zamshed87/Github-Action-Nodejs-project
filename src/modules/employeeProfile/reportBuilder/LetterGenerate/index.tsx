@@ -10,6 +10,7 @@ import { Form, Tooltip } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
+import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -17,6 +18,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
+import TemplateViewModal from "./templateViewModal";
 
 const LetterGenerateLanding = () => {
   // router states
@@ -53,6 +55,8 @@ const LetterGenerateLanding = () => {
 
   // states
   const [filterList, setFilterList] = useState({});
+  const [open, setOpen] = useState(false);
+  const [singleData, setSingleData] = useState({});
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -144,17 +148,15 @@ const LetterGenerateLanding = () => {
 
     {
       title: "Action",
-      dataIndex: "templateId",
-      render: (templateId: number, rec: any) => (
+      dataIndex: "letterGenerateId",
+      render: (generateId: number, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                history.push({
-                  pathname: `/profile/customReportsBuilder/letterGenerate/generateLetter/${templateId}`,
-                  state: rec,
-                });
+                setSingleData(rec);
+                setOpen(true);
               }}
             />
           </Tooltip>
@@ -229,7 +231,7 @@ const LetterGenerateLanding = () => {
           </div>
         </PCard>
       </PForm>
-      {/* <PModal
+      <PModal
         title="View Template"
         open={open}
         onCancel={() => {
@@ -238,7 +240,7 @@ const LetterGenerateLanding = () => {
         }}
         components={<TemplateViewModal singleData={singleData} />}
         width={1000}
-      /> */}
+      />
     </>
   ) : (
     <NotPermittedPage />
