@@ -53,7 +53,7 @@ export const getLetterTypeDDL = async (
       `/LetterBuilder/GetLetterTypeList?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`
     );
 
-    setLetterTypeDDL((prev) => [...prev, ...res?.data]);
+    setLetterTypeDDL(res?.data);
     setLoading(false);
   } catch (error) {
     setLoading(false);

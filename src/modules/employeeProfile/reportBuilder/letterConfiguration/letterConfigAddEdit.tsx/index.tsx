@@ -83,7 +83,6 @@ const LetterConfigAddEdit = () => {
   const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
-  console.log(location);
 
   // Form Instance
   const [form] = Form.useForm();
