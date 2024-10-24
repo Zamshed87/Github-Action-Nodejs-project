@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 
 const LetterGenerateLanding = () => {
@@ -52,8 +53,6 @@ const LetterGenerateLanding = () => {
 
   // states
   const [filterList, setFilterList] = useState({});
-  const [open, setOpen] = useState(false);
-  const [singleData, setSingleData] = useState({});
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -69,8 +68,8 @@ const LetterGenerateLanding = () => {
   const landingApiCall = ({
     pagination = { current: 1, pageSize: 25 },
     filters = filterList,
-    searchText = "",
   }: TLandingApi) => {
+    console.log(filters);
     const payload = {
       accountId: orgId,
       businessUnitId: buId,
@@ -80,13 +79,13 @@ const LetterGenerateLanding = () => {
       pageSize: pagination?.pageSize,
       isPaginated: true,
       isHeaderNeeded: true,
-      searchTxt: searchText || "",
       letterTypeList: filters?.letterType || [],
       createdByList: filters?.createdByEmployee || [],
-      statusList: filters?.status || [],
+      letterNameList: filters?.letterName || [],
+      issuedEmployeeIdList: filters?.issuedEmployeeName || [],
     };
     landingApi.action({
-      urlKey: "GetLetterTemplateLanding",
+      urlKey: "GetGeneratedLetterLanding",
       method: "POST",
       payload: payload,
     });
@@ -119,19 +118,29 @@ const LetterGenerateLanding = () => {
     {
       title: "Letter Name",
       dataIndex: "letterName",
+      filter: true,
+      filterKey: "letterNameList",
+      filterSearch: true,
     },
     {
-      title: "Created By",
+      title: "Issued To",
+      dataIndex: "issuedEmployeeName",
+      filter: true,
+      filterKey: "issuedEmployeeIdList",
+      filterSearch: true,
+    },
+    {
+      title: "Issued By",
       dataIndex: "createdByEmployee",
       filter: true,
       filterKey: "createdByList",
       filterSearch: true,
     },
-    //  {
-    //    title: "Created Date",
-    //    dataIndex: "createdAt",
-    //    render: (data: any) => dateFormatter(data),
-    //  },
+    {
+      title: "Issued Date",
+      dataIndex: "createdAt",
+      render: (data: any) => dateFormatter(data),
+    },
 
     {
       title: "Action",
@@ -142,8 +151,10 @@ const LetterGenerateLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                setSingleData(rec);
-                setOpen(true);
+                history.push({
+                  pathname: `/profile/customReportsBuilder/letterGenerate/generateLetter/${templateId}`,
+                  state: rec,
+                });
               }}
             />
           </Tooltip>

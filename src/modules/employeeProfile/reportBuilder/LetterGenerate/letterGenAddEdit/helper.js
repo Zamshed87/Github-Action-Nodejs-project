@@ -7,6 +7,7 @@
 
 import axios from "axios";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 export const getLetterNameDDL = async (
   profileData,
@@ -43,12 +44,13 @@ export const createNEditLetterGenerate = async (
       letterTypeId: values?.letterType?.value,
       letterName: values?.letterName?.value,
       generatedLetterBody: values?.letter,
-      issuedEmployeeId: values?.employee?.value,
+      issuedEmployeeId: values?.employee?.value || "",
       accountId: orgId,
       businessUnitId: buId,
       workplaceGroupId: wgId,
       workplaceId: wId,
       createdBy: employeeId,
+      createdAt: todayDate(),
     };
     setLoading(true);
     const res = await axios.post(`/LetterBuilder/LetterGenerate`, payload);
