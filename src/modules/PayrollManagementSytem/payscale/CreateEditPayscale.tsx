@@ -291,6 +291,10 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               type: "delete",
               onClick: () => {
                 // checkUsage(item, "delete");
+                if (item?.isBasic) {
+                  return toast.warn("Can not delete basic element");
+                }
+
                 let temp = elementDto?.filter(
                   (i: any, idx: number) => idx !== index
                 );
