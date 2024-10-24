@@ -230,6 +230,7 @@ export const apiList = {
   CreatePayScaleSetup: "/PayScaleSetup/CreatePayScaleSetup",
   GetPayScaleSetupById: "/PayScaleSetup/GetPayScaleSetupById",
   UpdatePayScaleSetup: "PayScaleSetup/UpdatePayScaleSetup",
+  DesignationIdWithAll: "/PeopleDeskDdl/DesignationIdWithAll",
 
   //updated ddls
 

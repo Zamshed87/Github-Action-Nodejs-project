@@ -71,19 +71,13 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   };
   const getDesignationDDL = () => {
     designationDDL?.action({
-      urlKey: "DesignationIdAll",
+      urlKey: "DesignationIdWithAll",
       method: "GET",
       params: {
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: wgId,
         workplaceId: wId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.designationName;
-          res[i].value = item?.designationId;
-        });
       },
     });
   };
@@ -223,6 +217,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               // name={`amountOrPercentage_${index}`}
               value={row?.amountOrPercentage}
               placeholder="Amount"
+              disabled={rowData}
               rules={[
                 { required: true, message: "Amount Is Required" },
                 {
@@ -278,6 +273,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     {
       title: "Action",
       align: "center",
+      hidden: rowData?.id ? true : false,
       render: (_: any, item: any, index: number) => (
         <TableButton
           buttonsList={[
@@ -305,7 +301,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
         />
       ),
     },
-  ];
+  ].filter((i: any) => !i.hidden);
   const headerDesignation: any = [
     {
       title: "SL",
@@ -734,6 +730,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             type="number"
             label="Increment Amount"
             name="increment"
+            disabled={rowData}
             min={0}
             rules={[
               {
@@ -750,6 +747,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             name="incrementSlab"
             label="Slabs Count"
             min={0}
+            disabled={rowData}
             rules={[
               {
                 required: true,
@@ -801,6 +799,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             layout="horizontal"
             label="Efficiency Bar"
             name="isEfficiency"
+            disabled={rowData}
             onChange={(e) => {
               setEfficiencyDto([]);
               form.setFieldsValue({
@@ -821,6 +820,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                     label="Increment Amount"
                     name="incrementExtended"
                     min={0}
+                    disabled={rowData}
                   />
                 </Col>
 
@@ -829,6 +829,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                     type="number"
                     name="efficiencySlab"
                     label="Slabs Count"
+                    disabled={rowData}
                     min={0}
                   />
                 </Col>
@@ -897,9 +898,20 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               const isDuplicate = designationDto?.filter(
                 (i: any) => i?.designationName === values?.designation?.label
               );
+              const isAll = designationDto?.filter(
+                (i: any) => i?.designationName === "All"
+              );
 
               if (isDuplicate?.length > 0) {
                 return toast.warn("Designation is Already selected");
+              }
+
+              if (isAll?.length > 0) {
+                return toast.warn("All  is selected");
+              }
+
+              if (values?.designation?.value === 0) {
+                setDesignationDto([]);
               }
 
               setDesignationDto((prev): any => {
