@@ -214,6 +214,7 @@ const LetterGenAddEdit = () => {
                 setLoading
               );
             }}
+            disabled={form.getFieldValue("letterId") ? false : true}
           />
         </Flex>
         <Row gutter={[10, 2]}>
