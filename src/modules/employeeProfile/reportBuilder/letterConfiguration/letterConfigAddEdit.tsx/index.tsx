@@ -20,7 +20,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { customFields } from "../utils";
+import { customFields, modules } from "../utils";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
 import {
@@ -30,53 +30,54 @@ import {
 } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
-const modules = {
-  mention: {
-    allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-    mentionDenotationChars: ["@"],
-    source: function (searchTerm: any, renderList: any, mentionChar: any) {
-      let MentionValue: any[] = [];
+// const modules = {
+//   mention: {
+//     allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+//     mentionDenotationChars: ["@"],
+//     source: function (searchTerm: any, renderList: any, mentionChar: any) {
+//       let MentionValue: any[] = [];
 
-      if (mentionChar === "@") {
-        MentionValue = customFields;
-      }
+//       if (mentionChar === "@") {
+//         MentionValue = customFields;
+//       }
 
-      if (searchTerm.length === 0) {
-        renderList(MentionValue, searchTerm);
-      } else {
-        const matches = [];
-        for (let i = 0; i < MentionValue.length; i++)
-          if (
-            ~MentionValue[i].value
-              .toLowerCase()
-              .indexOf(searchTerm.toLowerCase())
-          )
-            matches.push(MentionValue[i]);
-        renderList(matches, searchTerm);
-      }
-    },
-  },
-  toolbar: [
-    { header: [1, 2, 3, false] },
-    "bold",
-    "italic",
-    "underline",
-    "blockquote",
-    { list: "ordered" },
-    { list: "bullet" },
-    { indent: "-1" },
-    { indent: "+1" },
-    { color: [] },
-    { background: [] },
-    { align: [] },
-    "link",
-    "",
-    "",
-  ],
-  clipboard: {
-    matchVisual: true,
-  },
-};
+//       if (searchTerm.length === 0) {
+//         renderList(MentionValue, searchTerm);
+//       } else {
+//         const matches = [];
+//         for (let i = 0; i < MentionValue.length; i++)
+//           if (
+//             ~MentionValue[i].value
+//               .toLowerCase()
+//               .indexOf(searchTerm.toLowerCase())
+//           )
+//             matches.push(MentionValue[i]);
+//         renderList(matches, searchTerm);
+//       }
+//     },
+//   },
+//   toolbar: [
+//     { header: [1, 2, 3, false] },
+//     { size: ["small", false, "large", "huge"] },
+//     "bold",
+//     "italic",
+//     "underline",
+//     "blockquote",
+//     { list: "ordered" },
+//     { list: "bullet" },
+//     { indent: "-1" },
+//     { indent: "+1" },
+//     { color: [] },
+//     { background: [] },
+//     { align: [] },
+//     "link",
+//     "",
+//     "",
+//   ],
+//   clipboard: {
+//     matchVisual: true,
+//   },
+// };
 
 const LetterConfigAddEdit = () => {
   // Router state
@@ -243,7 +244,7 @@ const LetterConfigAddEdit = () => {
 
                 return (
                   <>
-                    <Col className="custom_quill quilJob" md={20} sm={24}>
+                    <Col className="custom_quill quil_template" md={20} sm={24}>
                       <label>
                         <span style={{ color: "red" }}>*</span>{" "}
                         <span style={{ fontSize: "12px", fontWeight: 500 }}>
@@ -256,9 +257,9 @@ const LetterConfigAddEdit = () => {
                         placeholder="Write your letter body..."
                         value={letter}
                         modules={modules}
-                        onChange={(value) =>
-                          form.setFieldValue("letter", value)
-                        }
+                        onChange={(value) => {
+                          form.setFieldValue("letter", value);
+                        }}
                       />
                     </Col>
                     <Col md={4} sm={24}>
