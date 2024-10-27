@@ -238,7 +238,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
                 ? "Leave"
                 : "Absent",
               requestStatus: values?.attendanceAdujust?.label,
-              remarks: item?.reasonUpdate || "By HR",
+              remarks: item?.reasonUpdate || "",
               isApproved: true,
               isActive: true,
               isManagement: true,
@@ -287,7 +287,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
                 ? "Leave"
                 : "Absent",
               requestStatus: values?.attendanceAdujust?.label,
-              remarks: item?.strReason || "By HR",
+              remarks: item?.strReason || "",
               isApproved: true,
               isActive: true,
               isManagement: true,
