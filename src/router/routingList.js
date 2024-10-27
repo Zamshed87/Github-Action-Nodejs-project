@@ -67,6 +67,10 @@ import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
+import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
+import LetterGenerateLanding from "modules/employeeProfile/reportBuilder/LetterGenerate";
+import LetterConfigAddEdit from "modules/employeeProfile/reportBuilder/letterConfiguration/letterConfigAddEdit.tsx";
+import LetterGenAddEdit from "modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -2676,7 +2680,7 @@ export const routingList = [
     component: PayrollElement,
   },
   {
-    path: "/administration/payrollConfiguration/payscale",
+    path: "/administration/payrollConfiguration/payScaleSetup",
     component: PayscaleLanding,
   },
   {
@@ -3114,6 +3118,30 @@ export const routingList = [
   {
     path: "/administration/configuration/latepunishmentpolicy",
     component: LatePunishmentPolicy,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterConfiguration",
+    component: LetterConfigLanding,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterConfiguration/createLetter",
+    component: LetterConfigAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterConfiguration/createLetter/:letterId",
+    component: LetterConfigAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterGenerate",
+    component: LetterGenerateLanding,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterGenerate/generateLetter",
+    component: LetterGenAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/letterGenerate/generateLetter/:letterId",
+    component: LetterGenAddEdit,
   },
   // Trainnning and development ends
 
