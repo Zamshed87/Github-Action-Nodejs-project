@@ -46,7 +46,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strDependOn: "Basic",
       isBasicSalary: true,
       numNumberOfPercent: 0,
-      numAmount: 10,
+      numAmount: 0,
       intSalaryBreakdownHeaderId1: 28,
       intSalaryBreakdownRowId: 104,
       isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
@@ -60,7 +60,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strDependOn: "Basic",
       isBasicSalary: false,
       numNumberOfPercent: 50,
-      numAmount: 20,
+      numAmount: 0,
       intSalaryBreakdownHeaderId1: 28,
       intSalaryBreakdownRowId: 102,
       isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
@@ -88,7 +88,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strDependOn: "Basic",
       isBasicSalary: false,
       numNumberOfPercent: 0,
-      numAmount: 2500,
+      numAmount: 0,
       intSalaryBreakdownHeaderId1: 28,
       intSalaryBreakdownRowId: 105,
       isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
@@ -412,54 +412,191 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       });
     }
   };
+
+  // accounts calculations
   const updateDtoHandler = (e: number, row: any, index: number): any => {
-    let total = accountsDto.reduce((acc: any, i: any) => acc + i?.numAmount, 0);
     const { grossAmount } = form.getFieldsValue(true);
-    if (grossAmount < e) {
-      return toast.warn(`${row?.key} cant be greater than gross `);
-    }
-    if (e < 0) {
-      return toast.warn(`${row?.key} cant be negative `);
-    }
-    if (
-      total === grossAmount &&
-      e !== 0 &&
-      accountsDto[2].numAmount === 0 &&
-      index !== 2
-    ) {
-      return toast.warn(`full amount is already assigned `);
-    }
     let temp = [...accountsDto];
+
+    // Check for invalid input values
+    if (e < 0) {
+      return toast.warn(`${row?.key} can't be negative`);
+    }
+    if (e > grossAmount) {
+      return toast.warn(`${row?.key} can't be greater than gross`);
+    }
+
+    // Update the selected index with the new amount
     temp[index].numAmount = e;
-    temp[index].accounts =
-      temp[index].key +
-      " " +
-      `(${
-        (e * 100) / grossAmount > 0 ? ((e * 100) / grossAmount)?.toFixed(6) : 0
-      }%) `;
+    temp[index].accounts = `${temp[index].key} (${(
+      (e * 100) /
+      grossAmount
+    ).toFixed(6)}%)`;
 
-    if (index !== 2) {
-      temp[2].numAmount = grossAmount - temp[0].numAmount - temp[1].numAmount;
-      temp[2].accounts =
-        temp[2].key +
-        " " +
-        `(${
-          (temp[2].numAmount * 100) / grossAmount > 0
-            ? ((temp[2].numAmount * 100) / grossAmount)?.toFixed(6)
-            : 0
-        }%) `;
+    // Calculate the remaining amount to be distributed between the other two indexes
+    const remainingAmount = grossAmount - e;
+    const [index1, index2] = [0, 1, 2].filter((i) => i !== index); // get the other two indexes
+
+    // Distribute remaining amount between the other two indexes
+    if (temp[index1].numAmount > remainingAmount) {
+      temp[index1].numAmount = remainingAmount;
+      temp[index2].numAmount = 0;
+    } else if (temp[index2].numAmount > remainingAmount) {
+      temp[index2].numAmount = remainingAmount;
+      temp[index1].numAmount = 0;
+    } else {
+      temp[index2].numAmount = remainingAmount - temp[index1].numAmount;
     }
-    if (temp[2].numAmount < 0) {
-      return toast.warn(`cash amount cant be negative `);
+
+    // Update accounts percentage for all indexes
+    temp[index1].accounts = `${temp[index1].key} (${(
+      (temp[index1].numAmount * 100) /
+      grossAmount
+    ).toFixed(6)}%)`;
+    temp[index2].accounts = `${temp[index2].key} (${(
+      (temp[index2].numAmount * 100) /
+      grossAmount
+    ).toFixed(6)}%)`;
+    temp[index].accounts = `${temp[index].key} (${(
+      (temp[index].numAmount * 100) /
+      grossAmount
+    ).toFixed(6)}%)`;
+
+    // Check for any negative values after adjustments
+    if (temp[index1].numAmount < 0 || temp[index2].numAmount < 0) {
+      return toast.warn(`Amounts can't be negative`);
     }
+
     setAccountsDto(temp);
-
-    // temp[2].accounts = accounts;
-    // temp[2].numAmount = e;
-    // (values?.bankPay * 100) /
-    //               values?.totalGrossSalary
-    //             )?.toFixed(6)
     console.log(e, row, index);
+  };
+
+  const salaryBreakDownCalc = (salaryDependsOn = "") => {
+    const modifyData: any = [];
+    const { grossAmount } = form.getFieldsValue(true);
+
+    rowDto?.forEach((itm: any) => {
+      const obj = {
+        ...itm,
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+            ? Math.ceil(grossAmount)
+            : itm?.strBasedOn === "Amount"
+            ? Math.ceil(itm?.numAmount)
+            : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
+        numAmount:
+          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+            ? Math.ceil(grossAmount)
+            : itm?.strBasedOn === "Amount"
+            ? Math.ceil(itm?.numAmount)
+            : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
+        showPercentage: itm?.numNumberOfPercent,
+        levelVariable: itm?.strPayrollElementName
+          .toLowerCase()
+          .split(" ")
+          .join(""),
+      };
+      console.log({ obj });
+
+      modifyData.push(obj);
+    });
+    const indexOfLowestAmount = modifyData.reduce(
+      (minIndex: any, currentObject: any, currentIndex: any, array: any) => {
+        return currentObject.numNumberOfPercent <
+          array[minIndex].numNumberOfPercent
+          ? currentIndex
+          : minIndex;
+      },
+      0
+    );
+    console.log({ indexOfLowestAmount });
+    adjustOverFollowAmount(
+      modifyData,
+      grossAmount,
+      indexOfLowestAmount,
+      setRowDto,
+      `${modifyData[indexOfLowestAmount]?.strPayrollElementName
+        .toLowerCase()
+        .split(" ")
+        .join("")}`
+    );
+  };
+  const calculate_salary_breakdown = () => {
+    const modified_data = [];
+    const { basicAmount } = form.getFieldsValue(true);
+    console.log({ basicAmount });
+    for (const item of rowDto) {
+      console.log({ item });
+
+      let amount;
+
+      if (item.isBasicSalary) {
+        amount = basicAmount; // Use the basic salary directly
+        item.numAmount = basicAmount; // Use the basic salary directly
+      } else if (item.strBasedOn === "Percentage") {
+        amount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
+        item.numAmount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
+      } else {
+        amount = item.numAmount; // Use the fixed amount if based on fixed amount
+      }
+
+      modified_data.push({
+        ...item,
+        amount: Math.ceil(amount), // Round to nearest integer
+      });
+    }
+
+    const total_gross_amount = modified_data.reduce(
+      (total, item) => total + item.amount,
+      0
+    );
+    form.setFieldsValue({
+      grossAmount: total_gross_amount,
+    });
+    const accounts = `Cash Pay (${100}%)`;
+    const temp = [...accountsDto];
+    temp[2].accounts = accounts;
+    temp[2].numAmount = total_gross_amount;
+    temp[0].numAmount = 0;
+    temp[1].numAmount = 0;
+    setRowDto(modified_data);
+    console.log("Total Gross Amount:", total_gross_amount);
+  };
+
+  const adjustOverFollowAmount = (
+    array = [],
+    grossSalaryAmount: any,
+    indexOfLowestAmount: any,
+    setterFunc: any,
+    payrollElementName: any
+  ): any => {
+    // console.log({ payrollElementName });
+    const totalAmount = array.reduce(
+      (acc, obj) => acc + (obj as any).numAmount,
+      0
+    );
+    const overFollowAmount = totalAmount - grossSalaryAmount;
+    // console.log({
+    //   totalAmount,
+    //   elementList: array,
+    //   grossSalaryAmount,
+    //   overFollowAmount,
+    // });
+    if (overFollowAmount > 0) {
+      // console.log({ isOverFollow: overFollowAmount });
+      (array[indexOfLowestAmount] as any).numAmount =
+        (array[indexOfLowestAmount] as any)?.numAmount - overFollowAmount;
+      (array[indexOfLowestAmount] as any)[payrollElementName] -=
+        overFollowAmount;
+    } else {
+      // console.log({ isNotOverFollow: overFollowAmount });
+
+      (array[indexOfLowestAmount] as any).numAmount =
+        (array[indexOfLowestAmount] as any)?.numAmount + overFollowAmount * -1;
+      (array[indexOfLowestAmount] as any)[payrollElementName] +=
+        overFollowAmount * -1;
+    }
+    setterFunc(array);
   };
   const header: any = [
     {
@@ -761,7 +898,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             }}
             value={row?.numAmount}
             placeholder="Amount"
-            disabled={index === 2}
+            // disabled={index === 2}
           />
         </>
       ),
@@ -1173,6 +1310,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
+                      onChange={(e: any) => {
+                        calculate_salary_breakdown();
+                      }}
                       rules={[
                         {
                           required: basedOn?.value === 2,
@@ -1196,7 +1336,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         const temp = [...accountsDto];
                         temp[2].accounts = accounts;
                         temp[2].numAmount = e;
-
+                        temp[0].numAmount = 0;
+                        temp[1].numAmount = 0;
+                        salaryBreakDownCalc();
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
                         //             )?.toFixed(6)
