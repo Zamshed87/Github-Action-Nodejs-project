@@ -57,7 +57,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       intPayrollElementTypeId: 234,
       strPayrollElementName: "House Rent",
       strBasedOn: "Percentage",
-      strDependOn: "Basic",
+      strDependOn: "Gross",
       isBasicSalary: false,
       numNumberOfPercent: 50,
       numAmount: 0,
@@ -111,11 +111,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
       numAmount: 0,
     },
-    // {
-    //   accounts: "Others/Additional Amount Transfer Into (0%)",
-    //   numAmount: 0,
-    //   key: "Others/Additional Amount Transfer Into",
-    // },
+    {
+      accounts: "Others/Additional Amount Transfer Into",
+      numAmount: 0,
+      isDDl: true,
+      key: "Others/Additional Amount Transfer Into",
+    },
   ]);
   const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
 
@@ -126,7 +127,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const bulkLandingAPI = useApiRequest([]);
   const bankDDL = useApiRequest([]);
   const branchDDL = useApiRequest([]);
-  // const employmentTypeDDL = useApiRequest([]);
+  const payscaleApi = useApiRequest([]);
   // const empDepartmentDDL = useApiRequest([]);
   // const workG = useApiRequest([]);
   // const workP = useApiRequest([]);
@@ -192,27 +193,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
   };
 
-  // const getEmploymentType = () => {
-  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
-
-  //   employmentTypeDDL?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "EmploymentType",
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: workplaceGroup?.value,
-  //       IntWorkplaceId: wp?.value,
-  //       intId: 0,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.EmploymentType;
-  //         res[i].value = item?.Id;
-  //       });
-  //     },
-  //   });
-  // };
+  const getPayscale = () => {
+    payscaleApi?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      // onSuccess: (res) => {
+      //   res.forEach((item: any, i: any) => {
+      //     res[i].label = item?.EmploymentType;
+      //     res[i].value = item?.Id;
+      //   });
+      // },
+    });
+  };
   // // workplace wise
   // const getWorkplaceGroup = () => {
   //   workG?.action({
@@ -372,46 +370,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         // console.error("Validate Failed:", info);
       });
   };
-  const calculateDynamicFields = (row: any) => {
-    const dynamicFields = {} as any;
-
-    // Add your logic here based on TGS
-    // Example: Calculate each dynamic field based on TGS
-    row.salaryElementsBreakdowns?.forEach((element: any) => {
-      dynamicFields[element.strPayrollElementName] = (
-        row.TGS *
-        (element.numNumberOfPercentage / 100)
-      ).toFixed(2);
-    });
-    // console.log({ dynamicFields });
-
-    return dynamicFields;
-  };
-  // Table Header
-  const handleIsPerDayChange = (
-    value: number,
-    rowIndex: number,
-    property: string
-  ) => {
-    if (property === "TGS") {
-      setRowDto((prevRows) => {
-        const updatedRows = [...prevRows];
-        updatedRows[rowIndex][property] = value;
-
-        const data = calculateDynamicFields(updatedRows[rowIndex]);
-        const newOB = { ...updatedRows[rowIndex], ...data };
-        updatedRows[rowIndex] = newOB;
-        return updatedRows;
-      });
-    } else {
-      setRowDto((prevRows) => {
-        const updatedRows = [...prevRows];
-        updatedRows[rowIndex][property] = value;
-
-        return updatedRows;
-      });
-    }
-  };
 
   // accounts calculations
   const updateDtoHandler = (e: number, row: any, index: number): any => {
@@ -470,6 +428,89 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     setAccountsDto(temp);
     console.log(e, row, index);
   };
+  // elements calculations
+  const updateRowDtoHandler = (e: number, row: any, index: number): any => {
+    const { grossAmount, salaryType, basedOn, slabCount } =
+      form.getFieldsValue(true);
+    let temp = [...rowDto];
+
+    // Check for invalid input values
+    if (e < 0) {
+      return toast.warn(`${row?.strPayrollElementName} can't be negative`);
+    }
+    if (
+      salaryType?.value !== "Grade" &&
+      basedOn?.value === 1 &&
+      e > grossAmount
+    ) {
+      return toast.warn(
+        `${row?.strPayrollElementName} can't be greater than gross`
+      );
+    }
+    // Update the selected index with the new amount
+    console.log(e + e * (slabCount || 0), 2);
+    temp[index].numAmount = e + e * (slabCount || 0);
+    if (temp[index].isBasicSalary) {
+      temp[index].baseAmount = e;
+    }
+    setRowDto((prev) => {
+      prev = temp;
+      return prev;
+    });
+
+    if (basedOn?.value === 2 || salaryType?.value === "Grade") {
+      calculate_salary_breakdown();
+    }
+    if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
+      methodAb();
+    }
+  };
+  const methodAb = () => {
+    const { grossAmount } = form.getFieldsValue(true); // Get the gross amount input
+    const basicElement = rowDto.find((item) => item.isBasicSalary); // Find the basic salary element
+    const basicAmount = basicElement ? basicElement.numAmount : 0;
+
+    // Calculate initial amounts based on dependencies
+    const calculatedRowDto = rowDto.map((item) => {
+      if (item.strBasedOn === "Percentage") {
+        // Calculate based on Basic or Gross dependency
+        if (item.strDependOn === "Basic" && basicAmount > 0) {
+          item.numAmount = Math.ceil(
+            (item.numNumberOfPercent * basicAmount) / 100
+          );
+        } else if (item.strDependOn === "Gross" && grossAmount > 0) {
+          item.numAmount = Math.ceil(
+            (item.numNumberOfPercent * grossAmount) / 100
+          );
+        }
+      }
+      // Retain fixed amounts where strBasedOn is "Amount"
+      return item;
+    });
+
+    // Calculate the total amount
+    let totalCalculatedAmount = calculatedRowDto.reduce(
+      (sum, item) => sum + item.numAmount,
+      0
+    );
+
+    // Determine if adjustment is needed
+    const difference = grossAmount - totalCalculatedAmount;
+
+    if (difference !== 0) {
+      // Find the element with the lowest percentage or designated element for adjustment
+      const adjustableElement = calculatedRowDto.reduce((minItem, item) =>
+        item.numNumberOfPercent < minItem.numNumberOfPercent ? item : minItem
+      );
+
+      // Adjust to balance the difference with the Gross amount
+      adjustableElement.numAmount += difference;
+    }
+
+    // Update the state with recalculated values
+    setRowDto(calculatedRowDto);
+    console.log("Adjusted Salary Breakdown to match Gross:", calculatedRowDto);
+  };
 
   const salaryBreakDownCalc = (salaryDependsOn = "") => {
     const modifyData: any = [];
@@ -522,17 +563,23 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     );
   };
   const calculate_salary_breakdown = () => {
+    let basicAmount = 0;
     const modified_data = [];
-    const { basicAmount } = form.getFieldsValue(true);
-    console.log({ basicAmount });
+    const values = form.getFieldsValue(true);
+    // const { basicAmount } = form.getFieldsValue(true);
+    if (values?.salaryType?.value === "Grade") {
+      basicAmount = rowDto[0]?.numAmount;
+      // basicAmount = rowDto[0]?.numAmount;
+    } else {
+      basicAmount = values?.basicAmount;
+    }
     for (const item of rowDto) {
-      console.log({ item });
-
       let amount;
 
       if (item.isBasicSalary) {
         amount = basicAmount; // Use the basic salary directly
-        item.numAmount = basicAmount; // Use the basic salary directly
+        item.numAmount = basicAmount;
+        item.baseAmount = item.baseAmount || basicAmount;
       } else if (item.strBasedOn === "Percentage") {
         amount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
         item.numAmount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
@@ -633,273 +680,64 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             // name={`numAmount_${index}`}
             value={row?.numAmount}
             placeholder="Amount"
+            onChange={(e: any) => {
+              const values = form.getFieldsValue(true);
+              if (values?.salaryType?.value !== "Grade") {
+                form.setFieldsValue({
+                  basicAmount: e,
+                });
+              }
+              if (values?.salaryType?.value == "Grade") {
+                form.setFieldsValue({
+                  slabCount: 0,
+                });
+              }
+              updateRowDtoHandler(e, row, index);
+            }}
             disabled={row?.strBasedOn !== "Amount"}
-            // rules={[
-            //   // { required: true, message: "Amount Is Required" },
-            //   {
-            //     validator: (_, value, callback) => {
-            //       const isExit = selectedRow.find(
-            //         (item: any) => item?.intEmployeeId === row?.intEmployeeId
-            //       );
-            //       const CA = parseFloat(value);
-            //       const BA = parseFloat(form.getFieldValue(`BA_${index}`) || 0);
-            //       const MFS = parseFloat(
-            //         form.getFieldValue(`MFS_${index}`) || 0
-            //       );
-            //       const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
-            //       if (isExit) {
-            //         if (isNaN(CA) || CA < 0) {
-            //           callback("Amount Is Required");
-            //         } else if (CA + BA + MFS !== TGS) {
-            //           callback("CA + BA + MFS must equal TGS");
-            //         } else {
-            //           callback();
-            //         }
-            //       }
-            //     },
-            //   },
-            // ]}
-            // disabled={true}
-            // onChange={(e: any) => {
-            //   handleIsPerDayChange(e, index, "CA");
-            //   handleIsPerDayChange(0, index, "BA");
-            //   handleIsPerDayChange(0, index, "MFS");
-
-            //   const property1 = `BA_${index}`;
-            //   const property2 = `MFS_${index}`;
-            //   form.setFieldsValue({
-            //     [property1]: 0,
-            //     [property2]: 0,
-            //   });
-            // }}
           />
         </>
       ),
     },
-
-    // {
-    //   title: "Per Day Salary",
-    //   render: (value: any, row: any, index: number) => (
-    //     <>
-    //       <PSelect
-    //         name={`isPerDay_${index}`}
-    //         options={[
-    //           { value: 1, label: "Yes" },
-    //           { value: 0, label: "No" },
-    //         ]}
-    //         onChange={(value) => handleIsPerDayChange(value, index, "isPerDay")}
-    //         defaultValue={{ value: 1, label: "Yes" }}
-    //         // rules={[{ required: true, message: "Per Day Salary is required" }]}
-    //       />
-    //     </>
-    //   ),
-    // },
-    // {
-    //   title: "Total Gross Salary",
-    //   render: (value: any, row: any, index: number) => (
-    //     <>
-    //       <PInput
-    //         type="number"
-    //         name={`TGS_${index}`}
-    //         placeholder="Amount"
-    //         rules={[
-    //           // { required: true, message: "Amount Is Required" },
-    //           {
-    //             validator: (_, value, callback) => {
-    //               const TGS = parseFloat(value);
-    //               const isExit = selectedRow.find(
-    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
-    //               );
-    //               if (isExit && isNaN(TGS)) {
-    //                 callback("Amount Is Required");
-    //               } else if (TGS < 0) {
-    //                 callback("Cant be Negative");
-    //               } else {
-    //                 callback();
-    //               }
-    //             },
-    //           },
-    //         ]}
-    //         // disabled={true}
-    //         onChange={(e: any) => {
-    //           handleIsPerDayChange(e, index, "TGS");
-    //           handleIsPerDayChange(e, index, "CA");
-    //           handleIsPerDayChange(0, index, "BA");
-    //           handleIsPerDayChange(0, index, "MFS");
-    //           const property = `CA_${index}`;
-    //           const property2 = `BA_${index}`;
-    //           const property3 = `MFS_${index}`;
-    //           form.setFieldsValue({
-    //             [property]: e,
-    //             [property2]: 0,
-    //             [property3]: 0,
-    //           });
-    //         }}
-    //       />
-    //     </>
-    //   ),
-    // },
-    // ...dynamicHeader,
-    // {
-    //   title: "Net Salary Amount",
-    //   dataIndex: "TGS",
-    // },
-    // {
-    //   title: "Bank Amount",
-    //   render: (value: any, row: any, index: number) => (
-    //     <>
-    //       <PInput
-    //         type="number"
-    //         name={`BA_${index}`}
-    //         placeholder="Amount"
-    //         rules={[
-    //           // { required: true, message: "Amount Is Required" },
-    //           {
-    //             validator: (_, value, callback) => {
-    //               const BA = parseFloat(value);
-    //               const isExit = selectedRow.find(
-    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
-    //               );
-    //               if (isExit && isNaN(BA)) {
-    //                 callback("Amount Is Required");
-    //               } else if (BA < 0) {
-    //                 callback("Cant be Negative");
-    //               } else {
-    //                 callback();
-    //               }
-    //             },
-    //           },
-    //         ]}
-    //         // disabled={true}
-    //         onChange={(e: any) => {
-    //           // const property1 = `MFS_${index}`;
-    //           handleIsPerDayChange(e, index, "BA");
-
-    //           handleIsPerDayChange(row?.TGS - e - row?.MFS, index, "CA");
-    //           // handleIsPerDayChange(e, index, "BA");
-    //           // handleIsPerDayChange(row?.TGS - e, index, "CA");
-    //           const property2 = `CA_${index}`;
-    //           form.setFieldsValue({
-    //             // [property1]: row?.TGS - e,
-    //             [property2]: row?.TGS - e - row?.MFS,
-    //           });
-    //         }}
-    //       />
-    //     </>
-    //   ),
-    // },
-    // {
-    //   title: "MFS Amount",
-    //   render: (_: any, row: any, index: number) => (
-    //     <>
-    //       <PInput
-    //         type="number"
-    //         name={`MFS_${index}`}
-    //         placeholder="Amount"
-    //         rules={[
-    //           // { required: true, message: "Amount Is Required" },
-    //           {
-    //             validator: (_, value, callback) => {
-    //               const MFS = parseFloat(value);
-    //               const isExit = selectedRow.find(
-    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
-    //               );
-    //               if (isExit && isNaN(MFS)) {
-    //                 callback("Amount Is Required");
-    //               } else if (MFS < 0) {
-    //                 callback("Cant be Negative");
-    //               } else {
-    //                 callback();
-    //               }
-    //             },
-    //           },
-    //         ]}
-    //         // disabled={true}
-    //         onChange={(e: any) => {
-    //           handleIsPerDayChange(e, index, "MFS");
-
-    //           handleIsPerDayChange(row?.TGS - e - row?.BA, index, "CA");
-    //           // handleIsPerDayChange(row?.TGS - row?.CA, index, "BA");
-    //           // const property1 = `BA_${index}`;
-    //           const property2 = `CA_${index}`;
-    //           form.setFieldsValue({
-    //             [property2]: row?.TGS - e - row?.BA,
-    //             // [property1]: row?.TGS - row?.CA,
-    //           });
-    //         }}
-    //       />
-    //     </>
-    //   ),
-    // },
-    // {
-    //   title: "Cash Amount",
-    //   render: (value: any, row: any, index: number) => (
-    //     <>
-    //       <PInput
-    //         type="number"
-    //         name={`CA_${index}`}
-    //         placeholder="Amount"
-    //         rules={[
-    //           // { required: true, message: "Amount Is Required" },
-    //           {
-    //             validator: (_, value, callback) => {
-    //               const isExit = selectedRow.find(
-    //                 (item: any) => item?.intEmployeeId === row?.intEmployeeId
-    //               );
-    //               const CA = parseFloat(value);
-    //               const BA = parseFloat(form.getFieldValue(`BA_${index}`) || 0);
-    //               const MFS = parseFloat(
-    //                 form.getFieldValue(`MFS_${index}`) || 0
-    //               );
-    //               const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
-    //               if (isExit) {
-    //                 if (isNaN(CA) || CA < 0) {
-    //                   callback("Amount Is Required");
-    //                 } else if (CA + BA + MFS !== TGS) {
-    //                   callback("CA + BA + MFS must equal TGS");
-    //                 } else {
-    //                   callback();
-    //                 }
-    //               }
-    //             },
-    //           },
-    //         ]}
-    //         // disabled={true}
-    //         onChange={(e: any) => {
-    //           handleIsPerDayChange(e, index, "CA");
-    //           handleIsPerDayChange(0, index, "BA");
-    //           handleIsPerDayChange(0, index, "MFS");
-
-    //           const property1 = `BA_${index}`;
-    //           const property2 = `MFS_${index}`;
-    //           form.setFieldsValue({
-    //             [property1]: 0,
-    //             [property2]: 0,
-    //           });
-    //         }}
-    //       />
-    //     </>
-    //   ),
-    // },
   ];
   const headerAccount: any = [
     {
       title: "Accounts",
       dataIndex: "accounts",
+      width: 625,
     },
     {
-      title: "Net Amount",
+      title: "",
       render: (value: any, row: any, index: number) => (
         <>
-          <PInput
-            type="number"
-            onChange={(e: any) => {
-              updateDtoHandler(e, row, index);
-            }}
-            value={row?.numAmount}
-            placeholder="Amount"
-            // disabled={index === 2}
-          />
+          {row?.isDDl ? (
+            <PSelect
+              options={[
+                { value: "Cash", label: "Cash" },
+                { value: "Digital/MFS", label: "Digital/MFS" },
+                { value: "Bank", label: "Bank" },
+              ]}
+              name="transferType"
+              // label="Transfer Type"
+              placeholder="Transfer Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  transferType: op,
+                });
+              }}
+              // rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          ) : (
+            <PInput
+              type="number"
+              onChange={(e: any) => {
+                updateDtoHandler(e, row, index);
+              }}
+              value={row?.numAmount}
+              placeholder="Amount"
+              // disabled={index === 2}
+            />
+          )}
         </>
       ),
     },
@@ -941,7 +779,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // console.log({ rowDto });
 
   return employeeFeature?.isView ? (
-    <PForm form={form} initialValues={{}}>
+    <PForm
+      form={form}
+      initialValues={{
+        transferType: "Cash",
+      }}
+    >
       <PCard>
         <PCardHeader
           title="Salary Assign"
@@ -1120,189 +963,164 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           </div>
         </Row>
         <Row gutter={[10, 2]} className="mb-3">
-          {/* <Col md={6} sm={12} xs={24}>
+          <Col md={6} sm={12} xs={24}>
             <PSelect
-              options={workG?.data || []}
-              name="workplaceGroup"
-              label="Workplace Group"
-              placeholder="Workplace Group"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplaceGroup: op,
-                  wp: undefined,
-                  payrollGroup: undefined,
-                });
-                getWorkplace();
-              }}
-              rules={[
-                { required: true, message: "Workplace Group is required" },
+              options={[
+                { value: "Grade", label: "Grade" },
+                { value: "Non-Grade", label: "Non-Grade" },
               ]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={workP?.data || []}
-              name="wp"
-              label="Workplace"
-              placeholder="Workplace"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  wp: op,
-                });
-                getEmploymentType();
-                getEmployeDepartment();
-                getEmployeDesignation();
-                getEmployeePosition();
-                getPayrollGroupDDL();
-              }}
-              rules={[{ required: true, message: "Workplace is required" }]}
-            />
-          </Col> */}
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={[]}
               name="salaryType"
               label="Salary Type"
               placeholder="Salary Type"
               onChange={(value, op) => {
                 form.setFieldsValue({
                   salaryType: op,
+                  grossAmount: undefined,
+                  slabCount: undefined,
+                  payscale: undefined,
+                  payscaleClass: undefined,
+                  payscaleGrade: undefined,
+                  payscaleJobLevel: undefined,
+                  basedOn: undefined,
+                  basicAmount: undefined,
                 });
               }}
               rules={[{ required: true, message: "Salary Type is required" }]}
             />
           </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={payrollGroupDDL?.data || []}
-              name="payrollGroup"
-              label="Payroll Group"
-              placeholder="Payroll Group"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  payrollGroup: op,
-                });
-              }}
-              rules={[{ required: true, message: "Payroll Group is required" }]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={[
-                { value: 1, label: "Gross" },
-                { value: 2, label: "Basic" },
-              ]}
-              name="basedOn"
-              label="Based On"
-              placeholder="Based On"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  basedOn: op,
-                });
-              }}
-              rules={[{ required: true, message: "Based On is required" }]}
-            />
-          </Col>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { salaryType } = form.getFieldsValue(true);
+              if (salaryType?.value === "Grade") {
+                return (
+                  <>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        options={[]}
+                        name="payscale"
+                        label="Payscale"
+                        placeholder="Payscale"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            payscale: op,
+                            payscaleClass: (op as any)?.jobClass,
+                            payscaleGrade: (op as any)?.jobGrade,
+                            payscaleJobLevel: (op as any)?.jobLevel,
+                          });
+                        }}
+                        rules={[
+                          {
+                            required: salaryType?.value === "Grade",
+                            message: "Payscale is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        options={[]}
+                        disabled={true}
+                        name="payscaleClass"
+                        label="Payscale Class"
+                        placeholder="Payscale Class"
+                        // onChange={(value, op) => {}}
+                        // rules={[
+                        //   {
+                        //     required: salaryType?.value === "Grade",
+                        //     message: "Payscale is required",
+                        //   },
+                        // ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        options={[]}
+                        name="payscaleGrade"
+                        label="Payscale Grade"
+                        disabled={true}
+                        placeholder="Payscale Grade"
+                        // onChange={(value, op) => {
 
-          {/* <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={employmentTypeDDL?.data || []}
-              name="employeeType"
-              label="Employment Type"
-              placeholder="Employment Type"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  employeeType: op,
-                });
-              }}
-              //   rules={[
-              //     { required: true, message: "Employment Type is required" },
-              //   ]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={empDepartmentDDL?.data || []}
-              name="department"
-              showSearch
-              filterOption={true}
-              label="Department"
-              allowClear
-              placeholder="Department"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  department: op,
-                });
-              }}
-              //   rules={[{ required: true, message: "Department is required" }]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={empDesignationDDL.data || []}
-              showSearch
-              filterOption={true}
-              name="designation"
-              label="Designation"
-              placeholder="Designation"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  designation: op,
-                });
-              }}
-              //   rules={[{ required: true, message: "Designation is required" }]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={positionDDL?.data || []}
-              name="hrPosition"
-              showSearch
-              filterOption={true}
-              label="HR Position"
-              placeholder="HR Position"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  hrPosition: op,
-                });
-              }}
-              //   rules={[{ required: true, message: "HR Position is required" }]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PInput
-              type="date"
-              name="joiningDateFrom"
-              label="Joining Date From"
-              placeholder="Joining Date From"
-              //   rules={[{ required: true, message: "Joining Date is required" }]}
-              // disabled={isEdit}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PInput
-              type="date"
-              name="joiningDateTo"
-              label="Joining Date To"
-              placeholder="Joining Date To"
-              //   rules={[{ required: true, message: "Joining Date is required" }]}
-              // disabled={isEdit}
-            />
-          </Col> */}
+                        // }}
+                        // rules={[
+                        //   {
+                        //     required: salaryType?.value === "Grade",
+                        //     message: "Payscale is required",
+                        //   },
+                        // ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        options={[]}
+                        name="payscaleJobLevel"
+                        disabled={true}
+                        label="Payscale Job Level"
+                        placeholder="Payscale Job Level"
+                        // onChange={(value, op) => {
 
-          {/* <Col
-            style={{
-              marginTop: "23px",
+                        // }}
+                        // rules={[
+                        //   {
+                        //     required: salaryType?.value === "Grade",
+                        //     message: "Payscale is required",
+                        //   },
+                        // ]}
+                      />
+                    </Col>
+                  </>
+                );
+              } else
+                return (
+                  <>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        options={payrollGroupDDL?.data || []}
+                        name="payrollGroup"
+                        label="Payroll Group"
+                        placeholder="Payroll Group"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            payrollGroup: op,
+                          });
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Payroll Group is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        options={[
+                          { value: 1, label: "Gross" },
+                          { value: 2, label: "Basic" },
+                        ]}
+                        name="basedOn"
+                        label="Based On"
+                        placeholder="Based On"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            basedOn: op,
+                          });
+                        }}
+                        rules={[
+                          { required: true, message: "Based On is required" },
+                        ]}
+                      />
+                    </Col>
+                  </>
+                );
             }}
-          >
-            <PButton type="primary" content="View" onClick={viewHandler} />
-          </Col> */}
+          </Form.Item>
         </Row>
         <Row>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { basedOn } = form.getFieldsValue(true);
-              if (basedOn?.value === 2) {
+              const { basedOn, salaryType } = form.getFieldsValue(true);
+              if (salaryType?.value !== "Grade" && basedOn?.value === 2) {
                 return (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
@@ -1310,9 +1128,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
-                      onChange={(e: any) => {
-                        calculate_salary_breakdown();
-                      }}
+                      onChange={calculate_salary_breakdown}
                       rules={[
                         {
                           required: basedOn?.value === 2,
@@ -1323,7 +1139,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   </Col>
                 );
               } else
-                return (
+                return salaryType?.value !== "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="number"
@@ -1353,7 +1169,41 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       ]}
                     />
                   </Col>
-                );
+                ) : salaryType?.value == "Grade" ? (
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[
+                        { value: 0, label: 0 },
+                        { value: 1, label: 1 },
+                        { value: 2, label: 2 },
+                      ]}
+                      name="slabCount"
+                      label="Slab Count"
+                      placeholder="Slab Count"
+                      onChange={(value, op) => {
+                        let temp = [...rowDto];
+
+                        temp[0].numAmount =
+                          temp[0].baseAmount + value * temp[0].baseAmount;
+                        console.log({ temp }, 0);
+                        setRowDto((prev) => {
+                          prev = temp;
+                          return prev;
+                        });
+                        calculate_salary_breakdown();
+                        form.setFieldsValue({
+                          slabCount: value,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: salaryType?.value == "Grade",
+                          message: "Slab Count is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                ) : undefined;
             }}
           </Form.Item>
           <Col xs={12}></Col>
