@@ -93,20 +93,20 @@ export default function CreateJobClass({
             <PInput
               type="text"
               name="jobclassName"
-              label="Job Class"
+              label="Payscale Class"
               min={0}
-              placeholder="Job Class Name"
+              placeholder="Payscale Class Name"
               rules={[
                 {
                   required: true,
-                  message: "Job Class Name is required",
+                  message: "Payscale Class Name is required",
                 },
               ]}
             />
           </Col>
           {!modalFooter && (
             <>
-              <Col span={5} className="my-3 pt-1">
+              <Col span={3} className="my-3 pt-1">
                 <PButton
                   type="secondary"
                   action="button"

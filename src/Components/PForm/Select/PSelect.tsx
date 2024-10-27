@@ -7,12 +7,22 @@ type SelectProperty = {
   rules?: any[];
   valuePropName?: string;
   hasFeedback?: boolean;
+  dropdownRender?: any;
+  allowClear?: boolean;
 };
 type PSelectProps = SelectProps & SelectProperty;
 
 export const PSelect: React.FC<PSelectProps> = (props) => {
-  const { name, label, rules, showSearch, hasFeedback, getPopupContainer } =
-    props;
+  const {
+    name,
+    label,
+    rules,
+    showSearch,
+    hasFeedback,
+    getPopupContainer,
+    dropdownRender,
+    allowClear = false,
+  } = props;
   return (
     <div className="PeopleDeskSelectWrapper">
       <Form.Item
@@ -46,6 +56,8 @@ export const PSelect: React.FC<PSelectProps> = (props) => {
               : undefined
           }
           showSearch={showSearch || false}
+          dropdownRender={dropdownRender}
+          allowClear={allowClear}
         />
       </Form.Item>
     </div>

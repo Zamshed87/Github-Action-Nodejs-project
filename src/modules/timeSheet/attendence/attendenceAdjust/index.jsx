@@ -140,7 +140,7 @@ export default function AttendenceAdjust() {
               ? "Leave"
               : "Absent",
             requestStatus: valueOption?.label,
-            remarks: "By HR",
+            remarks: "",
             isApproved: true,
             isActive: true,
             isManagement: true,
@@ -210,7 +210,7 @@ export default function AttendenceAdjust() {
           ? "Leave"
           : "Absent",
         requestStatus: values?.attendedanceAdjustStatus?.label,
-        remarks: values?.strReason || "By HR",
+        remarks: values?.strReason || "",
         isApproved: true,
         isActive: true,
         isManagement: true,

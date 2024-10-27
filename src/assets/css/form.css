@@ -797,3 +797,38 @@
 .ant-switch-checked {
   background-color: var(--success500);
 }
+
+.custom_quill .ql-mention-list-container ul {
+  max-height: 110px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  /* For Firefox */
+}
+
+.custom_quill .ql-mention-list-container ul::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom_quill .ql-mention-list-container ul::-webkit-scrollbar-thumb {
+  background: #acacac;
+}
+
+.custom_quill .ql-mention-list-container ul::-webkit-scrollbar-thumb:hover {
+  background: #aaa9a9;
+}
+
+.custom_quill .ql-mention-list {
+  margin: 8px;
+  box-shadow: var(--shadow02);
+  background-color: white;
+  z-index: 99999;
+}
+
+.custom_quill .ql-mention-list li {
+  display: block;
+  padding: 8px 12px;
+}
+
+.custom_quill .ql-mention-list li:hover {
+  background-color: rgb(212, 241, 232);
+}
