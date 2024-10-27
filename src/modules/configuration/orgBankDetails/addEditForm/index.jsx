@@ -400,7 +400,7 @@ export default function AddEditForm({
                 },
                 {
                   value: "BFTN",
-                  label: orgId === 4 ? "City Life" : "BFTN",
+                  label: orgId === 4 ? "City Live" : "BFTN",
                 },
                 {
                   value: "DBL",
