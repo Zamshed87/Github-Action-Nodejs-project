@@ -246,6 +246,7 @@ export const apiList = {
   WorkplaceGroupWithRoleExtension:
     "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
   Cafeteria: "/Cafeteria/GetCafeteriaSetupById",
+  commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
 };

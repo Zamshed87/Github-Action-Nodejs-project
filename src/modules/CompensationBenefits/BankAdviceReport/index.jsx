@@ -20,15 +20,12 @@ import {
   salaryAdviceExcelData,
 } from "./excel/excelStyle";
 import {
-  adviceTypeDDL,
-  bankAdviceColumnData,
   bankAdviceInitialValues,
   bankAdviceValidationSchema,
   getBankAdviceBonusRequestLanding,
   getBankAdviceRequestLanding,
 } from "./helper";
 import { paginationSize } from "../../../common/peopleDeskTable";
-import PeopleDeskTable from "../../componentModule/peopledeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { generateTopSheetAction } from "./excel/excelTopSheet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
@@ -53,6 +50,7 @@ const BankAdviceReport = () => {
   const [bankDDL, setBankDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tenMsdata, setTenMsdata] = useState("");
+  const [landingView, setLandingView] = useState("");
   const [pdfDto, setPdfDto] = useState([]);
   const [adviceType, setAdviceType] = useState([]);
 
@@ -134,8 +132,36 @@ const BankAdviceReport = () => {
     });
   };
 
+  const commonLanding = useApiRequest([]);
+  // Functions
+  const commonLandingFor = (values) => {
+    if (!values?.adviceName?.value) {
+      return toast.warning("Please select Salary Code");
+    }
+    commonLanding?.action({
+      method: "get",
+      urlKey: "commonLanding",
+      params: {
+        StrPartName: "htmlView",
+        IntAccountId: orgId,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: values?.workplaceGroup?.value,
+        IntWorkplaceId: values?.workplace?.value,
+        IntMonthId: values?.monthId,
+        IntYearId: values?.yearId,
+        IntBankId: values?.bank?.value,
+        IntSalaryGenerateRequestId: values?.adviceName?.value,
+        strAdviceType: values?.adviceType?.value,
+      },
+      onSuccess: (res) => {
+        setLandingView(res);
+      },
+    });
+  };
+
   // on form submit
   const saveHandler = (values) => {
+    commonLandingFor(values);
     if (values?.bankAdviceFor?.value === 2) {
       if (!values?.bonusCode?.length > 0)
         return toast.warning("Please select Bonus Code");
@@ -1089,7 +1115,7 @@ const BankAdviceReport = () => {
               </div>
             </div>
 
-            {rowDto?.length ? (
+            {/* {rowDto?.length ? (
               <PeopleDeskTable
                 columnData={bankAdviceColumnData(
                   pages?.current,
@@ -1118,7 +1144,14 @@ const BankAdviceReport = () => {
               </div>
             ) : (
               <NoResult />
-            )}
+            )} */}
+            <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: landingView,
+                }}
+              />
+            </div>
           </div>
         </div>
       ) : (
