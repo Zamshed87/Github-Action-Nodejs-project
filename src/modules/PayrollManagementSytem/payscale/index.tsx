@@ -11,7 +11,7 @@ import CreateEditPayscale from "./CreateEditPayscale";
 type TPayscale = never;
 const PayscaleLanding: React.FC<TPayscale> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { orgId, buId, wgId, wId, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -26,53 +26,37 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   // Api Actions
   const GetAllPayrollElementType = useApiRequest([]);
   const IsSalaryElementById = useApiRequest({});
-  const DeletePayrollElementTypeById = useApiRequest({});
+  const deletePayScale = useApiRequest({});
 
   // Life Cycle Hooks
   useEffect(() => {
     landingApi();
-    document.title = "Payscale";
+    document.title = "Payscale Setup";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
   // Landing Api
   const landingApi = () => {
     GetAllPayrollElementType?.action({
-      urlKey: "GetAllPayrollElementType",
-      method: "get",
-      params: { accountId: orgId, workplaceId: wId },
-    });
-  };
-
-  const checkUsage = (item: any, type: "delete" | "edit") => {
-    IsSalaryElementById?.action({
-      urlKey: "IsSalaryElementById",
+      urlKey: "GetPayScaleSetupLanding",
       method: "get",
       params: {
+        businessUnitId: buId,
+        pageNo: 1,
+        pageSize: 150,
         accountId: orgId,
-        bussinessUnitId: buId,
-        workplaceId: wId,
-        typeId: item?.intPayrollElementTypeId,
-      },
-      onSuccess: (res: any) => {
-        if (res?.isSalary || res?.isAllowance)
-          return toast.warning("This element is used in salary or allowance");
-
-        if (type === "delete") deleteElement(item);
-        else if (type === "edit") {
-          setRowData(item);
-          setOpen(true);
-        }
       },
     });
   };
+
   //  Delete Element
   const deleteElement = (item: any) => {
-    DeletePayrollElementTypeById?.action({
-      urlKey: "DeletePayrollElementTypeById",
-      method: "get",
+    deletePayScale?.action({
+      urlKey: "DeletePayScaleSetup",
+      method: "delete",
       params: {
-        id: item?.intPayrollElementTypeId,
+        id: item?.id,
+        actionBy: employeeId,
       },
       toast: true,
       onSuccess: () => {
@@ -84,7 +68,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   // menu permission check
   let payrollElement: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30259) {
+    if (item?.menuReferenceId === 30442) {
       payrollElement = item;
     }
   });
@@ -94,33 +78,33 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
       title: "SL",
       align: "center",
       render: (text: any, record: any, index: number) => index + 1,
+      width: 20,
     },
     {
       title: "PayScale Name",
-      dataIndex: "",
+      dataIndex: "payScaleName",
+      width: 50,
     },
     {
-      title: "Job Class",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "YES" : "NO"}</div>,
+      title: "Payscale Class",
+      dataIndex: "jobClassName",
+      width: 50,
     },
     {
-      title: "Job Grade",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "YES" : "NO"}</div>,
+      title: "Payscale Grade",
+      dataIndex: "jobGradeName",
+      width: 50,
     },
     {
-      title: "Job Level",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "Addition" : "Deduction"}</div>,
+      title: "Payscale Level",
+      dataIndex: "jobLevelName",
+      width: 50,
     },
+
     {
-      title: "Approval Status",
-      dataIndex: "",
-      render: (data: any) => <div>{data ? "YES" : "NO"}</div>,
-    },
-    {
-      title: "Action",
+      title: "",
+      width: 20,
+
       align: "center",
       render: (_: any, item: any) => (
         <TableButton
@@ -128,13 +112,15 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
             {
               type: "edit",
               onClick: () => {
-                checkUsage(item, "edit");
+                // checkUsage(item, "edit");
+                setRowData(item);
+                setOpen(true);
               },
             },
             {
               type: "delete",
               onClick: () => {
-                checkUsage(item, "delete");
+                deleteElement(item);
               },
             },
           ]}
@@ -148,7 +134,7 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
         <>
           <PCard>
             <PCardHeader
-              title="Payscale Grade"
+              title="Payscale Setup"
               buttonList={[
                 {
                   type: "primary",
@@ -163,14 +149,16 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
             <DataTable
               header={header}
               bordered
-              data={GetAllPayrollElementType?.data || []}
+              data={
+                GetAllPayrollElementType?.data?.payScaleSetupLandingData || []
+              }
               loading={GetAllPayrollElementType?.loading}
             />
           </PCard>
           <PModal
-            title={`${rowData ? "Edit" : "Create"} Payroll Element`}
+            title={`${rowData ? "Edit" : "Create"} Payscale`}
             open={open}
-            width={500}
+            width={900}
             onCancel={() => {
               setOpen(false);
             }}
