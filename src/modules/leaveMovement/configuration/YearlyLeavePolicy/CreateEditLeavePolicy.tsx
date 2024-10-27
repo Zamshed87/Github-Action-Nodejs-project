@@ -226,7 +226,7 @@ const CreateEditLeavePolicy = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || policyApi?.loading) && <Loading />}
       <PForm
         form={form}
         onFinish={submitHandler}
@@ -1312,6 +1312,7 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                             <Col md={12} sm={24}>
                               <PSelect
+                                allowClear
                                 options={[
                                   { value: 1, label: "Basic" },
                                   { value: 2, label: "Gross" },
