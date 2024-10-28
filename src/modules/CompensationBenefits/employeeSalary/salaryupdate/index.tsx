@@ -36,7 +36,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   );
   const location = useLocation();
   const history = useHistory();
-  console.log(location.state);
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
@@ -244,7 +243,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       accountsDto[2].numAmount +
       accountsDto[0].numAmount;
 
-    console.log(accountSum, values?.grossAmount);
     if (accountSum !== values?.grossAmount) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
@@ -257,7 +255,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
       );
     }
-    console.log({ values });
     const payload = {
       partId: 0,
       intEmployeeBankDetailsId:
@@ -320,7 +317,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       numDigitalPayInAmount: accountsDto[1].numAmount,
       IntOthersAdditionalAmountTransferInto: values?.transferType?.value,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
-      intSlabCount: values?.slabCount,
+      intSlabCount:
+        values?.salaryType?.value === "Grade" ? values?.slabCount : 0,
     };
     salaryAssign.action({
       urlKey: "EmployeeSalaryAssign",
@@ -400,7 +398,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
 
     setAccountsDto(temp);
-    console.log(e, row, index);
   };
   // elements calculations
   const updateRowDtoHandler = (e: number, row: any, index: number): any => {
@@ -533,7 +530,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     );
   };
   const calculate_salary_breakdown = () => {
-    console.log({ rowDto }, 5);
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
@@ -585,7 +581,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     temp[0].numAmount = 0;
     temp[1].numAmount = 0;
     setRowDto(modified_data);
-    console.log("Total Gross Amount:", total_gross_amount);
   };
 
   const adjustOverFollowAmount = (
@@ -1270,7 +1265,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             }}
           </Form.Item>
         </Row>
-        <Row>
+        <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
               const { basedOn, salaryType } = form.getFieldsValue(true);
@@ -1301,7 +1296,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       label="Gross"
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        console.log(e);
                         const accounts = `Cash Pay (${100}%)`;
                         const temp = [...accountsDto];
                         temp[2].accounts = accounts;
@@ -1338,7 +1332,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                           value *
                             (temp[0].baseAmount ||
                               getById?.data?.payScaleElements[0]?.netAmount);
-                        console.log({ temp }, 0);
                         setRowDto((prev) => {
                           prev = temp;
                           return prev;
