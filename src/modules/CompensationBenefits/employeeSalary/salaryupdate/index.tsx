@@ -664,6 +664,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 form.setFieldsValue({
                   slabCount: 0,
                 });
+                if (index !== 0) {
+                  rowDto[0].numAmount =
+                    getById?.data?.payScaleElements[0]?.netAmount;
+                  rowDto[0].baseAmount =
+                    getById?.data?.payScaleElements[0]?.netAmount;
+                }
               }
               updateRowDtoHandler(e, row, index);
             }}
