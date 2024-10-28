@@ -1169,7 +1169,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                                     overTimeAmount: undefined,
                                     toMin: undefined,
                                     fromMin: undefined,
-                                    showInDepend: undefined,
                                   });
                                 }}
                               >
