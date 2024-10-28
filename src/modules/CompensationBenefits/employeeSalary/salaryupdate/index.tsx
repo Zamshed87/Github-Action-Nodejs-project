@@ -15,12 +15,19 @@ import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { gray200, gray700, gray900 } from "utility/customColor";
 import { APIUrl } from "App";
 import { MovingOutlined } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import IncrementHistoryComponent from "../salaryAssign/DrawerBody/incrementHistoryView";
+import IConfirmModal from "common/IConfirmModal";
+import {
+  getEmployeeSalaryInfo,
+  salaryHoldAction,
+} from "../salaryAssign/helper";
+import { useLocation } from "react-router-dom";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -29,14 +36,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const location = useLocation();
 
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
   // States
-  const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
-  const [rowDto, setRowDto] = React.useState<any[]>([
+  const [selectedRow, setSelectedRow] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [rowDto, setRowDto] = useState<any[]>([
     {
       intSalaryBreakdownHeaderId: 28,
       strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
@@ -94,7 +103,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
     },
   ]);
-  const [accountsDto, setAccountsDto] = React.useState<any[]>([
+  const [accountsDto, setAccountsDto] = useState<any[]>([
     {
       accounts: "Bank Pay (0%)",
       key: "Bank Pay",
@@ -118,8 +127,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       key: "Others/Additional Amount Transfer Into",
     },
   ]);
-  const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
-
+  const [openIncrement, setOpenIncrement] = useState(false);
+  const handleIncrementClose = () => {
+    setOpenIncrement(false);
+  };
   // Form Instance
   const [form] = Form.useForm();
 
@@ -128,8 +139,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const bankDDL = useApiRequest([]);
   const branchDDL = useApiRequest([]);
   const payscaleApi = useApiRequest([]);
-  // const empDepartmentDDL = useApiRequest([]);
-  // const workG = useApiRequest([]);
+  const breakDownPolicyApi = useApiRequest([]);
+  const employeeInfo = useApiRequest([]);
   // const workP = useApiRequest([]);
   // const positionDDL = useApiRequest([]);
   // const empDesignationDDL = useApiRequest([]);
@@ -156,52 +167,14 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       hrPosition,
       wp,
     } = form.getFieldsValue(true);
-
-    bulkLandingAPI?.action({
-      urlKey: "BulkSalaryAssignLanding",
-      method: "post",
-      params: {
-        accountId: orgId,
-        workplaceId: wp?.value,
-        payrollGroupId: payrollGroup?.value,
-        empTypeId: employeeType?.value,
-        hrPositionId: hrPosition?.value,
-        departmentId: department?.value,
-        designationId: designation?.value,
-        fromDate: joiningDateFrom
-          ? moment(joiningDateFrom).format("YYYY-MM-DD")
-          : undefined,
-        toDate: joiningDateTo
-          ? moment(joiningDateTo).format("YYYY-MM-DD")
-          : undefined,
-      },
-      onSuccess: (res) => {
-        // console.log({ res });
-
-        setRowDto((prev: any) => {
-          return [...prev, ...res?.result];
-        });
-        const updatedHeader: any[] = [];
-        res?.result[0]?.salaryElementsBreakdowns?.forEach((element: any) => {
-          updatedHeader.push({
-            title: `${element.strPayrollElementName}(${element.numNumberOfPercentage})`,
-            dataIndex: element.strPayrollElementName,
-          });
-        });
-        setDynamicHeader(updatedHeader);
-      },
-    });
   };
 
   const getPayscale = () => {
     payscaleApi?.action({
-      urlKey: "PeopleDeskAllDDL",
+      urlKey: "GetPayScaleSetupDDLbyEmployee",
       method: "GET",
       params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: 0,
+        employeeId: (location?.state as any)?.EmployeeId,
       },
       // onSuccess: (res) => {
       //   res.forEach((item: any, i: any) => {
@@ -209,6 +182,31 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       //     res[i].value = item?.Id;
       //   });
       // },
+    });
+  };
+  const getEmployeeInfo = () => {
+    employeeInfo?.action({
+      urlKey: "EmployeeSalaryManagement",
+      method: "post",
+      payload: {
+        partType: "EmployeeSalaryInfoByEmployeeId",
+        departmentId: 0,
+        designationId: 0,
+        supervisorId: 0,
+        strStatus: "NotAssigned",
+        employeeId: (location?.state as any)?.EmployeeId,
+
+        accountId: orgId,
+        businessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        workplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        form.setFieldsValue({
+          isHoldSalary: res[0]?.IsHold ? true : false,
+        });
+      },
     });
   };
   // // workplace wise
@@ -316,8 +314,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   //   export const getBreakdownPolicyDDL = async (
 
   const getPayrollGroupDDL = () => {
-    const { workplaceGroup, wp } = form.getFieldsValue(true);
-
     payrollGroupDDL?.action({
       urlKey: "BreakdownNPolicyForSalaryAssign",
       method: "GET",
@@ -327,8 +323,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         IntAccountId: orgId,
         IntSalaryBreakdownHeaderId: 0,
         IntBusinessUnitId: buId,
-        IntWorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: wp?.value,
+        IntWorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -336,6 +332,25 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           res[i].label = item?.strSalaryBreakdownTitle;
           res[i].value = item?.intSalaryBreakdownHeaderId;
         });
+      },
+    });
+  };
+  const getBreakDownPolicyElements = () => {
+    const { payrollGroup, payscale, salaryType } = form.getFieldsValue(true);
+    breakDownPolicyApi?.action({
+      urlKey: "BreakdownNPolicyForSalaryAssign",
+      method: "GET",
+      params: {
+        StrReportType: "BREAKDOWN ELEMENT BY ID",
+
+        IntAccountId: orgId,
+        IntSalaryBreakdownHeaderId:
+          salaryType?.value !== "Grade" ? payrollGroup?.value : payscale?.value,
+        IntWorkplaceId: 0,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        setRowDto(res);
       },
     });
   };
@@ -773,11 +788,33 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
   };
   useEffect(() => {
-    // getWorkplaceGroup();
+    getPayscale();
     getBankDDL();
-  }, [wgId, buId, wId]);
+    getPayrollGroupDDL();
+    getEmployeeInfo();
+  }, [wgId, buId, wId, location.state]);
   // console.log({ rowDto });
-
+  const holdSalaryHandler = (e: any) => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Are your sure?`,
+      yesAlertFunc: () => {
+        const callback = () => {
+          getEmployeeInfo();
+        };
+        salaryHoldAction(
+          e.target.checked,
+          employeeInfo?.data[0]?.EmployeeId,
+          setLoading,
+          callback
+        );
+      },
+      noAlertFunc: () => {
+        // setIsHoldSalary(modifyIsHold);
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
   return employeeFeature?.isView ? (
     <PForm
       form={form}
@@ -828,15 +865,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               <div className="d-flex ">
                 <div
                   style={{
-                    // width: singleData > 0 ? singleData && "auto" : "78px",
-                    width: [].length > 0 ? "auto" : "78px",
+                    width:
+                      employeeInfo?.data?.length > 0
+                        ? employeeInfo?.data && "auto"
+                        : "78px",
+                    // width: [].length > 0 ? "auto" : "78px",
                   }}
                   className={
-                    // singleData > 0
-                    //   ? singleData && "add-image-about-info-card height-auto"
-                    //   : "add-image-about-info-card"
-                    [].length > 0
-                      ? "add-image-about-info-card height-auto"
+                    employeeInfo?.data?.length > 0
+                      ? employeeInfo?.data &&
+                        "add-image-about-info-card height-auto"
                       : "add-image-about-info-card"
                   }
                 >
@@ -844,9 +882,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     htmlFor="contained-button-file"
                     className="label-add-image"
                   >
-                    {false ? ( //singleData[0]?.ProfileImageUrl
+                    {employeeInfo?.data[0]?.ProfileImageUrl ? ( //singleData[0]?.ProfileImageUrl
                       <img
-                        src={`${APIUrl}/Document/DownloadFile?id=${0}`}
+                        src={`${APIUrl}/Document/DownloadFile?id=${employeeInfo?.data[0]?.ProfileImageUrl}`}
                         alt=""
                         height="78px"
                         width="78px"
@@ -869,9 +907,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       className="name-about-info"
                       style={{ marginBottom: "5px" }}
                     >
-                      {/* {`${singleData[0]?.EmployeeName}  `}  */}
+                      {`${employeeInfo?.data[0]?.EmployeeName}  `}
                       <span style={{ fontWeight: "400", color: gray700 }}>
-                        {/* [{singleData[0]?.EmployeeCode}] */}
+                        [{employeeInfo?.data[0]?.EmployeeCode}]
                       </span>{" "}
                     </h4>
                   </div>
@@ -883,7 +921,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                         Department -
                       </small>{" "}
-                      {/* {`${singleData[0]?.DepartmentName}`} */}
+                      {`${employeeInfo?.data[0]?.DepartmentName}`}
                     </p>
                   </div>
                   <div className="single-info">
@@ -894,7 +932,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                         Designation -
                       </small>{" "}
-                      {/* {singleData[0]?.DesignationName} */}
+                      {employeeInfo?.data[0]?.DesignationName}
                     </p>
                   </div>
                   <div className="single-info">
@@ -905,7 +943,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                         Employment Type -
                       </small>{" "}
-                      {/* {singleData[0]?.strEmploymentType} */}
+                      {employeeInfo?.data[0]?.strEmploymentType}
                     </p>
                   </div>
                 </div>
@@ -914,36 +952,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           </Col>
           <Col md={8}></Col>
           <div className="">
-            {/* <FormikCheckBox
-                height="15px"
-                styleObj={{
-                  color: gray900,
-                  checkedColor: greenColor,
-                  padding: "0px 0px 0px 5px",
-                }}
-                label={"Hold Salary"}
-                name="isHoldSalary"
-                value={isHoldSalary}
-                checked={isHoldSalary}
-                onChange={(e) => {
-                  // setIsHoldSalary(e.target.checked);
-                  // holdSalaryHandler(e);
-                }}
-              /> */}
             <div className="ml-1">
               <PInput
                 label="Hold Salary?"
                 type="checkbox"
                 layout="horizontal"
                 name="isHoldSalary"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    holdSalaryHandler(e);
+                  }
+                }}
               />
             </div>
             <div>
               <p
                 onClick={(e) => {
                   e.stopPropagation();
-                  // setOpenIncrement(true);
-                  // setIsOpen(false);
+                  setOpenIncrement(true);
                 }}
                 style={{ color: gray900 }}
                 className="d-inline-block mt-2 pointer uplaod-para"
@@ -1083,6 +1109,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                           form.setFieldsValue({
                             payrollGroup: op,
                           });
+                          getBreakDownPolicyElements();
                         }}
                         rules={[
                           {
@@ -1104,7 +1131,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         onChange={(value, op) => {
                           form.setFieldsValue({
                             basedOn: op,
+                            basicAmount: undefined,
+                            grossAmount: undefined,
                           });
+                          getBreakDownPolicyElements();
                         }}
                         rules={[
                           { required: true, message: "Based On is required" },
@@ -1386,6 +1416,20 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           <Col md={7}></Col>
         </Row>
       </PCard>
+
+      <IncrementHistoryComponent
+        show={openIncrement}
+        title={"Increment History"}
+        onHide={handleIncrementClose}
+        size="lg"
+        fullscreen=""
+        backdrop="static"
+        classes="default-modal"
+        orgId={orgId}
+        singleData={employeeInfo?.data?.[0]}
+        loading={loading}
+        setLoading={setLoading}
+      />
     </PForm>
   ) : (
     <NotPermittedPage />

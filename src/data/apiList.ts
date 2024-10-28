@@ -225,6 +225,8 @@ export const apiList = {
   GetJobClassDdl: "/MasterJobLevel/GetJobClassDdl",
   GetJobGradeDdl: "/MasterJobLevel/GetJobGradeDdl",
   GetJobLevelDdl: "/MasterJobLevel/GetJobLevelDdl",
+  EmployeeSalaryManagement: "/Payroll/EmployeeSalaryManagement",
+  GetPayScaleSetupDDLbyEmployee: "/Payroll/GetPayScaleSetupDDLbyEmployee",
 
   //updated ddls
 
