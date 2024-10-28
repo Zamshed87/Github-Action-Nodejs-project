@@ -228,6 +228,12 @@ export const apiList = {
   EmployeeSalaryManagement: "/Payroll/EmployeeSalaryManagement",
   GetPayScaleSetupDDLbyEmployee: "/Payroll/GetPayScaleSetupDDLbyEmployee",
   EmployeeProfileView: "/Employee/EmployeeProfileView",
+  GetPayScaleSetupLanding: "/PayScaleSetup/GetPayScaleSetupLanding",
+  DeletePayScaleSetup: "/PayScaleSetup/DeletePayScaleSetup",
+  CreatePayScaleSetup: "/PayScaleSetup/CreatePayScaleSetup",
+  GetPayScaleSetupById: "/PayScaleSetup/GetPayScaleSetupById",
+  UpdatePayScaleSetup: "PayScaleSetup/UpdatePayScaleSetup",
+  DesignationIdWithAll: "/PeopleDeskDdl/DesignationIdWithAll",
 
   //updated ddls
 

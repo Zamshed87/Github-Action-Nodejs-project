@@ -2676,7 +2676,7 @@ export const routingList = [
     component: PayrollElement,
   },
   {
-    path: "/administration/payrollConfiguration/payscale",
+    path: "/administration/payrollConfiguration/payScaleSetup",
     component: PayscaleLanding,
   },
   {
