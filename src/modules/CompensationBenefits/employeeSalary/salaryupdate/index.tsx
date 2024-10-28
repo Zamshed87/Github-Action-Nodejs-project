@@ -37,7 +37,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     shallowEqual
   );
   const location = useLocation();
-  console.log({ location });
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
@@ -85,7 +84,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const breakDownPolicyApi = useApiRequest([]);
   const employeeInfo = useApiRequest([]);
   const empBankInfo = useApiRequest([]);
-  // const positionDDL = useApiRequest([]);
+  const getById = useApiRequest({});
   // const empDesignationDDL = useApiRequest([]);
   const payrollGroupDDL = useApiRequest([]);
 
@@ -1041,7 +1040,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             // payscaleGrade: (op as any)?.jobGrade,
                             // payscaleJobLevel: (op as any)?.jobLevel,
                           });
-                          getBreakDownPolicyElements();
+                          // getById?.action({
+                          //   urlKey: "GetPayScaleSetupById",
+                          //   method: "get",
+                          //   params: {
+                          //     id: value,
+                          //   },
+
+                          //   onSuccess: (res: any) => {
+                          //     setRowDto(res?.payScaleElements);
+                          //   },
+                          // });
                         }}
                         rules={[
                           {
