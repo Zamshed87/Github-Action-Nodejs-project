@@ -215,7 +215,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           benefitHours: 1,
           count: 1,
           showInDepend: { value: 1, label: "Fixed" },
-          
         }}
         onFinish={onFinish}
         onValuesChange={(changedFields) => {
@@ -1070,10 +1069,12 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
 
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { showInDepend } = form.getFieldsValue(true);
+                      const { showInDepend, overtimeAmount } =
+                        form.getFieldsValue(true);
 
                       return (
-                        showInDepend?.value === 1 && (
+                        showInDepend?.value === 1 &&
+                        overtimeAmount === 4 && (
                           <>
                             <Col md={10} sm={22}>
                               <PInput
@@ -1100,12 +1101,18 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Form.Item>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { overTimeAmount, fromMin, toMin, showInDepend } =
-                        form.getFieldsValue(true);
+                      const {
+                        overTimeAmount,
+                        fromMin,
+                        toMin,
+                        showInDepend,
+                        overtimeAmount,
+                      } = form.getFieldsValue(true);
 
                       return (
                         (showInDepend?.value === 1 ||
-                          showInDepend?.value === 2) && (
+                          showInDepend?.value === 2) &&
+                        overtimeAmount === 4 && (
                           <>
                             <Col span={2} className="mt-1">
                               <button
@@ -1175,91 +1182,115 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     }}
                   </Form.Item>
 
-                  <Col md={15} sm={24}>
-                    {tableData?.length > 0 && (
-                      <div
-                        className="table-card-body pt-3 "
-                        style={{ marginLeft: "-.8em" }}
-                      >
-                        <div
-                          className=" table-card-styled tableOne"
-                          style={{ padding: "0px 12px" }}
-                        >
-                          <table className="table align-middle">
-                            <thead style={{ color: "#212529" }}>
-                              <tr>
-                                <th>
-                                  <div className="d-flex align-items-center">
-                                    From Min
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center">
-                                    To Min
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center">
-                                    Depends on
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center">
-                                    OverTime Min
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center justify-content-end">
-                                    Action
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { overtimeAmount } = form.getFieldsValue(true);
+
+                      return (
+                        overtimeAmount === 4 && (
+                          <>
+                            <Col md={15} sm={24}>
                               {tableData?.length > 0 && (
-                                <>
-                                  {tableData.map((item: any, index: number) => {
-                                    return (
-                                      <tr key={index}>
-                                        <td>{item?.intFromMinute}</td>
-                                        <td>{item?.intToMinute}</td>
-                                        <td>{item?.showInDepend?.label}</td>
-                                        <td>{item?.intOvertimeMinute}</td>
-                                        <td>
-                                          <div className="d-flex align-items-end justify-content-end">
-                                            <IconButton
-                                              type="button"
-                                              style={{
-                                                height: "25px",
-                                                width: "25px",
-                                              }}
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                remover(index);
-                                              }}
-                                            >
-                                              <Tooltip title="Delete">
-                                                <DeleteOutline
-                                                  sx={{
-                                                    height: "25px",
-                                                    width: "25px",
-                                                  }}
-                                                />
-                                              </Tooltip>
-                                            </IconButton>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </>
+                                <div
+                                  className="table-card-body pt-3 "
+                                  style={{ marginLeft: "-.8em" }}
+                                >
+                                  <div
+                                    className=" table-card-styled tableOne"
+                                    style={{ padding: "0px 12px" }}
+                                  >
+                                    <table className="table align-middle">
+                                      <thead style={{ color: "#212529" }}>
+                                        <tr>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              From Min
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              To Min
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              Depends on
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              OverTime Min
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center justify-content-end">
+                                              Action
+                                            </div>
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {tableData?.length > 0 && (
+                                          <>
+                                            {tableData.map(
+                                              (item: any, index: number) => {
+                                                return (
+                                                  <tr key={index}>
+                                                    <td>
+                                                      {item?.intFromMinute}
+                                                    </td>
+                                                    <td>{item?.intToMinute}</td>
+                                                    <td>
+                                                      {
+                                                        item?.showInDepend
+                                                          ?.label
+                                                      }
+                                                    </td>
+                                                    <td>
+                                                      {item?.intOvertimeMinute}
+                                                    </td>
+                                                    <td>
+                                                      <div className="d-flex align-items-end justify-content-end">
+                                                        <IconButton
+                                                          type="button"
+                                                          style={{
+                                                            height: "25px",
+                                                            width: "25px",
+                                                          }}
+                                                          onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            remover(index);
+                                                          }}
+                                                        >
+                                                          <Tooltip title="Delete">
+                                                            <DeleteOutline
+                                                              sx={{
+                                                                height: "25px",
+                                                                width: "25px",
+                                                              }}
+                                                            />
+                                                          </Tooltip>
+                                                        </IconButton>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                );
+                                              }
+                                            )}
+                                          </>
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
                               )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    )}
-                  </Col>
+                            </Col>
+                          </>
+                        )
+                      );
+                    }}
+                  </Form.Item>
+
                   {/* tousif told me to replace this name  */}
                   <Col md={24} sm={24}>
                     <PInput
