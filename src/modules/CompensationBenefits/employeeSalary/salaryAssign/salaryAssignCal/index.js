@@ -357,6 +357,20 @@ export const getByIdSalaryAssignDDLUpdate2 = (
   ) {
     const update = bangJinAssignedCal(res, grossSalaryAmount);
     setter(update || []);
+  } else if (res?.data?.[0]?.isGradeBasedSalary) {
+    const modify = res?.data?.map((i) => {
+      return {
+        ...i,
+        // strBasedOn: i?.isBasicSalary ? "Amount" : "Percentage",
+        strPayrollElementName: i?.strSalaryElement,
+        strSalaryBreakdownTitle: i?.strSalaryBreakdownHeaderTitle,
+        intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
+        intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
+        intPayrollElementTypeId: i?.intSalaryElementId,
+      };
+    });
+
+    setter(modify);
   } else {
     const breakdownList = res?.data || [];
     const demoList = [];

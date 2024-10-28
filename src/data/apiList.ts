@@ -234,6 +234,7 @@ export const apiList = {
   GetPayScaleSetupById: "/PayScaleSetup/GetPayScaleSetupById",
   UpdatePayScaleSetup: "PayScaleSetup/UpdatePayScaleSetup",
   DesignationIdWithAll: "/PeopleDeskDdl/DesignationIdWithAll",
+  EmployeeSalaryAssign: "Payroll/EmployeeSalaryAssign",
 
   //updated ddls
 

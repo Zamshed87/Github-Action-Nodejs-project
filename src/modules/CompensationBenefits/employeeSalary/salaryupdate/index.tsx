@@ -27,7 +27,10 @@ import {
   getEmployeeSalaryInfo,
   salaryHoldAction,
 } from "../salaryAssign/helper";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { todayDate } from "utility/todayDate";
+import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
+import SalaryType from "modules/employeeProfile/employeeOverview/components/others/salaryType";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -37,29 +40,34 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     shallowEqual
   );
   const location = useLocation();
+  const history = useHistory();
+  console.log(location.state);
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
   // States
-  const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState<any[]>([]);
+  const [slabDDL, setSlabDDL] = useState<any[]>([]);
   const [accountsDto, setAccountsDto] = useState<any[]>([
     {
       accounts: "Bank Pay (0%)",
       key: "Bank Pay",
       numAmount: 0,
+      percentage: 0,
     },
     {
       accounts: "Digital/MFS Pay (0%)",
       key: "Digital/MFS Pay",
       numAmount: 0,
+      percentage: 0,
     },
     {
       accounts: "Cash Pay (0%)",
       key: "Cash Pay",
 
+      percentage: 0,
       numAmount: 0,
     },
     {
@@ -77,7 +85,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const [form] = Form.useForm();
 
   // Api Actions
-  const bulkLandingAPI = useApiRequest([]);
+  const salaryAssign = useApiRequest([]);
   const bankDDL = useApiRequest([]);
   const branchDDL = useApiRequest([]);
   const payscaleApi = useApiRequest([]);
@@ -97,19 +105,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Salary Assign";
   }, []);
-
-  const getSalaryLanding = () => {
-    const {
-      payrollGroup,
-      designation,
-      department,
-      employeeType,
-      joiningDateTo,
-      joiningDateFrom,
-      hrPosition,
-      wp,
-    } = form.getFieldsValue(true);
-  };
 
   const getPayscale = () => {
     payscaleApi?.action({
@@ -296,7 +291,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
   };
   const getBreakDownPolicyElements = () => {
-    const { payrollGroup, payscale, salaryType } = form.getFieldsValue(true);
+    const { payrollGroup } = form.getFieldsValue(true);
     breakDownPolicyApi?.action({
       urlKey: "BreakdownNPolicyForSalaryAssign",
       method: "GET",
@@ -304,8 +299,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         StrReportType: "BREAKDOWN ELEMENT BY ID",
 
         IntAccountId: orgId,
-        IntSalaryBreakdownHeaderId:
-          salaryType?.value !== "Grade" ? payrollGroup?.value : payscale?.value,
+        IntSalaryBreakdownHeaderId: payrollGroup?.value,
         IntWorkplaceId: 0,
         intId: 0,
       },
@@ -314,20 +308,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
     });
   };
-  const viewHandler = async () => {
-    setRowDto((prev: any) => {
-      prev = [];
-      return prev;
-    });
-    await form
-      .validateFields()
-      .then(() => {
-        getSalaryLanding();
-      })
-      .catch(() => {
-        // console.error("Validate Failed:", info);
-      });
-  };
+
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 8) {
@@ -336,14 +317,89 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   });
 
   const submitHandler = async () => {
-    await form
-      .validateFields()
-      .then(() => {
-        console.log("first");
-      })
-      .catch(() => {
-        // console.error("Validate Failed:", info);
-      });
+    const values = form.getFieldsValue(true);
+    const accountSum =
+      accountsDto[1].numAmount +
+      accountsDto[2].numAmount +
+      accountsDto[0].numAmount;
+
+    console.log(accountSum, values?.grossAmount);
+    if (accountSum !== values?.grossAmount) {
+      return toast.warn(
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
+      );
+    }
+    const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
+
+    if (elementSum !== values?.grossAmount) {
+      return toast.warn(
+        "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
+      );
+    }
+    console.log({ values });
+    const payload = {
+      partId: 0,
+      intEmployeeBankDetailsId:
+        +employeeInfo?.data[0]?.empEmployeeBankDetail
+          ?.intEmployeeBankDetailsId || 0,
+      intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
+      isPrimarySalaryAccount: true,
+      isActive: true,
+      intWorkplaceId: wId || 0,
+      intBusinessUnitId: buId,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+      intBankOrWalletType: 1,
+      intBankWalletId: values?.bank?.value || 0,
+      strBankWalletName: values?.bank?.label || "",
+      strDistrict: "",
+      intBankBranchId: values?.branch?.value || 0,
+      strBranchName: values?.branch?.label || "",
+      strRoutingNo: values?.routing || "",
+      strAccountName: values?.account || "",
+      strAccountNo: `${values?.accountNo}` || "",
+      strSwiftCode: values?.swift || "",
+    };
+    bankDetailsAction(payload, setLoading, () => {});
+
+    const salaryAssignPayload = {
+      intEmployeeIdList: [
+        {
+          intEmployeeId: (location?.state as any)?.EmployeeId,
+        },
+      ],
+      effectiveMonth: 0,
+      effectiveYear: 0,
+      intCreateBy: 1,
+      intSalaryBreakdownHeaderId: rowDto[0].intSalaryBreakdownHeaderId,
+      strSalaryBreakdownHeaderTitle: rowDto[0].strSalaryBreakdownTitle,
+      isPerdaySalary: false,
+      numNetGrossSalary: values?.grossAmount,
+      numBasicORGross: rowDto[0]?.numAmount,
+      numGrossAmount: values?.grossAmount,
+      breakdownElements: rowDto,
+      numCashPayInPercent: accountsDto[2].percentage,
+      numBankPayInPercent: accountsDto[0].percentage,
+      numDigitalPayInPercent: accountsDto[1].percentage,
+      numCashPayInAmount: accountsDto[2].numAmount,
+      numBankPayInAmount: accountsDto[0].numAmount,
+      numDigitalPayInAmount: accountsDto[1].numAmount,
+      IntOthersAdditionalAmountTransferInto: values?.transferType?.value,
+      isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
+      intSlabCount: values?.slabCount?.value,
+    };
+    salaryAssign.action({
+      urlKey: "EmployeeSalaryAssign",
+      method: "post",
+      payload: salaryAssignPayload,
+      toast: true,
+      onSuccess: () => {
+        history.push(`/compensationAndBenefits/employeeSalary/salaryAssign`);
+      },
+    });
   };
 
   // accounts calculations
@@ -386,14 +442,26 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       (temp[index1].numAmount * 100) /
       grossAmount
     ).toFixed(6)}%)`;
+    temp[index1].percentage = (
+      (temp[index1].numAmount * 100) /
+      grossAmount
+    ).toFixed(6);
     temp[index2].accounts = `${temp[index2].key} (${(
       (temp[index2].numAmount * 100) /
       grossAmount
     ).toFixed(6)}%)`;
+    temp[index2].percentage = (
+      (temp[index2].numAmount * 100) /
+      grossAmount
+    ).toFixed(6);
     temp[index].accounts = `${temp[index].key} (${(
       (temp[index].numAmount * 100) /
       grossAmount
     ).toFixed(6)}%)`;
+    temp[index].percentage = (
+      (temp[index].numAmount * 100) /
+      grossAmount
+    ).toFixed(6);
 
     // Check for any negative values after adjustments
     if (temp[index1].numAmount < 0 || temp[index2].numAmount < 0) {
@@ -423,7 +491,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       );
     }
     // Update the selected index with the new amount
-    console.log(e + e * (slabCount || 0), 2);
     temp[index].numAmount = e + e * (slabCount || 0);
     if (temp[index].isBasicSalary) {
       temp[index].baseAmount = e;
@@ -484,7 +551,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
     // Update the state with recalculated values
     setRowDto(calculatedRowDto);
-    console.log("Adjusted Salary Breakdown to match Gross:", calculatedRowDto);
   };
 
   const salaryBreakDownCalc = (salaryDependsOn = "") => {
@@ -512,7 +578,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           .split(" ")
           .join(""),
       };
-      console.log({ obj });
 
       modifyData.push(obj);
     });
@@ -525,7 +590,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
       0
     );
-    console.log({ indexOfLowestAmount });
     adjustOverFollowAmount(
       modifyData,
       grossAmount,
@@ -538,6 +602,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     );
   };
   const calculate_salary_breakdown = () => {
+    console.log({ rowDto }, 5);
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
@@ -554,8 +619,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       if (item.isBasicSalary) {
         amount = basicAmount; // Use the basic salary directly
         item.numAmount = basicAmount;
-        item.baseAmount = item.baseAmount || basicAmount;
-      } else if (item.strBasedOn === "Percentage") {
+        item.baseAmount =
+          item.baseAmount || getById?.data?.payScaleElements[0]?.netAmount;
+      } else if (
+        item.strBasedOn === "Percentage" ||
+        item.strBasedOn === "Percent"
+      ) {
         amount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
         item.numAmount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
       } else {
@@ -766,14 +835,22 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         setLoading,
         wId
       );
+      console.log({ rowDto }, 6);
+
       form.setFieldsValue({
         grossAmount: (location?.state as any)?.numNetGrossSalary,
-        payrollGroup: (location?.state as any)?.intSalaryBreakdownHeaderId,
+        payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
+          ? undefined
+          : (location?.state as any)?.intSalaryBreakdownHeaderId,
         basedOn: 1,
-        salaryType: "Non-Grade",
+        salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
+          ? "Grade"
+          : "Non-Grade",
+        slabCount: {
+          value: employeeInfo?.data[0]?.intSlabCount,
+          label: employeeInfo?.data[0]?.intSlabCount,
+        },
       });
-
-      // temp[3].numAmount=
     }
     empBankInfo.action({
       urlKey: "EmployeeProfileView",
@@ -798,6 +875,51 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
     });
   }, [location?.state]);
+
+  useEffect(() => {
+    if (employeeInfo?.data[0]?.isGradeBasedSalary) {
+      getById?.action({
+        urlKey: "GetPayScaleSetupById",
+        method: "get",
+        params: {
+          id: (location?.state as any)?.intSalaryBreakdownHeaderId,
+        },
+
+        onSuccess: (res: any) => {
+          form.setFieldsValue({
+            salaryType: { value: "Grade", label: "Grade" },
+            payscale: (location?.state as any)?.intSalaryBreakdownHeaderId,
+            payscaleJobLevel: {
+              value: res?.jobLevelId,
+              label: res?.jobLevelName,
+            },
+            payscaleGrade: {
+              value: res?.jobGradeId,
+              label: res?.jobGradeName,
+            },
+            payscaleClass: {
+              value: res?.jobClassId,
+              label: res?.jobClassName,
+            },
+            slabCount: {
+              value: employeeInfo?.data[0]?.intSlabCount,
+              label: employeeInfo?.data[0]?.intSlabCount,
+            },
+          });
+          let temp = [];
+          for (let i = 0; i <= res?.incrementSlabCount; i++) {
+            temp.push({
+              value: i,
+              label: i,
+            });
+          }
+          setSlabDDL(temp);
+
+          // calculate_salary_breakdown();
+        },
+      });
+    }
+  }, [employeeInfo?.data[0]]);
 
   // console.log({ rowDto });
   const holdSalaryHandler = (e: any) => {
@@ -827,36 +949,38 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       initialValues={{
         transferType: "Cash",
       }}
+      onFinish={submitHandler}
     >
       <PCard>
         <PCardHeader
           title="Salary Assign"
-          buttonList={[
-            {
-              type: "primary",
-              content: "Save",
-              onClick: () => {
-                submitHandler();
-              },
-              disabled: selectedRow?.length > 0 ? false : true,
-              //   icon: <AddOutlined />,
-            },
-            {
-              type: "primary-outline",
-              content: "Cancel",
-              onClick: () => {
-                form.resetFields();
-                setSelectedRow([]);
-                setRowDto((prev) => {
-                  prev = [];
-                  return prev;
-                });
-                // getSalaryLanding();
-              },
-              // disabled: true,
-              //   icon: <AddOutlined />,
-            },
-          ]}
+          // buttonList={[
+          //   {
+          //     type: "primary",
+          //     content: "Save",
+          //     onClick: () => {
+          //       submitHandler();
+          //     },
+          //     disabled: selectedRow?.length > 0 ? false : true,
+          //     //   icon: <AddOutlined />,
+          //   },
+          //   {
+          //     type: "primary-outline",
+          //     content: "Cancel",
+          //     onClick: () => {
+          //       form.resetFields();
+          //       setSelectedRow([]);
+          //       setRowDto((prev) => {
+          //         prev = [];
+          //         return prev;
+          //       });
+          //       // getSalaryLanding();
+          //     },
+          //     // disabled: true,
+          //     //   icon: <AddOutlined />,
+          //   },
+          // ]}
+          submitText="Save"
         ></PCardHeader>
         <Row gutter={[10, 2]} className="mb-3 card-style">
           <Col md={13}>
@@ -1010,6 +1134,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   grossAmount: undefined,
                   slabCount: undefined,
                   payscale: undefined,
+                  payrollGroup: undefined,
                   payscaleClass: undefined,
                   payscaleGrade: undefined,
                   payscaleJobLevel: undefined,
@@ -1024,143 +1149,191 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           <Form.Item shouldUpdate noStyle>
             {() => {
               const { salaryType } = form.getFieldsValue(true);
-              if (salaryType?.value === "Grade") {
-                return (
-                  <>
-                    <Col md={6} sm={12} xs={24}>
-                      <PSelect
-                        options={payscaleApi?.data || []}
-                        name="payscale"
-                        label="Payscale"
-                        placeholder="Payscale"
-                        onChange={(value, op) => {
-                          form.setFieldsValue({
-                            payscale: op,
-                            // payscaleClass: (op as any)?.jobClass,
-                            // payscaleGrade: (op as any)?.jobGrade,
-                            // payscaleJobLevel: (op as any)?.jobLevel,
-                          });
-                          // getById?.action({
-                          //   urlKey: "GetPayScaleSetupById",
-                          //   method: "get",
-                          //   params: {
-                          //     id: value,
-                          //   },
-
-                          //   onSuccess: (res: any) => {
-                          //     setRowDto(res?.payScaleElements);
-                          //   },
-                          // });
-                        }}
-                        rules={[
-                          {
-                            required: salaryType?.value === "Grade",
-                            message: "Payscale is required",
+              return salaryType?.value === "Grade" ? (
+                <>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={payscaleApi?.data || []}
+                      name="payscale"
+                      label="Payscale"
+                      placeholder="Payscale"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          payscale: op,
+                          slabCount: undefined,
+                          // payscaleClass: (op as any)?.jobClass,
+                          // payscaleGrade: (op as any)?.jobGrade,
+                          // payscaleJobLevel: (op as any)?.jobLevel,
+                        });
+                        getById?.action({
+                          urlKey: "GetPayScaleSetupById",
+                          method: "get",
+                          params: {
+                            id: value,
                           },
-                        ]}
-                      />
-                    </Col>
-                    <Col md={6} sm={12} xs={24}>
-                      <PSelect
-                        options={[]}
-                        disabled={true}
-                        name="payscaleClass"
-                        label="Payscale Class"
-                        placeholder="Payscale Class"
-                        // onChange={(value, op) => {}}
-                        // rules={[
-                        //   {
-                        //     required: salaryType?.value === "Grade",
-                        //     message: "Payscale is required",
-                        //   },
-                        // ]}
-                      />
-                    </Col>
-                    <Col md={6} sm={12} xs={24}>
-                      <PSelect
-                        options={[]}
-                        name="payscaleGrade"
-                        label="Payscale Grade"
-                        disabled={true}
-                        placeholder="Payscale Grade"
-                        // onChange={(value, op) => {
 
-                        // }}
-                        // rules={[
-                        //   {
-                        //     required: salaryType?.value === "Grade",
-                        //     message: "Payscale is required",
-                        //   },
-                        // ]}
-                      />
-                    </Col>
-                    <Col md={6} sm={12} xs={24}>
-                      <PSelect
-                        options={[]}
-                        name="payscaleJobLevel"
-                        disabled={true}
-                        label="Payscale Job Level"
-                        placeholder="Payscale Job Level"
-                        // onChange={(value, op) => {
-
-                        // }}
-                        // rules={[
-                        //   {
-                        //     required: salaryType?.value === "Grade",
-                        //     message: "Payscale is required",
-                        //   },
-                        // ]}
-                      />
-                    </Col>
-                  </>
-                );
-              } else
-                return (
-                  <>
-                    <Col md={6} sm={12} xs={24}>
-                      <PSelect
-                        options={payrollGroupDDL?.data || []}
-                        name="payrollGroup"
-                        label="Payroll Group"
-                        placeholder="Payroll Group"
-                        onChange={(value, op) => {
-                          form.setFieldsValue({
-                            payrollGroup: op,
-                          });
-                          getBreakDownPolicyElements();
-                        }}
-                        rules={[
-                          {
-                            required: true,
-                            message: "Payroll Group is required",
+                          onSuccess: (res: any) => {
+                            const modify = res?.payScaleElements?.map(
+                              (i: any) => {
+                                return {
+                                  ...i,
+                                  intSalaryBreakdownRowId: i?.id,
+                                  intSalaryBreakdownHeaderId: value,
+                                  strSalaryBreakdownTitle: (op as any)?.label,
+                                  intPayrollElementTypeId: i?.payrollElementId,
+                                  strPayrollElementName: i?.payrollElementName,
+                                  strBasedOn: i?.basedOn,
+                                  strDependOn: "Basic",
+                                  baseAmount: i?.isBasic ? i?.netAmount : 0,
+                                  isBasicSalary: i?.isBasic,
+                                  numNumberOfPercent: i?.amountOrPercentage,
+                                  numAmount: i?.netAmount,
+                                  numberOfPercent: i?.amountOrPercentage,
+                                };
+                              }
+                            );
+                            const gross = modify.reduce(
+                              (acc: any, i: any) => acc + i?.numAmount,
+                              0
+                            );
+                            form.setFieldsValue({
+                              payscaleJobLevel: {
+                                value: res?.jobLevelId,
+                                label: res?.jobLevelName,
+                              },
+                              payscaleGrade: {
+                                value: res?.jobGradeId,
+                                label: res?.jobGradeName,
+                              },
+                              payscaleClass: {
+                                value: res?.jobClassId,
+                                label: res?.jobClassName,
+                              },
+                              grossAmount: gross,
+                            });
+                            accountsDto[2].numAmount = gross;
+                            accountsDto[2].accounts = `Cash Pay (${100}%)`;
+                            accountsDto[2].percentage = 100;
+                            const temp = [];
+                            for (let i = 0; i <= res?.incrementSlabCount; i++) {
+                              temp.push({
+                                value: i,
+                                label: i,
+                              });
+                            }
+                            setSlabDDL(temp);
+                            setRowDto(modify);
+                            // calculate_salary_breakdown();
                           },
-                        ]}
-                      />
-                    </Col>
-                    <Col md={6} sm={12} xs={24}>
-                      <PSelect
-                        options={[
-                          { value: 1, label: "Gross" },
-                          { value: 2, label: "Basic" },
-                        ]}
-                        name="basedOn"
-                        label="Based On"
-                        placeholder="Based On"
-                        onChange={(value, op) => {
-                          form.setFieldsValue({
-                            basedOn: op,
-                            basicAmount: undefined,
-                            grossAmount: undefined,
-                          });
-                          getBreakDownPolicyElements();
-                        }}
-                        rules={[
-                          { required: true, message: "Based On is required" },
-                        ]}
-                      />
-                    </Col>
-                  </>
-                );
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: salaryType?.value === "Grade",
+                          message: "Payscale is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      disabled={true}
+                      name="payscaleClass"
+                      label="Payscale Class"
+                      placeholder="Payscale Class"
+                      // onChange={(value, op) => {}}
+                      // rules={[
+                      //   {
+                      //     required: salaryType?.value === "Grade",
+                      //     message: "Payscale is required",
+                      //   },
+                      // ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="payscaleGrade"
+                      label="Payscale Grade"
+                      disabled={true}
+                      placeholder="Payscale Grade"
+                      // onChange={(value, op) => {
+
+                      // }}
+                      // rules={[
+                      //   {
+                      //     required: salaryType?.value === "Grade",
+                      //     message: "Payscale is required",
+                      //   },
+                      // ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[]}
+                      name="payscaleJobLevel"
+                      disabled={true}
+                      label="Payscale Job Level"
+                      placeholder="Payscale Job Level"
+                      // onChange={(value, op) => {
+
+                      // }}
+                      // rules={[
+                      //   {
+                      //     required: salaryType?.value === "Grade",
+                      //     message: "Payscale is required",
+                      //   },
+                      // ]}
+                    />
+                  </Col>
+                </>
+              ) : (
+                <>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={payrollGroupDDL?.data || []}
+                      name="payrollGroup"
+                      label="Payroll Group"
+                      placeholder="Payroll Group"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          payrollGroup: op,
+                        });
+                        getBreakDownPolicyElements();
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Payroll Group is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[
+                        { value: 1, label: "Gross" },
+                        { value: 2, label: "Basic" },
+                      ]}
+                      name="basedOn"
+                      label="Based On"
+                      placeholder="Based On"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          basedOn: op,
+                          basicAmount: undefined,
+                          grossAmount: undefined,
+                        });
+                        getBreakDownPolicyElements();
+                      }}
+                      rules={[
+                        { required: true, message: "Based On is required" },
+                      ]}
+                    />
+                  </Col>
+                </>
+              );
             }}
           </Form.Item>
         </Row>
@@ -1220,19 +1393,15 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 ) : salaryType?.value == "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
                     <PSelect
-                      options={[
-                        { value: 0, label: 0 },
-                        { value: 1, label: 1 },
-                        { value: 2, label: 2 },
-                      ]}
+                      options={slabDDL}
                       name="slabCount"
                       label="Slab Count"
                       placeholder="Slab Count"
                       onChange={(value, op) => {
                         let temp = [...rowDto];
-
                         temp[0].numAmount =
-                          temp[0].baseAmount + value * temp[0].baseAmount;
+                          getById?.data?.payScaleElements[0]?.netAmount +
+                          value * getById?.data?.payScaleElements[0]?.netAmount;
                         console.log({ temp }, 0);
                         setRowDto((prev) => {
                           prev = temp;
@@ -1279,27 +1448,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             }}
           </Form.Item>
         </Row>
-        {true ? (
-          <DataTable
-            header={header}
-            bordered
-            data={rowDto || []}
-            loading={bulkLandingAPI?.loading}
-            // scroll={{ x: 1500 }}
-            // rowSelection={{
-            //   type: "checkbox",
-            //   selectedRowKeys: selectedRow.map((item) => item?.key),
-            //   onChange: (selectedRowKeys, selectedRows) => {
-            //     setSelectedRow(selectedRows);
-            //   },
-            //   getCheckboxProps: () => {
-            //     // console.log(rec);
-            //     // return {
-            //     //   disabled: rec?.ApplicationStatus === "Approved",
-            //     // };
-            //   },
-            // }}
-          />
+        {rowDto?.length > 0 ? (
+          <DataTable header={header} bordered data={rowDto || []} />
         ) : (
           <NoResult title="No Result Found" para="" />
         )}
@@ -1338,7 +1488,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 });
                 getBranchDDL();
               }}
-              // rules={[{ required: true, message: "Salary Type is required" }]}
+              rules={[{ required: true, message: "Bank is required" }]}
             />
           </Col>
           <Col md={7}></Col>
@@ -1357,7 +1507,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   routing: (op as any)?.name,
                 });
               }}
-              // rules={[{ required: true, message: "Salary Type is required" }]}
+              rules={[{ required: true, message: "Branch is required" }]}
             />
           </Col>
           <Col md={7}></Col>
@@ -1408,12 +1558,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               type="text"
               name="account"
               placeholder="Account Name"
-              // rules={[
-              //   {
-              //     // required: basedOn?.value === 2,
-              //     message: "Basic is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: true,
+                  message: "Account Name is required",
+                },
+              ]}
             />
           </Col>
           <Col md={7}></Col>
@@ -1425,12 +1575,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               type="number"
               name="accountNo"
               placeholder="Account No"
-              // rules={[
-              //   {
-              //     // required: basedOn?.value === 2,
-              //     message: "Basic is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: true,
+                  message: "Account No is required",
+                },
+              ]}
             />
           </Col>
           <Col md={7}></Col>
