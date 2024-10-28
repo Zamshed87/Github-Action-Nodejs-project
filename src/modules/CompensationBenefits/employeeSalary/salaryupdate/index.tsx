@@ -22,15 +22,10 @@ import { MovingOutlined } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import IncrementHistoryComponent from "../salaryAssign/DrawerBody/incrementHistoryView";
 import IConfirmModal from "common/IConfirmModal";
-import {
-  getByIdBreakdownListDDL,
-  getEmployeeSalaryInfo,
-  salaryHoldAction,
-} from "../salaryAssign/helper";
+import { salaryHoldAction } from "../salaryAssign/helper";
 import { useHistory, useLocation } from "react-router-dom";
 import { todayDate } from "utility/todayDate";
 import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
-import SalaryType from "modules/employeeProfile/employeeOverview/components/others/salaryType";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -93,7 +88,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const employeeInfo = useApiRequest([]);
   const empBankInfo = useApiRequest([]);
   const getById = useApiRequest({});
-  // const empDesignationDDL = useApiRequest([]);
+  const assignBreakdownApi = useApiRequest([]);
   const payrollGroupDDL = useApiRequest([]);
 
   const dispatch = useDispatch();
@@ -113,12 +108,41 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       params: {
         employeeId: (location?.state as any)?.EmployeeId,
       },
-      // onSuccess: (res) => {
-      //   res.forEach((item: any, i: any) => {
-      //     res[i].label = item?.EmploymentType;
-      //     res[i].value = item?.Id;
-      //   });
-      // },
+    });
+  };
+  const getAssignedBreakdown = () => {
+    assignBreakdownApi?.action({
+      urlKey: "BreakdownNPolicyForSalaryAssign",
+      method: "GET",
+      params: {
+        StrReportType: "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
+        IntAccountId: orgId,
+        IntSalaryBreakdownHeaderId: (location?.state as any)
+          ?.intSalaryBreakdownHeaderId,
+        IntEmployeeId: (location?.state as any)?.EmployeeId,
+        IntWorkplaceId: wId || 0,
+      },
+      onSuccess: (res) => {
+        const modify = res?.map((i: any) => {
+          return {
+            ...i,
+            // strBasedOn: i?.isBasicSalary ? "Amount" : "Percentage",
+            strPayrollElementName: i?.strSalaryElement,
+            strSalaryBreakdownTitle: i?.strSalaryBreakdownHeaderTitle,
+            intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
+            intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
+            intPayrollElementTypeId: i?.intSalaryElementId,
+          };
+        });
+        if (employeeInfo?.data[0]?.isGradeBasedSalary) {
+          const modifyforGrade = [...modify];
+          // modifyforGrade[0].strBasedOn = "Amount";
+          setRowDto(modifyforGrade);
+        } else {
+          setRowDto(modify);
+          salaryBreakDownCalc();
+        }
+      },
     });
   };
   const getEmployeeInfo = () => {
@@ -150,123 +174,20 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         const temp = [...accountsDto];
         temp[0].numAmount = res[0]?.BankPayInAmount || 0;
         temp[0].accounts = res[0]?.BankPayInPercent
-          ? temp[0].key + " (" + res[0]?.BankPayInPercent + ")"
+          ? temp[0].key + " (" + res[0]?.BankPayInPercent + "%)"
           : temp[0].accounts;
         temp[1].numAmount = res[0]?.DigitalPayInAmount || 0;
         temp[1].accounts = res[0]?.DigitalPayInPercent
-          ? temp[1].key + " (" + res[0]?.DigitalPayInPercent + ")"
+          ? temp[1].key + " (" + res[0]?.DigitalPayInPercent + "%)"
           : temp[1].accounts;
 
         temp[2].numAmount = res[0]?.CashPayInAmount || 0;
         temp[2].accounts = res[0]?.CashPayInPercent
-          ? temp[2].key + "(" + res[0]?.CashPayInPercent + ")"
+          ? temp[2].key + "(" + res[0]?.CashPayInPercent + "%)"
           : temp[2].accounts;
       },
     });
   };
-  // // workplace wise
-  // const getWorkplaceGroup = () => {
-  //   workG?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "WorkplaceGroup",
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: wgId, // This should be removed
-  //       intId: employeeId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplaceGroup;
-  //         res[i].value = item?.intWorkplaceGroupId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getWorkplace = () => {
-  //   const { workplaceGroup } = form.getFieldsValue(true);
-  //   workP?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "Workplace",
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: workplaceGroup?.value,
-  //       intId: employeeId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplace;
-  //         res[i].value = item?.intWorkplaceId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getEmployeDepartment = () => {
-  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
-
-  //   empDepartmentDDL?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "EmpDepartment",
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: workplaceGroup?.value,
-  //       IntWorkplaceId: wp?.value,
-  //       intId: 0,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.DepartmentName;
-  //         res[i].value = item?.DepartmentId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getEmployeDesignation = () => {
-  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
-
-  //   empDesignationDDL?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "EmpDesignation",
-  //       AccountId: orgId,
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: workplaceGroup?.value,
-  //       IntWorkplaceId: wp?.value,
-  //       intId: 0,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.DesignationName;
-  //         res[i].value = item?.DesignationId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getEmployeePosition = () => {
-  //   const { workplaceGroup, wp } = form.getFieldsValue(true);
-
-  //   positionDDL?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "Position",
-  //       BusinessUnitId: buId,
-  //       WorkplaceGroupId: workplaceGroup?.value,
-  //       IntWorkplaceId: wp?.value,
-  //       intId: 0,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.PositionName;
-  //         res[i].value = item?.PositionId;
-  //       });
-  //     },
-  //   });
-  // };
-  //   export const getBreakdownPolicyDDL = async (
 
   const getPayrollGroupDDL = () => {
     payrollGroupDDL?.action({
@@ -365,6 +286,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     };
     bankDetailsAction(payload, setLoading, () => {});
 
+    const modifiedBreakDown = rowDto?.map((i) => {
+      return {
+        dependOn: i?.strDependOn,
+        intPayrollElementTypeId: i?.intPayrollElementTypeId,
+        intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
+        numAmount: i?.numAmount,
+        numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
+      };
+    });
+
     const salaryAssignPayload = {
       intEmployeeIdList: [
         {
@@ -380,16 +311,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       numNetGrossSalary: values?.grossAmount,
       numBasicORGross: rowDto[0]?.numAmount,
       numGrossAmount: values?.grossAmount,
-      breakdownElements: rowDto,
-      numCashPayInPercent: accountsDto[2].percentage,
-      numBankPayInPercent: accountsDto[0].percentage,
-      numDigitalPayInPercent: accountsDto[1].percentage,
+      breakdownElements: modifiedBreakDown,
+      numCashPayInPercent: +accountsDto[2].percentage,
+      numBankPayInPercent: +accountsDto[0].percentage,
+      numDigitalPayInPercent: +accountsDto[1].percentage,
       numCashPayInAmount: accountsDto[2].numAmount,
       numBankPayInAmount: accountsDto[0].numAmount,
       numDigitalPayInAmount: accountsDto[1].numAmount,
       IntOthersAdditionalAmountTransferInto: values?.transferType?.value,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
-      intSlabCount: values?.slabCount?.value,
+      intSlabCount: values?.slabCount,
     };
     salaryAssign.action({
       urlKey: "EmployeeSalaryAssign",
@@ -616,11 +547,14 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     for (const item of rowDto) {
       let amount;
 
-      if (item.isBasicSalary) {
+      if (item?.isBasicSalary) {
         amount = basicAmount; // Use the basic salary directly
         item.numAmount = basicAmount;
         item.baseAmount =
-          item.baseAmount || getById?.data?.payScaleElements[0]?.netAmount;
+          // item?.baseAmount ||
+          values?.basedOn?.value !== 2
+            ? item?.baseAmount || getById?.data?.payScaleElements[0]?.netAmount
+            : values?.basicAmount;
       } else if (
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
@@ -825,18 +759,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // for assigned
   useEffect(() => {
     if ((location?.state as any)?.Status === "Assigned") {
-      getByIdBreakdownListDDL(
-        "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
-        orgId,
-        (location?.state as any)?.EmployeeId || 0,
-        (location?.state as any)?.intSalaryBreakdownHeaderId,
-        setRowDto,
-        (location?.state as any)?.numNetGrossSalary,
-        setLoading,
-        wId
-      );
-      console.log({ rowDto }, 6);
-
+      getAssignedBreakdown();
       form.setFieldsValue({
         grossAmount: (location?.state as any)?.numNetGrossSalary,
         payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
@@ -862,15 +785,25 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
       onSuccess: (res) => {
         form.setFieldsValue({
-          bank: res?.empEmployeeBankDetail?.intBankWalletId,
-          routing: res?.empEmployeeBankDetail?.strRoutingNo,
+          bank: res?.empEmployeeBankDetail?.intBankWalletId
+            ? res?.empEmployeeBankDetail?.intBankWalletId
+            : undefined,
+          routing: res?.empEmployeeBankDetail?.strRoutingNo
+            ? res?.empEmployeeBankDetail?.strRoutingNo
+            : undefined,
           swift: res?.empEmployeeBankDetail?.strSwiftCode,
-          account: res?.empEmployeeBankDetail?.strAccountName,
-          accountNo: res?.empEmployeeBankDetail?.strAccountNo,
-          branch: {
-            value: res?.empEmployeeBankDetail?.intBankBranchId,
-            label: res?.empEmployeeBankDetail?.strBranchName,
-          },
+          account: res?.empEmployeeBankDetail?.strAccountName
+            ? res?.empEmployeeBankDetail?.strAccountName
+            : undefined,
+          accountNo: res?.empEmployeeBankDetail?.strAccountNo
+            ? res?.empEmployeeBankDetail?.strAccountNo
+            : undefined,
+          branch: res?.empEmployeeBankDetail?.intBankBranchId
+            ? {
+                value: res?.empEmployeeBankDetail?.intBankBranchId,
+                label: res?.empEmployeeBankDetail?.strBranchName,
+              }
+            : undefined,
         });
       },
     });
@@ -1349,7 +1282,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
-                      onChange={calculate_salary_breakdown}
+                      onChange={() => calculate_salary_breakdown()}
                       rules={[
                         {
                           required: basedOn?.value === 2,
@@ -1400,8 +1333,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       onChange={(value, op) => {
                         let temp = [...rowDto];
                         temp[0].numAmount =
-                          getById?.data?.payScaleElements[0]?.netAmount +
-                          value * getById?.data?.payScaleElements[0]?.netAmount;
+                          (temp[0].baseAmount ||
+                            getById?.data?.payScaleElements[0]?.netAmount) +
+                          value *
+                            (temp[0].baseAmount ||
+                              getById?.data?.payScaleElements[0]?.netAmount);
                         console.log({ temp }, 0);
                         setRowDto((prev) => {
                           prev = temp;
