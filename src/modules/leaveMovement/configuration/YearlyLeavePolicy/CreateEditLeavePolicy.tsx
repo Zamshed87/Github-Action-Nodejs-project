@@ -75,24 +75,14 @@ const CreateEditLeavePolicy = () => {
   }, []);
 
   useEffect(() => {
-    // getYearlyPolicyPopUpDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
-    //   "Id",
-    //   "EmploymentType",
-    //   setEmploymentTypeDDL
-    // );
+
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
       "LeaveTypeId",
       "LeaveType",
       setLeaveTypeDDL
     );
-    // getPeopleDeskAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
-    //   "PositionId",
-    //   "PositionName",
-    //   setHrPositionDDL
-    // );
+
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
