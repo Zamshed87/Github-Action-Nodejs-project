@@ -14,16 +14,16 @@ import { Col, Divider, Form, Row } from "antd";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { gray200, gray700, gray900 } from "utility/customColor";
+import { gray700, gray900 } from "utility/customColor";
 import { APIUrl } from "App";
 import { MovingOutlined } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import IncrementHistoryComponent from "../salaryAssign/DrawerBody/incrementHistoryView";
 import IConfirmModal from "common/IConfirmModal";
 import {
+  getByIdBreakdownListDDL,
   getEmployeeSalaryInfo,
   salaryHoldAction,
 } from "../salaryAssign/helper";
@@ -37,7 +37,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     shallowEqual
   );
   const location = useLocation();
-
+  console.log({ location });
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
@@ -45,64 +45,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // States
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState<any[]>([
-    {
-      intSalaryBreakdownHeaderId: 28,
-      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
-      intPayrollElementTypeId: 233,
-      strPayrollElementName: "Basic Salary",
-      strBasedOn: "Amount",
-      strDependOn: "Basic",
-      isBasicSalary: true,
-      numNumberOfPercent: 0,
-      numAmount: 0,
-      intSalaryBreakdownHeaderId1: 28,
-      intSalaryBreakdownRowId: 104,
-      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
-    },
-    {
-      intSalaryBreakdownHeaderId: 28,
-      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
-      intPayrollElementTypeId: 234,
-      strPayrollElementName: "House Rent",
-      strBasedOn: "Percentage",
-      strDependOn: "Gross",
-      isBasicSalary: false,
-      numNumberOfPercent: 50,
-      numAmount: 0,
-      intSalaryBreakdownHeaderId1: 28,
-      intSalaryBreakdownRowId: 102,
-      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
-    },
-    {
-      intSalaryBreakdownHeaderId: 28,
-      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
-      intPayrollElementTypeId: 235,
-      strPayrollElementName: "Medical Allowance",
-      strBasedOn: "Percentage",
-      strDependOn: "Basic",
-      isBasicSalary: false,
-      numNumberOfPercent: 10,
-      numAmount: 0,
-      intSalaryBreakdownHeaderId1: 28,
-      intSalaryBreakdownRowId: 103,
-      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
-    },
-    {
-      intSalaryBreakdownHeaderId: 28,
-      strSalaryBreakdownTitle: "(Gross - Conveyance) / 1.6",
-      intPayrollElementTypeId: 236,
-      strPayrollElementName: "Conveyance",
-      strBasedOn: "Amount",
-      strDependOn: "Basic",
-      isBasicSalary: false,
-      numNumberOfPercent: 0,
-      numAmount: 0,
-      intSalaryBreakdownHeaderId1: 28,
-      intSalaryBreakdownRowId: 105,
-      isCustomPayrollFor10ms: "(Gross - Conveyance) / 1.6",
-    },
-  ]);
+  const [rowDto, setRowDto] = useState<any[]>([]);
   const [accountsDto, setAccountsDto] = useState<any[]>([
     {
       accounts: "Bank Pay (0%)",
@@ -141,7 +84,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const payscaleApi = useApiRequest([]);
   const breakDownPolicyApi = useApiRequest([]);
   const employeeInfo = useApiRequest([]);
-  // const workP = useApiRequest([]);
+  const empBankInfo = useApiRequest([]);
   // const positionDDL = useApiRequest([]);
   // const empDesignationDDL = useApiRequest([]);
   const payrollGroupDDL = useApiRequest([]);
@@ -193,7 +136,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         departmentId: 0,
         designationId: 0,
         supervisorId: 0,
-        strStatus: "NotAssigned",
+        strStatus:
+          (location?.state as any)?.Status === "Assigned"
+            ? "Assigned"
+            : "NotAssigned",
         employeeId: (location?.state as any)?.EmployeeId,
 
         accountId: orgId,
@@ -205,7 +151,22 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onSuccess: (res) => {
         form.setFieldsValue({
           isHoldSalary: res[0]?.IsHold ? true : false,
+          transferType: res[0]?.intOthersAdditionalAmountTransferInto || 3,
         });
+        const temp = [...accountsDto];
+        temp[0].numAmount = res[0]?.BankPayInAmount || 0;
+        temp[0].accounts = res[0]?.BankPayInPercent
+          ? temp[0].key + " (" + res[0]?.BankPayInPercent + ")"
+          : temp[0].accounts;
+        temp[1].numAmount = res[0]?.DigitalPayInAmount || 0;
+        temp[1].accounts = res[0]?.DigitalPayInPercent
+          ? temp[1].key + " (" + res[0]?.DigitalPayInPercent + ")"
+          : temp[1].accounts;
+
+        temp[2].numAmount = res[0]?.CashPayInAmount || 0;
+        temp[2].accounts = res[0]?.CashPayInPercent
+          ? temp[2].key + "(" + res[0]?.CashPayInPercent + ")"
+          : temp[2].accounts;
       },
     });
   };
@@ -728,9 +689,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           {row?.isDDl ? (
             <PSelect
               options={[
-                { value: "Cash", label: "Cash" },
-                { value: "Digital/MFS", label: "Digital/MFS" },
-                { value: "Bank", label: "Bank" },
+                { value: 3, label: "Cash" },
+                { value: 2, label: "Digital/MFS" },
+                { value: 1, label: "Bank" },
               ]}
               name="transferType"
               // label="Transfer Type"
@@ -793,6 +754,52 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     getPayrollGroupDDL();
     getEmployeeInfo();
   }, [wgId, buId, wId, location.state]);
+  // for assigned
+  useEffect(() => {
+    if ((location?.state as any)?.Status === "Assigned") {
+      getByIdBreakdownListDDL(
+        "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
+        orgId,
+        (location?.state as any)?.EmployeeId || 0,
+        (location?.state as any)?.intSalaryBreakdownHeaderId,
+        setRowDto,
+        (location?.state as any)?.numNetGrossSalary,
+        setLoading,
+        wId
+      );
+      form.setFieldsValue({
+        grossAmount: (location?.state as any)?.numNetGrossSalary,
+        payrollGroup: (location?.state as any)?.intSalaryBreakdownHeaderId,
+        basedOn: 1,
+        salaryType: "Non-Grade",
+      });
+
+      // temp[3].numAmount=
+    }
+    empBankInfo.action({
+      urlKey: "EmployeeProfileView",
+      method: "get",
+      params: {
+        employeeId: (location?.state as any)?.EmployeeId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        form.setFieldsValue({
+          bank: res?.empEmployeeBankDetail?.intBankWalletId,
+          routing: res?.empEmployeeBankDetail?.strRoutingNo,
+          swift: res?.empEmployeeBankDetail?.strSwiftCode,
+          account: res?.empEmployeeBankDetail?.strAccountName,
+          accountNo: res?.empEmployeeBankDetail?.strAccountNo,
+          branch: {
+            value: res?.empEmployeeBankDetail?.intBankBranchId,
+            label: res?.empEmployeeBankDetail?.strBranchName,
+          },
+        });
+      },
+    });
+  }, [location?.state]);
+
   // console.log({ rowDto });
   const holdSalaryHandler = (e: any) => {
     const confirmObject = {
@@ -1010,6 +1017,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   basedOn: undefined,
                   basicAmount: undefined,
                 });
+                setRowDto([]);
               }}
               rules={[{ required: true, message: "Salary Type is required" }]}
             />
@@ -1022,17 +1030,18 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   <>
                     <Col md={6} sm={12} xs={24}>
                       <PSelect
-                        options={[]}
+                        options={payscaleApi?.data || []}
                         name="payscale"
                         label="Payscale"
                         placeholder="Payscale"
                         onChange={(value, op) => {
                           form.setFieldsValue({
                             payscale: op,
-                            payscaleClass: (op as any)?.jobClass,
-                            payscaleGrade: (op as any)?.jobGrade,
-                            payscaleJobLevel: (op as any)?.jobLevel,
+                            // payscaleClass: (op as any)?.jobClass,
+                            // payscaleGrade: (op as any)?.jobGrade,
+                            // payscaleJobLevel: (op as any)?.jobLevel,
                           });
+                          getBreakDownPolicyElements();
                         }}
                         rules={[
                           {
@@ -1350,13 +1359,15 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             <PInput
               type="number"
               name="routing"
-              placeholder="Basic"
-              rules={[
-                {
-                  // required: basedOn?.value === 2,
-                  message: "Basic is required",
-                },
-              ]}
+              placeholder="Routing"
+              disabled={true}
+
+              // rules={[
+              //   {
+              //     // required: basedOn?.value === 2,
+              //     message: "Basic is required",
+              //   },
+              // ]}
             />
           </Col>
           <Col md={7}></Col>
@@ -1369,7 +1380,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               type="number"
               name="swift"
               disabled={true}
-              placeholder="Basic"
+              placeholder="Swift Code"
               // rules={[
               //   {
               //     // required: basedOn?.value === 2,
