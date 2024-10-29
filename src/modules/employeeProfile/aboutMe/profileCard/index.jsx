@@ -24,6 +24,7 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import "../aboutMe.css";
 import AccordionCom from "../accordion";
 import { empProfilePicUpload } from "../helper";
+import { Tag } from "antd";
 
 const Input = styled("input")({
   display: "none",
@@ -140,13 +141,12 @@ const ProfileCard = ({
               <h4 className="name-about-info">
                 {empBasic?.strEmployeeName || "N/A"}
               </h4>
-              <Button>
-                <Chips
-                  style={{ padding: "1px 8px!important" }}
-                  label={getChipData(empBasic?.intEmployeeStatusId).label}
-                  className={getChipData(empBasic?.intEmployeeStatusId).class}
-                />
-              </Button>
+              <Tag
+                style={{ borderRadius: "50px", fontWeight: 600 }}
+                className={getChipData(empBasic?.intEmployeeStatusId).class}
+              >
+                {getChipData(empBasic?.intEmployeeStatusId).label}
+              </Tag>
             </div>
             {isEditBtn && isOfficeAdmin && (
               <div className="d-flex">
@@ -161,6 +161,11 @@ const ProfileCard = ({
               </div>
             )}
           </div>
+          {orgId === 7 && (
+            <h4 className="name-about-info">
+              {empBasic?.strEmployeeNameBn || "N/A"}
+            </h4>
+          )}
           <div className="single-info">
             <AccountBox sx={iconStyle} />
             <p className="text-single-info">

@@ -200,7 +200,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                           className="form-control"
                           errors={errors}
                           touched={touched}
-                          placeholder="Relatives Name (Bangla)"
+                          placeholder="Name (Bangla)"
                           classes="input-sm"
                         />
                       </div>
