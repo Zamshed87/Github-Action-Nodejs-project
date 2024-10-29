@@ -675,7 +675,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               }
               updateRowDtoHandler(e, row, index);
             }}
-            disabled={row?.strBasedOn !== "Amount"}
+            disabled={row?.strBasedOn !== "Amount" || row?.isBasicSalary}
           />
         </>
       ),
@@ -1316,7 +1316,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       onChange={() => calculate_salary_breakdown()}
                       rules={[
                         {
-                          required: basedOn?.value === 2,
+                          required: basedOn?.value === 2 || basedOn === 2,
                           message: "Basic is required",
                         },
                       ]}
@@ -1347,7 +1347,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       }}
                       rules={[
                         {
-                          required: basedOn?.value === 1,
+                          required: basedOn?.value === 1 || basedOn === 1,
                           message: "Gross is required",
                         },
                       ]}
