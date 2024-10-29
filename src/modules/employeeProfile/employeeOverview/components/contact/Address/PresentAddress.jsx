@@ -82,10 +82,8 @@ function PresentAddress({ getData, rowDto, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin, orgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     DDLForAddress(
@@ -784,13 +782,18 @@ function PresentAddress({ getData, rowDto, empId }) {
                                       rowDto?.presentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {/* <h4>
-                                  {
-                                    rowDto?.presentAddress[0]
-                                      ?.strAddressDetailsBn
-                                  }{" "}
-                                  (In Bangla)
-                                </h4> */}
+                                {orgId === 7 &&
+                                  rowDto?.presentAddress?.length > 0 &&
+                                  rowDto?.presentAddress[0]
+                                    ?.strAddressDetailsBn && (
+                                    <h4>
+                                      {
+                                        rowDto?.presentAddress[0]
+                                          ?.strAddressDetailsBn
+                                      }{" "}
+                                      (In Bangla)
+                                    </h4>
+                                  )}
                                 <small>Present Address</small>
                               </div>
                               <div

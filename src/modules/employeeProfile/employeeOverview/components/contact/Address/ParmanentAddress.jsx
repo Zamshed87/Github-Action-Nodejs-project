@@ -77,10 +77,8 @@ function ParmanentAddress({ getData, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin, orgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     DDLForAddress(
@@ -748,7 +746,18 @@ function ParmanentAddress({ getData, empId }) {
                                       rowDto?.permanentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-
+                                {orgId === 7 &&
+                                  rowDto?.permanentAddress?.length > 0 &&
+                                  rowDto?.permanentAddress[0]
+                                    ?.strAddressDetailsBn && (
+                                    <h4>
+                                      {
+                                        rowDto?.permanentAddress[0]
+                                          ?.strAddressDetailsBn
+                                      }{" "}
+                                      (In Bangla)
+                                    </h4>
+                                  )}
                                 <small>Parmanent Address</small>
                               </div>
                               <div

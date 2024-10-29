@@ -81,10 +81,8 @@ function OtherAddress({ getData, rowDto, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin, orgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     DDLForAddress(
@@ -766,6 +764,18 @@ function OtherAddress({ getData, rowDto, empId }) {
                                       rowDto?.otherAddress[0]?.strCountry,
                                     ])}
                                 </h4>
+                                {orgId === 7 &&
+                                  rowDto?.otherAddress?.length > 0 &&
+                                  rowDto?.otherAddress[0]
+                                    ?.strAddressDetailsBn && (
+                                    <h4>
+                                      {
+                                        rowDto?.otherAddress[0]
+                                          ?.strAddressDetailsBn
+                                      }{" "}
+                                      (In Bangla)
+                                    </h4>
+                                  )}
 
                                 <small>Other Address</small>
                               </div>
