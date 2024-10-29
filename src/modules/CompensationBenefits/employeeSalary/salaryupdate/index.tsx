@@ -318,7 +318,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       IntOthersAdditionalAmountTransferInto: values?.transferType?.value,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
       intSlabCount:
-        values?.salaryType?.value === "Grade" ? values?.slabCount : 0,
+        values?.salaryType?.value === "Grade"
+          ? values?.slabCount?.value || values?.slabCount
+          : 0,
     };
     salaryAssign.action({
       urlKey: "EmployeeSalaryAssign",
