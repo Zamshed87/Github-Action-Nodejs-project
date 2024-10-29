@@ -335,7 +335,6 @@ const getMatchingPolicy = (values: any, allData: any) => {
 // OT Policy Initial Data Generate by GetOverTimeConfigById
 export const initDataGenerate = (data: any, setTableData: any) => {
   const policyTypeInfo: any = [];
-
   if (data?.intHrPositionId) {
     policyTypeInfo.push({
       value: 1,
@@ -423,8 +422,8 @@ export const initDataGenerate = (data: any, setTableData: any) => {
       (ot) => ot.value === data?.intOtAmountShouldBe
     )?.value,
     calculateAutoAttendance: data?.isOvertimeAutoCalculate,
-    intOTHourShouldBeAboveInMin: data?.intOTHourShouldBeAboveInMin
-      ? (data?.intOTHourShouldBeAboveInMin / 60)?.toFixed(2)
+    intOTHourShouldBeAboveInMin: data?.intOtHourShouldBeAboveInMin
+      ? (data?.intOtHourShouldBeAboveInMin / 60)?.toFixed(2)
       : 0,
     intOtconfigId: data?.intOtconfigId,
     isOvertimeAutoCalculate: data?.isOvertimeAutoCalculate,
@@ -436,7 +435,7 @@ export const initDataGenerate = (data: any, setTableData: any) => {
         : data?.isOffdayCountAsFullDayOt === 2
         ? true
         : 2,
-    otRatePerMin: ((data?.numOTRateForBasedOnSalaryRange ?? 0) * 60).toFixed(2),
+    otRatePerMin: ((data?.numOtRateForBasedOnSalaryRange ?? 0) * 60).toFixed(2),
     intMaxOverTimeForHolidayInMin: data?.intMaxOverTimeForHolidayInMin
       ? (data?.intMaxOverTimeForHolidayInMin / 60)?.toFixed(2)
       : 0,
