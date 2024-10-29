@@ -9,14 +9,12 @@ import {
 import CakeIcon from "@mui/icons-material/Cake";
 import PersonIcon from "@mui/icons-material/Person";
 import SpaIcon from "@mui/icons-material/Spa";
-import { Button } from "@mui/material";
 import { styled } from "@mui/styles";
 import React, { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { APIUrl } from "../../../../App";
 import editProPic from "../../../../assets/images/editProPic.svg";
 import profileImg from "../../../../assets/images/profile.jpg";
-import Chips from "../../../../common/Chips";
 import Loading from "../../../../common/loading/Loading";
 import { updateEmpProfilePicString } from "../../../../commonRedux/auth/actions";
 import { gray900 } from "../../../../utility/customColor";

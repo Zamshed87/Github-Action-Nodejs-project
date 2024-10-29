@@ -58,6 +58,9 @@ const Family = ({ empFamily, objProps }) => {
                 Name - <small>{item?.strRelativesName}</small>
               </p>
               <p>
+                Name (In Bangla) - <small>{item?.strRelativesNameBn}</small>
+              </p>
+              <p>
                 Relationship - <small>{item?.strRelationship}</small>
               </p>
               <p>
