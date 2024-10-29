@@ -138,6 +138,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       },
       onSuccess: (data) => {
         const initialData = initDataGenerate(data, setTableData);
+        console.log("initialData", initialData);
         form.setFieldsValue(initialData);
         getHRPositionDDL();
         getEmploymentTypeDDL();
@@ -239,9 +240,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       >
         <PCard>
           <PCardHeader
-            title={`${
-              state?.intOtconfigIdstate?.intOtconfigId ? "Edit" : "Create"
-            } OT Policy`}
+            title={`${state?.intOtconfigId ? "Edit" : "Create"} OT Policy`}
             backButton
             submitText="Save"
           />
