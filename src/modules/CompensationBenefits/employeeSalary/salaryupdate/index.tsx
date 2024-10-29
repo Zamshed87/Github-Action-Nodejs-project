@@ -853,10 +853,15 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               label: `Slab ${i}`,
             });
           }
-          for (let i = 0; i <= res?.extendedIncrementSlabCount; i++) {
+          for (
+            let i = 1;
+            i <= res?.extendedIncrementSlabCount &&
+            res?.extendedIncrementSlabCount !== 0;
+            i++
+          ) {
             temp.push({
-              value: res?.incrementSlabCount + i + 1,
-              label: `Efficiency ${res?.incrementSlabCount + i + 1}`,
+              value: res?.incrementSlabCount + i,
+              label: `Efficiency ${res?.incrementSlabCount + i}`,
             });
           }
           setSlabDDL(temp);
@@ -1168,14 +1173,15 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                               });
                             }
                             for (
-                              let i = 0;
-                              i <= res?.extendedIncrementSlabCount;
+                              let i = 1;
+                              i <= res?.extendedIncrementSlabCount &&
+                              res?.extendedIncrementSlabCount !== 0;
                               i++
                             ) {
                               temp.push({
-                                value: res?.incrementSlabCount + i + 1,
+                                value: res?.incrementSlabCount + i,
                                 label: `Efficiency ${
-                                  res?.incrementSlabCount + i + 1
+                                  res?.incrementSlabCount + i
                                 }`,
                               });
                             }
@@ -1356,12 +1362,18 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       placeholder="Slab Count"
                       onChange={(value, op) => {
                         let temp = [...rowDto];
+                        const efficiency =
+                          value > getById?.data?.incrementSlabCount
+                            ? value % getById?.data?.incrementSlabCount
+                            : 0;
+                        const actualSlab = value - efficiency;
+                        console.log({ actualSlab, efficiency });
                         temp[0].numAmount =
                           (temp[0].baseAmount ||
                             getById?.data?.payScaleElements[0]?.netAmount) +
-                          value *
-                            (temp[0].baseAmount ||
-                              getById?.data?.payScaleElements[0]?.netAmount);
+                          actualSlab * getById?.data?.incrementAmount +
+                          efficiency * getById?.data?.extendedIncrementAmount;
+
                         setRowDto((prev) => {
                           prev = temp;
                           return prev;
