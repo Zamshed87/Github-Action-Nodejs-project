@@ -28,6 +28,7 @@ const initData = {
   postOffice: "",
   postCode: "",
   address: "",
+  addressBn: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -56,6 +57,10 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
+  addressBn: Yup.string().matches(
+    /^[\u0980-\u09FF\s]*$/,
+    "This field should be in Bangla"
+  ),
 });
 
 function ParmanentAddress({ getData, empId }) {
@@ -141,6 +146,7 @@ function ParmanentAddress({ getData, empId }) {
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
         addressDetails: values?.address || singleData?.address,
+        addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
         location: "",
@@ -221,6 +227,7 @@ function ParmanentAddress({ getData, empId }) {
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
         addressDetails: values?.address || singleData?.address,
+        addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
         location: "",
@@ -302,6 +309,7 @@ function ParmanentAddress({ getData, empId }) {
         values?.postOffice?.label || singleData?.postOffice?.label,
       postCode: values?.postCode || singleData?.postCode,
       addressDetails: values?.address || singleData?.address,
+      addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
       companyName: "",
       jobTitle: "",
       location: "",
@@ -442,9 +450,10 @@ function ParmanentAddress({ getData, empId }) {
             : "",
           postCode: singleData ? singleData?.postCode : "",
           address: singleData ? singleData?.address : "",
+          addressBn: singleData ? singleData?.addressBn : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -457,7 +466,6 @@ function ParmanentAddress({ getData, empId }) {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -490,6 +498,7 @@ function ParmanentAddress({ getData, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("country", valueOption);
                           }}
                           placeholder=" "
@@ -520,6 +529,7 @@ function ParmanentAddress({ getData, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("division", valueOption);
                           }}
                           placeholder="Division"
@@ -549,6 +559,7 @@ function ParmanentAddress({ getData, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("district", valueOption);
                           }}
                           placeholder="District"
@@ -575,6 +586,7 @@ function ParmanentAddress({ getData, empId }) {
                               valueOption?.value
                             );
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("policeStation", valueOption);
@@ -595,6 +607,7 @@ function ParmanentAddress({ getData, empId }) {
                           onChange={(valueOption) => {
                             setFieldValue("postCode", valueOption?.strPostCode);
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("postOffice", valueOption);
                           }}
                           placeholder="Post Office"
@@ -608,7 +621,6 @@ function ParmanentAddress({ getData, empId }) {
                         <FormikInput
                           name="postCode"
                           value={values?.postCode}
-                          onChange={(e) => {}}
                           errors={errors}
                           touched={touched}
                           placeholder="Post Code"
@@ -628,13 +640,24 @@ function ParmanentAddress({ getData, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
+                        <FormikInput
+                          name="addressBn"
+                          value={values?.addressBn}
+                          onChange={(e) => {
+                            setFieldValue("addressBn", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder="Address (In Bangla)"
+                          classes="input-sm"
+                          isDisabled={!values?.district}
+                        />
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -647,13 +670,13 @@ function ParmanentAddress({ getData, empId }) {
                               setFieldValue("postOffice", "");
                               setFieldValue("postCode", "");
                               setFieldValue("address", "");
+                              setFieldValue("addressBn", "");
                             }}
                           >
                             Cancel
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={
@@ -725,6 +748,7 @@ function ParmanentAddress({ getData, empId }) {
                                       rowDto?.permanentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
+
                                 <small>Parmanent Address</small>
                               </div>
                               <div
@@ -808,6 +832,10 @@ function ParmanentAddress({ getData, empId }) {
                                                   address:
                                                     rowDto?.permanentAddress[0]
                                                       ?.strAddressDetails,
+                                                  addressBn:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strAddressDetailsBn ||
+                                                    "",
                                                 });
                                                 setStatus("input");
                                                 setIsCreateForm(true);
@@ -892,6 +920,9 @@ function ParmanentAddress({ getData, empId }) {
                                                 address:
                                                   rowDto?.permanentAddress[0]
                                                     ?.strAddressDetails,
+                                                addressBn:
+                                                  rowDto?.permanentAddress[0]
+                                                    ?.strAddressDetailsBn || "",
                                               });
                                               setStatus("input");
                                               setIsCreateForm(true);
