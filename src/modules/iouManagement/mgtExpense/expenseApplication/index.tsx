@@ -253,11 +253,11 @@ export const MgtExpenseApplicationLanding = () => {
           rec?.status === "Pending" && {
             type: "edit",
             onClick: () => {
-              history.push(
-                `/profile/expense/expenseApplication/edit/${rec?.expenseId}`
-              );
-              //   setOpen(true);
-              //   setId(rec);
+              // history.push(
+              //   `/profile/expense/expenseApplication/edit/${rec?.expenseId}`
+              // );
+              setOpen(true);
+              setId(rec);
             },
           },
           (orgId == 5 || orgId === 6) && {
@@ -312,8 +312,8 @@ export const MgtExpenseApplicationLanding = () => {
                   if (!employeeFeature?.isCreate) {
                     return toast.warning("Your are not allowed to access");
                   }
-                  history.push(`/profile/expense/expenseApplication/create`);
-                  //   setOpen(true);
+                  // history.push(`/profile/expense/expenseApplication/create`);
+                  setOpen(true);
                 },
               },
             ]}
