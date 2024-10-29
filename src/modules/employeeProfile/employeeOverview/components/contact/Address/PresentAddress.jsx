@@ -33,6 +33,7 @@ const initData = {
   postCode: "",
   address: "",
   isParmanent: false,
+  addressBn: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -61,6 +62,10 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
+  addressBn: Yup.string().matches(
+    /^[\u0980-\u09FF\s]*$/,
+    "This field should be in Bangla"
+  ),
 });
 
 function PresentAddress({ getData, rowDto, empId }) {
@@ -77,10 +82,8 @@ function PresentAddress({ getData, rowDto, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin, orgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     DDLForAddress(
@@ -103,7 +106,7 @@ function PresentAddress({ getData, rowDto, empId }) {
   const saveHandler = (values) => {
     if (singleData) {
       const payload = {
-        partType: "AddressDelete",
+        partType: "Address",
         employeeId:
           rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
         autoId: rowDto?.presentAddress[0]?.intEmployeeAddressId || 0,
@@ -140,6 +143,7 @@ function PresentAddress({ getData, rowDto, empId }) {
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
         addressDetails: values?.address || singleData?.address,
+        addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
         location: "",
@@ -213,6 +217,7 @@ function PresentAddress({ getData, rowDto, empId }) {
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
         addressDetails: values?.address || singleData?.address,
+        addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
         location: "",
@@ -287,6 +292,7 @@ function PresentAddress({ getData, rowDto, empId }) {
         values?.postOffice?.label || singleData?.postOffice?.label,
       postCode: values?.postCode || singleData?.postCode,
       addressDetails: values?.address || singleData?.address,
+      addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
       companyName: "",
       jobTitle: "",
       location: "",
@@ -420,9 +426,10 @@ function PresentAddress({ getData, rowDto, empId }) {
           postCode: singleData ? singleData?.postCode : "",
           address: singleData ? singleData?.address : "",
           isParmanent: singleData?.isParmanent || false,
+          addressBn: singleData ? singleData?.addressBn : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -435,7 +442,6 @@ function PresentAddress({ getData, rowDto, empId }) {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -500,6 +506,9 @@ function PresentAddress({ getData, rowDto, empId }) {
                                   address:
                                     rowDto?.permanentAddress[0]
                                       ?.strAddressDetails,
+                                  addressBn:
+                                    rowDto?.permanentAddress[0]
+                                      ?.strAddressDetailsBn || "",
 
                                   isParmanent: e.target.checked,
                                 });
@@ -531,6 +540,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("country", valueOption);
                           }}
                           placeholder="Country"
@@ -559,6 +569,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("division", valueOption);
                           }}
                           placeholder="Division"
@@ -586,6 +597,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("district", valueOption);
                           }}
                           placeholder="District"
@@ -611,6 +623,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                               valueOption?.value
                             );
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("policeStation", valueOption);
@@ -630,6 +643,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                           onChange={(valueOption) => {
                             setFieldValue("postCode", valueOption?.strPostCode);
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("postOffice", valueOption);
                           }}
                           placeholder="Post Office"
@@ -642,7 +656,6 @@ function PresentAddress({ getData, rowDto, empId }) {
                         <FormikInput
                           name="postCode"
                           value={values?.postCode}
-                          onChange={(e) => {}}
                           errors={errors}
                           touched={touched}
                           placeholder="Post Code"
@@ -661,13 +674,24 @@ function PresentAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
+                        <FormikInput
+                          name="addressBn"
+                          value={values?.addressBn}
+                          onChange={(e) => {
+                            setFieldValue("addressBn", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder="Address (In Bangla)"
+                          classes="input-sm"
+                          isDisabled={!values?.district}
+                        />
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -680,13 +704,13 @@ function PresentAddress({ getData, rowDto, empId }) {
                               setFieldValue("postOffice", "");
                               setFieldValue("postCode", "");
                               setFieldValue("address", "");
+                              setFieldValue("addressBn", "");
                             }}
                           >
                             Cancel
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={
@@ -758,6 +782,18 @@ function PresentAddress({ getData, rowDto, empId }) {
                                       rowDto?.presentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
+                                {orgId === 7 &&
+                                  rowDto?.presentAddress?.length > 0 &&
+                                  rowDto?.presentAddress[0]
+                                    ?.strAddressDetailsBn && (
+                                    <h4>
+                                      {
+                                        rowDto?.presentAddress[0]
+                                          ?.strAddressDetailsBn
+                                      }{" "}
+                                      (In Bangla)
+                                    </h4>
+                                  )}
                                 <small>Present Address</small>
                               </div>
                               <div
@@ -786,27 +822,56 @@ function PresentAddress({ getData, rowDto, empId }) {
                                               onClick: () => {
                                                 setSingleData({
                                                   country: {
-                                                    value: rowDto?.presentAddress[0]?.intCountryId,
-                                                    label: rowDto?.presentAddress[0]?.strCountry,
+                                                    value:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.intCountryId,
+                                                    label:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.strCountry,
                                                   },
                                                   division: {
-                                                    value: rowDto?.presentAddress[0]?.intDivisionId,
-                                                    label: rowDto?.presentAddress[0]?.strDivision,
+                                                    value:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.intDivisionId,
+                                                    label:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.strDivision,
                                                   },
                                                   district: {
-                                                    value: rowDto?.presentAddress[0]?.intDistrictOrStateId,
-                                                    label: rowDto?.presentAddress[0]?.strDistrictOrState,
+                                                    value:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.intDistrictOrStateId,
+                                                    label:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.strDistrictOrState,
                                                   },
                                                   policeStation: {
-                                                    value: rowDto?.permanentAddress[0]?.intThanaId,
-                                                    label: rowDto?.permanentAddress[0]?.strThana,
+                                                    value:
+                                                      rowDto
+                                                        ?.permanentAddress[0]
+                                                        ?.intThanaId,
+                                                    label:
+                                                      rowDto
+                                                        ?.permanentAddress[0]
+                                                        ?.strThana,
                                                   },
                                                   postOffice: {
-                                                    value: rowDto?.presentAddress[0]?.intPostOfficeId,
-                                                    label: rowDto?.presentAddress[0]?.strPostOffice,
+                                                    value:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.intPostOfficeId,
+                                                    label:
+                                                      rowDto?.presentAddress[0]
+                                                        ?.strPostOffice,
                                                   },
-                                                  postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
-                                                  address: rowDto?.presentAddress[0]?.strAddressDetails,
+                                                  postCode:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strZipOrPostCode,
+                                                  address:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.strAddressDetails,
+                                                  addressBn:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.strAddressDetailsBn,
                                                 });
                                                 setStatus("input");
                                                 setIsCreateForm(true);
@@ -846,27 +911,54 @@ function PresentAddress({ getData, rowDto, empId }) {
                                             onClick: () => {
                                               setSingleData({
                                                 country: {
-                                                  value: rowDto?.presentAddress[0]?.intCountryId,
-                                                  label: rowDto?.presentAddress[0]?.strCountry,
+                                                  value:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.intCountryId,
+                                                  label:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.strCountry,
                                                 },
                                                 division: {
-                                                  value: rowDto?.presentAddress[0]?.intDivisionId,
-                                                  label: rowDto?.presentAddress[0]?.strDivision,
+                                                  value:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.intDivisionId,
+                                                  label:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.strDivision,
                                                 },
                                                 district: {
-                                                  value: rowDto?.presentAddress[0]?.intDistrictOrStateId,
-                                                  label: rowDto?.presentAddress[0]?.strDistrictOrState,
+                                                  value:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.intDistrictOrStateId,
+                                                  label:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.strDistrictOrState,
                                                 },
                                                 policeStation: {
-                                                  value: rowDto?.permanentAddress[0]?.intThanaId,
-                                                  label: rowDto?.permanentAddress[0]?.strThana,
+                                                  value:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.intThanaId,
+                                                  label:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strThana,
                                                 },
                                                 postOffice: {
-                                                  value: rowDto?.presentAddress[0]?.intPostOfficeId,
-                                                  label: rowDto?.presentAddress[0]?.strPostOffice,
+                                                  value:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.intPostOfficeId,
+                                                  label:
+                                                    rowDto?.presentAddress[0]
+                                                      ?.strPostOffice,
                                                 },
-                                                postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
-                                                address: rowDto?.presentAddress[0]?.strAddressDetails,
+                                                postCode:
+                                                  rowDto?.permanentAddress[0]
+                                                    ?.strZipOrPostCode,
+                                                address:
+                                                  rowDto?.presentAddress[0]
+                                                    ?.strAddressDetails,
+                                                addressBn:
+                                                  rowDto?.presentAddress[0]
+                                                    ?.strAddressDetailsBn,
                                               });
                                               setStatus("input");
                                               setIsCreateForm(true);
@@ -891,8 +983,6 @@ function PresentAddress({ getData, rowDto, empId }) {
                                           },
                                         ]),
                                   ]}
-                                  
-                                  
                                 />
                               </div>
                             </div>

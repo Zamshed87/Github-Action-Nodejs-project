@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import BackButton from "../../../../common/BackButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import About from "./components/About";
@@ -18,8 +18,9 @@ import Identification from "./components/Identification";
 import JobDetails from "./components/JobDetails";
 import Others from "./components/Others";
 import Personal from "./components/Personal";
+import { todayDate } from "utility/todayDate";
 
-function PrintPreview() {
+const PrintPreview = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const empInfo = location?.state?.empInfo;
@@ -42,6 +43,13 @@ function PrintPreview() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
 
+  const reactToPrintFn = useReactToPrint({
+    contentRef: printRef,
+    pageStyle:
+      "@page { } @media print { .card-about-info .content-about-info-card { padding-left: 40px!important; padding-top: 0px!important} .card-about-info .add-image-about-info-card { margin-top: 10px;} }",
+    documentTitle: `Employee Details`,
+  });
+
   return (
     <>
       <div className="about-info-main">
@@ -51,34 +59,30 @@ function PrintPreview() {
               <div className="card-about-info-main-header">
                 <BackButton title={"Employee Details"} />
                 <div>
-                  <ReactToPrint
-                    documentTitle={"Employee Details"}
-                    trigger={() => (
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          borderColor: "rgba(0, 0, 0, 0.6)",
-                          color: "rgba(0, 0, 0, 0.6)",
-                          fontSize: "14px",
-                          fontWeight: "bold",
-                          letterSpacing: "1.25px",
-                          "&:hover": {
-                            borderColor: "rgba(0, 0, 0, 0.6)",
-                          },
-                        }}
-                        startIcon={
-                          <PrintOutlined
-                            sx={{ color: "rgba(0, 0, 0, 0.6)" }}
-                            className="emp-print-icon"
-                          />
-                        }
-                      >
-                        Print
-                      </Button>
-                    )}
-                    content={() => printRef.current}
-                    pageStyle="@page { } @media print { .card-about-info .content-about-info-card { padding-left: 40px!important; padding-top: 0px!important} .card-about-info .add-image-about-info-card { margin-top: 10px;} }"
-                  />
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      borderColor: "rgba(0, 0, 0, 0.6)",
+                      color: "rgba(0, 0, 0, 0.6)",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      letterSpacing: "1.25px",
+                      "&:hover": {
+                        borderColor: "rgba(0, 0, 0, 0.6)",
+                      },
+                    }}
+                    startIcon={
+                      <PrintOutlined
+                        sx={{ color: "rgba(0, 0, 0, 0.6)" }}
+                        className="emp-print-icon"
+                      />
+                    }
+                    onClick={() => {
+                      reactToPrintFn();
+                    }}
+                  >
+                    Print
+                  </Button>
                 </div>
               </div>
             </div>
@@ -186,6 +190,6 @@ function PrintPreview() {
       </div>
     </>
   );
-}
+};
 
 export default PrintPreview;
