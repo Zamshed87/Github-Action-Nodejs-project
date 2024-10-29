@@ -8,7 +8,7 @@ import AvatarComponent from "common/AvatarComponent";
 import Chips from "common/Chips";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
-import { numberWithCommas } from "utility/numberWithCommas";
+// import { numberWithCommas } from "utility/numberWithCommas";
 
 const statusDDL = [
   { value: 0, label: "All" },
@@ -329,17 +329,17 @@ const finalSettlementColumns = (
       sorter: false,
       width: "100px",
     },
-    {
-      title: "Total Paid Amount  (BDT)",
-      dataIndex: "numTotalAmount",
-      render: (_, record) => (
-        <div>{numberWithCommas(record?.numTotalAmount) || "N/A"}</div>
-      ),
-      filter: false,
-      sorter: true,
-      isNumber: true,
-      width: "200px",
-    },
+    // {
+    //   title: "Total Paid Amount  (BDT)",
+    //   dataIndex: "numTotalAmount",
+    //   render: (_, record) => (
+    //     <div>{numberWithCommas(record?.numTotalAmount) || "N/A"}</div>
+    //   ),
+    //   filter: false,
+    //   sorter: true,
+    //   isNumber: true,
+    //   width: "200px",
+    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -359,14 +359,14 @@ const finalSettlementColumns = (
       className: "text-center",
     },
     {
-      title: "Action",
+      title: "Actions",
       dataIndex: "Status",
       render: (data, record) => (
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-center">
           <Tooltip title="View" arrow>
             <button
               type="button"
-              className="iconButton mt-0 mt-md-2 mt-lg-0"
+              className="iconButton"
               onClick={(e) => {
                 e.stopPropagation();
                 setId(record?.intSeparationId);
@@ -428,7 +428,8 @@ const finalSettlementColumns = (
       ),
       sorter: false,
       filter: false,
-      width: "150px",
+      width: "100px",
+      className: "text-center"
     },
   ];
 };
