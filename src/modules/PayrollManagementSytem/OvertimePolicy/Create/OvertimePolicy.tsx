@@ -138,6 +138,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       },
       onSuccess: (data) => {
         const initialData = initDataGenerate(data, setTableData);
+        console.log("initialData", initialData);
         form.setFieldsValue(initialData);
         getHRPositionDDL();
         getEmploymentTypeDDL();
