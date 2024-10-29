@@ -772,10 +772,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
           ? "Grade"
           : "Non-Grade",
-        slabCount: {
-          value: employeeInfo?.data[0]?.intSlabCount,
-          label: employeeInfo?.data[0]?.intSlabCount,
-        },
+        // slabCount: {
+        //   value: employeeInfo?.data[0]?.intSlabCount,
+        //   label: employeeInfo?.data[0]?.intSlabCount,
+        // },
       });
     }
     empBankInfo.action({
@@ -839,14 +839,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             },
             slabCount: {
               value: employeeInfo?.data[0]?.intSlabCount,
-              label: employeeInfo?.data[0]?.intSlabCount,
+              label: `${
+                employeeInfo?.data[0]?.intSlabCount > res?.incrementSlabCount
+                  ? "Efficiency"
+                  : "Slab"
+              } ${employeeInfo?.data[0]?.intSlabCount}`,
             },
           });
           let temp = [];
           for (let i = 0; i <= res?.incrementSlabCount; i++) {
             temp.push({
               value: i,
-              label: i,
+              label: `Slab ${i}`,
+            });
+          }
+          for (let i = 0; i <= res?.extendedIncrementSlabCount; i++) {
+            temp.push({
+              value: res?.incrementSlabCount + i + 1,
+              label: `Efficiency ${res?.incrementSlabCount + i + 1}`,
             });
           }
           setSlabDDL(temp);
@@ -1154,7 +1164,19 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             for (let i = 0; i <= res?.incrementSlabCount; i++) {
                               temp.push({
                                 value: i,
-                                label: i,
+                                label: `Slab ${i}`,
+                              });
+                            }
+                            for (
+                              let i = 0;
+                              i <= res?.extendedIncrementSlabCount;
+                              i++
+                            ) {
+                              temp.push({
+                                value: res?.incrementSlabCount + i + 1,
+                                label: `Efficiency ${
+                                  res?.incrementSlabCount + i + 1
+                                }`,
                               });
                             }
                             setSlabDDL(temp);
