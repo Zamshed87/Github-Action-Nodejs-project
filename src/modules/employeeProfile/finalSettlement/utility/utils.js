@@ -429,7 +429,7 @@ const finalSettlementColumns = (
       sorter: false,
       filter: false,
       width: "100px",
-      className: "text-center"
+      className: "text-center",
     },
   ];
 };

@@ -32,6 +32,7 @@ import {
   getSalaryAssignLanding,
   salaryAssignLandingColumn,
 } from "./helper";
+import { isDevServer } from "App";
 
 const initData = {
   search: "",
@@ -451,6 +452,12 @@ const SalaryAssign = () => {
                 onRowClick={(data) => {
                   if (!permission?.isEdit) {
                     return toast.warn("You don't have permission");
+                  }
+                  if (isDevServer && orgId === 1) {
+                    history.push({
+                      pathname: `/compensationAndBenefits/employeeSalary/salaryAssignv2`,
+                      state: data,
+                    });
                   }
 
                   setSingleData(data);

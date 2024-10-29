@@ -45,6 +45,8 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
         pageNo: 1,
         pageSize: 150,
         accountId: orgId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
       },
     });
   };
