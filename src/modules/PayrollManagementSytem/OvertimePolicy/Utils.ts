@@ -422,7 +422,6 @@ export const initDataGenerate = (data: any, setTableData: any) => {
       (ot) => ot.value === data?.intOtAmountShouldBe
     )?.value,
     calculateAutoAttendance: data?.isOvertimeAutoCalculate,
-
     intOTHourShouldBeAboveInMin: data?.intOtHourShouldBeAboveInMin
       ? (data?.intOtHourShouldBeAboveInMin / 60)?.toFixed(2)
       : 0,

@@ -240,7 +240,13 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       >
         <PCard>
           <PCardHeader
+<<<<<<< HEAD
+            title={`${
+              state?.intOtconfigId ? "Edit" : "Create"
+            } OT Policy`}
+=======
             title={`${state?.intOtconfigId ? "Edit" : "Create"} OT Policy`}
+>>>>>>> ac3e8b95159354f1c6d9f98c111ca790f50c2a9f
             backButton
             submitText="Save"
           />
