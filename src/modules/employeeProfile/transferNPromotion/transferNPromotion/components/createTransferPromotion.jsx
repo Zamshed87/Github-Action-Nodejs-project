@@ -836,7 +836,8 @@ function CreateTransferPromotion() {
                     name="effectiveDate"
                     type="date"
                     className="form-control"
-                    min={monthFirstDate(new Date())}
+                    // validation removed according to business team PEOP-4004
+                    // min={monthFirstDate(new Date())}
                     onChange={(e) => {
                       setValues((prev) => ({
                         ...prev,
