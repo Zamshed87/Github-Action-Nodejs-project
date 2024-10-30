@@ -30,55 +30,6 @@ import {
 } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
-// const modules = {
-//   mention: {
-//     allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-//     mentionDenotationChars: ["@"],
-//     source: function (searchTerm: any, renderList: any, mentionChar: any) {
-//       let MentionValue: any[] = [];
-
-//       if (mentionChar === "@") {
-//         MentionValue = customFields;
-//       }
-
-//       if (searchTerm.length === 0) {
-//         renderList(MentionValue, searchTerm);
-//       } else {
-//         const matches = [];
-//         for (let i = 0; i < MentionValue.length; i++)
-//           if (
-//             ~MentionValue[i].value
-//               .toLowerCase()
-//               .indexOf(searchTerm.toLowerCase())
-//           )
-//             matches.push(MentionValue[i]);
-//         renderList(matches, searchTerm);
-//       }
-//     },
-//   },
-//   toolbar: [
-//     { header: [1, 2, 3, false] },
-//     { size: ["small", false, "large", "huge"] },
-//     "bold",
-//     "italic",
-//     "underline",
-//     "blockquote",
-//     { list: "ordered" },
-//     { list: "bullet" },
-//     { indent: "-1" },
-//     { indent: "+1" },
-//     { color: [] },
-//     { background: [] },
-//     { align: [] },
-//     "link",
-//     "",
-//     "",
-//   ],
-//   clipboard: {
-//     matchVisual: true,
-//   },
-// };
-
 const LetterConfigAddEdit = () => {
   // Router state
   const { letterId }: any = useParams();
@@ -213,13 +164,17 @@ const LetterConfigAddEdit = () => {
                         content={"Add New"}
                         icon={<PlusOutlined />}
                         onClick={() => {
-                          createLetterType(
-                            form.getFieldsValue(true),
-                            profileData,
-                            setLoading,
-                            setLetterTypeDDL
-                          );
-                          form.setFieldValue("newLetterName", "");
+                          if (form.getFieldValue("newLetterName")) {
+                            createLetterType(
+                              form.getFieldsValue(true),
+                              profileData,
+                              setLoading,
+                              setLetterTypeDDL
+                            );
+                            form.setFieldValue("newLetterName", "");
+                          } else {
+                            return toast.warning("Please new type");
+                          }
                         }}
                       />
                     </Space>

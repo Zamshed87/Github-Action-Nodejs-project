@@ -785,8 +785,8 @@ const CreateAndEditEmploye = () => {
                     <PInput
                       type="text"
                       name="fullNameInBn"
-                      label="Full Name (বাংলা)"
-                      placeholder="Full Name (বাংলা)"
+                      label="Full Name (In Bangla)"
+                      placeholder="Full Name (In Bangla)"
                       // disabled={params?.id}
                       disabled={
                         empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
@@ -1602,8 +1602,8 @@ const CreateAndEditEmploye = () => {
                       <PInput
                         type="text"
                         name="permanentAddressBn"
-                        label="Permanent Address (বাংলা)"
-                        placeholder="Permanent Address (বাংলা)"
+                        label="Permanent Address (In Bangla)"
+                        placeholder="Permanent Address (In Bangla)"
                         rules={[
                           {
                             message: "This Field Must be in Bangla",
@@ -1616,8 +1616,8 @@ const CreateAndEditEmploye = () => {
                       <PInput
                         type="text"
                         name="presentAddressBn"
-                        label="Present Address (বাংলা)"
-                        placeholder="Present Address (বাংলা)"
+                        label="Present Address (In Bangla)"
+                        placeholder="Present Address (In Bangla)"
                         rules={[
                           {
                             message: "This Field Must be in Bangla",
