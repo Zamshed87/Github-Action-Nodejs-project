@@ -71,6 +71,7 @@ import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterCon
 import LetterGenerateLanding from "modules/employeeProfile/reportBuilder/LetterGenerate";
 import LetterConfigAddEdit from "modules/employeeProfile/reportBuilder/letterConfiguration/letterConfigAddEdit.tsx";
 import LetterGenAddEdit from "modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit";
+import SingleIncrement from "modules/CompensationBenefits/Increment/singleIncement/components/SingleIncrement";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -2516,7 +2517,7 @@ export const routingList = [
   { path: "/compensationAndBenefits/increment", component: IncrementLanding },
   {
     path: "/compensationAndBenefits/increment/singleIncrement/create",
-    component: CreateSingleIncrement,
+    component: SingleIncrement,
   },
   {
     path: "/compensationAndBenefits/increment/singleIncrement/view/:id",
@@ -2524,7 +2525,7 @@ export const routingList = [
   },
   {
     path: "/compensationAndBenefits/increment/singleIncrement/edit/:id",
-    component: CreateSingleIncrement,
+    component: SingleIncrement,
   },
   {
     path: "/compensationAndBenefits/increment/bulkIncrement/create",
