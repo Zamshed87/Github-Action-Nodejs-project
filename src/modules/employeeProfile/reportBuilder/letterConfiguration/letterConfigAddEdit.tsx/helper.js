@@ -36,7 +36,9 @@ export const createLetterType = async (
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     setLoading(false);
-    toast.warn(error?.response?.data?.message, { toastId: 1 });
+    toast.warn(error?.response?.data?.message || "Something went wrong", {
+      toastId: 1,
+    });
   }
 };
 
@@ -76,6 +78,7 @@ export const createNEditLetterTemplate = async (
       letterType: values?.letterType?.label,
       letterName: values?.letterName,
       letterBody: values?.letter,
+      backgroudImageId: values?.backgroudImageId,
       accountId: letterData?.accountId || orgId,
       businessUnitId: letterData?.businessUnitId || buId,
       workplaceGroupId: letterData?.workplaceGroupId || wgId,
@@ -93,6 +96,8 @@ export const createNEditLetterTemplate = async (
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     setLoading(false);
-    toast.warn(error?.response?.data?.message, { toastId: 1 });
+    toast.warn(error?.response?.data?.message || "Something went wrong", {
+      toastId: 1,
+    });
   }
 };
