@@ -42,6 +42,10 @@ export const OTCountFrom = [
     value: 3,
     label: "Round Up",
   },
+  {
+    value: 4,
+    label: "Range Based Round",
+  },
 ];
 export const OTCountAmount = [
   { value: 1, label: "At Actual" },
@@ -53,10 +57,7 @@ export const OTCountAmount = [
     value: 3,
     label: "Round Up",
   },
-  {
-    value: 4,
-    label: "Range Based Round",
-  },
+
 ];
 export const BasedOn = [
   { value: 1, label: "Fixed" },
@@ -146,9 +147,12 @@ TOTPolicyGenerate) => {
     // numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
     numOTRateForBasedOnSalaryRange: +((values?.otRatePerMin || 0) / 60).toFixed(
       6
-    ), // convert hours to min (user input as hours but we need to save as min)
+    ),
     rangeBasedVM: serviceLengthList || [],
+
+   
   };
+
   const payload: any = generateRows(
     policy, // policyType
     hrPosition,

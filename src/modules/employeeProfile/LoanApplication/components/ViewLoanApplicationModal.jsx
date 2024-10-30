@@ -19,6 +19,8 @@ import { APIUrl } from "../../../../App";
 import DemoImg from "../../../../assets/images/bigDemo.png";
 
 const ViewLoanApplicationModal = ({ setView, singleData, setShow, intProfileImageUrl }) => {
+  console.log("intProfileImageUrl", intProfileImageUrl);
+  console.log("singleData",singleData)
   const dispatch = useDispatch();
   const avatarSx = {
     background: "#F2F2F7",

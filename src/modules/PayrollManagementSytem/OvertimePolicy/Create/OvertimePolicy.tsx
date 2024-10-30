@@ -240,13 +240,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       >
         <PCard>
           <PCardHeader
-<<<<<<< HEAD
-            title={`${
-              state?.intOtconfigId ? "Edit" : "Create"
-            } OT Policy`}
-=======
             title={`${state?.intOtconfigId ? "Edit" : "Create"} OT Policy`}
->>>>>>> ac3e8b95159354f1c6d9f98c111ca790f50c2a9f
             backButton
             submitText="Save"
           />
@@ -997,24 +991,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       options={OTCountFrom}
                     />
                   </Col>
-                  <Divider
-                    style={{ margin: "3px 0", fontSize: 12 }}
-                    orientation="left"
-                  >
-                    Overtime Amount
-                  </Divider>
-                  <Col md={24} sm={24}>
-                    <PRadio
-                      type="group"
-                      name="overtimeAmount"
-                      options={OTCountAmount}
-                    />
-                  </Col>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { overtimeAmount } = form.getFieldsValue(true);
+                      const { overtimeCount } = form.getFieldsValue(true);
                       return (
-                        overtimeAmount === 4 && (
+                        overtimeCount === 4 && (
                           <>
                             <Col md={12} sm={24}>
                               <PInput
@@ -1074,18 +1055,18 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
 
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { showInDepend, overtimeAmount } =
+                      const { showInDepend, overtimeCount } =
                         form.getFieldsValue(true);
 
                       return (
                         showInDepend?.value === 1 &&
-                        overtimeAmount === 4 && (
+                        overtimeCount === 4 && (
                           <>
                             <Col md={10} sm={22}>
                               <PInput
                                 disabled={!isMin}
                                 type="number"
-                                name="overTimeAmount"
+                                name="otAmount"
                                 label="Min"
                                 placeholder="Min"
                                 size="small"
@@ -1107,17 +1088,17 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   <Form.Item shouldUpdate noStyle>
                     {() => {
                       const {
-                        overTimeAmount,
                         fromMin,
                         toMin,
                         showInDepend,
-                        overtimeAmount,
+                        overtimeCount,
+                        otAmount,
                       } = form.getFieldsValue(true);
 
                       return (
                         (showInDepend?.value === 1 ||
                           showInDepend?.value === 2) &&
-                        overtimeAmount === 4 && (
+                          overtimeCount === 4 && (
                           <>
                             <Col span={2} className="mt-1">
                               <button
@@ -1164,14 +1145,14 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                                       intFromMinute: fromMin || 0,
                                       intToMinute: toMin || 0,
                                       isAtActual: true,
-                                      intOvertimeMinute: overTimeAmount || 0,
+                                      intOvertimeMinute: otAmount || 0,
                                       showInDepend: showInDepend || "",
                                     },
                                   ]);
 
                                   // Reset form fields
                                   form.setFieldsValue({
-                                    overTimeAmount: undefined,
+                                    otAmount: undefined,
                                     toMin: undefined,
                                     fromMin: undefined,
                                   });
@@ -1188,10 +1169,10 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
 
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { overtimeAmount } = form.getFieldsValue(true);
+                      const { overtimeCount } = form.getFieldsValue(true);
 
                       return (
-                        overtimeAmount === 4 && (
+                        overtimeCount === 4 && (
                           <>
                             <Col md={15} sm={24}>
                               {tableData?.length > 0 && (
@@ -1294,6 +1275,20 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       );
                     }}
                   </Form.Item>
+                  <Divider
+                    style={{ margin: "3px 0", fontSize: 12 }}
+                    orientation="left"
+                  >
+                    Overtime Amount
+                  </Divider>
+                  <Col md={24} sm={24}>
+                    <PRadio
+                      type="group"
+                      name="overtimeAmount"
+                      options={OTCountAmount}
+                    />
+                  </Col>
+                 
 
                   {/* tousif told me to replace this name  */}
                   <Col md={24} sm={24}>
