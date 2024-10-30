@@ -18,7 +18,6 @@ import OverviewTab from "../../employeeOverview/components/OverviewTab";
 import AddEditForm from "../addEditFile";
 import { getEmployeeProfileViewData } from "../helper";
 import "./aboutMeCommon.css";
-import { isDevServer } from "App";
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { Tag } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -78,7 +77,6 @@ function AboutMeDetails() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
 
-  isDevServer && console.log({ isOfficeAdmin, employeeFeature });
   return (
     <>
       {loading && <Loading />}

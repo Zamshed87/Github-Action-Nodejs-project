@@ -73,16 +73,21 @@ const JobClassLanding: React.FC<TJobClass> = () => {
     {
       title: "SL",
       align: "center",
+      width: 10,
+
       render: (text: any, record: any, index: number) => index + 1,
     },
 
     {
-      title: "Job Class",
+      title: "Payscale Class",
       dataIndex: "jobClassName",
+      width: 50,
     },
 
     {
-      title: "Action",
+      title: "",
+      width: 20,
+
       align: "center",
       render: (_: any, item: any) => (
         <TableButton
@@ -111,7 +116,7 @@ const JobClassLanding: React.FC<TJobClass> = () => {
         <>
           <PCard>
             <PCardHeader
-              title="Job Class"
+              title="Payscale Class"
               buttonList={[
                 {
                   type: "primary",

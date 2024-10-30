@@ -167,6 +167,13 @@ export const getYearlyPolicyById = async (
               value: itm?.intStartServiceLengthInYear,
               label: itm?.intStartServiceLengthInYear,
             },
+            showLveIndays:
+              itm?.intLeaveDependOn === 1
+                ? dependsOnDDL[0]
+                : itm?.intLeaveDependOn === 2
+                ? dependsOnDDL[1]
+                : { value: 3, label: "Calculation" },
+
             intEndServiceLengthInYear: {
               value: itm?.intEndServiceLengthInYear,
               label:
@@ -188,6 +195,7 @@ export const getYearlyPolicyById = async (
           value: res?.data?.intWorkplaceGroupId,
           label: res?.data?.strWorkplaceGroupName,
         },
+        IntMaxEncashableLveInDay: res?.data?.intMaxEncashableLveInDay,
         intGender: res?.data?.genderListDto?.map((itm) => {
           return {
             ...itm,
@@ -224,6 +232,14 @@ export const getYearlyPolicyById = async (
           value: res?.data?.inPreviousLveTypeEnd?.intLeaveTypeId,
           label: res?.data?.inPreviousLveTypeEnd?.strLeaveType,
         },
+        intLeaveDependOn:
+          res?.data?.intLeaveDependOn === 1
+            ? dependsOnDDL[0]
+            : res?.data?.intLeaveDependOn === 2
+            ? dependsOnDDL[1]
+            : { value: 3, label: "Calculation" },
+        intLwpbasedOn:
+          res?.data?.intLwpbasedOn > 0 ? res?.data?.intLwpbasedOn : undefined,
         intHalfdayPreviousLveTypeEnd: res?.data?.intHalfdayPreviousLveTypeEnd
           ?.intLeaveTypeId && {
           ...res?.data?.intHalfdayPreviousLveTypeEnd,
@@ -465,3 +481,11 @@ export const saveHandler = (
     },
   });
 };
+export const dependsOnDDL = [
+  { value: 1, label: "Standard" },
+  { value: 2, label: "Service Length" },
+];
+export const commonDDL = [
+  { value: false, label: "Not Applicable" },
+  { value: true, label: "Applicable" },
+];

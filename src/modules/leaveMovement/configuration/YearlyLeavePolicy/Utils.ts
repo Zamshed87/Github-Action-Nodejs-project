@@ -3,6 +3,7 @@ export const generatePayload = (
   tableData: any,
   existingPolicies: any
 ) => {
+  console.log({ tableData });
   const workplaceList = values?.intWorkplaceList?.map((item: any) => {
     const exists = existingPolicies?.some(
       (em: any) => em.intWorkplace === item.value
@@ -44,6 +45,7 @@ export const generatePayload = (
         intStartServiceLengthInYear: item?.intStartServiceLengthInYear?.value,
         intEndServiceLengthInYear: item?.intEndServiceLengthInYear?.value,
         intLveInDay: +item?.intLveInDay,
+        intLeaveDependOn: +item?.showLveIndays?.value,
         isActive: true,
       };
     }) || [];
@@ -90,7 +92,8 @@ export const generatePayload = (
     isGenerate: values?.isGenerate || false,
     strDisplayName: values?.strDisplayName || null,
     strPolicyName: values?.strPolicyName || null,
-    serviceLengthList: values?.isDependOnServiceLength ? serviceLengthList : [],
+    serviceLengthList:
+      values?.intLeaveDependOn?.value === 2 ? serviceLengthList : [],
     intLeaveType: +values?.intLeaveType?.value,
     intYear: +values?.intYear?.value,
     inPreviousLveTypeEnd: +values?.inPreviousLveTypeEnd?.value || null,
@@ -105,7 +108,7 @@ export const generatePayload = (
     intHalfdayMaxInYear: +values?.intHalfdayMaxInYear || null,
     intHalfdayPreviousLveTypeEnd:
       +values?.intHalfdayPreviousLveTypeEnd?.value || null,
-    intMaxEncashableLveInDay: +values?.intMaxEncashableLveInDay || null,
+    intMaxEncashableLveInDay: +values?.IntMaxEncashableLveInDay || null,
     intAllocatedLveInDay: +values?.intAllocatedLveInDay || null,
     intCarryForwarExpiryMonth: +values?.intCarryForwarExpiryMonth || null,
     intCarryForwarExpiryDay: +values?.intCarryForwarExpiryDay || null,
@@ -123,6 +126,10 @@ export const generatePayload = (
     intExistingPolicyIdList: policyList,
     intMaxComlLveInMonth: +values?.intMaxComlLveInMonth || null,
     intMinWorkingHourForComl: +values?.intMinWorkingHourForComl || null,
+    intLeaveDependOn: +values?.intLeaveDependOn?.value || null,
+    isCarryWillBeCounted: values?.isCarryWillBeCounted || null,
+    intLwpbasedOn: +values?.intLwpbasedOn || null,
+    intLwpamountOrPercentage: +values?.intLwpamountOrPercentage,
   };
   return payload;
 };

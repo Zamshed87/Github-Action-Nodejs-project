@@ -375,7 +375,7 @@ const ProfileView = ({ assetId }) => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {singleData?.BrandValue || "N/A"}
+                  {singleData?.ManufacturerName || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">

@@ -225,6 +225,16 @@ export const apiList = {
   GetJobClassDdl: "/MasterJobLevel/GetJobClassDdl",
   GetJobGradeDdl: "/MasterJobLevel/GetJobGradeDdl",
   GetJobLevelDdl: "/MasterJobLevel/GetJobLevelDdl",
+  EmployeeSalaryManagement: "/Payroll/EmployeeSalaryManagement",
+  GetPayScaleSetupDDLbyEmployee: "/Payroll/GetPayScaleSetupDDLbyEmployee",
+  EmployeeProfileView: "/Employee/EmployeeProfileView",
+  GetPayScaleSetupLanding: "/PayScaleSetup/GetPayScaleSetupLanding",
+  DeletePayScaleSetup: "/PayScaleSetup/DeletePayScaleSetup",
+  CreatePayScaleSetup: "/PayScaleSetup/CreatePayScaleSetup",
+  GetPayScaleSetupById: "/PayScaleSetup/GetPayScaleSetupById",
+  UpdatePayScaleSetup: "PayScaleSetup/UpdatePayScaleSetup",
+  DesignationIdWithAll: "/PeopleDeskDdl/DesignationIdWithAll",
+  EmployeeSalaryAssign: "/Payroll/EmployeeSalaryAssign",
 
   //updated ddls
 
@@ -240,6 +250,7 @@ export const apiList = {
   WorkplaceGroupWithRoleExtension:
     "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
   Cafeteria: "/Cafeteria/GetCafeteriaSetupById",
+  commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
 };

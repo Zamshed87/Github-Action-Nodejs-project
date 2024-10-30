@@ -50,7 +50,6 @@ function AboutMe() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   useEffect(() => {
     if (
       empBasic?.empEmployeeBankDetail?.strAccountName ||
@@ -83,7 +82,7 @@ function AboutMe() {
                   fontSize: "14px",
                 }}
                 onClick={() => {
-                  let confirmObject = {
+                  const confirmObject = {
                     closeOnClickOutside: false,
                     message:
                       "Are you sure you want to mark as complete? After marking as complete, you can't edit.",

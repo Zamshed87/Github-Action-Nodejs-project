@@ -117,7 +117,7 @@ function EmployeeFeatureNew() {
     document.title = "Employee";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [buId, wgId, wId]);
 
   // menu permission
   let employeeFeature: any = null;

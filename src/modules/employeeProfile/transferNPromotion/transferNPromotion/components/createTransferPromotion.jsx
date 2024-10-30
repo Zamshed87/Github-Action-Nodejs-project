@@ -44,10 +44,7 @@ import {
   greenColor,
   success500,
 } from "../../../../../utility/customColor";
-import {
-  dateFormatterForInput,
-  monthFirstDate,
-} from "../../../../../utility/dateFormatter";
+import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../utility/todayDate";
 import { setOrganizationDDLFunc } from "../../../../roleExtension/ExtensionCreate/helper";
@@ -836,7 +833,8 @@ function CreateTransferPromotion() {
                     name="effectiveDate"
                     type="date"
                     className="form-control"
-                    min={monthFirstDate(new Date())}
+                    // validation removed according to business team PEOP-4004
+                    // min={monthFirstDate(new Date())}
                     onChange={(e) => {
                       setValues((prev) => ({
                         ...prev,

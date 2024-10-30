@@ -182,6 +182,9 @@ function LeavePolicyAssign() {
                                   state?.year,
                                   setCheckedList
                                 );
+                                history.push(
+                                  `/administration/leaveandmovement/yearlyLeavePolicy`
+                                );
                               };
                               demoPopup(
                                 "assign",
@@ -247,6 +250,9 @@ function LeavePolicyAssign() {
                                     state?.list,
                                     state?.year,
                                     setCheckedList
+                                  );
+                                  history.push(
+                                    `/administration/leaveandmovement/yearlyLeavePolicy`
                                   );
                                 };
                                 demoPopup(

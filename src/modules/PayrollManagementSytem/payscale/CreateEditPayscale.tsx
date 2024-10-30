@@ -1,13 +1,21 @@
-import { PForm, PInput, PSelect } from "Components";
+import {
+  DataTable,
+  PButton,
+  PForm,
+  PInput,
+  PSelect,
+  TableButton,
+} from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
-import React, { useEffect } from "react";
+import { Col, Divider, Form, Row } from "antd";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import CreateJobClass from "./CreateJobClass";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import CreateGrade from "./CreateGrade";
 import CreateJobLevel from "./CreateJoblevel";
+import { toast } from "react-toastify";
 
 type CreateEditPayscaleType = {
   rowData: any;
@@ -20,7 +28,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   setOpen,
 }) => {
   // Data From Store
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId, wId, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -28,8 +36,14 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   const savePayscale = useApiRequest({});
   const jobClassDDL = useApiRequest({});
   const gradeDDL = useApiRequest({});
+  const designationDDL = useApiRequest({});
   const jobLevelDDL = useApiRequest({});
-
+  const getById = useApiRequest({});
+  const elementDDL = useApiRequest({});
+  const [elementDto, setElementDto] = useState([]);
+  const [incrementDto, setIncrementDto] = useState([]);
+  const [designationDto, setDesignationDto] = useState([]);
+  const [efficiencyDto, setEfficiencyDto] = useState([]);
   const getJobClassDDL = () => {
     jobClassDDL?.action({
       urlKey: "GetJobClassDdl",
@@ -55,6 +69,18 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       onSuccess: () => {},
     });
   };
+  const getDesignationDDL = () => {
+    designationDDL?.action({
+      urlKey: "DesignationIdWithAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+      },
+    });
+  };
   const getJobLevelDDL = () => {
     const { grade } = form.getFieldsValue(true);
 
@@ -70,41 +96,312 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       onSuccess: () => {},
     });
   };
+  const getElementDDL = () => {
+    elementDDL?.action({
+      urlKey: "GetAllSalaryElementByAccountIdDDL",
+      method: "get",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+      },
+
+      onSuccess: () => {},
+    });
+  };
   // Form Instance
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (rowData) {
-      form.setFieldsValue({
-        payscale: rowData?.strPayrollElementName,
-        grade: rowData?.isBasicSalary,
-        jobClass: rowData?.isPrimarySalary,
-        jobLevel: rowData?.isAddition ? "addition" : "deduction",
-      });
-    }
-  }, [rowData]);
-
-  useEffect(() => {
     getJobClassDDL();
+    getDesignationDDL();
+    getElementDDL();
     // getGradeDDL();
     // getJobLevelDDL();
-  }, [rowData]);
+  }, []);
 
   //   Functions
   const onFinish = () => {
     const values = form.getFieldsValue(true);
-    const payload = {};
-    // savePayscale?.action({
-    //   urlKey: "SavePayrollElementType",
-    //   method: "post",
-    //   payload,
-    //   toast: true,
-    //   onSuccess: () => {
-    //     landingApi();
-    //     setOpen(false);
-    //   },
-    // });
+    if (elementDto?.length === 0) {
+      return toast.warn("Payroll elements are not selected");
+    }
+    if (designationDto?.length === 0) {
+      return toast.warn("Designations are not selected");
+    }
+    const payload = {
+      id: rowData?.id ? rowData?.id : 0,
+
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      payScaleName: values?.payscale,
+      jobClassId: values?.jobClass?.value,
+      jobGradeId: values?.grade?.value,
+      jobLevelId: values?.jobLevel?.value,
+      incrementSlabCount: values?.incrementSlab,
+      incrementAmount: values?.increment,
+      extendedIncrementSlabCount: values?.efficiencySlab,
+      extendedIncrementAmount: values?.incrementExtended,
+      payScaleElements: elementDto,
+      designationList: designationDto?.map((i: any) => i?.id),
+      actionBy: employeeId,
+    };
+    savePayscale?.action({
+      urlKey: rowData?.id ? "UpdatePayScaleSetup" : "CreatePayScaleSetup",
+      method: rowData?.id ? "put" : "post",
+      payload,
+      toast: true,
+      onSuccess: () => {
+        landingApi();
+        setOpen(false);
+      },
+    });
   };
+  const elementDtoHandler = (e: number, row: any, index: number) => {
+    if (e < 0) {
+      return toast.warn("number must be positive");
+    }
+    if (row?.basedOn === "Percentage" && e > 100) {
+      return toast.warn("Percentage cant be greater than 100");
+    }
+
+    let temp: any = [...elementDto];
+    temp[index].amountOrPercentage = e;
+
+    if (row?.basedOn === "Amount") {
+      temp[index].netAmount = e;
+    } else {
+      temp[index].netAmount = (e * temp[0].netAmount) / 100 || 0;
+    }
+
+    if (index === 0) {
+      temp = temp?.map((i: any) => {
+        if (i?.basedOn === "Amount") {
+          return i;
+        } else {
+          return {
+            ...i,
+            netAmount: (i?.amountOrPercentage * temp[0].netAmount) / 100,
+          };
+        }
+      });
+    }
+
+    setElementDto(temp);
+  };
+  const header: any = [
+    {
+      title: "SL",
+      align: "center",
+      render: (text: any, record: any, index: number) => index + 1,
+    },
+    {
+      title: "Payroll Element",
+      dataIndex: "payrollElementName",
+    },
+    {
+      title: "Based On",
+      dataIndex: "basedOn",
+    },
+
+    {
+      title: "Amount/Percentage",
+      render: (value: any, row: any, index: number) => (
+        <>
+          {row?.id ? (
+            <PInput
+              type="number"
+              // name={`amountOrPercentage_${index}`}
+              value={row?.amountOrPercentage}
+              placeholder="Amount"
+              disabled={rowData}
+              rules={[
+                { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    if (row?.basedOn === "Percentage" && value > 100) {
+                      callback("Percentage can not be greater than 100");
+                    } else if (value < 0) {
+                      callback("must be Positive");
+                    } else {
+                      callback();
+                    }
+                  },
+                },
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                elementDtoHandler(e, row, index);
+              }}
+            />
+          ) : (
+            <PInput
+              type="number"
+              name={`amountOrPercentage_${index}`}
+              value={row?.amountOrPercentage}
+              placeholder="Amount"
+              rules={[
+                { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    if (row?.basedOn === "Percentage" && value > 100) {
+                      callback("Percentage can not be greater than 100");
+                    } else if (value < 0) {
+                      callback("must be Positive");
+                    } else {
+                      callback();
+                    }
+                  },
+                },
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                elementDtoHandler(e, row, index);
+              }}
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      title: "Net Amount",
+      dataIndex: "netAmount",
+    },
+    {
+      title: "Action",
+      align: "center",
+      hidden: rowData?.id ? true : false,
+      render: (_: any, item: any, index: number) => (
+        <TableButton
+          buttonsList={[
+            // {
+            //   type: "edit",
+            //   onClick: () => {
+            //     // checkUsage(item, "edit");
+            //   },
+            // },
+            {
+              type: "delete",
+              onClick: () => {
+                // checkUsage(item, "delete");
+                if (item?.isBasic) {
+                  return toast.warn("Can not delete basic element");
+                }
+
+                let temp = elementDto?.filter(
+                  (i: any, idx: number) => idx !== index
+                );
+                setElementDto(temp);
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ].filter((i: any) => !i.hidden);
+  const headerDesignation: any = [
+    {
+      title: "SL",
+      align: "center",
+      render: (text: any, record: any, index: number) => index + 1,
+    },
+    {
+      title: "Desgination",
+      dataIndex: "designationName",
+    },
+
+    {
+      title: "Action",
+      align: "center",
+      render: (_: any, item: any, index: number) => (
+        <TableButton
+          buttonsList={[
+            {
+              type: "delete",
+              onClick: () => {
+                let temp = designationDto?.filter(
+                  (i: any, idx: number) => idx !== index
+                );
+                setDesignationDto(temp);
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ];
+  const headerIncrement: any = [
+    {
+      title: "Slab Count",
+      align: "center",
+      render: (text: any, record: any, index: number) => index + 1,
+    },
+    {
+      title: "Increment Amount",
+      dataIndex: "incrementAmount",
+    },
+  ];
+  const headerEfficiency: any = [
+    {
+      title: "Slab Count",
+      align: "center",
+      render: (text: any, record: any, index: number) =>
+        incrementDto.length + 1 + index,
+    },
+
+    {
+      title: "Increment Amount",
+      dataIndex: "incrementAmount",
+    },
+  ];
+
+  useEffect(() => {
+    if (rowData?.id) {
+      getById?.action({
+        urlKey: "GetPayScaleSetupById",
+        method: "get",
+        params: {
+          id: rowData?.id,
+        },
+
+        onSuccess: (res: any) => {
+          form.setFieldsValue({
+            payscale: res?.payScaleName,
+            jobLevel: { value: res?.jobLevelId, label: res?.jobLevelName },
+            grade: { value: res?.jobGradeId, label: res?.jobGradeName },
+            jobClass: { value: res?.jobClassId, label: res?.jobClassName },
+            increment: res?.incrementAmount,
+            incrementSlab: res?.incrementSlabCount,
+
+            incrementExtended: res?.extendedIncrementAmount,
+            efficiencySlab: res?.extendedIncrementSlabCount,
+            isEfficiency: res?.extendedIncrementAmount > 0 ? true : false,
+          });
+          setDesignationDto(res?.designationList);
+          const temp: any = [];
+          for (let i = 0; i < res?.extendedIncrementSlabCount; i++) {
+            const incrementAmount = res?.extendedIncrementAmount;
+            temp.push({
+              incrementAmount,
+            });
+          }
+          setEfficiencyDto(temp);
+
+          const tempIncrement: any = [];
+          for (let i = 0; i < res?.incrementSlabCount; i++) {
+            const incrementAmount = res?.incrementAmount;
+            tempIncrement.push({ incrementAmount });
+          }
+
+          setIncrementDto(tempIncrement);
+          setElementDto(res?.payScaleElements);
+        },
+      });
+    }
+  }, [rowData]);
 
   return (
     <PForm form={form} onFinish={onFinish}>
@@ -147,8 +444,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   <Col md={12} sm={24}>
                     <PSelect
                       name="jobClass"
-                      label="Job Class"
-                      placeholder="Select Job Class "
+                      label="Payscale Class"
+                      placeholder="Select Payscale Class "
                       options={
                         jobClassDDL?.data?.length > 0 ? jobClassDDL?.data : []
                       }
@@ -165,7 +462,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       rules={[
                         {
                           required: true,
-                          message: "Job Class is required",
+                          message: "Payscale Class is required",
                         },
                       ]}
                     />
@@ -213,8 +510,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   <Col md={12} sm={24}>
                     <PSelect
                       name="grade"
-                      label="Grade Name"
-                      placeholder="Select Grade"
+                      label="Payscale Grade"
+                      placeholder="Select Payscale Grade"
                       options={gradeDDL?.data?.length > 0 ? gradeDDL?.data : []}
                       loading={gradeDDL?.loading}
                       onChange={(value, op) => {
@@ -228,7 +525,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       rules={[
                         {
                           required: true,
-                          message: "Grade Type is required",
+                          message: "Payscale Grade is required",
                         },
                       ]}
                     />
@@ -276,8 +573,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   <Col md={12} sm={24}>
                     <PSelect
                       name="jobLevel"
-                      label="Job Level"
-                      placeholder="Select Job Level"
+                      label="Payscale Level"
+                      placeholder="Select Payscale Level"
                       options={
                         jobLevelDDL?.data?.length > 0 ? jobLevelDDL?.data : []
                       }
@@ -291,7 +588,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       rules={[
                         {
                           required: true,
-                          message: "Job Level is required",
+                          message: "Payscale Level is required",
                         },
                       ]}
                     />
@@ -317,6 +614,332 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               );
           }}
         </Form.Item>
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          Payroll Element Setup
+        </Divider>
+        <Col md={10} sm={24}>
+          <PSelect
+            name="element"
+            label="Payroll Element"
+            placeholder="Select Element"
+            options={elementDDL?.data?.length > 0 ? elementDDL?.data : []}
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                element: op,
+              });
+            }}
+            filterOption={false}
+          />
+        </Col>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { element } = form.getFieldsValue(true);
+            return (
+              <Col md={10} sm={24}>
+                <PSelect
+                  name="basedOn"
+                  label="Based On"
+                  placeholder="Based On"
+                  options={
+                    element?.isBasic
+                      ? [{ value: 1, label: "Amount" }]
+                      : [
+                          { value: 1, label: "Amount" },
+                          { value: 2, label: "Percentage" },
+                        ]
+                  }
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      basedOn: op,
+                    });
+                  }}
+                  filterOption={false}
+                />
+              </Col>
+            );
+          }}
+        </Form.Item>
+        <Col md={3} className="my-3 pt-1">
+          <PButton
+            type="primary"
+            onClick={() => {
+              const values = form.getFieldsValue(true);
+              const isExist = elementDto?.filter((i: any) => i?.isBasic);
+              const isDuplicate = elementDto?.filter(
+                (i: any) => i?.payrollElementName === values?.element?.label
+              );
+
+              if (isExist?.length === 0 && !values?.element?.isBasic) {
+                return toast.warn("Basic needs to be selected first");
+              }
+              if (isDuplicate?.length > 0) {
+                return toast.warn("Element is Already selected");
+              }
+
+              setElementDto((prev): any => {
+                return [
+                  ...prev,
+                  {
+                    ...values?.element,
+                    payrollElementName: values?.element?.label,
+                    isBasic: values?.element?.isBasic,
+                    element: values?.element?.label,
+                    elementId: values?.element?.value,
+                    payrollElementId: values?.element?.value,
+                    basedOn: values?.basedOn?.label,
+                    netAmount: 0,
+                    amountOrPercentage: 0,
+                  },
+                ];
+              });
+              form.setFieldsValue({
+                element: undefined,
+                basedOn: undefined,
+              });
+            }}
+            content="Add"
+          />
+        </Col>
+        {elementDto?.length > 0 && (
+          <Col md={24} sm={24}>
+            <DataTable header={header} bordered data={elementDto || []} />
+          </Col>
+        )}
+
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          Increment Configure
+        </Divider>
+        <Col md={10} sm={24}>
+          <PInput
+            type="number"
+            label="Increment Amount"
+            name="increment"
+            disabled={rowData}
+            min={0}
+            rules={[
+              {
+                required: true,
+                message: "Increment Amount is required",
+              },
+            ]}
+          />
+        </Col>
+
+        <Col md={10} sm={24}>
+          <PInput
+            type="number"
+            name="incrementSlab"
+            label="Slabs Count"
+            min={0}
+            disabled={rowData}
+            rules={[
+              {
+                required: true,
+                message: "Slabs Count is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={3} className="my-3 pt-1">
+          <PButton
+            type="primary"
+            onClick={() => {
+              const values = form.getFieldsValue(true);
+              let temp: any = [];
+              for (let i = 0; i < values?.incrementSlab; i++) {
+                const incrementAmount = values?.increment;
+                temp.push({ incrementAmount });
+              }
+
+              setIncrementDto(temp);
+            }}
+            content="Add"
+          />
+        </Col>
+        {incrementDto?.length > 0 && (
+          <Col md={24} sm={24}>
+            <DataTable
+              header={headerIncrement}
+              bordered
+              data={incrementDto || []}
+            />
+          </Col>
+        )}
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          Efficiency Bar
+        </Divider>
+
+        <Col md={4} className="mt-3" sm={24}>
+          <PInput
+            type="checkbox"
+            layout="horizontal"
+            label="Efficiency Bar"
+            name="isEfficiency"
+            disabled={rowData}
+            onChange={(e) => {
+              setEfficiencyDto([]);
+              form.setFieldsValue({
+                incrementExtended: undefined,
+                efficiencySlab: undefined,
+              });
+            }}
+          />
+        </Col>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { isEfficiency } = form.getFieldsValue(true);
+            return isEfficiency ? (
+              <>
+                <Col md={8} sm={24}>
+                  <PInput
+                    type="number"
+                    label="Increment Amount"
+                    name="incrementExtended"
+                    min={0}
+                    disabled={rowData}
+                  />
+                </Col>
+
+                <Col md={8} sm={24}>
+                  <PInput
+                    type="number"
+                    name="efficiencySlab"
+                    label="Slabs Count"
+                    disabled={rowData}
+                    min={0}
+                  />
+                </Col>
+                <Col md={3} className="my-3 pt-1">
+                  <PButton
+                    type="primary"
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      let temp: any = [];
+                      for (let i = 0; i < values?.efficiencySlab; i++) {
+                        const incrementAmount = values?.incrementExtended;
+                        temp.push({
+                          incrementAmount,
+                        });
+                      }
+                      setEfficiencyDto(temp);
+                    }}
+                    content="Add"
+                  />
+                </Col>
+                {efficiencyDto?.length > 0 && (
+                  <Col md={24} sm={24}>
+                    <DataTable
+                      header={headerEfficiency}
+                      bordered
+                      data={efficiencyDto || []}
+                    />
+                  </Col>
+                )}
+              </>
+            ) : null;
+          }}
+        </Form.Item>
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          Designation Setup
+        </Divider>
+        <Col md={12} sm={24}>
+          <PSelect
+            name="designation"
+            label="Designation"
+            placeholder="Select Designation"
+            options={
+              designationDDL?.data?.length > 0 ? designationDDL?.data : []
+            }
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                designation: op,
+              });
+            }}
+            filterOption={false}
+          />
+        </Col>
+        <Col md={3} className="my-3 pt-1">
+          <PButton
+            type="primary"
+            onClick={() => {
+              const values = form.getFieldsValue(true);
+              const isDuplicate = designationDto?.filter(
+                (i: any) => i?.designationName === values?.designation?.label
+              );
+              const isAll = designationDto?.filter(
+                (i: any) => i?.designationName === "All"
+              );
+
+              if (isDuplicate?.length > 0) {
+                return toast.warn("Designation is Already selected");
+              }
+
+              if (isAll?.length > 0) {
+                return toast.warn("All  is selected");
+              }
+
+              if (values?.designation?.value === 0) {
+                setDesignationDto([]);
+              }
+
+              setDesignationDto((prev): any => {
+                return [
+                  ...prev,
+                  {
+                    ...values.designation,
+                    designationName: values.designation?.label,
+                    id: values.designation?.value,
+                  },
+                ];
+              });
+              form.setFieldsValue({
+                designation: undefined,
+              });
+            }}
+            content="Add"
+          />
+        </Col>
+        {designationDto?.length > 0 && (
+          <Col md={24} sm={24}>
+            <DataTable
+              header={headerDesignation}
+              bordered
+              data={designationDto || []}
+            />
+          </Col>
+        )}
       </Row>
       <ModalFooter
         submitAction="submit"

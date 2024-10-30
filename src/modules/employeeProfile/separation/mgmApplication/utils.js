@@ -22,27 +22,29 @@ const approvalListHeader = ({
     },
     {
       title: "Approve Dept.",
-      dataIndex: "strStatusTitle",
+      dataIndex: "strApproverDepartment",
       sorter: true,
-      render: (_, record) =>
-        record?.strStatusTitle === "Approve By Supervisor"
-          ? "Supervisor"
-          : record?.strStatusTitle === "Approve By User Group"
-          ? `User Group (${record?.strUserGroup})`
-          : "Line Manager",
+      // render: (_, record) =>
+      //   record?.strStatusTitle === "Approve By Supervisor"
+      //     ? "Supervisor"
+      //     : record?.strStatusTitle === "Approve By User Group"
+      //     ? `User Group (${record?.strUserGroup})`
+      //     : "Line Manager",
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "strApproverStatus",
       align: "center",
       render: (_, record) =>
         // Write condition to check status
-        record?.status === "Pending" ? (
-          <PBadge type="warning" text={record?.status} />
-        ) : record?.status === "Rejected" ? (
-          <PBadge type="danger" text={record?.status} />
+         record?.strApproverStatus === "Pending" ? (
+          <PBadge type="warning" text={record?.strApproverStatus} />
+        ) : record?.strApproverStatus === "Rejected" || record?.strApproverStatus === "Reject By Admin" ? (
+          <PBadge type="danger" text={record?.strApproverStatus} />
+        ) : record?.strApproverStatus === "Approved By Admin" ? (
+          <PBadge type="info" text={record?.strApproverStatus} />
         ) : (
-          <PBadge type="success" text={record?.status} />
+          <PBadge type="success" text={record?.strApproverStatus} />
         ),
       width: "50px",
     },

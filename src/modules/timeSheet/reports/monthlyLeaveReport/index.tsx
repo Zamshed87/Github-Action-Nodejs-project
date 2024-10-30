@@ -378,8 +378,8 @@ const MonthlyLeaveReport = () => {
                         return {
                           ...item,
                           sl: index + 1,
-                          EndDate: dateFormatter(item?.EndDate),
-                          StartDate: dateFormatter(item?.StartDate),
+                          EndDate: dateFormatter(item?.LeaveEndDate),
+                          StartDate: dateFormatter(item?.LeaveStartDate),
                           ApplicationDate: dateFormatter(item?.ApplicationDate),
                         };
                       }
