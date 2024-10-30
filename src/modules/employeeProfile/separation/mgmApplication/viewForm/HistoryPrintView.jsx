@@ -110,20 +110,16 @@ const HistoryPrintView = ({
               {approveListData?.map((item, index) => (
                 <tr key={index}>
                   <td style={{ textAlign: "center" }}>{index + 1}</td>
-                  <td>
-                    {item?.strStatusTitle === "Approve By Supervisor"
-                      ? "Supervisor"
-                      : item?.strStatusTitle === "Approve By User Group"
-                      ? `User Group (${item?.strUserGroup})`
-                      : "Line Manager"}
-                  </td>
+                  <td>{item?.strApproverDepartment}</td>
                   <td className="text-center">
-                    {item?.status === "Pending" ? (
-                      <PBadge type="warning" text={item?.status} />
-                    ) : item?.status === "Rejected" ? (
-                      <PBadge type="danger" text={item?.status} />
+                    {item?.strApproverStatus === "Pending" ? (
+                      <PBadge type="warning" text={item?.strApproverStatus} />
+                    ) : item?.strApproverStatus === "Rejected" || item?.strApproverStatus === "Reject By Admin" ? (
+                      <PBadge type="danger" text={item?.strApproverStatus} />
+                    ) : item?.strApproverStatus === "Approved By Admin" ? (
+                      <PBadge type="info" text={item?.strApproverStatus} />
                     ) : (
-                      <PBadge type="success" text={item?.status} />
+                      <PBadge type="success" text={item?.strApproverStatus} />
                     )}
                   </td>
                   <td>{item?.comment || "N/A"}</td>
@@ -171,7 +167,9 @@ const HistoryPrintView = ({
                       ? moment(item?.effectiveDate).format("DD-MM-YYYY")
                       : "N/A"}
                   </td>
-                  <td>{item?.salaryAmount && formatMoney(item?.salaryAmount)}</td>
+                  <td>
+                    {item?.salaryAmount && formatMoney(item?.salaryAmount)}
+                  </td>
                 </tr>
               ))}
             </tbody>
