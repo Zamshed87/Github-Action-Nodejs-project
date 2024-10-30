@@ -146,8 +146,9 @@ TOTPolicyGenerate) => {
     // numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
     numOTRateForBasedOnSalaryRange: +((values?.otRatePerMin || 0) / 60).toFixed(
       6
-    ), // convert hours to min (user input as hours but we need to save as min)
+    ),
     rangeBasedVM: serviceLengthList || [],
+
   };
   const payload: any = generateRows(
     policy, // policyType
