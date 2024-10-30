@@ -9,14 +9,12 @@ import {
 import CakeIcon from "@mui/icons-material/Cake";
 import PersonIcon from "@mui/icons-material/Person";
 import SpaIcon from "@mui/icons-material/Spa";
-import { Button } from "@mui/material";
 import { styled } from "@mui/styles";
 import React, { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { APIUrl } from "../../../../App";
 import editProPic from "../../../../assets/images/editProPic.svg";
 import profileImg from "../../../../assets/images/profile.jpg";
-import Chips from "../../../../common/Chips";
 import Loading from "../../../../common/loading/Loading";
 import { updateEmpProfilePicString } from "../../../../commonRedux/auth/actions";
 import { gray900 } from "../../../../utility/customColor";
@@ -24,6 +22,7 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import "../aboutMe.css";
 import AccordionCom from "../accordion";
 import { empProfilePicUpload } from "../helper";
+import { Tag } from "antd";
 
 const Input = styled("input")({
   display: "none",
@@ -140,13 +139,12 @@ const ProfileCard = ({
               <h4 className="name-about-info">
                 {empBasic?.strEmployeeName || "N/A"}
               </h4>
-              <Button>
-                <Chips
-                  style={{ padding: "1px 8px!important" }}
-                  label={getChipData(empBasic?.intEmployeeStatusId).label}
-                  className={getChipData(empBasic?.intEmployeeStatusId).class}
-                />
-              </Button>
+              <Tag
+                style={{ borderRadius: "50px", fontWeight: 600 }}
+                className={getChipData(empBasic?.intEmployeeStatusId).class}
+              >
+                {getChipData(empBasic?.intEmployeeStatusId).label}
+              </Tag>
             </div>
             {isEditBtn && isOfficeAdmin && (
               <div className="d-flex">
@@ -161,6 +159,11 @@ const ProfileCard = ({
               </div>
             )}
           </div>
+          {orgId === 7 && (
+            <h4 className="name-about-info">
+              {empBasic?.strEmployeeNameBn || "N/A"}
+            </h4>
+          )}
           <div className="single-info">
             <AccountBox sx={iconStyle} />
             <p className="text-single-info">

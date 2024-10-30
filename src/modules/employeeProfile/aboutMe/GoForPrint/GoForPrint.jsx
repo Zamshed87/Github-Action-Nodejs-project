@@ -2,7 +2,7 @@ import { PrintOutlined } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import BackButton from "../../../../common/BackButton";
@@ -34,19 +34,12 @@ const initData = {
 };
 
 const validationSchema = Yup.object({});
-const saveHandler = (values) => {};
 
 function GoForPrint() {
   const dispatch = useDispatch();
 
   const [empInfo, setEmpInfo] = useState({});
   const [loading, setLoading] = useState(false);
-
-  // eslint-disable-next-line no-unused-vars
-  const { orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
 
   const history = useHistory();
   const location = useLocation();
@@ -72,21 +65,11 @@ function GoForPrint() {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -97,7 +80,7 @@ function GoForPrint() {
                       <BackButton title={"Employee Details"} />
                       <div>
                         <Button
-                          onClick={(e) =>
+                          onClick={() =>
                             history.push({
                               pathname:
                                 "/profile/employee/go-for-print/print-preview",

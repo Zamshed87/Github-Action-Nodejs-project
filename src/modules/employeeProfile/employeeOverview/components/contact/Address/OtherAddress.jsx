@@ -33,6 +33,7 @@ const initData = {
   postCode: "",
   address: "",
   isParmanent: false,
+  addressBn: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -61,6 +62,10 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
+  addressBn: Yup.string().matches(
+    /^[\u0980-\u09FF\s]*$/,
+    "This field should be in Bangla"
+  ),
 });
 
 function OtherAddress({ getData, rowDto, empId }) {
@@ -76,10 +81,8 @@ function OtherAddress({ getData, rowDto, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, wgId, intAccountId, isOfficeAdmin, orgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     DDLForAddress(
@@ -132,6 +135,7 @@ function OtherAddress({ getData, rowDto, empId }) {
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
         addressDetails: values?.address || singleData?.address,
+        addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
         location: "",
@@ -200,6 +204,7 @@ function OtherAddress({ getData, rowDto, empId }) {
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
         addressDetails: values?.address || singleData?.address,
+        addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
         location: "",
@@ -270,6 +275,7 @@ function OtherAddress({ getData, rowDto, empId }) {
       postOfficeName:
         values?.postOffice?.label || singleData?.postOffice?.label,
       addressDetails: values?.address || singleData?.address,
+      addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
       companyName: "",
       jobTitle: "",
       location: "",
@@ -403,9 +409,10 @@ function OtherAddress({ getData, rowDto, empId }) {
           postCode: singleData ? singleData?.postCode : "",
           address: singleData ? singleData?.address : "",
           isParmanent: singleData?.isParmanent || false,
+          addressBn: singleData ? singleData?.addressBn : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -418,7 +425,6 @@ function OtherAddress({ getData, rowDto, empId }) {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -485,6 +491,9 @@ function OtherAddress({ getData, rowDto, empId }) {
                                       ?.strAddressDetails,
 
                                   isParmanent: e.target.checked,
+                                  addressBn:
+                                    rowDto?.permanentAddress[0]
+                                      ?.strAddressDetailsBn || "",
                                 });
                               } else {
                                 setSingleData("");
@@ -514,6 +523,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("country", valueOption);
                           }}
                           placeholder="Country"
@@ -542,6 +552,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("division", valueOption);
                           }}
                           placeholder="Division"
@@ -569,6 +580,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("district", valueOption);
                           }}
                           placeholder="District"
@@ -594,6 +606,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                               valueOption?.value
                             );
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("postOffice", "");
                             setFieldValue("postCode", "");
                             setFieldValue("policeStation", valueOption);
@@ -613,6 +626,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                           onChange={(valueOption) => {
                             setFieldValue("postCode", valueOption?.strPostCode);
                             setFieldValue("address", "");
+                            setFieldValue("addressBn", "");
                             setFieldValue("postOffice", valueOption);
                           }}
                           placeholder="Post Office"
@@ -625,7 +639,6 @@ function OtherAddress({ getData, rowDto, empId }) {
                         <FormikInput
                           name="postCode"
                           value={values?.postCode}
-                          onChange={(e) => {}}
                           errors={errors}
                           touched={touched}
                           placeholder="Post Code"
@@ -644,13 +657,24 @@ function OtherAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
+                        <FormikInput
+                          name="addressBn"
+                          value={values?.addressBn}
+                          onChange={(e) => {
+                            setFieldValue("addressBn", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder="Address (In Bangla)"
+                          classes="input-sm"
+                          isDisabled={!values?.district}
+                        />
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -663,13 +687,13 @@ function OtherAddress({ getData, rowDto, empId }) {
                               setFieldValue("postOffice", "");
                               setFieldValue("postCode", "");
                               setFieldValue("address", "");
+                              setFieldValue("addressBn", "");
                             }}
                           >
                             Cancel
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={
@@ -740,6 +764,19 @@ function OtherAddress({ getData, rowDto, empId }) {
                                       rowDto?.otherAddress[0]?.strCountry,
                                     ])}
                                 </h4>
+                                {orgId === 7 &&
+                                  rowDto?.otherAddress?.length > 0 &&
+                                  rowDto?.otherAddress[0]
+                                    ?.strAddressDetailsBn && (
+                                    <h4>
+                                      {
+                                        rowDto?.otherAddress[0]
+                                          ?.strAddressDetailsBn
+                                      }{" "}
+                                      (In Bangla)
+                                    </h4>
+                                  )}
+
                                 <small>Other Address</small>
                               </div>
                               <div
@@ -768,27 +805,57 @@ function OtherAddress({ getData, rowDto, empId }) {
                                               onClick: () => {
                                                 setSingleData({
                                                   country: {
-                                                    value: rowDto?.otherAddress[0]?.intCountryId,
-                                                    label: rowDto?.otherAddress[0]?.strCountry,
+                                                    value:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.intCountryId,
+                                                    label:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.strCountry,
                                                   },
                                                   division: {
-                                                    value: rowDto?.otherAddress[0]?.intDivisionId,
-                                                    label: rowDto?.otherAddress[0]?.strDivision,
+                                                    value:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.intDivisionId,
+                                                    label:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.strDivision,
                                                   },
                                                   district: {
-                                                    value: rowDto?.otherAddress[0]?.intDistrictOrStateId,
-                                                    label: rowDto?.otherAddress[0]?.strDistrictOrState,
+                                                    value:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.intDistrictOrStateId,
+                                                    label:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.strDistrictOrState,
                                                   },
                                                   policeStation: {
-                                                    value: rowDto?.permanentAddress[0]?.intThanaId,
-                                                    label: rowDto?.permanentAddress[0]?.strThana,
+                                                    value:
+                                                      rowDto
+                                                        ?.permanentAddress[0]
+                                                        ?.intThanaId,
+                                                    label:
+                                                      rowDto
+                                                        ?.permanentAddress[0]
+                                                        ?.strThana,
                                                   },
                                                   postOffice: {
-                                                    value: rowDto?.otherAddress[0]?.intPostOfficeId,
-                                                    label: rowDto?.otherAddress[0]?.strPostOffice,
+                                                    value:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.intPostOfficeId,
+                                                    label:
+                                                      rowDto?.otherAddress[0]
+                                                        ?.strPostOffice,
                                                   },
-                                                  postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
-                                                  address: rowDto?.otherAddress[0]?.strAddressDetails,
+                                                  postCode:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strZipOrPostCode,
+                                                  address:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strAddressDetails,
+                                                  addressBn:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strAddressDetailsBn ||
+                                                    "",
                                                 });
                                                 setStatus("input");
                                                 setIsCreateForm(true);
@@ -828,27 +895,54 @@ function OtherAddress({ getData, rowDto, empId }) {
                                             onClick: () => {
                                               setSingleData({
                                                 country: {
-                                                  value: rowDto?.otherAddress[0]?.intCountryId,
-                                                  label: rowDto?.otherAddress[0]?.strCountry,
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intCountryId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strCountry,
                                                 },
                                                 division: {
-                                                  value: rowDto?.otherAddress[0]?.intDivisionId,
-                                                  label: rowDto?.otherAddress[0]?.strDivision,
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intDivisionId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strDivision,
                                                 },
                                                 district: {
-                                                  value: rowDto?.otherAddress[0]?.intDistrictOrStateId,
-                                                  label: rowDto?.otherAddress[0]?.strDistrictOrState,
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intDistrictOrStateId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strDistrictOrState,
                                                 },
                                                 policeStation: {
-                                                  value: rowDto?.permanentAddress[0]?.intThanaId,
-                                                  label: rowDto?.permanentAddress[0]?.strThana,
+                                                  value:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.intThanaId,
+                                                  label:
+                                                    rowDto?.permanentAddress[0]
+                                                      ?.strThana,
                                                 },
                                                 postOffice: {
-                                                  value: rowDto?.otherAddress[0]?.intPostOfficeId,
-                                                  label: rowDto?.otherAddress[0]?.strPostOffice,
+                                                  value:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.intPostOfficeId,
+                                                  label:
+                                                    rowDto?.otherAddress[0]
+                                                      ?.strPostOffice,
                                                 },
-                                                postCode: rowDto?.permanentAddress[0]?.strZipOrPostCode,
-                                                address: rowDto?.otherAddress[0]?.strAddressDetails,
+                                                postCode:
+                                                  rowDto?.permanentAddress[0]
+                                                    ?.strZipOrPostCode,
+                                                address:
+                                                  rowDto?.otherAddress[0]
+                                                    ?.strAddressDetails,
+                                                addressBn:
+                                                  rowDto?.permanentAddress[0]
+                                                    ?.strAddressDetailsBn || "",
                                               });
                                               setStatus("input");
                                               setIsCreateForm(true);
@@ -873,7 +967,6 @@ function OtherAddress({ getData, rowDto, empId }) {
                                           },
                                         ]),
                                   ]}
-                                  
                                 />
                               </div>
                             </div>

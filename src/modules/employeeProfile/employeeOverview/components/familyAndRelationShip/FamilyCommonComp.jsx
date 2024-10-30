@@ -200,7 +200,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                           className="form-control"
                           errors={errors}
                           touched={touched}
-                          placeholder="Relatives Name (Bangla)"
+                          placeholder="Name (Bangla)"
                           classes="input-sm"
                         />
                       </div>
@@ -576,6 +576,24 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             <small>Name</small>
                           </div>
                         </div>
+                        {orgId === 7 && (
+                          <div className="row mb-3">
+                            <div className="col-lg-1">
+                              <Avatar className="overviewAvatar">
+                                <AssignmentInd
+                                  sx={{
+                                    color: gray900,
+                                    fontSize: "18px",
+                                  }}
+                                />
+                              </Avatar>
+                            </div>
+                            <div className="col-lg-11">
+                              <h4>{item?.strRelativesNameBn || "N/A"}</h4>
+                              <small>Name (In Bangla)</small>
+                            </div>
+                          </div>
+                        )}
                         <div className="row mb-3">
                           <div className="col-lg-1">
                             <Avatar className="overviewAvatar">
