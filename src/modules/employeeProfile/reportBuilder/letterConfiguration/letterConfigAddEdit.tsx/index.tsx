@@ -58,8 +58,6 @@ const LetterConfigAddEdit = () => {
     }
   });
 
-  console.log();
-
   useEffect(() => {
     getLetterTypeDDL(profileData, setLoading, setLetterTypeDDL);
     dispatch(setFirstLevelNameAction("Employee Management"));
