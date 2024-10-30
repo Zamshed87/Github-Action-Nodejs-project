@@ -8,6 +8,7 @@
 import { Col, Divider, Form, Row, Space } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
+  Flex,
   PButton,
   PCard,
   PCardBody,
@@ -29,6 +30,7 @@ import {
   getLetterTypeDDL,
 } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
 
 const LetterConfigAddEdit = () => {
   // Router state
@@ -46,6 +48,7 @@ const LetterConfigAddEdit = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+  const { orgId, buId, employeeId } = profileData;
 
   // menu permission
   let letterConfigPermission: any = null;
@@ -54,6 +57,8 @@ const LetterConfigAddEdit = () => {
       letterConfigPermission = item;
     }
   });
+
+  console.log();
 
   useEffect(() => {
     getLetterTypeDDL(profileData, setLoading, setLetterTypeDDL);
@@ -64,14 +69,26 @@ const LetterConfigAddEdit = () => {
   //   states
   const [loading, setLoading] = useState(false);
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
+  const [empSignature, setEmpAuthSignature] = useState<any>([]);
+  const [fields, setFields] = useState(customFields);
 
   const handleInsertField = (fieldValue: any) => {
     const quill = quillRef?.current?.getEditor();
-    const cursorPosition = quill.getSelection().index;
-    // const currentContent = quill.getText();
 
+    const cursorPosition = quill?.getSelection()?.index;
+    // const currentContent = quill.getText();
     // Insert the field value at the cursor position
-    quill.insertText(cursorPosition, `@${fieldValue}`);
+    cursorPosition >= 0 && quill.insertText(cursorPosition, `@${fieldValue}`);
+  };
+
+  const handleSearch = (e: any) => {
+    const keyword = e.target.value;
+    // Filter fields based on the search term
+    const filteredFields = customFields.filter((field) =>
+      field.label.toLowerCase().includes(keyword.toLowerCase())
+    );
+
+    setFields(filteredFields);
   };
 
   return letterConfigPermission?.isCreate ? (
@@ -115,6 +132,10 @@ const LetterConfigAddEdit = () => {
                     });
                     const modifiedLetter = transformedHTML.innerHTML;
                     form.setFieldValue("letter", modifiedLetter);
+                    form.setFieldValue(
+                      "backgroudImageId",
+                      empSignature?.[0]?.response?.[0]?.globalFileUrlId || 0
+                    );
 
                     createNEditLetterTemplate(
                       form,
@@ -164,17 +185,16 @@ const LetterConfigAddEdit = () => {
                         content={"Add New"}
                         icon={<PlusOutlined />}
                         onClick={() => {
-                          if (form.getFieldValue("newLetterName")) {
-                            createLetterType(
-                              form.getFieldsValue(true),
-                              profileData,
-                              setLoading,
-                              setLetterTypeDDL
-                            );
-                            form.setFieldValue("newLetterName", "");
-                          } else {
-                            return toast.warning("Please new type");
+                          if (!form.getFieldValue("newLetterName")) {
+                            return toast.error("Please provide a type");
                           }
+                          createLetterType(
+                            form.getFieldsValue(true),
+                            profileData,
+                            setLoading,
+                            setLetterTypeDDL
+                          );
+                          form.setFieldValue("newLetterName", "");
                         }}
                       />
                     </Space>
@@ -190,6 +210,24 @@ const LetterConfigAddEdit = () => {
                 placeholder="Letter Name"
                 rules={[{ required: true, message: "Letter Name is required" }]}
               />
+            </Col>
+            <Col className="mt-2" md={6} sm={24}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "Background Image",
+                    attachmentList: empSignature,
+                    setAttachmentList: setEmpAuthSignature,
+                    accountId: orgId,
+                    tableReferrence: "LeaveAndMovement",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
             </Col>
           </Row>
           <Row gutter={[10, 2]}>
@@ -226,7 +264,9 @@ const LetterConfigAddEdit = () => {
                           overflow: "scroll",
                         }}
                       >
-                        <div
+                        <Flex
+                          justify="space-between"
+                          align="center"
                           style={{
                             backgroundColor: "darkgray",
                             padding: "5px",
@@ -235,9 +275,20 @@ const LetterConfigAddEdit = () => {
                           }}
                         >
                           <p style={{ color: "white" }}>Field Lists</p>
-                        </div>
+                          <input
+                            style={{
+                              maxWidth: "150px",
+                              border: "none",
+                              padding: "1px 4px",
+                              fontSize: "13px",
+                            }}
+                            type="search"
+                            placeholder="Search..."
+                            onChange={handleSearch}
+                          />
+                        </Flex>
                         <div style={{ padding: "0 5px" }}></div>
-                        {customFields?.map((dto: any, index: number) => (
+                        {fields?.map((dto: any, index: number) => (
                           <div key={index}>
                             <button
                               type="button"
@@ -251,10 +302,6 @@ const LetterConfigAddEdit = () => {
                               }}
                               onClick={() => {
                                 handleInsertField(dto?.value);
-                                // const text = `${form.getFieldValue(
-                                //   "letter"
-                                // )} @${dto?.value}`;
-                                // form.setFieldValue("letter", text);
                               }}
                             >
                               {dto?.label}
