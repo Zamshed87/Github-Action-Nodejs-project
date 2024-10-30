@@ -15,6 +15,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
+  OTCountAmount,
   OTCountFrom,
   OTPolicyGenerate,
   checkPolicyExistance,
@@ -26,6 +27,8 @@ import {
 import "../style.scss";
 import { getPeopleDeskAllDDL } from "common/api";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { AddOutlined, DeleteOutline } from "@mui/icons-material";
+import { IconButton, Tooltip } from "@mui/material";
 
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
@@ -51,6 +54,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
 
   // States
   const [matchingData, setMatchingData] = React.useState<any[]>([]);
+  const [isMin, setIsMin] = useState(true);
+  const [tableData, setTableData] = useState<any>([]);
   // Form Instance
   const [form] = Form.useForm();
 
@@ -132,7 +137,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
         intOtconfigId: state?.intOtconfigId,
       },
       onSuccess: (data) => {
-        const initialData = initDataGenerate(data);
+        const initialData = initDataGenerate(data, setTableData);
+        console.log("initialData", initialData);
         form.setFieldsValue(initialData);
         getHRPositionDDL();
         getEmploymentTypeDDL();
@@ -148,7 +154,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   // Submit Handler
   const onFinish = () => {
     if (matchingData?.length) {
-      console.log("something");
       return toast.info(
         "Please delete existing policy first or create new policy."
       );
@@ -165,6 +170,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       commonData,
       matchingData,
       state,
+      tableData,
     });
     SaveNUpdateOverTimeConfig?.action({
       method: "POST",
@@ -191,6 +197,13 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const remover = (payload: number) => {
+    const filterArr = tableData.filter(
+      (itm: any, idx: number) => idx !== payload
+    );
+    setTableData(filterArr);
+  };
+
   return (
     <>
       <PForm
@@ -202,6 +215,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           overtimeAmount: 1,
           benefitHours: 1,
           count: 1,
+          showInDepend: { value: 1, label: "Fixed" },
         }}
         onFinish={onFinish}
         onValuesChange={(changedFields) => {
@@ -226,9 +240,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       >
         <PCard>
           <PCardHeader
-            title={`${
-              state?.intOtconfigId ? "Edit" : "Create"
-            } OT Policy`}
+            title={`${state?.intOtconfigId ? "Edit" : "Create"} OT Policy`}
             backButton
             submitText="Save"
           />
@@ -979,6 +991,290 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       options={OTCountFrom}
                     />
                   </Col>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { overtimeCount } = form.getFieldsValue(true);
+                      return (
+                        overtimeCount === 4 && (
+                          <>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                label="From Min"
+                                placeholder="From Min"
+                                type="number"
+                                name="fromMin"
+                                rules={[
+                                  {
+                                    message: "Min must be positive",
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                label="To Min"
+                                placeholder="To Min"
+                                type="number"
+                                name="toMin"
+                                rules={[
+                                  {
+                                    message: "Min must be positive",
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PSelect
+                                options={[
+                                  { value: 1, label: "Fixed" },
+
+                                  { value: 2, label: "Actual" },
+                                ]}
+                                name="showInDepend"
+                                label="Depened on"
+                                placeholder="Depened on"
+                                onChange={(value, op) => {
+                                  setIsMin(value === 1);
+                                  form.setFieldsValue({
+                                    showInDepend: op,
+                                  });
+                                }}
+                              />
+                            </Col>
+                          </>
+                        )
+                      );
+                    }}
+                  </Form.Item>
+
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { showInDepend, overtimeCount } =
+                        form.getFieldsValue(true);
+
+                      return (
+                        showInDepend?.value === 1 &&
+                        overtimeCount === 4 && (
+                          <>
+                            <Col md={10} sm={22}>
+                              <PInput
+                                disabled={!isMin}
+                                type="number"
+                                name="otAmount"
+                                label="Min"
+                                placeholder="Min"
+                                size="small"
+                                rules={[
+                                  {
+                                    message: "Min must be positive",
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          </>
+                        )
+                      );
+                    }}
+                  </Form.Item>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const {
+                        fromMin,
+                        toMin,
+                        showInDepend,
+                        overtimeCount,
+                        otAmount,
+                      } = form.getFieldsValue(true);
+
+                      return (
+                        (showInDepend?.value === 1 ||
+                          showInDepend?.value === 2) &&
+                          overtimeCount === 4 && (
+                          <>
+                            <Col span={2} className="mt-1">
+                              <button
+                                type="button"
+                                className="mt-4  btn add-ddl-btn "
+                                style={{
+                                  margin: "0.4em 0 0 0.7em",
+                                  padding: "0.2em",
+                                }}
+                                onClick={() => {
+                                  if (
+                                    toMin === undefined ||
+                                    fromMin === undefined
+                                  ) {
+                                    return toast.warn(
+                                      "Please fill up the fields"
+                                    );
+                                  }
+
+                                  // Check for range overlap
+                                  const isOverlap = tableData.some(
+                                    (data: any) => {
+                                      return (
+                                        (fromMin >= data.intFromMinute &&
+                                          fromMin <= data.intToMinute) ||
+                                        (toMin >= data.intFromMinute &&
+                                          toMin <= data.intToMinute) ||
+                                        (fromMin <= data.intFromMinute &&
+                                          toMin >= data.intToMinute)
+                                      );
+                                    }
+                                  );
+
+                                  if (isOverlap) {
+                                    return toast.warn(
+                                      "Time range overlaps with an existing entry."
+                                    );
+                                  }
+
+                                  // Proceed if no overlap
+                                  setTableData((prev: any) => [
+                                    ...prev,
+                                    {
+                                      intFromMinute: fromMin || 0,
+                                      intToMinute: toMin || 0,
+                                      isAtActual: true,
+                                      intOvertimeMinute: otAmount || 0,
+                                      showInDepend: showInDepend || "",
+                                    },
+                                  ]);
+
+                                  // Reset form fields
+                                  form.setFieldsValue({
+                                    otAmount: undefined,
+                                    toMin: undefined,
+                                    fromMin: undefined,
+                                  });
+                                }}
+                              >
+                                <AddOutlined sx={{ fontSize: "16px" }} />
+                              </button>
+                            </Col>
+                          </>
+                        )
+                      );
+                    }}
+                  </Form.Item>
+
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { overtimeCount } = form.getFieldsValue(true);
+
+                      return (
+                        overtimeCount === 4 && (
+                          <>
+                            <Col md={15} sm={24}>
+                              {tableData?.length > 0 && (
+                                <div
+                                  className="table-card-body pt-3 "
+                                  style={{ marginLeft: "-.8em" }}
+                                >
+                                  <div
+                                    className=" table-card-styled tableOne"
+                                    style={{ padding: "0px 12px" }}
+                                  >
+                                    <table className="table align-middle">
+                                      <thead style={{ color: "#212529" }}>
+                                        <tr>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              From Min
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              To Min
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              Depends on
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center">
+                                              OverTime Min
+                                            </div>
+                                          </th>
+                                          <th>
+                                            <div className="d-flex align-items-center justify-content-end">
+                                              Action
+                                            </div>
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {tableData?.length > 0 && (
+                                          <>
+                                            {tableData.map(
+                                              (item: any, index: number) => {
+                                                return (
+                                                  <tr key={index}>
+                                                    <td>
+                                                      {item?.intFromMinute}
+                                                    </td>
+                                                    <td>{item?.intToMinute}</td>
+                                                    <td>
+                                                      {
+                                                        item?.showInDepend
+                                                          ?.label
+                                                      }
+                                                    </td>
+                                                    <td>
+                                                      {item?.intOvertimeMinute}
+                                                    </td>
+                                                    <td>
+                                                      <div className="d-flex align-items-end justify-content-end">
+                                                        <IconButton
+                                                          type="button"
+                                                          style={{
+                                                            height: "25px",
+                                                            width: "25px",
+                                                          }}
+                                                          onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            remover(index);
+                                                          }}
+                                                        >
+                                                          <Tooltip title="Delete">
+                                                            <DeleteOutline
+                                                              sx={{
+                                                                height: "25px",
+                                                                width: "25px",
+                                                              }}
+                                                            />
+                                                          </Tooltip>
+                                                        </IconButton>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                );
+                                              }
+                                            )}
+                                          </>
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              )}
+                            </Col>
+                          </>
+                        )
+                      );
+                    }}
+                  </Form.Item>
                   <Divider
                     style={{ margin: "3px 0", fontSize: 12 }}
                     orientation="left"
@@ -989,9 +1285,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     <PRadio
                       type="group"
                       name="overtimeAmount"
-                      options={OTCountFrom}
+                      options={OTCountAmount}
                     />
                   </Col>
+                 
+
                   {/* tousif told me to replace this name  */}
                   <Col md={24} sm={24}>
                     <PInput

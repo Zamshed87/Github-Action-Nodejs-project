@@ -42,6 +42,27 @@ export const OTCountFrom = [
     value: 3,
     label: "Round Up",
   },
+  {
+    value: 4,
+    label: "Range Based Round",
+  },
+];
+export const OTCountAmount = [
+  { value: 1, label: "At Actual" },
+  {
+    value: 2,
+    label: "Round Down",
+  },
+  {
+    value: 3,
+    label: "Round Up",
+  },
+
+];
+export const BasedOn = [
+  { value: 1, label: "Fixed" },
+
+  { value: 2, label: "Actual" },
 ];
 // Payload Generation for SaveNUpdateOverTimeConfig => Line 16 - 111
 type TOTPolicyGenerate = {
@@ -49,10 +70,13 @@ type TOTPolicyGenerate = {
   commonData: any;
   matchingData: any;
   state: any;
+  tableData: any;
 };
+
 export const OTPolicyGenerate = ({
   commonData,
   values,
+  tableData,
 }: // matchingData,
 TOTPolicyGenerate) => {
   const {
@@ -79,6 +103,16 @@ TOTPolicyGenerate) => {
     .filter((condition) => condition.condition)
     .map(({ value, label }) => ({ value, label }));
   // console.log({ policy });
+
+  const serviceLengthList =
+    tableData?.map((item: any, idx: number) => {
+      return {
+        intFromMinute: item?.intFromMinute || 0,
+        intToMinute: item?.intToMinute || 0,
+        isAtActual: item?.showInDepend?.value === 2 ? true : false,
+        intOvertimeMinute: item?.intOvertimeMinute || 0,
+      };
+    }) || [];
 
   const policyInfo = {
     intOtconfigId: intOtconfigId || 0,
@@ -113,8 +147,12 @@ TOTPolicyGenerate) => {
     // numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
     numOTRateForBasedOnSalaryRange: +((values?.otRatePerMin || 0) / 60).toFixed(
       6
-    ), // convert hours to min (user input as hours but we need to save as min)
+    ),
+    rangeBasedVM: serviceLengthList || [],
+
+   
   };
+
   const payload: any = generateRows(
     policy, // policyType
     hrPosition,
@@ -299,9 +337,8 @@ const getMatchingPolicy = (values: any, allData: any) => {
 };
 
 // OT Policy Initial Data Generate by GetOverTimeConfigById
-export const initDataGenerate = (data: any) => {
+export const initDataGenerate = (data: any, setTableData: any) => {
   const policyTypeInfo: any = [];
-
   if (data?.intHrPositionId) {
     policyTypeInfo.push({
       value: 1,
@@ -326,6 +363,19 @@ export const initDataGenerate = (data: any) => {
       label: "Calendar Name",
     });
   }
+  setTableData(
+    data?.rangeBasedVM?.map((itm: any) => {
+      return {
+        ...itm,
+        fromMin: itm?.intFromMinute,
+        toMin: itm?.intToMinute,
+        overTimeAmount: itm?.intOvertimeMinute,
+        showInDepend: {
+          label: itm?.isAtActual ? "Actual" : "Fixed",
+        },
+      };
+    })
+  );
   const formData = {
     policyType: policyTypeInfo,
     policyName: data?.strPolicyName,
@@ -372,7 +422,7 @@ export const initDataGenerate = (data: any) => {
     maxOverTimeDaily: data?.intMaxOverTimeDaily,
     maxOverTimeMonthly: data?.intMaxOverTimeMonthly,
     overtimeCount: data?.intOtcalculationShouldBe,
-    overtimeAmount: OTCountFrom?.find(
+    overtimeAmount: OTCountAmount?.find(
       (ot) => ot.value === data?.intOtAmountShouldBe
     )?.value,
     calculateAutoAttendance: data?.isOvertimeAutoCalculate,

@@ -6,9 +6,15 @@ import {
   gray900,
   greenColor,
 } from "../../../../../utility/customColor";
+import { shallowEqual, useSelector } from "react-redux";
 
 const Contact = ({ empContact, empAddress, objProps }) => {
   const { values, setFieldValue, isShowCheckBox } = objProps;
+
+  const { orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   return (
     <>
@@ -45,28 +51,16 @@ const Contact = ({ empContact, empAddress, objProps }) => {
         <div className="accordion-body">
           <div className="left">
             <p>
-              Email -{" "}
-              <small>
-                {empContact?.strPersonalMail}
-              </small>
+              Email - <small>{empContact?.strPersonalMail}</small>
             </p>
             <p>
-              Work Email -{" "}
-              <small>
-                {empContact?.strOfficeMail}
-              </small>
+              Work Email - <small>{empContact?.strOfficeMail}</small>
             </p>
             <p>
-              Phone -{" "}
-              <small>
-                {empContact?.strPersonalMobile}
-              </small>
+              Phone - <small>{empContact?.strPersonalMobile}</small>
             </p>
             <p>
-              Work phone -{" "}
-              <small>
-                {empContact?.strOfficeMobile}
-              </small>
+              Work phone - <small>{empContact?.strOfficeMobile}</small>
             </p>
             <p>
               Permanent Address -{" "}
@@ -85,6 +79,12 @@ const Contact = ({ empContact, empAddress, objProps }) => {
                   : ""}
               </small>
             </p>
+            {orgId === 7 && (
+              <p>
+                Permanent Address (In Bangla) -{" "}
+                <small>{empAddress?.[0]?.strAddressDetailsBn}</small>
+              </p>
+            )}
             <p>
               Present Address -{" "}
               <small>
@@ -102,6 +102,12 @@ const Contact = ({ empContact, empAddress, objProps }) => {
                   : ""}
               </small>
             </p>
+            {orgId === 7 && (
+              <p>
+                Present Address (In Bangla) -{" "}
+                <small>{empAddress?.[1]?.strAddressDetailsBn}</small>
+              </p>
+            )}
             <p>
               Other Address -{" "}
               <small>
@@ -119,6 +125,12 @@ const Contact = ({ empContact, empAddress, objProps }) => {
                   : ""}
               </small>
             </p>
+            {orgId === 7 && (
+              <p>
+                Other Address (In Bangla) -{" "}
+                <small>{empAddress?.[2]?.strAddressDetailsBn}</small>
+              </p>
+            )}
           </div>
         </div>
       </div>
