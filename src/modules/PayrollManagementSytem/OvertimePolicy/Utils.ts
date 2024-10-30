@@ -42,6 +42,10 @@ export const OTCountFrom = [
     value: 3,
     label: "Round Up",
   },
+  {
+    value: 4,
+    label: "Range Based Round",
+  },
 ];
 export const OTCountAmount = [
   { value: 1, label: "At Actual" },
@@ -53,10 +57,7 @@ export const OTCountAmount = [
     value: 3,
     label: "Round Up",
   },
-  {
-    value: 4,
-    label: "Range Based Round",
-  },
+
 ];
 export const BasedOn = [
   { value: 1, label: "Fixed" },
