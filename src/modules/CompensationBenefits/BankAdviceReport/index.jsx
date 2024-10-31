@@ -874,123 +874,123 @@ const BankAdviceReport = () => {
                       }
                       label="Download"
                       options={[
-                        {
-                          value: 1,
-                          label: "Top Sheet as Excel",
-                          icon: (
-                            <SiMicrosoftexcel
-                              style={{
-                                marginRight: "5px",
-                                color: gray500,
-                                fontSize: "16px",
-                              }}
-                            />
-                          ),
-                          onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 1,
-                              });
-                            }
+                        // {
+                        //   value: 1,
+                        //   label: "Top Sheet as Excel",
+                        //   icon: (
+                        //     <SiMicrosoftexcel
+                        //       style={{
+                        //         marginRight: "5px",
+                        //         color: gray500,
+                        //         fontSize: "16px",
+                        //       }}
+                        //     />
+                        //   ),
+                        //   onClick: () => {
+                        //     if (rowDto?.length <= 0) {
+                        //       return toast.warning("Data is empty !!!!", {
+                        //         toastId: 1,
+                        //       });
+                        //     }
 
-                            excelGenerate(values, (res) => {
-                              const total = Number(
-                                res
-                                  ?.reduce(
-                                    (acc, item) => acc + item?.numNetPayable,
-                                    0
-                                  )
-                                  .toFixed(2)
-                              );
-                              generateTopSheetAction(
-                                monthYearFormatter(values?.monthYear),
-                                "",
-                                "",
-                                excelColumnFunc(0),
-                                excelDataFunc(0),
-                                strBusinessUnit,
-                                4,
-                                res,
-                                values,
-                                total,
-                                // withDecimal(total),
-                                convert_number_to_word(total),
-                                businessUnitDDL[0]?.BusinessUnitAddress
-                              );
-                            });
-                          },
-                        },
-                        {
-                          value: 2,
-                          label: "Advice List as Excel",
-                          icon: (
-                            <SiMicrosoftexcel
-                              style={{
-                                marginRight: "5px",
-                                color: gray500,
-                                fontSize: "16px",
-                              }}
-                            />
-                          ),
-                          onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 2,
-                              });
-                            }
+                        //     excelGenerate(values, (res) => {
+                        //       const total = Number(
+                        //         res
+                        //           ?.reduce(
+                        //             (acc, item) => acc + item?.numNetPayable,
+                        //             0
+                        //           )
+                        //           .toFixed(2)
+                        //       );
+                        //       generateTopSheetAction(
+                        //         monthYearFormatter(values?.monthYear),
+                        //         "",
+                        //         "",
+                        //         excelColumnFunc(0),
+                        //         excelDataFunc(0),
+                        //         strBusinessUnit,
+                        //         4,
+                        //         res,
+                        //         values,
+                        //         total,
+                        //         // withDecimal(total),
+                        //         convert_number_to_word(total),
+                        //         businessUnitDDL[0]?.BusinessUnitAddress
+                        //       );
+                        //     });
+                        //   },
+                        // },
+                        // {
+                        //   value: 2,
+                        //   label: "Advice List as Excel",
+                        //   icon: (
+                        //     <SiMicrosoftexcel
+                        //       style={{
+                        //         marginRight: "5px",
+                        //         color: gray500,
+                        //         fontSize: "16px",
+                        //       }}
+                        //     />
+                        //   ),
+                        //   onClick: () => {
+                        //     if (rowDto?.length <= 0) {
+                        //       return toast.warning("Data is empty !!!!", {
+                        //         toastId: 2,
+                        //       });
+                        //     }
 
-                            excelGenerate(values, (res) => {
-                              const total = Number(
-                                res
-                                  ?.reduce(
-                                    (acc, item) => acc + item?.numNetPayable,
-                                    0
-                                  )
-                                  .toFixed(2)
-                              );
+                        //     excelGenerate(values, (res) => {
+                        //       const total = Number(
+                        //         res
+                        //           ?.reduce(
+                        //             (acc, item) => acc + item?.numNetPayable,
+                        //             0
+                        //           )
+                        //           .toFixed(2)
+                        //       );
 
-                              generateExcelAction(
-                                monthYearFormatter(values?.monthYear),
-                                "",
-                                "",
-                                excelColumnFunc(0),
-                                excelDataFunc(0),
-                                strBusinessUnit,
-                                values,
-                                res,
-                                values?.account?.AccountNo,
-                                total,
-                                // withDecimal(total),
-                                convert_number_to_word(total),
-                                businessUnitDDL[0]?.BusinessUnitAddress
-                              );
-                            });
-                          },
-                        },
-                        {
-                          value: 3,
-                          label: "Top Sheet as PDF",
-                          icon: (
-                            <MdPrint
-                              style={{
-                                marginRight: "5px",
-                                color: gray500,
-                                fontSize: "16px",
-                              }}
-                            />
-                          ),
-                          onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 3,
-                              });
-                            }
-                            excelGenerate(values, (res) => {
-                              setPdfDto(res);
-                            });
-                            topSheetPrintFn();
-                          },
-                        },
+                        //       generateExcelAction(
+                        //         monthYearFormatter(values?.monthYear),
+                        //         "",
+                        //         "",
+                        //         excelColumnFunc(0),
+                        //         excelDataFunc(0),
+                        //         strBusinessUnit,
+                        //         values,
+                        //         res,
+                        //         values?.account?.AccountNo,
+                        //         total,
+                        //         // withDecimal(total),
+                        //         convert_number_to_word(total),
+                        //         businessUnitDDL[0]?.BusinessUnitAddress
+                        //       );
+                        //     });
+                        //   },
+                        // },
+                        // {
+                        //   value: 3,
+                        //   label: "Top Sheet as PDF",
+                        //   icon: (
+                        //     <MdPrint
+                        //       style={{
+                        //         marginRight: "5px",
+                        //         color: gray500,
+                        //         fontSize: "16px",
+                        //       }}
+                        //     />
+                        //   ),
+                        //   onClick: () => {
+                        //     if (rowDto?.length <= 0) {
+                        //       return toast.warning("Data is empty !!!!", {
+                        //         toastId: 3,
+                        //       });
+                        //     }
+                        //     excelGenerate(values, (res) => {
+                        //       setPdfDto(res);
+                        //     });
+                        //     topSheetPrintFn();
+                        //   },
+                        // },
                         {
                           value: 3,
                           label: "Top Sheet and Datails as Excel",
