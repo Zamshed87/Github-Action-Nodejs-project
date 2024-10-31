@@ -106,7 +106,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         form={form}
         initialValues={{
           isHalfDay: 0,
-          fromDate: moment(todayDate()),
+          // fromDate: moment(todayDate()),
           toDate: moment(todayDate()),
           halfTime: "8:30 AM – 12:30 PM",
           leaveDays: 1,
