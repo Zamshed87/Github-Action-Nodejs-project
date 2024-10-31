@@ -13,12 +13,7 @@ import ConsumeMeal from "./components/ConsumeMeal";
 import FormCard from "./components/FormCard";
 // import MenuList from "./components/MenuList";
 import ScheduleMeal from "./components/ScheduleMeal";
-import {
-  createCafeteriaEntry,
-  // editMenuList,
-  // getCafeteriaMenuListReport,
-  getPendingAndConsumeMealReport,
-} from "./helper";
+import { createCafeteriaEntry, getPendingAndConsumeMealReport } from "./helper";
 import "./style.css";
 import { PeopleDeskSaasDDL } from "common/api";
 import { getPlaceDDL } from "../foodCorner/helper";
@@ -29,6 +24,7 @@ const initData = {
   employee: "",
   place: "",
   date: todayDate(),
+  viewDate: todayDate(),
   meal: 1,
   type: { value: 1, label: "Regular" },
   remarks: "",
@@ -116,14 +112,16 @@ export default function FoodCornerForAll() {
       values?.employee?.value,
       setScheduleMeal,
       setLoading,
-      ""
+      "",
+      values?.viewDate
     );
     getPendingAndConsumeMealReport(
       2,
       values?.employee?.value,
       setConsumeMeal,
       setLoading,
-      ""
+      "",
+      values?.viewDate
     );
   };
   useEffect(() => {
