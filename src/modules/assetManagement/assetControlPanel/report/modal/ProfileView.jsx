@@ -240,7 +240,7 @@ const ProfileView = ({ assetId }) => {
                   {dateFormatter(singleData?.AcquisitionDate)}
                 </p>
               </div>
-              <div className="single-info d-flex justify-content-between mb-1">
+              {/* <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
                     style={{
@@ -256,8 +256,8 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {singleData?.Supplier || "N/A"}
                 </p>
-              </div>
-              <div className="single-info d-flex justify-content-between mb-1">
+              </div> */}
+              {/* <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
                     style={{
@@ -273,7 +273,7 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {singleData?.Model || "N/A"}
                 </p>
-              </div>
+              </div> */}
               <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
@@ -378,7 +378,7 @@ const ProfileView = ({ assetId }) => {
                   {singleData?.ManufacturerName || "N/A"}
                 </p>
               </div>
-              <div className="single-info d-flex justify-content-between mb-1">
+              {/* <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
                     style={{
@@ -394,7 +394,7 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {dateFormatter(singleData?.WarrantyEndDate) || "N/A"}
                 </p>
-              </div>
+              </div> */}
               <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
