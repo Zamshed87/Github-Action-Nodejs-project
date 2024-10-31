@@ -334,10 +334,15 @@ const CreateLoanApplicationModal = ({
 
                         setFieldValue("totalwithinterest", e.target.value);
 
-                        if (e.target.value > grossSalary) {
-                          return toast.warn(
-                            "Loan Amount cannot be greater than gross salary"
-                          );
+                        if (orgId === 4 || orgId === 5) {
+                          if (e.target.value > grossSalary) {
+                            return toast.warn(
+                              "Loan Amount cannot be greater than gross salary",
+                              { toastId: "toastId" }
+                            );
+                          } else {
+                            setFieldValue("loanAmount", e.target.value);
+                          }
                         } else {
                           setFieldValue("loanAmount", e.target.value);
                         }
@@ -348,13 +353,20 @@ const CreateLoanApplicationModal = ({
                             +e.target.value * (values?.interest / 100)
                           ).toFixed(2);
 
-                          if (totalAmountwithInterest > grossSalary) {
-                            setFieldValue("interest", "");
-                            setFieldValue("totalwithinterest", grossSalary);
-                            return toast.warn(
-                              "Total amount with interest cannot exceed gross salary",
-                              { toastId: "toastId" }
-                            );
+                          if (orgId === 4 || orgId === 5) {
+                            if (totalAmountwithInterest > grossSalary) {
+                              setFieldValue("interest", "");
+                              setFieldValue("totalwithinterest", grossSalary);
+                              return toast.warn(
+                                "Total amount with interest cannot exceed gross salary",
+                                { toastId: "toastId" }
+                              );
+                            } else {
+                              setFieldValue(
+                                "totalwithinterest",
+                                totalAmountwithInterest
+                              );
+                            }
                           } else {
                             setFieldValue(
                               "totalwithinterest",
