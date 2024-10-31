@@ -123,6 +123,9 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 placeholder="Leave Type"
                 onChange={(value, op) => {
                   form.setFieldValue("leaveType", op);
+                  if (values?.isSelfService) {
+                    form.setFieldValue("fromDate", undefined);
+                  }
                 }}
                 rules={[
                   {
@@ -134,7 +137,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
             </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const { leaveType, fromDate, toDate } = form.getFieldsValue();
+                const { leaveType, fromDate, toDate } =
+                  form.getFieldsValue(true);
                 return (
                   <>
                     <Col md={8} sm={12} xs={24}>
