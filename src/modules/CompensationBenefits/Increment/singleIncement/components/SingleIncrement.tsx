@@ -351,21 +351,23 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       transferPromotionObj: values?.promote ? transferPromotionObj : null,
     };
     const gradeBasedPayload = {
-      incrementId: id || 0,
+      id: id || 0,
       employeeId: values?.employee?.value,
       accountId: orgId,
       businessUnitId: buId,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
-      payScaleId: values?.payscale?.value,
+      payScaleId: values?.payscale?.value || values?.payscale,
       slabCount: values?.slabCount?.value || values?.slabCount || 0,
       oldGrossAmount:
         employeeIncrementByIdApi?.data?.oldGrossAmount ||
         employeeInfo?.data[0]?.numNetGrossSalary ||
         0,
-      incrementDependOn: "Basic",
+      incrementDependOn: "",
       incrementDependOnValue: 0,
       incrementPercentage: 0,
       incrementAmount: 0,
+      workPlaceId: wId,
+      workPlaceGroupId: wgId,
       effectiveDate: moment(values?.dteEffectiveDate).format("YYYY-MM-DD"),
       rows: modifiedBreakDown,
       actionBy: employeeId,
@@ -850,6 +852,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               //   intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
               //   intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
               intPayrollElementTypeId: i?.payrollElementId,
+              isBasicSalary: i?.isBasic,
             };
           });
           const newGross = res?.rows?.reduce(
@@ -862,9 +865,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               ? undefined
               : employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
             // basedOn: 1,
-            salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
-              ? "Grade"
-              : "Non-Grade",
+
             dteEffectiveDate: moment(res?.effectiveDate),
             employee: {
               value: (location?.state as any)?.singleData?.incrementList?.[0]
