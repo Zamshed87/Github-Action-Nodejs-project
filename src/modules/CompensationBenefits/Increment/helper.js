@@ -175,7 +175,9 @@ export const incrementColumnData = (
               type="button"
             >
               <EditOutlined
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
+
                   if (record?.intTransferNpromotionReferenceId) {
                     getTransferNpromotion(
                       `/Employee/GetEmpTransferNpromotionById?id=${record?.intTransferNpromotionReferenceId}`,

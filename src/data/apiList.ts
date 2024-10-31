@@ -253,4 +253,10 @@ export const apiList = {
   commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
+  IsPromotionEligibleThroughIncrement:
+    "/Employee/IsPromotionEligibleThroughIncrement",
+  CreateEmployeeIncrement: "/Employee/CreateEmployeeIncrement",
+  CreateEmployeeIncrementNew: "/EmployeeIncrement/CreateEmployeeIncrement",
+  UpdateEmployeeIncrement: "EmployeeIncrement/UpdateEmployeeIncrement",
+  GetEmployeeIncrementById: "EmployeeIncrement/GetEmployeeIncrementById",
 };
