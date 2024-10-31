@@ -44,6 +44,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
   useEffect(() => {
     form.setFieldsValue({
       leaveType: leaveTypeDDL?.length > 0 ? { ...leaveTypeDDL[0] } : undefined,
+      fromDate: values?.isSelfService ? undefined : moment(todayDate()),
     });
   }, [leaveTypeDDL]);
   //   edit
@@ -106,7 +107,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         form={form}
         initialValues={{
           isHalfDay: 0,
-          // fromDate: moment(todayDate()),
+          // fromDate: values?.isSelfService ? "" : moment(todayDate()),
           toDate: moment(todayDate()),
           halfTime: "8:30 AM – 12:30 PM",
           leaveDays: 1,
