@@ -38,6 +38,8 @@ import { SaveAlt } from "@mui/icons-material";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getWorkplaceDetails } from "common/api";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initialValues = {
   searchString: "",
@@ -213,6 +215,9 @@ function IncrementLanding() {
                               dteEffectiveDate: dateFormatter(
                                 item?.dteEffectiveDate
                               ),
+                              isGradeBasedSalary: item?.isGradeBasedSalary
+                                ? "Grade"
+                                : "Non-Grade",
                             }));
                             createCommonExcelFile({
                               titleWithDate: `Increment - ${dateFormatter(
@@ -442,6 +447,27 @@ function IncrementLanding() {
                       </div>
                     </div>
 
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Salary Type</label>
+                        <FormikSelect
+                          name="salaryType"
+                          options={[
+                            { value: true, label: "Grade" },
+                            { value: false, label: "Non-Grade" },
+                            { value: null, label: "All" },
+                          ]}
+                          value={values?.salaryType}
+                          onChange={(valueOption) => {
+                            setFieldValue("salaryType", valueOption);
+                          }}
+                          placeholder=""
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
                     <div className="col-lg-1">
                       <button
                         disabled={
