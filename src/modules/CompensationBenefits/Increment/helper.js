@@ -19,8 +19,12 @@ export const getAllIncrementAndPromotionLanding = async (
 ) => {
   setLoading && setLoading(true);
   try {
+    const isGradeBased =
+      values?.salaryType?.label === "All"
+        ? ""
+        : `&isGradeBased=${values?.salaryType?.value}`;
     const res = await axios.get(
-      `/Employee/GetEmployeeIncrementLanding?accountId=${orgId}&businessUnitId=${buId}&dteFromDate=${values?.filterFromDate}&dteToDate=${values?.filterToDate}&workplaceGroupId=${wgId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${searchText}`
+      `/Employee/GetEmployeeIncrementLanding?accountId=${orgId}&businessUnitId=${buId}&dteFromDate=${values?.filterFromDate}&dteToDate=${values?.filterToDate}&workplaceGroupId=${wgId}${isGradeBased}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${searchText}`
     );
     if (res?.data) {
       const modifiedData = res?.data?.data?.map((item, index) => ({
@@ -124,6 +128,19 @@ export const incrementColumnData = (
       sort: true,
       filter: false,
       fieldType: "number",
+    },
+    {
+      title: "Salary Type",
+      dataIndex: "isGradeBasedSalary",
+      render: (record) => (record?.isGradeBasedSalary ? "Grade" : "Non-Grade"),
+    },
+    {
+      title: "PayScale",
+      dataIndex: "payScaleName",
+    },
+    {
+      title: "Slab Count",
+      dataIndex: "slabCount",
     },
     {
       title: "Effective Data",
@@ -245,6 +262,9 @@ export const columns = {
   strDepartment: "Department",
   strIncrementDependOn: "Depend On",
   numIncrementPercentageOrAmount: "Increment Percentage/Amount",
+  isGradeBasedSalary: "Salary Type",
+  payScaleName: "PayScale",
+  slabCount: "Slab Count",
   dteEffectiveDate: "Effective Data",
   strStatus: "Status",
 };
