@@ -151,7 +151,7 @@ const ProfileView = ({ assetId }) => {
                   {formatMoney(singleData?.AcquisitionValue)}
                 </p>
               </div>
-              <div className="single-info d-flex justify-content-between mb-1">
+              {/* <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "75%" }}>
                   <small
                     style={{
@@ -167,7 +167,7 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {formatMoney(singleData?.TotalDepreciationValue)}
                 </p>
-              </div>
+              </div> */}
               <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "75%" }}>
                   <small
@@ -457,7 +457,7 @@ const ProfileView = ({ assetId }) => {
               />
             </div>
           </div>
-          <div>
+          {/* <div>
             <div className="single-info d-flex justify-content-between mb-1">
               <p style={{ color: gray700, width: "20%" }}>
                 <small
@@ -509,10 +509,10 @@ const ProfileView = ({ assetId }) => {
                 {singleData?.Note || "N/A"}
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="row">
-          <div className="col-lg-12">
+          {/* <div className="col-lg-12">
             <h6>Depreciation</h6>
             {depreciationRowDto?.length > 0 ? (
               <PeopleDeskTable
@@ -531,7 +531,7 @@ const ProfileView = ({ assetId }) => {
                 )}
               </>
             )}
-          </div>
+          </div> */}
           <div className="col-lg-12">
             <h6>Maintenance/ Servicing Log</h6>
             {maintenanceRowDto?.length > 0 ? (
