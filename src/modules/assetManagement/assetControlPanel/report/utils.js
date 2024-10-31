@@ -99,27 +99,27 @@ const assetReportColumn = (
       className: "text-right",
       render: (record) => formatMoney(record?.bookValue),
     },
-    {
-      title: "Total Depr.Amount",
-      dataIndex: "totalDepreciation",
-      sort: false,
-      filter: false,
-      render: (record) => (
-        <span
-          style={
-            record?.totalDepreciation > 0 ? linkAble : { textAlign: "left" }
-          }
-          onClick={() => {
-            if (record?.totalDepreciation > 0) {
-              setDepreciationModal(true);
-              setItemId(record?.assetId);
-            }
-          }}
-        >
-          {formatMoney(record?.totalDepreciation)}
-        </span>
-      ),
-    },
+    // {
+    //   title: "Total Depr.Amount",
+    //   dataIndex: "totalDepreciation",
+    //   sort: false,
+    //   filter: false,
+    //   render: (record) => (
+    //     <span
+    //       style={
+    //         record?.totalDepreciation > 0 ? linkAble : { textAlign: "left" }
+    //       }
+    //       onClick={() => {
+    //         if (record?.totalDepreciation > 0) {
+    //           setDepreciationModal(true);
+    //           setItemId(record?.assetId);
+    //         }
+    //       }}
+    //     >
+    //       {formatMoney(record?.totalDepreciation)}
+    //     </span>
+    //   ),
+    // },
     {
       title: "Rece.Value",
       dataIndex: "bookValue",
@@ -652,7 +652,8 @@ const usesHistoryColumn = () => {
       dataIndex: "toDate",
       sort: false,
       filter: false,
-      render: (record) => record?.toDate ? dateFormatter(record?.toDate) : "N/A",
+      render: (record) =>
+        record?.toDate ? dateFormatter(record?.toDate) : "N/A",
     },
     {
       title: "Employee/Department",
@@ -710,13 +711,14 @@ export {
   addDocumentHandler,
   assetReportColumn,
   depreciationColumn,
-  documentAttachmentColumn, documentsColumn,
-  employeeDetailsColumn, getById,
+  documentAttachmentColumn,
+  documentsColumn,
+  employeeDetailsColumn,
+  getById,
   getData,
   maintenanceColumn,
   maintenanceSummaryColumn,
   saveAttachmentHandler,
   totalDepreciationColumn,
-  usesHistoryColumn
+  usesHistoryColumn,
 };
-

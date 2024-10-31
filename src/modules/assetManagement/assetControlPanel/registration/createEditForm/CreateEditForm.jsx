@@ -147,7 +147,7 @@ const AssetRegistrationForm = () => {
                             isDisabled={rowDto?.length}
                           />
                         </div>
-                        <div className="col-lg-4">
+                        {/*  <div className="col-lg-4">
                           <div className="d-flex">
                             <div className="mt-4">
                               <label>Depreciation</label>
@@ -189,7 +189,7 @@ const AssetRegistrationForm = () => {
                               </div>
                             ) : null}
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="col-lg-2">
