@@ -18,6 +18,8 @@ import {
   getAllRemoteAttendanceListDataForApproval,
   RemoteAttendanceApproveReject,
 } from "../helper";
+import { LightTooltip } from "common/LightTooltip";
+import { stripHtml } from "utility/stripHTML";
 
 const CardTable = ({ propsObj }) => {
   const {
@@ -241,6 +243,32 @@ const CardTable = ({ propsObj }) => {
       dataIndex: "strDeviceName",
       render: (_, record) => <>{record?.application?.strAttendanceType}</>,
     },
+    {
+      title: "Company Name",
+      dataIndex: "VisitingCompany",
+      render: (_, record) => <>{record?.application?.VisitingCompany}</>,
+    },
+
+    {
+      title: "Location",
+      dataIndex: "VisitingLocation",
+      render: (_, record) => (
+        (
+          <LightTooltip
+            title={stripHtml(record?.VisitingLocation ? record?.VisitingLocation : "N/A")}
+            arrow
+          >
+            <div className="pointer">
+              {stripHtml((record?.VisitingLocation || "N/A").slice(0, 70))}
+              {stripHtml((record?.VisitingLocation?.length || 0) > 70 ? "..." : "")}
+            </div>
+          </LightTooltip>
+        )
+      ),
+      sorter: false,
+      filter: false,
+    },
+
     {
       title: "Waiting Stage",
       dataIndex: "waitingStage",
