@@ -259,4 +259,5 @@ export const apiList = {
   CreateEmployeeIncrementNew: "/EmployeeIncrement/CreateEmployeeIncrement",
   UpdateEmployeeIncrement: "EmployeeIncrement/UpdateEmployeeIncrement",
   GetEmployeeIncrementById: "EmployeeIncrement/GetEmployeeIncrementById",
+  CommonEmployeeforSalaryDDL: "/Employee/CommonEmployeeforSalaryDDL",
 };
