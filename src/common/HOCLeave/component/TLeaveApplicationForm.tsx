@@ -153,7 +153,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                             calculateNextDateAntd(
                               dateString,
                               leaveType?.intMaxLveDaySelf
-                                ? leaveType?.intMaxLveDaySelf
+                                ? leaveType?.intMaxLveDaySelf - 1
                                 : 2
                             )
                           );
