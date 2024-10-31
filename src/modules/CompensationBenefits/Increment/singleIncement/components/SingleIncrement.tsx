@@ -92,14 +92,16 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
   const getEmployee = (value: any) => {
     if (value?.length < 2) return employeeDDLApi?.reset();
+    const { salaryType } = form.getFieldsValue(true);
 
     employeeDDLApi?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "CommonEmployeeforSalaryDDL",
       method: "GET",
       params: {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         searchText: value,
+        isGradeBased: salaryType?.value === "Grade" ? true : false,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -1036,6 +1038,34 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         <Row gutter={[10, 2]} className="mb-3 card-style">
           <Col md={6} sm={12} xs={24}>
             <PSelect
+              options={[
+                { value: "Grade", label: "Grade" },
+                { value: "Non-Grade", label: "Non-Grade" },
+              ]}
+              name="salaryType"
+              label="Salary Type"
+              placeholder="Salary Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  salaryType: op,
+                  grossAmount: undefined,
+                  slabCount: undefined,
+                  payscale: undefined,
+                  payrollGroup: undefined,
+                  payscaleClass: undefined,
+                  payscaleGrade: undefined,
+                  payscaleJobLevel: undefined,
+                  basedOn: undefined,
+                  basicAmount: undefined,
+                  employee: undefined,
+                });
+                setRowDto([]);
+              }}
+              rules={[{ required: true, message: "Salary Type is required" }]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
               options={employeeDDLApi?.data || []}
               name="employee"
               label="Select Employee"
@@ -1080,7 +1110,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             {() => {
               const { employee } = form.getFieldsValue(true);
               return employee?.value ? (
-                <Col md={16}>
+                <Col md={12}>
                   <div className="d-flex flex-column mt-3 pt-1">
                     <p
                       style={{
@@ -1121,33 +1151,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             {" "}
             Employee increment log
           </Divider>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={[
-                { value: "Grade", label: "Grade" },
-                { value: "Non-Grade", label: "Non-Grade" },
-              ]}
-              name="salaryType"
-              label="Salary Type"
-              placeholder="Salary Type"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  salaryType: op,
-                  grossAmount: undefined,
-                  slabCount: undefined,
-                  payscale: undefined,
-                  payrollGroup: undefined,
-                  payscaleClass: undefined,
-                  payscaleGrade: undefined,
-                  payscaleJobLevel: undefined,
-                  basedOn: undefined,
-                  basicAmount: undefined,
-                });
-                setRowDto([]);
-              }}
-              rules={[{ required: true, message: "Salary Type is required" }]}
-            />
-          </Col>
+
           <Form.Item shouldUpdate noStyle>
             {() => {
               const { salaryType, basedOn } = form.getFieldsValue(true);
