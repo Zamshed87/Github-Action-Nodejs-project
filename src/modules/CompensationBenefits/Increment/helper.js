@@ -20,7 +20,7 @@ export const getAllIncrementAndPromotionLanding = async (
   setLoading && setLoading(true);
   try {
     const isGradeBased =
-      values?.salaryType?.label === "All"
+      !values?.salaryType || values?.salaryType?.label === "All"
         ? ""
         : `&isGradeBased=${values?.salaryType?.value}`;
     const res = await axios.get(
