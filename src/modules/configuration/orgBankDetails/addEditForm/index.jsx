@@ -319,9 +319,9 @@ export default function AddEditForm({
             <PInput
               type="text"
               name="districtName"
-              label="District"
-              placeholder="District"
-              rules={[{ required: true, message: "District is required" }]}
+              label="Bank Address"
+              placeholder="Bank Address"
+              rules={[{ required: true, message: "Bank Address is required" }]}
             />
           </Col>
 
