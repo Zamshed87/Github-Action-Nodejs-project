@@ -16,8 +16,10 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import { timeFormatter } from "../../../../utility/timeFormatter";
 import {
   getAllRemoteAttendanceListDataForApproval,
-  RemoteAttendanceApproveReject
+  RemoteAttendanceApproveReject,
 } from "../helper";
+import { LightTooltip } from "common/LightTooltip";
+import { stripHtml } from "utility/stripHTML";
 
 const CardTable = ({ propsObj }) => {
   const {
@@ -237,6 +239,26 @@ const CardTable = ({ propsObj }) => {
       title: "Attendance Type",
       dataIndex: "strDeviceName",
       render: (_, record) => <>{record?.application?.strAttendanceType}</>,
+    },
+    {
+      title: "Location",
+      dataIndex: "placeName",
+      render: (_, record) => (
+        console.log("record?.placeName", record),
+        (
+          <LightTooltip
+            title={stripHtml(record?.placeName ? record?.placeName : "N/A")}
+            arrow
+          >
+            <div className="pointer">
+              {stripHtml((record?.placeName || "N/A").slice(0, 70))}
+              {stripHtml((record?.placeName?.length || 0) > 70 ? "..." : "")}
+            </div>
+          </LightTooltip>
+        )
+      ),
+      sorter: false,
+      filter: false,
     },
     {
       title: "Waiting Stage",
