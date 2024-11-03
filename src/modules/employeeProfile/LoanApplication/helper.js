@@ -643,7 +643,7 @@ export const handleAmendmentClick = (
   item,
   clickedRowIndex
 ) => {
-  // Clone the existing tableData
+
   const updatedTableData = [...tableData];
 
   // Calculate the new date based on the clicked row or the last row
@@ -682,11 +682,12 @@ export const handleAmendmentClick = (
 
   // Make the intInstallmentAmount, paymentYear, and paymentMonth of the clicked row zero
   if (clickedRowIndex >= 0 && clickedRowIndex < updatedTableData.length - 1) {
-    updatedTableData[clickedRowIndex].intInstallmentAmount = 0;
-    updatedTableData[clickedRowIndex].isHold = true;
-    updatedTableData[clickedRowIndex].paymentYear = nextDate.year() || 0;
-    updatedTableData[clickedRowIndex].paymentMonth = nextDate.month() + 1;
-    updatedTableData[clickedRowIndex].strRemarks = "";
+    updatedTableData[clickedRowIndex] = {
+      ...updatedTableData[clickedRowIndex],
+      intInstallmentAmount: 0,
+      isHold: true,
+      strRemarks: "",
+    };
   }
 
   // Set the state with the updated array
@@ -694,16 +695,12 @@ export const handleAmendmentClick = (
 };
 
 export const handleDeleteClick = (index, tableData, setTableData) => {
-  // Clone the existing tableData array
   const updatedTableData = [...tableData];
 
-  // Add the "amendment" property to the object at the specified index
   updatedTableData[index].amendment = true;
 
-  // Remove the object at the specified index
   updatedTableData.splice(index, 1);
 
-  // Set the state with the updated array
   setTableData(updatedTableData);
 };
 
@@ -712,4 +709,3 @@ export const subTotal = (tableData) => {
     return a + c?.intInstallmentAmount;
   }, 0);
 };
-//
