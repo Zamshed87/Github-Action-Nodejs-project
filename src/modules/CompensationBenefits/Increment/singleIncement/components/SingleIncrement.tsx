@@ -6,6 +6,7 @@ import {
   PForm,
   PInput,
   PSelect,
+  TableButton,
 } from "Components";
 
 import { useApiRequest } from "Hooks";
@@ -13,7 +14,7 @@ import { Col, Divider, Form, Row } from "antd";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 import { toast } from "react-toastify";
@@ -25,6 +26,16 @@ import { getEmployeeProfileViewData } from "modules/employeeProfile/employeeFeat
 import { getTransferAndPromotionHistoryById } from "../helper";
 import moment from "moment";
 import IConfirmModal from "common/IConfirmModal";
+import Accordion from "../accordion";
+import { attachment_action } from "common/api";
+import {
+  AttachmentOutlined,
+  FileUpload,
+  VisibilityOutlined,
+} from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { setOrganizationDDLFunc } from "modules/roleExtension/ExtensionCreate/helper";
+import HistoryTransferTable from "modules/employeeProfile/transferNPromotion/transferNPromotion/components/HistoryTransferTable";
 
 type TIncrement = unknown;
 const SingleIncrement: React.FC<TIncrement> = () => {
@@ -47,10 +58,34 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   const [transferRowDto, setTransferRowDtoRowDto] = useState<any[]>([]);
   const [slabDDL, setSlabDDL] = useState<any[]>([]);
   const [empBasic, setEmpBasic] = useState([]);
-  const [fileId, setFileId] = useState(0);
-
+  const [fileId, setFileId] = useState<any>(0);
+  const [organizationDDL, setOrganizationDDL] = useState([]);
+  const organizationTypeList = [
+    {
+      label: "Business Unit",
+      value: 1,
+    },
+    {
+      label: "Workplace Group",
+      value: 2,
+    },
+    {
+      label: "Workplace",
+      value: 3,
+    },
+  ];
   const [historyData, setHistoryData] = useState([]);
-
+  const onRoleAdd = (values: any) => {
+    setTransferRowDtoRowDto([
+      ...transferRowDto,
+      {
+        intOrganizationTypeId: +values?.orgType?.value,
+        strOrganizationTypeName: values?.orgType?.label,
+        intOrganizationReffId: values?.orgName?.value,
+        strOrganizationReffName: values?.orgName?.label,
+      },
+    ]);
+  };
   // Form Instance
   const [form] = Form.useForm();
 
@@ -65,6 +100,13 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   const employeeDDLApi = useApiRequest([]);
   const isPromotionEligibleCheckApi = useApiRequest([]);
   const employeeIncrementByIdApi = useApiRequest([]);
+  const buApi = useApiRequest([]);
+  const userRoleApi = useApiRequest([]);
+  const workplaceGroupApi = useApiRequest([]);
+  const workplaceApi = useApiRequest([]);
+  const departmentApi = useApiRequest([]);
+  const designationApi = useApiRequest([]);
+  const supervisorDDL = useApiRequest([]);
 
   const dispatch = useDispatch();
 
@@ -76,6 +118,119 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     document.title = "Single Increment";
   }, []);
 
+  const getBU = () => {
+    // const { employee } = form.getFieldsValue(true);
+    buApi?.action({
+      urlKey: "BusinessUnitIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strBusinessUnit;
+          res[i].value = item?.intBusinessUnitId;
+        });
+      },
+    });
+  };
+  const getworkplaceGroup = () => {
+    const { businessUnit } = form.getFieldsValue(true);
+    workplaceGroupApi?.action({
+      urlKey: "WorkplaceGroupIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: businessUnit?.value || buId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+  };
+  const getworkplace = () => {
+    const { businessUnit, workplaceGroup } = form.getFieldsValue(true);
+    workplaceApi?.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: businessUnit?.value || buId,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
+  const getDepartment = () => {
+    const { businessUnit, workplaceGroup, workplace } =
+      form.getFieldsValue(true);
+    departmentApi?.action({
+      urlKey: "DepartmentIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: businessUnit?.value || buId,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
+        });
+      },
+    });
+  };
+  const getDesignation = () => {
+    const { businessUnit, workplaceGroup, workplace } =
+      form.getFieldsValue(true);
+    designationApi?.action({
+      urlKey: "DesignationIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: businessUnit?.value || buId,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
+        });
+      },
+    });
+  };
+  const getUserRole = () => {
+    const { businessUnit } = form.getFieldsValue(true);
+    userRoleApi?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        BusinessUnitId: businessUnit?.value || buId,
+        DDLType: "UserRoleDDLWithoutDefault",
+        WorkplaceGroupId: wgId,
+        intId: 0,
+        intWorkplaceId: wId,
+        intYear: "",
+      },
+      // onSuccess: (res) => {
+      //   res.forEach((item: any, i: any) => {
+      //     res[i].label = item?.strWorkplaceGroup;
+      //     res[i].value = item?.intWorkplaceGroupId;
+      //   });
+      // },
+    });
+  };
   const getPayscale = () => {
     const { employee } = form.getFieldsValue(true);
     payscaleApi?.action({
@@ -102,6 +257,25 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         workplaceGroupId: wgId,
         searchText: value,
         isGradeBased: salaryType?.value === "Grade" ? true : false,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
+  const getSupervisor = (value: any) => {
+    if (value?.length < 2) return supervisorDDL?.reset();
+
+    supervisorDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        searchText: value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -233,7 +407,11 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       employeeFeature = item;
     }
   });
-
+  // image
+  const inputFile = useRef<any>(null);
+  const onButtonClick = () => {
+    inputFile.current.click();
+  };
   const submitHandler = async () => {
     const values = form.getFieldsValue(true);
 
@@ -638,6 +816,44 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     }
     setterFunc(array);
   };
+  const transferheader: any = [
+    {
+      title: "SL",
+      render: (value: any, row: any, index: number) => index + 1,
+      align: "center",
+      width: 20,
+      // fixed: "left",
+    },
+
+    {
+      title: "Org Type",
+      dataIndex: "strOrganizationTypeName",
+    },
+    {
+      title: "Org Name",
+      dataIndex: "strOrganizationReffName",
+    },
+    {
+      width: 20,
+      align: "center",
+      render: (_: any, rec: any, index: any) => (
+        <TableButton
+          buttonsList={[
+            {
+              type: "delete",
+              onClick: () => {
+                setTransferRowDtoRowDto((prev) => [
+                  ...prev.filter(
+                    (prev_item, item_index) => item_index !== index
+                  ),
+                ]);
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ];
   const header: any = [
     {
       title: "SL",
@@ -703,6 +919,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     getPayscale();
     getPayrollGroupDDL();
     getEmployeeInfo();
+    getBU();
   }, [wgId, buId, wId, location.state]);
   // for assigned
   useEffect(() => {
@@ -1388,8 +1605,550 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               ]}
             />
           </Col>
+          {/* 🔥🔥 Hidded the checkbox only If the check box is enabled the complete functionality of promote will work. this part is been hidden according to the instruction from avishek voumik vai. 🔥🔥 */}
+
+          {/* promotion part */}
+          {/* <Divider
+            style={{
+              marginBlock: "4px",
+              marginTop: "6px",
+              fontSize: "14px",
+              fontWeight: 600,
+            }}
+            orientation="left"
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+              }}
+            >
+              <PInput
+                type="checkbox"
+                layout="horizontal"
+                name="isPromote"
+                onChange={() => {}}
+              />
+              <span>Promote?</span>
+            </div>
+          </Divider> */}
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { isPromote, employee, isRoleExtension, orgName, orgType } =
+                form.getFieldsValue(true);
+
+              return isPromote ? (
+                <>
+                  {employee?.value && (
+                    <Col md={24}>
+                      <h3
+                        style={{
+                          color: " gray700 !important",
+                          fontSize: "16px",
+                          lineHeight: "20px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Employee current information
+                      </h3>
+                    </Col>
+                  )}
+                  {employee?.value && (
+                    <Col md={24}>
+                      <Accordion empBasic={empBasic} />
+                    </Col>
+                  )}
+                  <Col md={24} className="my-3">
+                    <h3
+                      style={{
+                        color: " gray700 !important",
+                        fontSize: "16px",
+                        lineHeight: "20px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Select the employee encouraging type and effective date
+                    </h3>
+                  </Col>
+                  <Col md={6}>
+                    <PSelect
+                      options={[
+                        // { value: "Transfer", label: "Transfer" },
+                        { value: "Promotion", label: "Promotion" },
+                        // {
+                        //   value: "Transfer & Promotion",
+                        //   label: "Transfer & Promotion",
+                        // },
+                      ]}
+                      name="transferNPromotionType"
+                      label="Select Type"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          transferNPromotionType: op,
+                        });
+                      }}
+                      rules={[
+                        { required: isPromote, message: "Type is required" },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6}>
+                    <PInput
+                      type="date"
+                      name="effectiveDate"
+                      label="Effective Date"
+                      placeholder="Effective Date"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Effective Date is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={24} className="my-3">
+                    <h3
+                      style={{
+                        color: " gray700 !important",
+                        fontSize: "16px",
+                        lineHeight: "20px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Employee administrative information
+                    </h3>
+                  </Col>
+                  <Col md={6}>
+                    <PSelect
+                      options={buApi?.data || []}
+                      name="businessUnit"
+                      label="Business Unit"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          businessUnit: op,
+                        });
+                        getworkplaceGroup();
+                        getUserRole();
+                      }}
+                      rules={[
+                        {
+                          required: isPromote,
+                          message: "Business Unit is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6}>
+                    <PSelect
+                      options={workplaceGroupApi?.data || []}
+                      name="workplaceGroup"
+                      label="Workplace Group"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          workplaceGroup: op,
+                        });
+                        getworkplace();
+                      }}
+                      rules={[
+                        {
+                          required: isPromote,
+                          message: "Workplace Group is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6}>
+                    <PSelect
+                      options={workplaceApi?.data || []}
+                      name="workplace"
+                      label="Workplace"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          workplace: op,
+                        });
+                        getDepartment();
+                        getDesignation();
+                      }}
+                      rules={[
+                        {
+                          required: isPromote,
+                          message: "Workplace is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6}>
+                    <PSelect
+                      options={departmentApi?.data || []}
+                      name="department"
+                      label="Department"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          department: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: isPromote,
+                          message: "Department is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6}>
+                    <PSelect
+                      options={designationApi?.data || []}
+                      name="designation"
+                      label="Designation"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          designation: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: isPromote,
+                          message: "Designation is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={supervisorDDL?.data || []}
+                      name="supervisor"
+                      label="Supervisor"
+                      placeholder="Search (min 3 letter)"
+                      // disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          supervisor: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={supervisorDDL?.loading}
+                      onSearch={(value) => {
+                        getSupervisor(value);
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Supervisor is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={supervisorDDL?.data || []}
+                      name="lineManager"
+                      label="Line Manager"
+                      placeholder="Search (min 3 letter)"
+                      // disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          lineManager: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={supervisorDDL?.loading}
+                      onSearch={(value) => {
+                        getSupervisor(value);
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Line Manager is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      allowClear
+                      mode="multiple"
+                      options={userRoleApi?.data || []}
+                      name="role"
+                      label="Role"
+                      placeholder="Search (min 3 letter)"
+                      // disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          role: op,
+                        });
+                      }}
+                      loading={userRoleApi?.loading}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Role is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="text"
+                      placeholder="Remarks"
+                      label="Remarks"
+                      name="remarks"
+                    />
+                  </Col>
+                  <Col md={6} sm={24} className="mt-2">
+                    <div className="input-main position-group-select">
+                      {fileId ? (
+                        <>
+                          <label className="lebel-bold mr-2">Attachment</label>
+                          <VisibilityOutlined
+                            sx={{
+                              color: "rgba(0, 0, 0, 0.6)",
+                              fontSize: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              dispatch(
+                                getDownlloadFileView_Action(
+                                  id && !fileId?.globalFileUrlId
+                                    ? (location.state as any)?.singleData
+                                        ?.transferPromotionObj?.intAttachementId
+                                    : fileId?.globalFileUrlId
+                                )
+                              );
+                            }}
+                          />
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div
+                      className={fileId ? " mt-0 " : "mt-3"}
+                      onClick={onButtonClick}
+                      style={{ cursor: "pointer" }}
+                      // style={{ cursor: "pointer", position: "relative" }}
+                    >
+                      <input
+                        onChange={(e) => {
+                          if (e.target.files?.[0] && employee?.value) {
+                            attachment_action(
+                              orgId,
+                              "TransferNPromotion",
+                              31,
+                              buId,
+                              employee?.value,
+                              e.target.files,
+                              setLoading
+                            )
+                              .then((data) => {
+                                setFileId(data?.[0]);
+                              })
+                              .catch((error) => {
+                                setFileId("");
+                              });
+                          }
+                        }}
+                        type="file"
+                        id="file"
+                        ref={inputFile}
+                        style={{ display: "none" }}
+                      />
+                      <div style={{ fontSize: "14px" }}>
+                        {!fileId ? (
+                          <>
+                            <FileUpload
+                              sx={{
+                                marginRight: "5px",
+                                fontSize: "18px",
+                              }}
+                            />{" "}
+                            Click to upload
+                          </>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      {fileId ? (
+                        <div className="d-flex align-items-center">
+                          <AttachmentOutlined
+                            sx={{
+                              marginRight: "5px",
+                              color: "#0072E5",
+                            }}
+                          />
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {fileId?.fileName || "Attachment"}
+                          </div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </Col>
+                  <Divider
+                    style={{
+                      marginBlock: "4px",
+                      marginTop: "6px",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                    }}
+                    orientation="left"
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                      }}
+                    >
+                      <PInput
+                        type="checkbox"
+                        layout="horizontal"
+                        name="isRoleExtension"
+                        onChange={() => {}}
+                      />
+                      <span>
+                        {" "}
+                        Is this employee applicable for role extension?
+                      </span>
+                    </div>
+                  </Divider>
+                  {isRoleExtension && (
+                    <Col md={6} sm={24} className="mt-2">
+                      <PSelect
+                        options={organizationTypeList}
+                        name="orgType"
+                        label="Organization Type"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            orgType: op,
+                          });
+                          console.log({ op });
+                          setOrganizationDDLFunc(
+                            orgId,
+                            wgId,
+                            buId,
+                            employeeId,
+                            op,
+                            setOrganizationDDL
+                          );
+                        }}
+                        // rules={[
+                        //   {
+                        //     required: isPromote,
+                        //     message: "Organization Type is required",
+                        //   },
+                        // ]}
+                      />
+                    </Col>
+                  )}
+                  {isRoleExtension && (
+                    <Col md={6} sm={24} className="mt-2">
+                      <PSelect
+                        options={organizationDDL || []}
+                        name="orgName"
+                        label="Organization Name"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            orgName: op,
+                          });
+                        }}
+                        // rules={[
+                        //   {
+                        //     required: isPromote,
+                        //     message: "Organization Type is required",
+                        //   },
+                        // ]}
+                      />
+                    </Col>
+                  )}
+                  {isRoleExtension && (
+                    <Col md={6} sm={24} className="mt-4 pt-1">
+                      <PButton
+                        type="primary"
+                        action="button"
+                        content="View"
+                        onClick={() => {
+                          const roleExist = transferRowDto?.some(
+                            (item) =>
+                              item?.intOrganizationTypeId === orgType?.value &&
+                              item?.intOrganizationReffId === orgName?.value
+                          );
+
+                          if (roleExist)
+                            return toast.warn("Already extis this role");
+                          onRoleAdd(form.getFieldsValue(true));
+
+                          form.setFieldsValue({
+                            orgType: undefined,
+                            orgName: undefined,
+                          });
+                        }}
+                      />
+                    </Col>
+                  )}
+                  {isRoleExtension && (
+                    <Divider
+                      style={{
+                        marginBlock: "4px",
+                        marginTop: "6px",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                      orientation="left"
+                    >
+                      Role Extension List
+                    </Divider>
+                  )}
+                  {isRoleExtension && transferRowDto?.length > 0 ? (
+                    <Col md={12} sm={24} className="mt-2">
+                      <DataTable
+                        header={transferheader}
+                        bordered
+                        data={transferRowDto || []}
+                      />
+                    </Col>
+                  ) : null}
+
+                  <Divider
+                    style={{
+                      marginBlock: "4px",
+                      marginTop: "6px",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                    }}
+                    orientation="left"
+                  >
+                    History of transfers and promotions
+                  </Divider>
+                  {historyData.length > 0 ? (
+                    <Col md={24} sm={24} className="mt-2">
+                      <HistoryTransferTable historyData={historyData} />
+                    </Col>
+                  ) : (
+                    <NoResult
+                      title={"No Transfer And Promotion History Found"}
+                    />
+                  )}
+                </>
+              ) : undefined;
+            }}
+          </Form.Item>
         </Row>
         <Row gutter={[10, 2]} className="mb-3"></Row>
+
+        {/* calculation rows */}
         <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
