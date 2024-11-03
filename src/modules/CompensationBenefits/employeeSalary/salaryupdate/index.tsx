@@ -242,11 +242,29 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
       accountsDto[0].numAmount;
-
+    console.log(values?.transferType);
     if (accountSum !== values?.grossAmount) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
+    }
+    if (
+      (values?.transferType?.value == 1 || values?.transferType == 1) &&
+      accountsDto[0].numAmount == 0
+    ) {
+      return toast.warn("Bank Pay is selected but no amount provided ");
+    }
+    if (
+      (values?.transferType?.value == 2 || values?.transferType == 2) &&
+      accountsDto[1].numAmount == 0
+    ) {
+      return toast.warn("Digital/MFS Pay is selected but no amount provided ");
+    }
+    if (
+      (values?.transferType?.value == 3 || values?.transferType == 3) &&
+      accountsDto[2].numAmount == 0
+    ) {
+      return toast.warn("Cash Pay is selected but no amount provided ");
     }
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
@@ -315,7 +333,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       numCashPayInAmount: accountsDto[2].numAmount,
       numBankPayInAmount: accountsDto[0].numAmount,
       numDigitalPayInAmount: accountsDto[1].numAmount,
-      IntOthersAdditionalAmountTransferInto: values?.transferType?.value,
+      IntOthersAdditionalAmountTransferInto:
+        values?.transferType?.value || values?.transferType,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
       intSlabCount:
         values?.salaryType?.value === "Grade"
