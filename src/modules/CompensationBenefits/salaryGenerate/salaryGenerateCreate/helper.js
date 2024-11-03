@@ -333,13 +333,14 @@ export const salaryGenerateCreateEditTableColumn = (
   {
     title: "Digital Amount",
     dataIndex: "numDigitalPayInAmount",
+    render: (_, record) => (
+      <div className="align-items-left">
+        {record?.numDigitalPayInAmount === null
+          ? "0"
+          : record?.numDigitalPayInAmount}
+      </div>
+    ),
   },
-  // {
-  //   title: "Workplace Group",
-  //   dataIndex: "strWorkplaceGroup",
-  //   sorter: true,
-  //   filter: true,
-  // },
   {
     title: "Payroll Group",
     dataIndex: "strPayrollGroup",
