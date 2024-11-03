@@ -330,6 +330,10 @@ export const salaryGenerateCreateEditTableColumn = (
     title: "Cash Pay",
     dataIndex: "numCashPayInAmount",
   },
+  {
+    title: "Digital Amount",
+    dataIndex: "numDigitalPayInAmount",
+  },
   // {
   //   title: "Workplace Group",
   //   dataIndex: "strWorkplaceGroup",
