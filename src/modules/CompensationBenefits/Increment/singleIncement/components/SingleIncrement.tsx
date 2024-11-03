@@ -545,7 +545,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       incrementDependOn: "",
       incrementDependOnValue: 0,
       incrementPercentage: 0,
-      incrementAmount: 0,
+      incrementAmount:
+        values?.grossAmount -
+        (employeeIncrementByIdApi?.data?.oldGrossAmount ||
+          employeeInfo?.data[0]?.numNetGrossSalary),
       workPlaceId: wId,
       workPlaceGroupId: wgId,
       effectiveDate: moment(values?.dteEffectiveDate).format("YYYY-MM-DD"),
