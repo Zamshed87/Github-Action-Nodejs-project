@@ -88,7 +88,6 @@ export default function AddEditForm({
   const [form] = Form.useForm();
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
- 
     const cb = () => {
       resetForm();
       setIsAddEditForm(false);
@@ -406,7 +405,7 @@ export default function AddEditForm({
                   value: "DBL",
                   label: "DBL",
                 },
-                
+
                 {
                   value: "SCB",
                   label: "SCB",
@@ -423,6 +422,11 @@ export default function AddEditForm({
                   value: "DigitalPayment",
 
                   label: "Digital Payment",
+                },
+                {
+                  value: "DBBLAB",
+
+                  label: "DBBL Agent Banking",
                 },
               ]}
               name="bankAdvice"
