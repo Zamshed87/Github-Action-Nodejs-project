@@ -13,6 +13,7 @@ import { todayDate } from "utility/todayDate";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
+import Loading from "common/loading/Loading";
 type LeaveApplicationForm = any;
 
 const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
@@ -37,6 +38,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
   const [, setStartYear] = useState<any>(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
+  const [isload, setLoad] = useState(false);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -45,6 +47,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
     form.setFieldsValue({
       leaveType: leaveTypeDDL?.length > 0 ? { ...leaveTypeDDL[0] } : undefined,
       fromDate: values?.isSelfService ? undefined : moment(todayDate()),
+      toDate: values?.isSelfService ? undefined : moment(todayDate()),
+      leaveDays: values?.isSelfService ? 0 : 1,
     });
   }, [leaveTypeDDL]);
   //   edit
@@ -92,10 +96,16 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
           (attachmentList[0] as any)?.response.length > 0
             ? (attachmentList[0] as any)?.response[0]
             : { globalFileUrlId: singleData?.DocumentFileUrl };
-        saveHandler({ ...values, ...data, imageFile }, () => {
-          form.resetFields();
-          setAttachmentList([]);
-        });
+        setLoad(true);
+        saveHandler(
+          { ...values, ...data, imageFile },
+          () => {
+            setLoad(false);
+            form.resetFields();
+            setAttachmentList([]);
+          },
+          setLoad
+        );
       })
       .catch(() => {
         console.log();
@@ -108,11 +118,12 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         initialValues={{
           isHalfDay: 0,
           // fromDate: values?.isSelfService ? "" : moment(todayDate()),
-          toDate: moment(todayDate()),
+          // toDate: moment(todayDate()),
           halfTime: "8:30 AM – 12:30 PM",
-          leaveDays: 1,
+          // leaveDays: 1,
         }}
       >
+        {isload && <Loading />}
         <PCardBody styles={{ marginTop: "51.5px" }}>
           <Row gutter={[10, 2]}>
             <Col md={8} sm={12} xs={24}>
@@ -168,6 +179,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                           form.setFieldsValue({
                             fromDate: date,
                             toDate: date,
+                            leaveDays: 1,
                           });
                           if (
                             moment(date).format() === moment(toDate).format() &&
@@ -196,7 +208,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                             });
                           } else {
                             form.setFieldsValue({
-                              leaveDays: 0,
+                              leaveDays: 1,
                             });
                           }
                         }}
