@@ -57,7 +57,6 @@ export const OTCountAmount = [
     value: 3,
     label: "Round Up",
   },
-
 ];
 export const BasedOn = [
   { value: 1, label: "Fixed" },
@@ -103,13 +102,13 @@ TOTPolicyGenerate) => {
     .filter((condition) => condition.condition)
     .map(({ value, label }) => ({ value, label }));
   // console.log({ policy });
-
+  console.log("tableData", tableData);
   const serviceLengthList =
     tableData?.map((item: any, idx: number) => {
       return {
         intFromMinute: item?.intFromMinute || 0,
         intToMinute: item?.intToMinute || 0,
-        isAtActual: item?.showInDepend?.value === 2 ? true : false,
+        isAtActual: item?.showInDepend?.label === "Actual" ? true : false,
         intOvertimeMinute: item?.intOvertimeMinute || 0,
       };
     }) || [];
@@ -149,8 +148,6 @@ TOTPolicyGenerate) => {
       6
     ),
     rangeBasedVM: serviceLengthList || [],
-
-   
   };
 
   const payload: any = generateRows(
@@ -372,6 +369,7 @@ export const initDataGenerate = (data: any, setTableData: any) => {
         overTimeAmount: itm?.intOvertimeMinute,
         showInDepend: {
           label: itm?.isAtActual ? "Actual" : "Fixed",
+          value: itm?.isAtActual ? 2 : 1,
         },
       };
     })
