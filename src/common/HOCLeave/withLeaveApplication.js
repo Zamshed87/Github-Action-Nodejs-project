@@ -108,7 +108,7 @@ const withLeaveApplication = (WrappedComponent) => {
       createLeaveApplication(payload, setLoading, callback);
     };
 
-    const demoPopup = (action, values, cb) => {
+    const demoPopup = (action, values, cb, setLoad) => {
       let payload = {};
       const callback = () => {
         getData(values?.employee?.value, values?.year?.value);
@@ -160,9 +160,9 @@ const withLeaveApplication = (WrappedComponent) => {
         message: `Ready to submit a leave application?`,
         yesAlertFunc: () => {
           if (values?.employee) {
-            createLeaveApplication(payload, setLoading, callback);
+            createLeaveApplication(payload, setLoading, callback, setLoad);
           } else {
-            createLeaveApplication(payload, setLoading, callback);
+            createLeaveApplication(payload, setLoading, callback, setLoad);
           }
         },
         noAlertFunc: () => null,
@@ -170,8 +170,8 @@ const withLeaveApplication = (WrappedComponent) => {
       IConfirmModal(confirmObject);
     };
 
-    const saveHandler = (values, cb) => {
-      demoPopup("Apply", values, cb);
+    const saveHandler = (values, cb, setLoad) => {
+      demoPopup("Apply", values, cb, setLoad);
     };
 
     const searchData = (keywords, allData, setLeaveHistoryData) => {
