@@ -66,7 +66,8 @@ export const createNEditLetterTemplate = async (
   form,
   profileData,
   setLoading,
-  letterData
+  letterData,
+  setBackgroundImg
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
@@ -87,12 +88,14 @@ export const createNEditLetterTemplate = async (
       createdAt: letterData?.createdAt || todayDate(),
     };
     setLoading(true);
+    console.log(payload);
     const res = await axios.post(
       `/LetterBuilder/CreateAndEditLetterTemplate`,
       payload
     );
     setLoading(false);
     form.resetFields();
+    setBackgroundImg([]);
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     setLoading(false);
