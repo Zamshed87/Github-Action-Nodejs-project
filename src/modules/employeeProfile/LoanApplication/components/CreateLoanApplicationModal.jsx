@@ -222,7 +222,6 @@ const CreateLoanApplicationModal = ({
       );
     }
   }, [singleData?.loanApplicationId]);
-
   const labelShowLastInstallmentAmt = (values) => {
     const lastAmount = values?.loanAmount % values?.amountPerInstallment;
     if (lastAmount > 0) {
