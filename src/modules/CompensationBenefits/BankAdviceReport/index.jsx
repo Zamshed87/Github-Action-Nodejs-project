@@ -6,15 +6,11 @@ import { getPeopleDeskAllDDL } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
-import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
-import { monthYearFormatter } from "../../../utility/dateFormatter";
-import { downloadFile } from "../../../utility/downloadFile";
-import { convert_number_to_word } from "../../../utility/numberToWord";
+import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
 import { customStyles } from "../../../utility/selectCustomStyle";
-import { generateExcelAction } from "./excel/excelConvert";
 import {
   salaryAdviceExcelColumn,
   salaryAdviceExcelData,
@@ -27,19 +23,17 @@ import {
 } from "./helper";
 import { paginationSize } from "../../../common/peopleDeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
-import { generateTopSheetAction } from "./excel/excelTopSheet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { todayDate } from "utility/todayDate";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { useApiRequest } from "Hooks";
 import BtnActionMenu from "common/BtnActionMenu";
 import { DownloadOutlined } from "@ant-design/icons";
-import { MdPrint } from "react-icons/md";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { TopSheetReport } from "./TopSheetReport";
 import { useReactToPrint } from "react-to-print";
-import MasterFilter from "common/MasterFilter";
 import moment from "moment";
+import { MdPrint } from "react-icons/md";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -874,123 +868,103 @@ const BankAdviceReport = () => {
                       }
                       label="Download"
                       options={[
-                        // {
-                        //   value: 1,
-                        //   label: "Top Sheet as Excel",
-                        //   icon: (
-                        //     <SiMicrosoftexcel
-                        //       style={{
-                        //         marginRight: "5px",
-                        //         color: gray500,
-                        //         fontSize: "16px",
-                        //       }}
-                        //     />
-                        //   ),
-                        //   onClick: () => {
-                        //     if (rowDto?.length <= 0) {
-                        //       return toast.warning("Data is empty !!!!", {
-                        //         toastId: 1,
-                        //       });
-                        //     }
+                        {
+                          value: 1,
+                          label: "Top Sheet as Excel",
+                          icon: (
+                            <SiMicrosoftexcel
+                              style={{
+                                marginRight: "5px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                              values?.workplaceGroup?.value
+                            }&IntWorkplaceId=${
+                              values?.workplace?.value
+                            }&IntMonthId=${values?.monthId}&IntYearId=${
+                              values?.yearId
+                            }&IntBankId=${
+                              values?.bank?.value
+                            }&IntSalaryGenerateRequestId=${
+                              values?.adviceName?.value
+                            }&StrAdviceType=${"TopSheet"}`;
 
-                        //     excelGenerate(values, (res) => {
-                        //       const total = Number(
-                        //         res
-                        //           ?.reduce(
-                        //             (acc, item) => acc + item?.numNetPayable,
-                        //             0
-                        //           )
-                        //           .toFixed(2)
-                        //       );
-                        //       generateTopSheetAction(
-                        //         monthYearFormatter(values?.monthYear),
-                        //         "",
-                        //         "",
-                        //         excelColumnFunc(0),
-                        //         excelDataFunc(0),
-                        //         strBusinessUnit,
-                        //         4,
-                        //         res,
-                        //         values,
-                        //         total,
-                        //         // withDecimal(total),
-                        //         convert_number_to_word(total),
-                        //         businessUnitDDL[0]?.BusinessUnitAddress
-                        //       );
-                        //     });
-                        //   },
-                        // },
-                        // {
-                        //   value: 2,
-                        //   label: "Advice List as Excel",
-                        //   icon: (
-                        //     <SiMicrosoftexcel
-                        //       style={{
-                        //         marginRight: "5px",
-                        //         color: gray500,
-                        //         fontSize: "16px",
-                        //       }}
-                        //     />
-                        //   ),
-                        //   onClick: () => {
-                        //     if (rowDto?.length <= 0) {
-                        //       return toast.warning("Data is empty !!!!", {
-                        //         toastId: 2,
-                        //       });
-                        //     }
+                            downloadFile(
+                              url,
+                              "Top Sheet Report as Excel",
+                              "xlsx",
+                              setLoading
+                            );
+                          },
+                        },
+                        {
+                          value: 2,
+                          label: "Advice List as Excel",
+                          icon: (
+                            <SiMicrosoftexcel
+                              style={{
+                                marginRight: "5px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (rowDto?.length <= 0) {
+                              return toast.warning("Data is empty !!!!", {
+                                toastId: 2,
+                              });
+                            }
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}`;
 
-                        //     excelGenerate(values, (res) => {
-                        //       const total = Number(
-                        //         res
-                        //           ?.reduce(
-                        //             (acc, item) => acc + item?.numNetPayable,
-                        //             0
-                        //           )
-                        //           .toFixed(2)
-                        //       );
-
-                        //       generateExcelAction(
-                        //         monthYearFormatter(values?.monthYear),
-                        //         "",
-                        //         "",
-                        //         excelColumnFunc(0),
-                        //         excelDataFunc(0),
-                        //         strBusinessUnit,
-                        //         values,
-                        //         res,
-                        //         values?.account?.AccountNo,
-                        //         total,
-                        //         // withDecimal(total),
-                        //         convert_number_to_word(total),
-                        //         businessUnitDDL[0]?.BusinessUnitAddress
-                        //       );
-                        //     });
-                        //   },
-                        // },
-                        // {
-                        //   value: 3,
-                        //   label: "Top Sheet as PDF",
-                        //   icon: (
-                        //     <MdPrint
-                        //       style={{
-                        //         marginRight: "5px",
-                        //         color: gray500,
-                        //         fontSize: "16px",
-                        //       }}
-                        //     />
-                        //   ),
-                        //   onClick: () => {
-                        //     if (rowDto?.length <= 0) {
-                        //       return toast.warning("Data is empty !!!!", {
-                        //         toastId: 3,
-                        //       });
-                        //     }
-                        //     excelGenerate(values, (res) => {
-                        //       setPdfDto(res);
-                        //     });
-                        //     topSheetPrintFn();
-                        //   },
-                        // },
+                            downloadFile(
+                              url,
+                              "Advice List as Excel",
+                              "xlsx",
+                              setLoading
+                            );
+                          },
+                        },
+                        {
+                          value: 3,
+                          label: "Top Sheet as PDF",
+                          icon: (
+                            <MdPrint
+                              style={{
+                                marginRight: "5px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (rowDto?.length <= 0) {
+                              return toast.warning("Data is empty !!!!", {
+                                toastId: 3,
+                              });
+                            }
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                              values?.workplaceGroup?.value
+                            }&IntWorkplaceId=${
+                              values?.workplace?.value
+                            }&IntMonthId=${values?.monthId}&IntYearId=${
+                              values?.yearId
+                            }&IntBankId=${
+                              values?.bank?.value
+                            }&IntSalaryGenerateRequestId=${
+                              values?.adviceName?.value
+                            }&StrAdviceType=${"TopSheet"}`;
+                            getPDFAction(url, setLoading);
+                            // excelGenerate(values, (res) => {
+                            //   setPdfDto(res);
+                            // });
+                            // topSheetPrintFn();
+                          },
+                        },
                         {
                           value: 3,
                           label: "Top Sheet and Datails as Excel",
@@ -1018,7 +992,7 @@ const BankAdviceReport = () => {
                     />
                   </li>
 
-                  <li className="pt-1">
+                  {/* <li className="pt-1">
                     <MasterFilter
                       isHiddenFilter
                       styles={{
@@ -1110,7 +1084,7 @@ const BankAdviceReport = () => {
                         }
                       }}
                     />
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
