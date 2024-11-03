@@ -337,16 +337,16 @@ const assetRegistrationColumn = (
         return formatMoney(record?.bookValue);
       },
     },
-    {
-      title: "Total Depreciation",
-      dataIndex: "totalDepreciation",
-      sort: false,
-      filter: false,
-      className: "text-right",
-      render: (record) => {
-        return formatMoney(record?.totalDepreciation);
-      },
-    },
+    // {
+    //   title: "Total Depreciation",
+    //   dataIndex: "totalDepreciation",
+    //   sort: false,
+    //   filter: false,
+    //   className: "text-right",
+    //   render: (record) => {
+    //     return formatMoney(record?.totalDepreciation);
+    //   },
+    // },
     {
       title: "Total Maintenance",
       dataIndex: "totalMaintenance",
@@ -528,6 +528,5 @@ export {
   registrationColumn,
   rowDtoInputHandler,
   rowDtoInputHandlerOnBlur,
-  saveHandler
+  saveHandler,
 };
-
