@@ -195,7 +195,7 @@ const ViewIncrementNPromotion = () => {
                     fontWeight: "400",
                   }}
                 >
-                  Depend On
+                  Depends On
                 </p>
               </div>
               <div className="d-flex flex-column mr-4">
