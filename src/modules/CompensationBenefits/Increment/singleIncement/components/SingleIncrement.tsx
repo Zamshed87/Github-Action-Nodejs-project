@@ -36,6 +36,7 @@ import {
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { setOrganizationDDLFunc } from "modules/roleExtension/ExtensionCreate/helper";
 import HistoryTransferTable from "modules/employeeProfile/transferNPromotion/transferNPromotion/components/HistoryTransferTable";
+import Loading from "common/loading/Loading";
 
 type TIncrement = unknown;
 const SingleIncrement: React.FC<TIncrement> = () => {
@@ -1256,6 +1257,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         },
       });
     }
+    getAssignedBreakdown();
   }, [employeeInfo?.data[0]]);
 
   return employeeFeature?.isView ? (
@@ -1266,6 +1268,15 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       }}
       onFinish={submitHandler}
     >
+      {(employeeIncrementByIdApi?.loading ||
+        isPromotionEligibleCheckApi?.loading ||
+        employeeDDLApi?.loading ||
+        payrollGroupDDL?.loading ||
+        assignBreakdownApi?.loading ||
+        getById?.loading ||
+        employeeInfo?.loading ||
+        payscaleApi?.loading ||
+        createIncrement?.loading) && <Loading />}
       <PCard>
         <PCardHeader
           backButton
@@ -1287,7 +1298,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                       { value: "Grade", label: "Grade" },
                       { value: "Non-Grade", label: "Non-Grade" },
                     ]
-                  : [{ value: "Non-Grade", label: "Non-Grade" }]
+                  : [
+                      { value: "Non-Grade", label: "Non-Grade" },
+                      // { value: "Grade", label: "Grade" },
+                    ]
               }
               name="salaryType"
               disabled={(location?.state as any)?.viewOnly}
@@ -1342,7 +1356,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                   wgId
                 );
                 setRowDto([]);
-                getAssignedBreakdown();
+                // getAssignedBreakdown();
               }}
               showSearch
               filterOption={false}
