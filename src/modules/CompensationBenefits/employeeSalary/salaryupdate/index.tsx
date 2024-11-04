@@ -139,7 +139,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           setRowDto(modifyforGrade);
         } else {
           setRowDto(modify);
-          salaryBreakDownCalc();
+          default_gross_calculation();
         }
       },
     });
@@ -242,11 +242,29 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
       accountsDto[0].numAmount;
-
+    console.log(values?.transferType);
     if (accountSum !== values?.grossAmount) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
+    }
+    if (
+      (values?.transferType?.value == 1 || values?.transferType == 1) &&
+      accountsDto[0].numAmount == 0
+    ) {
+      return toast.warn("Bank Pay is selected but no amount provided ");
+    }
+    if (
+      (values?.transferType?.value == 2 || values?.transferType == 2) &&
+      accountsDto[1].numAmount == 0
+    ) {
+      return toast.warn("Digital/MFS Pay is selected but no amount provided ");
+    }
+    if (
+      (values?.transferType?.value == 3 || values?.transferType == 3) &&
+      accountsDto[2].numAmount == 0
+    ) {
+      return toast.warn("Cash Pay is selected but no amount provided ");
     }
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
@@ -281,7 +299,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strAccountNo: `${values?.accountNo}` || "",
       strSwiftCode: values?.swift || "",
     };
-    bankDetailsAction(payload, setLoading, () => {});
+    if (values?.transferType?.value === 1 || values?.transferType === 1) {
+      bankDetailsAction(payload, setLoading, () => {});
+    }
 
     const modifiedBreakDown = rowDto?.map((i) => {
       return {
@@ -315,7 +335,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       numCashPayInAmount: accountsDto[2].numAmount,
       numBankPayInAmount: accountsDto[0].numAmount,
       numDigitalPayInAmount: accountsDto[1].numAmount,
-      IntOthersAdditionalAmountTransferInto: values?.transferType?.value,
+      IntOthersAdditionalAmountTransferInto:
+        values?.transferType?.value || values?.transferType,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
       intSlabCount:
         values?.salaryType?.value === "Grade"
@@ -431,7 +452,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
 
     if (basedOn?.value === 2 || salaryType?.value === "Grade") {
-      calculate_salary_breakdown();
+      basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
       methodAb();
@@ -483,7 +504,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     setRowDto(calculatedRowDto);
   };
 
-  const salaryBreakDownCalc = (salaryDependsOn = "") => {
+  const default_gross_calculation = (salaryDependsOn = "") => {
     const modifyData: any = [];
     const { grossAmount } = form.getFieldsValue(true);
 
@@ -531,7 +552,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         .join("")}`
     );
   };
-  const calculate_salary_breakdown = () => {
+  const basic_or_grade_calculation = () => {
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
@@ -866,7 +887,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           }
           setSlabDDL(temp);
 
-          // calculate_salary_breakdown();
+          // basic_or_grade_calculation();
         },
       });
     }
@@ -1165,6 +1186,13 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             accountsDto[2].numAmount = gross;
                             accountsDto[2].accounts = `Cash Pay (${100}%)`;
                             accountsDto[2].percentage = 100;
+
+                            accountsDto[0].numAmount = 0;
+                            accountsDto[0].accounts = `Bank Pay (${0}%)`;
+                            accountsDto[0].percentage = 0;
+                            accountsDto[1].numAmount = 0;
+                            accountsDto[1].accounts = `Digital/MFS Pay (${0}%)`;
+                            accountsDto[1].percentage = 0;
                             const temp = [];
                             for (let i = 0; i <= res?.incrementSlabCount; i++) {
                               temp.push({
@@ -1187,7 +1215,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             }
                             setSlabDDL(temp);
                             setRowDto(modify);
-                            // calculate_salary_breakdown();
+                            // basic_or_grade_calculation();
                           },
                         });
                       }}
@@ -1278,7 +1306,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     <PSelect
                       options={[
                         { value: 1, label: "Gross" },
-                        { value: 2, label: "Basic" },
+                        // { value: 2, label: "Basic" },
                       ]}
                       name="basedOn"
                       label="Based On"
@@ -1313,7 +1341,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
-                      onChange={() => calculate_salary_breakdown()}
+                      onChange={() => basic_or_grade_calculation()}
                       rules={[
                         {
                           required: basedOn?.value === 2 || basedOn === 2,
@@ -1338,7 +1366,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         temp[2].numAmount = e;
                         temp[0].numAmount = 0;
                         temp[1].numAmount = 0;
-                        salaryBreakDownCalc();
+                        default_gross_calculation();
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
                         //             )?.toFixed(6)
@@ -1378,7 +1406,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                           prev = temp;
                           return prev;
                         });
-                        calculate_salary_breakdown();
+                        basic_or_grade_calculation();
                         form.setFieldsValue({
                           slabCount: value,
                         });
@@ -1443,119 +1471,148 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           }}
           orientation="left"
         ></Divider>
-        <Row gutter={[10, 2]}>
-          <Col md={3} className="mt-2">
-            Bank Name
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PSelect
-              options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
-              name="bank"
-              placeholder="Bank"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  bank: op,
-                });
-                getBranchDDL();
-              }}
-              rules={[{ required: true, message: "Bank is required" }]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Branch Name
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PSelect
-              options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
-              name="branch"
-              placeholder="Branch"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  branch: op,
-                  routing: (op as any)?.name,
-                });
-              }}
-              rules={[{ required: true, message: "Branch is required" }]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Routing No
-          </Col>
-          <Col md={12} className="mt-2">
-            <PInput
-              type="number"
-              name="routing"
-              placeholder="Routing"
-              disabled={true}
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { transferType } = form.getFieldsValue(true);
+            return (
+              <Row gutter={[10, 2]}>
+                <Col md={3} className="mt-2">
+                  Bank Name
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PSelect
+                    options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
+                    name="bank"
+                    placeholder="Bank"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        bank: op,
+                      });
+                      getBranchDDL();
+                    }}
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
+                        message: "Bank is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Branch Name
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PSelect
+                    options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
+                    name="branch"
+                    placeholder="Branch"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        branch: op,
+                        routing: (op as any)?.name,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
+                        message: "Branch is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Routing No
+                </Col>
+                <Col md={12} className="mt-2">
+                  <PInput
+                    type="number"
+                    name="routing"
+                    placeholder="Routing"
+                    disabled={true}
 
-              // rules={[
-              //   {
-              //     // required: basedOn?.value === 2,
-              //     message: "Basic is required",
-              //   },
-              // ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Swift Code
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PInput
-              type="number"
-              name="swift"
-              disabled={true}
-              placeholder="Swift Code"
-              // rules={[
-              //   {
-              //     // required: basedOn?.value === 2,
-              //     message: "Basic is required",
-              //   },
-              // ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Account Name
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PInput
-              type="text"
-              name="account"
-              placeholder="Account Name"
-              rules={[
-                {
-                  required: true,
-                  message: "Account Name is required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Account No
-          </Col>
-          <Col md={12} className="mt-2">
-            <PInput
-              type="number"
-              name="accountNo"
-              placeholder="Account No"
-              rules={[
-                {
-                  required: true,
-                  message: "Account No is required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-        </Row>
+                    // rules={[
+                    //   {
+                    //     // required: basedOn?.value === 2,
+                    //     message: "Basic is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Swift Code
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PInput
+                    type="number"
+                    name="swift"
+                    disabled={true}
+                    placeholder="Swift Code"
+                    // rules={[
+                    //   {
+                    //     // required: basedOn?.value === 2,
+                    //     message: "Basic is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Account Name
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PInput
+                    type="text"
+                    name="account"
+                    placeholder="Account Name"
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
+                        message: "Account Name is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Account No
+                </Col>
+                <Col md={12} className="mt-2">
+                  <PInput
+                    type="number"
+                    name="accountNo"
+                    placeholder="Account No"
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
+                        message: "Account No is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+              </Row>
+            );
+          }}
+        </Form.Item>
       </PCard>
 
       <IncrementHistoryComponent

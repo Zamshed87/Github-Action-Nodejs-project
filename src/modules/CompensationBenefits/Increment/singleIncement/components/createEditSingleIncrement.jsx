@@ -1311,6 +1311,7 @@ function CreateSingleIncrement() {
                               }));
                               setOrganizationDDLFunc(
                                 orgId,
+                                wgId,
                                 buId,
                                 employeeId,
                                 valueOption,
