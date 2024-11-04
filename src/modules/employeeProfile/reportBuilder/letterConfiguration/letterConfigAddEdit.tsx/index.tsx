@@ -258,7 +258,6 @@ const LetterConfigAddEdit = () => {
               backgroundImg?.length === 0 ? (
                 <div
                   className="d-flex align-items-center"
-                  style={{ marginTop: "18px" }}
                   onClick={() => {
                     dispatch(
                       getDownlloadFileView_Action(

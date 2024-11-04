@@ -88,7 +88,6 @@ export const createNEditLetterTemplate = async (
       createdAt: letterData?.createdAt || todayDate(),
     };
     setLoading(true);
-    console.log(payload);
     const res = await axios.post(
       `/LetterBuilder/CreateAndEditLetterTemplate`,
       payload
