@@ -116,8 +116,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       params: {
         StrReportType: "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
         IntAccountId: orgId,
-        IntSalaryBreakdownHeaderId: (location?.state as any)
-          ?.intSalaryBreakdownHeaderId,
+        IntSalaryBreakdownHeaderId:
+          (location?.state as any)?.intSalaryBreakdownHeaderId || 0,
         IntEmployeeId: (location?.state as any)?.EmployeeId,
         IntWorkplaceId: wId || 0,
       },
@@ -219,7 +219,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         StrReportType: "BREAKDOWN ELEMENT BY ID",
 
         IntAccountId: orgId,
-        IntSalaryBreakdownHeaderId: payrollGroup?.value,
+        IntSalaryBreakdownHeaderId: payrollGroup?.value || 0,
         IntWorkplaceId: 0,
         intId: 0,
       },
