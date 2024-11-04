@@ -529,6 +529,7 @@ export default function SelfApplicationSeparationForm() {
                     <div>
                       <ReactQuill
                         value={values?.applicationBody}
+                        preserveWhitespace={true}
                         onChange={(value) =>
                           setFieldValue("applicationBody", value)
                         }

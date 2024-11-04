@@ -14,6 +14,7 @@ import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { shallowEqual, useSelector } from "react-redux";
 import FormikRadio from "common/FormikRadio";
 import { greenColor } from "utility/customColor";
+import moment from "moment";
 
 const FormCard = ({ propsObj }) => {
   const {
@@ -72,14 +73,16 @@ const FormCard = ({ propsObj }) => {
                     valueOption?.value,
                     setScheduleMeal,
                     setLoading,
-                    ""
+                    "",
+                    values?.viewDate
                   );
                   getPendingAndConsumeMealReport(
                     2,
                     valueOption?.value,
                     setConsumeMeal,
                     setLoading,
-                    ""
+                    "",
+                    values?.viewDate
                   );
                 }
               }}
@@ -97,14 +100,34 @@ const FormCard = ({ propsObj }) => {
                 name="date"
                 type="date"
                 className="form-control"
+                // I want to disable all dates from the previous month using moment.js
+                min={moment().subtract(1, "months").format("YYYY-MM-DD")}
                 onChange={(e) => {
                   setFieldValue("date", e.target.value);
+                  const selectDate = moment(e.target.value);
+
+                  const currentDate = moment();
+                  if (
+                    selectDate.format("MM-YYYY") ===
+                    currentDate.format("MM-YYYY")
+                  ) {
+                    setFieldValue("viewDate", moment().format("YYYY-MM-DD"));
+                  } else {
+                    // first date of that month
+                    const firstDate = moment(e.target.value).startOf("month");
+
+                    setFieldValue(
+                      "viewDate",
+                      moment(firstDate).format("YYYY-MM-DD")
+                    );
+                  }
                 }}
                 errors={errors}
                 touched={touched}
               />
             </div>
           </div>
+          {console.log("values", values)}
           <div className="col-lg-12">
             {employeeInfo && (
               <p>

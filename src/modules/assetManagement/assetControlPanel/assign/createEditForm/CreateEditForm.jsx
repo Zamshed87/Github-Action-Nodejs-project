@@ -122,6 +122,7 @@ const AssetAssignForm = () => {
                         color={blueColor}
                         onChange={(e) => {
                           setFieldValue("assignTo", e.target.value);
+                          setFieldValue("employeeName", "");
                         }}
                         checked={values?.assignTo === "employee"}
                       />
@@ -132,6 +133,7 @@ const AssetAssignForm = () => {
                         color={greenColor}
                         onChange={(e) => {
                           setFieldValue("assignTo", e.target.value);
+                          setFieldValue("employeeName", "");
                         }}
                         checked={values?.assignTo === "department"}
                       />

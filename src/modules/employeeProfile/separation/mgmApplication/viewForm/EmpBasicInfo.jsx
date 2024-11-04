@@ -174,7 +174,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     style={{ fontWeight: "500", color: gray700 }}
                   >
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
-                      Date of Resign -
+                      Date of Application -
                     </small>{" "}
                     {empBasic?.dateofResign || "N/A"}
                   </p>

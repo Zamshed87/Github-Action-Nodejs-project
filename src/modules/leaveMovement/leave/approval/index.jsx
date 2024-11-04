@@ -36,10 +36,7 @@ import {
   greenColor,
   successColor,
 } from "../../../../utility/customColor";
-import {
-  dateFormatter,
-  dateFormatterForInput,
-} from "../../../../utility/dateFormatter";
+import { dateFormatter } from "../../../../utility/dateFormatter";
 import {
   getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
@@ -53,7 +50,7 @@ import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
 import ApproveRejectComp from "common/ApproveRejectComp";
-import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
+import { toast } from "react-toastify";
 
 const initData = {
   searchString: "",
@@ -342,7 +339,7 @@ export default function LeaveApproval() {
     document.title = "Leave Approval";
   }, []);
 
-  const getLandingTable = (setFieldValue, page, paginationSize, values) => {
+  const getLandingTable = (setFieldValue, page, paginationSize) => {
     return [
       {
         title: "SL",
@@ -366,19 +363,25 @@ export default function LeaveApproval() {
                 name="allSelected"
                 checked={
                   filterData?.listData?.length > 0 &&
-                  filterData?.listData?.every((item) => item?.selectCheckbox)
+                  filterData?.listData
+                    ?.slice(0, 50)
+                    ?.every((item) => item?.selectCheckbox)
                 }
                 onChange={(e) => {
                   setAllLeaveApplicatonData({
-                    listData: leaveApplicationData?.listData?.map((item) => ({
-                      ...item,
-                      selectCheckbox: e.target.checked,
-                    })),
+                    listData: leaveApplicationData?.listData?.map(
+                      (item, index) => ({
+                        ...item,
+                        selectCheckbox:
+                          index < 50 ? e.target.checked : item.selectCheckbox,
+                      })
+                    ),
                   });
                   setFilterData({
-                    listData: filterData?.listData?.map((item) => ({
+                    listData: filterData?.listData?.map((item, index) => ({
                       ...item,
-                      selectCheckbox: e.target.checked,
+                      selectCheckbox:
+                        index < 50 ? e.target.checked : item.selectCheckbox,
                     })),
                   });
                   setFieldValue("allSelected", e.target.checked);
@@ -404,6 +407,16 @@ export default function LeaveApproval() {
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
                   e.stopPropagation();
+
+                  const checkedCount = filterData?.listData?.filter(
+                    (item) => item?.selectCheckbox
+                  ).length;
+
+                  if (e.target.checked && checkedCount >= 50) {
+                    toast.warning("You cannot select more than 50 items.");
+                    return;
+                  }
+
                   const leaveAppData = leaveApplicationData?.listData?.map(
                     (item) => {
                       if (
@@ -428,6 +441,7 @@ export default function LeaveApproval() {
                       };
                     } else return item;
                   });
+
                   setAllLeaveApplicatonData({ listData: [...leaveAppData] });
                   setFilterData({ listData: [...data] });
                 }}
@@ -628,7 +642,7 @@ export default function LeaveApproval() {
         // ),
         filter: false,
         sorter: false,
-        width: 100  ,
+        width: 100,
       },
       {
         title: "Waiting Stage",

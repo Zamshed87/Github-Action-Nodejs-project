@@ -88,7 +88,6 @@ export default function AddEditForm({
   const [form] = Form.useForm();
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
- 
     const cb = () => {
       resetForm();
       setIsAddEditForm(false);
@@ -320,9 +319,9 @@ export default function AddEditForm({
             <PInput
               type="text"
               name="districtName"
-              label="District"
-              placeholder="District"
-              rules={[{ required: true, message: "District is required" }]}
+              label="Bank Address"
+              placeholder="Bank Address"
+              rules={[{ required: true, message: "Bank Address is required" }]}
             />
           </Col>
 
@@ -406,7 +405,7 @@ export default function AddEditForm({
                   value: "DBL",
                   label: "DBL",
                 },
-                
+
                 {
                   value: "SCB",
                   label: "SCB",
@@ -423,6 +422,11 @@ export default function AddEditForm({
                   value: "DigitalPayment",
 
                   label: "Digital Payment",
+                },
+                {
+                  value: "DBBLAB",
+
+                  label: "DBBL Agent Banking",
                 },
               ]}
               name="bankAdvice"
