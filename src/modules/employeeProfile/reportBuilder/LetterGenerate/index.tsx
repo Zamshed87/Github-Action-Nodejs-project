@@ -21,6 +21,8 @@ import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
 import { useReactToPrint } from "react-to-print";
 import LetterPrint from "./letterPrint";
+import { getPDFAction } from "utility/downloadFile";
+import Loading from "common/loading/Loading";
 
 const LetterGenerateLanding = () => {
   // router states
@@ -60,6 +62,7 @@ const LetterGenerateLanding = () => {
   const [open, setOpen] = useState(false);
   const [singleData, setSingleData] = useState({});
   const [pdfData, setPdfData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -102,24 +105,24 @@ const LetterGenerateLanding = () => {
   }, [wgId, wId, buId]);
 
   // print pdf
-  const printLetterRef: any = useRef();
+  // const printLetterRef: any = useRef();
 
-  const reportPrintFn = useReactToPrint({
-    contentRef: printLetterRef,
-    pageStyle:
-      "@media print{body { -webkit-print-color-adjust: exact;font-size: 16px !important;line-height: 1.5; }@page {size: A4 ! important; margin: 20mm;}}",
-    documentTitle: pdfData?.letterType,
-  });
+  // const reportPrintFn = useReactToPrint({
+  //   contentRef: printLetterRef,
+  //   pageStyle:
+  //     "@media print{body { -webkit-print-color-adjust: exact;font-size: 16px !important;line-height: 1.5; }@page {size: A4 ! important; margin: 20mm;}}",
+  //   documentTitle: pdfData?.letterType,
+  // });
 
-  useEffect(() => {
-    if (pdfData) {
-      reportPrintFn();
-    }
-  }, [pdfData]);
+  // useEffect(() => {
+  //   if (pdfData) {
+  //     reportPrintFn();
+  //   }
+  // }, [pdfData]);
 
-  const handlePrint = (rec: any) => {
-    setPdfData(rec);
-  };
+  // const handlePrint = (rec: any) => {
+  //   setPdfData(rec);
+  // };
 
   // table column
   const header: any = [
@@ -190,7 +193,13 @@ const LetterGenerateLanding = () => {
                 cursor: "pointer",
                 margin: "0 5px",
               }}
-              onClick={() => handlePrint(rec)}
+              onClick={() => {
+                getPDFAction(
+                  `/LetterBuilder/GetGeneratedLetterPreviewPDF?isForPreview=true&issuedEmployeeId=${rec?.issuedEmployeeId}&templateId=${rec?.letterTypeId}&letterGenerateId=${rec?.letterGenerateId}`,
+                  setLoading
+                );
+                // handlePrint(rec);
+              }}
             />
           </Tooltip>
           <Tooltip placement="bottom" title={"Send"}>
@@ -211,6 +220,7 @@ const LetterGenerateLanding = () => {
 
   return letterGenPermission?.isView ? (
     <>
+      {loading && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
@@ -265,11 +275,11 @@ const LetterGenerateLanding = () => {
         components={<TemplateViewModal singleData={singleData} />}
         width={1000}
       />
-      <div className="d-none">
+      {/* <div className="d-none">
         <div ref={printLetterRef}>
           <LetterPrint singleData={pdfData} />
         </div>
-      </div>
+      </div> */}
     </>
   ) : (
     <NotPermittedPage />
