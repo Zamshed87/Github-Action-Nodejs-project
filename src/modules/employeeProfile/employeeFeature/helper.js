@@ -413,6 +413,7 @@ export const getEmployeeProfileViewData = async (
           empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
           strReferenceId: empBasic?.employeeProfileLandingView?.strReferenceId,
           fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
+          fullNameInBn: empBasic?.employeeProfileLandingView?.strEmployeeNameBn,
           employeeCode:
             empBasic?.employeeProfileLandingView?.strEmployeeCode || undefined,
           religion: empBasic?.employeeProfileLandingView?.intReligionId
