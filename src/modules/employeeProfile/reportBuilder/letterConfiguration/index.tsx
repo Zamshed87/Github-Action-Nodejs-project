@@ -48,11 +48,12 @@ const LetterConfigLanding = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Letter Configuration";
-    () => {
+
+    // Cleanup function to reset the title when the component unmounts
+    return () => {
       document.title = "PeopleDesk";
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   // states
   const [filterList, setFilterList] = useState({});
@@ -89,7 +90,7 @@ const LetterConfigLanding = () => {
       createdByList: filters?.createdByEmployee || [],
       statusList: filters?.status || [],
     };
-    landingApi.action({
+    landingApi?.action({
       urlKey: "GetLetterTemplateLanding",
       method: "POST",
       payload: payload,
@@ -121,7 +122,7 @@ const LetterConfigLanding = () => {
       ...prev,
       [templateId]: checked,
     }));
-    axios.post("/LetterBuilder/LetterTemplateStatusUpdate", {
+    axios?.post("/LetterBuilder/LetterTemplateStatusUpdate", {
       templateId,
       isActive: checked,
       updatedBy: employeeId,
@@ -132,7 +133,7 @@ const LetterConfigLanding = () => {
   const header: any = [
     {
       title: "SL",
-      render: (_: any, rec: any, index: number) =>
+      render: (_: any, _rec: any, index: number) =>
         getSerial({
           currentPage: landingApi?.data?.currentPage,
           pageSize: landingApi?.data?.pageSize,
@@ -170,7 +171,7 @@ const LetterConfigLanding = () => {
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
-      render: (data: any, rec: any) => (
+      render: (_data: any, rec: any) => (
         <>
           <Switch
             size="small"
