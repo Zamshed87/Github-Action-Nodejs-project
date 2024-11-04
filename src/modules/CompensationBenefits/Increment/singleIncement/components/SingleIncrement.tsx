@@ -2228,6 +2228,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                     <PSelect
                       options={slabDDL}
                       name="slabCount"
+                      disabled={(location?.state as any)?.viewOnly}
                       label="Slab Count"
                       placeholder="Slab Count"
                       onChange={(value, op) => {
