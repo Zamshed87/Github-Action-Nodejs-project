@@ -322,7 +322,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           setRowDto(modifyforGrade);
         } else {
           setRowDto(modify);
-          salaryBreakDownCalc();
+          default_gross_calculation();
         }
       },
     });
@@ -577,7 +577,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         urlKey: "IsPromotionEligibleThroughIncrement",
         method: "post",
         payload: payload,
-        toast: true,
+        toast: values?.salaryType?.value === "Grade" ? false : true,
         onSuccess: (res) => {
           if (res && orgId === 10022) {
             IConfirmModal(confirmObject);
@@ -595,6 +595,23 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 values?.salaryType?.value === "Grade"
                   ? gradeBasedPayload
                   : payload,
+              toast: true,
+              onSuccess: () => {
+                history.push(`/compensationAndBenefits/increment`);
+              },
+            });
+          }
+        },
+        onError: (res) => {
+          if (values?.salaryType?.value === "Grade") {
+            createIncrement.action({
+              urlKey:
+                values?.salaryType?.value === "Grade" && id
+                  ? "UpdateEmployeeIncrement"
+                  : "CreateEmployeeIncrementNew",
+              method:
+                values?.salaryType?.value === "Grade" && id ? "put" : "post",
+              payload: gradeBasedPayload,
               toast: true,
               onSuccess: () => {
                 history.push(`/compensationAndBenefits/increment`);
@@ -636,7 +653,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     });
 
     if (basedOn?.value === 2 || salaryType?.value === "Grade") {
-      calculate_salary_breakdown();
+      basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
       methodAb();
@@ -688,7 +705,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     setRowDto(calculatedRowDto);
   };
 
-  const salaryBreakDownCalc = (salaryDependsOn = "") => {
+  const default_gross_calculation = (salaryDependsOn = "") => {
     const modifyData: any = [];
     const { grossAmount } = form.getFieldsValue(true);
 
@@ -736,7 +753,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         .join("")}`
     );
   };
-  const calculate_salary_breakdown = () => {
+  const basic_or_grade_calculation = () => {
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
@@ -1151,7 +1168,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               }
               setSlabDDL(temp);
 
-              // calculate_salary_breakdown();
+              // basic_or_grade_calculation();
             },
           });
         },
@@ -1235,7 +1252,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           }
           setSlabDDL(temp);
 
-          // calculate_salary_breakdown();
+          // basic_or_grade_calculation();
         },
       });
     }
@@ -1459,7 +1476,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                             }
                             setSlabDDL(temp);
                             setRowDto(modify);
-                            // calculate_salary_breakdown();
+                            // basic_or_grade_calculation();
                           },
                         });
                       }}
@@ -2164,7 +2181,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
-                      onChange={() => calculate_salary_breakdown()}
+                      onChange={() => basic_or_grade_calculation()}
                       rules={[
                         {
                           required: basedOn?.value === 2 || basedOn === 2,
@@ -2184,7 +2201,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                       placeholder="Gross"
                       onChange={(e: any) => {
                         const accounts = `Cash Pay (${100}%)`;
-                        salaryBreakDownCalc();
+                        default_gross_calculation();
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
                         //             )?.toFixed(6)
@@ -2222,7 +2239,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                           prev = temp;
                           return prev;
                         });
-                        calculate_salary_breakdown();
+                        basic_or_grade_calculation();
                         form.setFieldsValue({
                           slabCount: value,
                         });
