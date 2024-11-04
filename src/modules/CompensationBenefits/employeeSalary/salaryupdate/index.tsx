@@ -1494,7 +1494,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     rules={[
                       {
                         required:
-                          transferType?.value === 1 || transferType === 1,
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
                         message: "Bank is required",
                       },
                     ]}
@@ -1519,7 +1521,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     rules={[
                       {
                         required:
-                          transferType?.value === 1 || transferType === 1,
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
                         message: "Branch is required",
                       },
                     ]}
@@ -1576,7 +1580,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     rules={[
                       {
                         required:
-                          transferType?.value === 1 || transferType === 1,
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
                         message: "Account Name is required",
                       },
                     ]}
@@ -1594,7 +1600,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     rules={[
                       {
                         required:
-                          transferType?.value === 1 || transferType === 1,
+                          transferType?.value === 1 ||
+                          transferType === 1 ||
+                          accountsDto[0].numAmount > 0,
                         message: "Account No is required",
                       },
                     ]}
