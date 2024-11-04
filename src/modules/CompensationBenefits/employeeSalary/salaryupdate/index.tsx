@@ -1184,6 +1184,13 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             accountsDto[2].numAmount = gross;
                             accountsDto[2].accounts = `Cash Pay (${100}%)`;
                             accountsDto[2].percentage = 100;
+
+                            accountsDto[0].numAmount = 0;
+                            accountsDto[0].accounts = `Bank Pay (${0}%)`;
+                            accountsDto[0].percentage = 0;
+                            accountsDto[1].numAmount = 0;
+                            accountsDto[1].accounts = `Digital/MFS Pay (${0}%)`;
+                            accountsDto[1].percentage = 0;
                             const temp = [];
                             for (let i = 0; i <= res?.incrementSlabCount; i++) {
                               temp.push({
