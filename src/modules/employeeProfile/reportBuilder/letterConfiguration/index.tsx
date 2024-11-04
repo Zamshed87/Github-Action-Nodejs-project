@@ -100,6 +100,34 @@ const LetterConfigLanding = () => {
     landingApiCall({});
   }, [wgId, wId, buId]);
 
+  const [switchStatus, setSwitchStatus] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  useEffect(() => {
+    // Update the switch status based on initial data or after filtering
+    const initialSwitchStatus = (landingApi?.data?.data || []).reduce(
+      (acc: any, item: any) => {
+        acc[item.templateId] = item.status === "Active";
+        return acc;
+      },
+      {}
+    );
+    setSwitchStatus(initialSwitchStatus);
+  }, [landingApi?.data?.data]); // Depend on the landing data source
+
+  const handleSwitchChange = (checked: boolean, templateId: number) => {
+    setSwitchStatus((prev) => ({
+      ...prev,
+      [templateId]: checked,
+    }));
+    axios.post("/LetterBuilder/LetterTemplateStatusUpdate", {
+      templateId,
+      isActive: checked,
+      updatedBy: employeeId,
+    });
+  };
+
   // table column
   const header: any = [
     {
@@ -146,14 +174,8 @@ const LetterConfigLanding = () => {
         <>
           <Switch
             size="small"
-            defaultChecked={data === "Active" ? true : false}
-            onChange={(checked) => {
-              axios.post("/LetterBuilder/LetterTemplateStatusUpdate", {
-                templateId: rec?.templateId,
-                isActive: checked,
-                updatedBy: employeeId,
-              });
-            }}
+            checked={switchStatus[rec.templateId]}
+            onChange={(checked) => handleSwitchChange(checked, rec.templateId)}
           />{" "}
         </>
       ),
@@ -196,7 +218,7 @@ const LetterConfigLanding = () => {
       <PForm form={form}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount} templates`}
+            title={`Total ${landingApi?.data?.totalCount || 0} templates`}
             buttonList={[
               {
                 type: "primary",
