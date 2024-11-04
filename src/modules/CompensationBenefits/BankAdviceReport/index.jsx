@@ -37,7 +37,6 @@ import { MdPrint } from "react-icons/md";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
-  const debounce = useDebounce();
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
@@ -891,7 +890,7 @@ const BankAdviceReport = () => {
                               values?.bank?.value
                             }&IntSalaryGenerateRequestId=${
                               values?.adviceName?.value
-                            }&StrAdviceType=${"TopSheet"}`;
+                            }&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
 
                             downloadFile(
                               url,
@@ -957,16 +956,13 @@ const BankAdviceReport = () => {
                               values?.bank?.value
                             }&IntSalaryGenerateRequestId=${
                               values?.adviceName?.value
-                            }&StrAdviceType=${"TopSheet"}`;
+                            }&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
                             getPDFAction(url, setLoading);
-                            // excelGenerate(values, (res) => {
-                            //   setPdfDto(res);
-                            // });
-                            // topSheetPrintFn();
+                          
                           },
                         },
                         {
-                          value: 3,
+                          value: 4,
                           label: "Top Sheet and Datails as Excel",
                           icon: (
                             <SiMicrosoftexcel
