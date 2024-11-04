@@ -1281,10 +1281,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         <Row gutter={[10, 2]} className="mb-3 card-style">
           <Col md={6} sm={12} xs={24}>
             <PSelect
-              options={[
-                { value: "Grade", label: "Grade" },
-                { value: "Non-Grade", label: "Non-Grade" },
-              ]}
+              options={
+                orgId === 3
+                  ? [
+                      { value: "Grade", label: "Grade" },
+                      { value: "Non-Grade", label: "Non-Grade" },
+                    ]
+                  : [{ value: "Non-Grade", label: "Non-Grade" }]
+              }
               name="salaryType"
               disabled={(location?.state as any)?.viewOnly}
               label="Salary Type"
