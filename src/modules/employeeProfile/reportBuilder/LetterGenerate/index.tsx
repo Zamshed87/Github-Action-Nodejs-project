@@ -21,7 +21,6 @@ import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
 import { postPDFAction } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
-import { modifiedLetter } from "../letterConfiguration/utils";
 
 const LetterGenerateLanding = () => {
   // router states
@@ -173,11 +172,11 @@ const LetterGenerateLanding = () => {
               }}
               onClick={() => {
                 const payload = {
-                  isForPreview: true,
-                  issuedEmployeeId: rec?.issuedEmployeeId,
-                  templateId: rec?.letterTypeId,
+                  isForPreview: false,
+                  issuedEmployeeId: 0,
+                  templateId: 0,
                   letterGenerateId: rec?.letterGenerateId,
-                  letterBody: modifiedLetter(rec?.generatedLetterBody),
+                  letterBody: "",
                 };
                 postPDFAction(
                   "/LetterBuilder/GetGeneratedLetterPreviewPDF",
