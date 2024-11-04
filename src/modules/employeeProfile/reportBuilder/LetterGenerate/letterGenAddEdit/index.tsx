@@ -29,8 +29,8 @@ import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
-import { modules } from "../../letterConfiguration/utils";
-import { getPDFAction } from "utility/downloadFile";
+import { modifiedLetter, modules } from "../../letterConfiguration/utils";
+import { postPDFAction } from "utility/downloadFile";
 
 const LetterGenAddEdit = () => {
   // Router state
@@ -205,12 +205,18 @@ const LetterGenAddEdit = () => {
             action="button"
             content="Preview"
             onClick={(e: any) => {
-              const { employee, letterId } = form.getFieldsValue(true);
+              const { employee, letterId, letter } = form.getFieldsValue(true);
               e.stopPropagation();
-              getPDFAction(
-                `/LetterBuilder/GetGeneratedLetterPreviewPDF?isForPreview=true&issuedEmployeeId=${
-                  employee?.value || 0
-                }&templateId=${letterId}&letterGenerateId=${letterId || 0}`,
+              const payload = {
+                isForPreview: true,
+                issuedEmployeeId: employee?.value || 0,
+                templateId: letterId,
+                letterGenerateId: letterId || 0,
+                letterBody: modifiedLetter(letter),
+              };
+              postPDFAction(
+                "/LetterBuilder/GetGeneratedLetterPreviewPDF",
+                payload,
                 setLoading
               );
             }}
