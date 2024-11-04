@@ -137,20 +137,20 @@ const LetterConfigAddEdit = () => {
                       mention.outerHTML = `@${mentionElement.dataset.value}`;
                     });
                     const modifiedLetter = transformedHTML.innerHTML;
-                    const htmlString = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  ${modifiedLetter}
-</body>
-</html>                               
-`;
-                    form.setFieldValue("letter", htmlString);
+                    //                     const htmlString = `
+                    // <!DOCTYPE html>
+                    // <html lang="en">
+                    // <head>
+                    //   <meta charset="UTF-8">
+                    //   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    //   <title>Document</title>
+                    // </head>
+                    // <body>
+                    //   ${modifiedLetter}
+                    // </body>
+                    // </html>
+                    // `;
+                    form.setFieldValue("letter", modifiedLetter);
                     form.setFieldValue(
                       "backgroudImageId",
                       backgroundImg?.[0]?.response?.[0]?.globalFileUrlId ||
