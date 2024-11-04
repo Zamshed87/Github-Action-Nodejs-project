@@ -453,7 +453,7 @@ const SalaryAssign = () => {
                   if (!permission?.isEdit) {
                     return toast.warn("You don't have permission");
                   }
-                  if (isDevServer && orgId === 1) {
+                  if (orgId === 3) {
                     history.push({
                       pathname: `/compensationAndBenefits/employeeSalary/salaryAssignv2`,
                       state: data,
