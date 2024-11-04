@@ -299,7 +299,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strAccountNo: `${values?.accountNo}` || "",
       strSwiftCode: values?.swift || "",
     };
-    bankDetailsAction(payload, setLoading, () => {});
+    if (values?.transferType?.value === 1 || values?.transferType === 1) {
+      bankDetailsAction(payload, setLoading, () => {});
+    }
 
     const modifiedBreakDown = rowDto?.map((i) => {
       return {
@@ -1304,7 +1306,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     <PSelect
                       options={[
                         { value: 1, label: "Gross" },
-                        { value: 2, label: "Basic" },
+                        // { value: 2, label: "Basic" },
                       ]}
                       name="basedOn"
                       label="Based On"
@@ -1469,119 +1471,140 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           }}
           orientation="left"
         ></Divider>
-        <Row gutter={[10, 2]}>
-          <Col md={3} className="mt-2">
-            Bank Name
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PSelect
-              options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
-              name="bank"
-              placeholder="Bank"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  bank: op,
-                });
-                getBranchDDL();
-              }}
-              rules={[{ required: true, message: "Bank is required" }]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Branch Name
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PSelect
-              options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
-              name="branch"
-              placeholder="Branch"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  branch: op,
-                  routing: (op as any)?.name,
-                });
-              }}
-              rules={[{ required: true, message: "Branch is required" }]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Routing No
-          </Col>
-          <Col md={12} className="mt-2">
-            <PInput
-              type="number"
-              name="routing"
-              placeholder="Routing"
-              disabled={true}
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { transferType } = form.getFieldsValue(true);
+            return (
+              <Row gutter={[10, 2]}>
+                <Col md={3} className="mt-2">
+                  Bank Name
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PSelect
+                    options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
+                    name="bank"
+                    placeholder="Bank"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        bank: op,
+                      });
+                      getBranchDDL();
+                    }}
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 || transferType === 1,
+                        message: "Bank is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Branch Name
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PSelect
+                    options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
+                    name="branch"
+                    placeholder="Branch"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        branch: op,
+                        routing: (op as any)?.name,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 || transferType === 1,
+                        message: "Branch is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Routing No
+                </Col>
+                <Col md={12} className="mt-2">
+                  <PInput
+                    type="number"
+                    name="routing"
+                    placeholder="Routing"
+                    disabled={true}
 
-              // rules={[
-              //   {
-              //     // required: basedOn?.value === 2,
-              //     message: "Basic is required",
-              //   },
-              // ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Swift Code
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PInput
-              type="number"
-              name="swift"
-              disabled={true}
-              placeholder="Swift Code"
-              // rules={[
-              //   {
-              //     // required: basedOn?.value === 2,
-              //     message: "Basic is required",
-              //   },
-              // ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Account Name
-          </Col>
-          <Col md={12} className="mt-2">
-            {" "}
-            <PInput
-              type="text"
-              name="account"
-              placeholder="Account Name"
-              rules={[
-                {
-                  required: true,
-                  message: "Account Name is required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-          <Col md={3} className="mt-2">
-            Account No
-          </Col>
-          <Col md={12} className="mt-2">
-            <PInput
-              type="number"
-              name="accountNo"
-              placeholder="Account No"
-              rules={[
-                {
-                  required: true,
-                  message: "Account No is required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={7}></Col>
-        </Row>
+                    // rules={[
+                    //   {
+                    //     // required: basedOn?.value === 2,
+                    //     message: "Basic is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Swift Code
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PInput
+                    type="number"
+                    name="swift"
+                    disabled={true}
+                    placeholder="Swift Code"
+                    // rules={[
+                    //   {
+                    //     // required: basedOn?.value === 2,
+                    //     message: "Basic is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Account Name
+                </Col>
+                <Col md={12} className="mt-2">
+                  {" "}
+                  <PInput
+                    type="text"
+                    name="account"
+                    placeholder="Account Name"
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 || transferType === 1,
+                        message: "Account Name is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+                <Col md={3} className="mt-2">
+                  Account No
+                </Col>
+                <Col md={12} className="mt-2">
+                  <PInput
+                    type="number"
+                    name="accountNo"
+                    placeholder="Account No"
+                    rules={[
+                      {
+                        required:
+                          transferType?.value === 1 || transferType === 1,
+                        message: "Account No is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={7}></Col>
+              </Row>
+            );
+          }}
+        </Form.Item>
       </PCard>
 
       <IncrementHistoryComponent

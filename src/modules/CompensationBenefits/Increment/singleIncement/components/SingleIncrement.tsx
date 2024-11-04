@@ -1269,8 +1269,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       <PCard>
         <PCardHeader
           backButton
-          title={`${id ? "Edit" : "Create"} Increment`}
-          submitText={`${id ? "Update" : "Save"}`}
+          title={`${
+            (location?.state as any)?.viewOnly ? "View" : id ? "Edit" : "Create"
+          } Increment`}
+          submitText={
+            (location?.state as any)?.viewOnly
+              ? undefined
+              : `${id ? "Update" : "Save"}`
+          }
         ></PCardHeader>
         <Row gutter={[10, 2]} className="mb-3 card-style">
           <Col md={6} sm={12} xs={24}>
@@ -1280,6 +1286,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 { value: "Non-Grade", label: "Non-Grade" },
               ]}
               name="salaryType"
+              disabled={(location?.state as any)?.viewOnly}
               label="Salary Type"
               placeholder="Salary Type"
               onChange={(value, op) => {
@@ -1399,6 +1406,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                       options={payscaleApi?.data || []}
                       name="payscale"
                       label="Payscale"
+                      disabled={(location?.state as any)?.viewOnly}
                       placeholder="Payscale"
                       onChange={(value, op) => {
                         form.setFieldsValue({
@@ -1616,6 +1624,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               type="date"
               name="dteEffectiveDate"
               label="Effective Date"
+              disabled={(location?.state as any)?.viewOnly}
               placeholder="Effective Date"
               rules={[
                 {
