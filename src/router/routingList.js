@@ -2520,6 +2520,10 @@ export const routingList = [
     component: SingleIncrement,
   },
   {
+    path: "/compensationAndBenefits/increment/singleIncrement/grade/view/:id",
+    component: SingleIncrement,
+  },
+  {
     path: "/compensationAndBenefits/increment/singleIncrement/view/:id",
     component: ViewIncrementNPromotion,
   },
@@ -2527,6 +2531,7 @@ export const routingList = [
     path: "/compensationAndBenefits/increment/singleIncrement/edit/:id",
     component: SingleIncrement,
   },
+
   {
     path: "/compensationAndBenefits/increment/bulkIncrement/create",
     component: BulkIncrementEntry,
