@@ -139,7 +139,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           setRowDto(modifyforGrade);
         } else {
           setRowDto(modify);
-          salaryBreakDownCalc();
+          default_gross_calculation();
         }
       },
     });
@@ -450,7 +450,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
 
     if (basedOn?.value === 2 || salaryType?.value === "Grade") {
-      calculate_salary_breakdown();
+      basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
       methodAb();
@@ -502,7 +502,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     setRowDto(calculatedRowDto);
   };
 
-  const salaryBreakDownCalc = (salaryDependsOn = "") => {
+  const default_gross_calculation = (salaryDependsOn = "") => {
     const modifyData: any = [];
     const { grossAmount } = form.getFieldsValue(true);
 
@@ -550,7 +550,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         .join("")}`
     );
   };
-  const calculate_salary_breakdown = () => {
+  const basic_or_grade_calculation = () => {
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
@@ -885,7 +885,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           }
           setSlabDDL(temp);
 
-          // calculate_salary_breakdown();
+          // basic_or_grade_calculation();
         },
       });
     }
@@ -1213,7 +1213,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             }
                             setSlabDDL(temp);
                             setRowDto(modify);
-                            // calculate_salary_breakdown();
+                            // basic_or_grade_calculation();
                           },
                         });
                       }}
@@ -1339,7 +1339,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
-                      onChange={() => calculate_salary_breakdown()}
+                      onChange={() => basic_or_grade_calculation()}
                       rules={[
                         {
                           required: basedOn?.value === 2 || basedOn === 2,
@@ -1364,7 +1364,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         temp[2].numAmount = e;
                         temp[0].numAmount = 0;
                         temp[1].numAmount = 0;
-                        salaryBreakDownCalc();
+                        default_gross_calculation();
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
                         //             )?.toFixed(6)
@@ -1404,7 +1404,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                           prev = temp;
                           return prev;
                         });
-                        calculate_salary_breakdown();
+                        basic_or_grade_calculation();
                         form.setFieldsValue({
                           slabCount: value,
                         });
