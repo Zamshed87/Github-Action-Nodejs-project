@@ -38,7 +38,7 @@ const GradeLanding: React.FC<TJobGrade> = () => {
       urlKey: "JobGradeLanding",
       method: "get",
       params: {
-        businessUnitId: 1,
+        businessUnitId: buId,
         pageNo: 1,
         pageSize: 100,
         accountId: orgId,
