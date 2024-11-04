@@ -238,25 +238,24 @@ const LetterConfigAddEdit = () => {
               />
             </Col>
             <Col className="mt-2" md={6} sm={24}>
-              {!letterId && (
-                <div className="mt-3">
-                  <FileUploadComponents
-                    propsObj={{
-                      title: "Background Image",
-                      attachmentList: backgroundImg,
-                      setAttachmentList: setBackgroundImg,
-                      accountId: orgId,
-                      tableReferrence: "LeaveAndMovement",
-                      documentTypeId: 15,
-                      userId: employeeId,
-                      buId,
-                      maxCount: 1,
-                      accept: "image/png, image/jpeg, image/jpg",
-                    }}
-                  />
-                </div>
-              )}
-              {form.getFieldValue("backgroudImageId") ? (
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "Background Image",
+                    attachmentList: backgroundImg,
+                    setAttachmentList: setBackgroundImg,
+                    accountId: orgId,
+                    tableReferrence: "LeaveAndMovement",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {form.getFieldValue("backgroudImageId") &&
+              backgroundImg?.length === 0 ? (
                 <div
                   className="d-flex align-items-center"
                   style={{ marginTop: "18px" }}
@@ -279,7 +278,7 @@ const LetterConfigAddEdit = () => {
                       cursor: "pointer",
                     }}
                   >
-                    Attachment
+                    Background Image
                   </div>
                 </div>
               ) : (
