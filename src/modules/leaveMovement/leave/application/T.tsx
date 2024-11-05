@@ -84,7 +84,7 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
         isSelfService: true,
       }}
     >
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
 
       <PCard>
         <PCardHeader>
@@ -184,8 +184,6 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
                     leaveTypeDDL: leaveTypeDDL?.filter(
                       (i: any) => i?.IsLveBalanceApplyForSelfService
                     ),
-                    setLoading,
-                    loading,
                     editPermission: permission?.isEdit,
                   }}
                 />
