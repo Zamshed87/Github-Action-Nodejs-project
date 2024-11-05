@@ -1150,21 +1150,33 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 },
               });
               let temp = [];
-              for (let i = 0; i <= data?.incrementSlabCount; i++) {
+              for (let i = res?.slabCount; i <= data?.incrementSlabCount; i++) {
                 temp.push({
                   value: i,
                   label: `Slab ${i}`,
                 });
               }
               for (
-                let i = 1;
-                i <= data?.extendedIncrementSlabCount &&
-                data?.extendedIncrementSlabCount !== 0;
+                let i = res?.slabCount;
+                i <=
+                  data?.extendedIncrementSlabCount + data?.incrementSlabCount &&
+                data?.extendedIncrementSlabCount !== 0 &&
+                res?.slabCount !==
+                  data?.extendedIncrementSlabCount + data?.incrementSlabCount;
                 i++
               ) {
+                if (
+                  data?.incrementSlabCount + (i - res?.slabCount + 1) >
+                  data?.extendedIncrementSlabCount + data?.incrementSlabCount
+                ) {
+                  break;
+                }
+
                 temp.push({
-                  value: data?.incrementSlabCount + i,
-                  label: `Efficiency ${data?.incrementSlabCount + i}`,
+                  value: data?.incrementSlabCount + (i - res?.slabCount + 1),
+                  label: `Efficiency ${
+                    data?.incrementSlabCount + (i - res?.slabCount + 1)
+                  }`,
                 });
               }
               setSlabDDL(temp);
@@ -1234,21 +1246,40 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             },
           });
           let temp = [];
-          for (let i = 0; i <= res?.incrementSlabCount; i++) {
+          for (
+            let i = employeeInfo?.data[0]?.intSlabCount;
+            i <= res?.incrementSlabCount;
+            i++
+          ) {
             temp.push({
               value: i,
               label: `Slab ${i}`,
             });
           }
           for (
-            let i = 1;
-            i <= res?.extendedIncrementSlabCount &&
-            res?.extendedIncrementSlabCount !== 0;
+            let i = employeeInfo?.data[0]?.intSlabCount;
+            i <= res?.extendedIncrementSlabCount + res?.incrementSlabCount &&
+            res?.extendedIncrementSlabCount !== 0 &&
+            employeeInfo?.data[0]?.intSlabCount !==
+              res?.extendedIncrementSlabCount + res?.incrementSlabCount;
             i++
           ) {
+            if (
+              res?.incrementSlabCount +
+                (i - employeeInfo?.data[0]?.intSlabCount + 1) >
+              res?.extendedIncrementSlabCount + res?.incrementSlabCount
+            ) {
+              break;
+            }
+
             temp.push({
-              value: res?.incrementSlabCount + i,
-              label: `Efficiency ${res?.incrementSlabCount + i}`,
+              value:
+                res?.incrementSlabCount +
+                (i - employeeInfo?.data[0]?.intSlabCount + 1),
+              label: `Efficiency ${
+                res?.incrementSlabCount +
+                (i - employeeInfo?.data[0]?.intSlabCount + 1)
+              }`,
             });
           }
           setSlabDDL(temp);
@@ -1256,8 +1287,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           // basic_or_grade_calculation();
         },
       });
+      getAssignedBreakdown();
     }
-    getAssignedBreakdown();
   }, [employeeInfo?.data[0]]);
 
   return employeeFeature?.isView ? (
@@ -1293,7 +1324,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           <Col md={6} sm={12} xs={24}>
             <PSelect
               options={
-                orgId === 3
+                orgId === 3 || orgId === 12
                   ? [
                       { value: "Grade", label: "Grade" },
                       { value: "Non-Grade", label: "Non-Grade" },
