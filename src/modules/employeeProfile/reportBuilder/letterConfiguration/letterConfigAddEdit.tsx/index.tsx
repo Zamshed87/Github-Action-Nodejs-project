@@ -72,6 +72,7 @@ const LetterConfigAddEdit = () => {
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
   const [backgroundImg, setBackgroundImg] = useState<any>([]);
   const [fields, setFields] = useState(customFields);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleInsertField = (fieldValue: any) => {
     const quill = quillRef?.current?.getEditor();
@@ -241,7 +242,10 @@ const LetterConfigAddEdit = () => {
               <div className="mt-3">
                 <FileUploadComponents
                   propsObj={{
+                    isOpen,
+                    setIsOpen,
                     title: "Background Image",
+                    destroyOnClose: false,
                     attachmentList: backgroundImg,
                     setAttachmentList: setBackgroundImg,
                     accountId: orgId,
@@ -250,7 +254,11 @@ const LetterConfigAddEdit = () => {
                     userId: employeeId,
                     buId,
                     maxCount: 1,
+                    isIcon: true,
+                    isErrorInfo: true,
                     accept: "image/png, image/jpeg, image/jpg",
+                    subText:
+                      "File formats : PDF, JPG and PNG. Max. Limit : 2MB",
                   }}
                 />
               </div>
