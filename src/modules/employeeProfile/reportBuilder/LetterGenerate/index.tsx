@@ -5,7 +5,7 @@
  *
  */
 
-import { EyeOutlined, PrinterOutlined, SendOutlined } from "@ant-design/icons";
+import { EyeOutlined, PrinterOutlined } from "@ant-design/icons";
 import { Form, Tooltip } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -186,7 +186,7 @@ const LetterGenerateLanding = () => {
               }}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title={"Send"}>
+          {/* <Tooltip placement="bottom" title={"Send"}>
             <SendOutlined
               style={{
                 color: "green",
@@ -195,7 +195,7 @@ const LetterGenerateLanding = () => {
                 marginRight: "5px",
               }}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Flex>
       ),
       align: "center",
