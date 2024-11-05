@@ -489,3 +489,7 @@ export const commonDDL = [
   { value: false, label: "Not Applicable" },
   { value: true, label: "Applicable" },
 ];
+export const encashDDL = [
+  { value: false, label: "In Days" },
+  { value: true, label: "Percentage" },
+];
