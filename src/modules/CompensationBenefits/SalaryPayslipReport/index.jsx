@@ -540,7 +540,7 @@ const SalaryPayslipReport = () => {
                                 </td>
                               </tr>
                             ))}
-                          {/* <tr>
+                          <tr>
                             <td style={{ textAlign: "left" }}>
                               <p>Tax</p>
                             </td>
@@ -564,7 +564,7 @@ const SalaryPayslipReport = () => {
                               <p>{salaryHeaderData[0]?.numPFAmount || 0}</p>
                             </td>
                           </tr>
-                          <tr>
+                          {/* <tr>
                             <td style={{ textAlign: "left" }}>
                               <p>Others</p>
                             </td>
