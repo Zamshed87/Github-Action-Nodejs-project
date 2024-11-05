@@ -37,7 +37,6 @@ import { MdPrint } from "react-icons/md";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
-  const debounce = useDebounce();
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
@@ -881,17 +880,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-                              values?.workplaceGroup?.value
-                            }&IntWorkplaceId=${
-                              values?.workplace?.value
-                            }&IntMonthId=${values?.monthId}&IntYearId=${
-                              values?.yearId
-                            }&IntBankId=${
-                              values?.bank?.value
-                            }&IntSalaryGenerateRequestId=${
-                              values?.adviceName?.value
-                            }&StrAdviceType=${"TopSheet"}`;
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
 
                             downloadFile(
                               url,
@@ -919,7 +908,7 @@ const BankAdviceReport = () => {
                                 toastId: 2,
                               });
                             }
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}`;
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
                               url,
@@ -947,26 +936,12 @@ const BankAdviceReport = () => {
                                 toastId: 3,
                               });
                             }
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-                              values?.workplaceGroup?.value
-                            }&IntWorkplaceId=${
-                              values?.workplace?.value
-                            }&IntMonthId=${values?.monthId}&IntYearId=${
-                              values?.yearId
-                            }&IntBankId=${
-                              values?.bank?.value
-                            }&IntSalaryGenerateRequestId=${
-                              values?.adviceName?.value
-                            }&StrAdviceType=${"TopSheet"}`;
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
                             getPDFAction(url, setLoading);
-                            // excelGenerate(values, (res) => {
-                            //   setPdfDto(res);
-                            // });
-                            // topSheetPrintFn();
                           },
                         },
                         {
-                          value: 3,
+                          value: 4,
                           label: "Top Sheet and Datails as Excel",
                           icon: (
                             <SiMicrosoftexcel
