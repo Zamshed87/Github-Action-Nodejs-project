@@ -67,7 +67,9 @@ export const offDayAssignDtoCol = (
   setLoading,
   loading,
   headerList,
-  wgName
+  wgName,
+  setOffDayHistory,
+  setAnchorElHistory
 ) => {
   return [
     {
@@ -203,6 +205,27 @@ export const offDayAssignDtoCol = (
     {
       title: "Off Day",
       dataIndex: "offDayList",
+      render: (record) => (
+        <div className="d-flex align-items-center">
+          <span className="ml-2">{record?.offDayList}</span>
+          {record?.offDayList !== "N/A" && (
+            <InfoOutlined
+              className="ml-2"
+              sx={{ cursor: "pointer" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                getEmployeeOffdayHistory(
+                  record?.employeeId,
+                  setLoading,
+                  setOffDayHistory
+                );
+                !loading && setAnchorElHistory(e.currentTarget);
+                setSelectedSingleEmployee([record]);
+              }}
+            />
+          )}
+        </div>
+      ),
     },
     {
       title: "",
@@ -383,7 +406,12 @@ export const offDayAssignCrud = async (obj) => {
   }
 };
 
-export const crudOffDayAssign = async (obj) => {
+export const crudOffDayAssign = async (
+  obj,
+  setErrorData,
+  setOpen,
+  setErrorPayload
+) => {
   const {
     values,
     orgId,
@@ -399,7 +427,7 @@ export const crudOffDayAssign = async (obj) => {
     empIDString,
     wId,
   } = obj;
-
+  let payload = {};
   try {
     if (!values?.effectiveDate) return toast.warn("Effective date is required");
 
@@ -412,8 +440,6 @@ export const crudOffDayAssign = async (obj) => {
       isActive: true,
       actionBy: employeeId,
     };
-
-    let payload = {};
 
     if (isMulti) {
       const empIds = offDayLanding.map((data) => {
@@ -435,7 +461,74 @@ export const crudOffDayAssign = async (obj) => {
     cb();
     toast.success("Submitted Successfully");
   } catch (error) {
+    console.log({ error }, error?.response?.data?.listData);
+
     setLoading(false);
+    setErrorData(error?.response?.data?.listData);
+    setErrorPayload(payload);
+    setOpen(true);
+
+    error?.response?.data?.listData?.length < 0 &&
+      toast.warn(error?.response?.data?.message || "Failed, try again");
+  }
+};
+export const crudOffDayAssignWithError = async (
+  payload,
+  setErrorData,
+  setOpen,
+  setErrorPayload,
+  setLoading,
+  cb
+) => {
+  try {
+    setLoading(true);
+    await axios.post("/Employee/OffdayAssign", payload);
+    setLoading(false);
+    setOpen(false);
+    setErrorPayload({});
+    setErrorData([]);
+    cb();
+    toast.success("Submitted Successfully");
+  } catch (error) {
+    console.log({ error }, error?.response?.data?.listData);
+
+    setLoading(false);
+    setErrorData(error?.response?.data?.listData);
+    setErrorPayload(payload);
+    setOpen(true);
+
+    error?.response?.data?.listData?.length < 0 &&
+      toast.warn(error?.response?.data?.message || "Failed, try again");
+  }
+};
+export const getEmployeeOffdayHistory = async (
+  id,
+  setLoading,
+  setOffDayHistory
+) => {
+  try {
+    setLoading(true);
+    const res = await axios.get(`/Employee/EmployeeOffdayHistory?empId=${id}`);
+    if (res?.data?.length > 0) {
+      const modify = res?.data?.map((i) => {
+        return {
+          ...i,
+          offDayList:
+            !i?.isFriday &&
+            !i?.isSaturday &&
+            !i?.isSunday &&
+            !i?.isMonday &&
+            !i?.isThursday &&
+            !i?.isTuesday &&
+            !i?.isWednesday
+              ? "N/A"
+              : printDays(i),
+        };
+      });
+      setOffDayHistory(modify);
+    }
+    setLoading(false);
+  } catch (error) {
     toast.warn(error?.response?.data?.message || "Failed, try again");
   }
 };
