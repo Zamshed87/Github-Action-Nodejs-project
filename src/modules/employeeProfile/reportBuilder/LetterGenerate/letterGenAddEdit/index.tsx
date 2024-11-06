@@ -212,10 +212,10 @@ const LetterGenAddEdit = () => {
                 issuedEmployeeId: employee?.value || 0,
                 templateId: letterId,
                 letterGenerateId: letterId || 0,
-                letterBody: `<div style="padding: 80px !important" >${letter}</div>`,
+                letterBody: letter,
               };
               postPDFAction(
-                "/LetterBuilder/GetGeneratedLetterPreviewPDF",
+                "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
                 payload,
                 setLoading
               );
