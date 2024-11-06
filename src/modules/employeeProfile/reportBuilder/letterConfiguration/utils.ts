@@ -33,6 +33,7 @@ export const customFields = [
   { id: 25, value: "[Business Unit]", label: "Business Unit" },
   { id: 26, value: "[Workplace Group]", label: "Workplace Group" },
   { id: 27, value: "[Workplace]", label: "Workplace" },
+  { id: 27, value: "[Current Date]", label: "Current Date" },
 ];
 
 export const modules = {
