@@ -884,8 +884,7 @@ const BankAdviceReport = () => {
 
                             downloadFile(
                               url,
-                              // "Top Sheet Report as Excel",
-                              `${values?.workplace?.code}-${values?.adviceType?.label}-TopSheetReport-${values?.monthId}_${values?.yearId}`,
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetExcel_${values?.monthId}-${values?.yearId}`,
                               "xlsx",
                               setLoading
                             );
@@ -913,8 +912,7 @@ const BankAdviceReport = () => {
 
                             downloadFile(
                               url,
-                              // "Advice List as Excel",
-                              `${values?.workplace?.code}-${values?.adviceType?.label}-BankAdviceReport${values?.monthId}_${values?.yearId}`,
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_AdviceListExcel_${values?.monthId}-${values?.yearId}`,
                               "xlsx",
                               setLoading
                             );
@@ -939,7 +937,11 @@ const BankAdviceReport = () => {
                               });
                             }
                             const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
-                            getPDFAction(url, setLoading);
+                            getPDFAction(
+                              url,
+                              setLoading,
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
+                            );
                           },
                         },
                         {
@@ -959,7 +961,7 @@ const BankAdviceReport = () => {
 
                             downloadFile(
                               url,
-                              "Top Sheet and Details Report",
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetDetailsExcel_${values?.monthId}-${values?.yearId}`,
                               "xlsx",
                               setLoading
                             );
