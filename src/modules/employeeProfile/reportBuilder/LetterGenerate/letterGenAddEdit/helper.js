@@ -70,7 +70,7 @@ export const createNEditLetterGenerate = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      templateId: letterData?.letterGenerateId || 0,
+      templateId: values?.letterId || 0,
       letterTypeId: values?.letterType?.value,
       letterName: values?.letterName?.value,
       generatedLetterBody: values?.letter,
@@ -82,6 +82,7 @@ export const createNEditLetterGenerate = async (
       createdBy: letterData?.createdBy || employeeId,
       createdAt: todayDate(),
     };
+    console.log(payload);
     setLoading(true);
     const res = await axios.post(`/LetterBuilder/LetterGenerate`, payload);
     setLoading(false);
