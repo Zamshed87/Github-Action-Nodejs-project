@@ -278,8 +278,10 @@ const CreateLoanApplicationModal = ({
                       handleChange={(valueOption) => {
                         setFieldValue("employee", valueOption);
                         setIsloan(valueOption?.isLoan);
-                        const doubleGross = valueOption?.numGrossSalary * 2;
-                        setGrossSalary(doubleGross);
+                        if (orgId === 4 || orgId === 5) {
+                          const doubleGross = valueOption?.numGrossSalary * 2;
+                          setGrossSalary(doubleGross);
+                        }
                       }}
                       placeholder="Search (min 3 letter)"
                       loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
@@ -329,9 +331,7 @@ const CreateLoanApplicationModal = ({
                       onChange={(e) => {
                         setFieldValue("installmentNumber", "");
                         setFieldValue("amountPerInstallment", "");
-                        setFieldValue("approveLoanAmount", e.target.value);
-
-                        setFieldValue("totalwithinterest", e.target.value);
+                        setFieldValue("totalwithinterest", +e.target.value);
 
                         if (orgId === 4 || orgId === 5) {
                           if (e.target.value > grossSalary) {
@@ -339,23 +339,21 @@ const CreateLoanApplicationModal = ({
                               "Loan Amount cannot be greater than gross salary",
                               { toastId: "toastId" }
                             );
-                          } else {
-                            setFieldValue("loanAmount", e.target.value);
                           }
+                          setFieldValue("loanAmount", e.target.value);
                         } else {
                           setFieldValue("loanAmount", e.target.value);
                         }
 
                         if (values?.interest || e.target.value) {
-                          const totalAmountwithInterest = (
+                          const totalAmountwithInterest =
                             +e.target.value +
-                            +e.target.value * (values?.interest / 100)
-                          ).toFixed(2);
+                            +e.target.value * (values?.interest / 100);
 
                           if (orgId === 4 || orgId === 5) {
                             if (totalAmountwithInterest > grossSalary) {
                               setFieldValue("interest", "");
-                              setFieldValue("totalwithinterest", grossSalary);
+                              setFieldValue("totalwithinterest", +grossSalary);
                               return toast.warn(
                                 "Total amount with interest cannot exceed gross salary",
                                 { toastId: "toastId" }
@@ -363,13 +361,13 @@ const CreateLoanApplicationModal = ({
                             } else {
                               setFieldValue(
                                 "totalwithinterest",
-                                totalAmountwithInterest
+                                +totalAmountwithInterest
                               );
                             }
                           } else {
                             setFieldValue(
                               "totalwithinterest",
-                              totalAmountwithInterest
+                              +totalAmountwithInterest
                             );
                           }
                         }
@@ -395,16 +393,24 @@ const CreateLoanApplicationModal = ({
                             +values?.loanAmount +
                             +values?.loanAmount * (e.target.value / 100)
                           ).toFixed(2);
-                          if (totalAmountwithInterest > grossSalary) {
-                            toast.warn(
-                              "Total amount with interest cannot exceed gross salary",
-                              { toastId: "toastId" }
-                            );
-                            setFieldValue("totalwithinterest", grossSalary);
+
+                          if (orgId === 4 || orgId === 5) {
+                            if (totalAmountwithInterest > grossSalary) {
+                              toast.warn(
+                                "Total amount with interest cannot exceed gross salary",
+                                { toastId: "toastId" }
+                              );
+                              setFieldValue("totalwithinterest", +grossSalary);
+                            } else {
+                              setFieldValue(
+                                "totalwithinterest",
+                                +totalAmountwithInterest
+                              );
+                            }
                           } else {
                             setFieldValue(
                               "totalwithinterest",
-                              totalAmountwithInterest
+                              +totalAmountwithInterest
                             );
                           }
                         }
@@ -426,38 +432,42 @@ const CreateLoanApplicationModal = ({
                   <div className="col-4">
                     <div className="d-flex justify-content-between">
                       <label>Total Loan Amount with interest</label>
-                      <span style={{ fontSize: "14px", position: "relative" }}>
-                        {formatMoney(grossSalary)}
-                        <i
-                          className="bi bi-info-circle"
-                          style={{ cursor: "pointer", marginLeft: "5px" }}
-                        ></i>
+                      {(orgId === 4 || orgId === 5) && (
                         <span
-                          style={{
-                            visibility: "hidden",
-                            width: "150px",
-                            backgroundColor: "black",
-                            color: "#fff",
-                            textAlign: "center",
-                            borderRadius: "6px",
-                            padding: "5px 0",
-                            position: "absolute",
-                            zIndex: 1,
-                            bottom: "125%",
-                            left: "50%",
-                            marginLeft: "-75px",
-                            fontSize: "12px",
-                            opacity: 0,
-                            transition: "opacity 0.3s",
-                          }}
-                          className="tooltip-text"
+                          style={{ fontSize: "14px", position: "relative" }}
                         >
-                          This is the maximum loan amount you can apply for,
-                          based on your gross salary.
+                          {formatMoney(grossSalary)}
+                          <i
+                            className="bi bi-info-circle"
+                            style={{ cursor: "pointer", marginLeft: "5px" }}
+                          ></i>
+                          <span
+                            style={{
+                              visibility: "hidden",
+                              width: "150px",
+                              backgroundColor: "black",
+                              color: "#fff",
+                              textAlign: "center",
+                              borderRadius: "6px",
+                              padding: "5px 0",
+                              position: "absolute",
+                              zIndex: 1,
+                              bottom: "125%",
+                              left: "50%",
+                              marginLeft: "-75px",
+                              fontSize: "12px",
+                              opacity: 0,
+                              transition: "opacity 0.3s",
+                            }}
+                            className="tooltip-text"
+                          >
+                            This is the maximum loan amount you can apply for,
+                            based on your gross salary.
+                          </span>
                         </span>
-                      </span>
+                      )}
                     </div>
-
+{console.log(values)}
                     <FormikInput
                       classes="input-sm"
                       value={values?.totalwithinterest}
