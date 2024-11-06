@@ -27,3 +27,4 @@ yarn.lock
 
 #dev
 /.vscode
+/.idea

@@ -46,6 +46,11 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
       }`
     );
 
+    // const modifiedLetter = (
+    //   res?.data?.generatedLetterBody?.match(/<body>([\s\S]*?)<\/body>/i)?.[1] ||
+    //   ""
+    // ).trim();
+
     form.setFieldValue("letter", res?.data?.generatedLetterBody);
     form.setFieldValue("letterId", res?.data?.templateId);
     setLoading(false);

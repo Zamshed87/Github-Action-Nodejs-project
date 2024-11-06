@@ -36,8 +36,13 @@ export const getEmployeeLeaveBalanceAndHistory = async (
   }
 };
 
-export const createLeaveApplication = async (payload, setLoading, cb) => {
-  setLoading && setLoading(true);
+export const createLeaveApplication = async (
+  payload,
+  setLoading,
+  cb,
+  setLoad
+) => {
+  // setLoading && setLoading(true);
   try {
     const res = await axios.post(
       `/LeaveMovement/CRUDLeaveApplication`,
@@ -45,11 +50,11 @@ export const createLeaveApplication = async (payload, setLoading, cb) => {
     );
     cb && cb();
     toast.success(res?.data?.Result?.Message || "Submitted Successfully");
-    setLoading && setLoading(false);
+    // setLoading && setLoading(false);
   } catch (error) {
     isDevServer && console.log(error?.response?.data);
     toast.warn(error?.response?.data?.message || "Something went wrong");
-    setLoading && setLoading(false);
+    setLoad && setLoad(false);
   }
 };
 export const deleteLeaveApplication = async (values, item, setLoading, cb) => {

@@ -9,7 +9,7 @@ import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
 import {
   createNEditLetterGenerate,
@@ -30,11 +30,11 @@ import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
 import { modules } from "../../letterConfiguration/utils";
-import { getPDFAction } from "utility/downloadFile";
+import { postPDFAction } from "utility/downloadFile";
 
 const LetterGenAddEdit = () => {
   // Router state
-  const { letterId }: any = useParams();
+  // const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
 
@@ -111,7 +111,7 @@ const LetterGenAddEdit = () => {
     >
       <PCard>
         <PCardHeader
-          title={letterId ? "Edit Template" : "Create Template"}
+          title={"Create Template"}
           backButton={true}
           buttonList={[
             {
@@ -205,12 +205,18 @@ const LetterGenAddEdit = () => {
             action="button"
             content="Preview"
             onClick={(e: any) => {
-              const { employee, letterId } = form.getFieldsValue(true);
+              const { employee, letterId, letter } = form.getFieldsValue(true);
               e.stopPropagation();
-              getPDFAction(
-                `/LetterBuilder/GetGeneratedLetterPreviewPDF?isForPreview=true&issuedEmployeeId=${
-                  employee?.value || 0
-                }&templateId=${letterId}&letterGenerateId=${letterId || 0}`,
+              const payload = {
+                isForPreview: true,
+                issuedEmployeeId: employee?.value || 0,
+                templateId: letterId,
+                letterGenerateId: letterId || 0,
+                letterBody: `<div style="padding: 80px !important" >${letter}</div>`,
+              };
+              postPDFAction(
+                "/LetterBuilder/GetGeneratedLetterPreviewPDF",
+                payload,
                 setLoading
               );
             }}

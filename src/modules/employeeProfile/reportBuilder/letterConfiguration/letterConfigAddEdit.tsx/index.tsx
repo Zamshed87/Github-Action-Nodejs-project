@@ -20,7 +20,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { customFields, modules } from "../utils";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
@@ -31,6 +31,8 @@ import {
 } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { AttachmentOutlined } from "@mui/icons-material";
 
 const LetterConfigAddEdit = () => {
   // Router state
@@ -38,6 +40,7 @@ const LetterConfigAddEdit = () => {
   const location = useLocation();
   const letterData: any = location?.state;
   const quillRef: any = useRef(null);
+  const history = useHistory();
 
   // Form Instance
   const [form] = Form.useForm();
@@ -67,8 +70,9 @@ const LetterConfigAddEdit = () => {
   //   states
   const [loading, setLoading] = useState(false);
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
-  const [empSignature, setEmpAuthSignature] = useState<any>([]);
+  const [backgroundImg, setBackgroundImg] = useState<any>([]);
   const [fields, setFields] = useState(customFields);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleInsertField = (fieldValue: any) => {
     const quill = quillRef?.current?.getEditor();
@@ -98,7 +102,12 @@ const LetterConfigAddEdit = () => {
           ? { label: letterData?.letterType, value: letterData?.letterTypeId }
           : "",
         letterName: letterData?.letterName || "",
-        letter: letterData?.letterBody || "",
+        backgroudImageId: letterData?.backgroudImageId || 0,
+        letter: (
+          letterData?.letterBody?.match(/<body>([\s\S]*?)<\/body>/i)?.[1] ||
+          letterData?.letterBody ||
+          ""
+        ).trim(),
       }}
     >
       <PCard>
@@ -129,18 +138,38 @@ const LetterConfigAddEdit = () => {
                       mention.outerHTML = `@${mentionElement.dataset.value}`;
                     });
                     const modifiedLetter = transformedHTML.innerHTML;
+                    //                     const htmlString = `
+                    // <!DOCTYPE html>
+                    // <html lang="en">
+                    // <head>
+                    //   <meta charset="UTF-8">
+                    //   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    //   <title>Document</title>
+                    // </head>
+                    // <body>
+                    //   ${modifiedLetter}
+                    // </body>
+                    // </html>
+                    // `;
                     form.setFieldValue("letter", modifiedLetter);
                     form.setFieldValue(
                       "backgroudImageId",
-                      empSignature?.[0]?.response?.[0]?.globalFileUrlId || 0
+                      backgroundImg?.[0]?.response?.[0]?.globalFileUrlId ||
+                        form.getFieldValue("backgroudImageId") ||
+                        0
                     );
 
                     createNEditLetterTemplate(
                       form,
                       profileData,
                       setLoading,
-                      letterData
+                      letterData,
+                      setBackgroundImg
                     );
+                    letterId &&
+                      history.push(
+                        "/profile/customReportsBuilder/letterConfiguration"
+                      );
                   })
                   .catch(() => {
                     console.log();
@@ -213,19 +242,55 @@ const LetterConfigAddEdit = () => {
               <div className="mt-3">
                 <FileUploadComponents
                   propsObj={{
+                    isOpen,
+                    setIsOpen,
                     title: "Background Image",
-                    attachmentList: empSignature,
-                    setAttachmentList: setEmpAuthSignature,
+                    destroyOnClose: false,
+                    attachmentList: backgroundImg,
+                    setAttachmentList: setBackgroundImg,
                     accountId: orgId,
                     tableReferrence: "LeaveAndMovement",
                     documentTypeId: 15,
                     userId: employeeId,
                     buId,
                     maxCount: 1,
+                    isIcon: true,
+                    isErrorInfo: true,
                     accept: "image/png, image/jpeg, image/jpg",
+                    subText:
+                      "File formats : PDF, JPG and PNG. Max. Limit : 2MB",
                   }}
                 />
               </div>
+              {form.getFieldValue("backgroudImageId") &&
+              backgroundImg?.length === 0 ? (
+                <div
+                  className="d-flex align-items-center"
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(
+                        form.getFieldValue("backgroudImageId")
+                      )
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{ marginRight: "5px", color: "#0072E5" }}
+                  />
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Background Image
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
             </Col>
           </Row>
           <Row gutter={[10, 2]}>

@@ -66,7 +66,8 @@ export const createNEditLetterTemplate = async (
   form,
   profileData,
   setLoading,
-  letterData
+  letterData,
+  setBackgroundImg
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
@@ -93,6 +94,7 @@ export const createNEditLetterTemplate = async (
     );
     setLoading(false);
     form.resetFields();
+    setBackgroundImg([]);
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     setLoading(false);

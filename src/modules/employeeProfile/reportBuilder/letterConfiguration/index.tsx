@@ -48,11 +48,12 @@ const LetterConfigLanding = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Letter Configuration";
-    () => {
+
+    // Cleanup function to reset the title when the component unmounts
+    return () => {
       document.title = "PeopleDesk";
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   // states
   const [filterList, setFilterList] = useState({});
@@ -89,7 +90,7 @@ const LetterConfigLanding = () => {
       createdByList: filters?.createdByEmployee || [],
       statusList: filters?.status || [],
     };
-    landingApi.action({
+    landingApi?.action({
       urlKey: "GetLetterTemplateLanding",
       method: "POST",
       payload: payload,
@@ -100,11 +101,39 @@ const LetterConfigLanding = () => {
     landingApiCall({});
   }, [wgId, wId, buId]);
 
+  const [switchStatus, setSwitchStatus] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  useEffect(() => {
+    // Update the switch status based on initial data or after filtering
+    const initialSwitchStatus = (landingApi?.data?.data || []).reduce(
+      (acc: any, item: any) => {
+        acc[item.templateId] = item.status === "Active";
+        return acc;
+      },
+      {}
+    );
+    setSwitchStatus(initialSwitchStatus);
+  }, [landingApi?.data?.data]); // Depend on the landing data source
+
+  const handleSwitchChange = (checked: boolean, templateId: number) => {
+    setSwitchStatus((prev) => ({
+      ...prev,
+      [templateId]: checked,
+    }));
+    axios?.post("/LetterBuilder/LetterTemplateStatusUpdate", {
+      templateId,
+      isActive: checked,
+      updatedBy: employeeId,
+    });
+  };
+
   // table column
   const header: any = [
     {
       title: "SL",
-      render: (_: any, rec: any, index: number) =>
+      render: (_: any, _rec: any, index: number) =>
         getSerial({
           currentPage: landingApi?.data?.currentPage,
           pageSize: landingApi?.data?.pageSize,
@@ -142,18 +171,12 @@ const LetterConfigLanding = () => {
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
-      render: (data: any, rec: any) => (
+      render: (_data: any, rec: any) => (
         <>
           <Switch
             size="small"
-            defaultChecked={data === "Active" ? true : false}
-            onChange={(checked) => {
-              axios.post("/LetterBuilder/LetterTemplateStatusUpdate", {
-                templateId: rec?.templateId,
-                isActive: checked,
-                updatedBy: employeeId,
-              });
-            }}
+            checked={switchStatus[rec.templateId]}
+            onChange={(checked) => handleSwitchChange(checked, rec.templateId)}
           />{" "}
         </>
       ),
@@ -196,7 +219,7 @@ const LetterConfigLanding = () => {
       <PForm form={form}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount} templates`}
+            title={`Total ${landingApi?.data?.totalCount || 0} templates`}
             buttonList={[
               {
                 type: "primary",
