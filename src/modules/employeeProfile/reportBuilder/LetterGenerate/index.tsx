@@ -179,7 +179,7 @@ const LetterGenerateLanding = () => {
                   letterBody: "",
                 };
                 postPDFAction(
-                  "/LetterBuilder/GetGeneratedLetterPreviewPDF",
+                  "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
                   payload,
                   setLoading
                 );

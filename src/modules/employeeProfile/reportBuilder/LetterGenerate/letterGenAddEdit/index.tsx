@@ -215,7 +215,7 @@ const LetterGenAddEdit = () => {
                 letterBody: `<div style="padding: 80px !important" >${letter}</div>`,
               };
               postPDFAction(
-                "/LetterBuilder/GetGeneratedLetterPreviewPDF",
+                "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
                 payload,
                 setLoading
               );
