@@ -23,24 +23,17 @@ export default function OffDayErrorModal({
   cb,
   setLoading,
 }) {
-  const demoPopup = () => {
-    const confirmObject = {
-      closeOnClickOutside: false,
-      message: `These employees have overlapping Off Days. Previous Off Days will be deleted to apply the new schedule. Are you Sure?`,
-      yesAlertFunc: () => {
-        crudOffDayAssignWithError(
-          { ...errorPayload, isErrorAvoid: true },
-          setErrorData,
-          setErroModalOpen,
-          setErrorPayload,
-          setLoading,
-          cb
-        );
-      },
-      noAlertFunc: () => null,
-    };
-    IConfirmModal(confirmObject);
-  };
+  //   const demoPopup = () => {
+  //     const confirmObject = {
+  //       closeOnClickOutside: false,
+  //       message: `These employees have overlapping Off Days. Previous Off Days will be deleted to apply the new schedule. Are you Sure?`,
+  //       yesAlertFunc: () => {
+
+  //       },
+  //       noAlertFunc: () => null,
+  //     };
+  //     IConfirmModal(confirmObject);
+  //   };
   return (
     <>
       <div className="viewModal">
@@ -75,16 +68,16 @@ export default function OffDayErrorModal({
                         <thead>
                           <tr>
                             <th style={{ width: "30px" }}>
-                              <div>SL</div>
+                              <div></div>
                             </th>
                             <th>
                               <div className="sortable" onClick={() => {}}>
-                                <span>Employee Name</span>
+                                <span></span>
                               </div>
                             </th>
                             <th>
                               <div className="sortable" onClick={() => {}}>
-                                <span>Description</span>
+                                <span></span>
                               </div>
                             </th>
                           </tr>
@@ -139,7 +132,14 @@ export default function OffDayErrorModal({
                 marginRight: "10px",
               }}
               onClick={() => {
-                demoPopup();
+                crudOffDayAssignWithError(
+                  { ...errorPayload, isErrorAvoid: true },
+                  setErrorData,
+                  setErroModalOpen,
+                  setErrorPayload,
+                  setLoading,
+                  cb
+                );
               }}
             >
               Continue
