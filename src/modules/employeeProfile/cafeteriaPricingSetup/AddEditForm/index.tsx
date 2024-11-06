@@ -98,8 +98,7 @@ const PricingSetupForm = () => {
             TotalCost: row?.monTotalCost,
             companyContributionforGuestPerMeal:
               row?.monCompanyContributionforGuestPerMeal,
-            ownContributionforGuestPerMeal:
-              row?.monOwnContributionforGuestPerMeal,
+            ownContributionForGuest: row?.monOwnContributionforGuestPerMeal,
             totalContributionforGuestPerMeal:
               row?.monTotalContributionforGuestPerMeal,
             designation: {
@@ -352,7 +351,7 @@ const PricingSetupForm = () => {
       render: (value: any, row: any) => row?.TotalCost,
     },
     {
-      title: "Own Contribution for Guest /Meal",
+      title: "Own Contribution for Guest/Meal",
       render: (value: any, row: any, index: number) =>
         +id ? (
           <>
@@ -376,7 +375,7 @@ const PricingSetupForm = () => {
                     }`
                   ),
                   index,
-                  "TotalCost"
+                  "totalContributionforGuestPerMeal"
                 );
               }}
             />
@@ -385,7 +384,7 @@ const PricingSetupForm = () => {
           <>
             <PInput
               type="number"
-              name={`OM_${index}`}
+              name={`OMFG_${index}`}
               // value={row?.ownContribution}
               placeholder="Amount"
               onPressEnter={(e: any) => {
@@ -413,13 +412,13 @@ const PricingSetupForm = () => {
                 handleIsPerDayChange(
                   parseInt(
                     `${
-                      row?.companyContribution
-                        ? e + +row?.companyContribution
+                      row?.companyContributionforGuestPerMeal
+                        ? e + +row?.companyContributionforGuestPerMeal
                         : e
                     }`
                   ),
                   index,
-                  "TotalCost"
+                  "totalContributionforGuestPerMeal"
                 );
               }}
             />
@@ -427,26 +426,30 @@ const PricingSetupForm = () => {
         ),
     },
     {
-      title: "Company Contribution/Meal",
+      title: "Company Contribution for Guest/Meal",
       render: (value: any, row: any, index: number) =>
         +id ? (
           <>
             <PInput
               type="number"
               // name={`CCC_${index}`}
-              value={row?.companyContribution}
+              value={row?.companyContributionforGuestPerMeal}
               placeholder="Amount"
               // disabled={true}
               onPressEnter={(e: any) => {
                 e.preventDefault();
               }}
               onChange={(e: any) => {
-                handleIsPerDayChange(e, index, "companyContribution");
+                handleIsPerDayChange(
+                  e,
+                  index,
+                  "companyContributionforGuestPerMeal"
+                );
 
                 handleIsPerDayChange(
-                  row?.ownContribution + e,
+                  row?.ownContributionForGuest + e,
                   index,
-                  "TotalCost"
+                  "totalContributionforGuestPerMeal"
                 );
               }}
             />
@@ -455,17 +458,18 @@ const PricingSetupForm = () => {
           <>
             <PInput
               type="number"
-              name={`CCC_${index}`}
+              name={`CCCFG_${index}`}
               placeholder="Amount"
               rules={[
                 // { required: true, message: "Amount Is Required" },
                 {
                   validator: (_, value, callback) => {
-                    const companyContribution = parseFloat(value);
+                    const companyContributionforGuestPerMeal =
+                      parseFloat(value);
 
-                    if (isNaN(companyContribution)) {
+                    if (isNaN(companyContributionforGuestPerMeal)) {
                       callback("Amount Is Required");
-                    } else if (companyContribution < 0) {
+                    } else if (companyContributionforGuestPerMeal < 0) {
                       callback("Cant be Negative");
                     } else {
                       callback();
@@ -478,17 +482,25 @@ const PricingSetupForm = () => {
               }}
               // disabled={true}
               onChange={(e: any) => {
-                handleIsPerDayChange(e, index, "companyContribution");
+                handleIsPerDayChange(
+                  e,
+                  index,
+                  "companyContributionforGuestPerMeal"
+                );
 
                 handleIsPerDayChange(
-                  row?.ownContribution + e,
+                  row?.ownContributionForGuest + e,
                   index,
-                  "TotalCost"
+                  "totalContributionforGuestPerMeal"
                 );
               }}
             />
           </>
         ),
+    },
+    {
+      title: "Total Contribution for Guest/Meal",
+      render: (value: any, row: any) => row?.totalContributionforGuestPerMeal,
     },
     {
       title: "Action",
@@ -774,6 +786,158 @@ const PricingSetupForm = () => {
       render: (value: any, row: any) => row?.TotalCost,
     },
     {
+      title: "Own Contribution for Guest/Meal",
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`OM_${index}`}
+              value={row?.ownContributionForGuest}
+              placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "ownContributionForGuest");
+                handleIsPerDayChange(
+                  parseInt(
+                    `${
+                      row?.companyContributionforGuestPerMeal
+                        ? e + +row?.companyContributionforGuestPerMeal
+                        : e
+                    }`
+                  ),
+                  index,
+                  "totalContributionforGuestPerMeal"
+                );
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`OMFG_${index}`}
+              // value={row?.ownContribution}
+              placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const ownMeal = parseFloat(value);
+
+                    if (isNaN(ownMeal)) {
+                      callback("Amount Is Required");
+                    } else if (ownMeal < 0) {
+                      callback("Cant be Negative");
+                    } else {
+                      callback();
+                    }
+                  },
+                },
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "ownContributionForGuest");
+                handleIsPerDayChange(
+                  parseInt(
+                    `${
+                      row?.companyContributionforGuestPerMeal
+                        ? e + +row?.companyContributionforGuestPerMeal
+                        : e
+                    }`
+                  ),
+                  index,
+                  "totalContributionforGuestPerMeal"
+                );
+              }}
+            />
+          </>
+        ),
+    },
+    {
+      title: "Company Contribution for Guest/Meal",
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`CCC_${index}`}
+              value={row?.companyContributionforGuestPerMeal}
+              placeholder="Amount"
+              // disabled={true}
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
+              onChange={(e: any) => {
+                handleIsPerDayChange(
+                  e,
+                  index,
+                  "companyContributionforGuestPerMeal"
+                );
+
+                handleIsPerDayChange(
+                  row?.ownContributionForGuest + e,
+                  index,
+                  "totalContributionforGuestPerMeal"
+                );
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`CCCFG_${index}`}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const companyContributionforGuestPerMeal =
+                      parseFloat(value);
+
+                    if (isNaN(companyContributionforGuestPerMeal)) {
+                      callback("Amount Is Required");
+                    } else if (companyContributionforGuestPerMeal < 0) {
+                      callback("Cant be Negative");
+                    } else {
+                      callback();
+                    }
+                  },
+                },
+              ]}
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(
+                  e,
+                  index,
+                  "companyContributionforGuestPerMeal"
+                );
+
+                handleIsPerDayChange(
+                  row?.ownContributionForGuest + e,
+                  index,
+                  "totalContributionforGuestPerMeal"
+                );
+              }}
+            />
+          </>
+        ),
+    },
+    {
+      title: "Total Contribution for Guest/Meal",
+      render: (value: any, row: any) => row?.totalContributionforGuestPerMeal,
+    },
+    {
       title: "Action",
       render: (value: any, row: any, index: number) => (
         <div className="d-flex justify-content-center">
@@ -835,6 +999,11 @@ const PricingSetupForm = () => {
         monCompanyContribution: item?.companyContribution,
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
+        monOwnContributionforGuestPerMeal: item?.ownContributionForGuest,
+        monCompanyContributionforGuestPerMeal:
+          item?.companyContributionforGuestPerMeal,
+        monTotalContributionforGuestPerMeal:
+          item?.totalContributionforGuestPerMeal,
         isActive: true,
         // intMonthId:
         //   mealType?.value === 2
@@ -861,7 +1030,7 @@ const PricingSetupForm = () => {
       rows: payload, // Array of row objects
       headerId: +id || 0,
     };
-
+    // console.log(newPayload);
     if (+id) {
       cafeEditApi.action({
         urlKey: "EditCafeteriaConfig",
@@ -1240,12 +1409,14 @@ const PricingSetupForm = () => {
                     header={headerForDesignation}
                     bordered
                     data={rowDto || []}
+                    scroll={{ x: 2000 }}
                   />
                 ) : pricingMatrixType?.value === 2 ? (
                   <DataTable
                     header={headerForSalary}
                     bordered
                     data={rowDto || []}
+                    scroll={{ x: 2100 }}
                   />
                 ) : undefined}
               </>
