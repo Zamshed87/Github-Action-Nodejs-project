@@ -31,6 +31,8 @@ import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { downloadEmployeeCardFile } from "modules/timeSheet/reports/employeeIDCard/helper";
 import { gray900 } from "utility/customColor";
+import OffDayErrorModal from "./OffDayErrorModal";
+import PopoverHistory from "../monthlyOffdayAssign/components/PopoverHistory";
 
 const initData = {
   search: "",
@@ -53,9 +55,15 @@ function OffDay() {
   const [selectedSingleEmployee, setSelectedSingleEmployee] = useState([]);
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElHistory, setAnchorElHistory] = useState(null);
   const [singleData, setSingleData] = useState(null);
   const [createModal, setCreateModal] = useState(false);
   const [isMulti, setIsMulti] = useState(false);
+  const [erroModalOpen, setErroModalOpen] = useState(false);
+  const [errorData, setErrorData] = useState(false);
+  const [errorPayload, setErrorPayload] = useState({});
+  const [offDayHistory, setOffDayHistory] = useState({});
+
   const [empId, setEmpId] = useState("");
   const handleCreateClose = () => setCreateModal(false);
   const [pages, setPages] = useState({
@@ -67,7 +75,9 @@ function OffDay() {
   const [isAssignAll, setIsAssignAll] = useState(false);
 
   const open = !loading && Boolean(anchorEl);
+  const openHistory = !loading && Boolean(anchorElHistory);
   const id = open ? "simple-popover" : undefined;
+  const idHistory = openHistory ? "simple-popover" : undefined;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -340,7 +350,6 @@ function OffDay() {
       checkedHeaderList
     );
   };
-
   return (
     <>
       <Formik
@@ -580,7 +589,9 @@ function OffDay() {
                             setLoading,
                             loading,
                             headerList,
-                            wgName
+                            wgName,
+                            setOffDayHistory,
+                            setAnchorElHistory
                           )}
                           pages={pages}
                           rowDto={rowDto}
@@ -698,7 +709,39 @@ function OffDay() {
                     checkedHeaderList
                   )
                 }
+                setErrorData={setErrorData}
+                setErroModalOpen={setErroModalOpen}
+                setErrorPayload={setErrorPayload}
                 setFieldValueParent={setFieldValue}
+              />
+
+              <OffDayErrorModal
+                show={erroModalOpen}
+                title={"Error Data List"}
+                onHide={() => {
+                  setErroModalOpen(false);
+                }}
+                size="lg"
+                backdrop="static"
+                classes="default-modal"
+                values={values}
+                errorData={errorData}
+                errorPayload={errorPayload}
+                setErrorData={setErrorData}
+                setErroModalOpen={setErroModalOpen}
+                setErrorPayload={setErrorPayload}
+                setLoading={setLoading}
+                cb={() => {
+                  getData(
+                    { current: 1, pageSize: paginationSize },
+                    "",
+                    [],
+                    -1,
+                    filterOrderList,
+                    checkedHeaderList
+                  );
+                }}
+                // resetForm={resetForm}
               />
             </Form>
           </>
@@ -729,6 +772,34 @@ function OffDay() {
             profileImg,
             calendarData,
             setCalendarData,
+          }}
+        />
+      </Popover>
+      <Popover
+        sx={{
+          "& .MuiPaper-root": {
+            width: "600px",
+            minHeight: "200px",
+            borderRadius: "4px",
+          },
+        }}
+        id={idHistory}
+        open={openHistory}
+        anchorEl={anchorElHistory}
+        onClose={() => {
+          setAnchorElHistory(null);
+        }}
+        anchorOrigin={{
+          // vertical: "bottom",
+          horizontal: "middle",
+        }}
+      >
+        <PopoverHistory
+          propsObj={{
+            selectedSingleEmployee,
+            profileImg,
+            offDayHistory,
+            setOffDayHistory,
           }}
         />
       </Popover>
