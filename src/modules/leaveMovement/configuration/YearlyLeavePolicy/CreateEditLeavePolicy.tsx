@@ -1920,9 +1920,10 @@ const CreateEditLeavePolicy = () => {
                                     },
                                     {
                                       message: "number  must be positive",
-                                      pattern: new RegExp(
-                                        /^[+]?([.]\d+|\d+([.]\d+)?)$/
-                                      ),
+                                      // pattern: new RegExp(
+                                      //   /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                      // ),
+                                      pattern: new RegExp(/^[+]?\d+$/),
                                     },
                                   ]}
                                 />
@@ -1947,9 +1948,10 @@ const CreateEditLeavePolicy = () => {
                                     },
                                     {
                                       message: "number  must be positive",
-                                      pattern: new RegExp(
-                                        /^[+]?([.]\d+|\d+([.]\d+)?)$/
-                                      ),
+                                      // pattern: new RegExp(
+                                      //   /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                      // ),
+                                      pattern: new RegExp(/^[+]?\d+$/),
                                     },
                                   ]}
                                 />
