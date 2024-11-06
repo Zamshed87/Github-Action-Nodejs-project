@@ -884,7 +884,8 @@ const BankAdviceReport = () => {
 
                             downloadFile(
                               url,
-                              "Top Sheet Report as Excel",
+                              // "Top Sheet Report as Excel",
+                              `${values?.workplace?.code}-${values?.adviceType?.label}-TopSheetReport-${values?.monthId}_${values?.yearId}`,
                               "xlsx",
                               setLoading
                             );
@@ -912,7 +913,8 @@ const BankAdviceReport = () => {
 
                             downloadFile(
                               url,
-                              "Advice List as Excel",
+                              // "Advice List as Excel",
+                              `${values?.workplace?.code}-${values?.adviceType?.label}-BankAdviceReport${values?.monthId}_${values?.yearId}`,
                               "xlsx",
                               setLoading
                             );
