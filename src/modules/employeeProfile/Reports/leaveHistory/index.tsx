@@ -456,7 +456,13 @@ const EmLeaveHistory = () => {
                           (i: any) => i?.value
                         );
 
-                        const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=excelView&intAccountId=${orgId}&intYear=${values?.year?.value}&strWorkplaceGroupList=${values?.workplaceGroup?.value}&strWorkplaceList=${workplaceList}`;
+                        const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=excelView&intAccountId=${orgId}&intYear=${
+                          values?.yearDDL?.value
+                        }&strWorkplaceGroupList=${
+                          values?.workplaceGroup?.value
+                        }&strWorkplaceList=${workplaceList}&strSearchTxt=${
+                          values?.search || ""
+                        }`;
 
                         downloadFile(
                           url,
@@ -493,8 +499,13 @@ const EmLeaveHistory = () => {
                         const workplaceList = values?.workplace?.map(
                           (i: any) => i?.value
                         );
-
-                        const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=pdfView&intAccountId=${orgId}&intYear=${values?.year?.value}&strWorkplaceGroupList=${values?.workplaceGroup?.value}&strWorkplaceList=${workplaceList}`;
+                        const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=pdfView&intAccountId=${orgId}&intYear=${
+                          values?.yearDDL?.value
+                        }&strWorkplaceGroupList=${
+                          values?.workplaceGroup?.value
+                        }&strWorkplaceList=${workplaceList}&strSearchTxt=${
+                          values?.search || ""
+                        }`;
 
                         getPDFAction(url, setLoading);
                       }}
@@ -520,7 +531,10 @@ const EmLeaveHistory = () => {
             )}
           </div>
 
-          <div style={{ overflow: "scroll" }} className=" w-100">
+          <div
+            style={{ overflow: "scroll", marginTop: "-35px" }}
+            className=" w-100"
+          >
             <div
               dangerouslySetInnerHTML={{
                 __html: data,
