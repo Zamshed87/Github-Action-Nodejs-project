@@ -428,6 +428,16 @@ export default function AddEditForm({
 
                   label: "DBBL Agent Banking",
                 },
+                {
+                  value: "UCB",
+
+                  label: "UCB",
+                },
+                {
+                  value: "MFS",
+
+                  label: "MFS",
+                },
               ]}
               name="bankAdvice"
               label="Bank Advice"
