@@ -195,6 +195,13 @@ export const getYearlyPolicyById = async (
           value: res?.data?.intWorkplaceGroupId,
           label: res?.data?.strWorkplaceGroupName,
         },
+        carryBalance: res?.data?.isEncashInDay
+          ? res?.data?.intEncashCarryBalanceInMinute
+          : res?.data?.intEncashCarryBalanceInPercentage,
+        mainBalance: res?.data?.isEncashInDay
+          ? res?.data?.intEncashMainBalanceInMinute
+          : res?.data?.intEncashMainBalanceInPercentage,
+        encashType: res?.data?.isEncashInDay ? encashDDL[0] : encashDDL[1],
         IntMaxEncashableLveInDay: res?.data?.intMaxEncashableLveInDay,
         intGender: res?.data?.genderListDto?.map((itm) => {
           return {
@@ -488,4 +495,8 @@ export const dependsOnDDL = [
 export const commonDDL = [
   { value: false, label: "Not Applicable" },
   { value: true, label: "Applicable" },
+];
+export const encashDDL = [
+  { value: false, label: "In Days" },
+  { value: true, label: "Percentage" },
 ];

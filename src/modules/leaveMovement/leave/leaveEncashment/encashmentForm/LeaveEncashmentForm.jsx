@@ -2,6 +2,8 @@
 import FormikInput from "common/FormikInput";
 import FormikSelect from "common/FormikSelect";
 import Loading from "common/loading/Loading";
+import { isNull } from "lodash";
+import { encashDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
 import { toast } from "react-toastify";
 import { getDateOfYear } from "utility/dateFormatter";
 import { customStyles } from "utility/selectCustomStyle";
@@ -24,6 +26,7 @@ function LeaveEncashmentForm({ propsObj }) {
     carry,
     carryHour,
     leaveTypeDDL,
+    leaveBalanceData,
   } = propsObj;
 
   return (
@@ -63,14 +66,42 @@ function LeaveEncashmentForm({ propsObj }) {
                 value={values?.leaveType}
                 onChange={(valueOption) => {
                   setFieldValue("leaveType", valueOption);
+                  const isExist = leaveBalanceData?.find(
+                    (i) => i?.intLeaveTypeId === valueOption?.value
+                  );
+                  setFieldValue(
+                    "encashType",
+                    isNull(isExist?.isEncashInDay)
+                      ? ""
+                      : isExist?.isEncashInDay
+                      ? encashDDL[0]
+                      : encashDDL[1]
+                  );
                 }}
                 styles={customStyles}
                 placeholder=""
               />
             </div>
           </div>
-
-          <div className="col-lg-6 d-none">
+          <div className="col-lg-6">
+            <div className="input-field-main">
+              <label>Max Encashment per year</label>
+              <FormikSelect
+                isClearable={false}
+                isDisabled={true}
+                menuPosition="fixed"
+                name="encashType"
+                options={encashDDL || []}
+                value={values?.encashType}
+                onChange={(valueOption) => {
+                  setFieldValue("encashType", valueOption);
+                }}
+                styles={customStyles}
+                placeholder=""
+              />
+            </div>
+          </div>
+          {/* <div className="col-lg-6 d-none">
             <div className="input-field-main">
               <label>Encashment Day</label>
               <FormikInput
@@ -109,7 +140,7 @@ function LeaveEncashmentForm({ propsObj }) {
                 touched={touched}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-lg-6">
             <div className="input-field-main">
               <label>Main Balance</label>
@@ -117,6 +148,8 @@ function LeaveEncashmentForm({ propsObj }) {
                 classes="input-sm"
                 value={values?.mainBalance}
                 placeholder=""
+                min={0}
+                step={0}
                 name="mainBalance"
                 type="number"
                 className="form-control"
@@ -125,7 +158,9 @@ function LeaveEncashmentForm({ propsObj }) {
                     setFieldValue("mainBalance", +e.target.value);
                   } else {
                     setFieldValue("mainBalance", "");
-                    return toast.warn('Main Balance cannot be negative', {toastId: 'toastId'});
+                    return toast.warn("Main Balance cannot be negative", {
+                      toastId: "toastId",
+                    });
                   }
                 }}
                 errors={errors}
@@ -140,6 +175,8 @@ function LeaveEncashmentForm({ propsObj }) {
                 classes="input-sm"
                 value={values?.carryBalance}
                 placeholder=""
+                min={0}
+                step={0}
                 name="carryBalance"
                 type="number"
                 className="form-control"
@@ -148,8 +185,9 @@ function LeaveEncashmentForm({ propsObj }) {
                     setFieldValue("carryBalance", +e.target.value);
                   } else {
                     setFieldValue("carryBalance", "");
-                    return toast.warn('Carrty Balance cannot be negative', {toastId: 'toastId'});
-
+                    return toast.warn("Carrty Balance cannot be negative", {
+                      toastId: "toastId",
+                    });
                   }
                 }}
                 errors={errors}
@@ -162,6 +200,7 @@ function LeaveEncashmentForm({ propsObj }) {
           <button
             className="btn btn-green btn-green-disable mt-3"
             type="submit"
+            disabled={!values?.carryBalance || !values?.mainBalance}
           >
             {isEdit ? "Update" : "Apply"}
           </button>

@@ -9,6 +9,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   commonDDL,
   dependsOnDDL,
+  encashDDL,
   getYearlyPolicyById,
   getYearlyPolicyPopUpDDL,
   isPolicyExist,
@@ -32,6 +33,7 @@ import {
 } from "Components";
 import { generatePayload } from "./Utils";
 import Loading from "common/loading/Loading";
+import { monthDDL } from "utility/monthUtility";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
@@ -75,14 +77,12 @@ const CreateEditLeavePolicy = () => {
   }, []);
 
   useEffect(() => {
-
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
       "LeaveTypeId",
       "LeaveType",
       setLeaveTypeDDL
     );
-
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
@@ -1608,6 +1608,7 @@ const CreateEditLeavePolicy = () => {
                           isHalfDayLeave,
                           isCarryForward,
                           isEncashable,
+                          encashType,
                         } = form.getFieldsValue();
 
                         // const empType = employeeType?.label;
@@ -1850,6 +1851,7 @@ const CreateEditLeavePolicy = () => {
                                     isEncashable: value,
                                     IntMaxEncashableLveInDay: undefined,
                                     intEncashableMonth: undefined,
+                                    encashType: undefined,
                                   });
                                 }}
                                 rules={[
@@ -1862,7 +1864,7 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                             {isEncashable && (
                               <Col md={12} sm={24}>
-                                <PInput
+                                {/* <PInput
                                   disabled={!isEncashable}
                                   type="number"
                                   name="IntMaxEncashableLveInDay"
@@ -1876,13 +1878,90 @@ const CreateEditLeavePolicy = () => {
                                       pattern: new RegExp(/^[+]?\d+$/),
                                     },
                                   ]}
+                                /> */}
+                                <PSelect
+                                  options={encashDDL as any}
+                                  name="encashType"
+                                  label="Max Encashment per year"
+                                  placeholder=""
+                                  onChange={(value, op) => {
+                                    form.setFieldsValue({
+                                      encashType: op,
+                                      // isEncashable: value,
+                                      IntMaxEncashableLveInDay: undefined,
+                                      // intEncashableMonth: undefined,
+                                      mainBalance: undefined,
+                                      carryBalance: undefined,
+                                    });
+                                  }}
+                                  rules={[
+                                    {
+                                      required: isEncashable,
+                                      message: "Encashable is required",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            {isEncashable && encashType?.label && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  type="number"
+                                  name="mainBalance"
+                                  label={`Main Balance ${
+                                    encashType?.label === "In Days"
+                                      ? "(In Days)"
+                                      : "(Percentage)"
+                                  }`}
+                                  placeholder=""
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message: "required",
+                                      required: isEncashable,
+                                    },
+                                    {
+                                      message: "number  must be positive",
+                                      // pattern: new RegExp(
+                                      //   /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                      // ),
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            )}
+                            {isEncashable && encashType?.label && (
+                              <Col md={12} sm={24}>
+                                <PInput
+                                  type="number"
+                                  name="carryBalance"
+                                  label={`Carry Balance ${
+                                    encashType?.label === "In Days"
+                                      ? "(In Days)"
+                                      : "(Percentage)"
+                                  }`}
+                                  placeholder=""
+                                  size="small"
+                                  rules={[
+                                    {
+                                      message: "required",
+                                      required: isEncashable,
+                                    },
+                                    {
+                                      message: "number  must be positive",
+                                      // pattern: new RegExp(
+                                      //   /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                      // ),
+                                      pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
                                 />
                               </Col>
                             )}
                             {isEncashable && (
                               <Col md={12} sm={24}>
-                                <PInput
-                                  disabled={!isEncashable}
+                                {/* <PInput
                                   type="number"
                                   name="intEncashableMonth"
                                   label=" Encashable Month"
@@ -1893,6 +1972,23 @@ const CreateEditLeavePolicy = () => {
                                       message:
                                         "Encashable Month must be positive",
                                       pattern: new RegExp(/^[+]?\d+$/),
+                                    },
+                                  ]}
+                                /> */}
+                                <PSelect
+                                  options={monthDDL}
+                                  name="intEncashableMonth"
+                                  label="Encashable Month"
+                                  placeholder="Encashable Month"
+                                  onChange={(value, op) => {
+                                    form.setFieldsValue({
+                                      intEncashableMonth: value,
+                                    });
+                                  }}
+                                  rules={[
+                                    {
+                                      required: false,
+                                      message: "Encashable is required",
                                     },
                                   ]}
                                 />
