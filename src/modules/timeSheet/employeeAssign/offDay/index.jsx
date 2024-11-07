@@ -742,6 +742,7 @@ function OffDay() {
                     filterOrderList,
                     checkedHeaderList
                   );
+                  setCheckedList([]);
                 }}
                 // resetForm={resetForm}
               />
