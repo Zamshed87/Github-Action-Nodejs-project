@@ -82,7 +82,11 @@ export default function OffDayErrorModal({
                             </th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody
+                          style={{
+                            overflow: "hidden",
+                          }}
+                        >
                           {errorData.map((item, index) => (
                             <tr className="hasEvent" key={index}>
                               <td>
