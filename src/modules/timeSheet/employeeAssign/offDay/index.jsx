@@ -273,6 +273,8 @@ function OffDay() {
 
   useEffect(() => {
     getData(pages);
+    setErrorData([]);
+    setCheckedList([]);
     // setChecked([]);
   }, [buId, orgId, wgId, wId]);
 
@@ -717,7 +719,7 @@ function OffDay() {
 
               <OffDayErrorModal
                 show={erroModalOpen}
-                title={"Error Data List"}
+                title={"⚠️Warning"}
                 onHide={() => {
                   setErroModalOpen(false);
                 }}
