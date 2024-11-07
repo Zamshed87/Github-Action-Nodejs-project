@@ -53,4 +53,5 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/BankWiseBankAdvice",
   "/PdfAndExcelReport/TopSheetNAdvice",
   "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
+  "/PdfAndExcelReport/GetLeaveHistoryReport",
 ];
