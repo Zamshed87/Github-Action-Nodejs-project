@@ -238,7 +238,7 @@ const LetterConfigAddEdit = () => {
                 rules={[{ required: true, message: "Letter Name is required" }]}
               />
             </Col>
-            <Col className="mt-2" md={6} sm={24}>
+            {/* <Col className="mt-2" md={6} sm={24}>
               <div className="mt-3">
                 <FileUploadComponents
                   propsObj={{
@@ -291,7 +291,7 @@ const LetterConfigAddEdit = () => {
               ) : (
                 ""
               )}
-            </Col>
+            </Col> */}
           </Row>
           <Row gutter={[10, 2]}>
             <Form.Item shouldUpdate noStyle>
