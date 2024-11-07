@@ -1889,7 +1889,9 @@ const CreateEditLeavePolicy = () => {
                                       encashType: op,
                                       // isEncashable: value,
                                       IntMaxEncashableLveInDay: undefined,
-                                      intEncashableMonth: undefined,
+                                      // intEncashableMonth: undefined,
+                                      mainBalance: undefined,
+                                      carryBalance: undefined,
                                     });
                                   }}
                                   rules={[

@@ -2,6 +2,7 @@
 import FormikInput from "common/FormikInput";
 import FormikSelect from "common/FormikSelect";
 import Loading from "common/loading/Loading";
+import { isNull } from "lodash";
 import { encashDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
 import { toast } from "react-toastify";
 import { getDateOfYear } from "utility/dateFormatter";
@@ -25,6 +26,7 @@ function LeaveEncashmentForm({ propsObj }) {
     carry,
     carryHour,
     leaveTypeDDL,
+    leaveBalanceData,
   } = propsObj;
 
   return (
@@ -64,6 +66,17 @@ function LeaveEncashmentForm({ propsObj }) {
                 value={values?.leaveType}
                 onChange={(valueOption) => {
                   setFieldValue("leaveType", valueOption);
+                  const isExist = leaveBalanceData?.find(
+                    (i) => i?.intLeaveTypeId === valueOption?.value
+                  );
+                  setFieldValue(
+                    "encashType",
+                    isNull(isExist?.isEncashInDay)
+                      ? ""
+                      : isExist?.isEncashInDay
+                      ? encashDDL[0]
+                      : encashDDL[1]
+                  );
                 }}
                 styles={customStyles}
                 placeholder=""
@@ -75,6 +88,7 @@ function LeaveEncashmentForm({ propsObj }) {
               <label>Max Encashment per year</label>
               <FormikSelect
                 isClearable={false}
+                isDisabled={true}
                 menuPosition="fixed"
                 name="encashType"
                 options={encashDDL || []}
