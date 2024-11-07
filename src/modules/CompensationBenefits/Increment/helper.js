@@ -257,9 +257,11 @@ export const searchData = (keywords, allData, setRowDto) => {
 export const columns = {
   sl: "SL",
   strEmployeeName: "Employee Name",
+  strEmployeeCode: "Employee Code",
   strEmploymentType: "Type",
   strDesignation: "Designation",
   strDepartment: "Department",
+  strSection: "Section",
   strIncrementDependOn: "Depend On",
   numIncrementPercentageOrAmount: "Increment Percentage/Amount",
   isGradeBasedSalary: "Salary Type",

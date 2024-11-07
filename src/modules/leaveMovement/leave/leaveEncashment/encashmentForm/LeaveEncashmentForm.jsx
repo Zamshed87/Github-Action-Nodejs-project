@@ -200,7 +200,7 @@ function LeaveEncashmentForm({ propsObj }) {
           <button
             className="btn btn-green btn-green-disable mt-3"
             type="submit"
-            disabled={!values?.carryBalance || !values?.mainBalance}
+            disabled={!values?.carryBalance && !values?.mainBalance}
           >
             {isEdit ? "Update" : "Apply"}
           </button>
