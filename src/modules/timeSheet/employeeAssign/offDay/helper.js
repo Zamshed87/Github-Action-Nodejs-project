@@ -430,7 +430,17 @@ export const crudOffDayAssign = async (
   let payload = {};
   try {
     if (!values?.effectiveDate) return toast.warn("Effective date is required");
-
+    if (
+      !values?.isFriday &&
+      !values?.isSaturday &&
+      !values?.isSunday &&
+      !values?.isMonday &&
+      !values?.isTuesday &&
+      !values?.isWednesday &&
+      !values?.isThursday
+    ) {
+      return toast.warn("Atleast a day has to be selected ");
+    }
     let commonObj = {
       ...values,
       accountId: orgId,
