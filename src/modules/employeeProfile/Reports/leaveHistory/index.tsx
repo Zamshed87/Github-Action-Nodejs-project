@@ -296,8 +296,8 @@ const EmLeaveHistory = () => {
           {(landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             backButton
-            exportIcon={true}
-            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            // exportIcon={true}
+            title={`Leave History`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
