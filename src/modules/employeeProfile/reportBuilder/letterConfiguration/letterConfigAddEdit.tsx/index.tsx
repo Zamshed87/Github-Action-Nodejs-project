@@ -30,9 +30,6 @@ import {
   getLetterTypeDDL,
 } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import FileUploadComponents from "utility/Upload/FileUploadComponents";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { AttachmentOutlined } from "@mui/icons-material";
 
 const LetterConfigAddEdit = () => {
   // Router state
@@ -51,7 +48,6 @@ const LetterConfigAddEdit = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId, buId, employeeId } = profileData;
 
   // menu permission
   let letterConfigPermission: any = null;
@@ -72,7 +68,6 @@ const LetterConfigAddEdit = () => {
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
   const [backgroundImg, setBackgroundImg] = useState<any>([]);
   const [fields, setFields] = useState(customFields);
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleInsertField = (fieldValue: any) => {
     const quill = quillRef?.current?.getEditor();
