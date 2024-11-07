@@ -445,13 +445,25 @@ const SelfSalaryPayslipReport = () => {
                       </td>
                     </tr>
                     <tr>
+                      {orgId !== 4 ? (
+                        <>
+                          <td style={{ textAlign: "left" }}>
+                            <p>Provident Fund</p>
+                          </td>
+                          <td style={{ textAlign: "right" }} colSpan="3">
+                            <p>{salaryHeaderData[0]?.numPFAmount || 0}</p>
+                          </td>
+                        </>
+                      ) : null}
+                    </tr>
+                    {/* <tr>
                       <td style={{ textAlign: "left" }}>
                         <p>Provident Fund</p>
                       </td>
                       <td style={{ textAlign: "right" }} colSpan="3">
                         <p>{salaryHeaderData[0]?.numPFAmount || 0}</p>
                       </td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <th>
                         <p style={thStyles} className="pl-1">
