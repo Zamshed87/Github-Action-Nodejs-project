@@ -367,14 +367,14 @@ const FoodDetailsReport = () => {
         hidden: reportType === 1 ? true : false,
       },
       {
-        title: "Guest Own Contribution",
+        title: "Guest Own Contribution (BDT)",
         dataIndex: "Guest_Own_Contribution",
         // sorter: true,
         width: 100,
         hidden: reportType === 1 ? true : false,
       },
       {
-        title: " Guest Company Contribution",
+        title: " Guest Company Contribution (BDT)",
         dataIndex: "Guest_Company_Contribution",
         // sorter: true,
         width: 100,
@@ -382,7 +382,7 @@ const FoodDetailsReport = () => {
       },
 
       {
-        title: "Total Guest Bill",
+        title: "Total Guest Bill (BDT)",
         dataIndex: "Total_Guest_Bill",
         // sorter: true,
         width: 100,
