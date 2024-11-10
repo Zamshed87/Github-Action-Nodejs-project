@@ -261,4 +261,6 @@ export const apiList = {
   GetEmployeeIncrementById: "EmployeeIncrement/GetEmployeeIncrementById",
   CommonEmployeeforSalaryDDL: "/Employee/CommonEmployeeforSalaryDDL",
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
+  GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
+  GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
 };
