@@ -41,7 +41,7 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
     const res = await axios.get(
       `/LetterBuilder/GetGeneratedLetterPreview?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&letterTypeId=${
         letterType?.value
-      }&letterName=${letterName?.value}&issuedEmployeeId=${
+      }&letterName=${letterName?.label}&issuedEmployeeId=${
         employee?.value || 0
       }`
     );
