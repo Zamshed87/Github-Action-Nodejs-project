@@ -40,12 +40,13 @@ export const getPendingAndConsumeMealReport = async (
   enrollId,
   setter,
   setIsLoading,
-  cb
+  cb,
+  date
 ) => {
   setIsLoading && setIsLoading(true);
   try {
     const res = await axios.get(
-      `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}`
+      `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}&mealDate=${date}`
     );
     setIsLoading && setIsLoading(false);
     setter(res?.data);
