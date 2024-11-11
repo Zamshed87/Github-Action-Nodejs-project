@@ -8,6 +8,7 @@ import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
+import formatAddress from "common/formatAddress";
 
 // const getYearMonth2 = (value) => {
 //   let splitMonth = value?.split("-");
@@ -32,8 +33,8 @@ export const createEditEmpAction = async (
 ) => {
   try {
     let payload = {
-      presentAddress: values?.presentAddress,
-      permanentAddress: values?.permanentAddress,
+      presentAddress: formatAddress(values?.presentAddress),
+      permanentAddress: formatAddress(values?.permanentAddress),
       presentAddressBn: values?.presentAddressBn,
       permanentAddressBn: values?.permanentAddressBn,
       intPayscaleGradeId: values?.payScaleGrade?.value,

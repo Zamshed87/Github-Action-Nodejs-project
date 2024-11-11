@@ -23,6 +23,7 @@ import {
   greenColor,
   success500,
 } from "./../../../../../../utility/customColor";
+import formatAddress from "common/formatAddress";
 
 const initData = {
   country: "",
@@ -142,7 +143,8 @@ function PresentAddress({ getData, rowDto, empId }) {
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
-        addressDetails: values?.address || singleData?.address,
+        addressDetails:
+          formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -216,7 +218,8 @@ function PresentAddress({ getData, rowDto, empId }) {
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
-        addressDetails: values?.address || singleData?.address,
+        addressDetails:
+          formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -674,18 +677,21 @@ function PresentAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        <FormikInput
-                          name="addressBn"
-                          value={values?.addressBn}
-                          onChange={(e) => {
-                            setFieldValue("addressBn", e.target.value);
-                          }}
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Address (In Bangla)"
-                          classes="input-sm"
-                          isDisabled={!values?.district}
-                        />
+                        {orgId === 7 && (
+                          <FormikInput
+                            name="addressBn"
+                            value={values?.addressBn}
+                            onChange={(e) => {
+                              setFieldValue("addressBn", e.target.value);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                            placeholder="Address (In Bangla)"
+                            classes="input-sm"
+                            isDisabled={!values?.district}
+                          />
+                        )}
+
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}

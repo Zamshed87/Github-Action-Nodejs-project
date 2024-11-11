@@ -23,6 +23,7 @@ import {
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../../utility/todayDate";
 import { DDLForAddress, updateEmployeeProfile } from "../../helper";
+import formatAddress from "common/formatAddress";
 
 const initData = {
   country: "",
@@ -134,7 +135,7 @@ function OtherAddress({ getData, rowDto, empId }) {
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
-        addressDetails: values?.address || singleData?.address,
+        addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -203,7 +204,7 @@ function OtherAddress({ getData, rowDto, empId }) {
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
-        addressDetails: values?.address || singleData?.address,
+        addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -274,7 +275,7 @@ function OtherAddress({ getData, rowDto, empId }) {
       postOfficeId: values?.postOffice?.value || singleData?.postOffice?.value,
       postOfficeName:
         values?.postOffice?.label || singleData?.postOffice?.label,
-      addressDetails: values?.address || singleData?.address,
+      addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
       addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
       companyName: "",
       jobTitle: "",
