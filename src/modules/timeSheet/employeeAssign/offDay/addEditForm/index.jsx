@@ -42,6 +42,9 @@ export default function AddEditFormComponent({
   isAssignAll,
   setIsAssignAll,
   empIDString,
+  setErroModalOpen,
+  setErrorPayload,
+  setErrorData,
 }) {
   const [loading, setLoading] = useState(false);
   const { employeeId, buId, orgId, wgId, wId } = useSelector(
@@ -77,7 +80,12 @@ export default function AddEditFormComponent({
               getData();
             },
           };
-          crudOffDayAssign(obj);
+          crudOffDayAssign(
+            obj,
+            setErrorData,
+            setErroModalOpen,
+            setErrorPayload
+          );
         }}
       >
         {({

@@ -72,6 +72,10 @@ import LetterGenerateLanding from "modules/employeeProfile/reportBuilder/LetterG
 import LetterConfigAddEdit from "modules/employeeProfile/reportBuilder/letterConfiguration/letterConfigAddEdit.tsx";
 import LetterGenAddEdit from "modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit";
 import SingleIncrement from "modules/CompensationBenefits/Increment/singleIncement/components/SingleIncrement";
+import QuestionCreationLanding from "modules/exit-interview/question-creation";
+import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
+import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
+import InterviewLanding from "modules/exit-interview/interview";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -404,11 +408,11 @@ const IncrementNPromotionApproval = lazy(() =>
     "../modules/CompensationBenefits/Increment/singleIncement/approval/index.jsx"
   )
 );
-const CreateSingleIncrement = lazy(() =>
-  import(
-    "../modules/CompensationBenefits/Increment/singleIncement/components/createEditSingleIncrement.jsx"
-  )
-);
+// const CreateSingleIncrement = lazy(() =>
+//   import(
+//     "../modules/CompensationBenefits/Increment/singleIncement/components/createEditSingleIncrement.jsx"
+//   )
+// );
 const ViewIncrementNPromotion = lazy(() =>
   import(
     "../modules/CompensationBenefits/Increment/singleIncement/components/viewIncrementNPromotion.jsx"
@@ -3150,6 +3154,27 @@ export const routingList = [
     component: LetterGenAddEdit,
   },
   // Trainnning and development ends
+
+  // Exit Interview starts
+
+  {
+    path: "/profile/exitInterview/questionCreation",
+    component: QuestionCreationLanding,
+  },
+  {
+    path: "/profile/exitInterview/questionerConfigure",
+    component: QuestionerConfigLanding,
+  },
+  {
+    path: "/profile/exitInterview/questionerAssign",
+    component: QuestionerAssignLanding,
+  },
+  {
+    path: "/profile/exitInterview/interview",
+    component: InterviewLanding,
+  },
+
+  // Exit Interview ends
 
   /* all module should be placed top of this */
   { path: "/components/form-control", component: FormControl },

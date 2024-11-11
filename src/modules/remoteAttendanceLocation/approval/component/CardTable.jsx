@@ -242,17 +242,16 @@ const CardTable = ({ propsObj }) => {
     },
     {
       title: "Location",
-      dataIndex: "placeName",
+      dataIndex: "visitingLocation",
       render: (_, record) => (
-        console.log("record?.placeName", record),
         (
           <LightTooltip
-            title={stripHtml(record?.placeName ? record?.placeName : "N/A")}
+            title={stripHtml(record?.visitingLocation ? record?.visitingLocation : "N/A")}
             arrow
           >
             <div className="pointer">
-              {stripHtml((record?.placeName || "N/A").slice(0, 70))}
-              {stripHtml((record?.placeName?.length || 0) > 70 ? "..." : "")}
+              {stripHtml((record?.visitingLocation || "N/A").slice(0, 70))}
+              {stripHtml((record?.visitingLocation?.length || 0) > 70 ? "..." : "")}
             </div>
           </LightTooltip>
         )
