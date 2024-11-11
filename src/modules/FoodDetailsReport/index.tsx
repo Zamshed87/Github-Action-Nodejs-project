@@ -385,6 +385,21 @@ const FoodDetailsReport = () => {
         hidden: reportType === 1 ? true : false,
       },
       {
+        title: "Total Meal",
+        dataIndex: "total_Meal_Count",
+        sorter: true,
+        width: 100,
+        hidden: reportType === 1 ? true : false,
+      },
+      {
+        title: "Rate",
+        dataIndex: "rate",
+        sorter: true,
+        width: 100,
+        hidden: reportType === 1 ? true : false,
+      },
+
+      {
         title: "Guest Own Contribution (BDT)",
         dataIndex: "Guest_Own_Contribution",
         // sorter: true,
@@ -403,21 +418,6 @@ const FoodDetailsReport = () => {
         title: "Total Guest Bill (BDT)",
         dataIndex: "Total_Guest_Bill",
         // sorter: true,
-        width: 100,
-        hidden: reportType === 1 ? true : false,
-      },
-
-      {
-        title: "Total Meal",
-        dataIndex: "total_Meal_Count",
-        sorter: true,
-        width: 100,
-        hidden: reportType === 1 ? true : false,
-      },
-      {
-        title: "Rate",
-        dataIndex: "rate",
-        sorter: true,
         width: 100,
         hidden: reportType === 1 ? true : false,
       },
@@ -505,11 +505,12 @@ const FoodDetailsReport = () => {
     MealTypeName: "Meal Type",
     own_Meal_Count: "Own Meal",
     guest_Meal_Count: "Guest Meal",
+    total_Meal_Count: "Total Meal",
+    rate: "Rate",
     Guest_Own_Contribution: "Guest Own Contribution",
     Guest_Company_Contribution: "Guest Company Contribution",
     Total_Guest_Bill: "Total Guest Bill",
-    total_Meal_Count: "Total Meal",
-    rate: "Rate",
+
     own_contribution_Bill: "Own Bill (BDT)",
     company_contribution_Bill: "Company Contribution (BDT)",
     total: "Total Bill (BDT)",
