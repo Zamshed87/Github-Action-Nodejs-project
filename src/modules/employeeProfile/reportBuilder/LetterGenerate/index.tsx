@@ -208,7 +208,7 @@ const LetterGenerateLanding = () => {
       <PForm form={form}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount} templates`}
+            title={`Total ${landingApi?.data?.totalCount || 0} templates`}
             buttonList={[
               {
                 type: "primary",
