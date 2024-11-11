@@ -332,9 +332,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       numCashPayInPercent: +accountsDto[2].percentage,
       numBankPayInPercent: +accountsDto[0].percentage,
       numDigitalPayInPercent: +accountsDto[1].percentage,
-      numCashPayInAmount: accountsDto[2].numAmount,
-      numBankPayInAmount: accountsDto[0].numAmount,
-      numDigitalPayInAmount: accountsDto[1].numAmount,
+      numCashPayInAmount: accountsDto[2].numAmount || 0,
+      numBankPayInAmount: accountsDto[0].numAmount || 0,
+      numDigitalPayInAmount: accountsDto[1].numAmount || 0,
       IntOthersAdditionalAmountTransferInto:
         values?.transferType?.value || values?.transferType,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
