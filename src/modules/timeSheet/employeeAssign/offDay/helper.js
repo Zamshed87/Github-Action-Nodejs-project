@@ -539,6 +539,8 @@ export const getEmployeeOffdayHistory = async (
     }
     setLoading(false);
   } catch (error) {
+    setLoading(false);
+
     toast.warn(error?.response?.data?.message || "Failed, try again");
   }
 };
