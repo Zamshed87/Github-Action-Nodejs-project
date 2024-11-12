@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="458ecb14-cd56-45c4-8c0f-c8368121609a" name="Changes" comment="" />
+    <list default="true" id="458ecb14-cd56-45c4-8c0f-c8368121609a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/letterConfiguration/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/letterConfiguration/utils.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,7 +32,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "PEOP-4815",
+    "git-widget-placeholder": "spelling",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -55,7 +60,7 @@
       <updated>1730708359144</updated>
       <workItem from="1730708360719" duration="45000" />
       <workItem from="1730708418528" duration="5739000" />
-      <workItem from="1731384621211" duration="2408000" />
+      <workItem from="1731384621211" duration="6515000" />
     </task>
     <servers />
   </component>
