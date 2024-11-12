@@ -40,11 +40,12 @@ const QuestionCreationLanding = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Question Creation";
-    () => {
+
+    // Cleanup function to reset the title when the component unmounts
+    return () => {
       document.title = "PeopleDesk";
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   // states
   const [filterList, setFilterList] = useState({});
@@ -80,7 +81,7 @@ const QuestionCreationLanding = () => {
       letterNameList: filters?.letterName || [],
       issuedEmployeeIdList: filters?.issuedEmployeeName || [],
     };
-    landingApi.action({
+    landingApi?.action({
       urlKey: "GetGeneratedLetterLanding",
       method: "POST",
       payload: payload,
