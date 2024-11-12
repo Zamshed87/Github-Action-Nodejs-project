@@ -317,7 +317,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                     color: "#667085",
                   }}
                 >
-                  My Employess
+                  My Employees
                 </h4>
                 <p>
                   {isToday()} Status | Total Employee{" "}

@@ -58,7 +58,7 @@ const LetterConfigAddEdit = () => {
   });
 
   useEffect(() => {
-    getLetterTypeDDL(profileData, setLoading, setLetterTypeDDL);
+    getLetterTypeDDL(profileData, setLoading, setLetterTypeDDL).then();
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -160,11 +160,13 @@ const LetterConfigAddEdit = () => {
                       setLoading,
                       letterData,
                       setBackgroundImg
-                    );
-                    letterId &&
-                      history.push(
-                        "/profile/customReportsBuilder/letterConfiguration"
-                      );
+                    ).then(() => {
+                        letterId &&
+                        history.push(
+                            "/profile/customReportsBuilder/letterConfiguration"
+                        );
+                    });
+
                   })
                   .catch(() => {
                     console.log();
@@ -181,7 +183,7 @@ const LetterConfigAddEdit = () => {
                 name="letterType"
                 label="Letter Type"
                 placeholder="Letter Type"
-                onChange={(value, op) => {
+                onChange={(_, op) => {
                   form.setFieldsValue({
                     letterType: op,
                   });
@@ -215,8 +217,10 @@ const LetterConfigAddEdit = () => {
                             profileData,
                             setLoading,
                             setLetterTypeDDL
-                          );
-                          form.setFieldValue("newLetterName", "");
+                          ).then(() => {
+                              form.setFieldValue("newLetterName", "");
+                          });
+
                         }}
                       />
                     </Space>
