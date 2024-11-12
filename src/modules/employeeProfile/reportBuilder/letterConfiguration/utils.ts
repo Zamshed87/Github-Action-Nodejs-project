@@ -86,7 +86,7 @@ export const modules = {
 };
 
 export const modifiedLetter = (data: string) => {
-  const letter = `
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,6 +99,4 @@ export const modifiedLetter = (data: string) => {
 </body>
 </html>                               
 `;
-
-  return letter;
 };
