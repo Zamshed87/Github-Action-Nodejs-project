@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 
 /*
 DDL Type
@@ -22,748 +22,779 @@ DDL Type
  */
 
 export const getAllGlobalDocumentType = async (
-  setter,
-  setAllData,
-  setLoading
+    setter,
+    setAllData,
+    setLoading
 ) => {
-  setLoading && setLoading(true);
+    setLoading && setLoading(true);
 
-  // let status = statusId ? `&intStatusId=${statusId}` : "";
-  try {
-    const res = await axios.get(`/SaasMasterData/GetAllGlobalDocumentType`);
-    if (res?.data) {
-      const modified = res?.data?.map((item) => ({
-        ...item,
-        statusValue: item?.isActive ? "Active" : "Inactive",
-      }));
-      modified?.length > 0 && setter && setter(modified);
-      setAllData && setAllData(res?.data);
-      setLoading && setLoading(false);
+    // let status = statusId ? `&intStatusId=${statusId}` : "";
+    try {
+        const res = await axios.get(`/SaasMasterData/GetAllGlobalDocumentType`);
+        if (res?.data) {
+            const modified = res?.data?.map((item) => ({
+                ...item,
+                statusValue: item?.isActive ? "Active" : "Inactive",
+            }));
+            modified?.length > 0 && setter && setter(modified);
+            setAllData && setAllData(res?.data);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
 };
 
 export const getAllGlobalEmploymentType = async (
-  setter,
-  setAllData,
-  setLoading,
-  orgId,
-  wId
+    setter,
+    setAllData,
+    setLoading,
+    orgId,
+    wId
 ) => {
-  setLoading && setLoading(true);
+    setLoading && setLoading(true);
 
-  // let status = statusId ? `&intStatusId=${statusId}` : "";
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}&workplaceId=${wId}`
-    );
-    if (res?.data) {
-      const modified = res?.data?.map((item) => ({
-        ...item,
-        statusValue: item?.isActive ? "Active" : "Inactive",
-      }));
+    // let status = statusId ? `&intStatusId=${statusId}` : "";
+    try {
+        const res = await axios.get(
+            `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}&workplaceId=${wId}`
+        );
+        if (res?.data) {
+            const modified = res?.data?.map((item) => ({
+                ...item,
+                statusValue: item?.isActive ? "Active" : "Inactive",
+            }));
 
-      setter(modified);
-      setAllData && setAllData(modified);
-      setLoading && setLoading(false);
+            setter(modified);
+            setAllData && setAllData(modified);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
 };
 
 export const getAllGlobalLoanType = async (
-  wId,
-  setter,
-  setAllData,
-  setLoading
+    wId,
+    setter,
+    setAllData,
+    setLoading
 ) => {
-  setLoading && setLoading(true);
+    setLoading && setLoading(true);
 
-  // let status = statusId ? `&intStatusId=${statusId}` : "";
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetAllEmpLoanType?workplaceId=${wId}`
-    );
-    if (res?.data) {
-      const modified = res?.data?.map((item) => ({
-        ...item,
-        statusValue: item?.isActive ? "Active" : "Inactive",
-      }));
-      modified?.length > 0 && setter && setter(modified);
-      setAllData && setAllData(res?.data);
-      setLoading && setLoading(false);
+    // let status = statusId ? `&intStatusId=${statusId}` : "";
+    try {
+        const res = await axios.get(
+            `/SaasMasterData/GetAllEmpLoanType?workplaceId=${wId}`
+        );
+        if (res?.data) {
+            const modified = res?.data?.map((item) => ({
+                ...item,
+                statusValue: item?.isActive ? "Active" : "Inactive",
+            }));
+            modified?.length > 0 && setter && setter(modified);
+            setAllData && setAllData(res?.data);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
 };
 
 export const getAllGlobalUserRole = async (
-  setter,
-  setAllData,
-  setLoading,
-  orgId
+    setter,
+    setAllData,
+    setLoading,
+    orgId
 ) => {
-  setLoading && setLoading(true);
+    setLoading && setLoading(true);
 
-  // let status = statusId ? `&intStatusId=${statusId}` : "";
-  try {
-    const res = await axios.get(`/SaasMasterData/GetAllUserRole`);
-    if (res?.data) {
-      // setter && setter(res?.data);
-      const newList = res?.data?.map((item) => ({
-        ...item,
-        isActiveStatus: item?.isActive ? "Active" : "Inactive",
-      }));
-      setAllData && setAllData(newList);
-      setter && setter(newList);
-      setLoading && setLoading(false);
+    // let status = statusId ? `&intStatusId=${statusId}` : "";
+    try {
+        const res = await axios.get(`/SaasMasterData/GetAllUserRole`);
+        if (res?.data) {
+            // setter && setter(res?.data);
+            const newList = res?.data?.map((item) => ({
+                ...item,
+                isActiveStatus: item?.isActive ? "Active" : "Inactive",
+            }));
+            setAllData && setAllData(newList);
+            setter && setter(newList);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
 };
 export const getAllGlobalLeaveType = async (
-  setter,
-  setAllData,
-  setLoading,
-  orgId
+    setter,
+    setAllData,
+    setLoading,
+    orgId
 ) => {
-  setLoading && setLoading(true);
+    setLoading && setLoading(true);
 
-  // let status = statusId ? `&intStatusId=${statusId}` : "";
-  try {
-    const res = await axios.get(`/SaasMasterData/GetAllLveLeaveType`);
+    // let status = statusId ? `&intStatusId=${statusId}` : "";
+    try {
+        const res = await axios.get(`/SaasMasterData/GetAllLveLeaveType`);
 
-    if (res?.data) {
-      const modified = res?.data?.map((item) => ({
-        ...item,
-        statusValue: item?.isActive ? "Active" : "Inactive",
-      }));
-      modified?.length > 0 && setter && setter(modified);
-      modified?.length > 0 && setAllData && setAllData(modified);
-      setLoading && setLoading(false);
+        if (res?.data) {
+            const modified = res?.data?.map((item) => ({
+                ...item,
+                statusValue: item?.isActive ? "Active" : "Inactive",
+            }));
+            modified?.length > 0 && setter && setter(modified);
+            modified?.length > 0 && setAllData && setAllData(modified);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
 };
 
 export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
-  try {
-    const res = await axios.get(apiUrl);
-    const newDDL = res?.data?.map((itm) => ({
-      ...itm,
-      value: itm[value],
-      label: itm[label],
-    }));
-    setter && setter(newDDL);
-    cb && cb();
-  } catch (error) {}
+    try {
+        const res = await axios.get(apiUrl);
+        const newDDL = res?.data?.map((itm) => ({
+            ...itm,
+            value: itm[value],
+            label: itm[label],
+        }));
+        setter && setter(newDDL);
+        cb && cb();
+    } catch (error) {
+    }
 };
 
 export const getPeopleDeskAllDDLnew = async (
-  apiUrl,
-  value,
-  label,
-  setter,
-  cb
+    apiUrl,
+    value,
+    label,
+    setter,
+    cb
 ) => {
-  try {
-    const res = await axios.get(apiUrl);
-    const newDDL = res?.data?.map((itm) => ({
-      ...itm,
-      value: itm[value],
-      label: itm[label],
-    }));
-    setter(newDDL);
-    cb && cb(newDDL);
-  } catch (error) {}
+    try {
+        const res = await axios.get(apiUrl);
+        const newDDL = res?.data?.map((itm) => ({
+            ...itm,
+            value: itm[value],
+            label: itm[label],
+        }));
+        setter(newDDL);
+        cb && cb(newDDL);
+    } catch (error) {
+    }
 };
 
 export const getPeopleDeskAllDDLCustom = async (
-  apiUrl,
-  value,
-  label,
-  setter,
-  cb
+    apiUrl,
+    value,
+    label,
+    setter,
+    cb
 ) => {
-  try {
-    const res = await axios.get(apiUrl);
-    const newDDL = res?.data?.map((itm) => ({
-      ...itm,
-      value: itm[value],
-      label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
-    }));
-    setter(newDDL);
-    cb && cb();
-  } catch (error) {}
+    try {
+        const res = await axios.get(apiUrl);
+        const newDDL = res?.data?.map((itm) => ({
+            ...itm,
+            value: itm[value],
+            label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
+        }));
+        setter(newDDL);
+        cb && cb();
+    } catch (error) {
+    }
 };
 
 export const getPeopleDeskAllDDLWithCode = async (
-  apiUrl,
-  value,
-  label,
-  setter,
-  cb
+    apiUrl,
+    value,
+    label,
+    setter,
+    cb
 ) => {
-  try {
-    const res = await axios.get(apiUrl);
-    const newDDL = res?.data?.map((itm) => ({
-      ...itm,
-      value: itm?.intEmployeeBasicInfoId,
-      label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
-    }));
-    setter(newDDL);
-    cb && cb();
-  } catch (error) {}
+    try {
+        const res = await axios.get(apiUrl);
+        const newDDL = res?.data?.map((itm) => ({
+            ...itm,
+            value: itm?.intEmployeeBasicInfoId,
+            label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
+        }));
+        setter(newDDL);
+        cb && cb();
+    } catch (error) {
+    }
 };
 
 export const getPeopleDeskAllDDLWithoutAllItem = async (
-  apiUrl,
-  value,
-  label,
-  setter
+    apiUrl,
+    value,
+    label,
+    setter
 ) => {
-  try {
-    const res = await axios.get(apiUrl);
-    const newDDL = res?.data
-      ?.filter((itm) => itm?.intBusinessUnitId !== 0)
-      ?.map((itm) => ({
-        ...itm,
-        value: itm[value],
-        label: itm[label],
-      }));
-    setter(newDDL);
-  } catch (error) {}
+    try {
+        const res = await axios.get(apiUrl);
+        const newDDL = res?.data
+            ?.filter((itm) => itm?.intBusinessUnitId !== 0)
+            ?.map((itm) => ({
+                ...itm,
+                value: itm[value],
+                label: itm[label],
+            }));
+        setter(newDDL);
+    } catch (error) {
+    }
 };
 
 export const getPeopleDeskAllLanding = async (
-  tableName,
-  accId,
-  busId,
-  id,
-  setter,
-  setAllData,
-  setLoading,
-  statusId,
-  year,
-  wgId = 0,
-  wId = 0
+    tableName,
+    accId,
+    busId,
+    id,
+    setter,
+    setAllData,
+    setLoading,
+    statusId,
+    year,
+    wgId = 0,
+    wId = 0
 ) => {
-  setLoading && setLoading(true);
+    setLoading && setLoading(true);
 
-  const status = statusId ? `&intStatusId=${statusId}` : "";
-  const yearFilter = year ? `&YearId=${year}` : "";
-  const workplace = wId ? `&workplaceId=${wId}` : "";
-  const workplaceGroup = wId ? `&WorkplaceGroupId=${wgId}` : "";
-  try {
-    const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}${workplaceGroup}&intId=${id}`
-    );
-    if (res?.data) {
-      setter && setter(res?.data);
-      setAllData && setAllData(res?.data);
-      setLoading && setLoading(false);
+    const status = statusId ? `&intStatusId=${statusId}` : "";
+    const yearFilter = year ? `&YearId=${year}` : "";
+    const workplace = wId ? `&workplaceId=${wId}` : "";
+    const workplaceGroup = wId ? `&WorkplaceGroupId=${wgId}` : "";
+    try {
+        const res = await axios.get(
+            `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}${workplaceGroup}&intId=${id}`
+        );
+        if (res?.data) {
+            setter && setter(res?.data);
+            setAllData && setAllData(res?.data);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
 };
 
 export const getFilterDDLNewAction = async (
-  buId,
-  workplaceGroupId,
-  deptId,
-  desigId,
-  supervisorId,
-  empType,
-  setter
+    buId,
+    workplaceGroupId,
+    deptId,
+    desigId,
+    supervisorId,
+    empType,
+    setter
 ) => {
-  try {
-    const res = await axios.get(
-      `/Employee/CombineDataSetByWorkplaceGDeptDesigSupEmpType?BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&DeptId=${deptId}&DesigId=${desigId}&SupervisorId=${supervisorId}&EmpType=${empType}`
-    );
-    const departmentList = res?.data?.departmentList?.map((item) => ({
-      ...item,
-      value: item?.id,
-      label: item?.name,
-    }));
-    const designationList = res?.data?.designationList?.map((item) => ({
-      ...item,
-      value: item?.id,
-      label: item?.name,
-    }));
-    const employeeList = res?.data?.employeeList?.map((item) => ({
-      ...item,
-      value: item?.id,
-      label: item?.name,
-    }));
-    const employmentTypeList = res?.data?.employmentTypeList?.map((item) => ({
-      ...item,
-      value: item?.id,
-      label: item?.name,
-    }));
-    const supervisorList = res?.data?.supervisorList?.map((item) => ({
-      ...item,
-      value: item?.id,
-      label: item?.name,
-    }));
-    const workplaceGroupList = res?.data?.workplaceGroupList?.map((item) => ({
-      ...item,
-      value: item?.id,
-      label: item?.name,
-    }));
-    setter({
-      departmentList,
-      designationList,
-      employeeList,
-      employmentTypeList,
-      supervisorList,
-      workplaceGroupList,
-    });
-  } catch (error) {
-    setter([]);
-  }
+    try {
+        const res = await axios.get(
+            `/Employee/CombineDataSetByWorkplaceGDeptDesigSupEmpType?BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&DeptId=${deptId}&DesigId=${desigId}&SupervisorId=${supervisorId}&EmpType=${empType}`
+        );
+        const departmentList = res?.data?.departmentList?.map((item) => ({
+            ...item,
+            value: item?.id,
+            label: item?.name,
+        }));
+        const designationList = res?.data?.designationList?.map((item) => ({
+            ...item,
+            value: item?.id,
+            label: item?.name,
+        }));
+        const employeeList = res?.data?.employeeList?.map((item) => ({
+            ...item,
+            value: item?.id,
+            label: item?.name,
+        }));
+        const employmentTypeList = res?.data?.employmentTypeList?.map((item) => ({
+            ...item,
+            value: item?.id,
+            label: item?.name,
+        }));
+        const supervisorList = res?.data?.supervisorList?.map((item) => ({
+            ...item,
+            value: item?.id,
+            label: item?.name,
+        }));
+        const workplaceGroupList = res?.data?.workplaceGroupList?.map((item) => ({
+            ...item,
+            value: item?.id,
+            label: item?.name,
+        }));
+        setter({
+            departmentList,
+            designationList,
+            employeeList,
+            employmentTypeList,
+            supervisorList,
+            workplaceGroupList,
+        });
+    } catch (error) {
+        setter([]);
+    }
 };
 
 // don't use this, use new function above
 export const getFilterDDL = async (
-  buId,
-  workplaceGroupId,
-  deptId,
-  desigId,
-  supervisorId,
-  empType,
-  setter
+    buId,
+    workplaceGroupId,
+    deptId,
+    desigId,
+    supervisorId,
+    empType,
+    setter
 ) => {
-  try {
-    const res = await axios.get(
-      `/Employee/CombineDataSetByWorkplaceGDeptDesigSupEmpType?BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&DeptId=${deptId}&DesigId=${desigId}&SupervisorId=${supervisorId}&EmpType=${empType}`
-    );
-    if (res?.data) {
-      setter(res?.data);
+    try {
+        const res = await axios.get(
+            `/Employee/CombineDataSetByWorkplaceGDeptDesigSupEmpType?BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&DeptId=${deptId}&DesigId=${desigId}&SupervisorId=${supervisorId}&EmpType=${empType}`
+        );
+        if (res?.data) {
+            setter(res?.data);
+        }
+    } catch (error) {
+        setter([]);
     }
-  } catch (error) {
-    setter([]);
-  }
 };
 
 export const makeAddress = (addressArray) => {
-  let result = "";
-  for (let i = 0; i < addressArray.length; i++) {
-    if (addressArray[i]) {
-      result = result + addressArray[i] + ", ";
+    let result = "";
+    for (let i = 0; i < addressArray.length; i++) {
+        if (addressArray[i]) {
+            result = result + addressArray[i] + ", ";
+        }
     }
-  }
 
-  return result.slice(0, result.length - 2);
+    return result.slice(0, result.length - 2);
 };
 
 export const attachment_action = async (
-  accountId,
-  tableReferrence,
-  documentTypeId,
-  buId,
-  userId,
-  attachment,
-  setLoading
+    accountId,
+    tableReferrence,
+    documentTypeId,
+    buId,
+    userId,
+    attachment,
+    setLoading
 ) => {
-  setLoading && setLoading(true);
-  let formData = new FormData();
-  formData.append("files", attachment[0]);
-  try {
-    let { data } = await axios.post(
-      `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    setLoading && setLoading(false);
-    toast.success("Upload  successfully");
-    return data;
-  } catch (error) {
-    setLoading && setLoading(false);
-    toast.error("File Size is too large or inValid File!");
-  }
+    setLoading && setLoading(true);
+    let formData = new FormData();
+    formData.append("files", attachment[0]);
+    try {
+        let {data} = await axios.post(
+            `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        setLoading && setLoading(false);
+        toast.success("Upload  successfully");
+        return data;
+    } catch (error) {
+        setLoading && setLoading(false);
+        toast.error("File Size is too large or inValid File!");
+    }
 };
 
 export const PeopleDeskSaasDDL = async (
-  ddlType,
-  wgId = 0,
-  busId,
-  setter,
-  value,
-  label,
-  id,
-  wId,
-  year
+    ddlType,
+    wgId = 0,
+    busId,
+    setter,
+    value,
+    label,
+    id,
+    wId,
+    year
 ) => {
-  try {
-    const res = await axios.get(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
-        id || 0
-      }&intWorkplaceId=${wId || 0}${year ? `&intYear=${year}` : ""}`
-    );
-    if (res?.data) {
-      const newDDL = res?.data?.map((itm) => {
-        return {
-          ...itm,
-          value: value ? itm[value] : itm?.LeaveTypeId,
-          label: label ? itm[label] : itm?.LeaveType,
-        };
-      });
-      setter(newDDL);
+    try {
+        const res = await axios.get(
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
+                id || 0
+            }&intWorkplaceId=${wId || 0}${year ? `&intYear=${year}` : ""}`
+        );
+        if (res?.data) {
+            const newDDL = res?.data?.map((itm) => {
+                return {
+                    ...itm,
+                    value: value ? itm[value] : itm?.LeaveTypeId,
+                    label: label ? itm[label] : itm?.LeaveType,
+                };
+            });
+            setter(newDDL);
+        }
+    } catch (error) {
     }
-  } catch (error) {}
 };
 
 export const getCombineAllDDL = async (
-  accId,
-  buId,
-  workplaceGroupId,
-  workplaceId,
-  deptId,
-  desigId,
-  empType,
-  setter
+    accId,
+    buId,
+    workplaceGroupId,
+    workplaceId,
+    deptId,
+    desigId,
+    empType,
+    setter
 ) => {
-  try {
-    const res = await axios.get(
-      `/QueryData/CombineDataSetByWorkplaceGDeptDesigSupEmpTypeByAccountId?AccountId=${accId}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&WorkplaceId=${workplaceId}&DeptId=${deptId}&DesigId=${desigId}&EmpType=${empType}`
-    );
-    if (res?.data) {
-      setter(res?.data);
+    try {
+        const res = await axios.get(
+            `/QueryData/CombineDataSetByWorkplaceGDeptDesigSupEmpTypeByAccountId?AccountId=${accId}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&WorkplaceId=${workplaceId}&DeptId=${deptId}&DesigId=${desigId}&EmpType=${empType}`
+        );
+        if (res?.data) {
+            setter(res?.data);
+        }
+    } catch (error) {
+        setter([]);
     }
-  } catch (error) {
-    setter([]);
-  }
 };
 
 export const getCombineAllWithSupDDL = async (
-  buId,
-  workplaceGroupId,
-  workplaceId,
-  deptId,
-  desigId,
-  empType,
-  supervisorId,
-  setter
+    buId,
+    workplaceGroupId,
+    workplaceId,
+    deptId,
+    desigId,
+    empType,
+    supervisorId,
+    setter
 ) => {
-  try {
-    const res = await axios.get(
-      `/Employee/CombineDataSetByWorkplaceGDeptDesigSupEmpType?BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&DeptId=${deptId}&DesigId=${desigId}&SupervisorId=${supervisorId}&EmpType=${empType}&WorkplaceId=${workplaceId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
+    try {
+        const res = await axios.get(
+            `/Employee/CombineDataSetByWorkplaceGDeptDesigSupEmpType?BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&DeptId=${deptId}&DesigId=${desigId}&SupervisorId=${supervisorId}&EmpType=${empType}&WorkplaceId=${workplaceId}`
+        );
+        if (res?.data) {
+            setter(res?.data);
+        }
+    } catch (error) {
+        setter([]);
     }
-  } catch (error) {
-    setter([]);
-  }
 };
 
 export const PeopleDeskSaasDDLWithFilter = async (
-  ddlType,
-  wgId = 0,
-  busId,
-  setter,
-  value,
-  label,
-  id,
-  isFilter,
-  filterProperty,
-  filterValue
+    ddlType,
+    wgId = 0,
+    busId,
+    setter,
+    value,
+    label,
+    id,
+    isFilter,
+    filterProperty,
+    filterValue
 ) => {
-  try {
-    const res = await axios.get(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
-        id || 0
-      }`
-    );
-    if (res?.data) {
-      let newDDL = res?.data?.map((itm) => {
-        return {
-          ...itm,
-          value: itm[value],
-          label: itm[label],
-        };
-      });
-      if (isFilter) {
-        newDDL = newDDL.filter((itm) => itm[filterProperty] !== filterValue);
-      }
-      setter(newDDL);
+    try {
+        const res = await axios.get(
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
+                id || 0
+            }`
+        );
+        if (res?.data) {
+            let newDDL = res?.data?.map((itm) => {
+                return {
+                    ...itm,
+                    value: itm[value],
+                    label: itm[label],
+                };
+            });
+            if (isFilter) {
+                newDDL = newDDL.filter((itm) => itm[filterProperty] !== filterValue);
+            }
+            setter(newDDL);
+        }
+    } catch (error) {
     }
-  } catch (error) {}
 };
 
 // Multiple attachment action
 export const multiple_attachment_actions = async (
-  accountId,
-  tableReferrence,
-  documentTypeId,
-  buId,
-  userId,
-  attachment,
-  setLoading
+    accountId,
+    tableReferrence,
+    documentTypeId,
+    buId,
+    userId,
+    attachment,
+    setLoading
 ) => {
-  setLoading && setLoading(true);
-  let formData = new FormData();
-  if (attachment?.[0]) {
-    for (let i = 0; i < attachment.length; i++) {
-      formData.append("files", attachment[i]);
+    setLoading && setLoading(true);
+    let formData = new FormData();
+    if (attachment?.[0]) {
+        for (let i = 0; i < attachment.length; i++) {
+            formData.append("files", attachment[i]);
+        }
     }
-  }
-  try {
-    let { data } = await axios.post(
-      `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    setLoading && setLoading(false);
-    toast.success("Upload  successfully");
-    return data;
-  } catch (error) {
-    setLoading && setLoading(false);
-    toast.error("File Size is too large or inValid File!");
-  }
+    try {
+        let {data} = await axios.post(
+            `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        setLoading && setLoading(false);
+        toast.success("Upload  successfully");
+        return data;
+    } catch (error) {
+        setLoading && setLoading(false);
+        toast.error("File Size is too large or inValid File!");
+    }
 };
 
 export const attachment_delete_action = async (id, cb) => {
-  try {
-    const res = await axios.get(`/Document/DeleteUploadedFile?id=${id}`);
-    cb && cb();
-    toast.success(res.data?.message || "Successfully");
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-  }
+    try {
+        const res = await axios.get(`/Document/DeleteUploadedFile?id=${id}`);
+        cb && cb();
+        toast.success(res.data?.message || "Successfully");
+    } catch (error) {
+        toast.warn(error?.response?.data?.message || "Something went wrong");
+    }
 };
 
 // Multiple attachment action
 export const multiple_attachment_action = async (
-  accountId,
-  tableReferrence,
-  documentTypeId,
-  buId,
-  userId,
-  attachment,
-  setLoading
+    accountId,
+    tableReferrence,
+    documentTypeId,
+    buId,
+    userId,
+    attachment,
+    setLoading
 ) => {
-  setLoading && setLoading(true);
-  let formData = new FormData();
-  if (attachment?.[0]) {
-    for (let i = 0; i < attachment.length; i++) {
-      formData.append("files", attachment[i]);
+    setLoading && setLoading(true);
+    let formData = new FormData();
+    if (attachment?.[0]) {
+        for (let i = 0; i < attachment.length; i++) {
+            formData.append("files", attachment[i]);
+        }
     }
-  }
-  try {
-    let { data } = await axios.post(
-      `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    setLoading && setLoading(false);
-    toast.success("Upload  successfully");
-    return data;
-  } catch (error) {
-    setLoading && setLoading(false);
-    toast.error("File Size is too large or inValid File!");
-  }
+    try {
+        let {data} = await axios.post(
+            `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        setLoading && setLoading(false);
+        toast.success("Upload  successfully");
+        return data;
+    } catch (error) {
+        setLoading && setLoading(false);
+        toast.error("File Size is too large or inValid File!");
+    }
 };
 
 export const getPeopleDeskWithoutAllDDL = async (
-  apiUrl,
-  value,
-  label,
-  setter
+    apiUrl,
+    value,
+    label,
+    setter
 ) => {
-  try {
-    const res = await axios.get(apiUrl);
-    const newDDL = res?.data
-      ?.filter((itm) => itm[value] !== 0)
-      ?.map((itm) => ({
-        ...itm,
-        value: itm[value],
-        label: itm[label],
-      }));
-    setter(newDDL);
-  } catch (error) {}
+    try {
+        const res = await axios.get(apiUrl);
+        const newDDL = res?.data
+            ?.filter((itm) => itm[value] !== 0)
+            ?.map((itm) => ({
+                ...itm,
+                value: itm[value],
+                label: itm[label],
+            }));
+        setter(newDDL);
+    } catch (error) {
+    }
 };
 
 export const getSearchEmployeeList = (buId, wgId, v) => {
-  if (v?.length < 2) return [];
-  return axios
-    .get(
-      `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
-    )
-    .then((res) => {
-      const modifiedData = res?.data?.map((item) => {
-        return {
-          ...item,
-          value: item?.employeeId,
-          label: item?.employeeName,
-        };
-      });
-      return modifiedData;
-    })
-    .catch((err) => []);
+    if (v?.length < 2) return [];
+    return axios
+        .get(
+            `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+        )
+        .then((res) => {
+            const modifiedData = res?.data?.map((item) => {
+                return {
+                    ...item,
+                    value: item?.employeeId,
+                    label: item?.employeeName,
+                };
+            });
+            return modifiedData;
+        })
+        .catch((err) => []);
 };
 
 export const getSearchEmployeeListWithWarning = (buId, wgId, v) => {
-  if (v?.length < 2) return [];
-  return axios
-    .get(
-      `/Employee/GetCommonEmployeeDDLWithWarning?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
-    )
-    .then((res) => {
-      const modifiedData = res?.data?.map((item) => {
-        return {
-          ...item,
-          value: item?.employeeId,
-          label: item?.employeeName,
-        };
-      });
-      return modifiedData;
-    })
-    .catch((err) => []);
+    if (v?.length < 2) return [];
+    return axios
+        .get(
+            `/Employee/GetCommonEmployeeDDLWithWarning?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+        )
+        .then((res) => {
+            const modifiedData = res?.data?.map((item) => {
+                return {
+                    ...item,
+                    value: item?.employeeId,
+                    label: item?.employeeName,
+                };
+            });
+            return modifiedData;
+        })
+        .catch((err) => []);
 };
 
 export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
-  if (v?.length < 2) return [];
+    if (v?.length < 2) return [];
 
-  return axios
-    .get(`/Employee/AllEmployeeDDL?intAccountId=${intAccountId}&strSearch=${v}`)
-    .then((res) => {
-      const modifiedData = res?.data?.map((item) => {
-        return {
-          ...item,
-          value: item?.value,
-          label: item?.label,
-        };
-      });
-      return modifiedData;
-    })
-    .catch((err) => []);
+    return axios
+        .get(`/Employee/AllEmployeeDDL?intAccountId=${intAccountId}&strSearch=${v}`)
+        .then((res) => {
+            const modifiedData = res?.data?.map((item) => {
+                return {
+                    ...item,
+                    value: item?.value,
+                    label: item?.label,
+                };
+            });
+            return modifiedData;
+        })
+        .catch((err) => []);
 };
 
 export const getSuperVisorLineMangerDottedByWorkplace = async ({
-  params,
-  cb,
-}) => {
-  try {
-    const response = await axios({
-      method: "GET",
-      url: `/PeopleDeskDDL/PeopleDeskAllDDL`,
-      data: {},
-      params: params,
-    });
-    const modified = (response?.data || []).map((item) => ({
-      label: item?.EmployeeOnlyName,
-      value: item?.EmployeeId,
-    }));
-    cb?.(modified);
-    return modified;
-  } catch (error) {
-    toast.warn(
-      error?.response?.data?.message || error?.message || "Something went wrong"
-    );
-  }
+                                                                   params,
+                                                                   cb,
+                                                               }) => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: `/PeopleDeskDDL/PeopleDeskAllDDL`,
+            data: {},
+            params: params,
+        });
+        const modified = (response?.data || []).map((item) => ({
+            label: item?.EmployeeOnlyName,
+            value: item?.EmployeeId,
+        }));
+        cb?.(modified);
+        return modified;
+    } catch (error) {
+        toast.warn(
+            error?.response?.data?.message || error?.message || "Something went wrong"
+        );
+    }
 };
 
 export const getSearchEmployeeListForEmp = (
-  buId,
-  wgId,
-  intAccountId,
-  employeeId,
-  v
+    buId,
+    wgId,
+    intAccountId,
+    employeeId,
+    v
 ) => {
-  if (v?.length < 2) return [];
-  return axios
-    .get(
-      // `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoForEmpMgmt&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&SearchTxt=${v}`
-    )
-    .then((res) => {
-      const modifiedData = res?.data?.map((item) => {
-        return {
-          ...item,
-          value: item?.EmployeeId,
-          label: item?.EmployeeOnlyName,
-        };
-      });
-      return modifiedData;
-    })
-    .catch((err) => []);
+    if (v?.length < 2) return [];
+    return axios
+        .get(
+            // `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoForEmpMgmt&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&SearchTxt=${v}`
+        )
+        .then((res) => {
+            const modifiedData = res?.data?.map((item) => {
+                return {
+                    ...item,
+                    value: item?.EmployeeId,
+                    label: item?.EmployeeOnlyName,
+                };
+            });
+            return modifiedData;
+        })
+        .catch((err) => []);
 };
 
 export const addressDataWriteFromJson = async (payload, setLoading, cb) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.post(`/Employee/AddressDataWriteFromJson`, payload);
-    cb && cb();
-    toast.success(res.data?.message || "Successfully");
-    setLoading && setLoading(false);
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-    setLoading && setLoading(false);
-  }
+    setLoading && setLoading(true);
+    try {
+        const res = await axios.post(`/Employee/AddressDataWriteFromJson`, payload);
+        cb && cb();
+        toast.success(res.data?.message || "Successfully");
+        setLoading && setLoading(false);
+    } catch (error) {
+        toast.warn(error?.response?.data?.message || "Something went wrong");
+        setLoading && setLoading(false);
+    }
 };
 
 export const testApi = async (setLoading, cb) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.get(`/Auth/JWTData`);
-    cb && cb();
-    toast.success(res.data?.message || "Successfully");
-    setLoading && setLoading(false);
+    setLoading && setLoading(true);
+    try {
+        const res = await axios.get(`/Auth/JWTData`);
+        cb && cb();
+        toast.success(res.data?.message || "Successfully");
+        setLoading && setLoading(false);
 
-    console.log("res", res?.data);
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-    setLoading && setLoading(false);
-  }
+        console.log("res", res?.data);
+    } catch (error) {
+        toast.warn(error?.response?.data?.message || "Something went wrong");
+        setLoading && setLoading(false);
+    }
 };
 
 export const getWorkplaceDetails = async (wId, setter, setLoading) => {
-  // used in many component
-  try {
-    const res = await axios.get(`/SaasMasterData/GetWorkplaceById?Id=${wId}`);
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
+    // used in many component
+    try {
+        const res = await axios.get(`/SaasMasterData/GetWorkplaceById?Id=${wId}`);
+        if (res?.data) {
+            setter(res?.data);
+            setLoading && setLoading(false);
+        }
+    } catch (error) {
+        setLoading && setLoading(false);
+        setter([]);
     }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
 };
 
 // this is common getBuDetails detail api for all module
 export const getBuDetails = async (buId = 0, setter, setLoading) => {
-  setLoading?.(true);
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter?.(res?.data);
-      setLoading?.(false);
+    setLoading?.(true);
+    try {
+        const res = await axios.get(
+            `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
+        );
+        if (res?.data) {
+            setter?.(res?.data);
+            setLoading?.(false);
+        }
+    } catch (error) {
+        setLoading?.(false);
+        setter?.([]);
     }
-  } catch (error) {
-    setLoading?.(false);
-    setter?.([]);
-  }
 };
+
+export const getWorkplace = ({params}) => {
+    const {workplaceDDL, orgId, buId, wgId} = params;
+    workplaceDDL?.action({
+        urlKey: "WorkplaceIdAll",
+        method: "GET",
+        params: {
+            accountId: orgId,
+            businessUnitId: buId,
+            workplaceGroupId: wgId,
+        },
+        onSuccess: (res) => {
+            res.forEach((item, i) => {
+                res[i].label = item?.strWorkplace;
+                res[i].value = item?.intWorkplaceId;
+            });
+        },
+    });
+}
+
+
+
+
