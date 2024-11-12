@@ -397,7 +397,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             placeholder="Depends on"
                             options={[
                               { value: 1, label: "Gross" },
-                              { value: 2, label: "Basic" },
+                              // { value: 2, label: "Basic" },
                             ]}
                             onChange={(value, option) => {
                               form.setFieldsValue({
