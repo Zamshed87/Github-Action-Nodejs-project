@@ -85,18 +85,21 @@ export const modules = {
   },
 };
 
-export const modifiedLetter = (data: string) => {
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body style="padding: 90px 80px !important">
-  ${data}
-</body>
-</html>                               
-`;
-};
+
+// need if we need to provide letter with head from frontend 🔥🔥🔥
+
+// export const modifiedLetter = (data: string) => {
+//   return `
+// <!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>Document</title>
+// </head>
+// <body style="padding: 90px 80px !important">
+//   ${data}
+// </body>
+// </html>
+// `;
+// };
