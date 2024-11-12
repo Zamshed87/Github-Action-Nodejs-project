@@ -75,14 +75,12 @@ const CreateEditLeavePolicy = () => {
   }, []);
 
   useEffect(() => {
-
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
       "LeaveTypeId",
       "LeaveType",
       setLeaveTypeDDL
     );
-
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
@@ -815,8 +813,11 @@ const CreateEditLeavePolicy = () => {
                   </>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { intLeaveDependOn, showLveIndays } =
-                        form.getFieldsValue(true);
+                      const {
+                        isProdataBasis,
+                        intLeaveDependOn,
+                        showLveIndays,
+                      } = form.getFieldsValue(true);
                       // const empType = employeeType?.label;
 
                       return (
@@ -842,6 +843,22 @@ const CreateEditLeavePolicy = () => {
                                   {
                                     required: false,
                                     message: "Prodata Basis is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          )}
+                          {isProdataBasis && (
+                            <Col md={12} sm={24}>
+                              <PInput
+                                type="number"
+                                name="intJoiningMonthCountMaxDate"
+                                label="Activate Pro-Rata from Joining (In Days)"
+                                placeholder="1-31"
+                                rules={[
+                                  {
+                                    message: "max input value is 31",
+                                    pattern: new RegExp(/^(3[01]|[12]?\d)$/),
                                   },
                                 ]}
                               />
