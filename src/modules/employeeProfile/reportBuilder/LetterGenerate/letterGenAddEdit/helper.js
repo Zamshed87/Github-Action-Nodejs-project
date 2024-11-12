@@ -51,8 +51,10 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
 
     form.setFieldValue("letter", res?.data?.generatedLetterBody);
     form.setFieldValue("letterId", res?.data?.templateId);
-    setLoading(false);
+
   } catch (error) {
+    toast.error("Something went wrong");
+  } finally {
     setLoading(false);
   }
 };
@@ -80,7 +82,6 @@ export const createNEditLetterGenerate = async (
       createdBy: letterData?.createdBy || employeeId,
       createdAt: todayDate(),
     };
-    console.log(payload);
     setLoading(true);
     const res = await axios.post(`/LetterBuilder/LetterGenerate`, payload);
     setLoading(false);
