@@ -33,8 +33,8 @@ export const createEditEmpAction = async (
 ) => {
   try {
     let payload = {
-      presentAddress: formatAddress(values?.presentAddress),
-      permanentAddress: formatAddress(values?.permanentAddress),
+      presentAddress: formatAddress(values?.presentAddress || ""),
+      permanentAddress: formatAddress(values?.permanentAddress || ""),
       presentAddressBn: values?.presentAddressBn,
       permanentAddressBn: values?.permanentAddressBn,
       intPayscaleGradeId: values?.payScaleGrade?.value,
@@ -123,6 +123,7 @@ export const createEditEmpAction = async (
       strOTbasedon: values?.strOTbasedon?.value || "",
       intOTFixedHour: +values?.intOTFixedHour || 0,
     };
+    console.log("payload", payload);
     if (!isEdit) {
       payload = {
         ...payload,
@@ -217,6 +218,7 @@ export const createEditEmpAction = async (
         },
       };
     }
+
     setLoading(true);
     const res = await axios.post(
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
