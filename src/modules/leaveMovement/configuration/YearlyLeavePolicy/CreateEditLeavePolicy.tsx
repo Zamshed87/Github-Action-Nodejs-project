@@ -828,8 +828,8 @@ const CreateEditLeavePolicy = () => {
                               <PSelect
                                 options={commonDDL as any}
                                 name="isProdataBasis"
-                                label="Prodata Basis"
-                                placeholder="Prodata Basis"
+                                label=" Pro Rata Basis"
+                                placeholder=" Pro Rata Basis"
                                 // disabled={
                                 //   intLeaveDependOn?.value !== 1 ||
                                 //   showLveIndays?.value !== 1
@@ -842,7 +842,7 @@ const CreateEditLeavePolicy = () => {
                                 rules={[
                                   {
                                     required: false,
-                                    message: "Prodata Basis is required",
+                                    message: " Pro Rata Basis is required",
                                   },
                                 ]}
                               />
@@ -859,6 +859,10 @@ const CreateEditLeavePolicy = () => {
                                   {
                                     message: "max input value is 31",
                                     pattern: new RegExp(/^(3[01]|[12]?\d)$/),
+                                  },
+                                  {
+                                    required: isProdataBasis,
+                                    message: "Required",
                                   },
                                 ]}
                               />
