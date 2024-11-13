@@ -10,8 +10,13 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
-import { CreateRewardPunishmentRecord } from "./helper";
+
+import {
+  CreateRewardPunishmentRecord,
+  editRewardPunishmentRecord,
+  getLetterNameDDL,
+  getLetterPreview,
+} from "./helper";
 import {
   Flex,
   PButton,
@@ -19,18 +24,18 @@ import {
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
 } from "Components";
 import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
-import { modules } from "../../letterConfiguration/utils";
+// import { modules } from "../../letterConfiguration/utils";
 import { postPDFAction } from "utility/downloadFile";
 import { useHistory } from "react-router-dom";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
-const PunishmentAction = () => {
+import { modules } from "modules/employeeProfile/reportBuilder/letterConfiguration/utils";
+const RewardPunishmentLetterGenAddEdit = () => {
   // Router state
   // const { letterId }: any = useParams();
   const location = useLocation();
@@ -60,7 +65,6 @@ const PunishmentAction = () => {
   });
 
   useEffect(() => {
-    getLetterTypeDDL(profileData, setLoading, setLetterTypeDDL);
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,7 +118,7 @@ const PunishmentAction = () => {
     >
       <PCard>
         <PCardHeader
-          title={"Punishment Action"}
+          title={"Create Template"}
           backButton={true}
           buttonList={[
             {
@@ -142,63 +146,58 @@ const PunishmentAction = () => {
                   });
               },
             },
+            {
+              type: "primary",
+              content: "Save & Send",
+              disabled: loading,
+              onClick: () => {
+                const values = form.getFieldsValue(true);
+
+                form
+                  .validateFields()
+                  .then(() => {
+                    if (!values?.letter) {
+                      return toast.warning("Please add letter template");
+                    }
+                    // createNEditLetterGenerate(
+                    //   form,
+                    //   profileData,
+                    //   setLoading,
+                    //   letterData
+                    // );
+                  })
+                  .catch(() => {
+                    console.log();
+                  });
+              },
+            },
           ]}
         />
         <PCardBody>
           <Row gutter={[10, 2]}>
             <Col md={4} sm={24}>
-              <PInput
-                type="text"
-                name="explanation"
-                label="Explanation"
-                placeholder="Explanation"
-                rules={[{ required: true, message: "Explanation is required" }]}
-              />
-            </Col>
-            <Col md={4} sm={24}>
-              <PInput
-                type="text"
-                name="info"
-                label="Info"
-                placeholder="Info"
-                rules={[{ required: true, message: "Info is required" }]}
-              />
-            </Col>
-            <Col md={4} sm={24}>
               <PSelect
                 options={[
-                  { label: "Verbal Warning", value: 1 },
-                  { label: "Written Warning", value: 2 },
-                  { label: "Final Written Warning", value: 3 },
-                  { label: "Suspension", value: 4 },
-                  { label: "Demotion", value: 5 },
-                  { label: "Termination", value: 6 },
-                  { label: "Probation", value: 7 },
-                  { label: "Coaching or Counseling", value: 8 },
-                  { label: "Performance Improvement Plan (PIP)", value: 9 },
+                  { label: "Reward", value: 1 },
+                  { label: "Punishment", value: 2 },
                 ]}
-                rules={[{ required: true, message: "Action is required" }]}
-                name="action"
-                label="Action"
-                placeholder="Action"
+                name="issuedType"
+                label="Issued Type"
+                placeholder="Issued Type"
                 onChange={(value, op) => {
                   form.setFieldsValue({
-                    action: op,
+                    issuedType: op,
                   });
+                  // getLetterNameDDL(
+                  //   profileData,
+                  //   setLoading,
+                  //   setLetterNameDDL,
+                  //   value
+                  // );
                 }}
               />
             </Col>
-            <Col md={4} sm={24}>
-              <PInput
-                type="text"
-                name="remarks"
-                label="Remarks"
-                placeholder="Remarks"
-                rules={[{ required: true, message: "Remarks is required" }]}
-              />
-            </Col>
-
-            {/* <Col md={6} sm={24}>
+            <Col md={6} sm={24}>
               <PSelect
                 options={letterTypeDDL}
                 name="letterType"
@@ -216,8 +215,57 @@ const PunishmentAction = () => {
                   );
                 }}
               />
-            </Col> */}
-            {/* <Col md={24} style={{ marginTop: "1.4rem" }}>
+            </Col>
+            <Col md={6} sm={24}>
+              <PSelect
+                options={letterNameDDL}
+                name="letterName"
+                label="Letter Name"
+                placeholder="Letter Name"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    letterName: op,
+                  });
+                  // getLetterPreview(profileData, setLoading, form);
+                }}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PSelect
+                name="employee"
+                label="Employee"
+                placeholder="Search Min 2 char"
+                options={CommonEmployeeDDL?.data || []}
+                loading={CommonEmployeeDDL?.loading}
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    employee: op,
+                  });
+                  getLetterPreview(profileData, setLoading, form);
+                }}
+                onSearch={(value) => {
+                  getEmployee(value);
+                }}
+                showSearch
+                filterOption={false}
+                allowClear={true}
+              />
+            </Col>
+            <Col
+              style={{
+                marginTop: "23px",
+              }}
+            >
+              <PButton
+                type="primary"
+                action="submit"
+                content="View"
+                onClick={() => {
+                  getLetterPreview(profileData, setLoading, form);
+                }}
+              />
+            </Col>
+            <Col md={24} style={{ marginTop: "1.4rem" }}>
               <div>
                 <>
                   <FileUploadComponents
@@ -241,10 +289,10 @@ const PunishmentAction = () => {
                   />
                 </>
               </div>
-            </Col> */}
+            </Col>
           </Row>
         </PCardBody>
-        {/* <Flex className="my-3 mr-2" gap="large" justify="flex-end">
+        <Flex className="my-3 mr-2" gap="large" justify="flex-end">
           <PButton
             type="primary"
             action="button"
@@ -286,7 +334,7 @@ const PunishmentAction = () => {
             }}
             disabled={form.getFieldValue("letterId") ? false : true}
           />
-        </Flex> */}
+        </Flex>
         <Row gutter={[10, 2]}>
           <Form.Item shouldUpdate noStyle>
             {() => {
@@ -318,4 +366,4 @@ const PunishmentAction = () => {
   );
 };
 
-export default PunishmentAction;
+export default RewardPunishmentLetterGenAddEdit;

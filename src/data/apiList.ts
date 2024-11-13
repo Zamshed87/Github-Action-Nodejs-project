@@ -254,7 +254,9 @@ export const apiList = {
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
   GetRewardPunishmentLetterLanding:
-    "/RewardPunishment/GetRewardPunishmentPagination",
+    "/RewardPunishment/GetRewardPunishmentPagination", // admin end
+  GetUserRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
   IsPromotionEligibleThroughIncrement:
     "/Employee/IsPromotionEligibleThroughIncrement",
   CreateEmployeeIncrement: "/Employee/CreateEmployeeIncrement",

@@ -10,7 +10,14 @@ import { Form, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
+import {
+  DataTable,
+  Flex,
+  PButton,
+  PCard,
+  PCardHeader,
+  PForm,
+} from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
@@ -207,19 +214,29 @@ const RewardPunishmentLanding = () => {
               }}
             />
           </Tooltip>
+          <PButton
+            size="small"
+            type="primary"
+            action="submit"
+            content="Action"
+            onClick={() => {
+              history.push("/profile/customReportsBuilder/punishmentAction");
+            }}
+          />
         </Flex>
       ),
       align: "center",
     },
   ];
-
   return letterGenPermission?.isView ? (
     <>
       {loading && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount} templates`}
+            title={`Total ${
+              landingApi?.data?.totalCount ? landingApi?.data?.totalCount : 0
+            } templates`}
             buttonList={[
               {
                 type: "primary",

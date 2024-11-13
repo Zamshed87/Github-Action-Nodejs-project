@@ -1425,6 +1425,7 @@ export const routingList = [
     path: "/profile/rewardsandpunishmentadd",
     component: RewardsAndPunishmentAdd,
   },
+
   // { path: "/dashboard", component: DashboardModule },
   { path: "/dashboard", component: MasterDashboardLanding },
   { path: "/profile/employee", component: EmployeeFeatureNew },
