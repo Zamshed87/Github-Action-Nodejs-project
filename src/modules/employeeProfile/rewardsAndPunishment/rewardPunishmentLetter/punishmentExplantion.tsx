@@ -31,9 +31,13 @@ import { postPDFAction } from "utility/downloadFile";
 import { useHistory } from "react-router-dom";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { modules } from "modules/employeeProfile/reportBuilder/letterConfiguration/utils";
-import { getLetterPreview } from "./letterGenAddEdit/helper";
+import {
+  getLetterPreview,
+  SaveRewardPunishmentExplanation,
+} from "./letterGenAddEdit/helper";
 import FormikTextArea from "common/FormikTextArea";
-const PunishmentExplantion = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PunishmentExplantion = ({ punishmentData }: any) => {
   // Router state
   // const { letterId }: any = useParams();
   const location = useLocation();
@@ -73,7 +77,38 @@ const PunishmentExplantion = () => {
   return letterGenPermission?.isCreate ? (
     <PForm formName="tempCreate" form={form} initialValues={{}}>
       <PCard>
-        <PCardHeader title={"Explanation"} backButton={false} />
+        <PCardHeader
+          buttonList={[
+            {
+              type: "primary",
+              content: "Save",
+              disabled: loading,
+              onClick: () => {
+                const values = form.getFieldsValue(true);
+
+                form
+                  .validateFields()
+                  .then(() => {
+                    if (!values?.explanation) {
+                      return toast.warning("Please add explanation");
+                    }
+                    SaveRewardPunishmentExplanation(
+                      form,
+                      profileData,
+                      setLoading,
+                      punishmentData,
+                      attachmentList
+                    );
+                  })
+                  .catch(() => {
+                    console.log();
+                  });
+              },
+            },
+          ]}
+          title={""}
+          backButton={false}
+        />
         <PCardBody>
           <Row gutter={[10, 2]}>
             <Col md={24} sm={24}>
@@ -112,7 +147,7 @@ const PunishmentExplantion = () => {
                       attachmentList,
                       setAttachmentList,
                       accountId: profileData?.orgId,
-                      tableReferrence: "REWARD_PUNISHMENT_LETTER",
+                      tableReferrence: "REWARD_PUNISHMENT_EXPLANATION",
                       documentTypeId: 24,
                       userId: profileData?.employeeId,
                       buId: profileData?.buId,

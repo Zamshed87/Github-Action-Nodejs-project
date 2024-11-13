@@ -58,7 +58,8 @@ export const CreateRewardPunishmentRecord = async (
   form,
   profileData,
   setLoading,
-  letterData
+  letterData,
+  attachmentList
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -84,7 +85,7 @@ export const CreateRewardPunishmentRecord = async (
       issueByEmployeeId: employeeId,
       issueByEmployeeName: userName || "",
       issueDate: todayDate(),
-      issueAttachment: letterData?.issueAttachment || "",
+      issueAttachment: attachmentList[0]?.response[0]?.globalFileUrlId || "",
       isPrinted: letterData?.isPrinted || true,
       isMailSend: letterData?.isMailSend || true,
       actionId: letterData?.actionId || 1, // need to check again

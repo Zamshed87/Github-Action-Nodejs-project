@@ -22,6 +22,7 @@ import { postPDFAction } from "utility/downloadFile";
 import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
 import { ViewRewardPunishmentRecord } from "./letterGenAddEdit/helper";
+import PunishmentExplantion from "./punishmentExplantion";
 
 const UserEndRewardPunishmentLanding = ({
   tabIndex,
@@ -67,6 +68,7 @@ const UserEndRewardPunishmentLanding = ({
   const [open, setOpen] = useState(false);
   const [explanationOpen, setExplanationOpen] = useState(false);
   const [singleData, setSingleData] = useState({});
+  const [punishmentData, setPunishmentData] = useState({});
   const [loading, setLoading] = useState(false);
 
   // landing calls
@@ -292,11 +294,12 @@ const UserEndRewardPunishmentLanding = ({
           </Tooltip>
           <button
             onClick={() => {
-              ViewRewardPunishmentRecord(
-                rec?.recordId,
-                setLoading,
-                setSingleData
-              ); // check
+              // ViewRewardPunishmentRecord(
+              //   rec?.recordId,
+              //   setLoading,
+              //   setSingleData
+              // ); // check
+              setPunishmentData(rec);
               setExplanationOpen(true);
             }}
           >
@@ -375,12 +378,12 @@ const UserEndRewardPunishmentLanding = ({
         />
         <PModal
           title="Explanation"
-          open={explanationOpen}
+          open={explanationOpen} // explanationOpen
           onCancel={() => {
             setExplanationOpen(false);
-            setSingleData({});
+            setPunishmentData({});
           }}
-          components={<TemplateViewModal singleData={singleData} />}
+          components={<PunishmentExplantion punishmentData={punishmentData} />}
           width={1000}
         />
         {/* <div className="d-none">

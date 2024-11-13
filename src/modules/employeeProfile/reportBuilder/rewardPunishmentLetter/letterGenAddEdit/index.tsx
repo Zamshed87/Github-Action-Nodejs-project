@@ -138,7 +138,8 @@ const RewardPunishmentLetterGenAddEdit = () => {
                       form,
                       profileData,
                       setLoading,
-                      letterData
+                      letterData,
+                      attachmentList
                     );
                   })
                   .catch(() => {
