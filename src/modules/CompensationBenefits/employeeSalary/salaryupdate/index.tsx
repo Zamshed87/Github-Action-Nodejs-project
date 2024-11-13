@@ -442,6 +442,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       );
     }
     // Update the selected index with the new amount
+    // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
     temp[index].numAmount = e + e * (slabCount || 0);
     if (temp[index].isBasicSalary) {
       temp[index].baseAmount = e;
@@ -452,9 +453,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
 
     if (basedOn?.value === 2 || salaryType?.value === "Grade") {
+      console.log("first");
       basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
+      console.log("first2");
+
       methodAb();
     }
   };
@@ -556,6 +560,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
+    console.log({ values });
     // const { basicAmount } = form.getFieldsValue(true);
     if (values?.salaryType?.value === "Grade") {
       basicAmount = rowDto[0]?.numAmount;
@@ -678,7 +683,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             placeholder="Amount"
             onChange={(e: any) => {
               const values = form.getFieldsValue(true);
-              if (values?.salaryType?.value !== "Grade") {
+              if (values?.salaryType?.value !== "Grade" && index === 0) {
                 form.setFieldsValue({
                   basicAmount: e,
                 });
@@ -784,12 +789,18 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   useEffect(() => {
     if ((location?.state as any)?.Status === "Assigned") {
       getAssignedBreakdown();
+      console.log(location?.state);
       form.setFieldsValue({
         grossAmount: (location?.state as any)?.numNetGrossSalary,
+        basicAmount: (location?.state as any)?.numBasicORGross,
         payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
           ? undefined
           : (location?.state as any)?.intSalaryBreakdownHeaderId,
-        basedOn: 1,
+        basedOn:
+          (location?.state as any)?.strDependOn.toLowerCase() === "basic"
+            ? { value: 2, label: "Basic" }
+            : { value: 1, label: "Gross" },
+
         salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
           ? "Grade"
           : "Non-Grade",

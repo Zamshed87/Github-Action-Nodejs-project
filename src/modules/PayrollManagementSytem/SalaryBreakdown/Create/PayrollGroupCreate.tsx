@@ -175,6 +175,8 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       isPerday: values?.isPerdaySalary || false,
       isDefault: values?.isDefaultBreakdown || false,
       isActive: true,
+      strDependOn: values?.dependsOn?.label,
+
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
@@ -188,7 +190,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
           singleData?.intSalaryBreakdownHeaderId ||
           state?.intSalaryBreakdownHeaderId ||
           0,
-        strDependOn: values?.dependsOn?.label,
+        strDependOn: "",
         pyrSalaryBreakdowRowList: [],
       };
       salaryBreakdownCreateNApply(payload, setLoading, callback);
