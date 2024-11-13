@@ -815,8 +815,11 @@ const CreateEditLeavePolicy = () => {
                   </>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { intLeaveDependOn, showLveIndays } =
-                        form.getFieldsValue(true);
+                      const {
+                        isProdataBasis,
+                        intLeaveDependOn,
+                        showLveIndays,
+                      } = form.getFieldsValue(true);
                       // const empType = employeeType?.label;
 
                       return (
@@ -827,8 +830,8 @@ const CreateEditLeavePolicy = () => {
                               <PSelect
                                 options={commonDDL as any}
                                 name="isProdataBasis"
-                                label="Prodata Basis"
-                                placeholder="Prodata Basis"
+                                label=" Pro Rata Basis"
+                                placeholder=" Pro Rata Basis"
                                 // disabled={
                                 //   intLeaveDependOn?.value !== 1 ||
                                 //   showLveIndays?.value !== 1
@@ -841,7 +844,27 @@ const CreateEditLeavePolicy = () => {
                                 rules={[
                                   {
                                     required: false,
-                                    message: "Prodata Basis is required",
+                                    message: " Pro Rata Basis is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          )}
+                          {isProdataBasis && (
+                            <Col md={12} sm={24}>
+                              <PInput
+                                type="number"
+                                name="intJoiningMonthCountMaxDate"
+                                label="Activate Pro-Rata from Joining (In Days)"
+                                placeholder="1-31"
+                                rules={[
+                                  {
+                                    message: "max input value is 31",
+                                    pattern: new RegExp(/^(3[01]|[12]?\d)$/),
+                                  },
+                                  {
+                                    required: isProdataBasis,
+                                    message: "Required",
                                   },
                                 ]}
                               />
