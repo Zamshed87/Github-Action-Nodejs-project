@@ -46,6 +46,8 @@ const CreateEditLeavePolicy = () => {
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState<any>(null);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const religionDDL = useApiRequest([]);
+
   const [buDDL, setBuDDL] = useState([]);
   const [allPolicies, setAllPolicies] = useState([]);
   const [singleData, setSingleData] = useState<any>({});
@@ -83,6 +85,23 @@ const CreateEditLeavePolicy = () => {
       "LeaveType",
       setLeaveTypeDDL
     );
+
+    religionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Religion",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.ReligionName;
+          res[i].value = item?.ReligionId;
+        });
+      },
+    });
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
@@ -815,8 +834,11 @@ const CreateEditLeavePolicy = () => {
                   </>
                   <Form.Item shouldUpdate noStyle>
                     {() => {
-                      const { intLeaveDependOn, showLveIndays } =
-                        form.getFieldsValue(true);
+                      const {
+                        isProdataBasis,
+                        intLeaveDependOn,
+                        showLveIndays,
+                      } = form.getFieldsValue(true);
                       // const empType = employeeType?.label;
 
                       return (
@@ -827,8 +849,8 @@ const CreateEditLeavePolicy = () => {
                               <PSelect
                                 options={commonDDL as any}
                                 name="isProdataBasis"
-                                label="Prodata Basis"
-                                placeholder="Prodata Basis"
+                                label=" Pro Rata Basis"
+                                placeholder=" Pro Rata Basis"
                                 // disabled={
                                 //   intLeaveDependOn?.value !== 1 ||
                                 //   showLveIndays?.value !== 1
@@ -841,7 +863,27 @@ const CreateEditLeavePolicy = () => {
                                 rules={[
                                   {
                                     required: false,
-                                    message: "Prodata Basis is required",
+                                    message: " Pro Rata Basis is required",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          )}
+                          {isProdataBasis && (
+                            <Col md={12} sm={24}>
+                              <PInput
+                                type="number"
+                                name="intJoiningMonthCountMaxDate"
+                                label="Activate Pro-Rata from Joining (In Days)"
+                                placeholder="1-31"
+                                rules={[
+                                  {
+                                    message: "max input value is 31",
+                                    pattern: new RegExp(/^(3[01]|[12]?\d)$/),
+                                  },
+                                  {
+                                    required: isProdataBasis,
+                                    message: "Required",
                                   },
                                 ]}
                               />
@@ -1189,6 +1231,36 @@ const CreateEditLeavePolicy = () => {
                           message: "Gender is required",
                         },
                       ]}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      mode="multiple"
+                      allowClear
+                      options={religionDDL?.data || []}
+                      name="religionListDto"
+                      label="Religion(Select Only if you have this configurations)"
+                      placeholder="Religion"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          religionListDto: op,
+                        });
+                        // const temp = form.getFieldsValue();
+                        // isPolicyExist(
+                        //   {
+                        //     ...temp,
+                        //     intGender: op,
+                        //   },
+                        //   allPolicies,
+                        //   setExistingPolicies
+                        // );
+                      }}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Religion is required",
+                      //   },
+                      // ]}
                     />
                   </Col>
                   <Col md={12} sm={24}>

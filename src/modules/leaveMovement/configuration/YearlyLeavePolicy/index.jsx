@@ -134,13 +134,7 @@ const YearlyLeavePolicy = () => {
         }}
         innerRef={formikRef}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -242,6 +236,9 @@ const YearlyLeavePolicy = () => {
                                 <th rowSpan="2" className="text-center">
                                   Hr Position
                                 </th>
+                                <th rowSpan="2" className="text-center">
+                                  Religion{" "}
+                                </th>
                               </tr>
                             </thead>
                             <tbody>
@@ -250,7 +247,7 @@ const YearlyLeavePolicy = () => {
                                   <React.Fragment key={workplaceName}>
                                     {/* Row with workplace name */}
                                     <tr>
-                                      <td colSpan="6">
+                                      <td colSpan="7">
                                         {" "}
                                         <span
                                           style={{
@@ -290,6 +287,15 @@ const YearlyLeavePolicy = () => {
                                             ?.map(
                                               (pos) =>
                                                 pos?.strHrPositionName + " "
+                                            )
+                                            ?.join(", ")}
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {policy?.religionListDto
+                                            ?.map(
+                                              (pos) =>
+                                                pos?.strReligionName + " "
                                             )
                                             ?.join(", ")}
                                         </td>

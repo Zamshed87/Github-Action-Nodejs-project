@@ -36,6 +36,15 @@ export const generatePayload = (
         };
       })
     : [];
+  const religion = values?.religionListDto?.length
+    ? values?.religionListDto?.map((item: any) => {
+        return {
+          ...item,
+          strReligionName: item?.label,
+          intReligionId: item?.value,
+        };
+      })
+    : [];
   const serviceLengthList =
     tableData?.map((item: any, idx: number) => {
       return {
@@ -53,6 +62,7 @@ export const generatePayload = (
 
   const payload = {
     // policyId: params?.id || 0,
+    religionListDto: religion,
     workplaceList: workplaceList,
     employmentTypeList: employmentTypeList,
     genderListDTO: genderListDTO,
@@ -65,7 +75,10 @@ export const generatePayload = (
       values?.isLveBalanceShowForSelfService || false,
     isLveBalanceApplyForSelfService:
       values?.isLveBalanceApplyForSelfService || false,
+    // prodata
     isProdataBasis: values?.isProdataBasis || false,
+    intJoiningMonthCountMaxDate: values?.intJoiningMonthCountMaxDate,
+    // ----------------
     isHalfDayLeave: values?.isHalfDayLeave || false,
     isEncashable: values?.isEncashable || false,
     isCompensatoryLve:
