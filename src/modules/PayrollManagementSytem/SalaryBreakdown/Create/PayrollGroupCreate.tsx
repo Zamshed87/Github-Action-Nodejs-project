@@ -188,7 +188,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
           singleData?.intSalaryBreakdownHeaderId ||
           state?.intSalaryBreakdownHeaderId ||
           0,
-        strDependOn: "",
+        strDependOn: values?.dependsOn?.label,
         pyrSalaryBreakdowRowList: [],
       };
       salaryBreakdownCreateNApply(payload, setLoading, callback);
