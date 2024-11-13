@@ -75,7 +75,10 @@ export const generatePayload = (
       values?.isLveBalanceShowForSelfService || false,
     isLveBalanceApplyForSelfService:
       values?.isLveBalanceApplyForSelfService || false,
+    // prodata
     isProdataBasis: values?.isProdataBasis || false,
+    intJoiningMonthCountMaxDate: values?.intJoiningMonthCountMaxDate,
+    // ----------------
     isHalfDayLeave: values?.isHalfDayLeave || false,
     isEncashable: values?.isEncashable || false,
     isCompensatoryLve:
