@@ -274,17 +274,14 @@ export const getSalaryAssignDDLUpdate2 = ({
   if (breakDownList?.[0]?.isCustomPayrollFor10ms) {
     const res = tenMsNotAssignCal({ data: breakDownList }, grossSalaryAmount);
     setBreakDownList(res || []);
-  }
-
-  // else if (accId === 9) {
-  //   const res = addinNotAssignCal(
-  //     { data: breakDownList },
-  //     basicSalaryObj,
-  //     grossSalaryAmount
-  //   );
-  //   setBreakDownList(res || []);
-  // }
-  else if (
+  } else if (accId === 9) {
+    const res = addinNotAssignCal(
+      { data: breakDownList },
+      basicSalaryObj,
+      grossSalaryAmount
+    );
+    setBreakDownList(res || []);
+  } else if (
     accId === 7 &&
     breakDownList?.[0]?.strSalaryBreakdownTitle?.includes("1.5")
   ) {
@@ -347,16 +344,14 @@ export const getByIdSalaryAssignDDLUpdate2 = (
   if (res?.data?.[0]?.isCustomPayrollFor10ms) {
     const update = tenMsAssignedCal(res, grossSalaryAmount);
     setter(update || []);
-  }
-  // else if (accId === 9) {
-  //   const update = addinAssignCal(
-  //     { data: res?.data },
-  //     basicSalaryObj,
-  //     grossSalaryAmount
-  //   );
-  //   setter(update || []);
-  // }
-  else if (
+  } else if (accId === 9) {
+    const update = addinAssignCal(
+      { data: res?.data },
+      basicSalaryObj,
+      grossSalaryAmount
+    );
+    setter(update || []);
+  } else if (
     accId === 7 &&
     res?.data?.[0]?.strSalaryBreakdownHeaderTitle?.includes("1.5")
   ) {
@@ -603,33 +598,33 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     let modifyObj;
 
     // for corporate
-    if (itm?.strSalaryBreakdownTitle === "Corporate") {
-      console.log("t");
-      // basic salary
-      if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
-        modifyObj = {
-          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-            basicSalaryObj.basicSalary || 0,
-          numAmount: basicSalaryObj.basicSalary || 0,
-          showPercentage: basicSalaryObj.numPercentageOfGross || 50,
-        };
-      }
+    // if (itm?.strSalaryBreakdownTitle === "Corporate") {
+    //   console.log("t");
+    //   // basic salary
+    //   if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
+    //     modifyObj = {
+    //       [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+    //         basicSalaryObj.basicSalary || 0,
+    //       numAmount: basicSalaryObj.basicSalary || 0,
+    //       showPercentage: basicSalaryObj.numPercentageOfGross || 50,
+    //     };
+    //   }
 
-      // basic dependency
-      if (
-        itm?.strBasedOn === "Percentage" &&
-        itm?.strDependOn === "Basic" &&
-        !itm?.isBasicSalary
-      ) {
-        modifyObj = {
-          [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
-          numAmount:
-            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
-          showPercentage: itm?.numNumberOfPercent,
-        };
-      }
-    }
+    //   // basic dependency
+    //   if (
+    //     itm?.strBasedOn === "Percentage" &&
+    //     itm?.strDependOn === "Basic" &&
+    //     !itm?.isBasicSalary
+    //   ) {
+    //     modifyObj = {
+    //       [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+    //         itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+    //       numAmount:
+    //         itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+    //       showPercentage: itm?.numNumberOfPercent,
+    //     };
+    //   }
+    // }
     // ------------
     // Flat salary
     if (
@@ -648,7 +643,7 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     }
 
     // others
-    if (itm?.strSalaryBreakdownTitle !== "Corporate") {
+    if (itm?.strSalaryBreakdownTitle !== "C") {
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
         modifyObj = {
@@ -721,9 +716,6 @@ export const addinNotAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
   return updatedData;
 };
 export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
-  console.log({ res });
-  console.log({ basicSalaryObj });
-  console.log({ grossSalaryAmount });
   let modifyData = [];
   let basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
 
@@ -731,32 +723,32 @@ export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     let modifyObj;
 
     // for corporate
-    if (itm?.strSalaryBreakdownTitle === "Corporate") {
-      // basic salary
-      if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
-        modifyObj = {
-          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
-            basicSalaryObj.basicSalary || 0,
-          numAmount: basicSalaryObj.basicSalary || 0,
-          showPercentage: basicSalaryObj.numPercentageOfGross || 50,
-        };
-      }
+    // if (itm?.strSalaryBreakdownTitle === "Corporate") {
+    //   // basic salary
+    //   if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
+    //     modifyObj = {
+    //       [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+    //         basicSalaryObj.basicSalary || 0,
+    //       numAmount: basicSalaryObj.basicSalary || 0,
+    //       showPercentage: basicSalaryObj.numPercentageOfGross || 50,
+    //     };
+    //   }
 
-      // basic dependency
-      if (
-        itm?.strBasedOn === "Percentage" &&
-        itm?.strDependOn === "Basic" &&
-        !itm?.isBasicSalary
-      ) {
-        modifyObj = {
-          [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
-            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
-          numAmount:
-            itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
-          showPercentage: itm?.numNumberOfPercent,
-        };
-      }
-    }
+    //   // basic dependency
+    //   if (
+    //     itm?.strBasedOn === "Percentage" &&
+    //     itm?.strDependOn === "Basic" &&
+    //     !itm?.isBasicSalary
+    //   ) {
+    //     modifyObj = {
+    //       [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+    //         itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+    //       numAmount:
+    //         itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+    //       showPercentage: itm?.numNumberOfPercent,
+    //     };
+    //   }
+    // }
 
     // Flat salary
     if (
@@ -775,7 +767,7 @@ export const addinAssignCal = (res, basicSalaryObj, grossSalaryAmount) => {
     }
 
     // others
-    if (itm?.strSalaryBreakdownTitle !== "Corporate") {
+    if (itm?.strSalaryBreakdownTitle !== "C") {
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
         modifyObj = {
