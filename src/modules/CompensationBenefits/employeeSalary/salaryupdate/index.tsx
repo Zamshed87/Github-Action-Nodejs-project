@@ -704,9 +704,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   ];
   const headerAccount: any = [
     {
-      title: "Accounts",
+      title: "",
       dataIndex: "accounts",
-      width: 625,
+      width: 325,
     },
     {
       title: "",
@@ -924,36 +924,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onFinish={submitHandler}
     >
       <PCard>
-        <PCardHeader
-          title="Salary Assign"
-          // buttonList={[
-          //   {
-          //     type: "primary",
-          //     content: "Save",
-          //     onClick: () => {
-          //       submitHandler();
-          //     },
-          //     disabled: selectedRow?.length > 0 ? false : true,
-          //     //   icon: <AddOutlined />,
-          //   },
-          //   {
-          //     type: "primary-outline",
-          //     content: "Cancel",
-          //     onClick: () => {
-          //       form.resetFields();
-          //       setSelectedRow([]);
-          //       setRowDto((prev) => {
-          //         prev = [];
-          //         return prev;
-          //       });
-          //       // getSalaryLanding();
-          //     },
-          //     // disabled: true,
-          //     //   icon: <AddOutlined />,
-          //   },
-          // ]}
-          submitText="Save"
-        ></PCardHeader>
+        <PCardHeader title="Salary Assign" submitText="Save"></PCardHeader>
         <Row gutter={[10, 2]} className="mb-3 card-style">
           <Col md={13}>
             <div
@@ -1449,9 +1420,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         </Row>
         {rowDto?.length > 0 ? (
           <DataTable header={header} bordered data={rowDto || []} />
-        ) : (
-          <NoResult title="No Result Found" para="" />
-        )}
+        ) : // <NoResult title="No Result Found" para="" />
+        null}
         <Divider
           style={{
             marginBlock: "4px",
@@ -1460,8 +1430,27 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             fontWeight: 600,
           }}
           orientation="left"
-        ></Divider>
-        <DataTable header={headerAccount} bordered data={accountsDto || []} />
+        >
+          Accounts
+        </Divider>
+        <Row gutter={[10, 1]} className="mb-3">
+          <Col span={12}>
+            <DataTable
+              showHeader={false}
+              header={headerAccount}
+              bordered
+              data={accountsDto.slice(0, 2) || []}
+            />
+          </Col>
+          <Col span={12}>
+            <DataTable
+              showHeader={false}
+              header={headerAccount}
+              bordered
+              data={accountsDto.slice(2) || []}
+            />
+          </Col>
+        </Row>
         <Divider
           style={{
             marginBlock: "4px",
