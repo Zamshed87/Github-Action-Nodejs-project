@@ -589,12 +589,12 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         });
                       }}
                       disabled={state?.intOtconfigId}
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: "Please Select Calendar Name!",
-                      //   },
-                      // ]}
+                      rules={[
+                        orgId === 9 && {
+                          required: true,
+                          message: "Please Select Calendar Name!",
+                        },
+                      ]}
                     />
                   </Col>
                   <Col md={12} sm={24}>
@@ -1098,7 +1098,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       return (
                         (showInDepend?.value === 1 ||
                           showInDepend?.value === 2) &&
-                          overtimeCount === 4 && (
+                        overtimeCount === 4 && (
                           <>
                             <Col span={2} className="mt-1">
                               <button
@@ -1288,7 +1288,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       options={OTCountAmount}
                     />
                   </Col>
-                 
 
                   {/* tousif told me to replace this name  */}
                   <Col md={24} sm={24}>
