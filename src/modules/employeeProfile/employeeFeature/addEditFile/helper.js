@@ -329,6 +329,7 @@ export const submitHandler = ({
   action,
   history,
 }) => {
+
   const cb = () => {
     action === "save" ? history?.goBack() : resetForm();
     // !isEdit && resetForm();
@@ -372,7 +373,7 @@ export const submitHandler = ({
     if (!values?.startingCalender)
       return toast.warn("Starting calender is required");
   }
-
+  
   createEditEmpAction(
     { ...values, intSignature },
     buId,
