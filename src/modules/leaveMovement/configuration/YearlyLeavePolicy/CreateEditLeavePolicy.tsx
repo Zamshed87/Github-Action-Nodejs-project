@@ -46,6 +46,8 @@ const CreateEditLeavePolicy = () => {
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState<any>(null);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const religionDDL = useApiRequest([]);
+
   const [buDDL, setBuDDL] = useState([]);
   const [allPolicies, setAllPolicies] = useState([]);
   const [singleData, setSingleData] = useState<any>({});
@@ -83,6 +85,23 @@ const CreateEditLeavePolicy = () => {
       "LeaveType",
       setLeaveTypeDDL
     );
+
+    religionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Religion",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.ReligionName;
+          res[i].value = item?.ReligionId;
+        });
+      },
+    });
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
@@ -1189,6 +1208,36 @@ const CreateEditLeavePolicy = () => {
                           message: "Gender is required",
                         },
                       ]}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      mode="multiple"
+                      allowClear
+                      options={religionDDL?.data || []}
+                      name="religionListDto"
+                      label="Religion(Select Only if you have this configurations)"
+                      placeholder="Religion"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          religionListDto: op,
+                        });
+                        // const temp = form.getFieldsValue();
+                        // isPolicyExist(
+                        //   {
+                        //     ...temp,
+                        //     intGender: op,
+                        //   },
+                        //   allPolicies,
+                        //   setExistingPolicies
+                        // );
+                      }}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Religion is required",
+                      //   },
+                      // ]}
                     />
                   </Col>
                   <Col md={12} sm={24}>

@@ -210,6 +210,13 @@ export const getYearlyPolicyById = async (
             label: itm?.strGenderName,
           };
         }),
+        religionListDto: res?.data?.religionListDto?.map((itm) => {
+          return {
+            ...itm,
+            value: itm?.intReligionId,
+            label: itm?.strReligionName,
+          };
+        }),
         intEmploymentTypeList: res?.data?.employmentTypeList?.map((itm) => {
           return {
             ...itm,
