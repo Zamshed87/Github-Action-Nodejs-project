@@ -1,10 +1,10 @@
-export const getWorkplaceGroup = ({params}: any) => {
-    params?.workplaceGroupDDL?.action({
+export const getWorkplaceGroup = ({workplaceGroupDDL, orgId, buId}: any) => {
+    workplaceGroupDDL?.action({
         urlKey: "WorkplaceGroupIdAll",
         method: "GET",
         params: {
-            accountId: params?.orgId,
-            businessUnitId: params?.buId,
+            accountId: orgId,
+            businessUnitId: buId,
         },
         onSuccess: (res: any[]) => {
             res.forEach((item, i) => {
