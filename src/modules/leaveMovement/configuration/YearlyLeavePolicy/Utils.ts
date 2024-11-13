@@ -3,7 +3,6 @@ export const generatePayload = (
   tableData: any,
   existingPolicies: any
 ) => {
-  console.log({ tableData });
   const workplaceList = values?.intWorkplaceList?.map((item: any) => {
     const exists = existingPolicies?.some(
       (em: any) => em.intWorkplace === item.value
@@ -102,7 +101,22 @@ export const generatePayload = (
       +values?.intMaxLveApplicationSelfInMonth || null,
     intMaxLveApplicationSelfInYear:
       +values?.intMaxLveApplicationSelfInYear || null,
+
+    //encash parameters
     intEncashableMonth: +values?.intEncashableMonth || null,
+
+    isEncashInDay: values?.encashType?.label === "In Days" ? true : false,
+    isEncashInPercentage:
+      values?.encashType?.label !== "In Days" ? true : false,
+    intEncashMainBalanceInMinute:
+      values?.encashType?.label === "In Days" ? +values?.mainBalance : 0,
+    intEncashCarryBalanceInMinute:
+      values?.encashType?.label === "In Days" ? +values?.carryBalance : 0,
+    intEncashMainBalanceInPercentage:
+      values?.encashType?.label !== "In Days" ? +values?.mainBalance : 0,
+    intEncashCarryBalanceInPercentage:
+      values?.encashType?.label !== "In Days" ? +values?.carryBalance : 0,
+    // ----------------------------------------------------------------------------
     intEndServiceLengthInYear: +values?.intEndServiceLengthInYear || null,
     intHalfdayMaxInMonth: +values?.intHalfdayMaxInMonth || null,
     intHalfdayMaxInYear: +values?.intHalfdayMaxInYear || null,

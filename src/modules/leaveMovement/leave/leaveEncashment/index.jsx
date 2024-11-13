@@ -82,7 +82,6 @@ function LeaveEncashment() {
   const [carryHour, setCarryHour] = useState("");
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
 
-
   const getEmpInfoDetails = (empId) => {
     getPeopleDeskAllLanding(
       "EmployeeBasicById",
@@ -104,7 +103,6 @@ function LeaveEncashment() {
       setEmployeeDDL
     );
   }, [wgId]);
-
 
   const getData = (empId, year) => {
     getEmployeeLeaveBalanceAndHistory(
@@ -144,7 +142,7 @@ function LeaveEncashment() {
   }, []);
 
   const demoPopup = (action, values, cb) => {
-    console.log("values", values);  
+    console.log("values", values);
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
       setSingleData("");
@@ -204,7 +202,6 @@ function LeaveEncashment() {
     }
   });
   const demoPopupForDelete = (item, values) => {
-
     const callback = () => {
       getData(values?.employee?.value, values?.year?.value);
     };
@@ -361,7 +358,7 @@ function LeaveEncashment() {
 
   return (
     <>
-    {loading && <Loading />}
+      {loading && <Loading />}
       <Formik
         enableReinitialize={true}
         initialValues={{
@@ -538,6 +535,7 @@ function LeaveEncashment() {
                           carry,
                           carryHour,
                           leaveTypeDDL,
+                          leaveBalanceData,
                         }}
                       />
                     </div>
