@@ -274,14 +274,17 @@ export const getSalaryAssignDDLUpdate2 = ({
   if (breakDownList?.[0]?.isCustomPayrollFor10ms) {
     const res = tenMsNotAssignCal({ data: breakDownList }, grossSalaryAmount);
     setBreakDownList(res || []);
-  } else if (accId === 9) {
-    const res = addinNotAssignCal(
-      { data: breakDownList },
-      basicSalaryObj,
-      grossSalaryAmount
-    );
-    setBreakDownList(res || []);
-  } else if (
+  }
+
+  // else if (accId === 9) {
+  //   const res = addinNotAssignCal(
+  //     { data: breakDownList },
+  //     basicSalaryObj,
+  //     grossSalaryAmount
+  //   );
+  //   setBreakDownList(res || []);
+  // }
+  else if (
     accId === 7 &&
     breakDownList?.[0]?.strSalaryBreakdownTitle?.includes("1.5")
   ) {
@@ -344,14 +347,16 @@ export const getByIdSalaryAssignDDLUpdate2 = (
   if (res?.data?.[0]?.isCustomPayrollFor10ms) {
     const update = tenMsAssignedCal(res, grossSalaryAmount);
     setter(update || []);
-  } else if (accId === 9) {
-    const update = addinAssignCal(
-      { data: res?.data },
-      basicSalaryObj,
-      grossSalaryAmount
-    );
-    setter(update || []);
-  } else if (
+  }
+  // else if (accId === 9) {
+  //   const update = addinAssignCal(
+  //     { data: res?.data },
+  //     basicSalaryObj,
+  //     grossSalaryAmount
+  //   );
+  //   setter(update || []);
+  // }
+  else if (
     accId === 7 &&
     res?.data?.[0]?.strSalaryBreakdownHeaderTitle?.includes("1.5")
   ) {
