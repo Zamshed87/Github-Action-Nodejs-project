@@ -144,6 +144,14 @@ export const columns = (
       fieldType: "string",
     },
     {
+      title: "Religion",
+      dataIndex: "strReligionName",
+      // sort: true,
+      // filter: true,
+      // filterDropDownList: headerList[`genderList`],
+      fieldType: "string",
+    },
+    {
       title: "Workplace",
       dataIndex: "strWorkplace",
       // sort: true,
