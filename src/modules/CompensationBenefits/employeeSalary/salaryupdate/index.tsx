@@ -1262,6 +1262,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payrollGroup: op,
+                          basedOn:
+                            (op as any)?.strDependOn?.toLowerCase() === "basic"
+                              ? { value: 2, label: "Basic" }
+                              : { value: 1, label: "Gross" },
                         });
                         getBreakDownPolicyElements();
                       }}
@@ -1277,10 +1281,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     <PSelect
                       options={[
                         { value: 1, label: "Gross" },
-                        // { value: 2, label: "Basic" },
+                        { value: 2, label: "Basic" },
                       ]}
                       name="basedOn"
                       label="Based On"
+                      disabled={true}
                       placeholder="Based On"
                       onChange={(value, op) => {
                         form.setFieldsValue({

@@ -47,7 +47,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
   // Form Instance
   const [form] = Form.useForm();
   // gross form
-  const [dynamicForm, setDynamicForm] = useState([]);
+  const [dynamicForm, setDynamicForm] = useState<any>([]);
 
   // ddl
   const [workplace, setWorkplace] = useState([]);
@@ -145,7 +145,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
   console.log("state", state);
 
   const onFinish = () => {
-    const values = form.getFieldsValue();
+    const values = form.getFieldsValue(true);
     const callback = () => {
       // cb();
       setSingleData("");
@@ -196,14 +196,35 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       if (dynamicForm?.length <= 0) {
         return toast.warn("Payroll Element List is empty!!!");
       }
-
+      let temp: any = [];
+      if (values?.dependsOn?.value === 2) {
+        temp = [...dynamicForm];
+        temp.push({
+          intSalaryBreakdownRowId: 0,
+          intSalaryBreakdownHeaderId: 0,
+          intDependsOn: 1,
+          strDependOn: "Basic",
+          strBasedOn: "Amount",
+          intPayrollElementTypeId: (
+            payrollElementDDL?.filter((i: any) => i?.isBasic)?.[0] as any
+          )?.value,
+          levelVariable: "basic",
+          strPayrollElementName: "Basic",
+          isBasic: true,
+          numNumberOfPercent: 0,
+          numAmount: 0,
+          isActive: true,
+          intCreatedBy: employeeId,
+          intUpdatedBy: employeeId,
+        });
+      }
       payrollGroupCalculation(
         orgId,
         employeeId,
         payload,
         singleData,
         state,
-        dynamicForm,
+        values?.dependsOn?.value === 2 ? temp : dynamicForm,
         values,
         setLoading,
         callback
