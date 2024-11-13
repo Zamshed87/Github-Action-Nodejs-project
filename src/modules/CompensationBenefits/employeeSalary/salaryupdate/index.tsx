@@ -242,7 +242,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
       accountsDto[0].numAmount;
-    console.log(values?.transferType);
     if (accountSum !== values?.grossAmount) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
@@ -453,12 +452,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     });
 
     if (basedOn?.value === 2 || salaryType?.value === "Grade") {
-      console.log("first");
       basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
-      console.log("first2");
-
       methodAb();
     }
   };
@@ -560,7 +556,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     let basicAmount = 0;
     const modified_data = [];
     const values = form.getFieldsValue(true);
-    console.log({ values });
     // const { basicAmount } = form.getFieldsValue(true);
     if (values?.salaryType?.value === "Grade") {
       basicAmount = rowDto[0]?.numAmount;
@@ -789,7 +784,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   useEffect(() => {
     if ((location?.state as any)?.Status === "Assigned") {
       getAssignedBreakdown();
-      console.log(location?.state);
       form.setFieldsValue({
         grossAmount: (location?.state as any)?.numNetGrossSalary,
         basicAmount: (location?.state as any)?.numBasicORGross,
@@ -1382,7 +1376,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                             ? value % getById?.data?.incrementSlabCount
                             : 0;
                         const actualSlab = value - efficiency;
-                        console.log({ actualSlab, efficiency });
                         temp[0].numAmount =
                           (temp[0].baseAmount ||
                             getById?.data?.payScaleElements[0]?.netAmount) +
