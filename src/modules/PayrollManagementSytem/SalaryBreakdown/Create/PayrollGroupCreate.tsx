@@ -289,7 +289,9 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Payroll Group Name is required!",
                     },
                   ]}
-                  disabled={state?.intSalaryBreakdownHeaderId}
+                  disabled={
+                    state?.intSalaryBreakdownHeaderId || dynamicForm?.length > 0
+                  }
                 />
               </Col>
               <Col md={6} sm={12}>
@@ -309,7 +311,9 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Please Select Payroll Policy!",
                     },
                   ]}
-                  disabled={state?.intSalaryBreakdownHeaderId}
+                  disabled={
+                    state?.intSalaryBreakdownHeaderId || dynamicForm?.length > 0
+                  }
                 />
               </Col>
               <Col md={6} sm={12}>
@@ -336,7 +340,9 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Please Select Workplace Group!",
                     },
                   ]}
-                  disabled={state?.intSalaryBreakdownHeaderId}
+                  disabled={
+                    state?.intSalaryBreakdownHeaderId || dynamicForm?.length > 0
+                  }
                 />
               </Col>
               <Col md={6} sm={12}>
@@ -363,7 +369,9 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       message: "Please Select Workplace!",
                     },
                   ]}
-                  disabled={state?.intSalaryBreakdownHeaderId}
+                  disabled={
+                    state?.intSalaryBreakdownHeaderId || dynamicForm?.length > 0
+                  }
                 />
               </Col>
 
@@ -380,13 +388,15 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                       payrollElement: undefined,
                     });
                   }}
-                  disabled={state?.intSalaryBreakdownHeaderId}
+                  disabled={
+                    state?.intSalaryBreakdownHeaderId || dynamicForm?.length > 0
+                  }
                 />
               </Col>
 
               <Form.Item noStyle shouldUpdate>
                 {() => {
-                  const { isPerdaySalary } = form.getFieldsValue();
+                  const { isPerdaySalary } = form.getFieldsValue(true);
                   return (
                     isPerdaySalary === false && (
                       <>
@@ -397,7 +407,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             placeholder="Depends on"
                             options={[
                               { value: 1, label: "Gross" },
-                              // { value: 2, label: "Basic" },
+                              { value: 2, label: "Basic" },
                             ]}
                             onChange={(value, option) => {
                               form.setFieldsValue({
@@ -413,7 +423,10 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             //     message: "Please Select Workplace!",
                             //   },
                             // ]}
-                            disabled={state?.intSalaryBreakdownHeaderId}
+                            disabled={
+                              state?.intSalaryBreakdownHeaderId ||
+                              dynamicForm?.length > 0
+                            }
                           />
                         </Col>
                       </>
@@ -424,7 +437,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
 
               <Form.Item noStyle shouldUpdate>
                 {() => {
-                  const { dependsOn } = form.getFieldsValue();
+                  const { dependsOn } = form.getFieldsValue(true);
                   return (
                     <>
                       {dependsOn?.value === 1 && (
@@ -434,7 +447,10 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             label="Is Flat Salary?"
                             name="isFlat"
                             layout="horizontal"
-                            disabled={state?.intSalaryBreakdownHeaderId}
+                            disabled={
+                              state?.intSalaryBreakdownHeaderId ||
+                              dynamicForm?.length > 0
+                            }
                           />
                         </Col>
                       )}
@@ -465,8 +481,9 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
               <Form.Item noStyle shouldUpdate>
                 {() => {
                   const { isPerdaySalary, payrollElement, basedOn, dependsOn } =
-                    form.getFieldsValue();
+                    form.getFieldsValue(true);
                   const values = form.getFieldsValue(true);
+
                   return (
                     isPerdaySalary === false && (
                       <>
@@ -492,7 +509,14 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             label="Payroll Element"
                             name="payrollElement"
                             placeholder="Payroll Element"
-                            options={payrollElementDDL || []}
+                            // as per discussion with parash vai basic depend on thakle basic true gula show korbe na
+                            options={
+                              dependsOn?.value === 2
+                                ? payrollElementDDL?.filter(
+                                    (i: any) => !i?.isBasic
+                                  )
+                                : payrollElementDDL || []
+                            }
                             onChange={(value, option) => {
                               form.setFieldsValue({
                                 payrollElement: option,
