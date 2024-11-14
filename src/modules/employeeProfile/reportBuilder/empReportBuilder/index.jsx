@@ -250,6 +250,7 @@ const EmployeeReportBuilder = () => {
                       touched={touched}
                     />
                   </div>
+                  {console.log("showingData",showingData)}
                   <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                     <div>
                       <Droppable droppableId="AllQuestion">
@@ -258,7 +259,7 @@ const EmployeeReportBuilder = () => {
                             ref={queDropProvided.innerRef}
                             {...queDropProvided.droppableProps}
                           >
-                            {showingData?.map((item, index) => {
+                            {showingData?.slice(0,-5)?.map((item, index) => {
                               return (
                                 <Draggable
                                   key={index}
