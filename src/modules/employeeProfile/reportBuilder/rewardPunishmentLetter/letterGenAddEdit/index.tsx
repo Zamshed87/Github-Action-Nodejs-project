@@ -37,13 +37,19 @@ import FileUploadComponents from "utility/Upload/FileUploadComponents";
 const RewardPunishmentLetterGenAddEdit = () => {
   // Router state
   // const { letterId }: any = useParams();
-  const location = useLocation();
-  const letterData: any = location?.state;
+  interface LocationState {
+    recordData?: any;
+    [key: string]: any;
+  }
 
-  console.log(letterData, "letterData");
+  const location = useLocation<LocationState>();
+  const letterData: any = location?.state;
+  const { recordData, edited } = location.state || {};
+
   // state
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
+  const [iseditButton, setIseditButton] = useState(true);
   // Form Instance
   const [form] = Form.useForm();
   const history = useHistory();
@@ -96,34 +102,39 @@ const RewardPunishmentLetterGenAddEdit = () => {
     });
   };
 
+  console.log(recordData, "recordData ===>");
+
   return letterGenPermission?.isCreate ? (
     <PForm
       formName="tempCreate"
       form={form}
       initialValues={{
-        letterType: letterData?.letterType
-          ? { label: letterData?.letterType, value: letterData?.letterTypeId }
+        issuedType: recordData
+          ? { label: recordData?.issueTypeName, value: recordData?.issueTypeId }
           : "",
-        letterName: letterData?.letterName
-          ? { label: letterData?.letterName, value: letterData?.letterName }
+        letterType: recordData?.letterType
+          ? { label: recordData?.letterType, value: recordData?.letterTypeId }
           : "",
-        letter: letterData?.generatedLetterBody || "",
-        employee: letterData?.issuedEmployeeId
+        letterName: recordData?.letterName
+          ? { label: recordData?.letterName, value: recordData?.letterNameId }
+          : "",
+        letter: recordData?.letterBody || "",
+        employee: recordData
           ? {
-              label: letterData?.issuedEmployeeName,
-              value: letterData?.issuedEmployeeId,
+              label: recordData?.issueForEmployeeName,
+              value: recordData?.issueForEmployeeId,
             }
           : "",
       }}
     >
       <PCard>
         <PCardHeader
-          title={"Create Template"}
+          title={edited ? "Edit Template" : "Create Template"}
           backButton={true}
           buttonList={[
             {
               type: "primary",
-              content: "Save",
+              content: edited ? "Edit" : "Save",
               disabled: loading,
               onClick: () => {
                 const values = form.getFieldsValue(true);
@@ -134,44 +145,54 @@ const RewardPunishmentLetterGenAddEdit = () => {
                     if (!values?.letter) {
                       return toast.warning("Please add letter template");
                     }
-                    CreateRewardPunishmentRecord(
-                      form,
-                      profileData,
-                      setLoading,
-                      letterData,
-                      attachmentList
-                    );
-                  })
-                  .catch(() => {
-                    console.log();
-                  });
-              },
-            },
-            {
-              type: "primary",
-              content: "Save & Send",
-              disabled: loading,
-              onClick: () => {
-                const values = form.getFieldsValue(true);
-
-                form
-                  .validateFields()
-                  .then(() => {
-                    if (!values?.letter) {
-                      return toast.warning("Please add letter template");
+                    if (edited) {
+                      editRewardPunishmentRecord(
+                        form,
+                        profileData,
+                        setLoading,
+                        recordData,
+                        attachmentList
+                      );
+                    } else {
+                      CreateRewardPunishmentRecord(
+                        form,
+                        profileData,
+                        setLoading,
+                        letterData,
+                        attachmentList
+                      );
                     }
-                    // createNEditLetterGenerate(
-                    //   form,
-                    //   profileData,
-                    //   setLoading,
-                    //   letterData
-                    // );
                   })
                   .catch(() => {
                     console.log();
                   });
               },
             },
+            // {
+            //   type: "primary",
+            //   content: "Save & Send",
+            //   disabled: loading,
+            //   onClick: () => {
+            //     const values = form.getFieldsValue(true);
+
+            //     form
+            //       .validateFields()
+            //       .then(() => {
+            //         if (!values?.letter) {
+            //           return toast.warning("Please add letter template");
+            //         }
+            //         // createNEditLetterGenerate(
+            //         //   form,
+            //         //   profileData,
+            //         //   setLoading,
+            //         //   letterData
+            //         // );
+            //       })
+            //       .catch(() => {
+            //         console.log();
+            //       });
+            //   },
+            // },
           ]}
         />
         <PCardBody>
@@ -252,20 +273,23 @@ const RewardPunishmentLetterGenAddEdit = () => {
                 allowClear={true}
               />
             </Col>
-            <Col
-              style={{
-                marginTop: "23px",
-              }}
-            >
-              <PButton
-                type="primary"
-                action="submit"
-                content="View"
-                onClick={() => {
-                  getLetterPreview(profileData, setLoading, form);
+            {!edited && (
+              <Col
+                style={{
+                  marginTop: "23px",
                 }}
-              />
-            </Col>
+              >
+                <PButton
+                  type="primary"
+                  action="submit"
+                  content="View"
+                  onClick={() => {
+                    getLetterPreview(profileData, setLoading, form);
+                  }}
+                />
+              </Col>
+            )}
+
             <Col md={24} style={{ marginTop: "1.4rem" }}>
               <div>
                 <>
@@ -294,24 +318,28 @@ const RewardPunishmentLetterGenAddEdit = () => {
           </Row>
         </PCardBody>
         <Flex className="my-3 mr-2" gap="large" justify="flex-end">
-          <PButton
-            type="primary"
-            action="button"
-            content="Edit"
-            onClick={(e: any) => {
-              e.stopPropagation();
+          {!edited && (
+            <PButton
+              type="primary"
+              action="button"
+              content="Edit"
+              onClick={(e: any) => {
+                e.stopPropagation();
+                setIseditButton(false);
 
-              editRewardPunishmentRecord(
-                form,
-                profileData,
-                setLoading,
-                letterData,
-                () =>
-                  history.push("/profile/customReportsBuilder/rewardPunishment")
-              );
-            }}
-            disabled={form.getFieldValue("letterId") ? false : true}
-          />
+                // editRewardPunishmentRecord(
+                //   form,
+                //   profileData,
+                //   setLoading,
+                //   letterData,
+                //   () =>
+                //     history.push("/profile/customReportsBuilder/rewardPunishment")
+                // );
+              }}
+              disabled={form.getFieldValue("letterId") ? false : true}
+            />
+          )}
+
           <PButton
             className="ml-2"
             type="primary"
@@ -346,6 +374,7 @@ const RewardPunishmentLetterGenAddEdit = () => {
                   <Col className="custom_quill quilJob" md={24} sm={24}>
                     <ReactQuill
                       preserveWhitespace={true}
+                      readOnly={edited ? false : iseditButton}
                       placeholder="letter body..."
                       value={letter}
                       modules={{

@@ -121,17 +121,17 @@ export const editRewardPunishmentRecord = async (
   form,
   profileData,
   setLoading,
-  letterData,
-  cb
+  recordData,
+  attachmentList
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
     const values = form.getFieldsValue(true);
     console.log(values, "values");
     console.log(profileData, "profileData");
-    console.log(letterData, "letterData");
+    console.log(recordData, "letterData");
     const payload = {
-      // recordId: 0, // default value as per structure
+      recordId: recordData?.recordId, // default value as per structure
       accountId: orgId,
       branchId: buId,
       workplaceId: wId,
@@ -148,21 +148,22 @@ export const editRewardPunishmentRecord = async (
       issueByEmployeeId: employeeId,
       issueByEmployeeName: userName || "",
       issueDate: todayDate(),
-      issueAttachment: letterData?.issueAttachment || "",
-      isPrinted: letterData?.isPrinted || true,
-      isMailSend: letterData?.isMailSend || true,
-      actionId: letterData?.actionId || 1, // need to check again
+      issueAttachment:
+        attachmentList[0]?.response[0]?.globalFileUrlId?.toString() || "",
+      isPrinted: recordData?.isPrinted || true,
+      isMailSend: recordData?.isMailSend || true,
+      actionId: recordData?.actionId || 1, // need to check again
       actionName: userName || "",
-      actionRemarks: letterData?.actionRemarks || "",
-      isExplanation: letterData?.isExplanation || true,
-      explanation: letterData?.explanation || "",
-      explanationAttachment: letterData?.explanationAttachment || "",
+      actionRemarks: recordData?.actionRemarks || "",
+      isExplanation: recordData?.isExplanation || true,
+      explanation: recordData?.explanation || "",
+      explanationAttachment: recordData?.explanationAttachment || "",
       actionBy: employeeId || 0,
       createdAt: todayDate(),
       serverDateTime: new Date().toISOString(),
       lastActionDateTime:
-        letterData?.lastActionDateTime || new Date().toISOString(),
-      isActive: letterData?.isActive || true,
+        recordData?.lastActionDateTime || new Date().toISOString(),
+      isActive: recordData?.isActive || true,
     };
 
     setLoading(true);
@@ -171,7 +172,6 @@ export const editRewardPunishmentRecord = async (
       payload
     );
     setLoading(false);
-    cb && cb();
     toast.success(res?.data?.message, { toastId: "Edit" });
   } catch (error) {
     setLoading(false);
@@ -182,7 +182,8 @@ export const editRewardPunishmentRecord = async (
 export const ViewRewardPunishmentRecord = async (
   recordId,
   setLoading,
-  setSingleData
+  setSingleData,
+  cb
 ) => {
   try {
     setLoading(true);
@@ -191,6 +192,7 @@ export const ViewRewardPunishmentRecord = async (
       `/RewardPunishment/ViewRewardPunishmentRecord?recordId=${recordId}`
     );
     if (res?.data) {
+      cb && cb(res?.data);
       setLoading(false);
       setSingleData(res?.data);
     }

@@ -5,7 +5,12 @@
  *
  */
 
-import { EyeOutlined, PrinterOutlined, SendOutlined } from "@ant-design/icons";
+import {
+  EditFilled,
+  EyeOutlined,
+  PrinterOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
 import { Form, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -29,6 +34,7 @@ import { postPDFAction } from "utility/downloadFile";
 import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
 import { ViewRewardPunishmentRecord } from "./letterGenAddEdit/helper";
+import { EditOutlined } from "@mui/icons-material";
 
 const RewardPunishmentLanding = () => {
   // router states
@@ -177,6 +183,31 @@ const RewardPunishmentLanding = () => {
                   setSingleData
                 ); // check
                 setOpen(true);
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Edit"}>
+            <EditFilled
+              style={{
+                color: "green",
+                // marginTop: "8px",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                ViewRewardPunishmentRecord(
+                  rec?.recordId,
+                  setLoading,
+                  setSingleData,
+                  (data: any) => {
+                    history.push({
+                      pathname: `/profile/customReportsBuilder/rewardPunishment/letterGenerate`,
+                      state: { recordData: data, edited: true },
+                    });
+                  }
+                ); // check
+
+                // setOpen(true);
               }}
             />
           </Tooltip>
