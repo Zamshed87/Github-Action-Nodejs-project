@@ -1267,6 +1267,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payrollGroup: op,
+                          grossAmount: undefined,
+                          basicAmount: undefined,
                           basedOn:
                             (op as any)?.strDependOn?.toLowerCase() === "basic"
                               ? { value: 2, label: "Basic" }
