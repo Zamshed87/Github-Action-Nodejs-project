@@ -10,6 +10,7 @@ import {
   EyeOutlined,
   PrinterOutlined,
   SendOutlined,
+  WarningOutlined,
 } from "@ant-design/icons";
 import { Form, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
@@ -193,7 +194,7 @@ const RewardPunishmentLanding = () => {
             <EditFilled
               style={{
                 color: "green",
-                // marginTop: "8px",
+                marginRight: "5px",
                 fontSize: "14px",
                 cursor: "pointer",
               }}
@@ -220,7 +221,7 @@ const RewardPunishmentLanding = () => {
                 color: "green",
                 fontSize: "14px",
                 cursor: "pointer",
-                margin: "0 5px",
+                marginRight: "5px",
               }}
               onClick={() => {
                 const payload = {
@@ -271,17 +272,42 @@ const RewardPunishmentLanding = () => {
             />
           </Tooltip>
           {rec?.issueTypeId === 2 && (
-            <button
-              disabled={!rec?.isExplanation}
-              content="Action"
-              onClick={() => {
-                history.push(
-                  `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`
-                );
-              }}
-            >
-              Action
-            </button>
+            <Tooltip placement="bottom" title={"Action"}>
+              <WarningOutlined
+                style={{
+                  color: "green",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  marginRight: "5px",
+                }}
+                onClick={() => {
+                  ViewRewardPunishmentRecord(
+                    rec?.recordId,
+                    setLoading,
+                    setSingleData,
+                    (data: any) => {
+                      history.push({
+                        pathname: `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`,
+                        state: { recordData: data, edited: true },
+                      });
+                    }
+                  ); // check
+
+                  // setOpen(true);
+                }}
+              />
+            </Tooltip>
+            // <button
+            //   disabled={!rec?.isExplanation}
+            //   content="Action"
+            //   onClick={() => {
+            //     history.push(
+            //       `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`
+            //     );
+            //   }}
+            // >
+            //   Action
+            // </button>
             // <PButton
             //   disabled={!rec?.isExplanation}
             //   size="small"

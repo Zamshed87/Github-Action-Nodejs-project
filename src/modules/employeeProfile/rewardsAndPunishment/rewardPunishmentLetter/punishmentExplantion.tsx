@@ -75,7 +75,13 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
   const [loading, setLoading] = useState(false);
 
   return letterGenPermission?.isCreate ? (
-    <PForm formName="tempCreate" form={form} initialValues={{}}>
+    <PForm
+      formName="tempCreate"
+      form={form}
+      initialValues={{
+        letter: punishmentData?.letterBody || "",
+      }}
+    >
       <PCard>
         <PCardHeader
           buttonList={[
@@ -165,7 +171,7 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
         </PCardBody>
 
         <Row gutter={[10, 2]}>
-          <Form.Item shouldUpdate noStyle>
+          {/* <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);
 
@@ -174,6 +180,7 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
                   <Col className="custom_quill quilJob" md={24} sm={24}>
                     <ReactQuill
                       preserveWhitespace={true}
+                      readOnly={true}
                       placeholder="letter body..."
                       value={letter}
                       modules={{
@@ -186,7 +193,15 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
                 </>
               );
             }}
-          </Form.Item>
+          </Form.Item> */}
+          <div className="mt-2">
+            <h2>Punishment Letter </h2>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: punishmentData?.letterBody,
+              }}
+            />
+          </div>
         </Row>
       </PCard>
     </PForm>

@@ -34,7 +34,7 @@ const PunishmentAction = () => {
   // Router state
   // const { letterId }: any = useParams();
   const location = useLocation();
-  const letterData: any = location?.state;
+  const { recordData, letterData }: any = location?.state;
   const params = useParams<{ recordId: string }>();
 
   console.log(letterData, "letterData");
@@ -98,9 +98,8 @@ const PunishmentAction = () => {
       formName="tempCreate"
       form={form}
       initialValues={{
-        letterType: letterData?.letterType
-          ? { label: letterData?.letterType, value: letterData?.letterTypeId }
-          : "",
+        explanation: recordData?.explanation || "",
+
         letterName: letterData?.letterName
           ? { label: letterData?.letterName, value: letterData?.letterName }
           : "",
@@ -146,22 +145,15 @@ const PunishmentAction = () => {
         />
         <PCardBody>
           <Row gutter={[10, 2]}>
-            <Col md={4} sm={24}>
+            <Col md={6} sm={24}>
               <PInput
-                type="text"
+                type="textarea"
+                disabled={true}
+                maxLength={250}
+                showCount={true}
                 name="explanation"
                 label="Explanation"
-                placeholder="Explanation"
-                rules={[{ required: true, message: "Explanation is required" }]}
-              />
-            </Col>
-            <Col md={4} sm={24}>
-              <PInput
-                type="text"
-                name="info"
-                label="Info"
-                placeholder="Info"
-                // rules={[{ required: true, message: "Info is required" }]}
+                // rules={[{ required: true, message: "Explanation is required" }]}
               />
             </Col>
             <Col md={4} sm={24}>
@@ -188,107 +180,28 @@ const PunishmentAction = () => {
                 }}
               />
             </Col>
-            <Col md={4} sm={24}>
+            <Col md={6} sm={24}>
               <PInput
-                type="text"
+                type="textarea"
                 name="remarks"
                 label="Remarks"
                 placeholder="Remarks"
                 rules={[{ required: true, message: "Remarks is required" }]}
               />
             </Col>
-
-            {/* <Col md={6} sm={24}>
-              <PSelect
-                options={letterTypeDDL}
-                name="letterType"
-                label="Letter Type"
-                placeholder="Letter Type"
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    letterType: op,
-                  });
-                  getLetterNameDDL(
-                    profileData,
-                    setLoading,
-                    setLetterNameDDL,
-                    value
-                  );
+            <div className="mt-2">
+              <h2>Punishment Letter </h2>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: recordData?.letterBody,
                 }}
               />
-            </Col> */}
-            {/* <Col md={24} style={{ marginTop: "1.4rem" }}>
-              <div>
-                <>
-                  <FileUploadComponents
-                    propsObj={{
-                      isOpen,
-                      setIsOpen,
-                      destroyOnClose: false,
-                      attachmentList,
-                      setAttachmentList,
-                      accountId: profileData?.orgId,
-                      tableReferrence: "REWARD_PUNISHMENT_LETTER",
-                      documentTypeId: 24,
-                      userId: profileData?.employeeId,
-                      buId: profileData?.buId,
-                      maxCount: 20,
-                      isIcon: true,
-                      isErrorInfo: true,
-                      subText:
-                        "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
-                    }}
-                  />
-                </>
-              </div>
-            </Col> */}
+            </div>
           </Row>
         </PCardBody>
-        {/* <Flex className="my-3 mr-2" gap="large" justify="flex-end">
-          <PButton
-            type="primary"
-            action="button"
-            content="Edit"
-            onClick={(e: any) => {
-              e.stopPropagation();
 
-              editRewardPunishmentRecord(
-                form,
-                profileData,
-                setLoading,
-                letterData,
-                () =>
-                  history.push("/profile/customReportsBuilder/rewardPunishment")
-              );
-            }}
-            disabled={form.getFieldValue("letterId") ? false : true}
-          />
-          <PButton
-            className="ml-2"
-            type="primary"
-            action="button"
-            content="Preview"
-            onClick={(e: any) => {
-              const { employee, letterId, letter } = form.getFieldsValue(true);
-              e.stopPropagation();
-              const payload = {
-                isForPreview: true,
-                issuedEmployeeId: employee?.value || 0,
-                templateId: letterId,
-                letterGenerateId: letterId || 0,
-                letterBody: letter,
-              };
-              postPDFAction(
-                "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
-                payload,
-                setLoading
-              );
-            }}
-            disabled={form.getFieldValue("letterId") ? false : true}
-          />
-        </Flex> */}
         <Row gutter={[10, 2]}>
-          <Form.Item shouldUpdate noStyle>
+          {/* <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);
 
@@ -309,7 +222,7 @@ const PunishmentAction = () => {
                 </>
               );
             }}
-          </Form.Item>
+          </Form.Item> */}
         </Row>
       </PCard>
     </PForm>

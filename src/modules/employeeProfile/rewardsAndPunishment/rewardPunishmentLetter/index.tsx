@@ -292,19 +292,23 @@ const UserEndRewardPunishmentLanding = ({
               }}
             />
           </Tooltip>
-          <button
-            onClick={() => {
-              // ViewRewardPunishmentRecord(
-              //   rec?.recordId,
-              //   setLoading,
-              //   setSingleData
-              // ); // check
-              setPunishmentData(rec);
-              setExplanationOpen(true);
-            }}
-          >
-            Explanation
-          </button>
+          {!rec?.isExplanation && (
+            <button
+              onClick={() => {
+                ViewRewardPunishmentRecord(
+                  rec?.recordId,
+                  setLoading,
+                  setSingleData,
+                  (data: any) => {
+                    setPunishmentData(data);
+                    setExplanationOpen(true);
+                  }
+                );
+              }}
+            >
+              Explanation
+            </button>
+          )}
         </Flex>
       ),
       align: "center",

@@ -180,15 +180,17 @@ export const editRewardPunishmentRecord = async (
 export const ViewRewardPunishmentRecord = async (
   recordId,
   setLoading,
-  setSingleData
+  setSingleData,
+  cb
 ) => {
   try {
     setLoading(true);
 
     const res = await axios.get(
-      `/RewardPunishment/ViewUserRewardPunishmentRecord?recordId=${recordId}`
+      `/RewardPunishment/ViewRewardPunishmentRecord?recordId=${recordId}`
     );
     if (res?.data) {
+      cb && cb(res?.data);
       setLoading(false);
       setSingleData(res?.data);
     }
