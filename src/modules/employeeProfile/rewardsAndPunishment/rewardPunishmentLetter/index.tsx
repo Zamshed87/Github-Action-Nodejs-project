@@ -5,7 +5,7 @@
  *
  */
 
-import { EyeOutlined, PrinterOutlined, SendOutlined } from "@ant-design/icons";
+import { EyeOutlined, PrinterOutlined } from "@ant-design/icons";
 import { Form, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -367,7 +367,7 @@ const UserEndRewardPunishmentLanding = ({
         </PForm>
 
         <PModal
-          title="View Template"
+          title="View"
           open={open}
           onCancel={() => {
             setOpen(false);

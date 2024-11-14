@@ -207,7 +207,7 @@ export const SaveRewardPunishmentExplanation = async (
   attachmentList
 ) => {
   try {
-    const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
+    // const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
     const values = form.getFieldsValue(true);
     console.log(values, "values");
     console.log(punishmentData, "punishmentData");
@@ -217,7 +217,7 @@ export const SaveRewardPunishmentExplanation = async (
       recordId: punishmentData?.recordId || 0,
       explanation: values?.explanation || "",
       explanationAttachment:
-        attachmentList[0]?.response[0]?.globalFileUrlId || "",
+        attachmentList[0]?.response[0]?.globalFileUrlId?.toString() || "",
       isActive: true,
       createdAt: punishmentData?.createdAt || todayDate(),
     };

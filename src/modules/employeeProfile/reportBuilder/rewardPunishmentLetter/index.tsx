@@ -220,7 +220,9 @@ const RewardPunishmentLanding = () => {
             action="submit"
             content="Action"
             onClick={() => {
-              history.push("/profile/customReportsBuilder/punishmentAction");
+              history.push(
+                `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`
+              );
             }}
           />
         </Flex>

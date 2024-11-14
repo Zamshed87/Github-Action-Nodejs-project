@@ -9,9 +9,9 @@ import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
-import { CreateRewardPunishmentRecord } from "./helper";
+import { SaveRewardPunishmentAction } from "./helper";
 import {
   Flex,
   PButton,
@@ -35,6 +35,7 @@ const PunishmentAction = () => {
   // const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
+  const params = useParams<{ recordId: string }>();
 
   console.log(letterData, "letterData");
   // state
@@ -127,14 +128,13 @@ const PunishmentAction = () => {
                 form
                   .validateFields()
                   .then(() => {
-                    if (!values?.letter) {
+                    if (!values?.explanation || !values?.action) {
                       return toast.warning("Please add letter template");
                     }
-                    CreateRewardPunishmentRecord(
+                    SaveRewardPunishmentAction(
                       form,
-                      profileData,
                       setLoading,
-                      letterData
+                      params?.recordId
                     );
                   })
                   .catch(() => {
@@ -161,7 +161,7 @@ const PunishmentAction = () => {
                 name="info"
                 label="Info"
                 placeholder="Info"
-                rules={[{ required: true, message: "Info is required" }]}
+                // rules={[{ required: true, message: "Info is required" }]}
               />
             </Col>
             <Col md={4} sm={24}>

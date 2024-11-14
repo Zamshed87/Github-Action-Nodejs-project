@@ -3167,7 +3167,7 @@ export const routingList = [
     component: RewardPunishmentLetterGenAddEdit,
   },
   {
-    path: "/profile/customReportsBuilder/punishmentAction",
+    path: "/profile/customReportsBuilder/punishmentAction/:recordId",
     component: PunishmentAction,
   },
   // Trainnning and development ends
