@@ -455,7 +455,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
-      methodAb();
+      default_gross_calculation();
     }
   };
   const methodAb = () => {
