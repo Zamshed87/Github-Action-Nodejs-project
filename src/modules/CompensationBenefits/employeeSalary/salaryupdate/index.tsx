@@ -8,6 +8,7 @@ import {
   PSelect,
 } from "Components";
 import profileImg from "../../../../assets/images/profile.jpg";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
@@ -26,6 +27,7 @@ import { salaryHoldAction } from "../salaryAssign/helper";
 import { useHistory, useLocation } from "react-router-dom";
 import { todayDate } from "utility/todayDate";
 import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
+import { Alert } from "@mui/material";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -139,7 +141,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           setRowDto(modifyforGrade);
         } else {
           setRowDto(modify);
-          default_gross_calculation();
+          // new_gross_calculation();
         }
       },
     });
@@ -455,7 +457,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
-      default_gross_calculation();
+      new_gross_calculation();
     }
   };
   const methodAb = () => {
@@ -551,6 +553,20 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         .split(" ")
         .join("")}`
     );
+  };
+  const new_gross_calculation = () => {
+    const { grossAmount } = form.getFieldsValue(true);
+
+    const modify = rowDto.map((item) => {
+      if (item.strBasedOn === "Percentage") {
+        return {
+          ...item,
+          numAmount: (grossAmount * item.numNumberOfPercent) / 100,
+        };
+      }
+      return item; // Leave as-is if based on "Amount"
+    });
+    setRowDto(modify);
   };
   const basic_or_grade_calculation = () => {
     let basicAmount = 0;
@@ -678,7 +694,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             placeholder="Amount"
             onChange={(e: any) => {
               const values = form.getFieldsValue(true);
-              if (values?.salaryType?.value !== "Grade" && index === 0) {
+              if (
+                values?.salaryType?.value !== "Grade" &&
+                row?.strDependOn !== "Gross" &&
+                index === 0
+              ) {
                 form.setFieldsValue({
                   basicAmount: e,
                 });
@@ -696,7 +716,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               }
               updateRowDtoHandler(e, row, index);
             }}
-            disabled={row?.strBasedOn !== "Amount" || row?.isBasicSalary}
+            disabled={
+              row?.strBasedOn !== "Amount" ||
+              (row?.strDependOn !== "Gross" && row?.isBasicSalary)
+            }
           />
         </>
       ),
@@ -1349,7 +1372,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         temp[2].numAmount = e;
                         temp[0].numAmount = 0;
                         temp[1].numAmount = 0;
-                        default_gross_calculation();
+                        new_gross_calculation();
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
                         //             )?.toFixed(6)
@@ -1429,6 +1452,43 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             }}
           </Form.Item>
         </Row>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { grossAmount, salaryType } = form.getFieldsValue(true);
+            const elementSum = rowDto?.reduce(
+              (acc, i) => acc + i?.numAmount,
+              0
+            );
+
+            return (
+              grossAmount &&
+              salaryType?.label !== "Grade" &&
+              elementSum !== grossAmount && (
+                <Alert
+                  icon={<InfoOutlinedIcon fontSize="inherit" />}
+                  severity="warning"
+                  style={{
+                    // width: "27rem",
+                    // position: "sticky",
+                    top: "1px",
+                  }}
+                >
+                  <div>
+                    <div className="mb-3">
+                      <h2>
+                        Gross Amount and Breakdown Sum Amount Mismatch <br />
+                        Adjust By
+                        {elementSum > grossAmount ? " Reducing " : " Adding "}
+                        Amount {Math.abs(elementSum - grossAmount)}
+                      </h2>
+                    </div>
+                    {/* <Divider orientation="left">Small Size</Divider> */}
+                  </div>
+                </Alert>
+              )
+            );
+          }}
+        </Form.Item>
         {rowDto?.length > 0 ? (
           <DataTable header={header} bordered data={rowDto || []} />
         ) : // <NoResult title="No Result Found" para="" />
