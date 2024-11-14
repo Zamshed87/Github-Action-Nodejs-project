@@ -230,7 +230,7 @@ const EmployeeList = () => {
       filterSearch: true,
       width: 150,
     },
-    {
+    orgId !== 9 && {
       title: "Division",
       dataIndex: "strDivision",
       sorter: true,
@@ -248,7 +248,7 @@ const EmployeeList = () => {
       filterSearch: true,
       width: 150,
     },
-    {
+    orgId !== 9 && {
       title: "Section",
       dataIndex: "strSection",
       sorter: true,
