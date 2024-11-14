@@ -37,7 +37,6 @@ const PunishmentAction = () => {
   const { recordData, letterData }: any = location?.state;
   const params = useParams<{ recordId: string }>();
 
-  console.log(letterData, "letterData");
   // state
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);

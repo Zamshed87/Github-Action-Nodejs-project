@@ -108,7 +108,7 @@ const RewardPunishmentLanding = () => {
         pageSize: pagination?.pageSize,
       },
       onSuccess: (res) => {
-        console.log(res);
+        // console.log(res);
       },
     });
   };

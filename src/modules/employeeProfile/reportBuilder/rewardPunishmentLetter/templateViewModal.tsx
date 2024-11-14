@@ -1,12 +1,4 @@
-/*
- * Title: Letter Config Landing
- * Author: Khurshida Meem
- * Date: 23-10-2024
- *
- */
-
 const TemplateViewModal = ({ singleData }: any) => {
-  console.log(singleData, "singleData");
   return (
     <>
       <div style={{ fontSize: "12px" }}>

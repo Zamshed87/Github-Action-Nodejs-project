@@ -102,8 +102,6 @@ const RewardPunishmentLetterGenAddEdit = () => {
     });
   };
 
-  console.log(recordData, "recordData ===>");
-
   return letterGenPermission?.isCreate ? (
     <PForm
       formName="tempCreate"

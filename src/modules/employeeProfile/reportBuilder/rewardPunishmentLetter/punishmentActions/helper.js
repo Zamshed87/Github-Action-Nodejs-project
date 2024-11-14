@@ -17,7 +17,6 @@ export const SaveRewardPunishmentAction = async (
   try {
     // const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
     const values = form.getFieldsValue(true);
-    console.log(values, "values");
     const payload = {
       actionId: values?.action?.value || 0,
       actionName: values?.action?.label || "",
