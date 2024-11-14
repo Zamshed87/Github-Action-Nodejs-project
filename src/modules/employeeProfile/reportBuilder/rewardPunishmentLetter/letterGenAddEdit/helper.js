@@ -59,7 +59,8 @@ export const CreateRewardPunishmentRecord = async (
   profileData,
   setLoading,
   letterData,
-  attachmentList
+  attachmentList,
+  isSaveNsent
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -88,11 +89,11 @@ export const CreateRewardPunishmentRecord = async (
       issueAttachment:
         attachmentList[0]?.response[0]?.globalFileUrlId?.toString() || "",
       isPrinted: letterData?.isPrinted || true,
-      isMailSend: letterData?.isMailSend || true,
+      isMailSend: isSaveNsent,
       actionId: letterData?.actionId || 1, // need to check again
       actionName: userName || "",
       actionRemarks: letterData?.actionRemarks || "",
-      isExplanation: letterData?.isExplanation || true,
+      isExplanation: false,
       explanation: letterData?.explanation || "",
       explanationAttachment: letterData?.explanationAttachment || "",
       actionBy: employeeId || 0,
@@ -100,7 +101,7 @@ export const CreateRewardPunishmentRecord = async (
       serverDateTime: new Date().toISOString(),
       lastActionDateTime:
         letterData?.lastActionDateTime || new Date().toISOString(),
-      isActive: letterData?.isActive || true,
+      isActive: true,
     };
 
     setLoading(true);
@@ -123,7 +124,8 @@ export const editRewardPunishmentRecord = async (
   setLoading,
   recordData,
   attachmentList,
-  cb
+  cb,
+  isSaveNsent
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -149,10 +151,11 @@ export const editRewardPunishmentRecord = async (
       issueByEmployeeId: employeeId,
       issueByEmployeeName: userName || "",
       issueDate: todayDate(),
-      issueAttachment:
-        attachmentList[0]?.response[0]?.globalFileUrlId?.toString() || "",
+      issueAttachment: isSaveNsent
+        ? attachmentList
+        : attachmentList[0]?.response[0]?.globalFileUrlId?.toString() || "",
       isPrinted: recordData?.isPrinted || true,
-      isMailSend: recordData?.isMailSend || true,
+      isMailSend: isSaveNsent || false,
       actionId: recordData?.actionId || 1, // need to check again
       actionName: userName || "",
       actionRemarks: recordData?.actionRemarks || "",

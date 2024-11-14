@@ -156,7 +156,8 @@ const RewardPunishmentLetterGenAddEdit = () => {
                           history.push(
                             "/profile/customReportsBuilder/rewardPunishment"
                           );
-                        }
+                        },
+                        false
                       );
                     } else {
                       CreateRewardPunishmentRecord(
@@ -164,7 +165,8 @@ const RewardPunishmentLetterGenAddEdit = () => {
                         profileData,
                         setLoading,
                         letterData,
-                        attachmentList
+                        attachmentList,
+                        false
                       );
                     }
                   })
@@ -173,31 +175,48 @@ const RewardPunishmentLetterGenAddEdit = () => {
                   });
               },
             },
-            // {
-            //   type: "primary",
-            //   content: "Save & Send",
-            //   disabled: loading,
-            //   onClick: () => {
-            //     const values = form.getFieldsValue(true);
+            {
+              type: "primary",
+              content: "Save & Send",
+              disabled: loading,
+              onClick: () => {
+                const values = form.getFieldsValue(true);
 
-            //     form
-            //       .validateFields()
-            //       .then(() => {
-            //         if (!values?.letter) {
-            //           return toast.warning("Please add letter template");
-            //         }
-            //         // createNEditLetterGenerate(
-            //         //   form,
-            //         //   profileData,
-            //         //   setLoading,
-            //         //   letterData
-            //         // );
-            //       })
-            //       .catch(() => {
-            //         console.log();
-            //       });
-            //   },
-            // },
+                form
+                  .validateFields()
+                  .then(() => {
+                    if (!values?.letter) {
+                      return toast.warning("Please add letter template");
+                    }
+                    if (edited) {
+                      editRewardPunishmentRecord(
+                        form,
+                        profileData,
+                        setLoading,
+                        recordData,
+                        attachmentList,
+                        (data: any) => {
+                          history.push(
+                            "/profile/customReportsBuilder/rewardPunishment"
+                          );
+                        }
+                      );
+                    } else {
+                      CreateRewardPunishmentRecord(
+                        form,
+                        profileData,
+                        setLoading,
+                        letterData,
+                        attachmentList,
+                        true
+                      );
+                    }
+                  })
+                  .catch(() => {
+                    console.log();
+                  });
+              },
+            },
           ]}
         />
         <PCardBody>

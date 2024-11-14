@@ -33,7 +33,10 @@ import { dateFormatter } from "utility/dateFormatter";
 import { postPDFAction } from "utility/downloadFile";
 import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
-import { ViewRewardPunishmentRecord } from "./letterGenAddEdit/helper";
+import {
+  editRewardPunishmentRecord,
+  ViewRewardPunishmentRecord,
+} from "./letterGenAddEdit/helper";
 import { EditOutlined } from "@mui/icons-material";
 
 const RewardPunishmentLanding = () => {
@@ -243,19 +246,55 @@ const RewardPunishmentLanding = () => {
                 cursor: "pointer",
                 marginRight: "5px",
               }}
+              onClick={() => {
+                ViewRewardPunishmentRecord(
+                  rec?.recordId,
+                  setLoading,
+                  setSingleData,
+                  (data: any) => {
+                    editRewardPunishmentRecord(
+                      form,
+                      profileData,
+                      setLoading,
+                      data,
+                      data?.issueAttachment,
+                      (data: any) => {
+                        history.push(
+                          "/profile/customReportsBuilder/rewardPunishment"
+                        );
+                      },
+                      true
+                    );
+                  }
+                );
+              }}
             />
           </Tooltip>
-          <PButton
-            size="small"
-            type="primary"
-            action="submit"
-            content="Action"
-            onClick={() => {
-              history.push(
-                `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`
-              );
-            }}
-          />
+          {rec?.issueTypeId === 2 && (
+            <button
+              disabled={!rec?.isExplanation}
+              content="Action"
+              onClick={() => {
+                history.push(
+                  `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`
+                );
+              }}
+            >
+              Action
+            </button>
+            // <PButton
+            //   disabled={!rec?.isExplanation}
+            //   size="small"
+            //   type="primary"
+            //   action="submit"
+            //   content="Action"
+            //   onClick={() => {
+            //     history.push(
+            //       `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`
+            //     );
+            //   }}
+            // />
+          )}
         </Flex>
       ),
       align: "center",
