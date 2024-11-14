@@ -122,7 +122,8 @@ export const editRewardPunishmentRecord = async (
   profileData,
   setLoading,
   recordData,
-  attachmentList
+  attachmentList,
+  cb
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -173,6 +174,7 @@ export const editRewardPunishmentRecord = async (
     );
     setLoading(false);
     toast.success(res?.data?.message, { toastId: "Edit" });
+    cb && cb();
   } catch (error) {
     setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: "Edit" });

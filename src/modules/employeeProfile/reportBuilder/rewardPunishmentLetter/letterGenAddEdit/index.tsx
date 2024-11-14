@@ -151,7 +151,12 @@ const RewardPunishmentLetterGenAddEdit = () => {
                         profileData,
                         setLoading,
                         recordData,
-                        attachmentList
+                        attachmentList,
+                        (data: any) => {
+                          history.push(
+                            "/profile/customReportsBuilder/rewardPunishment"
+                          );
+                        }
                       );
                     } else {
                       CreateRewardPunishmentRecord(
