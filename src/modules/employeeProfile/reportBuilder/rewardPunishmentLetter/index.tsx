@@ -275,25 +275,27 @@ const RewardPunishmentLanding = () => {
             <Tooltip placement="bottom" title={"Action"}>
               <WarningOutlined
                 style={{
-                  color: "green",
+                  color: rec?.isExplanation ? "green" : "grey", // Adjust color for disabled state
                   fontSize: "14px",
-                  cursor: "pointer",
+                  cursor: rec?.isExplanation ? "pointer" : "not-allowed", // Change cursor style for disabled state
                   marginRight: "5px",
                 }}
                 onClick={() => {
-                  ViewRewardPunishmentRecord(
-                    rec?.recordId,
-                    setLoading,
-                    setSingleData,
-                    (data: any) => {
-                      history.push({
-                        pathname: `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`,
-                        state: { recordData: data, edited: true },
-                      });
-                    }
-                  ); // check
-
-                  // setOpen(true);
+                  if (rec?.isExplanation) {
+                    // Check if isExplanation is true before allowing click
+                    ViewRewardPunishmentRecord(
+                      rec?.recordId,
+                      setLoading,
+                      setSingleData,
+                      (data: any) => {
+                        history.push({
+                          pathname: `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`,
+                          state: { recordData: data, edited: true },
+                        });
+                      }
+                    );
+                    // setOpen(true); // Uncomment if you need this for other functionality
+                  }
                 }}
               />
             </Tooltip>

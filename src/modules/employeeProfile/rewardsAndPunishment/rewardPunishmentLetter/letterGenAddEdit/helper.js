@@ -206,7 +206,8 @@ export const SaveRewardPunishmentExplanation = async (
   profileData,
   setLoading,
   punishmentData,
-  attachmentList
+  attachmentList,
+  cb
 ) => {
   try {
     // const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -231,6 +232,7 @@ export const SaveRewardPunishmentExplanation = async (
     );
     setLoading(false);
     form.resetFields();
+    cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     setLoading(false);

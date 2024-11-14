@@ -386,8 +386,14 @@ const UserEndRewardPunishmentLanding = ({
           onCancel={() => {
             setExplanationOpen(false);
             setPunishmentData({});
+            punishmentlandingApiCall({});
           }}
-          components={<PunishmentExplantion punishmentData={punishmentData} />}
+          components={
+            <PunishmentExplantion
+              punishmentData={punishmentData}
+              setExplanationOpen={setExplanationOpen}
+            />
+          }
           width={1000}
         />
         {/* <div className="d-none">

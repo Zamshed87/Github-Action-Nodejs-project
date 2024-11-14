@@ -37,7 +37,7 @@ import {
 } from "./letterGenAddEdit/helper";
 import FormikTextArea from "common/FormikTextArea";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PunishmentExplantion = ({ punishmentData }: any) => {
+const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
   // Router state
   // const { letterId }: any = useParams();
   const location = useLocation();
@@ -103,7 +103,10 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
                       profileData,
                       setLoading,
                       punishmentData,
-                      attachmentList
+                      attachmentList,
+                      (data: any) => {
+                        setExplanationOpen(false);
+                      }
                     );
                   })
                   .catch(() => {
@@ -128,7 +131,7 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
                 rules={[{ required: true, message: "Explanation is required" }]}
               />
             </Col>
-            <Col
+            {/* <Col
               style={{
                 marginTop: "23px",
               }}
@@ -141,7 +144,7 @@ const PunishmentExplantion = ({ punishmentData }: any) => {
                   getLetterPreview(profileData, setLoading, form);
                 }}
               />
-            </Col>
+            </Col> */}
             <Col md={24} style={{ marginTop: "1.4rem" }}>
               <div>
                 <>

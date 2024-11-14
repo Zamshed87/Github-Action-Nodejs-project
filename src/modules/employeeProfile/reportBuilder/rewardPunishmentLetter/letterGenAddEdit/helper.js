@@ -139,15 +139,31 @@ export const editRewardPunishmentRecord = async (
       branchId: buId,
       workplaceId: wId,
       workplaceGroupId: wgId,
-      issueTypeId: values?.issuedType?.value || 0,
-      issueTypeName: values?.issuedType?.label || "",
-      issueForEmployeeId: values?.employee?.value || 0,
-      issueForEmployeeName: values?.employee?.label || "",
-      letterTypeId: values?.letterType?.value || 0,
-      letterType: values?.letterType?.label || "",
-      letterNameId: values?.letterName?.value, // need to check again
-      letterName: values?.letterName?.label || "",
-      letterBody: values?.letter,
+      issueTypeId: isSaveNsent
+        ? recordData?.issueTypeId
+        : values?.issuedType?.value || 0,
+      issueTypeName: isSaveNsent
+        ? recordData?.issueTypeName
+        : values?.issuedType?.label || "",
+      issueForEmployeeId: isSaveNsent
+        ? recordData?.issueForEmployeeId
+        : values?.employee?.value || 0,
+      issueForEmployeeName: isSaveNsent
+        ? recordData?.issueForEmployeeName
+        : values?.employee?.label || "",
+      letterTypeId: isSaveNsent
+        ? recordData?.letterTypeId
+        : values?.letterType?.value || 0,
+      letterType: isSaveNsent
+        ? recordData?.letterType
+        : values?.letterType?.label || "",
+      letterNameId: isSaveNsent
+        ? recordData?.letterNameId
+        : values?.letterName?.value, // need to check again
+      letterName: isSaveNsent
+        ? recordData?.letterName
+        : values?.letterName?.label || "",
+      letterBody: isSaveNsent ? recordData?.letterBody : values?.letter,
       issueByEmployeeId: employeeId,
       issueByEmployeeName: userName || "",
       issueDate: todayDate(),
