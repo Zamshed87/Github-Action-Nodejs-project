@@ -20,6 +20,7 @@ import { todayDate } from "utility/todayDate";
 import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
 import { Alert } from "@mui/material";
 import { EmployeeInfo } from "./EmployeeInfo";
+import { BankInfo } from "./BankInfo";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -72,7 +73,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // Api Actions
   const salaryAssign = useApiRequest([]);
   const bankDDL = useApiRequest([]);
-  const branchDDL = useApiRequest([]);
   const payscaleApi = useApiRequest([]);
   const breakDownPolicyApi = useApiRequest([]);
   const employeeInfo = useApiRequest([]);
@@ -289,7 +289,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strAccountNo: `${values?.accountNo}` || "",
       strSwiftCode: values?.swift || "",
     };
-    if (values?.transferType?.value === 1 || values?.transferType === 1) {
+    if (
+      values?.transferType?.value === 1 ||
+      values?.transferType === 1 ||
+      accountsDto[0].numAmount > 0
+    ) {
       bankDetailsAction(payload, setLoading, () => {});
     }
 
@@ -348,7 +352,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // accounts calculations
   const updateDtoHandler = (e: number, row: any, index: number): any => {
     const { grossAmount } = form.getFieldsValue(true);
-    let temp = [...accountsDto];
+    const temp = [...accountsDto];
 
     // Check for invalid input values
     if (e < 0) {
@@ -417,7 +421,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const updateRowDtoHandler = (e: number, row: any, index: number): any => {
     const { grossAmount, salaryType, basedOn, slabCount } =
       form.getFieldsValue(true);
-    let temp = [...rowDto];
+    const temp = [...rowDto];
 
     // Check for invalid input values
     if (e < 0) {
@@ -730,18 +734,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
     });
   };
-  const getBranchDDL = () => {
-    const { bank } = form.getFieldsValue(true);
-    branchDDL?.action({
-      urlKey: "BankBranchDDL",
-      method: "GET",
-      params: {
-        BankId: bank?.value,
-        AccountID: orgId,
-        DistrictId: 0,
-      },
-    });
-  };
+
   useEffect(() => {
     getPayscale();
     getBankDDL();
@@ -840,7 +833,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               } ${employeeInfo?.data[0]?.intSlabCount}`,
             },
           });
-          let temp = [];
+          const temp = [];
           for (let i = 0; i <= res?.incrementSlabCount; i++) {
             temp.push({
               value: i,
@@ -1190,7 +1183,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       label="Slab Count"
                       placeholder="Slab Count"
                       onChange={(value, op) => {
-                        let temp = [...rowDto];
+                        const temp = [...rowDto];
                         const efficiency =
                           value > getById?.data?.incrementSlabCount
                             ? value % getById?.data?.incrementSlabCount
@@ -1225,7 +1218,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           <Col xs={12}></Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { grossAmount, basicAmount } = form.getFieldsValue(true);
+              const { grossAmount } = form.getFieldsValue(true);
 
               return (
                 <Col md={6} sm={12} xs={24}>
@@ -1328,148 +1321,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           }}
           orientation="left"
         ></Divider>
-        <Form.Item shouldUpdate noStyle>
-          {() => {
-            const { transferType } = form.getFieldsValue(true);
-            return (
-              <Row gutter={[10, 2]}>
-                <Col md={3} className="mt-2">
-                  Bank Name
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PSelect
-                    options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
-                    name="bank"
-                    placeholder="Bank"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        bank: op,
-                      });
-                      getBranchDDL();
-                    }}
-                    rules={[
-                      {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Bank is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Branch Name
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PSelect
-                    options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
-                    name="branch"
-                    placeholder="Branch"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        branch: op,
-                        routing: (op as any)?.name,
-                      });
-                    }}
-                    rules={[
-                      {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Branch is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Routing No
-                </Col>
-                <Col md={12} className="mt-2">
-                  <PInput
-                    type="number"
-                    name="routing"
-                    placeholder="Routing"
-                    disabled={true}
-
-                    // rules={[
-                    //   {
-                    //     // required: basedOn?.value === 2,
-                    //     message: "Basic is required",
-                    //   },
-                    // ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Swift Code
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PInput
-                    type="number"
-                    name="swift"
-                    disabled={true}
-                    placeholder="Swift Code"
-                    // rules={[
-                    //   {
-                    //     // required: basedOn?.value === 2,
-                    //     message: "Basic is required",
-                    //   },
-                    // ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Account Name
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PInput
-                    type="text"
-                    name="account"
-                    placeholder="Account Name"
-                    rules={[
-                      {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Account Name is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Account No
-                </Col>
-                <Col md={12} className="mt-2">
-                  <PInput
-                    type="number"
-                    name="accountNo"
-                    placeholder="Account No"
-                    rules={[
-                      {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Account No is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-              </Row>
-            );
-          }}
-        </Form.Item>
+        <BankInfo
+          form={form}
+          bankDDL={bankDDL}
+          orgId={orgId}
+          accountsDto={accountsDto}
+        />
       </PCard>
     </PForm>
   ) : (
