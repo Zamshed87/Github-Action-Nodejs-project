@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /*
  * Title: Exit interview add and edit
  * Author: Khurshida Meem
  * Date: 12-11-2024
  *
  */
-import { Col, Divider, Form, Row } from "antd";
+import { Col, Divider, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
-  Flex,
   PButton,
   PCard,
   PCardHeader,
@@ -112,9 +112,15 @@ const QuestionCreationAddEdit = () => {
       destination.index === source.index
     )
       return;
-    const temp = values.questions;
-    const draged = temp.splice(source.index, 1);
-    temp.splice(destination.index, 0, draged[0]);
+    // const temp = values.questions;
+    // const draged = temp.splice(source.index, 1);
+    // temp.splice(destination.index, 0, draged[0]);
+    const reorderedQuestions = Array.from(values.questions);
+    const [removed] = reorderedQuestions.splice(source.index, 1); // Remove the dragged question
+    reorderedQuestions.splice(destination.index, 0, removed); // Add it to the new position
+
+    // Update Formik values with the new reordered questions
+    setFieldValue("questions", reorderedQuestions);
   };
 
   const formData: any = useFormik({
@@ -266,7 +272,6 @@ const QuestionCreationAddEdit = () => {
                       spacing={2}
                       style={{ marginBottom: "20px" }}
                     >
-                      {/* @ts-ignore */}
                       <Droppable droppableId="AllQuestion">
                         {(queDropProvided) => (
                           <Stack
@@ -277,9 +282,11 @@ const QuestionCreationAddEdit = () => {
                           >
                             {form.values.questions.map(
                               (question: any, index: number) => {
-                                const newQuestion = `questions[${index}].questionTitle`;
-                                const newQuestionType = `questions[${index}].questionType`;
-                                const newRequired = `questions[${index}].isRequired`;
+                                const questionType = `questions[${index}].questionType`;
+                                const questionTitle = `questions[${index}].questionTitle`;
+                                const ansType = `questions[${index}].ansType`;
+                                const isRequired = `questions[${index}].isRequired`;
+                                const isDraft = `questions[${index}].isDraft`;
 
                                 return (
                                   <Draggable
@@ -311,9 +318,12 @@ const QuestionCreationAddEdit = () => {
                                             queProvided={queProvided}
                                             question={question}
                                             handleBlur={handleBlur}
-                                            newQuestion={newQuestion}
-                                            newQuestionType={newQuestionType}
-                                            newRequired={newRequired}
+                                            questionType={questionType}
+                                            questionTitle={questionTitle}
+                                            isRequired={isRequired}
+                                            isDraft={isDraft}
+                                            ansType={ansType}
+                                            questionSet={`questions[${index}]`}
                                             ansDragEnd={ansDragEnd}
                                             handleQuestionDelete={remove}
                                             values={form.values}
@@ -344,6 +354,9 @@ const QuestionCreationAddEdit = () => {
                               id: uuid(),
                               questionTitle: "",
                               questionType: "",
+                              ansType: "",
+                              isRequired: false,
+                              isDraft: false,
                             });
                           }}
                         />

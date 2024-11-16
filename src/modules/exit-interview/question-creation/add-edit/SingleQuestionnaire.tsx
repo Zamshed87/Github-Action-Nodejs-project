@@ -11,15 +11,18 @@ const SingleQuestionnaire = ({
   queProvided,
   question,
   handleBlur,
-  newQuestion,
-  newQuestionType,
-  newRequired,
+  questionType,
+  questionTitle,
+  isRequired,
+  isDraft,
+  ansType,
   ansDragEnd,
   handleQuestionDelete,
   values,
   setFieldValue,
   touched,
   setValues,
+  questionSet,
 }: any) => {
   return (
     <Stack direction="column" spacing={2}>
@@ -63,7 +66,7 @@ const SingleQuestionnaire = ({
               <DeleteOutlined />
             </IconButton>
 
-            <div className="mr-4">
+            <div className="mr-3">
               <div style={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
                 <hr />
               </div>
@@ -73,55 +76,83 @@ const SingleQuestionnaire = ({
               <Switch
                 size="small"
                 checked={question?.isRequired}
-                onChange={(value: any) =>
-                  setFieldValue(`${newRequired}`, value)
-                }
+                onChange={(value: any) => setFieldValue(`${isRequired}`, value)}
               />
-              <p>Required</p>
+              <p className="ml-2">Required</p>
             </Flex>
+
+            <div className="mx-3">
+              <div style={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+                <hr />
+              </div>
+            </div>
+            <PInput
+              checked={question?.isDraft}
+              label="Save as draft?"
+              type="checkbox"
+              name={question?.isDraft}
+              layout="horizontal"
+              onChange={(e) => {
+                setFieldValue(`${isDraft}`, e.target.checked);
+              }}
+            />
           </div>
         </Stack>
-        <Divider />
+        <Divider style={{ margin: 0 }} />
       </div>
 
       <div className="row">
-        <div className="col-12 col-sm-12 col-md-8 py-0 my-0 pl-0">
+        <div className="col-12 col-md-4 py-0 my-0 pl-0">
+          <PSelect
+            placeholder="Question Type"
+            name={`questions[${index}].questionType`}
+            label="Question type"
+            value={question.questionType}
+            options={[
+              { value: "exit", label: "Exit Interview" },
+              { value: "training", label: "Training Assessment" },
+            ]}
+            onChange={(value: any) => {
+              setFieldValue(`questions[${index}].questionType`, value);
+            }}
+          />
+        </div>
+        <div className="col-12 col-md-4 py-0 my-0 pl-0">
           <PInput
             type="text"
             value={question?.questionTitle}
-            name={newQuestion}
-            placeholder="Write your question"
-            label="Write your question"
-            onChange={(value: any) => setFieldValue(`${newQuestion}`, value)}
+            name={question?.questionTitle}
+            placeholder="Question Title"
+            label="Question Title"
+            onChange={(value: any) => setFieldValue(`${questionTitle}`, value)}
             rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
 
-        <div className="col-12 col-sm-12 col-md-4 py-0 my-0 pl-0 md-pr-0">
+        <div className="col-12 col-md-4 py-0 my-0 pl-0 md-pr-0">
           <PSelect
-            placeholder="Survay Type"
-            name={newQuestionType}
-            label="Question type"
-            value={question.questionType}
+            placeholder="Answer Type"
+            name={question.ansType}
+            label="Answer type"
+            value={question.ansType}
             options={[
-              { value: "select", label: "Dropdown" },
-              { value: "text", label: "Text" },
+              { value: "select", label: "Dropdown List" },
+              { value: "text", label: "Text Box" },
               { value: "radio", label: "Radio Button" },
               { value: "checkbox", label: "Checkbox" },
-              { value: "file", label: "File" },
             ]}
             onChange={(value: any) => {
-              setFieldValue(`${newQuestionType}`, value);
+              setFieldValue(`${question.ansType}`, value);
             }}
             rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
       </div>
 
-      {question.questionType &&
-        (question.questionType === "checkbox" ||
-          question.questionType === "radio" ||
-          question.questionType === "select") && (
+      {question.ansType &&
+        (question.ansType === "checkbox" ||
+          question.ansType === "radio" ||
+          question.ansType === "select") && (
           <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
             <SingleAnswer
               question={question}

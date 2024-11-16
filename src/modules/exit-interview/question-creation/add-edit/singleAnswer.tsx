@@ -1,7 +1,8 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { InputAdornment, Stack, TextField } from "@mui/material";
-import { PButton } from "Components";
+import { Col, Row } from "antd";
+import { PButton, PInput } from "Components";
 import { ErrorMessage, Field, FieldArray } from "formik";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import uuid from "utility/uuid";
@@ -38,6 +39,34 @@ const SingleAnswer = ({ question, handleBlur, touched }: any) => {
                               {...dragProvided.draggableProps}
                               {...dragProvided.dragHandleProps}
                             >
+                              {/* <Row>
+                                <Col>
+                                  <DragIndicatorIcon
+                                    style={{
+                                      cursor: "move",
+                                    }}
+                                    fontSize="small"
+                                  />
+                                </Col>
+                                <Col>
+                                  <PInput
+                                    type="text"
+                                    name={newAnswer}
+                                    value={answer.answerDescription}
+                                    onBlur={handleBlur}
+                                    placeholder={`Option ${index + 1}`}
+                                    // onChange={(value: any) =>
+                                    //   setFieldValue(`${newQuestion}`, value)
+                                    // }
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Required Field",
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                              </Row> */}
                               <Field
                                 as={TextField}
                                 id="standard-basic"
