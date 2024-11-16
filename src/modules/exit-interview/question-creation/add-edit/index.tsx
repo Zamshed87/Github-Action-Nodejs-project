@@ -13,22 +13,7 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getWorkplaceDDL, getWorkplaceGroupDDL } from "common/api/commonApi";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { useApiRequest } from "Hooks";
-import { SortableList } from "../components";
 
 const QuestionCreationAddEdit = () => {
   // Router state
@@ -197,18 +182,7 @@ const QuestionCreationAddEdit = () => {
             />
           </Col>
         </Row>
-        <div>
-          <SortableList
-            items={items}
-            onChange={setItems}
-            renderItem={(item: any) => (
-              <SortableList.Item id={item.id}>
-                hi
-                <SortableList.DragHandle />
-              </SortableList.Item>
-            )}
-          />
-        </div>
+        <div></div>
       </PCard>
     </PForm>
   ) : (
