@@ -162,7 +162,8 @@ const RewardPunishmentLetterGenAddEdit = () => {
                         setLoading,
                         letterData,
                         attachmentList,
-                        false
+                        false,
+                        () => history.push("/profile/rewardAndPunishment")
                       );
                     }
                   })
@@ -202,7 +203,8 @@ const RewardPunishmentLetterGenAddEdit = () => {
                         setLoading,
                         letterData,
                         attachmentList,
-                        true
+                        true,
+                        () => history.push("/profile/rewardAndPunishment")
                       );
                     }
                   })

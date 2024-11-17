@@ -170,16 +170,22 @@ const RewardPunishmentLanding = () => {
       title: "Issued Date",
       dataIndex: "createdAt",
       render: (data: any) => dateFormatter(data),
+      width: "40px",
     },
 
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId: number, rec: any) => (
-        <Flex justify="center">
+        <Flex justify="flex-start" gap="4">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                marginRight: "7px",
+              }}
               onClick={() => {
                 ViewRewardPunishmentRecord(
                   rec?.recordId,
@@ -194,7 +200,7 @@ const RewardPunishmentLanding = () => {
             <EditFilled
               style={{
                 color: "green",
-                marginRight: "5px",
+                marginRight: "7px",
                 fontSize: "14px",
                 cursor: "pointer",
               }}
@@ -205,7 +211,7 @@ const RewardPunishmentLanding = () => {
                   setSingleData,
                   (data: any) => {
                     history.push({
-                      pathname: `//profile/rewardAndPunishment/letterGenerate`,
+                      pathname: `/profile/rewardAndPunishment/letterGenerate`,
                       state: { recordData: data, edited: true },
                     });
                   }
@@ -221,7 +227,7 @@ const RewardPunishmentLanding = () => {
                 color: "green",
                 fontSize: "14px",
                 cursor: "pointer",
-                marginRight: "5px",
+                marginRight: "7px",
               }}
               onClick={() => {
                 const payload = {
@@ -245,7 +251,7 @@ const RewardPunishmentLanding = () => {
                 color: "green",
                 fontSize: "14px",
                 cursor: "pointer",
-                marginRight: "5px",
+                marginRight: "7px",
               }}
               onClick={() => {
                 ViewRewardPunishmentRecord(
@@ -324,6 +330,7 @@ const RewardPunishmentLanding = () => {
         </Flex>
       ),
       align: "center",
+      width: "80px",
     },
   ];
   return letterGenPermission?.isView ? (
