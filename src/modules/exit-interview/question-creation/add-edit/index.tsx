@@ -139,14 +139,8 @@ const QuestionCreationAddEdit = () => {
       // });
     },
   });
-  const {
-    values,
-    setFieldValue,
-    handleSubmit,
-    handleBlur,
-    resetForm,
-    setValues,
-  } = formData;
+  const { values, setFieldValue, handleSubmit, handleBlur, resetForm } =
+    formData;
 
   console.log(values);
 
