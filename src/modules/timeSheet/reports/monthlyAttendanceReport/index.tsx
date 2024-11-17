@@ -254,6 +254,7 @@ const MonthlyAttendanceReport = () => {
   };
   const searchFunc = debounce((value) => {
     landingApiCall({
+      pagination: { current: 1, pageSize: paginationSize },
       searchText: value,
     });
   }, 500);
@@ -272,7 +273,9 @@ const MonthlyAttendanceReport = () => {
           toDate: moment(monthLastDate()),
         }}
         onFinish={() => {
+          const values = form.getFieldsValue(true);
           landingApiCall({
+            searchText: values?.search,
             pagination: {
               current: pages?.current,
               pageSize: landingApi?.data[0]?.totalCount,
@@ -483,6 +486,7 @@ const MonthlyAttendanceReport = () => {
               });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}
