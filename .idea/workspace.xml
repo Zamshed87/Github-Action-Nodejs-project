@@ -4,16 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="458ecb14-cd56-45c4-8c0f-c8368121609a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/LetterGenerate/letterGenAddEdit/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/letterConfiguration/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/employeeProfile/reportBuilder/letterConfiguration/utils.ts" afterDir="false" />
-    </list>
+    <list default="true" id="458ecb14-cd56-45c4-8c0f-c8368121609a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myAllFileTypesSelected" value="true" />
+    <option name="mySelectedFileTypes">
+      <set />
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -25,6 +26,9 @@
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="2oNS5XoCngA65l5ei0mv6nKbqK6" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -32,13 +36,13 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "spelling",
+    "git-widget-placeholder": "PEOP-4815",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "preferences.sourceCode.JavaScript",
     "ts.external.directory.path": "C:\\Users\\meemr\\iBos\\aaaa\\peopledesk-v2-front\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -128,7 +132,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
