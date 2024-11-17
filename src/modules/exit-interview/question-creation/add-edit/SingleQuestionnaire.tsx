@@ -1,6 +1,6 @@
 import { DeleteOutlined, DragIndicator } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
-import { Divider, Switch } from "antd";
+import { Col, Divider, Row, Switch } from "antd";
 import { Flex, PInput, PSelect } from "Components";
 import React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -15,6 +15,7 @@ const SingleQuestionnaire = ({
   questionTitle,
   isRequired,
   isDraft,
+  ansTextLength,
   ansType,
   ansDragEnd,
   handleQuestionDelete,
@@ -22,7 +23,6 @@ const SingleQuestionnaire = ({
   setFieldValue,
   touched,
   setValues,
-  questionSet,
 }: any) => {
   return (
     <Stack direction="column" spacing={2}>
@@ -43,10 +43,16 @@ const SingleQuestionnaire = ({
               />
             </span>
 
-            <div className="circle_title">
-              <IconButton className="circle_title_icon">
-                <p className="para_sm">{index + 1}</p>
-              </IconButton>
+            <div>
+              <p
+                style={{
+                  border: "1px solid black",
+                  borderRadius: "50px",
+                  padding: "4px 8px",
+                }}
+              >
+                {index + 1}
+              </p>
             </div>
           </Stack>
           <div className="d-flex justify-content-center align-items-center ">
@@ -90,7 +96,6 @@ const SingleQuestionnaire = ({
               checked={question?.isDraft}
               label="Save as draft?"
               type="checkbox"
-              name={question?.isDraft}
               layout="horizontal"
               onChange={(e) => {
                 setFieldValue(`${isDraft}`, e.target.checked);
@@ -105,15 +110,14 @@ const SingleQuestionnaire = ({
         <div className="col-12 col-md-4 py-0 my-0 pl-0">
           <PSelect
             placeholder="Question Type"
-            name={`questions[${index}].questionType`}
             label="Question type"
-            value={question.questionType}
+            value={question?.questionType}
             options={[
               { value: "exit", label: "Exit Interview" },
               { value: "training", label: "Training Assessment" },
             ]}
             onChange={(value: any) => {
-              setFieldValue(`questions[${index}].questionType`, value);
+              setFieldValue(`${questionType}`, value);
             }}
           />
         </div>
@@ -121,18 +125,17 @@ const SingleQuestionnaire = ({
           <PInput
             type="text"
             value={question?.questionTitle}
-            name={question?.questionTitle}
             placeholder="Question Title"
             label="Question Title"
-            onChange={(value: any) => setFieldValue(`${questionTitle}`, value)}
-            rules={[{ required: true, message: "Required Field" }]}
+            onChange={(value: any) =>
+              setFieldValue(`${questionTitle}`, value.target.value)
+            }
           />
         </div>
 
         <div className="col-12 col-md-4 py-0 my-0 pl-0 md-pr-0">
           <PSelect
             placeholder="Answer Type"
-            name={question.ansType}
             label="Answer type"
             value={question.ansType}
             options={[
@@ -142,7 +145,7 @@ const SingleQuestionnaire = ({
               { value: "checkbox", label: "Checkbox" },
             ]}
             onChange={(value: any) => {
-              setFieldValue(`${question.ansType}`, value);
+              setFieldValue(`${ansType}`, value);
             }}
             rules={[{ required: true, message: "Required Field" }]}
           />
@@ -150,17 +153,31 @@ const SingleQuestionnaire = ({
       </div>
 
       {question.ansType &&
-        (question.ansType === "checkbox" ||
-          question.ansType === "radio" ||
-          question.ansType === "select") && (
-          <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
-            <SingleAnswer
-              question={question}
-              handleBlur={handleBlur}
-              touched={touched}
+      (question.ansType === "checkbox" ||
+        question.ansType === "radio" ||
+        question.ansType === "select") ? (
+        <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
+          <SingleAnswer
+            question={question}
+            handleBlur={handleBlur}
+            touched={touched}
+          />
+        </DragDropContext>
+      ) : (
+        <Row>
+          <Col md={8}>
+            <PInput
+              type="number"
+              value={question?.ansTextLength}
+              placeholder="Max length"
+              label="Maximum length of answer"
+              onChange={(value: any) =>
+                setFieldValue(`${ansTextLength}`, value)
+              }
             />
-          </DragDropContext>
-        )}
+          </Col>
+        </Row>
+      )}
     </Stack>
   );
 };

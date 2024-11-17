@@ -32,6 +32,7 @@ import { Stack } from "@mui/material";
 import * as yup from "yup";
 import SingleQuestionnaire from "./SingleQuestionnaire";
 import uuid from "utility/uuid";
+import { PlusOutlined } from "@ant-design/icons";
 
 const validationSchema = yup.object({
   questions: yup.array().of(
@@ -260,7 +261,7 @@ const QuestionCreationAddEdit = () => {
               />
             </Col>
           </Row>
-          <div>
+          <div style={{ marginTop: "16px" }}>
             <FormikProvider value={formData}>
               <FieldArray name="questions">
                 {({ push, remove, form }) => (
@@ -287,6 +288,7 @@ const QuestionCreationAddEdit = () => {
                                 const ansType = `questions[${index}].ansType`;
                                 const isRequired = `questions[${index}].isRequired`;
                                 const isDraft = `questions[${index}].isDraft`;
+                                const ansTextLength = `questions[${index}].ansTextLength`;
 
                                 return (
                                   <Draggable
@@ -299,14 +301,12 @@ const QuestionCreationAddEdit = () => {
                                         key={question.id}
                                         ref={queProvided.innerRef}
                                         {...queProvided.draggableProps}
-                                        // {...queProvided.dragHandleProps}
                                       >
                                         <div
                                           style={{
                                             backgroundColor: "white",
                                             padding: "15px",
-                                            margin: "8px 8px 8px 0",
-                                            width: "80%",
+                                            width: "75%",
                                             border: `1px solid rgba(0, 0, 0, 0.12)`,
                                             boxShadow:
                                               "0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12)",
@@ -322,8 +322,8 @@ const QuestionCreationAddEdit = () => {
                                             questionTitle={questionTitle}
                                             isRequired={isRequired}
                                             isDraft={isDraft}
+                                            ansTextLength={ansTextLength}
                                             ansType={ansType}
-                                            questionSet={`questions[${index}]`}
                                             ansDragEnd={ansDragEnd}
                                             handleQuestionDelete={remove}
                                             values={form.values}
@@ -353,12 +353,14 @@ const QuestionCreationAddEdit = () => {
                             push({
                               id: uuid(),
                               questionTitle: "",
-                              questionType: "",
-                              ansType: "",
+                              questionType: null,
+                              ansType: null,
                               isRequired: false,
                               isDraft: false,
+                              ansTextLength: "",
                             });
                           }}
+                          icon={<PlusOutlined />}
                         />
                       </div>
                     </Stack>
