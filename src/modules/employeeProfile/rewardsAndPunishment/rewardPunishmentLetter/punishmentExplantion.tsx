@@ -61,7 +61,7 @@ const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
   // menu permission
   let letterGenPermission: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30441) {
+    if (item?.menuReferenceId === 30448) {
       letterGenPermission = item;
     }
   });

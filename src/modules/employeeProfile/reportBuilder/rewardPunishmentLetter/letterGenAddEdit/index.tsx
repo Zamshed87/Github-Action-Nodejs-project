@@ -64,7 +64,7 @@ const RewardPunishmentLetterGenAddEdit = () => {
   // menu permission
   let letterGenPermission: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30441) {
+    if (item?.menuReferenceId === 30448) {
       letterGenPermission = item;
     }
   });
@@ -151,9 +151,7 @@ const RewardPunishmentLetterGenAddEdit = () => {
                         recordData,
                         attachmentList,
                         (data: any) => {
-                          history.push(
-                            "/profile/customReportsBuilder/rewardPunishment"
-                          );
+                          history.push("/profile/rewardAndPunishment");
                         },
                         false
                       );
@@ -194,9 +192,7 @@ const RewardPunishmentLetterGenAddEdit = () => {
                         recordData,
                         attachmentList,
                         (data: any) => {
-                          history.push(
-                            "/profile/customReportsBuilder/rewardPunishment"
-                          );
+                          history.push("/profile/rewardAndPunishment");
                         }
                       );
                     } else {
@@ -355,7 +351,7 @@ const RewardPunishmentLetterGenAddEdit = () => {
                 //   setLoading,
                 //   letterData,
                 //   () =>
-                //     history.push("/profile/customReportsBuilder/rewardPunishment")
+                //     history.push("/profile/rewardAndPunishment")
                 // );
               }}
               disabled={form.getFieldValue("letterId") ? false : true}

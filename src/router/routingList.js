@@ -3159,11 +3159,11 @@ export const routingList = [
     component: LetterGenAddEdit,
   },
   {
-    path: "/profile/customReportsBuilder/rewardPunishment",
+    path: "/profile/rewardAndPunishment",
     component: RewardPunishmentLanding,
   },
   {
-    path: "/profile/customReportsBuilder/rewardPunishment/letterGenerate",
+    path: "/profile/rewardAndPunishment/letterGenerate",
     component: RewardPunishmentLetterGenAddEdit,
   },
   {
