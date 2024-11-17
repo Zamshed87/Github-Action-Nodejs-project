@@ -36,8 +36,6 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
     const { orgId, buId, wgId, wId } = profileData;
     const { letterType, letterName, employee } = form.getFieldsValue(true);
 
-    console.log(form.getFieldsValue(true));
-
     const res = await axios.get(
       `/LetterBuilder/GetGeneratedLetterPreview?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&letterTypeId=${
         letterType?.value
@@ -65,9 +63,7 @@ export const CreateRewardPunishmentRecord = async (
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
     const values = form.getFieldsValue(true);
-    console.log(values, "values");
-    console.log(profileData, "profileData");
-    console.log(letterData, "letterData");
+
     const payload = {
       // recordId: 0, // default value as per structure
       accountId: orgId,
@@ -130,9 +126,7 @@ export const editRewardPunishmentRecord = async (
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
     const values = form.getFieldsValue(true);
-    console.log(values, "values");
-    console.log(profileData, "profileData");
-    console.log(recordData, "letterData");
+
     const payload = {
       recordId: recordData?.recordId, // default value as per structure
       accountId: orgId,

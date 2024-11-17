@@ -37,7 +37,6 @@ const PunishmentAction = () => {
   const { recordData, letterData }: any = location?.state;
   const params = useParams<{ recordId: string }>();
 
-  console.log(letterData, "letterData");
   // state
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
@@ -55,7 +54,7 @@ const PunishmentAction = () => {
   // menu permission
   let letterGenPermission: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30441) {
+    if (item?.menuReferenceId === 30448) {
       letterGenPermission = item;
     }
   });

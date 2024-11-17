@@ -59,7 +59,7 @@ const RewardPunishmentLanding = () => {
   // menu permission
   let letterGenPermission: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30441) {
+    if (item?.menuReferenceId === 30448) {
       letterGenPermission = item;
     }
   });
@@ -108,7 +108,7 @@ const RewardPunishmentLanding = () => {
         pageSize: pagination?.pageSize,
       },
       onSuccess: (res) => {
-        console.log(res);
+        // console.log(res);
       },
     });
   };
@@ -205,7 +205,7 @@ const RewardPunishmentLanding = () => {
                   setSingleData,
                   (data: any) => {
                     history.push({
-                      pathname: `/profile/customReportsBuilder/rewardPunishment/letterGenerate`,
+                      pathname: `//profile/rewardAndPunishment/letterGenerate`,
                       state: { recordData: data, edited: true },
                     });
                   }
@@ -260,9 +260,7 @@ const RewardPunishmentLanding = () => {
                       data,
                       data?.issueAttachment,
                       (data: any) => {
-                        history.push(
-                          "/profile/customReportsBuilder/rewardPunishment"
-                        );
+                        history.push("/profile/rewardAndPunishment");
                       },
                       true
                     );
@@ -344,9 +342,7 @@ const RewardPunishmentLanding = () => {
                 icon: "plus",
                 onClick: () => {
                   if (letterGenPermission?.isCreate) {
-                    history.push(
-                      "/profile/customReportsBuilder/rewardPunishment/letterGenerate"
-                    );
+                    history.push("/profile/rewardAndPunishment/letterGenerate");
                   } else {
                     toast.warn("You don't have permission");
                   }
