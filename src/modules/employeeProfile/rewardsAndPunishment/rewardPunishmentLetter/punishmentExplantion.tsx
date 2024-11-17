@@ -5,7 +5,7 @@
  *
  */
 
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -36,6 +36,8 @@ import {
   SaveRewardPunishmentExplanation,
 } from "./letterGenAddEdit/helper";
 import FormikTextArea from "common/FormikTextArea";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { VisibilityOutlined } from "@mui/icons-material";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
   // Router state
@@ -174,6 +176,22 @@ const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
         </PCardBody>
 
         <Row gutter={[10, 2]}>
+          <div className="d-flex justify-content-center">
+            <Tooltip title="Attachment View">
+              <button type="button" className="iconButton">
+                <VisibilityOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(
+                      getDownlloadFileView_Action(
+                        punishmentData?.issueAttachment
+                      )
+                    );
+                  }}
+                />
+              </button>
+            </Tooltip>
+          </div>
           {/* <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);
