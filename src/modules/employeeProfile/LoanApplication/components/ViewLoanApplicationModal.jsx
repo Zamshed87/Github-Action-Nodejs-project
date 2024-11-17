@@ -159,6 +159,7 @@ const ViewLoanApplicationModal = ({ setView, singleData, setShow, intProfileImag
                   <AttachFile sx={{ color: "rgba(0, 0, 0, 0.6)" }} />
                 </Avatar>
               </div>
+              
               <div
                 className="pointer"
                 onClick={(e) => {
