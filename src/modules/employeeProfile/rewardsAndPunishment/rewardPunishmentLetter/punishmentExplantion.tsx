@@ -86,42 +86,42 @@ const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
     >
       <PCard>
         <PCardHeader
-          buttonList={[
-            {
-              type: "primary",
-              content: "Save",
-              disabled: loading,
-              onClick: () => {
-                const values = form.getFieldsValue(true);
+          // buttonList={[
+          //   {
+          //     type: "primary",
+          //     content: "Save",
+          //     disabled: loading,
+          //     onClick: () => {
+          //       const values = form.getFieldsValue(true);
 
-                form
-                  .validateFields()
-                  .then(() => {
-                    if (!values?.explanation) {
-                      return toast.warning("Please add explanation");
-                    }
-                    SaveRewardPunishmentExplanation(
-                      form,
-                      profileData,
-                      setLoading,
-                      punishmentData,
-                      attachmentList,
-                      (data: any) => {
-                        setExplanationOpen(false);
-                      }
-                    );
-                  })
-                  .catch(() => {
-                    console.log();
-                  });
-              },
-            },
-          ]}
+          //       form
+          //         .validateFields()
+          //         .then(() => {
+          //           if (!values?.explanation) {
+          //             return toast.warning("Please add explanation");
+          //           }
+          //           SaveRewardPunishmentExplanation(
+          //             form,
+          //             profileData,
+          //             setLoading,
+          //             punishmentData,
+          //             attachmentList,
+          //             (data: any) => {
+          //               setExplanationOpen(false);
+          //             }
+          //           );
+          //         })
+          //         .catch(() => {
+          //           console.log();
+          //         });
+          //     },
+          //   },
+          // ]}
           title={""}
           backButton={false}
         />
         <PCardBody>
-          <Row gutter={[10, 2]}>
+          <Row gutter={[10, 3]}>
             <Col md={24} sm={24}>
               <PInput
                 type="textarea"
@@ -148,73 +148,89 @@ const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
               />
             </Col> */}
             <Col md={24} style={{ marginTop: "1.4rem" }}>
-              <div>
-                <>
-                  <FileUploadComponents
-                    propsObj={{
-                      isOpen,
-                      setIsOpen,
-                      destroyOnClose: false,
-                      attachmentList,
-                      setAttachmentList,
-                      accountId: profileData?.orgId,
-                      tableReferrence: "REWARD_PUNISHMENT_EXPLANATION",
-                      documentTypeId: 24,
-                      userId: profileData?.employeeId,
-                      buId: profileData?.buId,
-                      maxCount: 20,
-                      isIcon: true,
-                      isErrorInfo: true,
-                      subText:
-                        "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
-                    }}
-                  />
-                </>
-              </div>
+              <Flex
+                justify="space-between"
+                justify-content="space-between"
+                gap="4"
+              >
+                <div>
+                  <>
+                    <FileUploadComponents
+                      propsObj={{
+                        isOpen,
+                        setIsOpen,
+                        destroyOnClose: false,
+                        attachmentList,
+                        setAttachmentList,
+                        accountId: profileData?.orgId,
+                        tableReferrence: "REWARD_PUNISHMENT_EXPLANATION",
+                        documentTypeId: 24,
+                        userId: profileData?.employeeId,
+                        buId: profileData?.buId,
+                        maxCount: 20,
+                        isIcon: true,
+                        isErrorInfo: true,
+                        subText:
+                          "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
+                      }}
+                    />
+                  </>
+                </div>
+                <div style={{ marginLeft: "50px", display: "flex" }}>
+                  <p>Issue Attachment</p>
+                  {punishmentData?.issueAttachment && (
+                    <Tooltip title="Attachment View">
+                      {/* <button type="button" className="iconButton"> */}
+                      <VisibilityOutlined
+                        style={{ cursor: "pointer", marginLeft: "10px" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch(
+                            getDownlloadFileView_Action(
+                              punishmentData?.issueAttachment
+                            )
+                          );
+                        }}
+                      />
+                      {/* </button> */}
+                    </Tooltip>
+                  )}
+                </div>
+              </Flex>
             </Col>
           </Row>
+          <Col
+            style={{
+              marginTop: "23px",
+            }}
+          >
+            <PButton
+              type="primary"
+              action="submit"
+              content="Save"
+              onClick={() => {
+                const values = form.getFieldsValue(true);
+                if (!values?.explanation) {
+                  return toast.warning("Please add explanation");
+                }
+                SaveRewardPunishmentExplanation(
+                  form,
+                  profileData,
+                  setLoading,
+                  punishmentData,
+                  attachmentList,
+                  (data: any) => {
+                    setExplanationOpen(false);
+                  }
+                );
+              }}
+            />
+          </Col>
         </PCardBody>
 
         <Row gutter={[10, 2]}>
-          <div className="d-flex justify-content-center">
-            <Tooltip title="Attachment View">
-              <button type="button" className="iconButton">
-                <VisibilityOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dispatch(
-                      getDownlloadFileView_Action(
-                        punishmentData?.issueAttachment
-                      )
-                    );
-                  }}
-                />
-              </button>
-            </Tooltip>
-          </div>
-          {/* <Form.Item shouldUpdate noStyle>
-            {() => {
-              const { letter } = form.getFieldsValue(true);
+          <div className="d-flex justify-content-center"></div>
 
-              return (
-                <>
-                  <Col className="custom_quill quilJob" md={24} sm={24}>
-                    <ReactQuill
-                      preserveWhitespace={true}
-                      readOnly={true}
-                      placeholder="letter body..."
-                      value={letter}
-                      modules={{
-                        toolbar: modules.toolbar,
-                        clipboard: modules.clipboard,
-                      }}
-                      onChange={(value) => form.setFieldValue("letter", value)}
-                    />
-                  </Col>
-                </>
-              );
-            }}
-          </Form.Item> */}
           <div className="mt-2">
             <h2>Punishment Letter </h2>
             <div
