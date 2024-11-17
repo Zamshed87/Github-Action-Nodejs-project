@@ -58,7 +58,8 @@ export const CreateRewardPunishmentRecord = async (
   setLoading,
   letterData,
   attachmentList,
-  isSaveNsent
+  isSaveNsent,
+  cb
 ) => {
   try {
     const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -108,6 +109,7 @@ export const CreateRewardPunishmentRecord = async (
     setLoading(false);
     form.resetFields();
     toast.success(res?.data?.message, { toastId: 1 });
+    cb && cb();
   } catch (error) {
     setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
