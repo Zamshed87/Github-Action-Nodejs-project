@@ -164,19 +164,21 @@ const SingleQuestionnaire = ({
           />
         </DragDropContext>
       ) : (
-        <Row>
-          <Col md={8}>
-            <PInput
-              type="number"
-              value={question?.ansTextLength}
-              placeholder="Max length"
-              label="Maximum length of answer"
-              onChange={(value: any) =>
-                setFieldValue(`${ansTextLength}`, value)
-              }
-            />
-          </Col>
-        </Row>
+        question.ansType === "text" && (
+          <Row>
+            <Col md={8}>
+              <PInput
+                type="number"
+                value={question?.ansTextLength}
+                placeholder="Max length"
+                label="Maximum length of answer"
+                onChange={(value: any) =>
+                  setFieldValue(`${ansTextLength}`, value)
+                }
+              />
+            </Col>
+          </Row>
+        )
       )}
     </Stack>
   );
