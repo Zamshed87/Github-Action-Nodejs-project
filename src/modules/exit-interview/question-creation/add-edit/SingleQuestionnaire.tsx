@@ -112,10 +112,7 @@ const SingleQuestionnaire = ({
             placeholder="Question Type"
             label="Question type"
             value={question?.questionType}
-            options={[
-              { value: "exit", label: "Exit Interview" },
-              { value: "training", label: "Training Assessment" },
-            ]}
+            options={[]}
             onChange={(value: any) => {
               setFieldValue(`${questionType}`, value);
             }}

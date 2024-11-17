@@ -37,13 +37,37 @@ import { PlusOutlined } from "@ant-design/icons";
 const validationSchema = yup.object({
   questions: yup.array().of(
     yup.object().shape({
-      questionTitle: yup.string().required("Question is required!"),
-      questionType: yup.object().required("Question type is required"),
+      id: yup.string().required("Question ID is required"),
+      questionTitle: yup.string().required("Question title is required"),
+      questionType: yup.string().required("Question type is required"),
+      ansType: yup.string().required("Answer type is required"),
+      ansTextLength: yup
+        .string()
+        .nullable()
+        .when("ansType", {
+          is: "text",
+          then: yup.string().required("Answer text length is required"),
+          otherwise: yup.string().nullable(),
+        })
+        .when("ansType", {
+          is: "select",
+          then: yup.string().nullable(),
+          otherwise: yup.string().nullable(),
+        }),
     })
   ),
+
   answers: yup.array().of(
     yup.object().shape({
-      answerDescription: yup.string().required("Please write the option!"),
+      id: yup.string().required("Answer ID is required"),
+      queId: yup.string().required("Question ID for answer is required"),
+      answerDescription: yup.string().when("queId", {
+        is: (queId: string) => queId && queId.length > 0,
+        then: yup
+          .string()
+          .required("Answer description is required for this question"),
+        otherwise: yup.string().nullable(),
+      }),
     })
   ),
 });
@@ -132,7 +156,7 @@ const QuestionCreationAddEdit = () => {
       keyWordList: [],
     },
     // initialValues: initialData(),
-    // validationSchema,
+    validationSchema,
     onSubmit: () => {
       // saveHandler(values, () => {
       //   setIsDraft(false);
@@ -155,7 +179,6 @@ const QuestionCreationAddEdit = () => {
               {
                 type: "primary",
                 content: "Save",
-                icon: "plus",
                 disabled: loading,
                 onClick: () => {
                   // const values = form.getFieldsValue(true);
@@ -225,7 +248,10 @@ const QuestionCreationAddEdit = () => {
           <Row gutter={[10, 2]}>
             <Col md={6} sm={24}>
               <PSelect
-                options={[]}
+                options={[
+                  { value: "exit", label: "Exit Interview" },
+                  { value: "training", label: "Training Assessment" },
+                ]}
                 name="survayType"
                 label="Survay Type"
                 placeholder="Survay Type"
