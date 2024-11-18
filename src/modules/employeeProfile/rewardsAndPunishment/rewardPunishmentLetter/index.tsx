@@ -25,9 +25,11 @@ import { ViewRewardPunishmentRecord } from "./letterGenAddEdit/helper";
 import PunishmentExplantion from "./punishmentExplantion";
 
 const UserEndRewardPunishmentLanding = ({
+  empId,
   tabIndex,
   index,
 }: {
+  empId: number;
   tabIndex: number;
   index: number;
 }) => {
@@ -92,7 +94,7 @@ const UserEndRewardPunishmentLanding = ({
       method: "GET",
       params: {
         accountId: orgId,
-        userId: employeeId,
+        userId: empId,
         actionType: 1,
         // branchId: buId,
         // workplaceId: wId,
@@ -117,7 +119,7 @@ const UserEndRewardPunishmentLanding = ({
       method: "GET",
       params: {
         accountId: orgId,
-        userId: employeeId,
+        userId: empId,
         actionType: 2,
         pageNo: pagination?.current,
         pageSize: pagination?.pageSize,
@@ -296,7 +298,7 @@ const UserEndRewardPunishmentLanding = ({
               }}
             />
           </Tooltip>
-          {!rec?.isExplanation && (
+          {employeeId === empId && !rec?.isExplanation && (
             <button
               onClick={() => {
                 ViewRewardPunishmentRecord(
