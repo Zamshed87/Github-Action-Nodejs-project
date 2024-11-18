@@ -36,3 +36,16 @@ export const getWorkplaceDDL = ({ workplaceDDL, orgId, buId, wgId }: any) => {
     },
   });
 };
+
+export const getEnumData = ({ enumData, enumType }: any) => {
+  enumData?.action({
+    urlKey: "getCommonEnumData",
+    method: "GET",
+    params: {
+      types: enumType,
+    },
+    // onSuccess: (res: any) => {
+    //   return res?.data?.data;
+    // },
+  });
+};

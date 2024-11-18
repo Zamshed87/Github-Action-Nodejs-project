@@ -20,7 +20,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getWorkplaceDDL, getWorkplaceGroupDDL } from "common/api/commonApi";
+import {
+  getEnumData,
+  getWorkplaceDDL,
+  getWorkplaceGroupDDL,
+} from "common/api/commonApi";
 import { useApiRequest } from "Hooks";
 import { FieldArray, FormikProvider, useFormik } from "formik";
 import {
@@ -117,6 +121,8 @@ const QuestionCreationAddEdit = () => {
   // api states
   const workplaceGroupDDL: any = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
+  const survayTypeDDL = useApiRequest([]);
+  const questionTypeDDL = useApiRequest([]);
 
   const ansDragEnd = (result: DropResult, values: any) => {
     const { source, destination } = result;
@@ -159,6 +165,16 @@ const QuestionCreationAddEdit = () => {
   const { values, setFieldValue, handleBlur, resetForm } = formData;
 
   console.log(values);
+
+  useEffect(() => {
+    getEnumData({ enumData: survayTypeDDL, enumType: "QuestionnaireType" });
+    getEnumData({
+      enumData: questionTypeDDL,
+      enumType: "QuestionnaireQuestionType",
+    });
+  }, []);
+
+  console.log(survayTypeDDL, questionTypeDDL);
 
   return letterConfigPermission?.isCreate ? (
     <PForm>
