@@ -375,7 +375,7 @@ const UserEndRewardPunishmentLanding = ({
         </PForm>
 
         <PModal
-          title="View"
+          title=""
           open={open}
           onCancel={() => {
             setOpen(false);
@@ -385,7 +385,7 @@ const UserEndRewardPunishmentLanding = ({
           width={1000}
         />
         <PModal
-          title="Explanation"
+          title="Create Explanation"
           open={explanationOpen} // explanationOpen
           onCancel={() => {
             setExplanationOpen(false);

@@ -22,7 +22,7 @@ export const SaveRewardPunishmentAction = async (
       actionId: values?.action?.value || 0,
       actionName: values?.action?.label || "",
       recordId: recordId || 0,
-      actionRemarks: values?.explanation || "",
+      actionRemarks: values?.remarks || "",
       isActive: true,
       createdAt: todayDate(),
     };
