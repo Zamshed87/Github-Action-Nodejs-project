@@ -33,6 +33,7 @@ import * as yup from "yup";
 import SingleQuestionnaire from "./SingleQuestionnaire";
 import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
+import { saveQuestionnaire } from "./helper";
 
 const validationSchema = yup.object({
   questions: yup.array().of(
@@ -137,12 +138,10 @@ const QuestionCreationAddEdit = () => {
       destination.index === source.index
     )
       return;
-    // const temp = values.questions;
-    // const draged = temp.splice(source.index, 1);
-    // temp.splice(destination.index, 0, draged[0]);
+
     const reorderedQuestions = Array.from(values.questions);
-    const [removed] = reorderedQuestions.splice(source.index, 1); // Remove the dragged question
-    reorderedQuestions.splice(destination.index, 0, removed); // Add it to the new position
+    const [removed] = reorderedQuestions.splice(source.index, 1);
+    reorderedQuestions.splice(destination.index, 0, removed);
 
     // Update Formik values with the new reordered questions
     setFieldValue("questions", reorderedQuestions);
@@ -153,14 +152,13 @@ const QuestionCreationAddEdit = () => {
     initialValues: {
       questions: [],
       answers: [],
-      keyWordList: [],
     },
     // initialValues: initialData(),
     validationSchema,
     onSubmit: () => {
-      // saveHandler(values, () => {
-      //   setIsDraft(false);
-      // });
+      saveQuestionnaire(values, () => {
+        resetForm();
+      });
     },
   });
   const { values, setFieldValue, handleSubmit, handleBlur, resetForm } =
@@ -169,7 +167,7 @@ const QuestionCreationAddEdit = () => {
   console.log(values);
 
   return letterConfigPermission?.isCreate ? (
-    <form onSubmit={handleSubmit}>
+    <form>
       <PForm>
         <PCard>
           <PCardHeader
@@ -181,7 +179,9 @@ const QuestionCreationAddEdit = () => {
                 content: "Save",
                 disabled: loading,
                 onClick: () => {
-                  // const values = form.getFieldsValue(true);
+                  saveQuestionnaire(values, () => {
+                    resetForm();
+                  });
                 },
               },
             ]}
@@ -268,6 +268,9 @@ const QuestionCreationAddEdit = () => {
                 name="survayTitle"
                 placeholder="Survay Title"
                 label="Survay Title"
+                onChange={(e) => {
+                  setFieldValue("survayTitle", e.target.value);
+                }}
                 rules={[{ required: true, message: "Required Field" }]}
               />
             </Col>
@@ -277,6 +280,9 @@ const QuestionCreationAddEdit = () => {
                 name="survayDescription"
                 placeholder="Survay Description"
                 label="Survay Description"
+                onChange={(e) => {
+                  setFieldValue("survayDescription", e.target.value);
+                }}
                 rules={[{ required: true, message: "Required Field" }]}
               />
             </Col>
@@ -305,7 +311,7 @@ const QuestionCreationAddEdit = () => {
                               (question: any, index: number) => {
                                 const questionType = `questions[${index}].questionType`;
                                 const questionTitle = `questions[${index}].questionTitle`;
-                                const ansType = `questions[${index}].ansType`;
+                                const expectedAns = `questions[${index}].expectedAns`;
                                 const isRequired = `questions[${index}].isRequired`;
                                 const isDraft = `questions[${index}].isDraft`;
                                 const ansTextLength = `questions[${index}].ansTextLength`;
@@ -343,7 +349,7 @@ const QuestionCreationAddEdit = () => {
                                             isRequired={isRequired}
                                             isDraft={isDraft}
                                             ansTextLength={ansTextLength}
-                                            ansType={ansType}
+                                            expectedAns={expectedAns}
                                             ansDragEnd={ansDragEnd}
                                             handleQuestionDelete={remove}
                                             values={form.values}
