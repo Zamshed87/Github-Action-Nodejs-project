@@ -27,6 +27,7 @@ type PCardHeaderType = {
   submitType?: buttonType;
   submitIcon?: React.ReactNode;
   buttonList?: Array<{
+    action?: "button" | "reset" | "submit";
     content: string;
     className?: string;
     type: buttonType;
@@ -129,6 +130,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
                   onClick={button.onClick}
                   icon={button.icon === "plus" ? <PlusOutlined /> : button.icon}
                   disabled={button.disabled}
+                  action={button.action || "button"}
                 />
               </div>
             ))

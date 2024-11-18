@@ -51,7 +51,6 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
 
     form.setFieldValue("letter", res?.data?.generatedLetterBody);
     form.setFieldValue("letterId", res?.data?.templateId);
-
   } catch (error) {
     toast.error("Something went wrong");
   } finally {
@@ -65,6 +64,7 @@ export const createNEditLetterGenerate = async (
   setLoading,
   letterData
 ) => {
+  setLoading(true);
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
@@ -82,13 +82,12 @@ export const createNEditLetterGenerate = async (
       createdBy: letterData?.createdBy || employeeId,
       createdAt: todayDate(),
     };
-    setLoading(true);
     const res = await axios.post(`/LetterBuilder/LetterGenerate`, payload);
-    setLoading(false);
     form.resetFields();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
-    setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
+  } finally {
+    setLoading(false);
   }
 };
