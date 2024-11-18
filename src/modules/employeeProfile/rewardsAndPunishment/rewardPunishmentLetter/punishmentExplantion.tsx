@@ -39,7 +39,11 @@ import FormikTextArea from "common/FormikTextArea";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { VisibilityOutlined } from "@mui/icons-material";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
+const PunishmentExplantion = ({
+  punishmentData,
+  setExplanationOpen,
+  punishmentlandingApiCall,
+}: any) => {
   // Router state
   // const { letterId }: any = useParams();
   const location = useLocation();
@@ -84,56 +88,19 @@ const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
         letter: punishmentData?.letterBody || "",
       }}
     >
-      <PCard>
-        <PCardHeader
-          // buttonList={[
-          //   {
-          //     type: "primary",
-          //     content: "Save",
-          //     disabled: loading,
-          //     onClick: () => {
-          //       const values = form.getFieldsValue(true);
-
-          //       form
-          //         .validateFields()
-          //         .then(() => {
-          //           if (!values?.explanation) {
-          //             return toast.warning("Please add explanation");
-          //           }
-          //           SaveRewardPunishmentExplanation(
-          //             form,
-          //             profileData,
-          //             setLoading,
-          //             punishmentData,
-          //             attachmentList,
-          //             (data: any) => {
-          //               setExplanationOpen(false);
-          //             }
-          //           );
-          //         })
-          //         .catch(() => {
-          //           console.log();
-          //         });
-          //     },
-          //   },
-          // ]}
-          title={""}
-          backButton={false}
-        />
-        <PCardBody>
-          <Row gutter={[10, 3]}>
-            <Col md={24} sm={24}>
-              <PInput
-                type="textarea"
-                maxLength={250}
-                showCount={true}
-                name="explanation"
-                label="Explanation"
-                placeholder="...explanation"
-                rules={[{ required: true, message: "Explanation is required" }]}
-              />
-            </Col>
-            {/* <Col
+      <Row gutter={[10, 3]}>
+        <Col md={24} sm={24}>
+          <PInput
+            type="textarea"
+            maxLength={250}
+            showCount={true}
+            name="explanation"
+            label="Explanation"
+            placeholder="...explanation"
+            rules={[{ required: true, message: "Explanation is required" }]}
+          />
+        </Col>
+        {/* <Col
               style={{
                 marginTop: "23px",
               }}
@@ -147,100 +114,96 @@ const PunishmentExplantion = ({ punishmentData, setExplanationOpen }: any) => {
                 }}
               />
             </Col> */}
-            <Col md={24} style={{ marginTop: "1.4rem" }}>
-              <Flex
-                justify="space-between"
-                justify-content="space-between"
-                gap="4"
-              >
-                <div>
-                  <>
-                    <FileUploadComponents
-                      propsObj={{
-                        isOpen,
-                        setIsOpen,
-                        destroyOnClose: false,
-                        attachmentList,
-                        setAttachmentList,
-                        accountId: profileData?.orgId,
-                        tableReferrence: "REWARD_PUNISHMENT_EXPLANATION",
-                        documentTypeId: 24,
-                        userId: profileData?.employeeId,
-                        buId: profileData?.buId,
-                        maxCount: 20,
-                        isIcon: true,
-                        isErrorInfo: true,
-                        subText:
-                          "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
-                      }}
-                    />
-                  </>
-                </div>
-                <div style={{ marginLeft: "50px", display: "flex" }}>
-                  <p>Issue Attachment</p>
-                  {punishmentData?.issueAttachment && (
-                    <Tooltip title="Attachment View">
-                      {/* <button type="button" className="iconButton"> */}
-                      <VisibilityOutlined
-                        style={{ cursor: "pointer", marginLeft: "10px" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          dispatch(
-                            getDownlloadFileView_Action(
-                              punishmentData?.issueAttachment
-                            )
-                          );
-                        }}
-                      />
-                      {/* </button> */}
-                    </Tooltip>
-                  )}
-                </div>
-              </Flex>
-            </Col>
-          </Row>
-          <Col
-            style={{
-              marginTop: "23px",
+        <Col md={24} style={{ marginTop: "1.4rem" }}>
+          <Flex justify="space-between" justify-content="space-between" gap="4">
+            <div>
+              <>
+                <FileUploadComponents
+                  propsObj={{
+                    isOpen,
+                    setIsOpen,
+                    destroyOnClose: false,
+                    attachmentList,
+                    setAttachmentList,
+                    accountId: profileData?.orgId,
+                    tableReferrence: "REWARD_PUNISHMENT_EXPLANATION",
+                    documentTypeId: 24,
+                    userId: profileData?.employeeId,
+                    buId: profileData?.buId,
+                    maxCount: 20,
+                    isIcon: true,
+                    isErrorInfo: true,
+                    subText:
+                      "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
+                  }}
+                />
+              </>
+            </div>
+            {punishmentData?.issueAttachment && (
+              <div style={{ marginLeft: "50px", display: "flex" }}>
+                <p>Issue Attachment</p>
+
+                <Tooltip title="Attachment View">
+                  {/* <button type="button" className="iconButton"> */}
+                  <VisibilityOutlined
+                    style={{ cursor: "pointer", marginLeft: "10px" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dispatch(
+                        getDownlloadFileView_Action(
+                          punishmentData?.issueAttachment
+                        )
+                      );
+                    }}
+                  />
+                  {/* </button> */}
+                </Tooltip>
+              </div>
+            )}
+          </Flex>
+        </Col>
+      </Row>
+      <Col
+        style={{
+          marginTop: "23px",
+        }}
+      >
+        <PButton
+          type="primary"
+          action="submit"
+          content="Save"
+          onClick={() => {
+            const values = form.getFieldsValue(true);
+            if (!values?.explanation) {
+              return toast.warning("Please add explanation");
+            }
+            SaveRewardPunishmentExplanation(
+              form,
+              profileData,
+              setLoading,
+              punishmentData,
+              attachmentList,
+              (data: any) => {
+                punishmentlandingApiCall({});
+                setExplanationOpen(false);
+              }
+            );
+          }}
+        />
+      </Col>
+
+      <Row gutter={[10, 2]}>
+        <div className="d-flex justify-content-center"></div>
+
+        <div className="mt-2">
+          <h2>Punishment Letter </h2>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: punishmentData?.letterBody,
             }}
-          >
-            <PButton
-              type="primary"
-              action="submit"
-              content="Save"
-              onClick={() => {
-                const values = form.getFieldsValue(true);
-                if (!values?.explanation) {
-                  return toast.warning("Please add explanation");
-                }
-                SaveRewardPunishmentExplanation(
-                  form,
-                  profileData,
-                  setLoading,
-                  punishmentData,
-                  attachmentList,
-                  (data: any) => {
-                    setExplanationOpen(false);
-                  }
-                );
-              }}
-            />
-          </Col>
-        </PCardBody>
-
-        <Row gutter={[10, 2]}>
-          <div className="d-flex justify-content-center"></div>
-
-          <div className="mt-2">
-            <h2>Punishment Letter </h2>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: punishmentData?.letterBody,
-              }}
-            />
-          </div>
-        </Row>
-      </PCard>
+          />
+        </div>
+      </Row>
     </PForm>
   ) : (
     <NotPermittedPage />

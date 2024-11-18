@@ -12,7 +12,8 @@ import { todayDate } from "utility/todayDate";
 export const SaveRewardPunishmentAction = async (
   form,
   setLoading,
-  recordId
+  recordId,
+  cb
 ) => {
   try {
     // const { orgId, buId, wgId, wId, employeeId, userName } = profileData;
@@ -34,6 +35,7 @@ export const SaveRewardPunishmentAction = async (
     setLoading(false);
     form.resetFields();
     toast.success(res?.data?.message, { toastId: 1 });
+    cb && cb();
   } catch (error) {
     setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: 1 });

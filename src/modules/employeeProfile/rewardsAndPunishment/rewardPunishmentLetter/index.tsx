@@ -164,15 +164,16 @@ const UserEndRewardPunishmentLanding = ({
     },
     {
       title: "Issued Date",
-      dataIndex: "createdAt",
+      dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
+      width: "40px",
     },
 
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId: number, rec: any) => (
-        <Flex justify="center">
+        <Flex justify="flex-start" gap="4">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
@@ -235,6 +236,7 @@ const UserEndRewardPunishmentLanding = ({
       filter: true,
       filterKey: "letterNameList",
       filterSearch: true,
+      width: "40px",
     },
 
     {
@@ -243,18 +245,20 @@ const UserEndRewardPunishmentLanding = ({
       filter: true,
       filterKey: "createdByList",
       filterSearch: true,
+      width: "40px",
     },
     {
       title: "Issued Date",
-      dataIndex: "createdAt",
+      dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
+      width: "30px",
     },
 
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId: number, rec: any) => (
-        <Flex justify="center">
+        <Flex justify="flex-start" gap="4">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
@@ -301,7 +305,7 @@ const UserEndRewardPunishmentLanding = ({
                   setSingleData,
                   (data: any) => {
                     setPunishmentData(data);
-                    setExplanationOpen(true);
+                    setExplanationOpen(true); // need
                   }
                 );
               }}
@@ -392,6 +396,7 @@ const UserEndRewardPunishmentLanding = ({
             <PunishmentExplantion
               punishmentData={punishmentData}
               setExplanationOpen={setExplanationOpen}
+              punishmentlandingApiCall={punishmentlandingApiCall}
             />
           }
           width={1000}

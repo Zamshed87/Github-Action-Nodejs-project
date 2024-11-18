@@ -30,6 +30,7 @@ import { modules } from "../../letterConfiguration/utils";
 import { postPDFAction } from "utility/downloadFile";
 import { useHistory } from "react-router-dom";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import AttachmentShow from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter/attachmentShow";
 const PunishmentAction = () => {
   // Router state
   // const { letterId }: any = useParams();
@@ -126,13 +127,14 @@ const PunishmentAction = () => {
                 form
                   .validateFields()
                   .then(() => {
-                    if (!values?.explanation || !values?.action) {
-                      return toast.warning("Please add letter template");
+                    if (!values?.action) {
+                      return toast.warning("Please add action");
                     }
                     SaveRewardPunishmentAction(
                       form,
                       setLoading,
-                      params?.recordId
+                      params?.recordId,
+                      () => history.push("/profile/rewardAndPunishment")
                     );
                   })
                   .catch(() => {
@@ -144,11 +146,11 @@ const PunishmentAction = () => {
         />
         <PCardBody>
           <Row gutter={[10, 2]}>
-            <Col md={6} sm={24}>
+            <Col md={24} sm={24}>
               <PInput
                 type="textarea"
                 disabled={true}
-                maxLength={250}
+                // maxLength={150}
                 showCount={true}
                 name="explanation"
                 label="Explanation"
@@ -179,27 +181,29 @@ const PunishmentAction = () => {
                 }}
               />
             </Col>
-            <Col md={6} sm={24}>
+            <Col md={20} sm={24}>
               <PInput
-                type="textarea"
+                type="text"
                 name="remarks"
                 label="Remarks"
+                maxLength={80}
                 placeholder="Remarks"
                 rules={[{ required: true, message: "Remarks is required" }]}
               />
             </Col>
-            <div className="mt-2">
-              <h2>Punishment Letter </h2>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: recordData?.letterBody,
-                }}
-              />
-            </div>
+            <AttachmentShow recordData={recordData} />
           </Row>
         </PCardBody>
 
         <Row gutter={[10, 2]}>
+          <div className="mt-2 mx-4">
+            <h2>Punishment Letter </h2>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: recordData?.letterBody,
+              }}
+            />
+          </div>
           {/* <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);

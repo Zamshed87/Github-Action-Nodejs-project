@@ -168,7 +168,7 @@ const RewardPunishmentLanding = () => {
     },
     {
       title: "Issued Date",
-      dataIndex: "createdAt",
+      dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
       width: "40px",
     },

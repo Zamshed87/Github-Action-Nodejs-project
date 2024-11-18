@@ -5,7 +5,7 @@
  *
  */
 
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -34,6 +34,8 @@ import { modules } from "../../letterConfiguration/utils";
 import { postPDFAction } from "utility/downloadFile";
 import { useHistory } from "react-router-dom";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import { VisibilityOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 const RewardPunishmentLetterGenAddEdit = () => {
   // Router state
   // const { letterId }: any = useParams();
@@ -311,29 +313,77 @@ const RewardPunishmentLetterGenAddEdit = () => {
             )}
 
             <Col md={24} style={{ marginTop: "1.4rem" }}>
-              <div>
-                <>
-                  <FileUploadComponents
-                    propsObj={{
-                      isOpen,
-                      setIsOpen,
-                      destroyOnClose: false,
-                      attachmentList,
-                      setAttachmentList,
-                      accountId: profileData?.orgId,
-                      tableReferrence: "REWARD_PUNISHMENT_LETTER",
-                      documentTypeId: 24,
-                      userId: profileData?.employeeId,
-                      buId: profileData?.buId,
-                      maxCount: 20,
-                      isIcon: true,
-                      isErrorInfo: true,
-                      subText:
-                        "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
-                    }}
-                  />
-                </>
-              </div>
+              <Flex
+                justify="space-between"
+                justify-content="space-between"
+                gap="4"
+              >
+                <div>
+                  <>
+                    <FileUploadComponents
+                      propsObj={{
+                        isOpen,
+                        setIsOpen,
+                        destroyOnClose: false,
+                        attachmentList,
+                        setAttachmentList,
+                        accountId: profileData?.orgId,
+                        tableReferrence: "REWARD_PUNISHMENT_LETTER",
+                        documentTypeId: 24,
+                        userId: profileData?.employeeId,
+                        buId: profileData?.buId,
+                        maxCount: 20,
+                        isIcon: true,
+                        isErrorInfo: true,
+                        subText:
+                          "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
+                      }}
+                    />
+                  </>
+                </div>
+                {recordData?.issueAttachment && (
+                  <div style={{ marginLeft: "50px", display: "flex" }}>
+                    <p>Issue Attachment</p>
+
+                    <Tooltip title="Attachment View">
+                      {/* <button type="button" className="iconButton"> */}
+                      <VisibilityOutlined
+                        style={{ cursor: "pointer", marginLeft: "10px" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch(
+                            getDownlloadFileView_Action(
+                              recordData?.issueAttachment
+                            )
+                          );
+                        }}
+                      />
+                      {/* </button> */}
+                    </Tooltip>
+                  </div>
+                )}
+                {recordData?.explanationAttachment && (
+                  <div style={{ marginLeft: "50px", display: "flex" }}>
+                    <p>Explanation Attachment</p>
+
+                    <Tooltip title="Attachment View">
+                      {/* <button type="button" className="iconButton"> */}
+                      <VisibilityOutlined
+                        style={{ cursor: "pointer", marginLeft: "10px" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch(
+                            getDownlloadFileView_Action(
+                              recordData?.explanationAttachment
+                            )
+                          );
+                        }}
+                      />
+                      {/* </button> */}
+                    </Tooltip>
+                  </div>
+                )}
+              </Flex>
             </Col>
           </Row>
         </PCardBody>
