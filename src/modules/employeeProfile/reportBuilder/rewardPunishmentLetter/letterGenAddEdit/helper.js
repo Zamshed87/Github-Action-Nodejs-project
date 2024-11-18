@@ -164,8 +164,10 @@ export const editRewardPunishmentRecord = async (
       issueByEmployeeName: userName || "",
       issueDate: todayDate(),
       issueAttachment: isSaveNsent
-        ? attachmentList
-        : attachmentList[0]?.response[0]?.globalFileUrlId?.toString() || "",
+        ? recordData.issueAttachment
+        : attachmentList[0]?.response[0]?.globalFileUrlId?.toString()
+        ? attachmentList[0]?.response[0]?.globalFileUrlId?.toString()
+        : recordData.issueAttachment || "",
       isPrinted: recordData?.isPrinted || true,
       isMailSend: isSaveNsent || false,
       actionId: recordData?.actionId || 1, // need to check again

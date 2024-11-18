@@ -25,9 +25,11 @@ import { ViewRewardPunishmentRecord } from "./letterGenAddEdit/helper";
 import PunishmentExplantion from "./punishmentExplantion";
 
 const UserEndRewardPunishmentLanding = ({
+  empId,
   tabIndex,
   index,
 }: {
+  empId: number;
   tabIndex: number;
   index: number;
 }) => {
@@ -92,7 +94,7 @@ const UserEndRewardPunishmentLanding = ({
       method: "GET",
       params: {
         accountId: orgId,
-        userId: employeeId,
+        userId: empId,
         actionType: 1,
         // branchId: buId,
         // workplaceId: wId,
@@ -117,7 +119,7 @@ const UserEndRewardPunishmentLanding = ({
       method: "GET",
       params: {
         accountId: orgId,
-        userId: employeeId,
+        userId: empId,
         actionType: 2,
         pageNo: pagination?.current,
         pageSize: pagination?.pageSize,
@@ -164,15 +166,16 @@ const UserEndRewardPunishmentLanding = ({
     },
     {
       title: "Issued Date",
-      dataIndex: "createdAt",
+      dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
+      width: "40px",
     },
 
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId: number, rec: any) => (
-        <Flex justify="center">
+        <Flex justify="flex-start" gap="4">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
@@ -235,6 +238,7 @@ const UserEndRewardPunishmentLanding = ({
       filter: true,
       filterKey: "letterNameList",
       filterSearch: true,
+      width: "40px",
     },
 
     {
@@ -243,18 +247,20 @@ const UserEndRewardPunishmentLanding = ({
       filter: true,
       filterKey: "createdByList",
       filterSearch: true,
+      width: "40px",
     },
     {
       title: "Issued Date",
-      dataIndex: "createdAt",
+      dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
+      width: "30px",
     },
 
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId: number, rec: any) => (
-        <Flex justify="center">
+        <Flex justify="flex-start" gap="4">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
@@ -292,7 +298,7 @@ const UserEndRewardPunishmentLanding = ({
               }}
             />
           </Tooltip>
-          {!rec?.isExplanation && (
+          {employeeId === empId && !rec?.isExplanation && (
             <button
               onClick={() => {
                 ViewRewardPunishmentRecord(
@@ -301,7 +307,7 @@ const UserEndRewardPunishmentLanding = ({
                   setSingleData,
                   (data: any) => {
                     setPunishmentData(data);
-                    setExplanationOpen(true);
+                    setExplanationOpen(true); // need
                   }
                 );
               }}
@@ -371,7 +377,7 @@ const UserEndRewardPunishmentLanding = ({
         </PForm>
 
         <PModal
-          title="View"
+          title=""
           open={open}
           onCancel={() => {
             setOpen(false);
@@ -381,7 +387,7 @@ const UserEndRewardPunishmentLanding = ({
           width={1000}
         />
         <PModal
-          title="Explanation"
+          title="Create Explanation"
           open={explanationOpen} // explanationOpen
           onCancel={() => {
             setExplanationOpen(false);
@@ -392,6 +398,7 @@ const UserEndRewardPunishmentLanding = ({
             <PunishmentExplantion
               punishmentData={punishmentData}
               setExplanationOpen={setExplanationOpen}
+              punishmentlandingApiCall={punishmentlandingApiCall}
             />
           }
           width={1000}

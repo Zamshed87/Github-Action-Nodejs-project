@@ -168,7 +168,7 @@ const RewardPunishmentLanding = () => {
     },
     {
       title: "Issued Date",
-      dataIndex: "createdAt",
+      dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
       width: "40px",
     },
@@ -245,38 +245,46 @@ const RewardPunishmentLanding = () => {
               }}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title={"Send"}>
+          <Tooltip
+            placement="bottom"
+            title={rec?.isMailSend ? "Send Already" : "Send"}
+          >
             <SendOutlined
               style={{
-                color: "green",
+                color: !rec?.isMailSend ? "green" : "grey",
+                cursor: !rec?.isMailSend ? "pointer" : "not-allowed",
                 fontSize: "14px",
-                cursor: "pointer",
                 marginRight: "7px",
               }}
               onClick={() => {
-                ViewRewardPunishmentRecord(
-                  rec?.recordId,
-                  setLoading,
-                  setSingleData,
-                  (data: any) => {
-                    editRewardPunishmentRecord(
-                      form,
-                      profileData,
-                      setLoading,
-                      data,
-                      data?.issueAttachment,
-                      (data: any) => {
-                        history.push("/profile/rewardAndPunishment");
-                      },
-                      true
-                    );
-                  }
-                );
+                if (!rec?.isMailSend) {
+                  ViewRewardPunishmentRecord(
+                    rec?.recordId,
+                    setLoading,
+                    setSingleData,
+                    (data: any) => {
+                      editRewardPunishmentRecord(
+                        form,
+                        profileData,
+                        setLoading,
+                        data,
+                        data?.issueAttachment,
+                        (data: any) => {
+                          history.push("/profile/rewardAndPunishment");
+                        },
+                        true
+                      );
+                    }
+                  );
+                }
               }}
             />
           </Tooltip>
           {rec?.issueTypeId === 2 && (
-            <Tooltip placement="bottom" title={"Action"}>
+            <Tooltip
+              placement="bottom"
+              title={!rec?.isExplanation ? "Need Explanation first" : "Action"}
+            >
               <WarningOutlined
                 style={{
                   color: rec?.isExplanation ? "green" : "grey", // Adjust color for disabled state
@@ -292,10 +300,17 @@ const RewardPunishmentLanding = () => {
                       setLoading,
                       setSingleData,
                       (data: any) => {
-                        history.push({
-                          pathname: `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`,
-                          state: { recordData: data, edited: true },
-                        });
+                        if (data?.actionId) {
+                          toast.warn(
+                            "You already have taken action for this record"
+                          );
+                          return;
+                        } else {
+                          history.push({
+                            pathname: `/profile/customReportsBuilder/punishmentAction/${rec?.recordId}`,
+                            state: { recordData: data, edited: true },
+                          });
+                        }
                       }
                     );
                     // setOpen(true); // Uncomment if you need this for other functionality
@@ -380,7 +395,7 @@ const RewardPunishmentLanding = () => {
         </PCard>
       </PForm>
       <PModal
-        title="View Template"
+        title=""
         open={open}
         onCancel={() => {
           setOpen(false);
