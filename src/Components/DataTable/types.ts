@@ -11,7 +11,6 @@ export type TDataTableProps = {
   headerTitle?: (pageData: any) => React.ReactElement | string;
   header: ColumnsType<any> | any;
   data: any[];
-  showHeader?: boolean;
   filterData?: Record<string, unknown>;
   rowClassName?: (record: any, index: number) => string;
   rowSelection?: {

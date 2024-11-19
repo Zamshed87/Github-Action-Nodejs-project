@@ -53,10 +53,40 @@ const ProfileView = ({ assetId }) => {
       );
     }
   }, [assetId, orgId, buId, wId, wgId]);
-  console.log({ singleData });
+
   return (
     <>
       <div className="mb-2 d-flex justify-content-end">
+        {/* <ReactToPrint
+          documentTitle={"Asset Profile"}
+          trigger={() => (
+            <Button
+              variant="outlined"
+              sx={{
+                borderColor: "rgba(0, 0, 0, 0.6)",
+                color: "rgba(0, 0, 0, 0.6)",
+                fontSize: "12px",
+                fontWeight: "bold",
+                letterSpacing: "1.15px",
+                "&:hover": {
+                  borderColor: "rgba(0, 0, 0, 0.6)",
+                },
+              }}
+              startIcon={
+                <PrintOutlined
+                  sx={{ color: "rgba(0, 0, 0, 0.6)" }}
+                  className="emp-print-icon"
+                />
+              }
+            >
+              Print/PDF
+            </Button>
+          )}
+          content={() => contentRef.current}
+          pageStyle={
+            "@page { !important width: 100% } @media print { .name-about-info {font-size: 24px!important} .documents{ display: none!important} .printDateTime{display: block!important} }"
+          }
+        /> */}
         <Button
           variant="outlined"
           sx={{
@@ -85,9 +115,26 @@ const ProfileView = ({ assetId }) => {
           <div className="d-flex justify-content-between">
             <div style={{ width: "70%" }}>
               <h4 className="name-about-info">Asset Profile</h4>
+              <div className="single-info d-flex justify-content-between mt-4 pt-4">
+                <p style={{ color: gray700, width: "20%" }}>
+                  <small
+                    style={{
+                      fontSize: "12px",
+                      lineHeight: "1.5",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Asset Name
+                  </small>
+                </p>
+                <p style={{ width: "80%" }}>
+                  <span>: </span>
+                  {singleData?.AssetName}
+                </p>
+              </div>
             </div>
             <div style={{ width: "30%" }}>
-              {/* <div className="single-info d-flex justify-content-between mb-1">
+              <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "75%" }}>
                   <small
                     style={{
@@ -103,7 +150,7 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {formatMoney(singleData?.AcquisitionValue)}
                 </p>
-              </div> */}
+              </div>
               {/* <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "75%" }}>
                   <small
@@ -121,7 +168,7 @@ const ProfileView = ({ assetId }) => {
                   {formatMoney(singleData?.TotalDepreciationValue)}
                 </p>
               </div> */}
-              {/* <div className="single-info d-flex justify-content-between mb-1">
+              <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "75%" }}>
                   <small
                     style={{
@@ -154,28 +201,11 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {formatMoney(singleData?.MaintenaceOrServicingCost)}
                 </p>
-              </div> */}
+              </div>
             </div>
           </div>
-          <div className="d-flex justify-content-between mt-3">
-            <div style={{ width: "30%", marginTop: "" }}>
-              <div className="single-info d-flex justify-content-between mb-1">
-                <p style={{ color: gray700, width: "46.7%" }}>
-                  <small
-                    style={{
-                      fontSize: "12px",
-                      lineHeight: "1.5",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Asset Name
-                  </small>
-                </p>
-                <p style={{ width: "53.3%" }}>
-                  <span>: </span>
-                  {singleData?.AssetName}
-                </p>
-              </div>
+          <div className="d-flex justify-content-between">
+            <div style={{ width: "30%" }}>
               <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
@@ -210,7 +240,6 @@ const ProfileView = ({ assetId }) => {
                   {dateFormatter(singleData?.AcquisitionDate)}
                 </p>
               </div>
-
               {/* <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
@@ -279,6 +308,8 @@ const ProfileView = ({ assetId }) => {
                   {singleData?.Age || "N/A"}
                 </p>
               </div>
+            </div>
+            <div style={{ width: "30%" }}>
               <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
@@ -313,9 +344,7 @@ const ProfileView = ({ assetId }) => {
                   {singleData?.SubCategoryName}
                 </p>
               </div>
-            </div>
-            <div style={{ width: "30%", marginTop: "-1px" }}>
-              {/* <div className="single-info d-flex justify-content-between mb-1">
+              <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
                     style={{
@@ -331,7 +360,7 @@ const ProfileView = ({ assetId }) => {
                   <span>: </span>
                   {formatMoney(singleData?.AcquisitionValue)}
                 </p>
-              </div> */}
+              </div>
               <div className="single-info d-flex justify-content-between mb-1">
                 <p style={{ color: gray700, width: "46.7%" }}>
                   <small
@@ -392,57 +421,6 @@ const ProfileView = ({ assetId }) => {
                       fontWeight: "600",
                     }}
                   >
-                    Acquisition Value
-                  </small>
-                </p>
-                <p style={{ width: "53.3%" }}>
-                  <span>: </span>
-                  {formatMoney(singleData?.AcquisitionValue)}
-                </p>
-              </div>
-              <div className="single-info d-flex justify-content-between mb-1">
-                <p style={{ color: gray700, width: "46.7%" }}>
-                  <small
-                    style={{
-                      fontSize: "12px",
-                      lineHeight: "1.5",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Net Book Value
-                  </small>
-                </p>
-                <p style={{ width: "53.3%" }}>
-                  <span>: </span>
-                  {formatMoney(singleData?.NetBookValue)}
-                </p>
-              </div>
-              <div className="single-info d-flex justify-content-between mb-1">
-                <p style={{ color: gray700, width: "46.7%" }}>
-                  <small
-                    style={{
-                      fontSize: "12px",
-                      lineHeight: "1.5",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Maintenance /Servicing
-                  </small>
-                </p>
-                <p style={{ width: "53.3%" }}>
-                  <span>: </span>
-                  {formatMoney(singleData?.MaintenaceOrServicingCost)}
-                </p>
-              </div>
-              <div className="single-info d-flex justify-content-between mb-1">
-                <p style={{ color: gray700, width: "46.7%" }}>
-                  <small
-                    style={{
-                      fontSize: "12px",
-                      lineHeight: "1.5",
-                      fontWeight: "600",
-                    }}
-                  >
                     Status
                   </small>
                 </p>
@@ -470,12 +448,12 @@ const ProfileView = ({ assetId }) => {
             >
               <img
                 src={
-                  singleData?.ImageProfileId
-                    ? `${APIUrl}/Document/DownloadFile?id=${singleData?.ImageProfileId}`
+                  singleData?.ImageProfileID
+                    ? `${APIUrl}/Document/DownloadFile?id=${singleData?.ImageProfileID}`
                     : "https://icon-library.com/images/no-picture-available-icon/no-picture-available-icon-1.jpg"
                 }
                 alt="asset-image"
-                style={{ width: "100%", height: "194px", objectFit: "cover" }}
+                style={{ width: "100%", height: "180px", objectFit: "cover" }}
               />
             </div>
           </div>
