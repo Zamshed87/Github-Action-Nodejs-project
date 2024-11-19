@@ -176,7 +176,7 @@ export const defaultCalculation = (
       state?.intSalaryBreakdownHeaderId ||
       dynamicForm[0]?.intSalaryBreakdownHeaderId ||
       0,
-    // strDependOn: "",
+    strDependOn: "",
     pyrSalaryBreakdowRowList: [
       ...finalModifyPayrollElement,
       ...modifyAmountPayrollElementList,

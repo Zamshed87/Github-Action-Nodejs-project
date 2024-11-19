@@ -27,6 +27,7 @@ import ViewModalCalender from "./components/ViewModalCalender";
 import PopoverCalender from "./componentsCustom/PopoverCalender";
 import { createMonthlyOffdayAssign, offDayAssignDtoCol } from "./helper";
 import "./monthlyOffday.css";
+import { isDevServer } from "App";
 
 const initData = {
   search: "",
@@ -265,13 +266,13 @@ function MonthlyOffdayAssignLanding() {
   }
 
   const handleSave = () => {
-    console.log("calendarData", calendarData);
+    isDevServer && console.log("calendarData", calendarData);
+
     const offdays = calendarData.map((data) => ({
-      date: data.dteDate,
+      date: data?.dteDate || data?.date,
       isOffDay: data.isOffday,
       isActive: true,
     }));
-
     const empArr = [];
     const intEmployeeId = singleAssign
       ? [selectedSingleEmployee[0]?.employeeId]
@@ -302,7 +303,7 @@ function MonthlyOffdayAssignLanding() {
       setCheckedList([]);
       setFieldValue("search", "");
     };
-    console.log("payload",payload);
+    console.log("payload", payload);
     payload?.offdays?.length > 0
       ? createMonthlyOffdayAssign(payload, setLoading, callback)
       : toast.error("Please select at least one day");

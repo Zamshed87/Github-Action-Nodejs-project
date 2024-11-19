@@ -622,12 +622,12 @@ const maintenanceColumn = () => {
       filter: false,
       render: (record) => formatMoney(record?.MaintenanceCost),
     },
-    // {
-    //   title: "Technician",
-    //   dataIndex: "HandedOverTO",
-    //   sort: false,
-    //   filter: false,
-    // },
+    {
+      title: "Technician",
+      dataIndex: "HandedOverTO",
+      sort: false,
+      filter: false,
+    },
   ];
 };
 

@@ -148,7 +148,9 @@ const SingleQuestionnaire = ({
       (question.questionType === "checkbox" ||
         question.questionType === "radio" ||
         question.questionType === "select") ? (
-        <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
+        <DragDropContext
+          onDragEnd={(result: any) => ansDragEnd(result, values)}
+        >
           <SingleAnswer
             question={question}
             handleBlur={handleBlur}
