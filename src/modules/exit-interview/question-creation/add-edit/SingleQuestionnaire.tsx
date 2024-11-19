@@ -2,7 +2,6 @@ import { DeleteOutlined, DragIndicator } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
 import { Col, Divider, Row, Switch } from "antd";
 import { Flex, PInput, PSelect } from "Components";
-import React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import SingleAnswer from "./singleAnswer";
 
@@ -101,6 +100,7 @@ const SingleQuestionnaire = ({
               onChange={(e) => {
                 setFieldValue(`${isDraft}`, e.target.checked);
               }}
+              rules={[{ required: true, message: "Required Field" }]}
             />
           </div>
         </Stack>
@@ -117,6 +117,7 @@ const SingleQuestionnaire = ({
             onChange={(value: any) => {
               setFieldValue(`${questionType}`, value);
             }}
+            rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
         <div className="col-12 col-md-4 py-0 my-0 pl-0">
@@ -128,6 +129,7 @@ const SingleQuestionnaire = ({
             onChange={(value: any) =>
               setFieldValue(`${questionTitle}`, value.target.value)
             }
+            rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
 
@@ -140,14 +142,13 @@ const SingleQuestionnaire = ({
             onChange={(value: any) =>
               setFieldValue(`${expectedAns}`, value.target.value)
             }
+            rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
       </div>
 
       {question.questionType &&
-      (question.questionType === "checkbox" ||
-        question.questionType === "radio" ||
-        question.questionType === "select") ? (
+      ["0", "1", "2"].includes(question.questionType) ? (
         <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
           <SingleAnswer
             question={question}
@@ -156,7 +157,7 @@ const SingleQuestionnaire = ({
           />
         </DragDropContext>
       ) : (
-        question.questionType === "text" && (
+        ["3", "4"].includes(question.questionType) && (
           <Row>
             <Col md={8}>
               <PInput

@@ -39,25 +39,38 @@ import SingleQuestionnaire from "./SingleQuestionnaire";
 import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
 import { saveQuestionnaire } from "./helper";
+import { toast } from "react-toastify";
 
 const validationSchema = yup.object({
+  buDDL: yup.object().shape({
+    label: yup.string().required("Item category is required"),
+    value: yup.string().required("Item category is required"),
+  }),
+  wgDDL: yup.object().shape({
+    label: yup.string().required("Item category is required"),
+    value: yup.string().required("Item category is required"),
+  }),
+  wDDL: yup.object().shape({
+    label: yup.string().required("Item category is required"),
+    value: yup.string().required("Item category is required"),
+  }),
+  survayType: yup.object().shape({
+    label: yup.string().required("Item category is required"),
+    value: yup.string().required("Item category is required"),
+  }),
+  survayTitle: yup.string().required("Required Field"),
+  survayDescription: yup.string().required("Required Field"),
   questions: yup.array().of(
     yup.object().shape({
-      id: yup.string().required("Question ID is required"),
-      questionTitle: yup.string().required("Question title is required"),
-      questionType: yup.string().required("Question type is required"),
-      ansType: yup.string().required("Answer type is required"),
+      questionTitle: yup.string().required("Required Field"),
+      questionType: yup.string().required("Required Field"),
+      expectedAns: yup.string().required("Required Field"),
       ansTextLength: yup
         .string()
         .nullable()
-        .when("ansType", {
+        .when("questionType", {
           is: "text",
-          then: yup.string().required("Answer text length is required"),
-          otherwise: yup.string().nullable(),
-        })
-        .when("ansType", {
-          is: "select",
-          then: yup.string().nullable(),
+          then: yup.string().required("Length is required"),
           otherwise: yup.string().nullable(),
         }),
     })
@@ -65,13 +78,10 @@ const validationSchema = yup.object({
 
   answers: yup.array().of(
     yup.object().shape({
-      id: yup.string().required("Answer ID is required"),
       queId: yup.string().required("Question ID for answer is required"),
       answerDescription: yup.string().when("queId", {
         is: (queId: string) => queId && queId.length > 0,
-        then: yup
-          .string()
-          .required("Answer description is required for this question"),
+        then: yup.string().required("Required Field"),
         otherwise: yup.string().nullable(),
       }),
     })
@@ -187,9 +197,17 @@ const QuestionCreationAddEdit = () => {
               content: "Save",
               disabled: loading,
               onClick: () => {
-                saveQuestionnaire(values, setLoading, () => {
-                  resetForm();
-                });
+                validationSchema
+                  .validate(values)
+                  .then(() => {
+                    saveQuestionnaire(values, setLoading, () => {
+                      resetForm();
+                    });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    toast.warning("Please fill the required fields");
+                  });
               },
             },
           ]}

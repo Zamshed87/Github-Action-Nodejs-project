@@ -21,7 +21,7 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
           };
         });
       return {
-        typeId: ques?.questionType,
+        typeId: parseInt(ques?.questionType),
         title: ques?.questionTitle,
         sortOrder: index + 1,
         answer: ques?.expectedAns,
@@ -34,7 +34,7 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
 
     const payload = {
       id: 0,
-      typeId: values?.survayType?.value,
+      typeId: parseInt(values?.survayType?.value),
       title: values?.survayTitle,
       description: values?.survayDescription,
       businessUnitId: values?.buDDL?.value,
