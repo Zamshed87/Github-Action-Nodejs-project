@@ -40,6 +40,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       format,
       disabledDate,
       addOnBefore,
+      styles = {},
     } = property;
 
     const Components =
@@ -151,7 +152,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           rules={rules}
           valuePropName={type === "checkbox" ? "checked" : valuePropName}
           hasFeedback={hasFeedback}
-          style={{ marginBottom: 0 }}
+          style={{ ...styles, marginBottom: 0 }}
           className={disabled ? "peopledesk_input_disabled" : ""}
         >
           {Components}

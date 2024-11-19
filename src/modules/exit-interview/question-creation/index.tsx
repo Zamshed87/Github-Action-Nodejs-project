@@ -1,3 +1,10 @@
+/*
+ * Title: Exit interview landing
+ * Author: Khurshida Meem
+ * Date: 12-11-2024
+ *
+ */
+
 import { EyeOutlined } from "@ant-design/icons";
 import { Form, Tooltip } from "antd";
 import NoResult from "common/NoResult";
