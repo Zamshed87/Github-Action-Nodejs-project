@@ -38,12 +38,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Employee is required"),
     })
     .typeError("Employee is required"),
-  place: Yup.object()
-    .shape({
-      label: Yup.string().required("place is required"),
-      value: Yup.string().required("place is required"),
-    })
-    .typeError("place is required"),
+  // place: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("place is required"),
+  //     value: Yup.string().required("place is required"),
+  //   })
+  //   .typeError("place is required"),
   date: Yup.date().required("Date is required"),
   meal: Yup.string().required("No of meal is required"),
   // type: Yup.object()
