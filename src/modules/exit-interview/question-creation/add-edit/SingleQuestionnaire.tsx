@@ -16,13 +16,14 @@ const SingleQuestionnaire = ({
   isRequired,
   isDraft,
   ansTextLength,
-  ansType,
+  expectedAns,
   ansDragEnd,
   handleQuestionDelete,
   values,
   setFieldValue,
   touched,
   setValues,
+  questionTypeDDL,
 }: any) => {
   return (
     <Stack direction="column" spacing={2}>
@@ -94,7 +95,7 @@ const SingleQuestionnaire = ({
             </div>
             <PInput
               checked={question?.isDraft}
-              label="Save as draft?"
+              label="Save as Template?"
               type="checkbox"
               layout="horizontal"
               onChange={(e) => {
@@ -112,10 +113,7 @@ const SingleQuestionnaire = ({
             placeholder="Question Type"
             label="Question type"
             value={question?.questionType}
-            options={[
-              { value: "exit", label: "Exit Interview" },
-              { value: "training", label: "Training Assessment" },
-            ]}
+            options={questionTypeDDL || []}
             onChange={(value: any) => {
               setFieldValue(`${questionType}`, value);
             }}
@@ -134,28 +132,22 @@ const SingleQuestionnaire = ({
         </div>
 
         <div className="col-12 col-md-4 py-0 my-0 pl-0 md-pr-0">
-          <PSelect
-            placeholder="Answer Type"
-            label="Answer type"
-            value={question.ansType}
-            options={[
-              { value: "select", label: "Dropdown List" },
-              { value: "text", label: "Text Box" },
-              { value: "radio", label: "Radio Button" },
-              { value: "checkbox", label: "Checkbox" },
-            ]}
-            onChange={(value: any) => {
-              setFieldValue(`${ansType}`, value);
-            }}
-            rules={[{ required: true, message: "Required Field" }]}
+          <PInput
+            type="text"
+            value={question?.expectedAns}
+            placeholder="Expected Answer"
+            label="Expected Answer"
+            onChange={(value: any) =>
+              setFieldValue(`${expectedAns}`, value.target.value)
+            }
           />
         </div>
       </div>
 
-      {question.ansType &&
-      (question.ansType === "checkbox" ||
-        question.ansType === "radio" ||
-        question.ansType === "select") ? (
+      {question.questionType &&
+      (question.questionType === "checkbox" ||
+        question.questionType === "radio" ||
+        question.questionType === "select") ? (
         <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
           <SingleAnswer
             question={question}
@@ -164,7 +156,7 @@ const SingleQuestionnaire = ({
           />
         </DragDropContext>
       ) : (
-        question.ansType === "text" && (
+        question.questionType === "text" && (
           <Row>
             <Col md={8}>
               <PInput

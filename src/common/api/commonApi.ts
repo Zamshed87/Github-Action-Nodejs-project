@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const getWorkplaceGroupDDL = ({
   workplaceGroupDDL,
   orgId,
@@ -35,4 +37,20 @@ export const getWorkplaceDDL = ({ workplaceDDL, orgId, buId, wgId }: any) => {
       });
     },
   });
+};
+
+export const getEnumData = async (
+  enumType: string,
+  setData: any,
+  setLoading?: any
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(`/Enum/GetEnums?types=${enumType}`);
+    setData(res?.data[enumType]);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading && setLoading(false);
+  }
 };
