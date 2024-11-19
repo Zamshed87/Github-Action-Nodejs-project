@@ -601,11 +601,11 @@ const maintenanceColumn = () => {
       dataIndex: "date",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.maintenanceDate) || "N/A",
+      render: (record) => dateFormatter(record?.MaintenanceDate) || "N/A",
     },
     {
       title: "Maintenance Type",
-      dataIndex: "maintenanceType",
+      dataIndex: "MaintenanceType",
       sort: false,
       filter: false,
     },
@@ -645,7 +645,7 @@ const usesHistoryColumn = () => {
       dataIndex: "fromDate",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.fromDate),
+      render: (record) => dateFormatter(record?.FromDate),
     },
     {
       title: "To Date",
@@ -653,7 +653,7 @@ const usesHistoryColumn = () => {
       sort: false,
       filter: false,
       render: (record) =>
-        record?.toDate ? dateFormatter(record?.toDate) : "N/A",
+        record?.ToDate ? dateFormatter(record?.ToDate) : "N/A",
     },
     {
       title: "Employee/Department",
@@ -695,7 +695,7 @@ const documentsColumn = (dispatch) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   dispatch(
-                    getDownlloadFileView_Action(record?.GlobalImageUrlID)
+                    getDownlloadFileView_Action(record?.GlobalImageUrlId)
                   );
                 }}
               />
