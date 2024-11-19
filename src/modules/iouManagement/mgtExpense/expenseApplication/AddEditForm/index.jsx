@@ -95,8 +95,6 @@ export default function AddEditForm({
   useEffect(() => {
     getExpenseTypeDDL();
   }, []);
-
-  console.log(attachmentList, "attachmentList");
   useEffect(() => {
     if (singleData?.expenseId) {
       getById.action({

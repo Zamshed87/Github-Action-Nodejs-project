@@ -129,7 +129,6 @@ type BaseProps = FormItemProps & {
   format?: string;
   addOnBefore?: string;
   disabledDate?: (currentDate: Moment) => boolean;
-  styles?: React.CSSProperties;
 };
 
 type InputTypeMapping = {
