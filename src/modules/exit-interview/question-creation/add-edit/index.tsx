@@ -39,7 +39,6 @@ import SingleQuestionnaire from "./SingleQuestionnaire";
 import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
 import { saveQuestionnaire } from "./helper";
-import axios from "axios";
 
 const validationSchema = yup.object({
   questions: yup.array().of(
