@@ -31,8 +31,8 @@ export const getLetterNameDDL = async (
 };
 
 export const getLetterPreview = async (profileData, setLoading, form) => {
+  setLoading(true);
   try {
-    setLoading(true);
     const { orgId, buId, wgId, wId } = profileData;
     const { letterType, letterName, employee } = form.getFieldsValue(true);
 

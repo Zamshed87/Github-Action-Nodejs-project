@@ -23,6 +23,7 @@ const SingleQuestionnaire = ({
   setFieldValue,
   touched,
   setValues,
+  questionTypeDDL,
 }: any) => {
   return (
     <Stack direction="column" spacing={2}>
@@ -112,12 +113,7 @@ const SingleQuestionnaire = ({
             placeholder="Question Type"
             label="Question type"
             value={question?.questionType}
-            options={[
-              { value: "select", label: "Dropdown List" },
-              { value: "text", label: "Text Box" },
-              { value: "radio", label: "Radio Button" },
-              { value: "checkbox", label: "Checkbox" },
-            ]}
+            options={questionTypeDDL || []}
             onChange={(value: any) => {
               setFieldValue(`${questionType}`, value);
             }}

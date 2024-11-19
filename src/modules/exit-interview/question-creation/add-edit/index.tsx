@@ -39,6 +39,7 @@ import SingleQuestionnaire from "./SingleQuestionnaire";
 import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
 import { saveQuestionnaire } from "./helper";
+import axios from "axios";
 
 const validationSchema = yup.object({
   questions: yup.array().of(
@@ -121,8 +122,9 @@ const QuestionCreationAddEdit = () => {
   // api states
   const workplaceGroupDDL: any = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
-  const survayTypeDDL = useApiRequest([]);
-  const questionTypeDDL = useApiRequest([]);
+
+  const [survayTypeDDL, setSurvayTypeDDL] = useState([]);
+  const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
 
   const ansDragEnd = (result: DropResult, values: any) => {
     const { source, destination } = result;
@@ -167,11 +169,8 @@ const QuestionCreationAddEdit = () => {
   console.log(values);
 
   useEffect(() => {
-    getEnumData({ enumData: survayTypeDDL, enumType: "QuestionnaireType" });
-    getEnumData({
-      enumData: questionTypeDDL,
-      enumType: "QuestionnaireQuestionType",
-    });
+    getEnumData("QuestionnaireType", setSurvayTypeDDL);
+    getEnumData("QuestionnaireQuestionType", setQuestionTypeDDL);
   }, []);
 
   console.log(survayTypeDDL, questionTypeDDL);
@@ -258,10 +257,7 @@ const QuestionCreationAddEdit = () => {
         <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
-              options={[
-                { value: "exit", label: "Exit Interview" },
-                { value: "training", label: "Training Assessment" },
-              ]}
+              options={survayTypeDDL || []}
               name="survayType"
               label="Survay Type"
               placeholder="Survay Type"
@@ -367,6 +363,7 @@ const QuestionCreationAddEdit = () => {
                                           errors={form.errors}
                                           touched={form.touched}
                                           setValues={form.setValues}
+                                          questionTypeDDL={questionTypeDDL}
                                         />
                                       </div>
                                     </div>
