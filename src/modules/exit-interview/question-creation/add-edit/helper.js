@@ -43,7 +43,6 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
       questions: question,
     };
 
-    console.log(payload);
     const res = await axios.post(`/Questionnaire`, payload);
     cb();
     toast.success(res?.data?.Message || "Created Sucessfully", { toastId: 1 });

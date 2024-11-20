@@ -5,8 +5,9 @@
  *
  */
 
-import { EyeOutlined } from "@ant-design/icons";
-import { Form, Tooltip } from "antd";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { Form, Switch, Tooltip } from "antd";
+import axios from "axios";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -19,6 +20,8 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
+import { MdAssignmentAdd } from "react-icons/md";
+import { getSingleQuestionnaire } from "./helper";
 
 const QuestionCreationLanding = () => {
   // router states
@@ -58,6 +61,7 @@ const QuestionCreationLanding = () => {
   const [filterList, setFilterList] = useState({});
   const [open, setOpen] = useState(false);
   const [singleData, setSingleData] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -82,9 +86,9 @@ const QuestionCreationLanding = () => {
       pageSize: pagination?.pageSize,
       isPaginated: true,
       isHeaderNeeded: true,
-      typeList: filters?.letterType || [],
-      createdByList: filters?.createdByEmployee || [],
-      statusList: filters?.letterName || [],
+      typeList: filters?.type || [],
+      createdByList: filters?.createdBy || [],
+      statusList: filters?.status || [],
     };
     landingApi?.action({
       urlKey: "GetQuestionLanding",
@@ -96,6 +100,32 @@ const QuestionCreationLanding = () => {
   useEffect(() => {
     landingApiCall({});
   }, [wgId, wId, buId]);
+
+  const [switchStatus, setSwitchStatus] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  useEffect(() => {
+    const initialSwitchStatus = (landingApi?.data?.data || []).reduce(
+      (acc: any, item: any) => {
+        acc[item.id] = item.status === "Active";
+        return acc;
+      },
+      {}
+    );
+    setSwitchStatus(initialSwitchStatus);
+  }, [landingApi?.data?.data]);
+
+  const handleSwitchChange = (checked: boolean, id: number) => {
+    setSwitchStatus((prev) => ({
+      ...prev,
+      [id]: checked,
+    }));
+    axios?.put("/Questionnaire/Active", {
+      id,
+      active: checked,
+    });
+  };
 
   // table column
   const header: any = [
@@ -112,45 +142,87 @@ const QuestionCreationLanding = () => {
     },
     {
       title: "Survay Type",
-      dataIndex: "letterType",
+      dataIndex: "type",
       filter: true,
       filterKey: "typeList",
       filterSearch: true,
     },
     {
-      title: "Letter Name",
-      dataIndex: "letterName",
-      filter: true,
-      filterKey: "letterNameList",
-      filterSearch: true,
+      title: "Survay Title",
+      dataIndex: "title",
     },
     {
-      title: "Issued To",
-      dataIndex: "issuedEmployeeName",
-      filter: true,
-      filterKey: "issuedEmployeeIdList",
-      filterSearch: true,
+      title: "Created Date",
+      dataIndex: "createdDate",
     },
     {
-      title: "Issued By",
-      dataIndex: "createdByEmployee",
+      title: "Created By",
+      dataIndex: "createdBy",
       filter: true,
       filterKey: "createdByList",
       filterSearch: true,
     },
     {
-      title: "Issued Date",
-      dataIndex: "createdAt",
-      render: (data: any) => dateFormatter(data),
+      title: "Created Date",
+      dataIndex: "createdDate",
     },
-
+    {
+      title: "Number of Questions",
+      dataIndex: "noOfQuestions",
+      width: 50,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      filter: true,
+      filterKey: "statusList",
+      filterSearch: true,
+      render: (_data: any, rec: any) => (
+        <>
+          <Switch
+            size="small"
+            checked={switchStatus[rec.id]}
+            onChange={(checked) => handleSwitchChange(checked, rec.id)}
+          />{" "}
+        </>
+      ),
+      align: "center",
+    },
     {
       title: "Action",
-      dataIndex: "letterGenerateId",
-      render: (generateId: number, rec: any) => (
+      dataIndex: "id",
+      render: (_: number, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              onClick={() => {
+                getSingleQuestionnaire(
+                  rec?.id,
+                  setSingleData,
+                  setLoading,
+                  setOpen
+                );
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Edit"}>
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 4px",
+              }}
+              onClick={() => {
+                history.push(
+                  `/profile/exitInterview/questionCreation/edit/${rec.id}`
+                );
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Assign"}>
+            <MdAssignmentAdd
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
                 setSingleData(rec);
@@ -163,6 +235,8 @@ const QuestionCreationLanding = () => {
       align: "center",
     },
   ];
+
+  console.log(singleData);
 
   return QuestionCreationPermission?.isView ? (
     <>
@@ -191,7 +265,7 @@ const QuestionCreationLanding = () => {
             {landingApi?.data?.totalCount > 0 ? (
               <DataTable
                 bordered
-                data={[]}
+                data={landingApi?.data?.data || []}
                 loading={landingApi?.loading}
                 header={header}
                 pagination={{
