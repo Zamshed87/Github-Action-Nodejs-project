@@ -193,13 +193,7 @@ export default function FoodCornerForAll() {
                                 fontWeight: "600",
                               }}
                             >
-                              Meal Requisition{" "}
-                              <span
-                                style={{ marginLeft: "40px",  color: "#db4c4c", letterSpacing:'0.3px', fontWeight:'bold'}}
-                              >
-                                Next months meal employees can register within
-                                last 7 days of current month.
-                              </span>
+                              Meal Requisition
                             </h6>
                             <FormCard
                               propsObj={{
