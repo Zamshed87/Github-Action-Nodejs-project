@@ -240,7 +240,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           ) : (
             <PInput
               type="number"
-              name={`amountOrPercentage_${index}`}
+              // name={`amountOrPercentage_${index}`}
               value={row?.amountOrPercentage}
               placeholder="Amount"
               rules={[
@@ -682,6 +682,9 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               }
               if (isDuplicate?.length > 0) {
                 return toast.warn("Element is Already selected");
+              }
+              if (!values?.basedOn || !values?.element) {
+                return toast.warn("Select Fields First");
               }
 
               setElementDto((prev): any => {
