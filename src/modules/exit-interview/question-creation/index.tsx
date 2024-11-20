@@ -18,10 +18,11 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 import { MdAssignmentAdd } from "react-icons/md";
 import { getSingleQuestionnaire } from "./helper";
+import Loading from "common/loading/Loading";
+import QuestionaireView from "./QuestionaireView";
 
 const QuestionCreationLanding = () => {
   // router states
@@ -37,7 +38,7 @@ const QuestionCreationLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId, buId, wgId, wId } = profileData;
+  const { buId, wgId, wId } = profileData;
 
   // menu permission
   let QuestionCreationPermission: any = null;
@@ -236,10 +237,9 @@ const QuestionCreationLanding = () => {
     },
   ];
 
-  console.log(singleData);
-
   return QuestionCreationPermission?.isView ? (
     <>
+      {loading && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
@@ -294,14 +294,9 @@ const QuestionCreationLanding = () => {
           setOpen(false);
           setSingleData({});
         }}
-        components={<>hi</>}
+        components={<QuestionaireView singleData={singleData} />}
         width={1000}
       />
-      {/* <div className="d-none">
-        <div ref={printLetterRef}>
-          <LetterPrint singleData={pdfData} />
-        </div>
-      </div> */}
     </>
   ) : (
     <NotPermittedPage />
