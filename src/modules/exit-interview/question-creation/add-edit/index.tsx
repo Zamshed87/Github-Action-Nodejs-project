@@ -40,6 +40,7 @@ import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
 import { saveQuestionnaire } from "./helper";
 import { toast } from "react-toastify";
+import { getSingleQuestionnaire } from "../helper";
 
 const validationSchema = yup.object({
   buDDL: yup.object().shape({
@@ -135,6 +136,7 @@ const QuestionCreationAddEdit = () => {
 
   const [survayTypeDDL, setSurvayTypeDDL] = useState([]);
   const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
+  const [singleData, setSingleData] = useState({});
 
   const ansDragEnd = (result: DropResult, values: any) => {
     const { source, destination } = result;
@@ -169,7 +171,7 @@ const QuestionCreationAddEdit = () => {
   const formData: any = useFormik({
     enableReinitialize: true,
     initialValues: {
-      buDDL: null,
+      survayDescription: "hi",
       questions: [],
       answers: [],
     },
@@ -177,14 +179,13 @@ const QuestionCreationAddEdit = () => {
   });
   const { values, setFieldValue, handleBlur, resetForm } = formData;
 
-  console.log(values);
-
   useEffect(() => {
     getEnumData("QuestionnaireType", setSurvayTypeDDL);
     getEnumData("QuestionnaireQuestionType", setQuestionTypeDDL);
+    quesId && getSingleQuestionnaire(quesId, setSingleData, setLoading);
   }, []);
 
-  console.log(survayTypeDDL, questionTypeDDL);
+  console.log(quesId);
 
   return letterConfigPermission?.isCreate ? (
     <PForm>
@@ -202,7 +203,7 @@ const QuestionCreationAddEdit = () => {
                 validationSchema
                   .validate(values)
                   .then(() => {
-                    saveQuestionnaire(values, setLoading, () => {
+                    saveQuestionnaire(values, profileData, setLoading, () => {
                       resetForm();
                       history.push("/profile/exitInterview/questionCreation");
                     });
@@ -215,7 +216,7 @@ const QuestionCreationAddEdit = () => {
             },
           ]}
         />
-        <Row gutter={[10, 2]}>
+        {/* <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
               options={
@@ -274,7 +275,7 @@ const QuestionCreationAddEdit = () => {
               rules={[{ required: true, message: "Required Field" }]}
             />
           </Col>
-        </Row>
+        </Row> */}
         <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
@@ -304,6 +305,7 @@ const QuestionCreationAddEdit = () => {
           <Col md={6} sm={24}>
             <PInput
               type="text"
+              value={values?.survayDescription}
               name="survayDescription"
               placeholder="Survay Description"
               label="Survay Description"

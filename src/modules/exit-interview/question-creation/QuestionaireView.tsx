@@ -1,11 +1,12 @@
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import axios from "axios";
 import SingleInfo from "common/SingleInfo";
 import { Flex, PButton, PInput, PRadio, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useSelector } from "react-redux";
+import { assignToEmployee } from "./helper";
+import Loading from "common/loading/Loading";
 
 const QuestionaireView = ({ singleData }: any) => {
   const { type, title, description, questions } = singleData;
@@ -24,6 +25,7 @@ const QuestionaireView = ({ singleData }: any) => {
   };
 
   const [employee, setEmployee] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const CommonEmployeeDDL = useApiRequest([]);
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
@@ -46,6 +48,7 @@ const QuestionaireView = ({ singleData }: any) => {
   };
   return (
     <div>
+      {loading && <Loading />}
       <Flex justify="space-between">
         <div>
           <SingleInfo label={"Questionaire Type"} value={type || "N/A"} />
@@ -79,10 +82,12 @@ const QuestionaireView = ({ singleData }: any) => {
             type="primary"
             content="Assign"
             onClick={() => {
-              axios.post("/Questionnaire/Assign", {
-                questionnaireId: singleData?.id,
-                employeeBasicInfoId: employee?.value,
-              });
+              assignToEmployee(
+                singleData?.id,
+                employee?.value,
+                setEmployee,
+                setLoading
+              );
             }}
           />
         </div>

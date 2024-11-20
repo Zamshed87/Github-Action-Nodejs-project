@@ -18,3 +18,20 @@ export const getSingleQuestionnaire = async (
     setLoading && setLoading(false);
   }
 };
+
+export const assignToEmployee = async (id, empId, setData, setLoading) => {
+  setLoading && setLoading(true);
+  const payload = {
+    questionnaireId: id,
+    employeeBasicInfoId: empId,
+  };
+  try {
+    const res = await axios.post(`/Questionnaire/Assign`, payload);
+    setData(null);
+    toast.success(res?.data?.Message || "Successfully Assigned");
+  } catch (res) {
+    toast.warning(res?.data?.Message || "Something went wrong");
+  } finally {
+    setLoading && setLoading(false);
+  }
+};

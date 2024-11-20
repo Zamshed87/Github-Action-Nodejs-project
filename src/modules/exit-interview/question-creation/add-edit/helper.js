@@ -8,7 +8,12 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const saveQuestionnaire = async (values, setLoading, cb) => {
+export const saveQuestionnaire = async (
+  values,
+  profileData,
+  setLoading,
+  cb
+) => {
   setLoading(true);
   try {
     const question = values?.questions?.map((ques, index) => {
@@ -37,9 +42,9 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
       typeId: parseInt(values?.survayType?.value),
       title: values?.survayTitle,
       description: values?.survayDescription,
-      businessUnitId: values?.buDDL?.value,
-      workplaceGroupId: values?.wgDDL?.value,
-      workplaceId: values?.wDDL?.value,
+      businessUnitId: profileData?.buId,
+      workplaceGroupId: profileData?.wgId,
+      workplaceId: profileData?.wId,
       questions: question,
     };
 
