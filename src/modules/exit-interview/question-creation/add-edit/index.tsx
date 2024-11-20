@@ -6,7 +6,7 @@
  * Date: 12-11-2024
  *
  */
-import { Col, Divider, Row } from "antd";
+import { Col, Divider, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -43,18 +43,18 @@ import { toast } from "react-toastify";
 import { getSingleQuestionnaire } from "../helper";
 
 const validationSchema = yup.object({
-  buDDL: yup.object().shape({
-    label: yup.string().required("Business unit is required"),
-    value: yup.string().required("Business unit is required"),
-  }),
-  wgDDL: yup.object().shape({
-    label: yup.string().required("Workplace group is required"),
-    value: yup.string().required("Workplace group is required"),
-  }),
-  wDDL: yup.object().shape({
-    label: yup.string().required("Workplace is required"),
-    value: yup.string().required("Workplace is required"),
-  }),
+  // buDDL: yup.object().shape({
+  //   label: yup.string().required("Business unit is required"),
+  //   value: yup.string().required("Business unit is required"),
+  // }),
+  // wgDDL: yup.object().shape({
+  //   label: yup.string().required("Workplace group is required"),
+  //   value: yup.string().required("Workplace group is required"),
+  // }),
+  // wDDL: yup.object().shape({
+  //   label: yup.string().required("Workplace is required"),
+  //   value: yup.string().required("Workplace is required"),
+  // }),
   survayType: yup.object().shape({
     label: yup.string().required("survayType is required"),
     value: yup.string().required("survayType is required"),
@@ -138,6 +138,8 @@ const QuestionCreationAddEdit = () => {
   const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState({});
 
+  const [antForm] = Form.useForm();
+
   const ansDragEnd = (result: DropResult, values: any) => {
     const { source, destination } = result;
     if (!destination) return;
@@ -171,7 +173,6 @@ const QuestionCreationAddEdit = () => {
   const formData: any = useFormik({
     enableReinitialize: true,
     initialValues: {
-      survayDescription: "hi",
       questions: [],
       answers: [],
     },
@@ -188,7 +189,16 @@ const QuestionCreationAddEdit = () => {
   console.log(quesId);
 
   return letterConfigPermission?.isCreate ? (
-    <PForm>
+    <PForm
+      form={antForm}
+      initialValues={{
+        survayType: null,
+        survayTitle: "hi",
+        survayDescription: "",
+        questions: [],
+        answers: [],
+      }}
+    >
       <PCard>
         <PCardHeader
           title={quesId ? "Edit Question" : "Create Question"}
@@ -284,6 +294,7 @@ const QuestionCreationAddEdit = () => {
               label="Survay Type"
               placeholder="Survay Type"
               onChange={(_: number, op) => {
+                antForm.setFieldValue("survayType", op);
                 setFieldValue("survayType", op);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -297,6 +308,7 @@ const QuestionCreationAddEdit = () => {
               placeholder="Survay Title"
               label="Survay Title"
               onChange={(e) => {
+                antForm.setFieldValue("survayTitle", e.target.value);
                 setFieldValue("survayTitle", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -310,6 +322,7 @@ const QuestionCreationAddEdit = () => {
               placeholder="Survay Description"
               label="Survay Description"
               onChange={(e) => {
+                antForm.setFieldValue("survayDescription", e.target.value);
                 setFieldValue("survayDescription", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -387,6 +400,7 @@ const QuestionCreationAddEdit = () => {
                                           touched={form.touched}
                                           setValues={form.setValues}
                                           questionTypeDDL={questionTypeDDL}
+                                          antForm={antForm}
                                         />
                                       </div>
                                     </div>

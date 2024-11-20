@@ -23,6 +23,7 @@ const SingleQuestionnaire = ({
   touched,
   setValues,
   questionTypeDDL,
+  antForm,
 }: any) => {
   return (
     <Stack direction="column" spacing={2}>
@@ -82,7 +83,10 @@ const SingleQuestionnaire = ({
               <Switch
                 size="small"
                 checked={question?.isRequired}
-                onChange={(value: any) => setFieldValue(`${isRequired}`, value)}
+                onChange={(value: any) => {
+                  antForm.setFieldValue(`${isRequired}`, value);
+                  setFieldValue(`${isRequired}`, value);
+                }}
               />
               <p className="ml-2">Required</p>
             </Flex>
@@ -98,6 +102,7 @@ const SingleQuestionnaire = ({
               type="checkbox"
               layout="horizontal"
               onChange={(e) => {
+                antForm.setFieldValue(`${isDraft}`, e.target.checked);
                 setFieldValue(`${isDraft}`, e.target.checked);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -115,6 +120,7 @@ const SingleQuestionnaire = ({
             value={question?.questionType}
             options={questionTypeDDL || []}
             onChange={(value: any) => {
+              antForm.setFieldValue(`${questionType}`, value);
               setFieldValue(`${questionType}`, value);
             }}
             rules={[{ required: true, message: "Required Field" }]}
@@ -126,9 +132,10 @@ const SingleQuestionnaire = ({
             value={question?.questionTitle}
             placeholder="Question Title"
             label="Question Title"
-            onChange={(value: any) =>
-              setFieldValue(`${questionTitle}`, value.target.value)
-            }
+            onChange={(value: any) => {
+              antForm.setFieldValue(`${questionTitle}`, value.target.value);
+              setFieldValue(`${questionTitle}`, value.target.value);
+            }}
             rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
@@ -139,9 +146,10 @@ const SingleQuestionnaire = ({
             value={question?.expectedAns}
             placeholder="Expected Answer"
             label="Expected Answer"
-            onChange={(value: any) =>
-              setFieldValue(`${expectedAns}`, value.target.value)
-            }
+            onChange={(value: any) => {
+              antForm.setFieldValue(`${expectedAns}`, value.target.value);
+              setFieldValue(`${expectedAns}`, value.target.value);
+            }}
             rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
@@ -154,6 +162,7 @@ const SingleQuestionnaire = ({
             question={question}
             handleBlur={handleBlur}
             touched={touched}
+            antForm={antForm}
           />
         </DragDropContext>
       ) : (
@@ -165,9 +174,10 @@ const SingleQuestionnaire = ({
                 value={question?.ansTextLength}
                 placeholder="Max length"
                 label="Maximum length of answer"
-                onChange={(value: any) =>
-                  setFieldValue(`${ansTextLength}`, value)
-                }
+                onChange={(value: any) => {
+                  antForm.setFieldValue(`${ansTextLength}`, value);
+                  setFieldValue(`${ansTextLength}`, value);
+                }}
               />
             </Col>
           </Row>
