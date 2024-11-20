@@ -17,6 +17,12 @@ const FormCard = ({ propsObj }) => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const nextMonthLastDate = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 2, 0).toISOString().split("T")[0];
+  };
+
   return (
     <>
       {loading && <Loading />}
@@ -72,7 +78,7 @@ const FormCard = ({ propsObj }) => {
                   }}
                   errors={errors}
                   touched={touched}
-                  max={monthLastDate()}
+                 max={nextMonthLastDate()}
                   min={monthFirstDate()}
                 />
               </div>
