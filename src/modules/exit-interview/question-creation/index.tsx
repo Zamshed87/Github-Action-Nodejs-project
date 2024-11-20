@@ -75,7 +75,6 @@ const QuestionCreationLanding = () => {
     filters = filterList,
   }: TLandingApi) => {
     const payload = {
-      accountId: orgId,
       businessUnitId: buId,
       workplaceGroupId: wgId,
       workplaceId: wId,
@@ -83,13 +82,12 @@ const QuestionCreationLanding = () => {
       pageSize: pagination?.pageSize,
       isPaginated: true,
       isHeaderNeeded: true,
-      letterTypeList: filters?.letterType || [],
+      typeList: filters?.letterType || [],
       createdByList: filters?.createdByEmployee || [],
-      letterNameList: filters?.letterName || [],
-      issuedEmployeeIdList: filters?.issuedEmployeeName || [],
+      statusList: filters?.letterName || [],
     };
     landingApi?.action({
-      urlKey: "GetGeneratedLetterLanding",
+      urlKey: "GetQuestionLanding",
       method: "POST",
       payload: payload,
     });
@@ -113,10 +111,10 @@ const QuestionCreationLanding = () => {
       align: "center",
     },
     {
-      title: "Letter Type",
+      title: "Survay Type",
       dataIndex: "letterType",
       filter: true,
-      filterKey: "letterTypeList",
+      filterKey: "typeList",
       filterSearch: true,
     },
     {
