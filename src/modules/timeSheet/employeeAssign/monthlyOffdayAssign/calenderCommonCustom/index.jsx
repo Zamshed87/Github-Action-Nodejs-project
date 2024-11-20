@@ -48,8 +48,7 @@ const CalenderCommon = ({
   // Initialize or update the calendar data whenever dates are updated
   useEffect(() => {
     if (
-      !singleAssign &&
-      checkedList?.length > 1 &&
+      (isAssignAll || checkedList?.length > 1) &&
       (calendarData.length !== dates.length || // Check if lengths don't match
         calendarData[0]?.date?.split("-")[1] !== date.month)
     ) {
@@ -77,7 +76,7 @@ const CalenderCommon = ({
       );
     }
   }, [date, singleAssign, checkedList]);
-  console.log({ calendarData });
+  // console.log({ calendarData });
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
       <div className="mx-0" style={{ height: "80%" }}>
