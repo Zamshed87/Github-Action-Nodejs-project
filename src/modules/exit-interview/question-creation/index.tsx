@@ -19,7 +19,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getSerial } from "Utils";
-import { MdAssignmentAdd } from "react-icons/md";
 import { getSingleQuestionnaire } from "./helper";
 import Loading from "common/loading/Loading";
 import QuestionaireView from "./QuestionaireView";
@@ -219,15 +218,6 @@ const QuestionCreationLanding = () => {
                 history.push(
                   `/profile/exitInterview/questionCreation/edit/${rec.id}`
                 );
-              }}
-            />
-          </Tooltip>
-          <Tooltip placement="bottom" title={"Assign"}>
-            <MdAssignmentAdd
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onClick={() => {
-                setSingleData(rec);
-                setOpen(true);
               }}
             />
           </Tooltip>

@@ -1,11 +1,20 @@
-import { QuestionCircleOutlined, QuestionOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import axios from "axios";
 import SingleInfo from "common/SingleInfo";
-import { PInput, PRadio, PSelect } from "Components";
-import React from "react";
+import { Flex, PButton, PInput, PRadio, PSelect } from "Components";
+import { useApiRequest } from "Hooks";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
+import { shallowEqual, useSelector } from "react-redux";
 
 const QuestionaireView = ({ singleData }: any) => {
   const { type, title, description, questions } = singleData;
+
+  const { profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  const { buId, wgId } = profileData;
 
   const getValueLabel = (dataArr: any) => {
     return dataArr?.map((item: any) => ({
@@ -13,16 +22,71 @@ const QuestionaireView = ({ singleData }: any) => {
       label: item.optionName,
     }));
   };
+
+  const [employee, setEmployee] = useState<any>(null);
+  const CommonEmployeeDDL = useApiRequest([]);
+  const getEmployee = (value: any) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.employeeNameWithCode;
+          res[i].value = item?.employeeId;
+        });
+      },
+    }).then();
+  };
   return (
     <div>
-      <>
-        <SingleInfo label={"Questionaire Type"} value={type || "N/A"} />
-        <SingleInfo label={"Questionaire Title"} value={title || "N/A"} />
-        <SingleInfo
-          label={"Questionaire Description"}
-          value={description || "N/A"}
-        />
-      </>
+      <Flex justify="space-between">
+        <div>
+          <SingleInfo label={"Questionaire Type"} value={type || "N/A"} />
+          <SingleInfo label={"Questionaire Title"} value={title || "N/A"} />
+          <SingleInfo
+            label={"Questionaire Description"}
+            value={description || "N/A"}
+          />
+        </div>
+        <div>
+          <PSelect
+            style={{ width: "250px" }}
+            name="employee"
+            label="Assign to"
+            placeholder="Search Min 2 char"
+            options={CommonEmployeeDDL?.data || []}
+            loading={CommonEmployeeDDL?.loading}
+            onChange={(value, op: any) => {
+              setEmployee(op);
+            }}
+            onSearch={(value) => {
+              getEmployee(value);
+            }}
+            showSearch
+            filterOption={false}
+            allowClear={true}
+          />
+          <PButton
+            disabled={!employee}
+            style={{ marginLeft: "auto", marginTop: "4px" }}
+            type="primary"
+            content="Assign"
+            onClick={() => {
+              axios.post("/Questionnaire/Assign", {
+                questionnaireId: singleData?.id,
+                employeeBasicInfoId: employee?.value,
+              });
+            }}
+          />
+        </div>
+      </Flex>
       <div style={{ marginTop: "10px" }}>
         <h2>
           <QuestionCircleOutlined style={{ fontSize: "16px" }} /> Application
