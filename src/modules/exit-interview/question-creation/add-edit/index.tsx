@@ -19,7 +19,7 @@ import {
 } from "Components";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import {
   getEnumData,
   getWorkplaceDDL,
@@ -43,20 +43,20 @@ import { toast } from "react-toastify";
 
 const validationSchema = yup.object({
   buDDL: yup.object().shape({
-    label: yup.string().required("Item category is required"),
-    value: yup.string().required("Item category is required"),
+    label: yup.string().required("Business unit is required"),
+    value: yup.string().required("Business unit is required"),
   }),
   wgDDL: yup.object().shape({
-    label: yup.string().required("Item category is required"),
-    value: yup.string().required("Item category is required"),
+    label: yup.string().required("Workplace group is required"),
+    value: yup.string().required("Workplace group is required"),
   }),
   wDDL: yup.object().shape({
-    label: yup.string().required("Item category is required"),
-    value: yup.string().required("Item category is required"),
+    label: yup.string().required("Workplace is required"),
+    value: yup.string().required("Workplace is required"),
   }),
   survayType: yup.object().shape({
-    label: yup.string().required("Item category is required"),
-    value: yup.string().required("Item category is required"),
+    label: yup.string().required("survayType is required"),
+    value: yup.string().required("survayType is required"),
   }),
   survayTitle: yup.string().required("Required Field"),
   survayDescription: yup.string().required("Required Field"),
@@ -93,6 +93,7 @@ const QuestionCreationAddEdit = () => {
   const { quesId }: any = useParams();
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { permissionList, profileData, businessUnitDDL } = useSelector(
     (state: any) => state?.auth,
@@ -168,6 +169,7 @@ const QuestionCreationAddEdit = () => {
   const formData: any = useFormik({
     enableReinitialize: true,
     initialValues: {
+      buDDL: null,
       questions: [],
       answers: [],
     },
@@ -202,6 +204,7 @@ const QuestionCreationAddEdit = () => {
                   .then(() => {
                     saveQuestionnaire(values, setLoading, () => {
                       resetForm();
+                      history.push("/profile/exitInterview/questionCreation");
                     });
                   })
                   .catch((err) => {
@@ -223,6 +226,7 @@ const QuestionCreationAddEdit = () => {
                 ) || []
               }
               name="buDDL"
+              value={values?.buDDL}
               label="Business Unit"
               placeholder="Business Unit"
               onChange={(value: number, op) => {

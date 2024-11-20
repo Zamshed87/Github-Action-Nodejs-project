@@ -25,7 +25,7 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
         title: ques?.questionTitle,
         sortOrder: index + 1,
         answer: ques?.expectedAns,
-        answerTextLength: ques?.ansTextLength || 0,
+        answerTextLength: ques?.ansTextLength || 4000,
         isRequired: ques?.isRequired,
         saveAsTemplate: ques?.isDraft,
         options: relevantAnswers || [],
@@ -46,9 +46,9 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
     console.log(payload);
     const res = await axios.post(`/Questionnaire`, payload);
     cb();
-    toast.success(res?.data?.message, { toastId: 1 });
+    toast.success(res?.data?.Message || "Created Sucessfully", { toastId: 1 });
   } catch (error) {
-    toast.warn(error?.response?.data?.message, { toastId: 1 });
+    toast.warn(error?.response?.data?.Message, { toastId: 1 });
   } finally {
     setLoading(false);
   }
