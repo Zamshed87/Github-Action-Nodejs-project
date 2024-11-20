@@ -6,7 +6,7 @@
  * Date: 12-11-2024
  *
  */
-import { Col, Divider, Row } from "antd";
+import { Col, Divider, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -19,7 +19,7 @@ import {
 } from "Components";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import {
   getEnumData,
   getWorkplaceDDL,
@@ -39,25 +39,39 @@ import SingleQuestionnaire from "./SingleQuestionnaire";
 import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
 import { saveQuestionnaire } from "./helper";
+import { toast } from "react-toastify";
+import { getSingleQuestionnaire } from "../helper";
 
 const validationSchema = yup.object({
+  // buDDL: yup.object().shape({
+  //   label: yup.string().required("Business unit is required"),
+  //   value: yup.string().required("Business unit is required"),
+  // }),
+  // wgDDL: yup.object().shape({
+  //   label: yup.string().required("Workplace group is required"),
+  //   value: yup.string().required("Workplace group is required"),
+  // }),
+  // wDDL: yup.object().shape({
+  //   label: yup.string().required("Workplace is required"),
+  //   value: yup.string().required("Workplace is required"),
+  // }),
+  survayType: yup.object().shape({
+    label: yup.string().required("survayType is required"),
+    value: yup.string().required("survayType is required"),
+  }),
+  survayTitle: yup.string().required("Required Field"),
+  survayDescription: yup.string().required("Required Field"),
   questions: yup.array().of(
     yup.object().shape({
-      id: yup.string().required("Question ID is required"),
-      questionTitle: yup.string().required("Question title is required"),
-      questionType: yup.string().required("Question type is required"),
-      ansType: yup.string().required("Answer type is required"),
+      questionTitle: yup.string().required("Required Field"),
+      questionType: yup.string().required("Required Field"),
+      expectedAns: yup.string().required("Required Field"),
       ansTextLength: yup
         .string()
         .nullable()
-        .when("ansType", {
+        .when("questionType", {
           is: "text",
-          then: yup.string().required("Answer text length is required"),
-          otherwise: yup.string().nullable(),
-        })
-        .when("ansType", {
-          is: "select",
-          then: yup.string().nullable(),
+          then: yup.string().required("Length is required"),
           otherwise: yup.string().nullable(),
         }),
     })
@@ -65,13 +79,10 @@ const validationSchema = yup.object({
 
   answers: yup.array().of(
     yup.object().shape({
-      id: yup.string().required("Answer ID is required"),
       queId: yup.string().required("Question ID for answer is required"),
       answerDescription: yup.string().when("queId", {
         is: (queId: string) => queId && queId.length > 0,
-        then: yup
-          .string()
-          .required("Answer description is required for this question"),
+        then: yup.string().required("Required Field"),
         otherwise: yup.string().nullable(),
       }),
     })
@@ -83,6 +94,7 @@ const QuestionCreationAddEdit = () => {
   const { quesId }: any = useParams();
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { permissionList, profileData, businessUnitDDL } = useSelector(
     (state: any) => state?.auth,
@@ -124,6 +136,9 @@ const QuestionCreationAddEdit = () => {
 
   const [survayTypeDDL, setSurvayTypeDDL] = useState([]);
   const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
+  const [singleData, setSingleData] = useState({});
+
+  const [antForm] = Form.useForm();
 
   const ansDragEnd = (result: DropResult, values: any) => {
     const { source, destination } = result;
@@ -165,17 +180,25 @@ const QuestionCreationAddEdit = () => {
   });
   const { values, setFieldValue, handleBlur, resetForm } = formData;
 
-  console.log(values);
-
   useEffect(() => {
     getEnumData("QuestionnaireType", setSurvayTypeDDL);
     getEnumData("QuestionnaireQuestionType", setQuestionTypeDDL);
+    quesId && getSingleQuestionnaire(quesId, setSingleData, setLoading);
   }, []);
 
-  console.log(survayTypeDDL, questionTypeDDL);
+  console.log(quesId);
 
   return letterConfigPermission?.isCreate ? (
-    <PForm>
+    <PForm
+      form={antForm}
+      initialValues={{
+        survayType: null,
+        survayTitle: "hi",
+        survayDescription: "",
+        questions: [],
+        answers: [],
+      }}
+    >
       <PCard>
         <PCardHeader
           title={quesId ? "Edit Question" : "Create Question"}
@@ -187,14 +210,23 @@ const QuestionCreationAddEdit = () => {
               content: "Save",
               disabled: loading,
               onClick: () => {
-                saveQuestionnaire(values, setLoading, () => {
-                  resetForm();
-                });
+                validationSchema
+                  .validate(values)
+                  .then(() => {
+                    saveQuestionnaire(values, profileData, setLoading, () => {
+                      resetForm();
+                      history.push("/profile/exitInterview/questionCreation");
+                    });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    toast.warning("Please fill the required fields");
+                  });
               },
             },
           ]}
         />
-        <Row gutter={[10, 2]}>
+        {/* <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
               options={
@@ -205,6 +237,7 @@ const QuestionCreationAddEdit = () => {
                 ) || []
               }
               name="buDDL"
+              value={values?.buDDL}
               label="Business Unit"
               placeholder="Business Unit"
               onChange={(value: number, op) => {
@@ -252,7 +285,7 @@ const QuestionCreationAddEdit = () => {
               rules={[{ required: true, message: "Required Field" }]}
             />
           </Col>
-        </Row>
+        </Row> */}
         <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
@@ -261,6 +294,7 @@ const QuestionCreationAddEdit = () => {
               label="Survay Type"
               placeholder="Survay Type"
               onChange={(_: number, op) => {
+                antForm.setFieldValue("survayType", op);
                 setFieldValue("survayType", op);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -274,6 +308,7 @@ const QuestionCreationAddEdit = () => {
               placeholder="Survay Title"
               label="Survay Title"
               onChange={(e) => {
+                antForm.setFieldValue("survayTitle", e.target.value);
                 setFieldValue("survayTitle", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -282,10 +317,12 @@ const QuestionCreationAddEdit = () => {
           <Col md={6} sm={24}>
             <PInput
               type="text"
+              value={values?.survayDescription}
               name="survayDescription"
               placeholder="Survay Description"
               label="Survay Description"
               onChange={(e) => {
+                antForm.setFieldValue("survayDescription", e.target.value);
                 setFieldValue("survayDescription", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
@@ -363,6 +400,7 @@ const QuestionCreationAddEdit = () => {
                                           touched={form.touched}
                                           setValues={form.setValues}
                                           questionTypeDDL={questionTypeDDL}
+                                          antForm={antForm}
                                         />
                                       </div>
                                     </div>
