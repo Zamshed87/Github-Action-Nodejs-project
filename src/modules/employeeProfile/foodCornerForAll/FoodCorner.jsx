@@ -85,6 +85,7 @@ export default function FoodCornerForAll() {
       Narration: values?.remarks || "",
       ActionBy: employeeId,
       MealConsumePlaceId: values?.place?.value || 0,
+      businessUnitId: buId,
     };
     createCafeteriaEntry(
       1,
@@ -101,7 +102,8 @@ export default function FoodCornerForAll() {
       payload,
       setLoading,
       cb,
-      +values?.place?.value
+      +values?.place?.value,
+      buId
     );
     // (partId, date, enrollId, typeId, mealOption, mealFor, countMeal, ownGuest, payable, narration, userId, payload, setLoading, cb)
   };
@@ -191,7 +193,13 @@ export default function FoodCornerForAll() {
                                 fontWeight: "600",
                               }}
                             >
-                              Meal Requisition
+                              Meal Requisition{" "}
+                              <span
+                                style={{ marginLeft: "40px",  color: "#db4c4c", letterSpacing:'0.3px', fontWeight:'bold'}}
+                              >
+                                Next months meal employees can register within
+                                last 7 days of current month.
+                              </span>
                             </h6>
                             <FormCard
                               propsObj={{
