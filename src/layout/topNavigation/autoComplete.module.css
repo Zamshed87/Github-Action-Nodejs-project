@@ -8,7 +8,7 @@
     transition: all 0.3s linear;
     padding: 4px 5px 5px;
     border-radius: 5px;
-    font-family: var(--interFont);
+    font-family: Poppins;
     color: var(--gray600) !important;
     font-size: 14px !important;
     min-width: 250px;
