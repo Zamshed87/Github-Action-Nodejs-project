@@ -31,7 +31,11 @@ export const createCafeteriaEntry = async (
     toast.success(res.data?.message || " Create Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    toast.warn(
+      error?.response?.data?.Message ||
+        error?.response?.data?.message ||
+        "Something went wrong"
+    );
     setLoading && setLoading(false);
   }
 };
