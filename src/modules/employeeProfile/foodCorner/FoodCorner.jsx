@@ -39,12 +39,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Type is required"),
     })
     .typeError("Type is required"),
-  place: Yup.object()
-    .shape({
-      label: Yup.string().required("place is required"),
-      value: Yup.string().required("place is required"),
-    })
-    .typeError("place is required"),
+  // place: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("place is required"),
+  //     value: Yup.string().required("place is required"),
+  //   })
+  //   .typeError("place is required"),
 });
 
 export default function FoodCorner() {
@@ -74,8 +74,6 @@ export default function FoodCorner() {
       isPayable: 1,
       Narration: values?.remarks || "",
       ActionBy: employeeId,
-      businessUnitId: buId,
-      
     };
     createCafeteriaEntry(
       1,
@@ -97,20 +95,22 @@ export default function FoodCorner() {
     );
   };
 
-  const getLandingData = () => {
+  const getLandingData = (values) => {
     getPendingAndConsumeMealReport(
       1,
       employeeId,
       setScheduleMeal,
       setLoading,
-      ""
+      "",
+      values?.date || todayDate()
     );
     getPendingAndConsumeMealReport(
       2,
       employeeId,
       setConsumeMeal,
       setLoading,
-      ""
+      "",
+      values?.date || todayDate()
     );
   };
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function FoodCorner() {
         onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
-            getLandingData();
+            getLandingData(values);
           });
         }}
       >
@@ -160,12 +160,7 @@ export default function FoodCorner() {
                             fontWeight: "600",
                           }}
                         >
-                          Meal Requisition {" "}
-                              <span
-                                style={{ marginLeft: "40px",  color: "#db4c4c", letterSpacing:'0.3px', fontWeight:'bold', fontSize:'13px'}}
-                              >
-                               Employees can register for next month’s meals in the last 7 days of the current month.
-                              </span>
+                          Meal Requisition
                         </h6>
                         <FormCard
                           propsObj={{
@@ -217,6 +212,7 @@ export default function FoodCorner() {
                       <ScheduleMeal
                         getLandingData={getLandingData}
                         scheduleMeal={scheduleMeal}
+                        buId={buId}
                       />
                     </div>
                     <div className="col-lg-6">
