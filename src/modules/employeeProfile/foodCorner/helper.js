@@ -31,7 +31,11 @@ export const createCafeteriaEntry = async (
     toast.success(res.data?.message || " Create Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    toast.warn(
+      error?.response?.data?.Message ||
+        error?.response?.data?.message ||
+        "Something went wrong"
+    );
     setLoading && setLoading(false);
   }
 };
@@ -41,12 +45,13 @@ export const getPendingAndConsumeMealReport = async (
   enrollId,
   setter,
   setIsLoading,
-  cb
+  cb,
+  date
 ) => {
   setIsLoading && setIsLoading(true);
   try {
     const res = await axios.get(
-      `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}`
+      `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}&mealDate=${date}`
     );
     setIsLoading && setIsLoading(false);
     setter(res?.data);
