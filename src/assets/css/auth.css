@@ -73,7 +73,7 @@
 .auth-footer-list li > a,
 .auth-footer-list li > a:hover,
 .auth-footer-list li > a:focus {
-  font-family: var(--robotoFont);
+  font-family: Poppins;
   font-size: 12px;
   line-height: 14px;
   color: var(--grey);

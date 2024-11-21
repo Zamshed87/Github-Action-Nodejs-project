@@ -431,5 +431,5 @@ color : #999;
 .MuiTablePagination-displayedRows {
   font-size: 12px !important;
   line-height: 18px !important;
-  font-family: var(--interFont) !important;
+  font-family: Poppins !important;
 }
