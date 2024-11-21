@@ -77,6 +77,9 @@ import QuestionerConfigLanding from "modules/exit-interview/questioner-configure
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
+import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
+import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3153,6 +3156,18 @@ export const routingList = [
   {
     path: "/profile/customReportsBuilder/letterGenerate/generateLetter/:letterId",
     component: LetterGenAddEdit,
+  },
+  {
+    path: "/profile/rewardAndPunishment",
+    component: RewardPunishmentLanding,
+  },
+  {
+    path: "/profile/rewardAndPunishment/letterGenerate",
+    component: RewardPunishmentLetterGenAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/punishmentAction/:recordId",
+    component: PunishmentAction,
   },
   // Trainnning and development ends
 
