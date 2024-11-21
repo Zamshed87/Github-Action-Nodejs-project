@@ -309,6 +309,7 @@ export default function FoodCornerForAll() {
                             scheduleMeal={scheduleMeal}
                             values={values}
                             employeeId={employeeId}
+                            buId={buId}
                           />
                         </div>
                         <div className="col-lg-6">

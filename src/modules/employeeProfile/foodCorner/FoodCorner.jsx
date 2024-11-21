@@ -90,7 +90,8 @@ export default function FoodCorner() {
       payload,
       setLoading,
       cb,
-      +values?.place?.value
+      +values?.place?.value,
+      buId
     );
   };
 
@@ -211,6 +212,7 @@ export default function FoodCorner() {
                       <ScheduleMeal
                         getLandingData={getLandingData}
                         scheduleMeal={scheduleMeal}
+                        buId={buId}
                       />
                     </div>
                     <div className="col-lg-6">
