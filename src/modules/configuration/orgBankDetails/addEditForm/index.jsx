@@ -440,7 +440,7 @@ export default function AddEditForm({
                   label: "UCB",
                 },
                 {
-                  value: "Upay",
+                  value: "DigitalPayment",
 
                   label: "Upay",
                 },
