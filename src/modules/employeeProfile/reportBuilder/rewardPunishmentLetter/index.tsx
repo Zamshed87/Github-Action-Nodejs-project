@@ -247,17 +247,17 @@ const RewardPunishmentLanding = () => {
           </Tooltip>
           <Tooltip
             placement="bottom"
-            title={rec?.isMailSend ? "Send Already" : "Send"}
+            title={rec?.isExplanation ? "Send Already" : "Send"}
           >
             <SendOutlined
               style={{
-                color: !rec?.isMailSend ? "green" : "grey",
-                cursor: !rec?.isMailSend ? "pointer" : "not-allowed",
+                color: !rec?.isExplanation ? "green" : "grey",
+                cursor: !rec?.isExplanation ? "pointer" : "not-allowed",
                 fontSize: "14px",
                 marginRight: "7px",
               }}
               onClick={() => {
-                if (!rec?.isMailSend) {
+                if (!rec?.isExplanation) {
                   ViewRewardPunishmentRecord(
                     rec?.recordId,
                     setLoading,

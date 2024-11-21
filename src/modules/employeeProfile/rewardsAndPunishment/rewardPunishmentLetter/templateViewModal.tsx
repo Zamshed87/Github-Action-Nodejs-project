@@ -107,12 +107,16 @@ const TemplateView = ({ singleData }: any) => {
             <Text strong>Actions:</Text>{" "}
             <Text>{singleData?.actionName || "N/A"}</Text>
           </div>
+          <div>
+            <Text strong>Action Remarks:</Text>{" "}
+            <Text>{singleData?.actionRemarks || "N/A"}</Text>
+          </div>
         </>
       )}
 
       <Divider />
 
-      <Title level={5}>Letter Template</Title>
+      <Title level={5}>{singleData?.letterName}</Title>
       <div
         style={{
           border: "1px solid #f0f0f0",
