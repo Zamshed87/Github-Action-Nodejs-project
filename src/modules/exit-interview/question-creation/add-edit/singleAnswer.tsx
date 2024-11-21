@@ -7,7 +7,7 @@ import { ErrorMessage, Field, FieldArray } from "formik";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import uuid from "utility/uuid";
 
-const SingleAnswer = ({ question, handleBlur, touched }: any) => {
+const SingleAnswer = ({ question, handleBlur, touched, antForm }: any) => {
   return (
     <Stack direction="column">
       <FieldArray name="answers">

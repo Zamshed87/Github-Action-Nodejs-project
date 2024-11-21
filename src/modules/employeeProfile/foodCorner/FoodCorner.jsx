@@ -74,6 +74,8 @@ export default function FoodCorner() {
       isPayable: 1,
       Narration: values?.remarks || "",
       ActionBy: employeeId,
+      businessUnitId: buId,
+      
     };
     createCafeteriaEntry(
       1,
@@ -90,7 +92,8 @@ export default function FoodCorner() {
       payload,
       setLoading,
       cb,
-      +values?.place?.value
+      +values?.place?.value,
+      buId
     );
   };
 
@@ -157,7 +160,12 @@ export default function FoodCorner() {
                             fontWeight: "600",
                           }}
                         >
-                          Meal Requisition
+                          Meal Requisition {" "}
+                              <span
+                                style={{ marginLeft: "40px",  color: "#db4c4c", letterSpacing:'0.3px', fontWeight:'bold', fontSize:'13px'}}
+                              >
+                               Employees can register for next month’s meals in the last 7 days of the current month.
+                              </span>
                         </h6>
                         <FormCard
                           propsObj={{

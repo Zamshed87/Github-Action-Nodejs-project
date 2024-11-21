@@ -2,7 +2,6 @@ import { DeleteOutlined, DragIndicator } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
 import { Col, Divider, Row, Switch } from "antd";
 import { Flex, PInput, PSelect } from "Components";
-import React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import SingleAnswer from "./singleAnswer";
 
@@ -24,6 +23,7 @@ const SingleQuestionnaire = ({
   touched,
   setValues,
   questionTypeDDL,
+  antForm,
 }: any) => {
   return (
     <Stack direction="column" spacing={2}>
@@ -83,7 +83,10 @@ const SingleQuestionnaire = ({
               <Switch
                 size="small"
                 checked={question?.isRequired}
-                onChange={(value: any) => setFieldValue(`${isRequired}`, value)}
+                onChange={(value: any) => {
+                  antForm.setFieldValue(`${isRequired}`, value);
+                  setFieldValue(`${isRequired}`, value);
+                }}
               />
               <p className="ml-2">Required</p>
             </Flex>
@@ -99,8 +102,10 @@ const SingleQuestionnaire = ({
               type="checkbox"
               layout="horizontal"
               onChange={(e) => {
+                antForm.setFieldValue(`${isDraft}`, e.target.checked);
                 setFieldValue(`${isDraft}`, e.target.checked);
               }}
+              rules={[{ required: true, message: "Required Field" }]}
             />
           </div>
         </Stack>
@@ -115,8 +120,10 @@ const SingleQuestionnaire = ({
             value={question?.questionType}
             options={questionTypeDDL || []}
             onChange={(value: any) => {
+              antForm.setFieldValue(`${questionType}`, value);
               setFieldValue(`${questionType}`, value);
             }}
+            rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
         <div className="col-12 col-md-4 py-0 my-0 pl-0">
@@ -125,9 +132,11 @@ const SingleQuestionnaire = ({
             value={question?.questionTitle}
             placeholder="Question Title"
             label="Question Title"
-            onChange={(value: any) =>
-              setFieldValue(`${questionTitle}`, value.target.value)
-            }
+            onChange={(value: any) => {
+              antForm.setFieldValue(`${questionTitle}`, value.target.value);
+              setFieldValue(`${questionTitle}`, value.target.value);
+            }}
+            rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
 
@@ -137,28 +146,27 @@ const SingleQuestionnaire = ({
             value={question?.expectedAns}
             placeholder="Expected Answer"
             label="Expected Answer"
-            onChange={(value: any) =>
-              setFieldValue(`${expectedAns}`, value.target.value)
-            }
+            onChange={(value: any) => {
+              antForm.setFieldValue(`${expectedAns}`, value.target.value);
+              setFieldValue(`${expectedAns}`, value.target.value);
+            }}
+            rules={[{ required: true, message: "Required Field" }]}
           />
         </div>
       </div>
 
       {question.questionType &&
-      (question.questionType === "checkbox" ||
-        question.questionType === "radio" ||
-        question.questionType === "select") ? (
-        <DragDropContext
-          onDragEnd={(result: any) => ansDragEnd(result, values)}
-        >
+      ["0", "1", "2"].includes(question.questionType) ? (
+        <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
           <SingleAnswer
             question={question}
             handleBlur={handleBlur}
             touched={touched}
+            antForm={antForm}
           />
         </DragDropContext>
       ) : (
-        question.questionType === "text" && (
+        ["3", "4"].includes(question.questionType) && (
           <Row>
             <Col md={8}>
               <PInput
@@ -166,9 +174,10 @@ const SingleQuestionnaire = ({
                 value={question?.ansTextLength}
                 placeholder="Max length"
                 label="Maximum length of answer"
-                onChange={(value: any) =>
-                  setFieldValue(`${ansTextLength}`, value)
-                }
+                onChange={(value: any) => {
+                  antForm.setFieldValue(`${ansTextLength}`, value);
+                  setFieldValue(`${ansTextLength}`, value);
+                }}
               />
             </Col>
           </Row>

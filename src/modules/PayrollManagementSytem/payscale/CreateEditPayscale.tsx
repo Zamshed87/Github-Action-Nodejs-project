@@ -130,6 +130,14 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     if (designationDto?.length === 0) {
       return toast.warn("Designations are not selected");
     }
+
+    if (!values?.jobLevel?.value) {
+      form.setFieldsValue({
+        jobLevelCreate: undefined,
+      });
+      return toast.warn("Payscale Level is not selected");
+    }
+
     const payload = {
       id: rowData?.id ? rowData?.id : 0,
 
@@ -240,7 +248,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           ) : (
             <PInput
               type="number"
-              name={`amountOrPercentage_${index}`}
+              // name={`amountOrPercentage_${index}`}
               value={row?.amountOrPercentage}
               placeholder="Amount"
               rules={[
@@ -478,6 +486,9 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       onClick={() => {
                         form.setFieldsValue({
                           typeCreate: true,
+                          jobClass: undefined,
+                          grade: undefined,
+                          jobLevel: undefined,
                         });
                       }}
                     >
@@ -541,6 +552,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       onClick={() => {
                         form.setFieldsValue({
                           gradeCreate: true,
+                          grade: undefined,
+                          jobLevel: undefined,
                         });
                       }}
                     >
@@ -604,6 +617,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       onClick={() => {
                         form.setFieldsValue({
                           jobLevelCreate: true,
+                          jobLevel: undefined,
                         });
                       }}
                     >
@@ -682,6 +696,9 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
               }
               if (isDuplicate?.length > 0) {
                 return toast.warn("Element is Already selected");
+              }
+              if (!values?.basedOn || !values?.element) {
+                return toast.warn("Select Fields First");
               }
 
               setElementDto((prev): any => {

@@ -15,7 +15,7 @@
 }
 
 .chat-heading {
-  font-family: Roboto;
+  font-family: Poppins;
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
@@ -73,7 +73,7 @@
   margin-left: 8px;
 }
 .chat-profile h5 {
-  font-family: Roboto;
+  font-family: Poppins;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -82,7 +82,7 @@
   margin-bottom: 2px;
 }
 .chat-profile p {
-  font-family: Roboto;
+  font-family: Poppins;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
