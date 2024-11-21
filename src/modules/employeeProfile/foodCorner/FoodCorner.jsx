@@ -162,10 +162,9 @@ export default function FoodCorner() {
                         >
                           Meal Requisition {" "}
                               <span
-                                style={{ marginLeft: "40px",  color: "#db4c4c", letterSpacing:'0.3px', fontWeight:'bold'}}
+                                style={{ marginLeft: "40px",  color: "#db4c4c", letterSpacing:'0.3px', fontWeight:'bold', fontSize:'13px'}}
                               >
-                                Next months meal employees can register within
-                                last 7 days of current month.
+                               Employees can register for next month’s meals in the last 7 days of the current month.
                               </span>
                         </h6>
                         <FormCard
