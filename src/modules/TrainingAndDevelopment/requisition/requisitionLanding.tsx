@@ -14,7 +14,7 @@ import {
 import Loading from "common/loading/Loading";
 import { getSerial } from "Utils";
 import { dateFormatter } from "utility/dateFormatter";
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { BarsOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { data } from "./helper";
 const TnDRequisitionLanding = () => {
@@ -108,7 +108,7 @@ const TnDRequisitionLanding = () => {
             />
           </Tooltip>
           <Tooltip placement="bottom" title={"Status"}>
-            <EditOutlined
+            <BarsOutlined
               style={{
                 color: "green",
                 fontSize: "14px",

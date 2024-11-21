@@ -79,26 +79,30 @@ const TnDRequisitionCreateEdit = () => {
           <PCardHeader
             backButton
             title={`Requisition ${type === "create" ? "Create" : "Edit"}`}
-            buttonList={[
-              {
-                type: "primary",
-                content: `${type === "create" ? "Save" : "Edit"}`,
-                icon: type === "create" ? <SaveOutlined /> : <EditOutlined />,
-                onClick: () => {
-                  const values = form.getFieldsValue(true);
+            buttonList={
+              type === "view"
+                ? [] // No buttons for "status" type
+                : [
+                    {
+                      type: "primary",
+                      content: `${type === "create" ? "Save" : "Edit"}`,
+                      icon:
+                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
 
-                  form
-                    .validateFields()
-                    .then(() => {
-                      console.log(values);
-                    })
-                    .catch(() => {
-                      console.log("error");
-                    });
-                  // history.push("/trainingDevelopment/requisition/create");
-                },
-              },
-            ]}
+                        form
+                          .validateFields()
+                          .then(() => {
+                            console.log(values);
+                          })
+                          .catch(() => {
+                            console.log("error");
+                          });
+                      },
+                    },
+                  ]
+            }
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
@@ -234,6 +238,16 @@ const TnDRequisitionCreateEdit = () => {
                         message: "Upcomming Training is required",
                       },
                     ]}
+                  />
+                </Col>
+              )}
+              {(type === "view" || type === "status") && (
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="text"
+                    placeholder="Comments"
+                    label="Comments"
+                    name="comments"
                   />
                 </Col>
               )}
