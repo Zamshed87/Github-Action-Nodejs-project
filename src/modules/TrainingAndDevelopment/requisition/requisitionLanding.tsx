@@ -16,6 +16,7 @@ import { getSerial } from "Utils";
 import { dateFormatter } from "utility/dateFormatter";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
+import { data } from "./helper";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -85,8 +86,9 @@ const TnDRequisitionLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                //   setSingleData(rec);
-                //   setOpen(true);
+                history.push("/trainingDevelopment/requisition/view", {
+                  data: rec,
+                });
               }}
             />
           </Tooltip>
@@ -98,6 +100,26 @@ const TnDRequisitionLanding = () => {
                 cursor: "pointer",
                 margin: "0 5px",
               }}
+              onClick={() => {
+                history.push("/trainingDevelopment/requisition/edit", {
+                  data: rec,
+                });
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Status"}>
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                history.push("/trainingDevelopment/requisition/status", {
+                  data: rec,
+                });
+              }}
             />
           </Tooltip>
         </Flex>
@@ -105,9 +127,8 @@ const TnDRequisitionLanding = () => {
       align: "center",
     },
   ];
-  const landingApiCall = (form: any) => {
-    const values = form.getFieldsValue(true);
-
+  const landingApiCall = (values: any) => {
+    console.log(values);
     getLandingApi("/trainingType");
   };
   useEffect(() => {
@@ -129,9 +150,7 @@ const TnDRequisitionLanding = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push(
-                    "/profile/trainingDevelopment/requisition/create"
-                  );
+                  history.push("/trainingDevelopment/requisition/create");
                 },
               },
             ]}
@@ -166,9 +185,13 @@ const TnDRequisitionLanding = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PButton
+                  style={{ marginTop: "22px" }}
                   type="primary"
                   content="View"
-                  onClick={() => landingApiCall(form)}
+                  onClick={() => {
+                    const values = form.getFieldsValue(true);
+                    landingApiCall(values);
+                  }}
                 />
               </Col>
             </Row>
@@ -177,7 +200,8 @@ const TnDRequisitionLanding = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={landingApi?.data?.data || []}
+              // data={landingApi?.data?.data || []}
+              data={data}
               loading={landingApi?.loading}
               header={header}
               pagination={{

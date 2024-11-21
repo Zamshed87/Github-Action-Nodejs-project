@@ -77,7 +77,6 @@ import QuestionerConfigLanding from "modules/exit-interview/questioner-configure
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
-
 import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
 import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
 
@@ -3112,16 +3111,6 @@ export const routingList = [
   },
   //external training end
 
-  // Training & Development New
-  {
-    path: "/profile/trainingDevelopment/requisition/:type",
-    component: TnDRequisitionLanding,
-  },
-  {
-    path: "/profile/trainingDevelopment/requisition/:type",
-    component: TnDRequisitionCreateEdit,
-  },
-
   {
     path: "/trainingAndDevelopment/assessment/assessmentForm",
     component: AssessmentFormLanding,
@@ -3166,6 +3155,15 @@ export const routingList = [
   {
     path: "/profile/customReportsBuilder/letterGenerate/generateLetter/:letterId",
     component: LetterGenAddEdit,
+  },
+  // Training & Development New
+  {
+    path: "/trainingDevelopment/requisition",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/trainingDevelopment/requisition/:type",
+    component: TnDRequisitionCreateEdit,
   },
   // Trainnning and development ends
 
