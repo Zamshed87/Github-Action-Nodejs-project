@@ -16,15 +16,14 @@ export const createCafeteriaEntry = async (
   payload,
   setLoading,
   cb,
-  placeId,
-  buId
+  placeId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
       `/Cafeteria/CafeteriaEntry?PartId=${partId}&ToDate=${date}&EnrollId=${enrollId}&TypeId=1&MealOption=${mealOption}&MealFor=${mealFor}&CountMeal=${countMeal}&isOwnGuest=${ownGuest}&isPayable=${payable}&Narration=${narration}&ActionBy=${userId}&MealConsumePlaceId=${
         placeId || 0
-      }&businessUnitId=${buId}`,
+      }`,
       payload
     );
     cb && cb();
@@ -41,12 +40,13 @@ export const getPendingAndConsumeMealReport = async (
   enrollId,
   setter,
   setIsLoading,
-  cb
+  cb,
+  date
 ) => {
   setIsLoading && setIsLoading(true);
   try {
     const res = await axios.get(
-      `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}`
+      `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}&mealDate=${date}`
     );
     setIsLoading && setIsLoading(false);
     setter(res?.data);
