@@ -1,189 +1,260 @@
 import { DeleteOutlined, DragIndicator } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
 import { Col, Divider, Row, Switch } from "antd";
-import { Flex, PInput, PSelect } from "Components";
-import { DragDropContext } from "react-beautiful-dnd";
-import SingleAnswer from "./singleAnswer";
+import { Flex, PButton, PInput, PSelect } from "Components";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { PlusOutlined } from "@ant-design/icons";
 
 const SingleQuestionnaire = ({
   index,
   queProvided,
-  question,
-  handleBlur,
-  questionType,
-  questionTitle,
-  isRequired,
-  isDraft,
-  ansTextLength,
-  expectedAns,
+  field,
   ansDragEnd,
   handleQuestionDelete,
-  values,
-  setFieldValue,
-  touched,
-  setValues,
+  Form,
   questionTypeDDL,
   antForm,
 }: any) => {
   return (
-    <Stack direction="column" spacing={2}>
-      <div>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={1}
-        >
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <span {...queProvided.dragHandleProps}>
-              <DragIndicator
-                style={{
-                  cursor: "move",
-                }}
-                fontSize="small"
-              />
-            </span>
+    <Form.Item shouldUpdate>
+      <Stack direction="column" spacing={2}>
+        <div>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={1}
+          >
+            <Stack
+              style={{ marginTop: "-20px" }}
+              direction="row"
+              alignItems="center"
+              spacing={1}
+            >
+              <span {...queProvided.dragHandleProps}>
+                <DragIndicator
+                  style={{
+                    cursor: "move",
+                  }}
+                  fontSize="small"
+                />
+              </span>
 
-            <div>
-              <p
-                style={{
-                  border: "1px solid black",
-                  borderRadius: "50px",
-                  padding: "4px 8px",
+              <div>
+                <p
+                  style={{
+                    border: "1px solid black",
+                    borderRadius: "50px",
+                    padding: "4px 10px",
+                  }}
+                >
+                  {index + 1}
+                </p>
+              </div>
+            </Stack>
+            <div className="d-flex justify-content-center align-items-center ">
+              <IconButton
+                style={{ marginTop: "-25px" }}
+                onClick={() => {
+                  handleQuestionDelete(field.name);
                 }}
               >
-                {index + 1}
-              </p>
+                <DeleteOutlined />
+              </IconButton>
+
+              <div className="mr-3" style={{ marginTop: "-20px" }}>
+                <div style={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+                  <hr style={{ margin: "12px 0" }} />
+                </div>
+              </div>
+
+              <Flex>
+                <div>
+                  <Form.Item
+                    name={[field.name, "isRequired"]}
+                    valuePropName="checked"
+                  >
+                    <Switch
+                      size="small"
+                      onChange={() => {
+                        console.log(antForm.getFieldValue(`questions`));
+                        console.log(
+                          ["0", "1", "2"].includes(
+                            antForm.getFieldValue(
+                              `questions[${index}].questionTypeVal`
+                            )
+                          )
+                        );
+                      }}
+                    />
+                  </Form.Item>
+                </div>
+                <p style={{ margin: "8px 0 0 4px" }}>Required</p>
+              </Flex>
+
+              {/*  */}
+              <div className="mx-3" style={{ marginTop: "-20px" }}>
+                <div style={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+                  <hr style={{ margin: "12px 0" }} />
+                </div>
+              </div>
+
+              <Form.Item name={[field.name, "isDraft"]} valuePropName="checked">
+                <PInput
+                  label="Save as Template?"
+                  type="checkbox"
+                  layout="horizontal"
+                  onChange={(e) => {
+                    antForm.setFieldValue(
+                      `questions[${index}].isDraft`,
+                      e.target.checked
+                    );
+                  }}
+                />
+              </Form.Item>
             </div>
           </Stack>
-          <div className="d-flex justify-content-center align-items-center ">
-            <IconButton
-              className="circle_title_icon_borderless"
-              onClick={() => {
-                setValues({
-                  ...values,
-                  answers: values.answers.filter(
-                    (item: any) =>
-                      item.queId.toString() !== question.id.toString()
-                  ),
-                });
-                handleQuestionDelete(index);
-              }}
-            >
-              <DeleteOutlined />
-            </IconButton>
+          <Divider style={{ margin: "-10px 0 0 0" }} />
+        </div>
 
-            <div className="mr-3">
-              <div style={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
-                <hr />
-              </div>
-            </div>
-
-            <Flex>
-              <Switch
-                size="small"
-                checked={question?.isRequired}
-                onChange={(value: any) => {
-                  antForm.setFieldValue(`${isRequired}`, value);
-                  setFieldValue(`${isRequired}`, value);
-                }}
+        <div className="row">
+          <div className="col-12 col-md-4 py-0 my-0 pl-0">
+            <Form.Item name={[field.name, "questionType"]}>
+              <PSelect
+                placeholder="Question Type"
+                label="Question type"
+                options={questionTypeDDL || []}
+                rules={[{ required: true, message: "Required Field" }]}
               />
-              <p className="ml-2">Required</p>
-            </Flex>
-
-            <div className="mx-3">
-              <div style={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
-                <hr />
-              </div>
-            </div>
-            <PInput
-              checked={question?.isDraft}
-              label="Save as Template?"
-              type="checkbox"
-              layout="horizontal"
-              onChange={(e) => {
-                antForm.setFieldValue(`${isDraft}`, e.target.checked);
-                setFieldValue(`${isDraft}`, e.target.checked);
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
+            </Form.Item>
           </div>
-        </Stack>
-        <Divider style={{ margin: 0 }} />
-      </div>
-
-      <div className="row">
-        <div className="col-12 col-md-4 py-0 my-0 pl-0">
-          <PSelect
-            placeholder="Question Type"
-            label="Question type"
-            value={question?.questionType}
-            options={questionTypeDDL || []}
-            onChange={(value: any) => {
-              antForm.setFieldValue(`${questionType}`, value);
-              setFieldValue(`${questionType}`, value);
-            }}
-            rules={[{ required: true, message: "Required Field" }]}
-          />
-        </div>
-        <div className="col-12 col-md-4 py-0 my-0 pl-0">
-          <PInput
-            type="text"
-            value={question?.questionTitle}
-            placeholder="Question Title"
-            label="Question Title"
-            onChange={(value: any) => {
-              antForm.setFieldValue(`${questionTitle}`, value.target.value);
-              setFieldValue(`${questionTitle}`, value.target.value);
-            }}
-            rules={[{ required: true, message: "Required Field" }]}
-          />
-        </div>
-
-        <div className="col-12 col-md-4 py-0 my-0 pl-0 md-pr-0">
-          <PInput
-            type="text"
-            value={question?.expectedAns}
-            placeholder="Expected Answer"
-            label="Expected Answer"
-            onChange={(value: any) => {
-              antForm.setFieldValue(`${expectedAns}`, value.target.value);
-              setFieldValue(`${expectedAns}`, value.target.value);
-            }}
-            rules={[{ required: true, message: "Required Field" }]}
-          />
-        </div>
-      </div>
-
-      {question.questionType &&
-      ["0", "1", "2"].includes(question.questionType) ? (
-        <DragDropContext onDragEnd={(result) => ansDragEnd(result, values)}>
-          <SingleAnswer
-            question={question}
-            handleBlur={handleBlur}
-            touched={touched}
-            antForm={antForm}
-          />
-        </DragDropContext>
-      ) : (
-        ["3", "4"].includes(question.questionType) && (
-          <Row>
-            <Col md={8}>
+          <div className="col-12 col-md-4 py-0 my-0 pl-0">
+            <Form.Item name={[field.name, "questionTitle"]}>
               <PInput
-                type="number"
-                value={question?.ansTextLength}
-                placeholder="Max length"
-                label="Maximum length of answer"
-                onChange={(value: any) => {
-                  antForm.setFieldValue(`${ansTextLength}`, value);
-                  setFieldValue(`${ansTextLength}`, value);
-                }}
+                type="text"
+                placeholder="Question Title"
+                label="Question Title"
+                rules={[{ required: true, message: "Required Field" }]}
               />
-            </Col>
-          </Row>
-        )
-      )}
-    </Stack>
+            </Form.Item>
+          </div>
+
+          <div className="col-12 col-md-4 py-0 my-0 pl-0 md-pr-0">
+            <Form.Item name={[field.name, "expectedAns"]}>
+              <PInput
+                type="text"
+                placeholder="Expected Answer"
+                label="Expected Answer"
+                rules={[{ required: true, message: "Required Field" }]}
+              />
+            </Form.Item>
+          </div>
+        </div>
+
+        {["0", "1", "2"].includes(
+          antForm.getFieldValue(`questions[${index}].questionType`)
+        ) ? (
+          <Form.List name={[field.name, "answers"]}>
+            {(subFields: any, subOpt: any) => (
+              <DragDropContext
+                onDragEnd={(result) =>
+                  ansDragEnd(result, antForm.getFieldValue("answers"))
+                }
+              >
+                <Stack direction="column" spacing={2}>
+                  <Droppable droppableId="AllAnswers">
+                    {(provided) => (
+                      <Stack
+                        direction="column"
+                        spacing={2}
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                      >
+                        {subFields?.map((subField: any, subIdx: number) => {
+                          <Draggable
+                            key={subIdx}
+                            draggableId={subIdx.toString()}
+                            index={subIdx}
+                          >
+                            {(dragProvided) => (
+                              <div
+                                className="pb-1 mb-1"
+                                key={subIdx}
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                              >
+                                <Row>
+                                  <Col>
+                                    <span {...dragProvided.dragHandleProps}>
+                                      <DragIndicator
+                                        style={{
+                                          cursor: "move",
+                                        }}
+                                        fontSize="small"
+                                      />
+                                    </span>
+                                  </Col>
+                                  <Col>
+                                    <Form.Item
+                                      name={[
+                                        subField.name,
+                                        "answerDescription",
+                                      ]}
+                                    >
+                                      <PInput
+                                        type="text"
+                                        placeholder="Option"
+                                        label=""
+                                        rules={[
+                                          {
+                                            required: true,
+                                            message: "Required Field",
+                                          },
+                                        ]}
+                                      />
+                                    </Form.Item>
+                                  </Col>
+                                </Row>
+                              </div>
+                            )}
+                          </Draggable>;
+                        })}
+                        {provided.placeholder}
+                      </Stack>
+                    )}
+                  </Droppable>
+
+                  <PButton
+                    onClick={() => {
+                      subOpt.add();
+                    }}
+                    type="primary"
+                    content="Add Option"
+                    icon={<PlusOutlined />}
+                  />
+                </Stack>
+              </DragDropContext>
+            )}
+          </Form.List>
+        ) : (
+          ["3", "4"].includes(
+            antForm.getFieldValue(`questions[${index}].questionType`)
+          ) && (
+            <Row>
+              <Col md={8}>
+                <Form.Item name={[field.name, "ansTextLength"]}>
+                  <PInput
+                    type="number"
+                    placeholder="Max length"
+                    label="Maximum length of answer"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          )
+        )}
+      </Stack>
+    </Form.Item>
   );
 };
 
