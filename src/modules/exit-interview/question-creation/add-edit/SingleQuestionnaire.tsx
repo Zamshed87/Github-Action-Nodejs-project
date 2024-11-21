@@ -4,6 +4,7 @@ import { Col, Divider, Row, Switch } from "antd";
 import { Flex, PButton, PInput, PSelect } from "Components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 const SingleQuestionnaire = ({
   index,
@@ -15,6 +16,15 @@ const SingleQuestionnaire = ({
   questionTypeDDL,
   antForm,
 }: any) => {
+  const [questionType, setQuestionType] = useState(
+    antForm.getFieldValue([field.name, "questionType"])
+  );
+
+  const handleChange = (value: any) => {
+    setQuestionType(value); // update state
+    antForm.setFieldValue([field.name, "questionType"], value);
+  };
+
   return (
     <Stack direction="column" spacing={2}>
       <div>
@@ -128,6 +138,7 @@ const SingleQuestionnaire = ({
               placeholder="Question Type"
               label="Question type"
               options={questionTypeDDL || []}
+              onChange={handleChange}
               rules={[{ required: true, message: "Required Field" }]}
             />
           </Form.Item>
@@ -155,9 +166,7 @@ const SingleQuestionnaire = ({
         </div>
       </div>
 
-      {["0", "1", "2"].includes(
-        antForm.getFieldValue(`questions[${index}].questionType`)
-      ) ? (
+      {["0", "1", "2"].includes(questionType) ? (
         <Form.List name={[field.name, "answers"]}>
           {(subFields: any, subOpt: any) => (
             <DragDropContext
@@ -174,7 +183,7 @@ const SingleQuestionnaire = ({
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                     >
-                      {subFields?.map((subField: any, subIdx: number) => {
+                      {subFields?.map((subField: any, subIdx: number) => (
                         <Draggable
                           key={subIdx}
                           draggableId={subIdx.toString()}
@@ -219,8 +228,8 @@ const SingleQuestionnaire = ({
                               </Row>
                             </div>
                           )}
-                        </Draggable>;
-                      })}
+                        </Draggable>
+                      ))}
                       {provided.placeholder}
                     </Stack>
                   )}
@@ -239,9 +248,7 @@ const SingleQuestionnaire = ({
           )}
         </Form.List>
       ) : (
-        ["3", "4"].includes(
-          antForm.getFieldValue(`questions[${index}].questionType`)
-        ) && (
+        ["3", "4"].includes(questionType) && (
           <Row>
             <Col md={8}>
               <Form.Item name={[field.name, "ansTextLength"]} shouldUpdate>
