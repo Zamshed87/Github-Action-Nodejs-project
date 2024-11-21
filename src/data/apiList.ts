@@ -268,4 +268,6 @@ export const apiList = {
 
   getCommonEnumData: "/Enum/GetEnums",
   GetQuestionLanding: "/Questionnaire/Landing",
+  GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
+  GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
 };
