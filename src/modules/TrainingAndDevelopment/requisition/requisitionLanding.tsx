@@ -15,7 +15,10 @@ import Loading from "common/loading/Loading";
 import { getSerial } from "Utils";
 import { dateFormatter } from "utility/dateFormatter";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
-const RequisitionLanding = () => {
+import { useHistory } from "react-router-dom";
+const TnDRequisitionLanding = () => {
+  // router states
+  const history = useHistory();
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -126,7 +129,9 @@ const RequisitionLanding = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  // setModalVisible(true);
+                  history.push(
+                    "/profile/trainingDevelopment/requisition/create"
+                  );
                 },
               },
             ]}
@@ -191,4 +196,4 @@ const RequisitionLanding = () => {
   );
 };
 
-export default RequisitionLanding;
+export default TnDRequisitionLanding;

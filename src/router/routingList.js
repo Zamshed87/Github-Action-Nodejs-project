@@ -78,6 +78,9 @@ import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
 
+import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
+import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
+
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
 );
@@ -3108,6 +3111,16 @@ export const routingList = [
     component: ExternalTrainingLanding,
   },
   //external training end
+
+  // Training & Development New
+  {
+    path: "/profile/trainingDevelopment/requisition/:type",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/profile/trainingDevelopment/requisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
 
   {
     path: "/trainingAndDevelopment/assessment/assessmentForm",
