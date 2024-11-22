@@ -221,7 +221,7 @@ export const IncrementProposal = () => {
       params: {
         supervisorId: values?.supervisor?.value,
         IncrementYear: `${values?.intYear?.value}`,
-        // isInserted: values?.isInserted,
+        isInserted: values?.isInserted,
         // isInserted: "true",
       },
       onSuccess: (res) => {
