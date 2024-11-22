@@ -18,16 +18,13 @@ import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
+import { dateFormatter } from "utility/dateFormatter";
 
-import { getSerial } from "Utils";
 import { yearDDLAction } from "utility/yearDDL";
 import { toast } from "react-toastify";
-import { isNull } from "lodash";
 import { todayDate } from "utility/todayDate";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
@@ -36,7 +33,7 @@ export const IncrementProposal = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, userName },
+    profileData: { buId, employeeId, orgId, buName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [landing, setLanding] = useState<any[]>([
