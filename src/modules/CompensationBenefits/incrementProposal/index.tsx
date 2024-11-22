@@ -18,16 +18,13 @@ import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
+import { dateFormatter } from "utility/dateFormatter";
 
-import { getSerial } from "Utils";
 import { yearDDLAction } from "utility/yearDDL";
 import { toast } from "react-toastify";
-import { isNull } from "lodash";
 import { todayDate } from "utility/todayDate";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
@@ -36,71 +33,10 @@ export const IncrementProposal = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, userName },
+    profileData: { buId, employeeId, orgId, buName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
-  const [landing, setLanding] = useState<any[]>([
-    {
-      key: 0,
-      workplaceGroup: "Group A",
-      workplace: "Office A",
-      employeeName: "John Doe",
-      designation: "Software Engineer",
-      department: "IT",
-      section: "Development",
-      supervisor: "Jane Smith",
-      dottedSupervisor: "Robert Brown",
-      lineManager: "Michael Johnson",
-      dateOfJoining: "2020-01-15",
-      lastIncrementDate: "2023-06-01",
-      lastIncrementAmount: 15000,
-      recentGrossSalary: 120000,
-      proposedIncrementPercent: 5,
-      incrementProposalAmount: 6000,
-      proposedGrossSalary: 126000,
-      remarks: "Eligible for promotion",
-    },
-    {
-      key: 1,
-      workplaceGroup: "Group B",
-      workplace: "Office B",
-      employeeName: "Alice Green",
-      designation: "Project Manager",
-      department: "Operations",
-      section: "Management",
-      supervisor: "Emily White",
-      dottedSupervisor: "Chris Blue",
-      lineManager: "William Gray",
-      dateOfJoining: "2018-03-12",
-      lastIncrementDate: "2023-05-10",
-      lastIncrementAmount: 20000,
-      recentGrossSalary: 150000,
-      proposedIncrementPercent: 10,
-      proposedIncrementAmount: 15000,
-      proposedGrossSalary: 165000,
-      remarks: "Outstanding performer",
-    },
-    {
-      key: 2,
-      workplaceGroup: "Group C",
-      workplace: "Office C",
-      employeeName: "Mark Black",
-      designation: "HR Specialist",
-      department: "Human Resources",
-      section: "Recruitment",
-      supervisor: "Sophia Green",
-      dottedSupervisor: "Nathan Red",
-      lineManager: "Liam Yellow",
-      dateOfJoining: "2019-07-01",
-      lastIncrementDate: "2022-12-15",
-      lastIncrementAmount: 10000,
-      recentGrossSalary: 90000,
-      proposedIncrementPercent: 8,
-      proposedIncrementAmount: 7200,
-      proposedGrossSalary: 97200,
-      remarks: "Consistent performance",
-    },
-  ]);
+  const [landing, setLanding] = useState<any[]>([]);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30338),
@@ -224,7 +160,7 @@ export const IncrementProposal = () => {
       params: {
         supervisorId: values?.supervisor?.value,
         IncrementYear: `${values?.intYear?.value}`,
-        // isInserted: values?.isInserted,
+        isInserted: values?.isInserted,
         // isInserted: "true",
       },
       onSuccess: (res) => {
