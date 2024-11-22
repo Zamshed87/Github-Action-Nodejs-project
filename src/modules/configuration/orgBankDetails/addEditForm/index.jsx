@@ -435,9 +435,9 @@ export default function AddEditForm({
                   label: "DBBL Agent Banking",
                 },
                 {
-                  value: "UCB",
+                  value: "UCBL",
 
-                  label: "UCB",
+                  label: "UCBL",
                 },
                 {
                   value: "Upay",

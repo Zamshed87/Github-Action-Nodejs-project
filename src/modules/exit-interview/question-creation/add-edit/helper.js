@@ -8,7 +8,12 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const saveQuestionnaire = async (values, setLoading, cb) => {
+export const saveQuestionnaire = async (
+  values,
+  profileData,
+  setLoading,
+  cb
+) => {
   setLoading(true);
   try {
     const question = values?.questions?.map((ques, index) => {
@@ -21,11 +26,11 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
           };
         });
       return {
-        typeId: ques?.questionType,
+        typeId: parseInt(ques?.questionType),
         title: ques?.questionTitle,
         sortOrder: index + 1,
         answer: ques?.expectedAns,
-        answerTextLength: ques?.ansTextLength || 0,
+        answerTextLength: ques?.ansTextLength || 4000,
         isRequired: ques?.isRequired,
         saveAsTemplate: ques?.isDraft,
         options: relevantAnswers || [],
@@ -34,21 +39,20 @@ export const saveQuestionnaire = async (values, setLoading, cb) => {
 
     const payload = {
       id: 0,
-      typeId: values?.survayType?.value,
+      typeId: parseInt(values?.survayType?.value),
       title: values?.survayTitle,
       description: values?.survayDescription,
-      businessUnitId: values?.buDDL?.value,
-      workplaceGroupId: values?.wgDDL?.value,
-      workplaceId: values?.wDDL?.value,
+      businessUnitId: profileData?.buId,
+      workplaceGroupId: profileData?.wgId,
+      workplaceId: profileData?.wId,
       questions: question,
     };
 
-    console.log(payload);
     const res = await axios.post(`/Questionnaire`, payload);
     cb();
-    toast.success(res?.data?.message, { toastId: 1 });
+    toast.success(res?.data?.Message || "Created Sucessfully", { toastId: 1 });
   } catch (error) {
-    toast.warn(error?.response?.data?.message, { toastId: 1 });
+    toast.warn(error?.response?.data?.Message, { toastId: 1 });
   } finally {
     setLoading(false);
   }
