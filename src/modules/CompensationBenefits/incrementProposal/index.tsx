@@ -8,6 +8,7 @@ import {
   PForm,
   PInput,
   PSelect,
+  TableButton,
 } from "Components";
 import type { RangePickerProps } from "antd/es/date-picker";
 
@@ -24,6 +25,9 @@ import { useParams } from "react-router-dom";
 import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
 
 import { getSerial } from "Utils";
+import { yearDDLAction } from "utility/yearDDL";
+import { toast } from "react-toastify";
+import { isNull } from "lodash";
 
 export const IncrementProposal = () => {
   const dispatch = useDispatch();
@@ -49,7 +53,7 @@ export const IncrementProposal = () => {
       lastIncrementAmount: 15000,
       recentGrossSalary: 120000,
       proposedIncrementPercent: 5,
-      proposedIncrementAmount: 6000,
+      incrementProposalAmount: 6000,
       proposedGrossSalary: 126000,
       remarks: "Eligible for promotion",
     },
@@ -103,33 +107,40 @@ export const IncrementProposal = () => {
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
+  const deleteProposal = useApiRequest({});
+  const createUpdateIncrementProposal = useApiRequest({});
+
   const CommonEmployeeDDL = useApiRequest([]);
 
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+  const getEmployee = (value: any = "") => {
+    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
     CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "GetSupervisorDDL",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        AccountId: orgId,
         // workplaceId: wId,
-        searchText: value,
+        // searchText: value,
       },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-        });
-      },
+      // onSuccess: (res) => {
+      //   res.forEach((item: any, i: number) => {
+      //     res[i].label = item?.employeeName;
+      //     res[i].value = item?.employeeId;
+      //   });
+      // },
     });
   };
   //   const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-
+  const options: any = [
+    { value: "", label: "All" },
+    { value: true, label: "Assigned" },
+    { value: false, label: "Not-Assigned" },
+  ];
   const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
@@ -205,30 +216,55 @@ export const IncrementProposal = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "MonthlyRosterReportForSingleEmployee",
+      urlKey: "GetIncrementProposalLoader",
       method: "GET",
       params: {
-        BusinessUnitId: buId,
-        IsXls: false,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        PageNo: pagination.current || 1,
-        EmployeeId: values?.employee?.value,
-        PageSize: pagination.pageSize || 25,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.todate).format("YYYY-MM-DD"),
-        WorkplaceId: values?.workplace?.value,
-        searchTxt: searchText,
+        supervisorId: values?.supervisor?.value,
+        IncrementYear: `${values?.intYear?.value}`,
+        // isInserted: values?.isInserted,
+        // isInserted: "true",
+      },
+      onSuccess: (res) => {
+        const modify = res?.map((i: any, index: number) => {
+          return {
+            ...i,
+            key: index,
+            proposedGrossSalary:
+              +i?.recentGrossSalary + +i?.incrementProposalAmount,
+          };
+        });
+        setLanding(modify);
+        const selected = modify?.filter((i: any) => i?.id > 0);
+        if (selected?.length) {
+          setSelectedRow(selected);
+        }
       },
     });
   };
 
   useEffect(() => {
+    getEmployee();
     // getWorkplaceGroup();
     // empBasicInfo(buId, orgId, employeeId, setEmpInfo);
 
-    landingApiCall();
+    // landingApiCall();
   }, []);
+  //  Delete Element
+  const deleteProposalById = (item: any) => {
+    deleteProposal?.action({
+      urlKey: "DeleteIncrementProposal",
+      method: "DELETE",
+      params: {
+        Id: item?.id,
+      },
+      toast: true,
+      onSuccess: () => {
+        setSelectedRow([]);
 
+        landingApiCall();
+      },
+    });
+  };
   const header: any = [
     // {
     //     title: "SL",
@@ -265,32 +301,37 @@ export const IncrementProposal = () => {
     },
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "designationName",
       width: 100,
     },
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "departmentName",
       width: 100,
     },
     {
       title: "Section",
-      dataIndex: "section",
+      dataIndex: "sectionName",
       width: 100,
     },
     {
       title: "Supervisor",
-      dataIndex: "supervisor",
+      dataIndex: "supervisorName",
       width: 100,
     },
     {
       title: "Dotted Supervisor",
-      dataIndex: "dottedSupervisor",
+      dataIndex: "dottedSupervisorName",
       width: 100,
     },
     {
       title: "Line Manager",
-      dataIndex: "lineManager",
+      dataIndex: "lineManagerName",
+      width: 100,
+    },
+    {
+      title: "Increment Year",
+      dataIndex: "incrementYear",
       width: 100,
     },
     {
@@ -301,6 +342,7 @@ export const IncrementProposal = () => {
     {
       title: "Last Increment Date",
       dataIndex: "lastIncrementDate",
+      render: (data: any) => (data ? dateFormatter(data) : "-"),
       width: 100,
     },
     {
@@ -321,15 +363,22 @@ export const IncrementProposal = () => {
       render: (_value: any, row: any, index: number) => (
         <PInput
           type="number"
-          value={row?.proposedIncrementPercent}
+          value={+row?.incrementProposalPercentage || 0}
           placeholder="Decimal Number"
           onChange={(e) => {
+            if ((e as number) < 0) {
+              return toast.warn("number must be positive");
+            }
+            if ((e as number) > 100) {
+              return toast.warn("Percentage cant be greater than 100");
+            }
+
             const temp = [...landing];
-            temp[index].proposedIncrementPercent = e;
-            temp[index].proposedIncrementAmount =
+            temp[index].incrementProposalPercentage = e;
+            temp[index].incrementProposalAmount =
               (row?.recentGrossSalary * (e as number)) / 100;
             temp[index].proposedGrossSalary =
-              row?.recentGrossSalary + temp[index].proposedIncrementAmount;
+              row?.recentGrossSalary + temp[index].incrementProposalAmount;
             setLanding(temp);
           }}
         />
@@ -342,12 +391,15 @@ export const IncrementProposal = () => {
       render: (_value: any, row: any, index: number) => (
         <PInput
           type="number"
-          value={row?.proposedIncrementAmount}
+          value={row?.incrementProposalAmount || 0}
           placeholder="Decimal Number"
           onChange={(e) => {
+            if ((e as number) < 0) {
+              return toast.warn("number must be positive");
+            }
             const temp = [...landing];
-            temp[index].proposedIncrementAmount = e;
-            temp[index].proposedIncrementPercent =
+            temp[index].incrementProposalAmount = e;
+            temp[index].incrementProposalPercentage =
               ((e as number) * 100) / row?.recentGrossSalary;
             temp[index].proposedGrossSalary = row?.recentGrossSalary + e;
             setLanding(temp);
@@ -362,14 +414,17 @@ export const IncrementProposal = () => {
       render: (_value: any, row: any, index: number) => (
         <PInput
           type="number"
-          value={row?.proposedGrossSalary}
+          value={row?.proposedGrossSalary || 0}
           placeholder="Decimal Number"
           onChange={(e) => {
+            if ((e as number) < 0) {
+              return toast.warn("number must be positive");
+            }
             const temp = [...landing];
-            temp[index].proposedIncrementAmount =
+            temp[index].incrementProposalAmount =
               (e as number) - row?.recentGrossSalary;
-            temp[index].proposedIncrementPercent =
-              ((temp[index].proposedIncrementAmount as number) * 100) /
+            temp[index].incrementProposalPercentage =
+              ((temp[index].incrementProposalAmount as number) * 100) /
               row?.recentGrossSalary;
             temp[index].proposedGrossSalary = e;
             setLanding(temp);
@@ -395,38 +450,97 @@ export const IncrementProposal = () => {
         />
       ),
     },
+    {
+      title: "",
+      width: 30,
+
+      align: "center",
+      render: (_: any, item: any) => (
+        <TableButton
+          buttonsList={[
+            {
+              type: "delete",
+              onClick: () => {
+                deleteProposalById(item);
+              },
+            },
+          ]}
+        />
+      ),
+    },
   ];
 
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
+  // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+  //   const { fromDate } = form.getFieldsValue(true);
+  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
+  //   // Disable dates before fromDate and after next3daysForEmp
+  //   return current && current < fromDateMoment.startOf("day");
+  // };
+  const viewHandler = async () => {
+    setSelectedRow([]);
+    await form
+      .validateFields()
+      .then(() => {
+        landingApiCall();
+      })
+      .catch(() => {
+        console.error("Validate Failed:");
+      });
+  };
+  const onFinish = () => {
+    if (selectedRow?.length == 0) {
+      return toast.warn("Select Employees First");
+    }
+    const selectedRowEmpID = selectedRow.map((item) => item?.employeeId);
+    const updatedSelectedRows = landing?.filter((item) =>
+      selectedRowEmpID.includes(item.employeeId)
+    );
+
+    if (
+      updatedSelectedRows?.filter((i) => i?.incrementProposalAmount === 0)
+        ?.length > 0
+    ) {
+      return toast.warn("Please fill up the input fields");
+    }
+
+    const modify = updatedSelectedRows?.map((i) => {
+      return {
+        ...i,
+        actionBy: employeeId,
+      };
+    });
+    createUpdateIncrementProposal?.action({
+      urlKey: "CreateUpdateIncrementProposal",
+      method: "post",
+      payload: modify,
+      toast: true,
+      onSuccess: () => {
+        landingApiCall();
+      },
+    });
   };
   return employeeFeature?.isView ? (
     <>
       <PForm
         form={form}
-        initialValues={{
-          employee: { value: employeeId, label: userName },
-
-          fromDate: moment(getDateOfYear("first")),
-          toDate: moment(getDateOfYear("last")),
-        }}
-        onFinish={() => {
-          landingApiCall({
-            pagination: {
-              current: landingApi?.data?.currentPage,
-              pageSize: landingApi?.data?.totalCount,
-            },
-          });
-        }}
+        initialValues={
+          {
+            // employee: { value: employeeId, label: userName },
+            // fromDate: moment(getDateOfYear("first")),
+            // toDate: moment(getDateOfYear("last")),
+          }
+        }
+        onFinish={onFinish}
       >
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            exportIcon={true}
-            // title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            submitText="Save"
+            exportIcon={
+              landingApi?.data?.length > 0 &&
+              landingApi?.data?.every((i: any) => i?.id > 0)
+            }
+            title={`Total ${landingApi?.data?.length || 0} employees`}
 
             // onExport={() => {
             //   const excelLanding = async () => {
@@ -543,25 +657,70 @@ export const IncrementProposal = () => {
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PSelect
-                  name="employee"
-                  label="Employee"
+                  allowClear
+                  name="supervisor"
+                  label="Supervisor"
                   placeholder="Search Min 2 char"
                   options={CommonEmployeeDDL?.data || []}
                   loading={CommonEmployeeDDL?.loading}
                   onChange={(value, op) => {
                     form.setFieldsValue({
-                      employee: op,
+                      supervisor: op,
                     });
                     // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
-                  showSearch
-                  filterOption={false}
+                  // onSearch={(value) => {
+                  //   getEmployee(value);
+                  // }}
+                  // showSearch
+                  // filterOption={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Supervisor is required",
+                    },
+                  ]}
                 />
               </Col>
-              <Col md={3} sm={12} xs={24}>
+              <Col md={6} sm={24}>
+                <PSelect
+                  options={yearDDLAction()}
+                  name="intYear"
+                  label="Year"
+                  placeholder="Year"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      intYear: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Year is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PSelect
+                  options={options}
+                  name="isInserted"
+                  label="Status"
+                  placeholder="isInserted"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      isInserted: value,
+                    });
+                  }}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Year is required",
+                  //   },
+                  // ]}
+                />
+              </Col>
+              {/* <Col md={3} sm={12} xs={24}>
                 <PInput
                   type="date"
                   name="fromDate"
@@ -587,7 +746,7 @@ export const IncrementProposal = () => {
                     });
                   }}
                 />
-              </Col>
+              </Col> */}
 
               {/* <Col md={5} sm={12} xs={24}>
                 <PSelect
@@ -632,7 +791,14 @@ export const IncrementProposal = () => {
                   marginTop: "23px",
                 }}
               >
-                <PButton type="primary" action="submit" content="View" />
+                <PButton
+                  type="primary"
+                  action="button"
+                  onClick={() => {
+                    viewHandler();
+                  }}
+                  content="View"
+                />
               </Col>
             </Row>
           </PCardBody>
@@ -640,24 +806,24 @@ export const IncrementProposal = () => {
           <DataTable
             bordered
             data={
-              //   landingApi?.data?.data ||
+              // landingApi?.data ||
               landing || []
             }
             loading={landingApi?.loading}
             header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
-            onChange={(pagination, filters, sorter, extra) => {
-              // Return if sort function is called
-              if (extra.action === "sort") return;
-              setFilterList(filters);
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
+            // onChange={(pagination, filters, sorter, extra) => {
+            //   // Return if sort function is called
+            //   if (extra.action === "sort") return;
+            //   setFilterList(filters);
 
-              landingApiCall({
-                pagination,
-              });
-            }}
+            //   landingApiCall({
+            //     pagination,
+            //   });
+            // }}
             scroll={{ x: 1500 }}
             rowSelection={{
               type: "checkbox",
