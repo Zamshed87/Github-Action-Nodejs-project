@@ -933,7 +933,7 @@ const SelfExpenseApplicationView = lazy(() =>
   import("../modules/expense/updatedExpanseApp/viewForm.jsx")
 );
 const FoodDetailsReport = lazy(() =>
-  import("../modules/FoodDetailsReport/index.jsx")
+  import("../modules/FoodDetailsReport/index.tsx")
 );
 const GrievanceDetails = lazy(() =>
   import("../modules/grievanceManagement/components/GrievanceDetails.jsx")

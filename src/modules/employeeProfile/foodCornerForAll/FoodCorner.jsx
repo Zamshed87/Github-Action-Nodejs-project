@@ -38,12 +38,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Employee is required"),
     })
     .typeError("Employee is required"),
-  place: Yup.object()
-    .shape({
-      label: Yup.string().required("place is required"),
-      value: Yup.string().required("place is required"),
-    })
-    .typeError("place is required"),
+  // place: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("place is required"),
+  //     value: Yup.string().required("place is required"),
+  //   })
+  //   .typeError("place is required"),
   date: Yup.date().required("Date is required"),
   meal: Yup.string().required("No of meal is required"),
   // type: Yup.object()
@@ -85,6 +85,7 @@ export default function FoodCornerForAll() {
       Narration: values?.remarks || "",
       ActionBy: employeeId,
       MealConsumePlaceId: values?.place?.value || 0,
+      businessUnitId: buId,
     };
     createCafeteriaEntry(
       1,
@@ -101,7 +102,8 @@ export default function FoodCornerForAll() {
       payload,
       setLoading,
       cb,
-      +values?.place?.value
+      0,
+      buId
     );
     // (partId, date, enrollId, typeId, mealOption, mealFor, countMeal, ownGuest, payable, narration, userId, payload, setLoading, cb)
   };
@@ -137,7 +139,7 @@ export default function FoodCornerForAll() {
   }, [orgId, buId]);
   // placeDDL
   useEffect(() => {
-    getPlaceDDL("mealConsume", orgId, setPlaceDDL, buId, wgId);
+    // getPlaceDDL("mealConsume", orgId, setPlaceDDL, buId, wgId);
   }, [orgId, buId]);
 
   const permission = useMemo(
@@ -307,6 +309,7 @@ export default function FoodCornerForAll() {
                             scheduleMeal={scheduleMeal}
                             values={values}
                             employeeId={employeeId}
+                            buId={buId}
                           />
                         </div>
                         <div className="col-lg-6">

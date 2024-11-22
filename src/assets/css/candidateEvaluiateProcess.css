@@ -7,7 +7,7 @@
 }
 
 .bg_transparent_Button {
-  font-family: Roboto;
+  font-family: Poppins;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -17,7 +17,7 @@
   padding: 0 !important;
 }
 .hiringPipeling_comment_title_author {
-  font-family: var(--robotoFont);
+  font-family: Poppins;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -35,7 +35,7 @@
   margin-left: 16px;
 }
 .hiringPipeling_comment_content {
-  font-family: var(--robotoFont);
+  font-family: Poppins;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -49,7 +49,7 @@
 }
 
 .sub_heading {
-  font-family: Roboto;
+  font-family: Poppins;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -68,7 +68,7 @@
 }
 
 .sub_heading_content {
-  font-family: Roboto;
+  font-family: Poppins;
   font-style: normal;
   font-weight: 500;
   font-size: 12px;

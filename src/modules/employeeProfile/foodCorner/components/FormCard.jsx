@@ -17,6 +17,14 @@ const FormCard = ({ propsObj }) => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const nextMonthLastDate = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 2, 0)
+      .toISOString()
+      .split("T")[0];
+  };
+
   return (
     <>
       {loading && <Loading />}
@@ -72,7 +80,7 @@ const FormCard = ({ propsObj }) => {
                   }}
                   errors={errors}
                   touched={touched}
-                  max={monthLastDate()}
+                  max={nextMonthLastDate()}
                   min={monthFirstDate()}
                 />
               </div>
@@ -83,7 +91,7 @@ const FormCard = ({ propsObj }) => {
                 {strDesignation} <strong>Unit: </strong> {buName}
               </p>
             </div>
-            <div className="col-lg-6">
+            {/* <div className="col-lg-6">
               <div className="input-field-main">
                 <label htmlFor="">Place</label>
                 <FormikSelect
@@ -103,7 +111,7 @@ const FormCard = ({ propsObj }) => {
                   isDisabled={false}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="col-lg-6">
               <div className="input-field-main">
                 <label htmlFor="">Number Of Meal</label>

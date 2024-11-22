@@ -392,6 +392,12 @@ export default function AddEditForm({
           </Col>
           <Col md={12} sm={24}>
             <PSelect
+              name="bankAdvice"
+              label="Bank Advice"
+              showSearch
+              mode="multiple"
+              filterOption={true}
+              placeholder="Bank Advic"
               options={[
                 {
                   value: "IBBL",
@@ -434,17 +440,11 @@ export default function AddEditForm({
                   label: "UCB",
                 },
                 {
-                  value: "MFS",
+                  value: "Upay",
 
-                  label: "MFS",
+                  label: "Upay",
                 },
               ]}
-              name="bankAdvice"
-              label="Bank Advice"
-              showSearch
-              mode="multiple"
-              filterOption={true}
-              placeholder="Bank Advic"
               onChange={(value, op) => {
                 form.setFieldsValue({
                   bankAdvice: op,
