@@ -77,6 +77,7 @@ import QuestionerConfigLanding from "modules/exit-interview/questioner-configure
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
 import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
 import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
@@ -2337,6 +2338,11 @@ export const routingList = [
   },
 
   // compensationAndBenefits
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/incrementProposal",
+    component: IncrementProposal,
+  },
   {
     path: "/compensationAndBenefits/configuration/payrollElementAndRule",
     component: PayrollElementsRules,

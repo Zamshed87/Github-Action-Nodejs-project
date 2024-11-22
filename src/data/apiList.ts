@@ -267,7 +267,12 @@ export const apiList = {
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
 
   getCommonEnumData: "/Enum/GetEnums",
-  GetQuestionLanding: "/Questionnaire/Landing",
   GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
   GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
+  GetSupervisorDDL: "/IncrementProposal/GetSupervisorDDL",
+  GetIncrementProposalLoader: "/IncrementProposal/GetIncrementProposalLoader",
+  DeleteIncrementProposal: "/IncrementProposal/DeleteIncrementProposal",
+  CreateUpdateIncrementProposal:
+    "/IncrementProposal/CreateUpdateIncrementProposal",
+  GetQuestionLanding: "/Questionnaire/Landing",
 };
