@@ -4,6 +4,7 @@ import { Col, Divider, Row, Switch } from "antd";
 import { Flex, PButton, PInput, PSelect } from "Components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 const SingleQuestionnaire = ({
   index,
@@ -16,24 +17,23 @@ const SingleQuestionnaire = ({
   antForm,
 }: any) => {
   return (
-    <Stack direction="column" spacing={2}>
+    <Stack direction="column">
       <div>
         <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          spacing={1}
         >
           <Stack
             style={{ marginTop: "-20px" }}
             direction="row"
             alignItems="center"
-            spacing={1}
           >
             <span {...queProvided.dragHandleProps}>
               <DragIndicator
                 style={{
                   cursor: "move",
+                  marginRight: "5px",
                 }}
                 fontSize="small"
               />
@@ -108,14 +108,13 @@ const SingleQuestionnaire = ({
         <Divider style={{ margin: "-10px 0 0 0" }} />
       </div>
 
-      <div className="row">
+      <div className="row pl-3">
         <div className="col-12 col-md-4 py-0 my-0 pl-0">
           <Form.Item name={[field.name, "questionType"]} shouldUpdate>
             <PSelect
               placeholder="Question Type"
               label="Question type"
               options={questionTypeDDL || []}
-              rules={[{ required: true, message: "Required Field" }]}
             />
           </Form.Item>
         </div>
@@ -125,7 +124,6 @@ const SingleQuestionnaire = ({
               type="text"
               placeholder="Question Title"
               label="Question Title"
-              rules={[{ required: true, message: "Required Field" }]}
             />
           </Form.Item>
         </div>
@@ -136,7 +134,6 @@ const SingleQuestionnaire = ({
               type="text"
               placeholder="Expected Answer"
               label="Expected Answer"
-              rules={[{ required: true, message: "Required Field" }]}
             />
           </Form.Item>
         </div>
@@ -154,12 +151,11 @@ const SingleQuestionnaire = ({
                     ansDragEnd(result, quesData[index]?.answers)
                   }
                 >
-                  <Stack direction="column" spacing={2}>
+                  <Stack direction="column">
                     <Droppable droppableId="AllAnswers">
                       {(provided) => (
                         <Stack
                           direction="column"
-                          spacing={2}
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                         >
@@ -171,7 +167,6 @@ const SingleQuestionnaire = ({
                             >
                               {(dragProvided) => (
                                 <div
-                                  className="pb-1 mb-1"
                                   key={subIdx}
                                   ref={dragProvided.innerRef}
                                   {...dragProvided.draggableProps}
@@ -187,7 +182,7 @@ const SingleQuestionnaire = ({
                                         />
                                       </span>
                                     </Col>
-                                    <Col>
+                                    <Col md={12}>
                                       <Form.Item
                                         name={[
                                           subField.name,
@@ -197,8 +192,7 @@ const SingleQuestionnaire = ({
                                       >
                                         <PInput
                                           type="text"
-                                          placeholder="Option"
-                                          label=""
+                                          placeholder={`Option ${subIdx + 1}`}
                                           rules={[
                                             {
                                               required: true,
@@ -207,6 +201,18 @@ const SingleQuestionnaire = ({
                                           ]}
                                         />
                                       </Form.Item>
+                                    </Col>
+                                    <Col md={4}>
+                                      <RemoveCircleIcon
+                                        sx={{
+                                          marginLeft: "8px",
+                                          mt: 1,
+                                          fontSize: "20px",
+                                          color: "var(--error)",
+                                        }}
+                                        className="pointer"
+                                        onClick={() => subOpt.remove(subIdx)}
+                                      />
                                     </Col>
                                   </Row>
                                 </div>
@@ -239,6 +245,12 @@ const SingleQuestionnaire = ({
                       type="number"
                       placeholder="Max length"
                       label="Maximum length of answer"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Required Field",
+                        },
+                      ]}
                     />
                   </Form.Item>
                 </Col>

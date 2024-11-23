@@ -6,7 +6,7 @@
  * Date: 12-11-2024
  *
  */
-import { Col, Divider, Form, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -19,28 +19,26 @@ import {
 } from "Components";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getEnumData } from "common/api/commonApi";
-import { useApiRequest } from "Hooks";
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
-import { Stack } from "@mui/material";
 import SingleQuestionnaire from "./SingleQuestionnaire";
 import { PlusOutlined } from "@ant-design/icons";
-import { saveQuestionnaire } from "./helper";
+import { initDataForEdit, saveQuestionnaire } from "./helper";
 import { toast } from "react-toastify";
 import { getSingleQuestionnaire } from "../helper";
+import Loading from "common/loading/Loading";
 
 const QuestionCreationAddEdit = () => {
   // Router state
   const { quesId }: any = useParams();
 
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -104,6 +102,12 @@ const QuestionCreationAddEdit = () => {
     getEnumData("QuestionnaireQuestionType", setQuestionTypeDDL);
     quesId && getSingleQuestionnaire(quesId, setSingleData, setLoading);
   }, []);
+  useEffect(() => {
+    if (quesId) {
+      const initData = initDataForEdit(singleData);
+      antForm.setFieldsValue(initData);
+    }
+  }, [singleData]);
 
   return letterConfigPermission?.isCreate ? (
     <PForm
@@ -115,6 +119,7 @@ const QuestionCreationAddEdit = () => {
         questions: [],
       }}
     >
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
           title={quesId ? "Edit Question" : "Create Question"}
@@ -126,90 +131,28 @@ const QuestionCreationAddEdit = () => {
               content: "Save",
               disabled: loading,
               onClick: () => {
-                console.log(antForm.getFieldsValue(true));
-                // validationSchema
-                //   .validate(values)
-                //   .then(() => {
-                //     saveQuestionnaire(values, profileData, setLoading, () => {
-                //       resetForm();
-                //       history.push("/profile/exitInterview/questionCreation");
-                //     });
-                //   })
-                //   .catch((err) => {
-                //     console.log(err);
-                //     toast.warning("Please fill the required fields");
-                //   });
+                const values = antForm.getFieldsValue(true);
+                antForm
+                  .validateFields()
+                  .then(() => {
+                    saveQuestionnaire(values, profileData, setLoading, () => {
+                      antForm.resetFields();
+                    });
+                  })
+                  .catch(() => {
+                    toast.warning("Please fill the required fields");
+                  });
               },
             },
           ]}
         />
-        {/* <Row gutter={[10, 2]}>
-          <Col md={6} sm={24}>
-            <PSelect
-              options={
-                addLabelValue(
-                  businessUnitDDL,
-                  "BusinessUnitName",
-                  "BusinessUnitId"
-                ) || []
-              }
-              name="buDDL"
-              value={values?.buDDL}
-              label="Business Unit"
-              placeholder="Business Unit"
-              onChange={(value: number, op) => {
-                setFieldValue("buDDL", op);
-                setFieldValue("wgDDL", null);
-                setFieldValue("wDDL", null);
-                getWorkplaceGroupDDL({
-                  workplaceGroupDDL,
-                  orgId,
-                  buId: value,
-                });
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
-          </Col>
-
-          <Col md={6} sm={24}>
-            <PSelect
-              options={workplaceGroupDDL?.data || []}
-              name="wgDDL"
-              label="Workplace Group"
-              placeholder="Workplace Group"
-              onChange={(value, op) => {
-                setFieldValue("wgDDL", op);
-                setFieldValue("wDDL", null);
-                getWorkplaceDDL({
-                  workplaceDDL,
-                  orgId,
-                  buId: values?.buId?.value,
-                  wgId: value,
-                });
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
-          </Col>
-          <Col md={6} sm={24}>
-            <PSelect
-              options={workplaceDDL?.data || []}
-              name="wDDL"
-              label="Workplace"
-              placeholder="Workplace"
-              onChange={(value, op) => {
-                setFieldValue("wDDL", op);
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
-          </Col>
-        </Row> */}
         <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
               options={survayTypeDDL || []}
               name="survayType"
-              label="Survay Type"
-              placeholder="Survay Type"
+              label="Survey Type"
+              placeholder="Survey Type"
               onChange={(_: number, op) => {
                 antForm.setFieldValue("survayType", op);
               }}
@@ -221,8 +164,8 @@ const QuestionCreationAddEdit = () => {
             <PInput
               type="text"
               name="survayTitle"
-              placeholder="Survay Title"
-              label="Survay Title"
+              placeholder="Survey Title"
+              label="Survey Title"
               onChange={(e) => {
                 antForm.setFieldValue("survayTitle", e.target.value);
               }}
@@ -233,8 +176,8 @@ const QuestionCreationAddEdit = () => {
             <PInput
               type="text"
               name="survayDescription"
-              placeholder="Survay Description"
-              label="Survay Description"
+              placeholder="Survey Description"
+              label="Survey Description"
               onChange={(e) => {
                 antForm.setFieldValue("survayDescription", e.target.value);
               }}
@@ -250,85 +193,70 @@ const QuestionCreationAddEdit = () => {
                   queDragEnd(result, antForm.getFieldValue("questions"))
                 }
               >
-                <Stack
-                  direction="column"
-                  spacing={2}
-                  style={{ marginBottom: "20px" }}
-                >
-                  <Droppable droppableId="AllQuestion">
-                    {(queDropProvided) => (
-                      <Stack
-                        direction="column"
-                        spacing={2}
-                        ref={queDropProvided.innerRef}
-                        {...queDropProvided.droppableProps}
-                      >
-                        {fields.map((field, index) => (
-                          <Draggable
-                            key={index}
-                            draggableId={index.toString()}
-                            index={index}
-                          >
-                            {(queProvided) => (
+                <Droppable droppableId="AllQuestion">
+                  {(queDropProvided) => (
+                    <div
+                      ref={queDropProvided.innerRef}
+                      {...queDropProvided.droppableProps}
+                    >
+                      {fields.map((field, index) => (
+                        <Draggable
+                          key={index}
+                          draggableId={index.toString()}
+                          index={index}
+                        >
+                          {(queProvided) => (
+                            <div
+                              className="mt-3"
+                              key={index}
+                              ref={queProvided.innerRef}
+                              {...queProvided.draggableProps}
+                            >
                               <div
-                                key={index}
-                                ref={queProvided.innerRef}
-                                {...queProvided.draggableProps}
+                                style={{
+                                  backgroundColor: "white",
+                                  padding: "15px",
+                                  width: "75%",
+                                  border: `1px solid rgba(0, 0, 0, 0.12)`,
+                                  boxShadow:
+                                    "0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12)",
+                                  borderRadius: "4px",
+                                }}
                               >
-                                <div
-                                  style={{
-                                    backgroundColor: "white",
-                                    padding: "15px",
-                                    width: "75%",
-                                    border: `1px solid rgba(0, 0, 0, 0.12)`,
-                                    boxShadow:
-                                      "0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12)",
-                                    borderRadius: "4px",
-                                  }}
-                                >
-                                  <SingleQuestionnaire
-                                    index={index}
-                                    queProvided={queProvided}
-                                    field={field}
-                                    ansDragEnd={ansDragEnd}
-                                    handleQuestionDelete={remove}
-                                    Form={Form}
-                                    questionTypeDDL={questionTypeDDL}
-                                    antForm={antForm}
-                                  />
-                                </div>
+                                <SingleQuestionnaire
+                                  index={index}
+                                  queProvided={queProvided}
+                                  field={field}
+                                  ansDragEnd={ansDragEnd}
+                                  handleQuestionDelete={remove}
+                                  Form={Form}
+                                  questionTypeDDL={questionTypeDDL}
+                                  antForm={antForm}
+                                />
                               </div>
-                            )}
-                          </Draggable>
-                        ))}
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
 
-                        {queDropProvided.placeholder}
-                      </Stack>
-                    )}
-                  </Droppable>
-                  <div>
-                    <PButton
-                      type="primary"
-                      content="Add Question"
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        add();
-                      }}
-                      icon={<PlusOutlined />}
-                    />
-                  </div>
-                </Stack>
-                {antForm.getFieldValue("questions")?.length > 0 && <Divider />}
+                      {queDropProvided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+                <div className="mt-3">
+                  <PButton
+                    type="primary"
+                    content="Add Question"
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      add();
+                    }}
+                    icon={<PlusOutlined />}
+                  />
+                </div>
               </DragDropContext>
             )}
           </Form.List>
-          {/* <FormikProvider value={formData}>
-            <FieldArray name="questions">
-              {({ push, remove, form }) => (
-                
-              )}
-            </FieldArray>
-          </FormikProvider> */}
         </div>
       </PCard>
     </PForm>
