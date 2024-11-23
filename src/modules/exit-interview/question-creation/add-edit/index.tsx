@@ -20,13 +20,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import {
-  getEnumData,
-  getWorkplaceDDL,
-  getWorkplaceGroupDDL,
-} from "common/api/commonApi";
+import { getEnumData } from "common/api/commonApi";
 import { useApiRequest } from "Hooks";
-import { FieldArray, FormikProvider, useFormik } from "formik";
 import {
   DragDropContext,
   Draggable,
@@ -34,60 +29,11 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { Stack } from "@mui/material";
-import * as yup from "yup";
 import SingleQuestionnaire from "./SingleQuestionnaire";
-import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
 import { saveQuestionnaire } from "./helper";
 import { toast } from "react-toastify";
 import { getSingleQuestionnaire } from "../helper";
-
-const validationSchema = yup.object({
-  // buDDL: yup.object().shape({
-  //   label: yup.string().required("Business unit is required"),
-  //   value: yup.string().required("Business unit is required"),
-  // }),
-  // wgDDL: yup.object().shape({
-  //   label: yup.string().required("Workplace group is required"),
-  //   value: yup.string().required("Workplace group is required"),
-  // }),
-  // wDDL: yup.object().shape({
-  //   label: yup.string().required("Workplace is required"),
-  //   value: yup.string().required("Workplace is required"),
-  // }),
-  survayType: yup.object().shape({
-    label: yup.string().required("survayType is required"),
-    value: yup.string().required("survayType is required"),
-  }),
-  survayTitle: yup.string().required("Required Field"),
-  survayDescription: yup.string().required("Required Field"),
-  questions: yup.array().of(
-    yup.object().shape({
-      questionTitle: yup.string().required("Required Field"),
-      questionType: yup.string().required("Required Field"),
-      expectedAns: yup.string().required("Required Field"),
-      ansTextLength: yup
-        .string()
-        .nullable()
-        .when("questionType", {
-          is: "text",
-          then: yup.string().required("Length is required"),
-          otherwise: yup.string().nullable(),
-        }),
-    })
-  ),
-
-  answers: yup.array().of(
-    yup.object().shape({
-      queId: yup.string().required("Question ID for answer is required"),
-      answerDescription: yup.string().when("queId", {
-        is: (queId: string) => queId && queId.length > 0,
-        then: yup.string().required("Required Field"),
-        otherwise: yup.string().nullable(),
-      }),
-    })
-  ),
-});
 
 const QuestionCreationAddEdit = () => {
   // Router state
@@ -96,23 +42,10 @@ const QuestionCreationAddEdit = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { permissionList, profileData, businessUnitDDL } = useSelector(
+  const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId } = profileData;
-
-  const addLabelValue = (
-    ddlArray: any[],
-    labelField: string,
-    valueField: string
-  ) => {
-    return ddlArray.map((item) => ({
-      ...item,
-      label: item[labelField],
-      value: item[valueField],
-    }));
-  };
 
   //   states
   const [loading, setLoading] = useState(false);
@@ -130,10 +63,6 @@ const QuestionCreationAddEdit = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // api states
-  const workplaceGroupDDL: any = useApiRequest([]);
-  const workplaceDDL = useApiRequest([]);
-
   const [survayTypeDDL, setSurvayTypeDDL] = useState([]);
   const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState({});
@@ -148,13 +77,12 @@ const QuestionCreationAddEdit = () => {
       destination.index === source.index
     )
       return;
-    const temp = values.answers;
-    const draged = temp.splice(source.index, 1);
-    temp.splice(destination.index, 0, draged[0]);
+    // const temp = values?.answers;
+    const draged = values.splice(source.index, 1);
+    values.splice(destination.index, 0, draged[0]);
   };
 
   const queDragEnd = (result: DropResult, values: any) => {
-    console.log(values);
     const { source, destination } = result;
     if (!destination) return;
     if (
@@ -171,16 +99,6 @@ const QuestionCreationAddEdit = () => {
     antForm.setFieldValue("questions", reorderedQuestions);
   };
 
-  const formData: any = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      questions: [],
-      answers: [],
-    },
-    onSubmit: () => {},
-  });
-  const { values, setFieldValue, handleBlur, resetForm } = formData;
-
   useEffect(() => {
     getEnumData("QuestionnaireType", setSurvayTypeDDL);
     getEnumData("QuestionnaireQuestionType", setQuestionTypeDDL);
@@ -195,7 +113,6 @@ const QuestionCreationAddEdit = () => {
         survayTitle: "",
         survayDescription: "",
         questions: [],
-        answers: [],
       }}
     >
       <PCard>
@@ -295,7 +212,6 @@ const QuestionCreationAddEdit = () => {
               placeholder="Survay Type"
               onChange={(_: number, op) => {
                 antForm.setFieldValue("survayType", op);
-                setFieldValue("survayType", op);
               }}
               rules={[{ required: true, message: "Required Field" }]}
             />
@@ -309,7 +225,6 @@ const QuestionCreationAddEdit = () => {
               label="Survay Title"
               onChange={(e) => {
                 antForm.setFieldValue("survayTitle", e.target.value);
-                setFieldValue("survayTitle", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
             />
@@ -317,13 +232,11 @@ const QuestionCreationAddEdit = () => {
           <Col md={6} sm={24}>
             <PInput
               type="text"
-              value={values?.survayDescription}
               name="survayDescription"
               placeholder="Survay Description"
               label="Survay Description"
               onChange={(e) => {
                 antForm.setFieldValue("survayDescription", e.target.value);
-                setFieldValue("survayDescription", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
             />
@@ -376,7 +289,6 @@ const QuestionCreationAddEdit = () => {
                                   <SingleQuestionnaire
                                     index={index}
                                     queProvided={queProvided}
-                                    handleBlur={handleBlur}
                                     field={field}
                                     ansDragEnd={ansDragEnd}
                                     handleQuestionDelete={remove}
@@ -406,7 +318,7 @@ const QuestionCreationAddEdit = () => {
                     />
                   </div>
                 </Stack>
-                {values.questions?.length > 0 && <Divider />}
+                {antForm.getFieldValue("questions")?.length > 0 && <Divider />}
               </DragDropContext>
             )}
           </Form.List>

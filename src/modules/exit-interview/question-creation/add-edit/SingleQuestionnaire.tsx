@@ -4,7 +4,6 @@ import { Col, Divider, Row, Switch } from "antd";
 import { Flex, PButton, PInput, PSelect } from "Components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
 
 const SingleQuestionnaire = ({
   index,
@@ -78,13 +77,7 @@ const SingleQuestionnaire = ({
                   <Switch
                     size="small"
                     onChange={() => {
-                      const quesData = antForm.getFieldValue(`questions`);
-                      console.log(quesData[index]?.questionType);
-                      console.log(
-                        antForm.getFieldValue(
-                          `questions[${index}].questionType`
-                        )
-                      );
+                      console.log(antForm.getFieldsValue(true));
                     }}
                   />
                 </Form.Item>
@@ -108,12 +101,6 @@ const SingleQuestionnaire = ({
                 label="Save as Template?"
                 type="checkbox"
                 layout="horizontal"
-                onChange={(e) => {
-                  antForm.setFieldValue(
-                    `questions[${index}].isDraft`,
-                    e.target.checked
-                  );
-                }}
               />
             </Form.Item>
           </div>
@@ -164,7 +151,7 @@ const SingleQuestionnaire = ({
               {(subFields: any, subOpt: any) => (
                 <DragDropContext
                   onDragEnd={(result) =>
-                    ansDragEnd(result, antForm.getFieldValue("answers"))
+                    ansDragEnd(result, quesData[index]?.answers)
                   }
                 >
                   <Stack direction="column" spacing={2}>
