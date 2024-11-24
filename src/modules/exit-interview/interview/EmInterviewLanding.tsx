@@ -10,7 +10,6 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
 import InterviewModal from "./components/interview-modal";
-import { getQuestionaireById } from "./helper";
 import { useHistory } from "react-router-dom";
 
 const EmInterviewLanding = () => {
@@ -24,9 +23,7 @@ const EmInterviewLanding = () => {
   const { buId, wgId, wId } = profileData;
 
   const [singleData, setSingleData] = useState({});
-  const [loading, setLoading] = useState(false);
   const [filterList, setFilterList] = useState({});
-  const [interviewModal, setInterviewModal] = useState(false);
   const [viewModal, setViewModal] = useState(false);
 
   // landing calls
@@ -152,14 +149,8 @@ const EmInterviewLanding = () => {
             <button
               onClick={() => {
                 history.push("/interview", {
-                  state: { quesId: rec.id, empId: 1 },
+                  quesId: rec.id,
                 });
-                // getQuestionaireById(
-                //   rec.id,
-                //   setSingleData,
-                //   setLoading,
-                //   setInterviewModal
-                // );
               }}
             >
               Interview
@@ -176,7 +167,7 @@ const EmInterviewLanding = () => {
 
   return QuestionCreationPermission?.isView ? (
     <>
-      {(loading || landingApi.loading) && <Loading />}
+      {landingApi.loading && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
@@ -208,7 +199,7 @@ const EmInterviewLanding = () => {
           </div>
         </PCard>
       </PForm>
-      <PModal
+      {/* <PModal
         title="View Template"
         open={interviewModal}
         onCancel={() => {
@@ -217,7 +208,7 @@ const EmInterviewLanding = () => {
         }}
         components={<InterviewModal singleData={singleData} />}
         width={1000}
-      />
+      /> */}
     </>
   ) : (
     <NotPermittedPage />
