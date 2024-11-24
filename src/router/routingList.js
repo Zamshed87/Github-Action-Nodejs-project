@@ -81,6 +81,7 @@ import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuil
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
 import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
 import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
+import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3203,6 +3204,10 @@ export const routingList = [
   {
     path: "/profile/exitInterview/interview",
     component: EmInterviewLanding,
+  },
+  {
+    path: "/interview",
+    component: InterviewModal,
   },
 
   // Exit Interview ends

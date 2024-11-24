@@ -5,14 +5,17 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
 import { PModal } from "Components/Modal";
-import { stat } from "fs";
 import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
+import InterviewModal from "./components/interview-modal";
+import { getQuestionaireById } from "./helper";
+import { useHistory } from "react-router-dom";
 
 const EmInterviewLanding = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -23,7 +26,8 @@ const EmInterviewLanding = () => {
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [filterList, setFilterList] = useState({});
-  const [open, setOpen] = useState(false);
+  const [interviewModal, setInterviewModal] = useState(false);
+  const [viewModal, setViewModal] = useState(false);
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -142,9 +146,27 @@ const EmInterviewLanding = () => {
     {
       title: "Action",
       dataIndex: "status",
-      render: (status: string) => (
+      render: (status: string, rec: any) => (
         <Flex justify="center">
-          {status === "Assigned" ? <>Interview</> : <>View</>}
+          {status === "Assigned" ? (
+            <button
+              onClick={() => {
+                history.push("/interview", {
+                  state: { quesId: rec.id, empId: 1 },
+                });
+                // getQuestionaireById(
+                //   rec.id,
+                //   setSingleData,
+                //   setLoading,
+                //   setInterviewModal
+                // );
+              }}
+            >
+              Interview
+            </button>
+          ) : (
+            <button>View</button>
+          )}
         </Flex>
       ),
       align: "center",
@@ -159,22 +181,6 @@ const EmInterviewLanding = () => {
         <PCard>
           <PCardHeader
             title={`Total ${landingApi?.data?.totalCount || 0} Questionnaires`}
-            // buttonList={[
-            //   {
-            //     type: "primary",
-            //     content: "Create New",
-            //     icon: "plus",
-            //     onClick: () => {
-            //       if (QuestionCreationPermission?.isCreate) {
-            //         history.push(
-            //           `/profile/exitInterview/questionCreation/create`
-            //         );
-            //       } else {
-            //         toast.warn("You don't have permission");
-            //       }
-            //     },
-            //   },
-            // ]}
           />
           <div className="mb-3">
             {landingApi?.data?.totalCount > 0 ? (
@@ -202,16 +208,16 @@ const EmInterviewLanding = () => {
           </div>
         </PCard>
       </PForm>
-      {/* <PModal
-            title="View Template"
-            open={open}
-            onCancel={() => {
-              setOpen(false);
-              setSingleData({});
-            }}
-            // components={<QuestionaireView singleData={singleData} />}
-            width={1000}
-          /> */}
+      <PModal
+        title="View Template"
+        open={interviewModal}
+        onCancel={() => {
+          setInterviewModal(false);
+          setSingleData({});
+        }}
+        components={<InterviewModal singleData={singleData} />}
+        width={1000}
+      />
     </>
   ) : (
     <NotPermittedPage />
