@@ -17,7 +17,7 @@ import { dateFormatter } from "utility/dateFormatter";
 import { BarsOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { data } from "./helper";
-const TnDRequisitionLanding = () => {
+const TnDPlanningLanding = () => {
   // router states
   const history = useHistory();
   // hooks
@@ -29,6 +29,7 @@ const TnDRequisitionLanding = () => {
 
   // Form Instance
   const [form] = Form.useForm();
+  // table column
   // table column
   const header: any = [
     {
@@ -43,11 +44,31 @@ const TnDRequisitionLanding = () => {
       align: "center",
     },
     {
-      title: "Requestor",
-      dataIndex: "requestor",
+      title: "Business Unit",
+      dataIndex: "businessUnit",
       filter: true,
-      filterKey: "requestorList",
+      filterKey: "businessUnitList",
       filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroup",
+      filter: true,
+      filterKey: "workplaceGroupList",
+      filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+      filter: true,
+      filterKey: "workplaceList",
+      filterSearch: true,
+      width: 100,
+      fixed: "left",
     },
     {
       title: "Training Type",
@@ -55,9 +76,50 @@ const TnDRequisitionLanding = () => {
       filter: true,
       filterKey: "trainingTypeList",
       filterSearch: true,
+      width: 150,
+      fixed: "left",
     },
     {
-      title: "Created by",
+      title: "Training Title",
+      dataIndex: "trainingTitle",
+      filter: true,
+      filterKey: "trainingTitleList",
+      filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Training Mode",
+      dataIndex: "trainingMode",
+      filter: true,
+      filterKey: "trainingModeList",
+      filterSearch: true,
+      width: 100,
+      fixed: "left",
+    },
+    {
+      title: "Training Date & Time",
+      dataIndex: "trainingDateTime",
+      render: (data: any) => dateFormatter(data),
+      sorter: true,
+      align: "center",
+    },
+    {
+      title: "Name of Trainer",
+      dataIndex: "trainerName",
+      filter: true,
+      filterKey: "trainerNameList",
+      filterSearch: true,
+    },
+    {
+      title: "Trainer Contact No.",
+      dataIndex: "trainerContact",
+      filter: true,
+      filterKey: "trainerContactList",
+      filterSearch: true,
+    },
+    {
+      title: "Created By",
       dataIndex: "createdBy",
       filter: true,
       filterKey: "createdByList",
@@ -67,32 +129,31 @@ const TnDRequisitionLanding = () => {
       title: "Created Date",
       dataIndex: "createdDate",
       render: (data: any) => dateFormatter(data),
-      filter: true,
       sorter: true,
     },
     {
       title: "Status",
-      dataIndex: "trainingStatus",
+      dataIndex: "status",
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
     },
     {
       title: "Action",
-      dataIndex: "letterGenerateId",
-      render: (generateId: number, rec: any) => (
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"View"}>
+          <Tooltip placement="bottom" title="View">
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                history.push("/trainingDevelopment/requisition/view", {
+                history.push("/trainingDevelopment/planning/view", {
                   data: rec,
                 });
               }}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title={"Edit"}>
+          <Tooltip placement="bottom" title="Edit">
             <EditOutlined
               style={{
                 color: "green",
@@ -101,13 +162,13 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/requisition/edit", {
+                history.push("/trainingDevelopment/planning/edit", {
                   data: rec,
                 });
               }}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title={"Status"}>
+          <Tooltip placement="bottom" title="Status">
             <BarsOutlined
               style={{
                 color: "green",
@@ -116,7 +177,7 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/requisition/status", {
+                history.push("/trainingDevelopment/planning/status", {
                   data: rec,
                 });
               }}
@@ -125,8 +186,10 @@ const TnDRequisitionLanding = () => {
         </Flex>
       ),
       align: "center",
+      width: 120,
     },
   ];
+
   const landingApiCall = (values: any) => {
     console.log(values);
     getLandingApi("/trainingType");
@@ -150,7 +213,7 @@ const TnDRequisitionLanding = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/trainingDevelopment/requisition/create");
+                  history.push("/trainingDevelopment/planning/create");
                 },
               },
             ]}
@@ -203,15 +266,14 @@ const TnDRequisitionLanding = () => {
                   onClick={() => {
                     const values = form.getFieldsValue(true);
                     form
-                    .validateFields()
-                    .then(() => {
-                      console.log(values);
-                      landingApiCall(values);
-                    })
-                    .catch(() => {
-                      console.log("error");
-                    });
-                    
+                      .validateFields()
+                      .then(() => {
+                        console.log(values);
+                        landingApiCall(values);
+                      })
+                      .catch(() => {
+                        console.log("error");
+                      });
                   }}
                 />
               </Col>
@@ -241,4 +303,4 @@ const TnDRequisitionLanding = () => {
   );
 };
 
-export default TnDRequisitionLanding;
+export default TnDPlanningLanding;

@@ -15,10 +15,8 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import axios from "axios";
 import { message } from "antd";
-import { title } from "process";
-import { dateFormatter } from "utility/dateFormatter";
 
-const TrainingType = () => {
+const TrainingTitle = () => {
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -42,44 +40,18 @@ const TrainingType = () => {
       align: "center",
     },
     {
-      title: "trainingType",
-      dataIndex: "trainingType",
+      title: "Training Title",
+      dataIndex: "trainingTitle",
       filter: true,
-      filterKey: "trainingTypeList",
+      filterKey: "trainingTitleList",
       filterSearch: true,
     },
     {
-      title: "Remarks",
-      dataIndex: "remarks",
+      title: "Training Description",
+      dataIndex: "trainingDescription",
       filter: true,
-      filterKey: "remarksList",
+      filterKey: "trainingDescriptionList",
       filterSearch: true,
-    },
-    {
-      title: "Created by",
-      dataIndex: "createdBy",
-      filter: true,
-      filterKey: "createdByList",
-      filterSearch: true,
-    },
-    {
-      title: "Created Date,",
-      dataIndex: "createdDate",
-      render: (text: any) => dateFormatter(text),
-      filter: true,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
-            <Switch defaultChecked onChange={() => console.log("Switched")} />
-          </Tooltip>
-        </Flex>
-      ),
-      align: "center",
-      width: 120,
     },
     {
       title: "Status",
@@ -135,20 +107,20 @@ const TrainingType = () => {
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount || 0} Training Type`}
+            title={`Total ${landingApi?.data?.totalCount || 0} Training Title`}
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Training Type"
-                  label="Training Type"
-                  name="trainingType"
+                  placeholder="Training Title"
+                  label="Training Title"
+                  name="trainingTitle"
                   rules={[
                     {
                       required: true,
-                      message: "Training Type is required",
+                      message: "Training Title is required",
                     },
                   ]}
                 />
@@ -156,9 +128,9 @@ const TrainingType = () => {
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Remarks"
-                  label="Remarks"
-                  name="remarks"
+                  placeholder="Training Description"
+                  label="Training Description"
+                  name="trainingDescription"
                 />
               </Col>
               <Col md={6} sm={24}>
@@ -193,4 +165,4 @@ const TrainingType = () => {
   );
 };
 
-export default TrainingType;
+export default TrainingTitle;
