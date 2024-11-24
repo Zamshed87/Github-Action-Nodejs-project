@@ -1,4 +1,4 @@
-import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
+import { Checkbox, Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
@@ -20,7 +20,7 @@ import { dateFormatter } from "utility/dateFormatter";
 import { shallowEqual, useSelector } from "react-redux";
 import { createTrainingType, dataDemo, updateTrainingType } from "./helper";
 
-const TrainingType = ({ setOpenTraingTypeModal }: any) => {
+const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
@@ -49,31 +49,39 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       align: "center",
     },
     {
-      title: "trainingType",
-      dataIndex: "strName",
+      title: "Inhouser Trainer?",
+      dataIndex: "inhouserTrainer",
       filter: true,
-      filterKey: "trainingTypeList",
+      filterKey: "inhouserTrainerList",
       filterSearch: true,
     },
     {
-      title: "Remarks",
-      dataIndex: "strRemarks",
+      title: "Name of Trainer",
+      dataIndex: "nameofTrainer",
       filter: true,
-      filterKey: "remarksList",
+      filterKey: "nameofTrainerList",
       filterSearch: true,
     },
     {
-      title: "Created by",
-      dataIndex: "intCreatedBy",
+      title: "Name of Organization",
+      dataIndex: "nameOfOrganization",
       filter: true,
-      filterKey: "createdByList",
+      filterKey: "nameOfOrganizationList",
       filterSearch: true,
     },
     {
-      title: "Created Date,",
-      dataIndex: "createdDate",
-      render: (text: any) => dateFormatter(text),
+      title: "Trainer Contact No",
+      dataIndex: "trainerContactNo",
       filter: true,
+      filterKey: "nameOfOrganizationList",
+      filterSearch: true,
+    },
+    {
+      title: "Trainer Email",
+      dataIndex: "trainerEmail",
+      filter: true,
+      filterKey: "trainerEmailList",
+      filterSearch: true,
     },
     {
       title: "Status",
@@ -107,21 +115,31 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       {(loading || landingLoading) && <Loading />}
       <PForm form={form} initialValues={{}}>
         <PCard>
-          <PCardHeader
-            title={`Total ${landingApi?.length || 0} Training Type`}
-          />
+          <PCardHeader title={`Total ${landingApi?.length || 0} Trainer`} />
           <PCardBody>
             <Row gutter={[10, 2]}>
+              <Col md={4} sm={24}>
+                <Checkbox
+                  name="inhouseTrainer"
+                  onChange={(e) => {
+                    form.setFieldsValue({
+                      inhouseTrainer: e.target.checked,
+                    });
+                  }}
+                >
+                  Inhouse Trainer?
+                </Checkbox>
+              </Col>
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Training Type"
-                  label="Training Type"
-                  name="trainingType"
+                  placeholder="Name of Trainer"
+                  label="Name of Trainer"
+                  name="nameofTrainer"
                   rules={[
                     {
                       required: true,
-                      message: "Training Type is required",
+                      message: "Name of Trainer is required",
                     },
                   ]}
                 />
@@ -129,11 +147,26 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Remarks"
-                  label="Remarks"
-                  name="remarks"
+                  placeholder="Name of Organization"
+                  label="Name of Organization"
+                  name="nameofOrganization"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Name of Organization is required",
+                    },
+                  ]}
                 />
               </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Trainer Email"
+                  label="Trainer Email"
+                  name="trainerEmail"
+                />
+              </Col>
+
               <Col md={6} sm={24}>
                 <PButton
                   style={{ marginTop: "22px" }}
@@ -183,4 +216,4 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   );
 };
 
-export default TrainingType;
+export default TrainerInfo;

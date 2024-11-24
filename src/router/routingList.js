@@ -81,6 +81,7 @@ import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/re
 import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
 import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/planningCreateEdit";
 import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
+import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3174,6 +3175,10 @@ export const routingList = [
   {
     path: "/trainingDevelopment/planning/:type",
     component: TnDPlanningCreateEdit,
+  },
+  {
+    path: "/trainingDevelopment/trainerInfo",
+    component: TrainerInfo,
   },
   // Trainnning and development ends
 

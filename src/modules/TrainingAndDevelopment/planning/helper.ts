@@ -1,3 +1,6 @@
+import { FormInstance } from "antd";
+import moment from "moment";
+
 export const trainingModeFixDDL: any[] = [
   {
     label: "Online",
@@ -39,6 +42,50 @@ export const trainingStatusFixDDL: any[] = [
     value: "Cencaled",
   },
 ];
+
+export const setTrainingDuration = (form: FormInstance<any>) => {
+  const {
+    trainingStartDate,
+    trainingStartTime,
+    trainingEndDate,
+    trainingEndTime,
+  } = form.getFieldsValue(true);
+
+  if (
+    trainingStartDate &&
+    trainingStartTime &&
+    trainingEndDate &&
+    trainingEndTime
+  ) {
+    // Combine date and time
+    const trainingStartDateTime = moment(
+      `${moment(trainingStartDate).format("YYYY-MM-DD")}T${moment(
+        trainingStartTime
+      ).format("HH:mm:ss.SSS")}Z`
+    );
+    const trainingEndDateTime = moment(
+      `${moment(trainingEndDate).format("YYYY-MM-DD")}T${moment(
+        trainingEndTime
+      ).format("HH:mm:ss.SSS")}Z`
+    );
+
+    // Calculate duration
+    if (trainingEndDateTime.isAfter(trainingStartDateTime)) {
+      const duration = moment.duration(
+        trainingEndDateTime.diff(trainingStartDateTime)
+      );
+      const hours = Math.floor(duration.asHours());
+      const minutes = duration.minutes();
+      form.setFieldsValue({
+        trainingDuration: `${hours} hours ${minutes} minutes`,
+      });
+    } else {
+      form.setFieldsValue({
+        trainingDuration: `End date-time must be after start date-time.`,
+      });
+    }
+  }
+};
 
 export const data: any[] = [
   {

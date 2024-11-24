@@ -49,24 +49,35 @@ export const updateTrainingType = async (
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
   data: any,
-  isActive: boolean
+  onlyStatus: boolean
 ) => {
   setLoading(true);
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
+    let payload = {};
 
-    const payload = {
-      intId: values?.id,
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: "",
-      intUpdatedBy: "",
-      isActive: isActive ? !isActive : data?.isActive,
-    };
+    if (onlyStatus) {
+      payload = {
+        ...data,
+        isActive: !data?.isActive,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+      };
+    } else {
+      payload = {
+        intId: data?.intId,
+        strName: values?.trainingType || data?.strName,
+        strRemarks: values?.remarks || data?.strRemarks,
+        intAccountId: orgId,
+        dteCreatedAt: "",
+        intCreatedBy: "",
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+        isActive: data?.isActive,
+      };
+    }
+
     const res = await axios.post(
       `/TrainingAndDevelopment/SaveTrainingType`,
       payload

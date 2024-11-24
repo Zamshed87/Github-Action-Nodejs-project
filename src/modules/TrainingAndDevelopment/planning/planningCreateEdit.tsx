@@ -25,6 +25,8 @@ import { trainingModeFixDDL, trainingStatusFixDDL } from "./helper";
 import { PModal } from "Components/Modal";
 import TrainingType from "../masterData/trainingType";
 import TrainingTitle from "../masterData/trainingTitle";
+import moment from "moment";
+import { setTrainingDuration } from "./helper";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -48,6 +50,7 @@ const TnDPlanningCreateEdit = () => {
   const getBUnitDDL = useApiRequest({});
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
+  const [nameOfTrainerOrgDDL, getNameOfTrainerOrgDDL] = useAxiosGet();
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -138,6 +141,7 @@ const TnDPlanningCreateEdit = () => {
     });
     getWorkplaceGroup();
     getTrainingTypeDDL("/trainingType");
+    getNameOfTrainerOrgDDL("/trainingType");
   }, [profileData?.buId, profileData?.wgId]);
 
   return (
@@ -169,6 +173,8 @@ const TnDPlanningCreateEdit = () => {
                             console.log(values);
                           })
                           .catch(() => {
+                            console.log(values);
+
                             console.log("error");
                           });
                       },
@@ -421,6 +427,7 @@ const TnDPlanningCreateEdit = () => {
                     form.setFieldsValue({
                       trainingStartDate: value,
                     });
+                    setTrainingDuration(form);
                   }}
                   rules={[
                     {
@@ -437,9 +444,11 @@ const TnDPlanningCreateEdit = () => {
                   label="Training Start Time"
                   placeholder="Training Start Time"
                   onChange={(value) => {
+                    console.log(value);
                     form.setFieldsValue({
                       trainingStartTime: value,
                     });
+                    setTrainingDuration(form);
                   }}
                   rules={[
                     {
@@ -459,6 +468,7 @@ const TnDPlanningCreateEdit = () => {
                     form.setFieldsValue({
                       trainingEndDate: value,
                     });
+                    setTrainingDuration(form);
                   }}
                   rules={[
                     {
@@ -478,6 +488,7 @@ const TnDPlanningCreateEdit = () => {
                     form.setFieldsValue({
                       trainingEndTime: value,
                     });
+                    setTrainingDuration(form);
                   }}
                   rules={[
                     {
@@ -490,11 +501,30 @@ const TnDPlanningCreateEdit = () => {
 
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
+                  disabled={true}
                   type="text"
-                  placeholder="Remarks"
-                  label="Remarks"
-                  name="remarks"
+                  placeholder="Training Duration"
+                  label="Training Duration"
+                  name="trainingDuration"
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={nameOfTrainerOrgDDL || []} // need to change
+                  name="nameofTrainerOrganization"
+                  label="Name of Trainer & Organization"
+                  placeholder="Name of Trainer & Organization"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      nameofTrainerOrganization: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Name of Trainer & Organization is required",
+                    },
+                  ]}
                 />
               </Col>
 
