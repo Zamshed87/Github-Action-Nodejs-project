@@ -3,10 +3,11 @@ import {
   PlusCircleOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row } from "antd";
+import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
+  Flex,
   PButton,
   PCard,
   PCardBody,
@@ -27,6 +28,8 @@ import TrainingType from "../masterData/trainingType";
 import TrainingTitle from "../masterData/trainingTitle";
 import moment from "moment";
 import { setTrainingDuration } from "./helper";
+import { Delete } from "@mui/icons-material";
+import ListOfCost from "./listOfCost";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -40,6 +43,7 @@ const TnDPlanningCreateEdit = () => {
   const [loading, setLoading] = useState(false);
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
   const [openTrainingTitleModal, setOpenTrainingTitleModal] = useState(false);
+  const [costField, setCostField] = useState<any>([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -51,6 +55,7 @@ const TnDPlanningCreateEdit = () => {
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const [nameOfTrainerOrgDDL, getNameOfTrainerOrgDDL] = useAxiosGet();
+  const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -143,6 +148,14 @@ const TnDPlanningCreateEdit = () => {
     getTrainingTypeDDL("/trainingType");
     getNameOfTrainerOrgDDL("/trainingType");
   }, [profileData?.buId, profileData?.wgId]);
+
+  const addHandler = (values: any) => {
+    const nextId =
+      costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
+    setCostField([...costField, { id: nextId, ...values }]);
+  };
+
+  console.log(costField);
 
   return (
     <div>
@@ -527,40 +540,14 @@ const TnDPlanningCreateEdit = () => {
                   ]}
                 />
               </Col>
-
-              {(type === "view" || type === "status") && upcommi && (
-                <Col md={6} sm={24}>
-                  <PSelect
-                    options={[]}
-                    name="upcommingTraining"
-                    disabled={type === "view"}
-                    label="upcomming Training"
-                    placeholder="upcomming Training"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        upcommingTraining: op,
-                      });
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Upcomming Training is required",
-                      },
-                    ]}
-                  />
-                </Col>
-              )}
-              {(type === "view" || type === "status") && (
-                <Col md={6} sm={24}>
-                  <PInput
-                    type="text"
-                    placeholder="Comments"
-                    label="Comments"
-                    name="comments"
-                  />
-                </Col>
-              )}
             </Row>
+
+            <ListOfCost
+              form={form}
+              costField={costField}
+              setCostField={setCostField}
+              addHandler={addHandler}
+            />
           </PCardBody>
         </PCard>
       </PForm>
