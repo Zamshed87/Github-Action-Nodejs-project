@@ -1,19 +1,42 @@
-export const requisitionStatus: any[] = [
+export const trainingModeFixDDL: any[] = [
   {
-    label: "Assigned",
-    value: "Assigned",
+    label: "Online",
+    value: "Online",
   },
   {
-    label: "Deferred",
-    value: "Deferred",
+    label: "Classroom",
+    value: "Classroom",
   },
   {
-    label: "Discarded",
-    value: "Discarded",
+    label: "Residential",
+    value: "Residential",
   },
   {
-    label: "Accomplished",
-    value: "Accomplished",
+    label: "Workshop",
+    value: "Workshop",
+  },
+  {
+    label: "Foreign",
+    value: "Foreign",
+  },
+];
+
+export const trainingStatusFixDDL: any[] = [
+  {
+    label: "Upcoming",
+    value: "Upcoming",
+  },
+  {
+    label: "Ongoing",
+    value: "Ongoing",
+  },
+  {
+    label: "Completed",
+    value: "Completed",
+  },
+  {
+    label: "Cencaled",
+    value: "Cencaled",
   },
 ];
 

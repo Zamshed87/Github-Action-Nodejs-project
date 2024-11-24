@@ -1,4 +1,8 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  PlusCircleOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
 import { Col, Form, FormInstance, Row } from "antd";
 import Loading from "common/loading/Loading";
 import {
@@ -16,7 +20,10 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { requisitionStatus } from "./helper";
+// import { requisitionStatus } from "./helper";
+import { trainingModeFixDDL, trainingStatusFixDDL } from "./helper";
+import { PModal } from "Components/Modal";
+import TrainingType from "../masterData/trainingType";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -28,11 +35,17 @@ const TnDPlanningCreateEdit = () => {
   const data = location?.state?.data;
 
   const [loading, setLoading] = useState(false);
+  const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
+  const { buId, wgId, employeeId, orgId } = profileData;
+
+  const getBUnitDDL = useApiRequest({});
+  const workplaceGroup = useApiRequest([]);
+  const workplace = useApiRequest([]);
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -43,6 +56,46 @@ const TnDPlanningCreateEdit = () => {
     useAxiosGet();
 
   const [upcommi, setUpcommi] = useState(false);
+
+  // workplace wise
+  const getWorkplaceGroup = () => {
+    workplaceGroup?.action({
+      urlKey: "WorkplaceGroupWithRoleExtension",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+  };
+
+  const getWorkplace = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    workplace?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: employeeId,
+      },
+      onSuccess: (res: any) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
 
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
@@ -65,6 +118,23 @@ const TnDPlanningCreateEdit = () => {
   };
 
   useEffect(() => {
+    getBUnitDDL.action({
+      urlKey: "BusinessUnitWithRoleExtension",
+      method: "GET",
+      params: {
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        empId: employeeId || 0,
+        accountId: orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.strBusinessUnit;
+          res[i].value = item?.intBusinessUnitId;
+        });
+      },
+    });
+    getWorkplaceGroup();
     getTrainingTypeDDL("/trainingType");
   }, [profileData?.buId, profileData?.wgId]);
 
@@ -78,7 +148,7 @@ const TnDPlanningCreateEdit = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`Requisition ${type === "create" ? "Create" : "Edit"}`}
+            title={`Training Plan ${type === "create" ? "Create" : "Edit"}`}
             buttonList={
               type === "view"
                 ? [] // No buttons for "status" type
@@ -106,7 +176,59 @@ const TnDPlanningCreateEdit = () => {
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={
+                    getBUnitDDL?.data?.length > 0 ? getBUnitDDL?.data : []
+                  }
+                  name="bUnit"
+                  label="Business Unit"
+                  showSearch
+                  filterOption={true}
+                  placeholder="Business Unit"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      bUnit: op,
+                    });
+                  }}
+                  rules={[{ required: true, message: "District is required" }]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={workplaceGroup?.data || []}
+                  name="workplaceGroup"
+                  label="Workplace Group"
+                  placeholder="Workplace Group"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplaceGroup: op,
+                      workplace: undefined,
+                    });
+                    getWorkplace();
+                  }}
+                  rules={[
+                    { required: true, message: "Workplace Group is required" },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={workplace?.data || []}
+                  name="workplace"
+                  label="Workplace"
+                  placeholder="Workplace"
+                  // disabled={+id ? true : false}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplace: op,
+                    });
+                    //   getDesignation();
+                  }}
+                  rules={[{ required: true, message: "Workplace is required" }]}
+                />
+              </Col>
+              {/* <Col md={6} sm={24}>
                 <PSelect
                   disabled={type === "view" || type === "status"}
                   name="employee"
@@ -132,13 +254,27 @@ const TnDPlanningCreateEdit = () => {
                     },
                   ]}
                 />
-              </Col>
-              <Col md={6} sm={24}>
+              </Col> */}
+              <Col md={6} sm={12} xs={24}>
                 <PSelect
-                  disabled={type === "view" || type === "status"}
                   options={trainingTypeDDL || []}
                   name="trainingType"
-                  label="Training Type"
+                  label={
+                    <>
+                      Training Type{" "}
+                      <PlusCircleOutlined
+                        onClick={() => {
+                          setOpenTraingTypeModal(true);
+                        }}
+                        style={{
+                          color: "green",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          margin: "0 5px",
+                        }}
+                      />
+                    </>
+                  }
                   placeholder="Training Type"
                   onChange={(value, op) => {
                     form.setFieldsValue({
@@ -153,9 +289,85 @@ const TnDPlanningCreateEdit = () => {
                   ]}
                 />
               </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingTypeDDL || []}
+                  name="trainingTitle"
+                  label="Training Title"
+                  placeholder="Training Title"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingTitle: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Title is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingModeFixDDL || []}
+                  name="trainingMode"
+                  label="Training Mode"
+                  placeholder="Training Mode"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingMode: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Mode is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingModeFixDDL || []} // need to change
+                  name="trainingOrganizer"
+                  label="Training Organizer"
+                  placeholder="Training Organizer"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingOrganizer: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Organizer is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingStatusFixDDL || []}
+                  name="requisitionStatus"
+                  disabled={type === "view"}
+                  label="Requisition Status"
+                  placeholder="Requisition Status"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      requisitionStatus: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Requisition Status is required",
+                    },
+                  ]}
+                />
+              </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Reason For Requisition"
                   label="Reason For Requisition"
@@ -192,33 +404,7 @@ const TnDPlanningCreateEdit = () => {
                   name="remarks"
                 />
               </Col>
-              {(type === "view" || type === "status") && (
-                <Col md={6} sm={24}>
-                  <PSelect
-                    options={requisitionStatus}
-                    name="requisitionStatus"
-                    disabled={type === "view"}
-                    label="Requisition Status"
-                    placeholder="Requisition Status"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        requisitionStatus: op,
-                      });
-                      if (!Array.isArray(op) && op?.label === "Assigned") {
-                        setUpcommi(true);
-                      } else {
-                        setUpcommi(false);
-                      }
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Requisition Status is required",
-                      },
-                    ]}
-                  />
-                </Col>
-              )}
+
               {(type === "view" || type === "status") && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
@@ -255,6 +441,21 @@ const TnDPlanningCreateEdit = () => {
           </PCardBody>
         </PCard>
       </PForm>
+      {/* Training Type Modal */}
+      <PModal
+        open={openTraingTypeModal}
+        title={"Training Type"}
+        width="400"
+        onCancel={() => {
+          setOpenTraingTypeModal(false);
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <TrainingType setOpenTraingTypeModal={setOpenTraingTypeModal} />
+          </>
+        }
+      />
     </div>
   );
 };

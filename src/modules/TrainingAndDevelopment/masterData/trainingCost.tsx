@@ -15,17 +15,8 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import axios from "axios";
 import { message } from "antd";
-import { title } from "process";
-import { dateFormatter } from "utility/dateFormatter";
-import { shallowEqual, useSelector } from "react-redux";
-import { createTrainingType } from "./helper";
 
-const TrainingType = ({ setOpenTraingTypeModal }: any) => {
-  const { permissionList, profileData } = useSelector(
-    (state: any) => state?.auth,
-    shallowEqual
-  );
-  const { buId, wgId, employeeId, orgId } = profileData;
+const TrainingCost = () => {
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -49,44 +40,18 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       align: "center",
     },
     {
-      title: "trainingType",
-      dataIndex: "trainingType",
+      title: "Cost Type",
+      dataIndex: "costType",
       filter: true,
-      filterKey: "trainingTypeList",
+      filterKey: "costTypeList",
       filterSearch: true,
     },
     {
-      title: "Remarks",
-      dataIndex: "remarks",
+      title: "Description",
+      dataIndex: "costDescription",
       filter: true,
-      filterKey: "remarksList",
+      filterKey: "costDescriptionList",
       filterSearch: true,
-    },
-    {
-      title: "Created by",
-      dataIndex: "createdBy",
-      filter: true,
-      filterKey: "createdByList",
-      filterSearch: true,
-    },
-    {
-      title: "Created Date,",
-      dataIndex: "createdDate",
-      render: (text: any) => dateFormatter(text),
-      filter: true,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
-            <Switch defaultChecked onChange={() => console.log("Switched")} />
-          </Tooltip>
-        </Flex>
-      ),
-      align: "center",
-      width: 120,
     },
     {
       title: "Status",
@@ -122,26 +87,42 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     landingApiCall();
   }, []);
 
+  const saveHandler = async (form: FormInstance<any>) => {
+    try {
+      const values = form.getFieldsValue(true);
+      setLoading(true);
+      await axios.post("/trainingType", values);
+      message.success("Training Type saved successfully");
+      landingApiCall();
+    } catch (error) {
+      message.error("Failed to save Training Type");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
-      {(loading || landingLoading) && <Loading />}
+      {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount || 0} Training Type`}
+            title={`Total ${
+              landingApi?.data?.totalCount || 0
+            } Training Cost Type`}
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Training Type"
-                  label="Training Type"
-                  name="trainingType"
+                  placeholder="Cost Type"
+                  label="Cost Type"
+                  name="costType"
                   rules={[
                     {
                       required: true,
-                      message: "Training Type is required",
+                      message: "Cost Type is required",
                     },
                   ]}
                 />
@@ -149,33 +130,16 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Remarks"
-                  label="Remarks"
-                  name="remarks"
+                  placeholder="Description"
+                  label="Cost Description"
+                  name="costDescription"
                 />
               </Col>
               <Col md={6} sm={24}>
                 <PButton
-                  style={{ marginTop: "22px" }}
                   type="primary"
                   content="Save"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        console.log(values);
-                        createTrainingType(
-                          form,
-                          profileData,
-                          setLoading,
-                          setOpenTraingTypeModal
-                        );
-                      })
-                      .catch(() => {
-                        console.log("error");
-                      });
-                  }}
+                  onClick={() => saveHandler(form)}
                 />
               </Col>
             </Row>
@@ -203,4 +167,4 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   );
 };
 
-export default TrainingType;
+export default TrainingCost;
