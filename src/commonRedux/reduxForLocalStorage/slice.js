@@ -34,6 +34,18 @@ const initState = {
     current: 1,
     pageSize: 100,
   },
+  barAssesmentInitialValues: {
+    assessmentToDDL: { value: "colleague", label: "Colleague", id: 3 },
+    employeeDDL: "",
+    yearDDL: "",
+    quarterDDL: "",
+  },
+  performanceMarkingInitialValues: {
+    year: "",
+    quarter: "",
+    department: "",
+    evaluationCriteria: "",
+  },
 };
 
 export const localStorageSlice = createSlice({
@@ -70,6 +82,15 @@ export const localStorageSlice = createSlice({
         ...state[payload?.name],
         [payload?.key]: payload?.value,
       };
+    },
+    setBarAssesmentInitialValues: (state, action) => {
+      state.barAssesmentInitialValues = action.payload;
+    },
+    setPerformanceMarkingInitialValues: (state, action) => {
+      state.performanceMarkingInitialValues = action.payload;
+    },
+    setSBUBalancedScoreData: (state, action) => {
+      state.SBUBalancedScorecardData = action.payload;
     },
   },
 });

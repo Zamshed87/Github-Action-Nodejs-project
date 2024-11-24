@@ -1,0 +1,63 @@
+.pmsCentralTableClass {
+  width: 100%;
+  margin-top: 10px;
+}
+.pmsCentralTableClass,
+.pmsCentralTableClass th,
+.pmsCentralTableClass td {
+  border: 1px solid gray;
+  font-size: 12px;
+}
+.pmsCentralTableClass td {
+  padding: 10px 5px !important;
+  font-size: 11px;
+}
+.pmsCentralTableClass {
+  margin-bottom: 0 !important;
+}
+.resKpi {
+  overflow-x: hidden;
+}
+.pmsCentralTableClass td,
+.pmsCentralTableClass th {
+  vertical-align: middle !important;
+}
+.pmsCentralTableClass th {
+  background: #299647 !important;
+  color: #ffffff;
+  padding: 8px !important;
+}
+.pmsCentralTableClass .obj {
+  text-align: left;
+  padding-left: 3px !important;
+  font-weight: 700;
+}
+.pmsCentralTableClass .bsc {
+  width: 8px;
+  color: #ffffff;
+  font-weight: 700;
+}
+.pmsCentralTableClass .bsc > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(-180deg) translateX(-5px);
+  writing-mode: vertical-rl;
+}
+.pmsCentralTableClass .bsc0 {
+  background: #2ecc71;
+}
+.pmsCentralTableClass .bsc1 {
+  background: #3498db;
+}
+.pmsCentralTableClass .bsc2 {
+  background: #e67e22;
+}
+.pmsCentralTableClass .bsc3 {
+  background: coral;
+}
+@media (min-width: 300px) and (max-width: 992px) {
+  .resKpi {
+    overflow-x: scroll;
+  }
+}
