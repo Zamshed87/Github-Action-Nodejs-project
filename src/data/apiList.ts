@@ -267,5 +267,6 @@ export const apiList = {
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
 
   getCommonEnumData: "/Enum/GetEnums",
+  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
   GetQuestionLanding: "/Questionnaire/Landing",
 };

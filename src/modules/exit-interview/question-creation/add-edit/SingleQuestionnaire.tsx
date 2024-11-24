@@ -74,12 +74,7 @@ const SingleQuestionnaire = ({
                   valuePropName="checked"
                   shouldUpdate
                 >
-                  <Switch
-                    size="small"
-                    onChange={() => {
-                      console.log(antForm.getFieldsValue(true));
-                    }}
-                  />
+                  <Switch size="small" />
                 </Form.Item>
               </div>
               <p style={{ margin: "8px 0 0 4px" }}>Required</p>

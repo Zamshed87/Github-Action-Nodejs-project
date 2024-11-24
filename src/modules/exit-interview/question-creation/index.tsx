@@ -72,7 +72,6 @@ const QuestionCreationLanding = () => {
       pageSize?: number;
     };
     filters?: any;
-    searchText?: string;
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: 25 },
@@ -229,7 +228,7 @@ const QuestionCreationLanding = () => {
 
   return QuestionCreationPermission?.isView ? (
     <>
-      {loading && <Loading />}
+      {(loading || landingApi.loading) && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
