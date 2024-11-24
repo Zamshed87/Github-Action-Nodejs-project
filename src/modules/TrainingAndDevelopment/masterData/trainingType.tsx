@@ -18,7 +18,7 @@ import { message } from "antd";
 import { title } from "process";
 import { dateFormatter } from "utility/dateFormatter";
 import { shallowEqual, useSelector } from "react-redux";
-import { createTrainingType } from "./helper";
+import { createTrainingType, dataDemo, updateTrainingType } from "./helper";
 
 const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -82,8 +82,17 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
         <Flex justify="center">
           <Tooltip placement="bottom" title="Status">
             <Switch
+              size="small"
               defaultChecked={rec?.isActive}
-              onChange={() => console.log("Switched")}
+              onChange={() => {
+                updateTrainingType(
+                  form,
+                  profileData,
+                  setLoading,
+                  rec,
+                  rec?.isActive
+                );
+              }}
             />
           </Tooltip>
         </Flex>
@@ -161,7 +170,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={landingApi || []}
+              data={dataDemo || []}
               loading={landingLoading}
               header={header}
               // pagination={{
