@@ -440,9 +440,14 @@ export default function AddEditForm({
                   label: "UCB",
                 },
                 {
-                  value: "DigitalPayment",
+                  value: "Upay",
 
                   label: "Upay",
+                },
+                {
+                  value: "UCBL",
+
+                  label: "UCBL",
                 },
               ]}
               onChange={(value, op) => {
