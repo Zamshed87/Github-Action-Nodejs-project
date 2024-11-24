@@ -72,7 +72,7 @@ export const createNEditLetterGenerate = async (
     const payload = {
       templateId: values?.letterId || 0,
       letterTypeId: values?.letterType?.value,
-      letterName: values?.letterName?.value,
+      letterName: values?.letterName?.label,
       generatedLetterBody: values?.letter,
       issuedEmployeeId: values?.employee?.value || "",
       accountId: letterData?.accountId || orgId,
