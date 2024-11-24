@@ -31,7 +31,7 @@ export const createTrainingType = async (
     );
     form.resetFields();
     toast.success(res?.data?.message, { toastId: 1222 });
-    setOpenTraingTypeModal(false);
+    setOpenTraingTypeModal && setOpenTraingTypeModal(false);
     setLoading(false);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

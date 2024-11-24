@@ -24,6 +24,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { trainingModeFixDDL, trainingStatusFixDDL } from "./helper";
 import { PModal } from "Components/Modal";
 import TrainingType from "../masterData/trainingType";
+import TrainingTitle from "../masterData/trainingTitle";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -36,6 +37,7 @@ const TnDPlanningCreateEdit = () => {
 
   const [loading, setLoading] = useState(false);
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
+  const [openTrainingTitleModal, setOpenTrainingTitleModal] = useState(false);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -225,7 +227,7 @@ const TnDPlanningCreateEdit = () => {
                     });
                     //   getDesignation();
                   }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
+                  //   rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
               {/* <Col md={6} sm={24}>
@@ -293,7 +295,22 @@ const TnDPlanningCreateEdit = () => {
                 <PSelect
                   options={trainingTypeDDL || []}
                   name="trainingTitle"
-                  label="Training Title"
+                  label={
+                    <>
+                      Training Title{" "}
+                      <PlusCircleOutlined
+                        onClick={() => {
+                          setOpenTrainingTitleModal(true);
+                        }}
+                        style={{
+                          color: "green",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          margin: "0 5px",
+                        }}
+                      />
+                    </>
+                  }
                   placeholder="Training Title"
                   onChange={(value, op) => {
                     form.setFieldsValue({
@@ -349,19 +366,18 @@ const TnDPlanningCreateEdit = () => {
               <Col md={6} sm={12} xs={24}>
                 <PSelect
                   options={trainingStatusFixDDL || []}
-                  name="requisitionStatus"
-                  disabled={type === "view"}
-                  label="Requisition Status"
-                  placeholder="Requisition Status"
+                  name="trainingStatus"
+                  label="Training Status"
+                  placeholder="Training Status"
                   onChange={(value, op) => {
                     form.setFieldsValue({
-                      requisitionStatus: op,
+                      trainingStatus: op,
                     });
                   }}
                   rules={[
                     {
                       required: true,
-                      message: "Requisition Status is required",
+                      message: "Training Status is required",
                     },
                   ]}
                 />
@@ -369,32 +385,109 @@ const TnDPlanningCreateEdit = () => {
               <Col md={6} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Reason For Requisition"
-                  label="Reason For Requisition"
-                  name="reasonForRequisition"
+                  placeholder="Objectives/ Key Learnings/ Outcomes"
+                  label="Objectives/ Key Learnings/ Outcomes"
+                  name="objectives"
                   rules={[
                     {
                       required: true,
-                      message: "Reason For Requisition is required",
+                      message:
+                        "Objectives/ Key Learnings/ Outcomes is required",
                     },
                   ]}
                 />
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
-                  placeholder="Objectives to Achieve"
-                  label="Objectives to Achieve"
-                  name="objectivesToAchieve"
+                  placeholder="Training Vanue"
+                  label="Training Vanue"
+                  name="trainingVanue"
                   rules={[
                     {
                       required: true,
-                      message: "Objectives to Achieve is required",
+                      message: "Training Vanue is required",
                     },
                   ]}
                 />
               </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="date"
+                  name="trainingStartDate"
+                  label="Training Start Date"
+                  placeholder="Training Start Date"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingStartDate: value,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Start Date is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="time"
+                  name="trainingStartTime"
+                  label="Training Start Time"
+                  placeholder="Training Start Time"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingStartTime: value,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Start Time is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="date"
+                  name="trainingEndDate"
+                  label="Training End Date"
+                  placeholder="Training End Date"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingEndDate: value,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training End Date is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="time"
+                  name="trainingEndTime"
+                  label="Training End Time"
+                  placeholder="Training End Time"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingEndTime: value,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training End Time is required",
+                    },
+                  ]}
+                />
+              </Col>
+
               <Col md={6} sm={24}>
                 <PInput
                   disabled={type === "view" || type === "status"}
@@ -445,7 +538,7 @@ const TnDPlanningCreateEdit = () => {
       <PModal
         open={openTraingTypeModal}
         title={"Training Type"}
-        width="400"
+        width="350"
         onCancel={() => {
           setOpenTraingTypeModal(false);
         }}
@@ -453,6 +546,24 @@ const TnDPlanningCreateEdit = () => {
         components={
           <>
             <TrainingType setOpenTraingTypeModal={setOpenTraingTypeModal} />
+          </>
+        }
+      />
+
+      {/* Training Title Modal */}
+      <PModal
+        open={openTrainingTitleModal}
+        title={"Training Title"}
+        width="400"
+        onCancel={() => {
+          setOpenTrainingTitleModal(false);
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <TrainingTitle
+              setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+            />
           </>
         }
       />

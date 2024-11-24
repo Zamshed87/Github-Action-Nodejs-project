@@ -16,7 +16,7 @@ import { getSerial } from "Utils";
 import axios from "axios";
 import { message } from "antd";
 
-const TrainingTitle = () => {
+const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -135,6 +135,7 @@ const TrainingTitle = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PButton
+                  style={{ marginTop: "22px" }}
                   type="primary"
                   content="Save"
                   onClick={() => saveHandler(form)}
