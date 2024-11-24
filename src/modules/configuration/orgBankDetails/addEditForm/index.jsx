@@ -444,11 +444,7 @@ export default function AddEditForm({
 
                   label: "Upay",
                 },
-                {
-                  value: "UCBL",
-
-                  label: "UCBL",
-                },
+                
               ]}
               onChange={(value, op) => {
                 form.setFieldsValue({
