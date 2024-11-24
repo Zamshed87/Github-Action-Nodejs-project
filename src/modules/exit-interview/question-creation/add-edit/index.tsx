@@ -135,9 +135,15 @@ const QuestionCreationAddEdit = () => {
                 antForm
                   .validateFields()
                   .then(() => {
-                    saveQuestionnaire(values, profileData, setLoading, () => {
-                      antForm.resetFields();
-                    });
+                    saveQuestionnaire(
+                      quesId,
+                      values,
+                      profileData,
+                      setLoading,
+                      () => {
+                        antForm.resetFields();
+                      }
+                    );
                   })
                   .catch(() => {
                     toast.warning("Please fill the required fields");

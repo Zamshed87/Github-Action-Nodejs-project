@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const saveQuestionnaire = async (
+  quesId,
   values,
   profileData,
   setLoading,
@@ -53,7 +54,7 @@ export const saveQuestionnaire = async (
     }
 
     const payload = {
-      id: 0,
+      id: quesId || 0,
       typeId: parseInt(values?.survayType?.value),
       title: values?.survayTitle,
       description: values?.survayDescription,
@@ -63,7 +64,9 @@ export const saveQuestionnaire = async (
       questions: formattedQuestions,
     };
 
-    const res = await axios.post(`/Questionnaire`, payload);
+    const method = quesId ? axios.put : axios.post;
+
+    const res = await method(`/Questionnaire`, payload);
     cb();
     toast.success(res?.data?.Message || "Created Sucessfully", { toastId: 1 });
   } catch (error) {
