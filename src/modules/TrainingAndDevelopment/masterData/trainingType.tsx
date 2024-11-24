@@ -41,8 +41,8 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000,
           index,
         }),
       fixed: "left",
@@ -50,21 +50,21 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     },
     {
       title: "trainingType",
-      dataIndex: "trainingType",
+      dataIndex: "strName",
       filter: true,
       filterKey: "trainingTypeList",
       filterSearch: true,
     },
     {
       title: "Remarks",
-      dataIndex: "remarks",
+      dataIndex: "strRemarks",
       filter: true,
       filterKey: "remarksList",
       filterSearch: true,
     },
     {
       title: "Created by",
-      dataIndex: "createdBy",
+      dataIndex: "intCreatedBy",
       filter: true,
       filterKey: "createdByList",
       filterSearch: true,
@@ -81,33 +81,10 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title="Status">
-            <Switch defaultChecked onChange={() => console.log("Switched")} />
-          </Tooltip>
-        </Flex>
-      ),
-      align: "center",
-      width: 120,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
-            <Switch defaultChecked onChange={() => console.log("Switched")} />
-            {/* <EditOutlined
-                style={{
-                  color: "green",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  margin: "0 5px",
-                }}
-                onClick={() => {
-                  history.push("/trainingDevelopment/planning/edit", {
-                    data: rec,
-                  });
-                }}
-              /> */}
+            <Switch
+              defaultChecked={rec?.isActive}
+              onChange={() => console.log("Switched")}
+            />
           </Tooltip>
         </Flex>
       ),
@@ -116,7 +93,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     },
   ];
   const landingApiCall = () => {
-    getLandingApi("/trainingType");
+    getLandingApi("/TrainingAndDevelopment/GetAllTrainingType");
   };
   useEffect(() => {
     landingApiCall();
@@ -128,7 +105,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount || 0} Training Type`}
+            title={`Total ${landingApi?.length || 0} Training Type`}
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
@@ -184,17 +161,17 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={landingApi?.data?.data || []}
-              loading={landingApi?.loading}
+              data={landingApi || []}
+              loading={landingLoading}
               header={header}
-              pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
-              }}
+              // pagination={{
+              //   pageSize: landingApi?.data?.pageSize,
+              //   total: landingApi?.data?.totalCount,
+              // }}
               filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
-                landingApiCall();
-              }}
+              // onChange={(pagination, filters) => {
+              //   landingApiCall();
+              // }}
             />
           </div>
         </PCard>

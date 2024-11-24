@@ -26,8 +26,7 @@ export const createTrainingType = async (
       isActive: true,
     };
     const res = await axios.post(
-      `https://192.168.7.52
-:7020/api/TrainingAndDevelopment/SaveTrainingType`,
+      `/TrainingAndDevelopment/SaveTrainingType`,
       payload
     );
     form.resetFields();
