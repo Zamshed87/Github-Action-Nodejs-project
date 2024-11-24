@@ -30,6 +30,7 @@ import moment from "moment";
 import { setTrainingDuration } from "./helper";
 import { Delete } from "@mui/icons-material";
 import ListOfCost from "./listOfCost";
+import ListOfPerticipants from "./listOfPerticipants";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -44,6 +45,7 @@ const TnDPlanningCreateEdit = () => {
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
   const [openTrainingTitleModal, setOpenTrainingTitleModal] = useState(false);
   const [costField, setCostField] = useState<any>([]);
+  const [perticipantField, setperticipantField] = useState<any>([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -153,6 +155,14 @@ const TnDPlanningCreateEdit = () => {
     const nextId =
       costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
     setCostField([...costField, { id: nextId, ...values }]);
+  };
+
+  const addHanderForPerticipant = (values: any) => {
+    const nextId =
+      perticipantField.length > 0
+        ? perticipantField[perticipantField.length - 1].id + 1
+        : 1;
+    setperticipantField([...perticipantField, { id: nextId, ...values }]);
   };
 
   console.log(costField);
@@ -547,6 +557,12 @@ const TnDPlanningCreateEdit = () => {
               costField={costField}
               setCostField={setCostField}
               addHandler={addHandler}
+            />
+            <ListOfPerticipants
+              form={form}
+              perticipantField={perticipantField}
+              setperticipantField={setperticipantField}
+              addHandler={addHanderForPerticipant}
             />
           </PCardBody>
         </PCard>

@@ -9,13 +9,13 @@ import { tr } from "date-fns/locale";
 
 const ListOfPerticipants = ({
   form,
-  costField,
-  setCostField,
+  perticipantField,
+  setperticipantField,
   addHandler,
 }: {
   form: FormInstance;
-  costField: any[];
-  setCostField: (data: any[]) => void;
+  perticipantField: any[];
+  setperticipantField: (data: any[]) => void;
   addHandler: (values: any) => void;
 }) => {
   const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
@@ -51,10 +51,10 @@ const ListOfPerticipants = ({
                 margin: "0 5px",
               }}
               onClick={() => {
-                const updatedCostField = costField.filter(
+                const updatedperticipantField = perticipantField.filter(
                   (item) => item.id !== rec.id
                 );
-                setCostField(updatedCostField);
+                setperticipantField(updatedperticipantField);
               }}
             />
           </Tooltip>
@@ -65,11 +65,13 @@ const ListOfPerticipants = ({
     },
   ];
 
-  console.log(costField.reduce((acc, item) => acc + Number(item.costValue), 0));
+  console.log(
+    perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
+  );
 
   return (
     <div style={{ marginTop: "13px" }}>
-      <h1>List of Cost</h1>
+      <h1>List of Perticipants</h1>
       <Row gutter={[10, 2]} style={{ marginTop: "10px" }}>
         <Col md={6} sm={24}>
           <PSelect
@@ -121,7 +123,10 @@ const ListOfPerticipants = ({
       <Flex justify="flex-end" align="flex-start" className="mr-2">
         <h1>
           Total Cost:{" "}
-          {costField.reduce((acc, item) => acc + Number(item.costValue), 0)}
+          {perticipantField.reduce(
+            (acc, item) => acc + Number(item.costValue),
+            0
+          )}
         </h1>
         {/* <div>
           <PInput
@@ -130,17 +135,17 @@ const ListOfPerticipants = ({
             label="Total Cost:"
             name="totalCost"
             value={String(
-              costField.reduce((acc, item) => acc + Number(item.costValue), 0)
+              perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
             )}
             disabled={true}
           />
         </div> */}
       </Flex>
-      {costField?.length > 0 && (
+      {perticipantField?.length > 0 && (
         <div className="mb-3 mt-2">
           <DataTable
             bordered
-            data={costField || []}
+            data={perticipantField || []}
             loading={false}
             header={headerCost}
           />
