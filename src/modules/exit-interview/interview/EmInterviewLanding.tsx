@@ -4,12 +4,10 @@ import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
-import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
-import InterviewModal from "./components/interview-modal";
 import { useHistory } from "react-router-dom";
 
 const EmInterviewLanding = () => {
@@ -22,7 +20,6 @@ const EmInterviewLanding = () => {
   );
   const { buId, wgId, wId } = profileData;
 
-  const [singleData, setSingleData] = useState({});
   const [filterList, setFilterList] = useState({});
   const [viewModal, setViewModal] = useState(false);
 
