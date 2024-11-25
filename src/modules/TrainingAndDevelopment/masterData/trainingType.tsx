@@ -106,78 +106,76 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     <div>
       {(loading || landingLoading) && <Loading />}
       <PForm form={form} initialValues={{}}>
-        <PCard>
-          <PCardHeader
-            title={`Total ${landingApi?.length || 0} Training Type`}
-          />
-          <PCardBody>
-            <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="text"
-                  placeholder="Training Type"
-                  label="Training Type"
-                  name="trainingType"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Type is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="text"
-                  placeholder="Remarks"
-                  label="Remarks"
-                  name="remarks"
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="Save"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        console.log(values);
-                        createTrainingType(
-                          form,
-                          profileData,
-                          setLoading,
-                          setOpenTraingTypeModal
-                        );
-                      })
-                      .catch(() => {
-                        console.log("error");
-                      });
-                  }}
-                />
-              </Col>
-            </Row>
-          </PCardBody>
+        {/* <PCard> */}
+        <PCardHeader title={`Total ${landingApi?.length || 0} Training Type`} />
+        <PCardBody>
+          <Row gutter={[10, 2]}>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Training Type"
+                label="Training Type"
+                name="trainingType"
+                rules={[
+                  {
+                    required: true,
+                    message: "Training Type is required",
+                  },
+                ]}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Remarks"
+                label="Remarks"
+                name="remarks"
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PButton
+                style={{ marginTop: "22px" }}
+                type="primary"
+                content="Save"
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      console.log(values);
+                      createTrainingType(
+                        form,
+                        profileData,
+                        setLoading,
+                        setOpenTraingTypeModal
+                      );
+                    })
+                    .catch(() => {
+                      console.log("error");
+                    });
+                }}
+              />
+            </Col>
+          </Row>
+        </PCardBody>
 
-          <div className="mb-3">
-            <DataTable
-              bordered
-              data={dataDemo || []}
-              loading={landingLoading}
-              header={header}
-              // pagination={{
-              //   pageSize: landingApi?.data?.pageSize,
-              //   total: landingApi?.data?.totalCount,
-              // }}
-              filterData={landingApi?.data?.filters}
-              // onChange={(pagination, filters) => {
-              //   landingApiCall();
-              // }}
-            />
-          </div>
-        </PCard>
+        <div className="mb-3">
+          <DataTable
+            bordered
+            data={dataDemo || []}
+            loading={landingLoading}
+            header={header}
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
+            filterData={landingApi?.data?.filters}
+            // onChange={(pagination, filters) => {
+            //   landingApiCall();
+            // }}
+          />
+        </div>
+        {/* </PCard> */}
       </PForm>
     </div>
   );

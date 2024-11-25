@@ -98,62 +98,62 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
-        <PCard>
-          <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount || 0} Training Title`}
-          />
-          <PCardBody>
-            <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="text"
-                  placeholder="Training Title"
-                  label="Training Title"
-                  name="trainingTitle"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Title is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="text"
-                  placeholder="Training Description"
-                  label="Training Description"
-                  name="trainingDescription"
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="Save"
-                  onClick={() => saveHandler(form)}
-                />
-              </Col>
-            </Row>
-          </PCardBody>
+        {/* <PCard> */}
+        <PCardHeader
+          title={`Total ${landingApi?.data?.totalCount || 0} Training Title`}
+        />
+        <PCardBody>
+          <Row gutter={[10, 2]}>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Training Title"
+                label="Training Title"
+                name="trainingTitle"
+                rules={[
+                  {
+                    required: true,
+                    message: "Training Title is required",
+                  },
+                ]}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Training Description"
+                label="Training Description"
+                name="trainingDescription"
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PButton
+                style={{ marginTop: "22px" }}
+                type="primary"
+                content="Save"
+                onClick={() => saveHandler(form)}
+              />
+            </Col>
+          </Row>
+        </PCardBody>
 
-          <div className="mb-3">
-            <DataTable
-              bordered
-              data={landingApi?.data?.data || []}
-              loading={landingApi?.loading}
-              header={header}
-              pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
-              }}
-              filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
-                landingApiCall();
-              }}
-            />
-          </div>
-        </PCard>
+        <div className="mb-3">
+          <DataTable
+            bordered
+            data={landingApi?.data?.data || []}
+            loading={landingApi?.loading}
+            header={header}
+            pagination={{
+              pageSize: landingApi?.data?.pageSize,
+              total: landingApi?.data?.totalCount,
+            }}
+            filterData={landingApi?.data?.filters}
+            onChange={(pagination, filters) => {
+              landingApiCall();
+            }}
+          />
+        </div>
+        {/* </PCard> */}
       </PForm>
     </div>
   );

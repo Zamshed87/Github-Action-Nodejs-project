@@ -98,64 +98,64 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
-        <PCard>
-          <PCardHeader
-            title={`Total ${
-              landingApi?.data?.totalCount || 0
-            } Training Cost Type`}
-          />
-          <PCardBody>
-            <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="text"
-                  placeholder="Cost Type"
-                  label="Cost Type"
-                  name="costType"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Cost Type is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="text"
-                  placeholder="Description"
-                  label="Cost Description"
-                  name="costDescription"
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="Save"
-                  onClick={() => saveHandler(form)}
-                />
-              </Col>
-            </Row>
-          </PCardBody>
+        {/* <PCard> */}
+        <PCardHeader
+          title={`Total ${
+            landingApi?.data?.totalCount || 0
+          } Training Cost Type`}
+        />
+        <PCardBody>
+          <Row gutter={[10, 2]}>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Cost Type"
+                label="Cost Type"
+                name="costType"
+                rules={[
+                  {
+                    required: true,
+                    message: "Cost Type is required",
+                  },
+                ]}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Description"
+                label="Cost Description"
+                name="costDescription"
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PButton
+                style={{ marginTop: "22px" }}
+                type="primary"
+                content="Save"
+                onClick={() => saveHandler(form)}
+              />
+            </Col>
+          </Row>
+        </PCardBody>
 
-          <div className="mb-3">
-            <DataTable
-              bordered
-              data={landingApi?.data?.data || []}
-              loading={landingApi?.loading}
-              header={header}
-              pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
-              }}
-              filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
-                landingApiCall();
-              }}
-            />
-          </div>
-        </PCard>
+        <div className="mb-3">
+          <DataTable
+            bordered
+            data={landingApi?.data?.data || []}
+            loading={landingApi?.loading}
+            header={header}
+            pagination={{
+              pageSize: landingApi?.data?.pageSize,
+              total: landingApi?.data?.totalCount,
+            }}
+            filterData={landingApi?.data?.filters}
+            onChange={(pagination, filters) => {
+              landingApiCall();
+            }}
+          />
+        </div>
+        {/* </PCard> */}
       </PForm>
     </div>
   );
