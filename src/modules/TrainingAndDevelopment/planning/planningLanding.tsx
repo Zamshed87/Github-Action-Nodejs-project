@@ -14,7 +14,14 @@ import {
 import Loading from "common/loading/Loading";
 import { getSerial } from "Utils";
 import { dateFormatter } from "utility/dateFormatter";
-import { BarsOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  BarsOutlined,
+  EditOutlined,
+  EyeOutlined,
+  CarryOutOutlined,
+  HddOutlined,
+  ContainerOutlined,
+} from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { data } from "./helper";
 const TnDPlanningLanding = () => {
@@ -168,8 +175,38 @@ const TnDPlanningLanding = () => {
               }}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title="Status">
-            <BarsOutlined
+          <Tooltip placement="bottom" title="Attendance">
+            <CarryOutOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                history.push("/trainingDevelopment/planning/status", {
+                  data: rec,
+                });
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title="Feedback">
+            <HddOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                history.push("/trainingDevelopment/planning/status", {
+                  data: rec,
+                });
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title="Assessment">
+            <ContainerOutlined
               style={{
                 color: "green",
                 fontSize: "14px",
