@@ -15,6 +15,9 @@ import { Checkbox, Col, Form, Row } from "antd";
 import ReactQuill from "react-quill";
 import { modules } from "modules/employeeProfile/reportBuilder/letterConfiguration/utils";
 import { createLetterType } from "./helper";
+import { getPeopleDeskAllLanding } from "common/api";
+import { shallowEqual, useSelector } from "react-redux";
+import EmpInfo from "./empInfo";
 
 const InterviewModal = () => {
   const location: any = useLocation();
@@ -25,12 +28,35 @@ const InterviewModal = () => {
 
   const [singleData, setSingleData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  // const
+  const [empInfo, setEmpInfo] = useState(null);
+
+  const { profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+
+  const { buId, wgId, orgId } = profileData;
 
   useEffect(() => {
     form.setFieldValue("startTime", new Date().toISOString());
     getQuestionaireById(location?.state?.quesId, setSingleData, setLoading);
   }, []);
+
+  useEffect(() => {
+    singleData?.employeeBasicInfoId &&
+      getPeopleDeskAllLanding(
+        "EmployeeBasicById",
+        orgId,
+        buId,
+        singleData?.employeeBasicInfoId,
+        setEmpInfo,
+        null,
+        setLoading,
+        null,
+        null,
+        wgId
+      );
+  }, [singleData?.employeeBasicInfoId]);
 
   const generateInitialValues = (formData: any) => {
     return formData?.reduce((acc: any, field: any) => {
@@ -59,8 +85,6 @@ const InterviewModal = () => {
     });
     return modifiedArr;
   };
-
-  console.log(generateInitialValues(singleData?.questions));
 
   return singleData && !singleData?.isCompleted ? (
     <PForm
@@ -99,6 +123,9 @@ const InterviewModal = () => {
             },
           ]}
         />
+        <div className=" my-3" style={{ minHeight: "auto" }}>
+          <EmpInfo empBasic={empInfo?.[0]} />
+        </div>
         <PCardBody>
           <Row gutter={[10, 2]}>
             {singleData?.questions?.map((field: any, index: number) => {
