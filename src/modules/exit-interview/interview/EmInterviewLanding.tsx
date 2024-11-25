@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -9,6 +9,9 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
 import { useHistory } from "react-router-dom";
+import ViewModal from "./components/view-modal";
+import { PModal } from "Components/Modal";
+import { getQuestionaireById } from "./helper";
 
 const EmInterviewLanding = () => {
   const dispatch = useDispatch();
@@ -22,6 +25,8 @@ const EmInterviewLanding = () => {
 
   const [filterList, setFilterList] = useState({});
   const [viewModal, setViewModal] = useState(false);
+  const [singleData, setSingleData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -136,6 +141,18 @@ const EmInterviewLanding = () => {
       dataIndex: "status",
       width: 50,
       align: "center",
+      render: (status: string) => (
+        <Tag
+          style={{
+            color: "grey",
+            border: "1px solid lightGrey",
+            fontWeight: 500,
+          }}
+          color={status === "Assigned" ? "geekblue" : "green"}
+        >
+          {status}
+        </Tag>
+      ),
     },
     {
       title: "Action",
@@ -144,16 +161,42 @@ const EmInterviewLanding = () => {
         <Flex justify="center">
           {status === "Assigned" ? (
             <button
+              style={{
+                padding: "0 4px",
+                fontSize: "10px",
+                border: 0,
+                backgroundColor: "var(--error)",
+                color: "white",
+                borderRadius: "3px",
+              }}
               onClick={() => {
                 history.push("/interview", {
                   quesId: rec.id,
                 });
               }}
             >
-              Interview
+              INTERVIEW
             </button>
           ) : (
-            <button>View</button>
+            <button
+              style={{
+                padding: "0 4px",
+                fontSize: "10px",
+                border: 0,
+                backgroundColor: "green",
+                color: "white",
+                borderRadius: "3px",
+              }}
+              onClick={() => {
+                getQuestionaireById(rec?.id, setSingleData, setLoading).then(
+                  () => {
+                    setViewModal(true);
+                  }
+                );
+              }}
+            >
+              VIEW
+            </button>
           )}
         </Flex>
       ),
@@ -164,7 +207,7 @@ const EmInterviewLanding = () => {
 
   return QuestionCreationPermission?.isView ? (
     <>
-      {landingApi.loading && <Loading />}
+      {(landingApi.loading || loading) && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
@@ -196,16 +239,16 @@ const EmInterviewLanding = () => {
           </div>
         </PCard>
       </PForm>
-      {/* <PModal
-        title="View Template"
-        open={interviewModal}
+      <PModal
+        title="View Answers"
+        open={viewModal}
         onCancel={() => {
-          setInterviewModal(false);
-          setSingleData({});
+          setViewModal(false);
+          setSingleData(null);
         }}
-        components={<InterviewModal singleData={singleData} />}
+        components={<ViewModal singleData={singleData} />}
         width={1000}
-      /> */}
+      />
     </>
   ) : (
     <NotPermittedPage />
