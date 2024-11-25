@@ -42,3 +42,14 @@ export const setDataAction = (name, key, value) => (dispatch) => {
   // common data setter for init
   dispatch(slice.setData({ name, key, value }));
 };
+export const setBarAssesmentInitialValuesAction = (data) => (dispatch) => {
+  dispatch(slice.setBarAssesmentInitialValues(data));
+};
+export const setPerformanceMarkingInitialValuesAction =
+  (data) => (dispatch) => {
+    dispatch(slice.setPerformanceMarkingInitialValues(data));
+  };
+
+export const setSBUBalancedScoreData = (data) => (dispatch) => {
+  dispatch(slice.setSBUBalancedScoreData(data));
+};

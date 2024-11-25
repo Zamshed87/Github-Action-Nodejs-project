@@ -1,0 +1,44 @@
+.action-content {
+    width: 95%;
+    margin: auto;
+  }
+  
+  .action-text-center {
+    text-align: center;
+    margin: 0px;
+  }
+  
+  .action-mt-60 {
+    margin-top: 300px;
+  }
+  .action-mb-4{
+    margin-bottom: 30px;
+  }
+  .action-mt-8 {
+    margin-top: 40px;
+  }
+  
+  .action-grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .action-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid black;
+  }
+  
+  .action-table th,
+  .action-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .action-sign-container {
+    float: right;
+    margin-top: 50px;
+    border-top: 2px solid black;
+  }
