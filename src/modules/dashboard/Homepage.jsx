@@ -140,8 +140,8 @@ const Homepage = () => {
     } else if (label === "Manning") {
       to = "/manning";
       image = requirment;
-    } else if (label === "Training & Development") {
-      to = "/trainingAndDevelopment/training/schedule";
+    } else if (label === "Training and Development") {
+      to = "/trainingNdevelopment/trainingTime";
       image = training;
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
@@ -154,7 +154,11 @@ const Homepage = () => {
     const childMenu =
       childMenuArray?.length > 0 ? flattenNestedArray(childMenuArray) : [];
     const { to } = toAndImage(label, childMenu);
-    if (label !== "Approval" && label !== "Dashboard" && label !== "Employee Self Service") {
+    if (
+      label !== "Approval" &&
+      label !== "Dashboard" &&
+      label !== "Employee Self Service"
+    ) {
       dispatch(handleMostClickedMenuListAction(childMenu?.[0]));
     }
     if (to === "https://devhire.peopledesk.io/") {
