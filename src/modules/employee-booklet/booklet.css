@@ -1,0 +1,43 @@
+/* .emp-update-booklet-layout {
+  width: 1140px !important;
+  margin: 0 auto;
+  background-color: white !important;
+} */
+
+.book-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0; /* Light background for contrast */
+  overflow: hidden; /* Prevent overflow when flipping */
+}
+
+/* Ensure HTMLFlipBook dimensions are contained */
+.flipbook {
+  overflow: hidden;
+  width: 300px; /* Match width set in JSX */
+  height: 300px; /* Match height set in JSX */
+  border-radius: 5px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Style each page */
+.page {
+  width: 100%; /* Full width for each page */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle inset shadow */
+  border-radius: 4px;
+}
+
+/* Optional: Additional styling for page content */
+.page > div {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 1.2em;
+  color: #333;
+}
