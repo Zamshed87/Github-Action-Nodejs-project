@@ -92,7 +92,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
     },
   ];
   const landingApiCall = () => {

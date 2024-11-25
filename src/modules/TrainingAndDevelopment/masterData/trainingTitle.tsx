@@ -59,25 +59,18 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title="Status">
-            <Switch defaultChecked onChange={() => console.log("Switched")} />
-            {/* <EditOutlined
-                style={{
-                  color: "green",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  margin: "0 5px",
-                }}
-                onClick={() => {
-                  history.push("/trainingDevelopment/planning/edit", {
-                    data: rec,
-                  });
-                }}
-              /> */}
+            {/* <Switch
+              size="small"
+              defaultChecked={rec?.isActive}
+              onChange={() => {
+                updateTrainingType(form, profileData, setLoading, rec, true);
+              }}
+            /> */}
           </Tooltip>
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
     },
   ];
   const landingApiCall = () => {
