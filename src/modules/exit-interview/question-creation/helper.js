@@ -10,7 +10,10 @@ export const getSingleQuestionnaire = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(`/Questionnaire/${id}`);
-    setData(res.data);
+    setData({
+      ...res.data,
+      id,
+    });
     setOpen && setOpen(true);
   } catch (error) {
     toast.warning("Something went wrong");
@@ -21,6 +24,7 @@ export const getSingleQuestionnaire = async (
 
 export const assignToEmployee = async (id, empId, setData, setLoading) => {
   setLoading && setLoading(true);
+
   const payload = {
     questionnaireId: id,
     employeeBasicInfoId: empId,

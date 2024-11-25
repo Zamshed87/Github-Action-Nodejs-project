@@ -75,12 +75,14 @@ import SingleIncrement from "modules/CompensationBenefits/Increment/singleInceme
 import QuestionCreationLanding from "modules/exit-interview/question-creation";
 import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
-import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
 import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
 import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
 import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
+import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
+import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
+import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3202,8 +3204,16 @@ export const routingList = [
     component: QuestionerAssignLanding,
   },
   {
+    path: "/SelfService/exitInterview",
+    component: EssInterviewLanding,
+  },
+  {
     path: "/profile/exitInterview/interview",
-    component: InterviewLanding,
+    component: EmInterviewLanding,
+  },
+  {
+    path: "/interview",
+    component: InterviewModal,
   },
 
   // Exit Interview ends

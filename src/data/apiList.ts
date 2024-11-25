@@ -267,6 +267,7 @@ export const apiList = {
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
 
   getCommonEnumData: "/Enum/GetEnums",
+  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
   GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
   GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
   GetSupervisorDDL: "/IncrementProposal/GetSupervisorDDL",

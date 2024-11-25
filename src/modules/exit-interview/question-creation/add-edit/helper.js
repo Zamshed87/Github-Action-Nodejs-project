@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const saveQuestionnaire = async (
+  quesId,
   values,
   profileData,
   setLoading,
@@ -16,44 +17,81 @@ export const saveQuestionnaire = async (
 ) => {
   setLoading(true);
   try {
-    const question = values?.questions?.map((ques, index) => {
-      const relevantAnswers = values?.answers
-        .filter((answer) => answer.queId === ques.id)
-        .map((item, index) => {
-          return {
-            sortOrder: index + 1,
-            optionName: item?.answerDescription,
-          };
-        });
+    const formattedQuestions = values?.questions?.map((ques, index) => {
+      const relevantAnswers = ques.answers
+        ? ques.answers.map((answer, idx) => ({
+            optionName: answer.answerDescription,
+            sortOrder: idx + 1,
+          }))
+        : [];
+
       return {
-        typeId: parseInt(ques?.questionType),
-        title: ques?.questionTitle,
+        typeId: parseInt(ques.questionType),
+        title: ques.questionTitle,
         sortOrder: index + 1,
-        answer: ques?.expectedAns,
-        answerTextLength: ques?.ansTextLength || 4000,
-        isRequired: ques?.isRequired,
-        saveAsTemplate: ques?.isDraft,
-        options: relevantAnswers || [],
+        answer: ques.expectedAns,
+        answerTextLength: ques.ansTextLength || 400,
+        isRequired: ques.isRequired ? true : false,
+        saveAsTemplate: ques?.isDraft ? true : false,
+        options: relevantAnswers,
       };
     });
 
+    if (values?.questions?.length === 0) {
+      return toast.warning("Please add questions");
+    }
+
+    for (const obj of values?.questions || []) {
+      if (
+        !obj ||
+        !obj?.questionType ||
+        !obj?.questionTitle ||
+        !obj?.expectedAns
+      ) {
+        toast.warning("Please fill question fields");
+        return;
+      }
+    }
+
     const payload = {
-      id: 0,
+      id: quesId || 0,
       typeId: parseInt(values?.survayType?.value),
       title: values?.survayTitle,
       description: values?.survayDescription,
       businessUnitId: profileData?.buId,
       workplaceGroupId: profileData?.wgId,
       workplaceId: profileData?.wId,
-      questions: question,
+      questions: formattedQuestions,
     };
 
-    const res = await axios.post(`/Questionnaire`, payload);
+    const method = quesId ? axios.put : axios.post;
+
+    const res = await method(`/Questionnaire`, payload);
     cb();
     toast.success(res?.data?.Message || "Created Sucessfully", { toastId: 1 });
   } catch (error) {
+    console.log(error);
     toast.warn(error?.response?.data?.Message, { toastId: 1 });
   } finally {
     setLoading(false);
   }
+};
+
+export const initDataForEdit = (data) => {
+  return {
+    survayType: { value: data?.typeId, label: data?.typeName },
+    survayTitle: data?.title,
+    survayDescription: data?.description,
+    questions: data?.questions?.map((question) => ({
+      questionType: question?.typeId.toString(),
+      questionTitle: question?.title,
+      expectedAns: question?.answer,
+      ansTextLength: question?.answerTextLength,
+      isRequired: question?.isRequired,
+      isDraft: false,
+      answers: question?.options?.map((option) => ({
+        answerDescription: option.optionName,
+      })),
+    })),
+  };
 };

@@ -46,6 +46,7 @@ const QuestionaireView = ({ singleData }: any) => {
       },
     }).then();
   };
+
   return (
     <div>
       {loading && <Loading />}
@@ -61,7 +62,6 @@ const QuestionaireView = ({ singleData }: any) => {
         <div>
           <PSelect
             style={{ width: "250px" }}
-            name="employee"
             label="Assign to"
             placeholder="Search Min 2 char"
             options={CommonEmployeeDDL?.data || []}
