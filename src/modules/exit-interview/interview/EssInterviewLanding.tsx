@@ -9,6 +9,9 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
 import { useHistory } from "react-router-dom";
+import { PModal } from "Components/Modal";
+import ViewModal from "./components/view-modal";
+import { getQuestionaireById } from "./helper";
 
 const EssInterviewLanding = () => {
   const dispatch = useDispatch();
@@ -22,6 +25,8 @@ const EssInterviewLanding = () => {
 
   const [filterList, setFilterList] = useState({});
   const [viewModal, setViewModal] = useState(false);
+  const [singleData, setSingleData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -144,6 +149,14 @@ const EssInterviewLanding = () => {
         <Flex justify="center">
           {status === "Assigned" ? (
             <button
+              style={{
+                padding: "0 4px",
+                fontSize: "10px",
+                border: 0,
+                backgroundColor: "var(--error)",
+                color: "white",
+                borderRadius: "3px",
+              }}
               onClick={() => {
                 history.push("/interview", {
                   quesId: rec.id,
@@ -153,7 +166,25 @@ const EssInterviewLanding = () => {
               Interview
             </button>
           ) : (
-            <button>View</button>
+            <button
+              style={{
+                padding: "0 4px",
+                fontSize: "10px",
+                border: 0,
+                backgroundColor: "green",
+                color: "white",
+                borderRadius: "3px",
+              }}
+              onClick={() => {
+                getQuestionaireById(rec?.id, setSingleData, setLoading).then(
+                  () => {
+                    setViewModal(true);
+                  }
+                );
+              }}
+            >
+              View
+            </button>
           )}
         </Flex>
       ),
@@ -163,7 +194,7 @@ const EssInterviewLanding = () => {
   ];
   return QuestionCreationPermission?.isView ? (
     <>
-      {landingApi.loading && <Loading />}
+      {(landingApi.loading || loading) && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
@@ -195,16 +226,16 @@ const EssInterviewLanding = () => {
           </div>
         </PCard>
       </PForm>
-      {/* <PModal
-        title="View Template"
-        open={interviewModal}
+      <PModal
+        title="View Answers"
+        open={viewModal}
         onCancel={() => {
-          setInterviewModal(false);
-          setSingleData({});
+          setViewModal(false);
+          setSingleData(null);
         }}
-        components={<InterviewModal singleData={singleData} />}
+        components={<ViewModal singleData={singleData} />}
         width={1000}
-      /> */}
+      />
     </>
   ) : (
     <NotPermittedPage />
