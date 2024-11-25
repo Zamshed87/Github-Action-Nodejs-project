@@ -15,39 +15,20 @@ const ListOfPerticipants = ({
   setperticipantField,
   addHandler,
   calculatePerPersonCost,
+  departmentDDL,
+  positionDDL,
 }: {
   form: FormInstance;
   perticipantField: any[];
   setperticipantField: (data: any[]) => void;
   addHandler: (values: any) => void;
   calculatePerPersonCost: () => number;
+  departmentDDL: any[];
+  positionDDL: any[];
 }) => {
   const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
   const CommonEmployeeDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
-
-  // workplace wise
-  const getEmployeDepartment = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
-
-        accountId: orgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-  };
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -77,7 +58,6 @@ const ListOfPerticipants = ({
 
   useEffect(() => {
     getCostTypeDDL({ url: "/costType" });
-    getEmployeDepartment();
   }, []);
 
   const headerCost = [
@@ -88,17 +68,32 @@ const ListOfPerticipants = ({
     {
       title: "Participants List",
       dataIndex: "perticipant",
+      width: 120,
     },
     {
-      title: "Cost Value",
-      dataIndex: "costValue",
+      title: "Department",
+      dataIndex: "department",
+    },
+    {
+      title: "HR Position",
+      dataIndex: "hrPosition",
+      width: 50,
+    },
+    {
+      title: "workplaceGroup",
+      dataIndex: "workplaceGroup",
+      width: 50,
+    },
+    {
+      title: "workplace",
+      dataIndex: "workplace",
     },
     {
       title: "Action",
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
+          <Tooltip placement="bottom" title="Delete">
             <DeleteOutlined
               style={{
                 color: "red",
@@ -117,7 +112,7 @@ const ListOfPerticipants = ({
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
     },
   ];
 
@@ -131,7 +126,7 @@ const ListOfPerticipants = ({
       <Row gutter={[10, 2]} style={{ marginTop: "10px" }}>
         <Col md={6} sm={24}>
           <PSelect
-            options={[{ label: "All", value: 0 }]} // need to change
+            options={departmentDDL} // need to change
             name="department"
             label="Department"
             placeholder="Department"
@@ -144,7 +139,7 @@ const ListOfPerticipants = ({
         </Col>
         <Col md={6} sm={24}>
           <PSelect
-            options={[{ label: "All", value: 0 }]} // need to change
+            options={positionDDL} // need to change
             name="hrPosition"
             label="HR Position"
             placeholder="HR Position"

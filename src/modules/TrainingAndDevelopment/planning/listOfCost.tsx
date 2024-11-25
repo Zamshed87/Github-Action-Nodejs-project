@@ -45,7 +45,7 @@ const ListOfCost = ({
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
+          <Tooltip placement="bottom" title="Delete">
             <DeleteOutlined
               style={{
                 color: "red",
@@ -64,7 +64,7 @@ const ListOfCost = ({
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
     },
   ];
 

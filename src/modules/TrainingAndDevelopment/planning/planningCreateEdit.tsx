@@ -57,6 +57,9 @@ const TnDPlanningCreateEdit = () => {
   const getBUnitDDL = useApiRequest({});
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
+
   const [nameOfTrainerOrgDDL, getNameOfTrainerOrgDDL] = useAxiosGet();
   const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
 
@@ -105,6 +108,51 @@ const TnDPlanningCreateEdit = () => {
         res.forEach((item: any, i: any) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
+
+  // workplace wise
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "DepartmentIdAll",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+
+        accountId: orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
+        });
+      },
+    });
+  };
+
+  const getEmployeePosition = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
         });
       },
     });
@@ -163,6 +211,12 @@ const TnDPlanningCreateEdit = () => {
   };
 
   const addHanderForPerticipant = (values: any) => {
+    if (!values?.employee) {
+      toast.error("Employee is required");
+      return;
+    }
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    console.log(workplaceGroup, workplace);
     const nextId =
       perticipantField.length > 0
         ? perticipantField[perticipantField.length - 1].id + 1
@@ -172,7 +226,10 @@ const TnDPlanningCreateEdit = () => {
       {
         id: nextId,
         perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
-        ...values,
+        department: values?.department?.label,
+        hrPosition: values?.hrPosition?.label,
+        workplaceGroup: workplaceGroup?.label,
+        workplace: workplace?.label,
       },
     ]);
   };
@@ -192,7 +249,7 @@ const TnDPlanningCreateEdit = () => {
     return perPersonCost;
   };
 
-  console.log(costField);
+  console.log(perticipantField);
 
   return (
     <div>
@@ -281,6 +338,9 @@ const TnDPlanningCreateEdit = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
+                    getEmployeDepartment();
+                    getEmployeePosition();
+
                     //   getDesignation();
                   }}
                   //   rules={[{ required: true, message: "Workplace is required" }]}
@@ -565,6 +625,8 @@ const TnDPlanningCreateEdit = () => {
               setperticipantField={setperticipantField}
               addHandler={addHanderForPerticipant}
               calculatePerPersonCost={calculatePerPersonCost}
+              departmentDDL={empDepartmentDDL?.data || []}
+              positionDDL={positionDDL?.data || []}
             />
           </PCardBody>
         </PCard>
