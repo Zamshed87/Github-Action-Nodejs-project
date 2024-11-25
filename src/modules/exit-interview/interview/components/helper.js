@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import { toast } from "react-toastify";
 
 export const createLetterType = async (
@@ -13,7 +14,7 @@ export const createLetterType = async (
     const payload = {
       id: qId,
       startDateTime: values?.startTime,
-      endDateTime: new Date().toISOString(),
+      endDateTime: moment().format("YYYY-MM-DDTHH:mm:ss"),
       questions: fieldsArr.map((field) => {
         const fieldId = `field-${field.id}`;
         const answer = values[fieldId];
