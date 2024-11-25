@@ -435,15 +435,16 @@ export default function AddEditForm({
                   label: "DBBL Agent Banking",
                 },
                 {
-                  value: "UCB",
+                  value: "UCBL",
 
-                  label: "UCB",
+                  label: "UCBL",
                 },
                 {
-                  value: "MFS",
+                  value: "Upay",
 
-                  label: "MFS",
+                  label: "Upay",
                 },
+                
               ]}
               onChange={(value, op) => {
                 form.setFieldsValue({

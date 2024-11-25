@@ -3,14 +3,16 @@ import { IconButton, Tooltip } from "@mui/material";
 import { shallowEqual, useSelector } from "react-redux";
 import { createCafeteriaEntry } from "../helper";
 
-
-const ScheduleMeal = ({scheduleMeal, getLandingData}) => {
-  const { employeeId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+const ScheduleMeal = ({ scheduleMeal, getLandingData, buId }) => {
+  const { employeeId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   return (
     <>
       <div className="leave-movement-FormCard">
         <div className="card-style mt-2 p-0">
-          <div className="card-body" style={{padding:"12px"}}>
+          <div className="card-body" style={{ padding: "12px" }}>
             <div className="table-card-styled">
               <table className="table mb-0">
                 <thead>
@@ -31,9 +33,29 @@ const ScheduleMeal = ({scheduleMeal, getLandingData}) => {
                           <td className="text-center">
                             <Tooltip title="Delete" arrow placement="top">
                               <IconButton>
-                                <DeleteOutlineOutlined sx ={{color:"red"}} onClick={() => {
-                                  createCafeteriaEntry(2, item?.dteMeal, employeeId, 0, 0, 0, 0, 0, 0, "N/A", 0, "", "", getLandingData);
-                                }}/>
+                                <DeleteOutlineOutlined
+                                  sx={{ color: "red" }}
+                                  onClick={() => {
+                                    createCafeteriaEntry(
+                                      2,
+                                      item?.dteMeal,
+                                      employeeId,
+                                      0,
+                                      0,
+                                      0,
+                                      0,
+                                      0,
+                                      0,
+                                      "N/A",
+                                      0,
+                                      "",
+                                      "",
+                                      getLandingData,
+                                      0,
+                                      buId
+                                    );
+                                  }}
+                                />
                               </IconButton>
                             </Tooltip>
                           </td>

@@ -76,6 +76,7 @@ import QuestionCreationLanding from "modules/exit-interview/question-creation";
 import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
 import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
 import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
@@ -937,7 +938,7 @@ const SelfExpenseApplicationView = lazy(() =>
   import("../modules/expense/updatedExpanseApp/viewForm.jsx")
 );
 const FoodDetailsReport = lazy(() =>
-  import("../modules/FoodDetailsReport/index.jsx")
+  import("../modules/FoodDetailsReport/index.tsx")
 );
 const GrievanceDetails = lazy(() =>
   import("../modules/grievanceManagement/components/GrievanceDetails.jsx")
@@ -2339,6 +2340,11 @@ export const routingList = [
   },
 
   // compensationAndBenefits
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/incrementProposal",
+    component: IncrementProposal,
+  },
   {
     path: "/compensationAndBenefits/configuration/payrollElementAndRule",
     component: PayrollElementsRules,
