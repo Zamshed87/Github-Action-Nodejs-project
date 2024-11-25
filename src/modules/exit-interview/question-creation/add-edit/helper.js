@@ -18,20 +18,20 @@ export const saveQuestionnaire = async (
   setLoading(true);
   try {
     const formattedQuestions = values?.questions?.map((ques, index) => {
-      const relevantAnswers = ques.answers
-        ? ques.answers.map((answer, idx) => ({
-            optionName: answer.answerDescription,
+      const relevantAnswers = ques?.answers
+        ? ques?.answers.map((answer, idx) => ({
+            optionName: answer?.answerDescription,
             sortOrder: idx + 1,
           }))
         : [];
 
       return {
-        typeId: parseInt(ques.questionType),
-        title: ques.questionTitle,
+        typeId: parseInt(ques?.questionType),
+        title: ques?.questionTitle,
         sortOrder: index + 1,
-        answer: ques.expectedAns,
-        answerTextLength: ques.ansTextLength || 400,
-        isRequired: ques.isRequired ? true : false,
+        answer: ques?.expectedAns,
+        answerTextLength: ques?.ansTextLength || 400,
+        isRequired: ques?.isRequired ? true : false,
         saveAsTemplate: ques?.isDraft ? true : false,
         options: relevantAnswers,
       };
@@ -50,6 +50,35 @@ export const saveQuestionnaire = async (
       ) {
         toast.warning("Please fill question fields");
         return;
+      }
+      if (
+        (obj?.questionType === "0" ||
+          obj?.questionType === "1" ||
+          obj?.questionType === "2") &&
+        (!obj?.answers || obj?.answers?.length === 0)
+      ) {
+        toast.warning("Please add answers");
+        return;
+      }
+      if (
+        (obj?.questionType === "3" || obj?.questionType === "4") &&
+        !obj?.ansTextLength
+      ) {
+        toast.warning("Please add text length");
+        return;
+      }
+      if (
+        (obj?.questionType === "0" ||
+          obj?.questionType === "1" ||
+          obj?.questionType === "2") &&
+        (obj?.answers || obj?.answers?.length > 0)
+      ) {
+        for (const ans of obj?.answers) {
+          if (!ans || !ans.answerDescription) {
+            toast.warning("Please add answer");
+            return;
+          }
+        }
       }
     }
 
