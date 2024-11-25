@@ -4,6 +4,7 @@ import {
   PCardHeader,
   PForm,
   PInput,
+  PRadio,
   PSelect,
 } from "Components";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -21,6 +22,7 @@ import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
 import { Alert } from "@mui/material";
 import { EmployeeInfo } from "./EmployeeInfo";
 import { BankInfo } from "./BankInfo";
+import { DigitalMFS } from "./DigitalMFS";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -266,8 +268,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     const payload = {
       partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
       intEmployeeBankDetailsId:
-        +employeeInfo?.data[0]?.empEmployeeBankDetail
-          ?.intEmployeeBankDetailsId || 0,
+        +empBankInfo?.data?.empEmployeeBankDetail?.intEmployeeBankDetailsId ||
+        0,
       intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
       isPrimarySalaryAccount: true,
       isActive: true,
@@ -289,6 +291,34 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strAccountNo: `${values?.accountNo}` || "",
       strSwiftCode: values?.swift || "",
     };
+    const payloadMFS = {
+      partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
+      intEmployeeBankDetailsId:
+        +empBankInfo?.data?.empEmployeeBankDetail?.intEmployeeBankDetailsId ||
+        0,
+      intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
+      isPrimarySalaryAccount: true,
+      isActive: true,
+      intWorkplaceId: wId || 0,
+      intBusinessUnitId: buId,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+      intBankOrWalletType: 2,
+      intBankWalletId: values?.gateway?.value || 0,
+      strBankWalletName: values?.gateway?.label || "",
+      strDistrict: "",
+      intBankBranchId: 0,
+      strBranchName: "",
+      strRoutingNo: "",
+      strAccountName: "",
+      strAccountNo: `${values?.mobile}` || "",
+      strSwiftCode: "",
+    };
+    values?.gateway?.value &&
+      bankDetailsAction(payloadMFS, setLoading, () => {});
     if (
       values?.transferType?.value === 1 ||
       values?.transferType === 1 ||
@@ -826,6 +856,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
       onSuccess: (res) => {
         form.setFieldsValue({
+          gateway:
+            res?.empEmployeeBankDetail?.intBankOrWalletType === 2
+              ? {
+                  value: res?.empEmployeeBankDetail?.intBankWalletId,
+                  label: res?.empEmployeeBankDetail?.strBankWalletName,
+                }
+              : "",
+          mobile:
+            res?.empEmployeeBankDetail?.intBankOrWalletType === 2
+              ? res?.empEmployeeBankDetail?.strAccountNo
+              : "",
           bank: res?.empEmployeeBankDetail?.intBankWalletId
             ? res?.empEmployeeBankDetail?.intBankWalletId
             : undefined,
@@ -915,6 +956,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       form={form}
       initialValues={{
         transferType: "Cash",
+        bankOrMfs: 0,
       }}
       onFinish={submitHandler}
     >
@@ -1384,18 +1426,72 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         <Divider
           style={{
             marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            <PRadio
+              name="bankOrMfs"
+              type="group"
+              options={[
+                {
+                  value: 0,
+                  label: "Bank Details",
+                },
+                {
+                  value: 1,
+                  label: "Digital/MFS",
+                },
+              ]}
+              onChange={(e: any) => {
+                const value = e.target.value;
+                form.setFieldsValue({
+                  bankOrMfs: value,
+                });
+              }}
+            />
+            {/* <span>Promote?</span> */}
+          </div>
+        </Divider>
+        {/* <Divider
+          style={{
+            marginBlock: "4px",
             marginTop: "16px",
             fontSize: "14px",
             fontWeight: 600,
           }}
           orientation="left"
-        ></Divider>
-        <BankInfo
-          form={form}
-          bankDDL={bankDDL}
-          orgId={orgId}
-          accountsDto={accountsDto}
-        />
+        ></Divider> */}
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { bankOrMfs } = form.getFieldsValue(true);
+
+            return bankOrMfs === 1 ? (
+              <DigitalMFS
+                form={form}
+                wgId={wgId}
+                buId={buId}
+                accountsDto={accountsDto}
+              />
+            ) : (
+              <BankInfo
+                form={form}
+                bankDDL={bankDDL}
+                orgId={orgId}
+                accountsDto={accountsDto}
+              />
+            );
+          }}
+        </Form.Item>
       </PCard>
     </PForm>
   ) : (

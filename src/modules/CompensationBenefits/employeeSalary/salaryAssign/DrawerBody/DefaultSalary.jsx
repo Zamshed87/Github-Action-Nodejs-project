@@ -1413,6 +1413,7 @@ const DefaultSalary = ({ propsObj }) => {
                       value={values?.gateway}
                       menuPosition="fixed"
                       onChange={(valueOption) => {
+                        setFieldValue("gateway", valueOption);
                         setFieldValue("mobile", "");
                       }}
                       placeholder=" "
@@ -1594,12 +1595,13 @@ const DefaultSalary = ({ propsObj }) => {
                         };
 
                         values?.gateway?.value &&
+                          bankDetailsAction(payloadMFS, setLoading, () =>
+                            bankDataHandler(singleData)
+                          );
+                        values?.bankName?.value &&
                           bankDetailsAction(payload, setLoading, () =>
                             bankDataHandler(singleData)
                           );
-                        bankDetailsAction(payloadMFS, setLoading, () =>
-                          bankDataHandler(singleData)
-                        );
                       }}
                       type="submit"
                       className="btn btn-green btn-green-disable"
@@ -1695,6 +1697,38 @@ const DefaultSalary = ({ propsObj }) => {
                           strAccountNo: values?.accNo || "",
                           strSwiftCode: values?.swiftCode || "",
                         };
+                        const payloadMFS = {
+                          // --
+                          partId: singleData?.[0]?.EmployeeId ? 2 : 1,
+                          intEmployeeBankDetailsId:
+                            values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBasicInfoId:
+                            +singleData?.[0]?.EmployeeId || 0,
+                          isPrimarySalaryAccount: true,
+                          isActive: true,
+                          intWorkplaceId: wId || 0,
+                          intBusinessUnitId: buId,
+                          intAccountId: orgId,
+                          dteCreatedAt: todayDate(),
+                          intCreatedBy: employeeId,
+                          dteUpdatedAt: todayDate(),
+                          intUpdatedBy: employeeId,
+                          intBankOrWalletType: 2,
+                          intBankWalletId: values?.gateway?.value || 0,
+                          strBankWalletName: values?.gateway?.label || "",
+                          strDistrict: "",
+                          intBankBranchId: 0,
+                          strBranchName: "",
+                          strRoutingNo: "",
+                          strAccountName: "",
+                          strAccountNo: values?.mobile || "",
+                          strSwiftCode: "",
+                        };
+
+                        values?.gateway?.value &&
+                          bankDetailsAction(payloadMFS, setLoading, () =>
+                            bankDataHandler(singleData)
+                          );
                         bankDetailsAction(payload, setLoading, () =>
                           bankDataHandler(singleData)
                         );
