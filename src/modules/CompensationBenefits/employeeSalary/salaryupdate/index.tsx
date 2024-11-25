@@ -264,7 +264,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       );
     }
     const payload = {
-      partId: 0,
+      partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
       intEmployeeBankDetailsId:
         +employeeInfo?.data[0]?.empEmployeeBankDetail
           ?.intEmployeeBankDetailsId || 0,

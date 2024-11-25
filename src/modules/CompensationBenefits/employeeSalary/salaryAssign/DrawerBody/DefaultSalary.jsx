@@ -73,6 +73,7 @@ const DefaultSalary = ({ propsObj }) => {
 
   // state
   const [bankDDL, setBankDDL] = useState([]);
+  const [paymentGateWayDDL, setPaymentGateWayDDL] = useState([]);
   const [bankBranchDDL, setBankBranchDDL] = useState([]);
 
   const { employeeId } = useSelector(
@@ -86,6 +87,12 @@ const DefaultSalary = ({ propsObj }) => {
       "BankID",
       "BankName",
       setBankDDL
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PaymentGateway&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
+      "DigitalBankId",
+      "DigitalBankName",
+      setPaymentGateWayDDL
     );
   }, []);
   useEffect(() => {
@@ -127,15 +134,22 @@ const DefaultSalary = ({ propsObj }) => {
   };
 
   const [expanded, setExpanded] = React.useState(false);
+  const [expandedMFS, setExpandedMFS] = React.useState(false);
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
+  };
+  const handleChangeMFS = (panel) => (event, newExpanded) => {
+    setExpandedMFS(newExpanded ? panel : false);
   };
 
   useEffect(() => {
     if (values?.bankName?.value || values?.accName) {
       setExpanded("panel1");
+    } else if (values?.gateway?.value) {
+      setExpandedMFS("panel2");
     } else {
       setExpanded(false);
+      setExpandedMFS(false);
     }
   }, [values?.bankName]);
   return (
@@ -1360,6 +1374,92 @@ const DefaultSalary = ({ propsObj }) => {
             </AccordionDetails>
           </Accordion>
         </div>
+        <div style={{ width: "100%", maxWidth: "100%" }}>
+          <Accordion
+            expanded={expandedMFS === "panel2"}
+            onChange={handleChangeMFS("panel2")}
+            sx={{
+              width: "100% !important",
+              left: "0px !important",
+              right: "0px !important",
+              marginBottom: "10px !important",
+            }}
+          >
+            <AccordionSummary aria-controls="panel1-content" id="panel1-header">
+              <Typography>Digital/MFS</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                {/* Bank Name */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Gateway{" "}
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <FormikSelect
+                      name="gateway"
+                      options={paymentGateWayDDL}
+                      value={values?.gateway}
+                      menuPosition="fixed"
+                      onChange={(valueOption) => {
+                        setFieldValue("mobile", "");
+                      }}
+                      placeholder=" "
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isDisabled={false}
+                    />
+                  </div>
+                </div>
+
+                {/* Account No */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Mobile No
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <DefaultInput
+                      value={values?.mobile}
+                      onChange={(e) => {
+                        setFieldValue("mobile", e.target.value);
+                      }}
+                      name="mobile"
+                      type="number"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                      placeholder=" "
+                      classes="input-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </div>
 
         {isBulk ? (
           <>
@@ -1440,7 +1540,7 @@ const DefaultSalary = ({ propsObj }) => {
                       }
                       onClick={() => {
                         const payload = {
-                          partId: 0,
+                          partId: singleData?.[0]?.EmployeeId ? 2 : 1,
                           intEmployeeBankDetailsId:
                             values?.intEmployeeBankDetailsId || 0,
                           intEmployeeBasicInfoId:
@@ -1465,7 +1565,39 @@ const DefaultSalary = ({ propsObj }) => {
                           strAccountNo: values?.accNo || "",
                           strSwiftCode: values?.swiftCode || "",
                         };
-                        bankDetailsAction(payload, setLoading, () =>
+                        const payloadMFS = {
+                          // --
+                          partId: singleData?.[0]?.EmployeeId ? 2 : 1,
+                          intEmployeeBankDetailsId:
+                            values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBasicInfoId:
+                            +singleData?.[0]?.EmployeeId || 0,
+                          isPrimarySalaryAccount: true,
+                          isActive: true,
+                          intWorkplaceId: wId || 0,
+                          intBusinessUnitId: buId,
+                          intAccountId: orgId,
+                          dteCreatedAt: todayDate(),
+                          intCreatedBy: employeeId,
+                          dteUpdatedAt: todayDate(),
+                          intUpdatedBy: employeeId,
+                          intBankOrWalletType: 2,
+                          intBankWalletId: values?.gateway?.value || 0,
+                          strBankWalletName: values?.gateway?.label || "",
+                          strDistrict: "",
+                          intBankBranchId: 0,
+                          strBranchName: "",
+                          strRoutingNo: "",
+                          strAccountName: "",
+                          strAccountNo: values?.mobile || "",
+                          strSwiftCode: "",
+                        };
+
+                        values?.gateway?.value &&
+                          bankDetailsAction(payload, setLoading, () =>
+                            bankDataHandler(singleData)
+                          );
+                        bankDetailsAction(payloadMFS, setLoading, () =>
                           bankDataHandler(singleData)
                         );
                       }}
@@ -1538,7 +1670,7 @@ const DefaultSalary = ({ propsObj }) => {
                       className="btn btn-green btn-green-disable"
                       onClick={() => {
                         const payload = {
-                          partId: 0,
+                          partId: singleData?.[0]?.EmployeeId ? 2 : 1,
                           intEmployeeBankDetailsId:
                             values?.intEmployeeBankDetailsId || 0,
                           intEmployeeBasicInfoId:
