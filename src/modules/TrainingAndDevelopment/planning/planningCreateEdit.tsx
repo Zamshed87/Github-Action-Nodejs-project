@@ -18,7 +18,7 @@ import {
 } from "Components";
 import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 // import { requisitionStatus } from "./helper";
@@ -32,6 +32,7 @@ import { Delete } from "@mui/icons-material";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
 import { toast } from "react-toastify";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -40,6 +41,8 @@ const TnDPlanningCreateEdit = () => {
 
   const location = useLocation<LocationState>();
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const data = location?.state?.data;
 
   const [loading, setLoading] = useState(false);
@@ -52,6 +55,14 @@ const TnDPlanningCreateEdit = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+  let permission = null;
+
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30356) {
+      permission = item;
+    }
+  });
+
   const { buId, wgId, employeeId, orgId } = profileData;
 
   const getBUnitDDL = useApiRequest({});
@@ -179,6 +190,7 @@ const TnDPlanningCreateEdit = () => {
   };
 
   useEffect(() => {
+    dispatch(setFirstLevelNameAction("Training & Development"));
     getBUnitDDL.action({
       urlKey: "BusinessUnitWithRoleExtension",
       method: "GET",
