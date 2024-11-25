@@ -31,6 +31,7 @@ import { setTrainingDuration } from "./helper";
 import { Delete } from "@mui/icons-material";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
+import { toast } from "react-toastify";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -152,6 +153,10 @@ const TnDPlanningCreateEdit = () => {
   }, [profileData?.buId, profileData?.wgId]);
 
   const addHandler = (values: any) => {
+    if (!values?.costValue) {
+      toast.error("Cost Value is required");
+      return;
+    }
     const nextId =
       costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
     setCostField([...costField, { id: nextId, ...values }]);
@@ -162,7 +167,29 @@ const TnDPlanningCreateEdit = () => {
       perticipantField.length > 0
         ? perticipantField[perticipantField.length - 1].id + 1
         : 1;
-    setperticipantField([...perticipantField, { id: nextId, ...values }]);
+    setperticipantField([
+      ...perticipantField,
+      {
+        id: nextId,
+        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
+        ...values,
+      },
+    ]);
+  };
+
+  const calculatePerPersonCost = () => {
+    let totalCost = 0;
+    costField.forEach((item: any) => {
+      totalCost += +item.costValue;
+    });
+    const perPersonCost = parseFloat(
+      (totalCost / perticipantField.length)?.toFixed(2)
+    );
+    form.setFieldsValue({
+      perPersonCost: perPersonCost,
+      totalCost: totalCost,
+    });
+    return perPersonCost;
   };
 
   console.log(costField);
@@ -259,33 +286,7 @@ const TnDPlanningCreateEdit = () => {
                   //   rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
-              {/* <Col md={6} sm={24}>
-                <PSelect
-                  disabled={type === "view" || type === "status"}
-                  name="employee"
-                  label="Employee"
-                  placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
-                  loading={CommonEmployeeDDL?.loading}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      employee: op,
-                    });
-                  }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
-                  showSearch
-                  filterOption={false}
-                  allowClear={true}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Employee is required",
-                    },
-                  ]}
-                />
-              </Col> */}
+
               <Col md={6} sm={12} xs={24}>
                 <PSelect
                   options={trainingTypeDDL || []}
@@ -563,6 +564,7 @@ const TnDPlanningCreateEdit = () => {
               perticipantField={perticipantField}
               setperticipantField={setperticipantField}
               addHandler={addHanderForPerticipant}
+              calculatePerPersonCost={calculatePerPersonCost}
             />
           </PCardBody>
         </PCard>

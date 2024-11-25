@@ -206,7 +206,7 @@ const TnDPlanningLanding = () => {
           <PCardHeader
             title={`Total ${
               landingApi?.data?.totalCount || 0
-            } Training Requisition`}
+            } Training Planning`}
             buttonList={[
               {
                 type: "primary",
