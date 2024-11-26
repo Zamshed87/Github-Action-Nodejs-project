@@ -11,6 +11,15 @@ import moment from "moment";
 const ViewModal = ({ singleData }: any) => {
   console.log(singleData);
 
+  const isExistForCheckbox = (op: string, opArr: any[]) => {
+    for (let i = 0; i < opArr?.length; i++) {
+      if (opArr[i] === op) {
+        return true;
+      }
+      return false;
+    }
+  };
+
   return (
     <div>
       <div style={{ fontSize: "12px" }}>
@@ -87,7 +96,10 @@ const ViewModal = ({ singleData }: any) => {
                 ques?.options?.map((op: any, index: number) => (
                   <Flex align="center" key={index}>
                     <div>
-                      {op?.optionName?.includes(ques?.responseAnswer) ? (
+                      {isExistForCheckbox(
+                        op?.optionName,
+                        ques?.responseAnswer
+                      ) ? (
                         <CheckBoxIcon
                           sx={{ fontSize: "12px", color: "green" }}
                         />
