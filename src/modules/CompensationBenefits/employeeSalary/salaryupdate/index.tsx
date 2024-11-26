@@ -161,7 +161,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onSuccess: (res) => {
         form.setFieldsValue({
           isHoldSalary: res[0]?.IsHold ? true : false,
-          transferType: res[0]?.intOthersAdditionalAmountTransferInto || 3,
+          transferType:
+            res[0]?.intOthersAdditionalAmountTransferInto || orgId === 12
+              ? 1
+              : 3,
         });
         const temp = [...accountsDto];
         temp[0].numAmount = res[0]?.BankPayInAmount || 0;
@@ -955,7 +958,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     <PForm
       form={form}
       initialValues={{
-        transferType: "Cash",
+        transferType: orgId === 12 ? { value: 1, label: "Bank" } : "Cash",
         bankOrMfs: 0,
       }}
       onFinish={submitHandler}
