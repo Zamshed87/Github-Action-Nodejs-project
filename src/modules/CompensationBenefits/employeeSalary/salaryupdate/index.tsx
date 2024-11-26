@@ -4,6 +4,7 @@ import {
   PCardHeader,
   PForm,
   PInput,
+  PRadio,
   PSelect,
 } from "Components";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -21,6 +22,7 @@ import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
 import { Alert } from "@mui/material";
 import { EmployeeInfo } from "./EmployeeInfo";
 import { BankInfo } from "./BankInfo";
+import { DigitalMFS } from "./DigitalMFS";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -233,7 +235,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
       accountsDto[0].numAmount;
-    if (accountSum !== values?.grossAmount) {
+    if (Math.round(accountSum) !== Math.round(values?.grossAmount)) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
@@ -258,16 +260,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
-    if (elementSum !== values?.grossAmount) {
+    if (Math.round(elementSum) !== Math.round(values?.grossAmount)) {
       return toast.warn(
         "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
       );
     }
     const payload = {
-      partId: 0,
+      partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
       intEmployeeBankDetailsId:
-        +employeeInfo?.data[0]?.empEmployeeBankDetail
-          ?.intEmployeeBankDetailsId || 0,
+        +empBankInfo?.data?.empEmployeeBankDetail?.intEmployeeBankDetailsId ||
+        0,
       intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
       isPrimarySalaryAccount: true,
       isActive: true,
@@ -289,6 +291,34 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strAccountNo: `${values?.accountNo}` || "",
       strSwiftCode: values?.swift || "",
     };
+    const payloadMFS = {
+      partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
+      intEmployeeBankDetailsId:
+        +empBankInfo?.data?.empEmployeeBankDetail?.intEmployeeBankDetailsId ||
+        0,
+      intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
+      isPrimarySalaryAccount: true,
+      isActive: true,
+      intWorkplaceId: wId || 0,
+      intBusinessUnitId: buId,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+      intBankOrWalletType: 2,
+      intBankWalletId: values?.gateway?.value || 0,
+      strBankWalletName: values?.gateway?.label || "",
+      strDistrict: "",
+      intBankBranchId: 0,
+      strBranchName: "",
+      strRoutingNo: "",
+      strAccountName: "",
+      strAccountNo: `${values?.mobile}` || "",
+      strSwiftCode: "",
+    };
+    values?.gateway?.value &&
+      bankDetailsAction(payloadMFS, setLoading, () => {});
     if (
       values?.transferType?.value === 1 ||
       values?.transferType === 1 ||
@@ -374,6 +404,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     const [index1, index2] = [0, 1, 2].filter((i) => i !== index); // get the other two indexes
 
     // Distribute remaining amount between the other two indexes
+    // console.log({ index1 }, temp[index1].numAmount, remainingAmount);
+    // console.log({ index2 }, temp[index2].numAmount, remainingAmount);
     if (temp[index1].numAmount > remainingAmount) {
       temp[index1].numAmount = remainingAmount;
       temp[index2].numAmount = 0;
@@ -381,7 +413,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       temp[index2].numAmount = remainingAmount;
       temp[index1].numAmount = 0;
     } else {
-      temp[index2].numAmount = remainingAmount - temp[index1].numAmount;
+      orgId === 12
+        ? (temp[index1].numAmount = remainingAmount - temp[index2].numAmount)
+        : (temp[index2].numAmount = remainingAmount - temp[index1].numAmount);
     }
 
     // Update accounts percentage for all indexes
@@ -438,7 +472,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
     // Update the selected index with the new amount
     // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
-    temp[index].numAmount = e + e * (slabCount || 0);
+    if (temp[index]?.basedOn === "Amount") {
+      temp[index].numAmount = e;
+    } else {
+      temp[index].numAmount = e + e * (slabCount || 0);
+    }
     if (temp[index].isBasicSalary) {
       temp[index].baseAmount = e;
     }
@@ -510,7 +548,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       if (item.strBasedOn === "Percentage") {
         return {
           ...item,
-          numAmount: (grossAmount * item.numNumberOfPercent) / 100,
+          numAmount: Math.round((grossAmount * item.numNumberOfPercent) / 100),
         };
       }
       return item; // Leave as-is if based on "Amount"
@@ -543,8 +581,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
-        item.numAmount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
+        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100); // Calculate based on percentage of basic salary
+        item.numAmount = Math.round(
+          (item.numNumberOfPercent * basicAmount) / 100
+        ); // Calculate based on percentage of basic salary
       } else {
         amount = item.numAmount; // Use the fixed amount if based on fixed amount
       }
@@ -562,13 +602,54 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     form.setFieldsValue({
       grossAmount: total_gross_amount,
     });
-    const accounts = `Cash Pay (${100}%)`;
+
+    // const accounts = `Cash Pay (${100}%)`;
+    // const temp = [...accountsDto];
+    // temp[2].accounts = accounts;
+    // temp[2].numAmount = total_gross_amount;
+    // temp[0].numAmount = 0;
+    // temp[1].numAmount = 0;
+    // setAccountsDto([...temp]);
+    if (orgId === 12) {
+      accountDetailsSetup("bank", total_gross_amount);
+    } else {
+      accountDetailsSetup("cash", total_gross_amount);
+    }
+
+    setRowDto(modified_data);
+  };
+
+  const accountDetailsSetup = (account: any, gross: any) => {
     const temp = [...accountsDto];
+    let accounts = `Cash Pay (${100}%)`;
     temp[2].accounts = accounts;
-    temp[2].numAmount = total_gross_amount;
+    temp[2].numAmount = gross;
     temp[0].numAmount = 0;
     temp[1].numAmount = 0;
-    setRowDto(modified_data);
+    temp[1].accounts = "Digital/MFS Pay (0%)";
+    temp[0].accounts = "Bank Pay (0%)";
+
+    if (account === "bank") {
+      accounts = `Bank Pay (${100}%)`;
+      temp[0].accounts = accounts;
+      temp[0].numAmount = gross;
+      temp[2].numAmount = 0;
+      temp[2].accounts = "Cash Pay (0%)";
+      temp[1].accounts = "Digital/MFS Pay (0%)";
+
+      temp[1].numAmount = 0;
+    }
+    if (account === "mfs") {
+      accounts = `Digital/MFS Pay (${100}%)`;
+      temp[1].accounts = accounts;
+      temp[1].numAmount = gross;
+      temp[2].numAmount = 0;
+      temp[0].numAmount = 0;
+      temp[2].accounts = "Cash Pay (0%)";
+      temp[0].accounts = "Bank Pay (0%)";
+    }
+
+    setAccountsDto([...temp]);
   };
 
   // const adjustOverFollowAmount = (
@@ -652,17 +733,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   basicAmount: e,
                 });
               }
-              if (values?.salaryType?.value == "Grade") {
-                form.setFieldsValue({
-                  slabCount: 0,
-                });
-                if (index !== 0) {
-                  rowDto[0].numAmount =
-                    getById?.data?.payScaleElements[0]?.netAmount;
-                  rowDto[0].baseAmount =
-                    getById?.data?.payScaleElements[0]?.netAmount;
-                }
-              }
+              // if (values?.salaryType?.value == "Grade") {
+              //   form.setFieldsValue({
+              //     slabCount: 0,
+              //   });
+              //   if (index !== 0) {
+              //     rowDto[0].numAmount =
+              //       getById?.data?.payScaleElements[0]?.netAmount;
+              //     rowDto[0].baseAmount =
+              //       getById?.data?.payScaleElements[0]?.netAmount;
+              //   }
+              // }
               updateRowDtoHandler(e, row, index);
             }}
             disabled={
@@ -775,6 +856,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
       onSuccess: (res) => {
         form.setFieldsValue({
+          gateway:
+            res?.empEmployeeBankDetail?.intBankOrWalletType === 2
+              ? {
+                  value: res?.empEmployeeBankDetail?.intBankWalletId,
+                  label: res?.empEmployeeBankDetail?.strBankWalletName,
+                }
+              : "",
+          mobile:
+            res?.empEmployeeBankDetail?.intBankOrWalletType === 2
+              ? res?.empEmployeeBankDetail?.strAccountNo
+              : "",
           bank: res?.empEmployeeBankDetail?.intBankWalletId
             ? res?.empEmployeeBankDetail?.intBankWalletId
             : undefined,
@@ -864,6 +956,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       form={form}
       initialValues={{
         transferType: "Cash",
+        bankOrMfs: 0,
       }}
       onFinish={submitHandler}
     >
@@ -943,10 +1036,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                                   strPayrollElementName: i?.payrollElementName,
                                   strBasedOn: i?.basedOn,
                                   strDependOn: "Basic",
-                                  baseAmount: i?.isBasic ? i?.netAmount : 0,
+                                  baseAmount: i?.isBasic
+                                    ? Math.round(i?.netAmount)
+                                    : 0,
                                   isBasicSalary: i?.isBasic,
                                   numNumberOfPercent: i?.amountOrPercentage,
-                                  numAmount: i?.netAmount,
+                                  numAmount: Math.round(i?.netAmount),
                                   numberOfPercent: i?.amountOrPercentage,
                                 };
                               }
@@ -968,18 +1063,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                                 value: res?.jobClassId,
                                 label: res?.jobClassName,
                               },
-                              grossAmount: gross,
+                              grossAmount: Math.round(gross),
                             });
-                            accountsDto[2].numAmount = gross;
-                            accountsDto[2].accounts = `Cash Pay (${100}%)`;
-                            accountsDto[2].percentage = 100;
+                            // accountsDto[2].numAmount = gross;
+                            // accountsDto[2].accounts = `Cash Pay (${100}%)`;
+                            // accountsDto[2].percentage = 100;
 
-                            accountsDto[0].numAmount = 0;
-                            accountsDto[0].accounts = `Bank Pay (${0}%)`;
-                            accountsDto[0].percentage = 0;
-                            accountsDto[1].numAmount = 0;
-                            accountsDto[1].accounts = `Digital/MFS Pay (${0}%)`;
-                            accountsDto[1].percentage = 0;
+                            // accountsDto[0].numAmount = 0;
+                            // accountsDto[0].accounts = `Bank Pay (${0}%)`;
+                            // accountsDto[0].percentage = 0;
+                            // accountsDto[1].numAmount = 0;
+                            // accountsDto[1].accounts = `Digital/MFS Pay (${0}%)`;
+                            // accountsDto[1].percentage = 0;
+                            if (orgId === 12) {
+                              accountDetailsSetup("bank", gross);
+                            } else {
+                              accountDetailsSetup("cash", gross);
+                            }
+
                             const temp = [];
                             for (let i = 0; i <= res?.incrementSlabCount; i++) {
                               temp.push({
@@ -1154,18 +1255,28 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       label="Gross"
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        const accounts = `Cash Pay (${100}%)`;
-                        const temp = [...accountsDto];
-                        temp[2].accounts = accounts;
-                        temp[2].numAmount = e;
-                        temp[0].numAmount = 0;
-                        temp[1].numAmount = 0;
-                        new_gross_calculation();
-                        // (values?.bankPay * 100) /
-                        //               values?.totalGrossSalary
-                        //             )?.toFixed(6)
+                        // const temp = [...accountsDto];
+                        if (orgId === 12) {
+                          // const accounts = `Bank Pay (${100}%)`;
+                          // temp[0].accounts = accounts;
+                          // temp[0].numAmount = e;
+                          // temp[2].numAmount = 0;
+                          // temp[1].numAmount = 0;
+                          accountDetailsSetup("bank", e);
+                        } else {
+                          accountDetailsSetup("cash", e);
 
-                        setAccountsDto([...temp]);
+                          // const accounts = `Cash Pay (${100}%)`;
+                          // temp[2].accounts = accounts;
+                          // temp[2].numAmount = e;
+                          // temp[0].numAmount = 0;
+                          // temp[1].numAmount = 0;
+                          // (values?.bankPay * 100) /
+                          //               values?.totalGrossSalary
+                          //             )?.toFixed(6)
+                        }
+                        new_gross_calculation();
+                        // setAccountsDto([...temp]);
                       }}
                       rules={[
                         {
@@ -1315,18 +1426,72 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         <Divider
           style={{
             marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            <PRadio
+              name="bankOrMfs"
+              type="group"
+              options={[
+                {
+                  value: 0,
+                  label: "Bank Details",
+                },
+                {
+                  value: 1,
+                  label: "Digital/MFS",
+                },
+              ]}
+              onChange={(e: any) => {
+                const value = e.target.value;
+                form.setFieldsValue({
+                  bankOrMfs: value,
+                });
+              }}
+            />
+            {/* <span>Promote?</span> */}
+          </div>
+        </Divider>
+        {/* <Divider
+          style={{
+            marginBlock: "4px",
             marginTop: "16px",
             fontSize: "14px",
             fontWeight: 600,
           }}
           orientation="left"
-        ></Divider>
-        <BankInfo
-          form={form}
-          bankDDL={bankDDL}
-          orgId={orgId}
-          accountsDto={accountsDto}
-        />
+        ></Divider> */}
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { bankOrMfs } = form.getFieldsValue(true);
+
+            return bankOrMfs === 1 ? (
+              <DigitalMFS
+                form={form}
+                wgId={wgId}
+                buId={buId}
+                accountsDto={accountsDto}
+              />
+            ) : (
+              <BankInfo
+                form={form}
+                bankDDL={bankDDL}
+                orgId={orgId}
+                accountsDto={accountsDto}
+              />
+            );
+          }}
+        </Form.Item>
       </PCard>
     </PForm>
   ) : (

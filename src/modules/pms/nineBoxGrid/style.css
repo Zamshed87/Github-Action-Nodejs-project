@@ -1,0 +1,63 @@
+.nineBox-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 5px;
+}
+
+.nineBox-headingBox {
+  background-color: black;
+  width: 40px;
+  float: right;
+}
+
+.nineBox-innerBody h1 {
+  text-align: center;
+  font-size: medium;
+  font-weight: bold;
+}
+/* .nineBox-mark-container{
+  position: relative;
+} */
+.nineBox-totalMarks-Container {
+  display: block;
+}
+
+.nineBox-totalMarks {
+  background-color: white;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 50%;
+  margin: auto;
+  margin-top: 5px;
+}
+.nineBox-totalMarksText {
+  color: white;
+  text-align: center;
+}
+.box-container:hover .nineBox-totalMarks-Container {
+  display: none;
+  /* background-color: red; */
+}
+.nineBox-mark {
+  background-color: white;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 50%;
+  margin: auto;
+  margin-top: 5px;
+}
+.nineBox-Marks-container {
+  display: none;
+}
+.box-container:hover .nineBox-Marks-container {
+  display: block;
+  animation-delay: 300ms;
+  /* background-color: red; */
+}
+
+@media (min-width: 300px) and (max-width: 992px) {
+  .nineBox-container {
+    display: block;
+  }
+}

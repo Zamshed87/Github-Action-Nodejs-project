@@ -1,0 +1,242 @@
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import AntTable from "../../../../common/AntTable";
+import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import FormikSelect from "../../../../common/FormikSelect";
+import ViewModal from "../../../../common/ViewModal";
+import {
+  getAsyncEmployeeApi,
+  getAsyncEmployeeCommonApi,
+  getPeopleDeskAllDDL,
+} from "../../../../common/api";
+import Loading from "../../../../common/loading/Loading";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import { customStyles } from "../../../../utility/selectCustomStyle";
+import { individualKpiMappingTableColumn } from "./helper";
+import IndividualKpiViewModal from "./individualKpiViewModal";
+import AntScrollTable from "../../../../common/AntScrollTable";
+
+const IndividualKpiMapping = () => {
+  // 30391
+  const [selectedData, setSelectedData] = useState(null);
+  const [showKpiViewModal, setShowKpiViewModal] = useState(false);
+
+  const { employeeId, orgId, buId, buName } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  const initData = {
+    businessUnit: {
+      value: buId,
+      label: buName,
+    },
+    department: "",
+    employee: "",
+  };
+
+  const history = useHistory();
+  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  const [departmentDDL, setDepartmentDDL] = useState([]);
+  const [tableData, getTableData, tableDataLoader, setTableData] =
+    useAxiosGet();
+
+  useEffect(() => {
+    if (initData?.businessUnit?.value) {
+      getPeopleDeskAllDDL(
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${initData?.businessUnit?.value}&intId=0`,
+        "DepartmentId",
+        "DepartmentName",
+        setDepartmentDDL
+      );
+    }
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      "intBusinessUnitId",
+      "strBusinessUnit",
+      setBusinessUnitDDL
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId, buId, employeeId]);
+
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: 20,
+    total: 0,
+  });
+
+  const { values, setFieldValue } = useFormik({
+    initialValues: initData,
+  });
+
+  const getData = (values, pages) => {
+    getTableData(
+      `/PMS/GetKpiMappingLanding?accountId=${orgId}&businessUnitId=${
+        values?.businessUnit?.value
+      }&departmentId=${values?.department?.value || 0}&employeeId=${
+        values?.employee?.value || 0
+      }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`,
+      (data) => {
+        if (data) {
+          setPages((prev) => ({
+            ...prev,
+            total: data?.totalCount,
+          }));
+        }
+        return data;
+      }
+    );
+  };
+
+  const handleTableChange = ({ pagination }) => {
+    setPages((prev) => ({ ...prev, ...pagination }));
+    if (
+      (pages?.current === pagination?.current &&
+        pages?.pageSize !== pagination?.pageSize) ||
+      pages?.current !== pagination?.current
+    ) {
+      return getData(values, pagination);
+    }
+  };
+
+  return (
+    <>
+      {tableDataLoader && <Loading />}
+      <div className="table-card">
+        <div className="table-card-heading" style={{ marginBottom: "12px" }}>
+          <div>
+            <h2 style={{ color: "#344054" }}>Individual Kpi Mapping</h2>
+          </div>
+        </div>
+        <div className="card-style pb-0 mb-2">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Business Unit</label>
+                <FormikSelect
+                  name="businessUnit"
+                  isClearable={false}
+                  options={businessUnitDDL || []}
+                  value={values?.businessUnit}
+                  onChange={(valueOption) => {
+                    setTableData([]);
+                    if (valueOption) {
+                      setFieldValue("businessUnit", valueOption);
+                      getPeopleDeskAllDDL(
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${valueOption?.value}&intId=0`,
+                        "DepartmentId",
+                        "DepartmentName",
+                        setDepartmentDDL
+                      );
+                    } else {
+                      setFieldValue("businessUnit", "");
+                      setFieldValue("department", "");
+                      setDepartmentDDL([]);
+                    }
+                  }}
+                  placeholder=""
+                  styles={customStyles}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-3">
+              <div className="input-field-main">
+                <label>Department</label>
+                <FormikSelect
+                  name="department"
+                  placeholder=""
+                  options={departmentDDL || []}
+                  value={values?.department}
+                  onChange={(valueOption) => {
+                    setTableData([]);
+                    setFieldValue("department", valueOption);
+                  }}
+                  styles={customStyles}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Employee</label>
+                <AsyncFormikSelect
+                  isClear={true}
+                  selectedValue={values?.employee}
+                  styles={{
+                    control: (provided) => ({
+                      ...customStyles?.control(provided),
+                      width: "100%",
+                    }),
+                  }}
+                  isSearchIcon={true}
+                  handleChange={(valueOption) => {
+                    setTableData([]);
+                    setFieldValue("employee", valueOption);
+                  }}
+                  loadOptions={async (value) => {
+                    return getAsyncEmployeeApi({
+                      orgId,
+                      buId: values?.businessUnit?.value,
+                      intId: 0,
+                      value,
+                    });
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-3">
+              <button
+                type="button"
+                className="btn btn-green mr-2"
+                style={{ marginTop: "22px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  getData(values, pages);
+                }}
+                disabled={!values?.businessUnit}
+              >
+                View
+              </button>
+            </div>
+          </div>
+        </div>
+        {/* table */}
+        <div className="table-card-body">
+          {tableData?.data?.length ? (
+            <div className="table-card-styled table-responsive tableOne">
+              <AntScrollTable
+                data={tableData?.data}
+                columnsData={individualKpiMappingTableColumn({
+                  values,
+                  history,
+                  setSelectedData,
+                  setShowKpiViewModal,
+                })}
+                rowKey={(record) => record?.id}
+                pages={pages?.pageSize}
+                pagination={pages}
+                handleTableChange={handleTableChange}
+              />
+            </div>
+          ) : null}
+        </div>
+        <ViewModal
+          size="lg"
+          title="Mapped KPI"
+          backdrop="static"
+          classes="default-modal preview-modal"
+          show={showKpiViewModal}
+          onHide={() => setShowKpiViewModal(false)}
+        >
+          <IndividualKpiViewModal selectedData={selectedData} />
+        </ViewModal>
+      </div>
+    </>
+  );
+};
+
+export default IndividualKpiMapping;

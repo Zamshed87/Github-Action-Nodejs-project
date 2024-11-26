@@ -5,6 +5,7 @@ import { gray900, greenColor } from "utility/customColor";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
+import { getSerial } from "Utils";
 
 export const getEmpOvertimeLandingData = async (
   org,
@@ -42,12 +43,17 @@ export const updateOvertimeHour = async (payload, setLoading, cb) => {
   }
 };
 
-export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
+export const overTimeGeneratedDtoCol = (
+  rowDtoHandler,
+  rowDto,
+  setRowDto,
+  pages
+) => {
   return [
     {
       title: "SL",
       dataIndex: "sl",
-      render: (data, record) => (
+      render: (data, record, index) => (
         <div style={{ minWidth: "80px" }}>
           <FormikCheckBox
             styleObj={{
@@ -72,7 +78,13 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
             }}
           />
 
-          <span style={{ marginLeft: "5px" }}>{data}</span>
+          <span style={{ marginLeft: "5px" }}>
+            {getSerial({
+              currentPage: pages?.current,
+              pageSize: pages?.pageSize,
+              index,
+            })}
+          </span>
         </div>
       ),
       key: "sl",
@@ -159,6 +171,8 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
       isDate: true,
       key: "dteAttendanceDate",
       width: "100px",
+      sorter: true,
+      filter: true,
     },
     {
       title: "Calendar Name",

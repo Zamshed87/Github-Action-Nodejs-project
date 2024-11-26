@@ -1,0 +1,12 @@
+.growModel table,
+.growModel th,
+.growModel td {
+  border: 1px solid;
+}
+.table-row-width {
+  width: 50% !important;
+}
+.growModel textarea {
+  border: none !important;
+  outline: none;
+}

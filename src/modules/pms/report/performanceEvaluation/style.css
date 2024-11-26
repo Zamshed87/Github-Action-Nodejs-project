@@ -1,0 +1,54 @@
+.performance-report-wrapper {
+  margin: 0px 10px !important;
+  border: 3px solid rgb(204, 193, 193);
+  padding: 10px;
+}
+
+.performance-report-wrapper .heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.performance-report-wrapper .photo {
+  width: 100px;
+  height: 100px;
+  padding: 2px;
+  border: 1px solid #ccc;
+}
+
+.performance-report-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.performance-report-wrapper table th,
+.performance-report-wrapper table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.performance-report-wrapper table th {
+  background-color: #6ecbeb;
+}
+
+.performance-report-wrapper .table-title td {
+  background-color: #0099cc;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.performance-report-wrapper .footer {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 30px;
+}
+
+.performance-report-wrapper .footer .signature {
+    padding: 20px;
+  }

@@ -1,0 +1,38 @@
+
+
+
+.measuringDetails p {
+   font-size: 16px;
+ }
+ .measuringDetails .fa {
+   padding-right: 10px;
+   color: #3699ff !important;
+ }
+ 
+ .measuringDetails ul li {
+   margin: 10px 0;
+   position: relative;
+   font-size: 14px;
+   border-bottom: 1px solid #c5e0fc;
+   padding: 8px 0px 5px 12px;
+   transition: all 0.2s;
+   background: transparent;
+   list-style: none;
+ }
+ .measuringDetails ul li:hover {
+   border-bottom: 1px solid transparent;
+   background: #f0f1f3;
+ }
+ .measuringDetails ul li::before {
+   content: "";
+   position: absolute;
+   left: -5px;
+   width: 1px;
+   height: 100%;
+   background: #7fb4e9;
+   transition: all 0.3s ease !important;
+   top: 0;
+ }
+ .measuringDetails ul li:hover::before {
+   width: 8px;
+ }

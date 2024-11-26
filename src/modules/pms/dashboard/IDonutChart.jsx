@@ -1,8 +1,6 @@
 import React from "react";
 import { Pie } from "@ant-design/plots";
-import IHeart from "./IHeart";
-
-const IDonutChart = ({target, ach}) => {
+const IDonutChart = ({ target, ach, label }) => {
   const data = [
     {
       type: "Target",
@@ -34,9 +32,14 @@ const IDonutChart = ({target, ach}) => {
       },
     ],
   };
+
   return (
     <div className="h-100">
-      <IHeart />
+      {label && (
+        <div className="text-center">
+          <h6 className="mt-2">{label}</h6>
+        </div>
+      )}
       <Pie {...config} />
     </div>
   );

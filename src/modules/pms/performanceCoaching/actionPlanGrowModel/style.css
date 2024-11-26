@@ -1,0 +1,13 @@
+.actionplan-pdf-section table,.actionplan-pdf-section th,.actionplan-pdf-section td {
+    /* this css makes effect on every table design of project. next time dont try to use any external css,..cause we dont know which gonna create conflict to other design */
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+    background-color: white !important;
+    font-size: 14px !important;
+}
+.actionplan-pdf-section .footer{
+    /* background-color: #ffffff !important; */
+    text-align: end;
+    padding-right: 50px;
+    height: 130px;
+}
