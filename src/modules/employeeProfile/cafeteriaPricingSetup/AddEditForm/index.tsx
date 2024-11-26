@@ -13,20 +13,15 @@ import {
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const PricingSetupForm = () => {
   const {
-    permissionList,
     profileData: { buId, wgId, employeeId, orgId, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
-  const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30417),
-    []
-  );
 
   // Form Instance
   const [form] = Form.useForm();
@@ -196,10 +191,12 @@ const PricingSetupForm = () => {
     {
       title: "Workplace Group",
       render: (value: any, row: any) => row?.workplaceGroup?.label,
+      width: 100,
     },
     {
       title: "Workplace",
       render: (value: any, row: any) => row?.workplace?.label,
+      width: 100,
     },
     {
       title: "Designation",
@@ -221,6 +218,7 @@ const PricingSetupForm = () => {
               }}
               // disabled={true}
               onChange={(e: any) => {
+                console.log(e.target.value);
                 handleIsPerDayChange(e, index, "ownContribution");
                 handleIsPerDayChange(
                   parseInt(
@@ -504,12 +502,15 @@ const PricingSetupForm = () => {
     },
     {
       title: "Action",
+      width: 50,
+      align: "center",
       render: (value: any, row: any, index: number) => (
         <div className="d-flex justify-content-center">
           <Tooltip title="Delete" arrow>
-            <button type="button" className="iconButton">
-              <DeleteOutlineOutlined onClick={() => handleDeleteRow(index)} />
-            </button>
+            <DeleteOutlineOutlined
+              style={{ color: "green", fontSize: "18px", cursor: "pointer" }}
+              onClick={() => handleDeleteRow(index)}
+            />
           </Tooltip>
         </div>
       ),
@@ -529,6 +530,7 @@ const PricingSetupForm = () => {
     {
       title: "Workplace",
       render: (value: any, row: any) => row?.workplace?.label,
+      width: 100,
     },
     {
       title: "Salary Range Min",
@@ -939,12 +941,15 @@ const PricingSetupForm = () => {
     },
     {
       title: "Action",
+      align: "center",
+      width: 50,
       render: (value: any, row: any, index: number) => (
         <div className="d-flex justify-content-center">
           <Tooltip title="Delete" arrow>
-            <button type="button" className="iconButton">
-              <DeleteOutlineOutlined onClick={() => handleDeleteRow(index)} />
-            </button>
+            <DeleteOutlineOutlined
+              style={{ color: "green", fontSize: "18px", cursor: "pointer" }}
+              onClick={() => handleDeleteRow(index)}
+            />
           </Tooltip>
         </div>
       ),
@@ -974,7 +979,7 @@ const PricingSetupForm = () => {
     // },
   ];
   const submitHandler = (rowDto: any) => {
-    const { pricingMatrixType, mealType, date, workplace, workplaceGroup } =
+    const { pricingMatrixType, mealType, workplace, workplaceGroup } =
       form.getFieldsValue(true);
     const cb = () => {
       form.resetFields();
@@ -989,7 +994,7 @@ const PricingSetupForm = () => {
       return;
     }
 
-    const payload = rowDto.map((item: any, idx: number) => {
+    const payload = rowDto.map((item: any) => {
       return {
         // intConfigId: +id || 0,
         intDesignationId: item?.designation?.value || 0,
