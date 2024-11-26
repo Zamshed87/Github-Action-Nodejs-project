@@ -16,8 +16,8 @@ const ViewModal = ({ singleData }: any) => {
       if (opArr[i] === op) {
         return true;
       }
-      return false;
     }
+    return false;
   };
 
   return (
@@ -111,12 +111,16 @@ const ViewModal = ({ singleData }: any) => {
                     </div>
                     <div
                       style={{
-                        fontWeight: op?.optionName?.includes(
+                        fontWeight: isExistForCheckbox(
+                          op?.optionName,
                           ques?.responseAnswer
                         )
                           ? 500
                           : "",
-                        color: op?.optionName?.includes(ques?.responseAnswer)
+                        color: isExistForCheckbox(
+                          op?.optionName,
+                          ques?.responseAnswer
+                        )
                           ? "green"
                           : "",
                       }}
