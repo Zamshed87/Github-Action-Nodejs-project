@@ -1374,93 +1374,98 @@ const DefaultSalary = ({ propsObj }) => {
             </AccordionDetails>
           </Accordion>
         </div>
-        <div style={{ width: "100%", maxWidth: "100%" }}>
-          <Accordion
-            expanded={expandedMFS === "panel2"}
-            onChange={handleChangeMFS("panel2")}
-            sx={{
-              width: "100% !important",
-              left: "0px !important",
-              right: "0px !important",
-              marginBottom: "10px !important",
-            }}
-          >
-            <AccordionSummary aria-controls="panel1-content" id="panel1-header">
-              <Typography>Digital/MFS</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div>
-                {/* Bank Name */}
-                <div className="row">
-                  <div className="col-lg-7">
-                    <h2
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                        color: gray700,
-                        position: "relative",
-                        top: "-1px",
-                      }}
-                    >
-                      Gateway{" "}
-                    </h2>
+        {orgId === 4 && (
+          <div style={{ width: "100%", maxWidth: "100%" }}>
+            <Accordion
+              expanded={expandedMFS === "panel2"}
+              onChange={handleChangeMFS("panel2")}
+              sx={{
+                width: "100% !important",
+                left: "0px !important",
+                right: "0px !important",
+                marginBottom: "10px !important",
+              }}
+            >
+              <AccordionSummary
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Typography>Digital/MFS</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div>
+                  {/* Bank Name */}
+                  <div className="row">
+                    <div className="col-lg-7">
+                      <h2
+                        style={{
+                          fontWeight: "500",
+                          fontSize: "14px",
+                          lineHeight: "20px",
+                          color: gray700,
+                          position: "relative",
+                          top: "-1px",
+                        }}
+                      >
+                        Gateway{" "}
+                      </h2>
+                    </div>
+                    <div className="col-md-5">
+                      <FormikSelect
+                        name="gateway"
+                        options={paymentGateWayDDL}
+                        value={values?.gateway}
+                        menuPosition="fixed"
+                        onChange={(valueOption) => {
+                          setFieldValue("gateway", valueOption);
+                          setFieldValue("mobile", "");
+                        }}
+                        placeholder=" "
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        isDisabled={false}
+                      />
+                    </div>
                   </div>
-                  <div className="col-md-5">
-                    <FormikSelect
-                      name="gateway"
-                      options={paymentGateWayDDL}
-                      value={values?.gateway}
-                      menuPosition="fixed"
-                      onChange={(valueOption) => {
-                        setFieldValue("gateway", valueOption);
-                        setFieldValue("mobile", "");
-                      }}
-                      placeholder=" "
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                      isDisabled={false}
-                    />
-                  </div>
-                </div>
 
-                {/* Account No */}
-                <div className="row">
-                  <div className="col-lg-7">
-                    <h2
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                        color: gray700,
-                        position: "relative",
-                        top: "-1px",
-                      }}
-                    >
-                      Mobile No
-                    </h2>
-                  </div>
-                  <div className="col-md-5">
-                    <DefaultInput
-                      value={values?.mobile}
-                      onChange={(e) => {
-                        setFieldValue("mobile", e.target.value);
-                      }}
-                      name="mobile"
-                      type="number"
-                      className="form-control"
-                      errors={errors}
-                      touched={touched}
-                      placeholder=" "
-                      classes="input-sm"
-                    />
+                  {/* Account No */}
+                  <div className="row">
+                    <div className="col-lg-7">
+                      <h2
+                        style={{
+                          fontWeight: "500",
+                          fontSize: "14px",
+                          lineHeight: "20px",
+                          color: gray700,
+                          position: "relative",
+                          top: "-1px",
+                        }}
+                      >
+                        Mobile No
+                      </h2>
+                    </div>
+                    <div className="col-md-5">
+                      <DefaultInput
+                        value={values?.mobile}
+                        onChange={(e) => {
+                          setFieldValue("mobile", e.target.value);
+                        }}
+                        name="mobile"
+                        type="number"
+                        className="form-control"
+                        errors={errors}
+                        touched={touched}
+                        placeholder=" "
+                        classes="input-sm"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </AccordionDetails>
-          </Accordion>
-        </div>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        )}
 
         {isBulk ? (
           <>
@@ -1594,7 +1599,8 @@ const DefaultSalary = ({ propsObj }) => {
                           strSwiftCode: "",
                         };
 
-                        values?.gateway?.value &&
+                        orgId === 4 &&
+                          values?.gateway?.value &&
                           bankDetailsAction(payloadMFS, setLoading, () =>
                             bankDataHandler(singleData)
                           );
@@ -1725,7 +1731,8 @@ const DefaultSalary = ({ propsObj }) => {
                           strSwiftCode: "",
                         };
 
-                        values?.gateway?.value &&
+                        orgId === 4 &&
+                          values?.gateway?.value &&
                           bankDetailsAction(payloadMFS, setLoading, () =>
                             bankDataHandler(singleData)
                           );
