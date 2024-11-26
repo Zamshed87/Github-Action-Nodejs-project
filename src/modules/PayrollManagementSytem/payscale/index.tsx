@@ -85,6 +85,9 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
     {
       title: "PayScale Name",
       dataIndex: "payScaleName",
+      filter: true,
+      filterSearch: true,
+
       width: 50,
     },
     {
@@ -95,11 +98,15 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
     {
       title: "Payscale Grade",
       dataIndex: "jobGradeName",
+      filter: true,
+      filterSearch: true,
+
       width: 50,
     },
     {
       title: "Payscale Level",
       dataIndex: "jobLevelName",
+
       width: 50,
     },
 
