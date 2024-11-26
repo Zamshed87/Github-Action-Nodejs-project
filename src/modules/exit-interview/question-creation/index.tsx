@@ -140,14 +140,14 @@ const QuestionCreationLanding = () => {
       align: "center",
     },
     {
-      title: "Survay Type",
+      title: "Survey Type",
       dataIndex: "type",
       filter: true,
       filterKey: "typeList",
       filterSearch: true,
     },
     {
-      title: "Survay Title",
+      title: "Survey Title",
       dataIndex: "title",
     },
     {
