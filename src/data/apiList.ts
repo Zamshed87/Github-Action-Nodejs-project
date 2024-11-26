@@ -263,4 +263,6 @@ export const apiList = {
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
 
   getCommonEnumData: "/Enum/GetEnums",
+  GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
+  GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
 };
