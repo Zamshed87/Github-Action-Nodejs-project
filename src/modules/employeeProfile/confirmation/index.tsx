@@ -63,7 +63,7 @@ export const Confirmation = () => {
 
   // Form Instance
   const [form] = Form.useForm();
-
+  const [filterList, setFilterList] = useState<any>({});
   const landingApi = useApiRequest({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [buDetails, setBuDetails] = useState({});
@@ -503,7 +503,20 @@ export const Confirmation = () => {
               pageSize: landingApi?.data?.pageSize,
               total: landingApi?.data?.totalCount,
             }}
-            // 🔥🔥feature existence not sure
+            filterData={landingApi?.data?.employeeHeader}
+           
+            onChange={(pagination, filters, sorter, extra) => {
+              // Return if sort function is called
+              if (extra.action === "sort") return;
+              const { search } = form.getFieldsValue(true);
+              setFilterList(filters);
+              landingApiCall({
+                pagination,
+                filerList: filters,
+                searchText: search,
+              });
+            }}
+             // 🔥🔥feature existence not sure
             // onRow={(record) => ({
             //   onClick: () => {
             //     console.log(record);
