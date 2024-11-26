@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -84,6 +84,8 @@ const EssInterviewLanding = () => {
     });
   };
 
+  console.log(filterList);
+
   useEffect(() => {
     landingApiCall({});
   }, [wgId, wId, buId]);
@@ -121,14 +123,14 @@ const EssInterviewLanding = () => {
       title: "Resign Status",
       dataIndex: "resignStatus",
       filter: true,
-      filterKey: "createdByList",
+      filterKey: "resignStatusList",
       filterSearch: true,
     },
     {
       title: "Interview Completed By",
       dataIndex: "interviewCompletedBy",
       filter: true,
-      filterKey: "createdByList",
+      filterKey: "interviewCompletedByList",
       filterSearch: true,
       width: 100,
     },
@@ -141,6 +143,21 @@ const EssInterviewLanding = () => {
       dataIndex: "status",
       width: 50,
       align: "center",
+      filter: true,
+      filterKey: "statusList",
+      filterSearch: true,
+      render: (status: string) => (
+        <Tag
+          style={{
+            color: "grey",
+            border: "1px solid lightGrey",
+            fontWeight: 500,
+          }}
+          color={status === "Assigned" ? "geekblue" : "green"}
+        >
+          {status}
+        </Tag>
+      ),
     },
     {
       title: "Action",
