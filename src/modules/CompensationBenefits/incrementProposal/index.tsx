@@ -225,12 +225,12 @@ export const IncrementProposal = () => {
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplaceGroupName",
       width: 100,
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplaceName",
       width: 100,
     },
     {
@@ -275,7 +275,8 @@ export const IncrementProposal = () => {
     },
     {
       title: "Date of Joining",
-      dataIndex: "dateOfJoining",
+      dataIndex: "joiningDate",
+      render: (data: any) => (data ? dateFormatter(data) : "-"),
       width: 100,
     },
     {
@@ -410,8 +411,8 @@ export const IncrementProposal = () => {
   ];
   const columns = {
     sl: "SL",
-    workplaceGroup: "Workplace Group",
-    workplace: "Workplace",
+    workplaceGroupName: "Workplace Group",
+    workplaceName: "Workplace",
     employeeName: "Employee Name",
     designationName: "Designation",
     departmentName: "Department",
@@ -420,7 +421,7 @@ export const IncrementProposal = () => {
     dottedSupervisorName: "Dotted Supervisor",
     lineManagerName: "Line Manager",
     incrementYear: "Increment Year",
-    dateOfJoining: "Date of Joining",
+    joiningDate: "Date of Joining",
     lastIncrementDate: "Last Increment Date",
     lastIncrementAmount: "Last Increment Amount",
     recentGrossSalary: "Recent Gross Salary",
@@ -619,6 +620,12 @@ export const IncrementProposal = () => {
                       return {
                         ...item,
                         sl: index + 1,
+                        lastIncrementDate: item?.lastIncrementDate
+                          ? dateFormatter(item?.lastIncrementDate)
+                          : "-",
+                        joiningDate: item?.joiningDate
+                          ? dateFormatter(item?.joiningDate)
+                          : "-",
                         proposedGrossSalary:
                           +item?.recentGrossSalary +
                           +item?.incrementProposalAmount,
