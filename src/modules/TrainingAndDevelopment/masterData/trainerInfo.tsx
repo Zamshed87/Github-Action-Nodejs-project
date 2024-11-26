@@ -18,7 +18,13 @@ import { message } from "antd";
 import { title } from "process";
 import { dateFormatter } from "utility/dateFormatter";
 import { shallowEqual, useSelector } from "react-redux";
-import { createTrainingType, dataDemo, updateTrainingType } from "./helper";
+import {
+  createTrainerInfo,
+  createTrainingType,
+  dataDemo,
+  updateTrainerInfo,
+  updateTrainingType,
+} from "./helper";
 
 const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -91,9 +97,18 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
           <Tooltip placement="bottom" title="Status">
             <Switch
               size="small"
-              defaultChecked={rec?.isActive}
+              checked={rec?.isActive}
               onChange={() => {
-                updateTrainingType(form, profileData, setLoading, rec, true);
+                updateTrainerInfo(
+                  form,
+                  profileData,
+                  setLoading,
+                  rec,
+                  true,
+                  () => {
+                    landingApiCall();
+                  }
+                );
               }}
             />
           </Tooltip>
@@ -178,10 +193,13 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                     .validateFields()
                     .then(() => {
                       console.log(values);
-                      createTrainingType(
+                      createTrainerInfo(
                         form,
                         profileData,
                         setLoading,
+                        () => {
+                          landingApiCall();
+                        },
                         setOpenTraingTypeModal
                       );
                     })
@@ -197,7 +215,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={dataDemo || []}
+            data={landingApi || []}
             loading={landingLoading}
             header={header}
             // pagination={{

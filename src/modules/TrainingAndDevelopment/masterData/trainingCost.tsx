@@ -15,8 +15,15 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import axios from "axios";
 import { message } from "antd";
+import { createTrainingCost, updateTrainingCost } from "./helper";
+import { shallowEqual, useSelector } from "react-redux";
 
 const TrainingCost = ({ setOpenCostTypeModal }: any) => {
+  const { permissionList, profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  const { buId, wgId, employeeId, orgId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -59,13 +66,22 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title="Status">
-            {/* <Switch
-            size="small"
-            defaultChecked={rec?.isActive}
-            onChange={() => {
-              updateTrainingType(form, profileData, setLoading, rec, true);
-            }}
-          /> */}
+            <Switch
+              size="small"
+              checked={rec?.isActive}
+              onChange={() => {
+                updateTrainingCost(
+                  form,
+                  profileData,
+                  setLoading,
+                  rec,
+                  true,
+                  () => {
+                    landingApiCall();
+                  }
+                );
+              }}
+            />
           </Tooltip>
         </Flex>
       ),
@@ -79,20 +95,6 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   useEffect(() => {
     landingApiCall();
   }, []);
-
-  const saveHandler = async (form: FormInstance<any>) => {
-    try {
-      const values = form.getFieldsValue(true);
-      setLoading(true);
-      await axios.post("/trainingType", values);
-      message.success("Training Type saved successfully");
-      landingApiCall();
-    } catch (error) {
-      message.error("Failed to save Training Type");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div>
@@ -133,7 +135,25 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
                 style={{ marginTop: "22px" }}
                 type="primary"
                 content="Save"
-                onClick={() => saveHandler(form)}
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      createTrainingCost(
+                        form,
+                        profileData,
+                        setLoading,
+                        () => {
+                          landingApiCall();
+                        },
+                        setOpenCostTypeModal
+                      );
+                    })
+                    .catch(() => {
+                      console.log("error");
+                    });
+                }}
               />
             </Col>
           </Row>

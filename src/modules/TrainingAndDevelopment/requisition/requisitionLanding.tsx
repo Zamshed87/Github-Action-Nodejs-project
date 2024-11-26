@@ -86,7 +86,7 @@ const TnDRequisitionLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                history.push("/trainingDevelopment/requisition/view", {
+                history.push("/trainingAndDevelopment/requisition/view", {
                   data: rec,
                 });
               }}
@@ -101,7 +101,7 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/requisition/edit", {
+                history.push("/trainingAndDevelopment/requisition/edit", {
                   data: rec,
                 });
               }}
@@ -116,7 +116,7 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/requisition/status", {
+                history.push("/trainingAndDevelopment/requisition/status", {
                   data: rec,
                 });
               }}
@@ -150,7 +150,7 @@ const TnDRequisitionLanding = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/trainingDevelopment/requisition/create");
+                  history.push("/trainingAndDevelopment/requisition/create");
                 },
               },
             ]}
@@ -203,15 +203,14 @@ const TnDRequisitionLanding = () => {
                   onClick={() => {
                     const values = form.getFieldsValue(true);
                     form
-                    .validateFields()
-                    .then(() => {
-                      console.log(values);
-                      landingApiCall(values);
-                    })
-                    .catch(() => {
-                      console.log("error");
-                    });
-                    
+                      .validateFields()
+                      .then(() => {
+                        console.log(values);
+                        landingApiCall(values);
+                      })
+                      .catch(() => {
+                        console.log("error");
+                      });
                   }}
                 />
               </Col>

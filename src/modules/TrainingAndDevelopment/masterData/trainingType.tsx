@@ -18,7 +18,13 @@ import { message } from "antd";
 import { title } from "process";
 import { dateFormatter } from "utility/dateFormatter";
 import { shallowEqual, useSelector } from "react-redux";
-import { createTrainingType, dataDemo, updateTrainingType } from "./helper";
+import {
+  createTrainingType,
+  dataDemo,
+  deleteTrainingType,
+  updateTrainingType,
+} from "./helper";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -35,6 +41,10 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
 
   // Form Instance
   const [form] = Form.useForm();
+
+  // Watch for editAction changes
+  const editAction = Form.useWatch("editAction", form);
+
   // table column
   const header: any = [
     {
@@ -71,7 +81,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     },
     {
       title: "Created Date,",
-      dataIndex: "createdDate",
+      dataIndex: "dteCreatedAt",
       render: (text: any) => dateFormatter(text),
       filter: true,
     },
@@ -80,12 +90,24 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
+          <Tooltip
+            placement="bottom"
+            title={rec?.isActive ? "Inactive" : "Active"}
+          >
             <Switch
               size="small"
-              defaultChecked={rec?.isActive}
+              checked={rec?.isActive}
               onChange={() => {
-                updateTrainingType(form, profileData, setLoading, rec, true);
+                updateTrainingType(
+                  form,
+                  profileData,
+                  setLoading,
+                  rec,
+                  true,
+                  () => {
+                    landingApiCall();
+                  }
+                );
               }}
             />
           </Tooltip>
@@ -94,10 +116,57 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       align: "center",
       width: 40,
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Edit">
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                form.setFieldsValue({
+                  trainingType: rec?.strName,
+                  remarks: rec?.strRemarks,
+                  singleData: rec,
+                  editAction: true,
+                });
+              }}
+            />
+          </Tooltip>
+
+          {/* <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                deleteTrainingType(rec, setLoading, () => {
+                  landingApiCall();
+                  form.resetFields();
+                });
+              }}
+            />
+          </Tooltip> */}
+        </Flex>
+      ),
+      align: "center",
+      width: 30,
+    },
   ];
+
   const landingApiCall = () => {
-    getLandingApi("/TrainingAndDevelopment/GetAllTrainingType");
+    getLandingApi("/TrainingType/Training/Type");
   };
+
   useEffect(() => {
     landingApiCall();
   }, []);
@@ -105,8 +174,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   return (
     <div>
       {(loading || landingLoading) && <Loading />}
-      <PForm form={form} initialValues={{}}>
-        {/* <PCard> */}
+      <PForm form={form} initialValues={{ editAction: false }}>
         <PCardHeader title={`Total ${landingApi?.length || 0} Training Type`} />
         <PCardBody>
           <Row gutter={[10, 2]}>
@@ -133,22 +201,44 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
               />
             </Col>
             <Col md={6} sm={24}>
+              <Form.Item name="editAction" hidden>
+                <input type="hidden" />
+              </Form.Item>
               <PButton
-                style={{ marginTop: "22px" }}
+                style={{
+                  marginTop: "22px",
+                  backgroundColor: editAction ? "red" : "",
+                }}
                 type="primary"
-                content="Save"
+                content={editAction ? "Edit" : "Save"}
                 onClick={() => {
                   const values = form.getFieldsValue(true);
                   form
                     .validateFields()
                     .then(() => {
-                      console.log(values);
-                      createTrainingType(
-                        form,
-                        profileData,
-                        setLoading,
-                        setOpenTraingTypeModal
-                      );
+                      editAction
+                        ? updateTrainingType(
+                            form,
+                            profileData,
+                            setLoading,
+                            values?.singleData,
+                            false,
+                            () => {
+                              landingApiCall();
+                              form.resetFields();
+                            }
+                          )
+                        : createTrainingType(
+                            form,
+                            profileData,
+                            setLoading,
+                            () => {
+                              landingApiCall();
+                              // Reset form after successful submission
+                              form.resetFields();
+                            },
+                            setOpenTraingTypeModal
+                          );
                     })
                     .catch(() => {
                       console.log("error");
@@ -162,20 +252,12 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={dataDemo || []}
+            data={landingApi || []}
             loading={landingLoading}
             header={header}
-            // pagination={{
-            //   pageSize: landingApi?.data?.pageSize,
-            //   total: landingApi?.data?.totalCount,
-            // }}
             filterData={landingApi?.data?.filters}
-            // onChange={(pagination, filters) => {
-            //   landingApiCall();
-            // }}
           />
         </div>
-        {/* </PCard> */}
       </PForm>
     </div>
   );

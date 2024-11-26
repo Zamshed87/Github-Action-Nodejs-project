@@ -15,11 +15,18 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import axios from "axios";
 import { message } from "antd";
+import { createTrainingTitle, updateTrainingTitle } from "./helper";
+import { shallowEqual, useSelector } from "react-redux";
 
 const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
+
+  const { permissionList, profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
 
   // state
   const [loading, setLoading] = useState(false);
@@ -59,13 +66,22 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title="Status">
-            {/* <Switch
+            <Switch
               size="small"
-              defaultChecked={rec?.isActive}
+              checked={rec?.isActive}
               onChange={() => {
-                updateTrainingType(form, profileData, setLoading, rec, true);
+                updateTrainingTitle(
+                  form,
+                  profileData,
+                  setLoading,
+                  rec,
+                  true,
+                  () => {
+                    landingApiCall();
+                  }
+                );
               }}
-            /> */}
+            />
           </Tooltip>
         </Flex>
       ),
@@ -79,20 +95,6 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   useEffect(() => {
     landingApiCall();
   }, []);
-
-  const saveHandler = async (form: FormInstance<any>) => {
-    try {
-      const values = form.getFieldsValue(true);
-      setLoading(true);
-      await axios.post("/trainingType", values);
-      message.success("Training Type saved successfully");
-      landingApiCall();
-    } catch (error) {
-      message.error("Failed to save Training Type");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div>
@@ -131,7 +133,25 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
                 style={{ marginTop: "22px" }}
                 type="primary"
                 content="Save"
-                onClick={() => saveHandler(form)}
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      createTrainingTitle(
+                        form,
+                        profileData,
+                        setLoading,
+                        () => {
+                          landingApiCall();
+                        },
+                        setOpenTrainingTitleModal
+                      );
+                    })
+                    .catch(() => {
+                      console.log("error");
+                    });
+                }}
               />
             </Col>
           </Row>
@@ -140,17 +160,17 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={landingApi?.data?.data || []}
-            loading={landingApi?.loading}
+            data={landingApi || []}
+            loading={landingLoading}
             header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
             filterData={landingApi?.data?.filters}
-            onChange={(pagination, filters) => {
-              landingApiCall();
-            }}
+            // onChange={(pagination, filters) => {
+            //   landingApiCall();
+            // }}
           />
         </div>
         {/* </PCard> */}

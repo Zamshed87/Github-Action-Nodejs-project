@@ -79,8 +79,12 @@ const TnDPlanningCreateEdit = () => {
   const { type } = params;
   //   api calls
   const CommonEmployeeDDL = useApiRequest([]);
-  const [trainingTypeDDL, getTrainingTypeDDL, loadingTrainingType] =
-    useAxiosGet();
+  const [
+    trainingTypeDDL,
+    getTrainingTypeDDL,
+    loadingTrainingType,
+    setTrainingType,
+  ] = useAxiosGet();
 
   const [upcommi, setUpcommi] = useState(false);
 
@@ -208,9 +212,20 @@ const TnDPlanningCreateEdit = () => {
       },
     });
     getWorkplaceGroup();
-    getTrainingTypeDDL("/trainingType");
+    getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSet);
     getNameOfTrainerOrgDDL("/trainingType");
   }, [profileData?.buId, profileData?.wgId]);
+
+  const typeDataSet = (data: any) => {
+    let list: any[] = [];
+    data?.map((item: any) => {
+      list.push({
+        label: item?.strName,
+        value: item?.intId,
+      });
+    });
+    setTrainingType(list);
+  };
 
   const addHandler = (values: any) => {
     if (!values?.costValue) {
@@ -650,11 +665,14 @@ const TnDPlanningCreateEdit = () => {
         width="350"
         onCancel={() => {
           setOpenTraingTypeModal(false);
+          getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSet);
         }}
         maskClosable={false}
         components={
           <>
-            <TrainingType setOpenTraingTypeModal={setOpenTraingTypeModal} />
+            <TrainingType
+            // setOpenTraingTypeModal={setOpenTraingTypeModal}
+            />
           </>
         }
       />
@@ -671,7 +689,7 @@ const TnDPlanningCreateEdit = () => {
         components={
           <>
             <TrainingTitle
-              setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+            // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
             />
           </>
         }

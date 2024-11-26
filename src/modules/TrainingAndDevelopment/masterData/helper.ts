@@ -4,10 +4,12 @@ import { SetStateAction } from "react";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
+// Training Type
 export const createTrainingType = async (
   form: FormInstance<any>,
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any,
   setOpenTraingTypeModal: (arg0: boolean) => void
 ) => {
   setLoading(true);
@@ -21,24 +23,16 @@ export const createTrainingType = async (
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
-      dteUpdatedAt: "",
-      intUpdatedBy: "",
       isActive: true,
     };
-    const res = await axios.post(
-      `/TrainingAndDevelopment/SaveTrainingType`,
-      payload
-    );
+    const res = await axios.post(`/TrainingType/Training/Type`, payload);
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
     setOpenTraingTypeModal && setOpenTraingTypeModal(false);
     setLoading(false);
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      toast.warn(error.response.data.message, { toastId: 1222 });
-    } else {
-      toast.warn("An unexpected error occurred", { toastId: 1222 });
-    }
+    toast.warn("Created failed", { toastId: 1222 });
   } finally {
     setLoading(false);
   }
@@ -49,7 +43,8 @@ export const updateTrainingType = async (
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
   data: any,
-  onlyStatus: boolean
+  onlyStatus: boolean,
+  cb: any
 ) => {
   setLoading(true);
   try {
@@ -70,27 +65,291 @@ export const updateTrainingType = async (
         strName: values?.trainingType || data?.strName,
         strRemarks: values?.remarks || data?.strRemarks,
         intAccountId: orgId,
-        dteCreatedAt: "",
-        intCreatedBy: "",
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
         isActive: data?.isActive,
       };
     }
 
-    const res = await axios.post(
-      `/TrainingAndDevelopment/SaveTrainingType`,
+    const res = await axios.put(
+      `/TrainingType/Training/Type/${data?.intId}`,
       payload
     );
     form.resetFields();
-    toast.success("Updated Successfully", { toastId: 1222 });
+    toast.success("Updated Successfully", { toastId: 12522 });
+    cb && cb();
     setLoading(false);
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      toast.warn(error.response.data.message, { toastId: 1222 });
+    toast.warn("An unexpected error occurred", { toastId: 12522 });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const deleteTrainingType = async (
+  data: any,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const res = await axios.delete(
+      `/TrainingType/Training/Type/${data?.intId}`
+    );
+    toast.success("Deleted Successfully", { toastId: 1222 });
+    cb && cb();
+    setLoading(false);
+  } catch (error) {
+    toast.warn("An unexpected error occurred", { toastId: 1222 });
+  } finally {
+    setLoading(false);
+  }
+};
+
+// ....................................................................................
+// Training Title
+export const createTrainingTitle = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any,
+  setOpenTrainingTitleModal: (arg0: boolean) => void
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+
+    const payload = {
+      strName: values?.trainingType,
+      strRemarks: values?.remarks,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      isActive: true,
+    };
+    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error) {
+    toast.warn("Created failed", { toastId: 1222 });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const updateTrainingTitle = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  data: any,
+  onlyStatus: boolean,
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+    let payload = {};
+
+    if (onlyStatus) {
+      payload = {
+        ...data,
+        isActive: !data?.isActive,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+      };
     } else {
-      toast.warn("An unexpected error occurred", { toastId: 1222 });
+      payload = {
+        intId: data?.intId,
+        strName: values?.trainingType || data?.strName,
+        strRemarks: values?.remarks || data?.strRemarks,
+        intAccountId: orgId,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+        isActive: data?.isActive,
+      };
     }
+
+    const res = await axios.put(
+      `/TrainingType/Training/Type/${data?.intId}`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Updated Successfully", { toastId: 12522 });
+    cb && cb();
+    setLoading(false);
+  } catch (error) {
+    toast.warn("An unexpected error occurred", { toastId: 12522 });
+  } finally {
+    setLoading(false);
+  }
+};
+// .......................................................................................
+// Trainer Info
+export const createTrainerInfo = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any,
+  setOpenTrainingTitleModal: (arg0: boolean) => void
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+
+    const payload = {
+      strName: values?.trainingType,
+      strRemarks: values?.remarks,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      isActive: true,
+    };
+    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error) {
+    toast.warn("Created failed", { toastId: 1222 });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const updateTrainerInfo = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  data: any,
+  onlyStatus: boolean,
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+    let payload = {};
+
+    if (onlyStatus) {
+      payload = {
+        ...data,
+        isActive: !data?.isActive,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+      };
+    } else {
+      payload = {
+        intId: data?.intId,
+        strName: values?.trainingType || data?.strName,
+        strRemarks: values?.remarks || data?.strRemarks,
+        intAccountId: orgId,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+        isActive: data?.isActive,
+      };
+    }
+
+    const res = await axios.put(
+      `/TrainingType/Training/Type/${data?.intId}`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Updated Successfully", { toastId: 12522 });
+    cb && cb();
+    setLoading(false);
+  } catch (error) {
+    toast.warn("An unexpected error occurred", { toastId: 12522 });
+  } finally {
+    setLoading(false);
+  }
+};
+
+// ..................................................................................
+
+// Training Cost
+export const createTrainingCost = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any,
+  setOpenTrainingTitleModal: (arg0: boolean) => void
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+
+    const payload = {
+      strName: values?.trainingType,
+      strRemarks: values?.remarks,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      isActive: true,
+    };
+    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error) {
+    toast.warn("Created failed", { toastId: 1222 });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const updateTrainingCost = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  data: any,
+  onlyStatus: boolean,
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+    let payload = {};
+
+    if (onlyStatus) {
+      payload = {
+        ...data,
+        isActive: !data?.isActive,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+      };
+    } else {
+      payload = {
+        intId: data?.intId,
+        strName: values?.trainingType || data?.strName,
+        strRemarks: values?.remarks || data?.strRemarks,
+        intAccountId: orgId,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+        isActive: data?.isActive,
+      };
+    }
+
+    const res = await axios.put(
+      `/TrainingType/Training/Type/${data?.intId}`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Updated Successfully", { toastId: 12522 });
+    cb && cb();
+    setLoading(false);
+  } catch (error) {
+    toast.warn("An unexpected error occurred", { toastId: 12522 });
   } finally {
     setLoading(false);
   }

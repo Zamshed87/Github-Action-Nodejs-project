@@ -23,10 +23,15 @@ import {
   ContainerOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+
 import { data } from "./helper";
 const TnDPlanningLanding = () => {
   // router states
   const history = useHistory();
+  const dispatch = useDispatch();
+
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -154,7 +159,7 @@ const TnDPlanningLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                history.push("/trainingDevelopment/planning/view", {
+                history.push("/trainingAndDevelopment/planning/view", {
                   data: rec,
                 });
               }}
@@ -169,7 +174,7 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/planning/edit", {
+                history.push("/trainingAndDevelopment/planning/edit", {
                   data: rec,
                 });
               }}
@@ -184,7 +189,7 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/planning/status", {
+                history.push("/trainingAndDevelopment/planning/status", {
                   data: rec,
                 });
               }}
@@ -199,7 +204,7 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/planning/status", {
+                history.push("/trainingAndDevelopment/planning/status", {
                   data: rec,
                 });
               }}
@@ -214,7 +219,7 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingDevelopment/planning/status", {
+                history.push("/trainingAndDevelopment/planning/status", {
                   data: rec,
                 });
               }}
@@ -232,6 +237,8 @@ const TnDPlanningLanding = () => {
     getLandingApi("/trainingType");
   };
   useEffect(() => {
+    dispatch(setFirstLevelNameAction("Training & Development"));
+
     landingApiCall({});
   }, []);
 
@@ -250,7 +257,7 @@ const TnDPlanningLanding = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/trainingDevelopment/planning/create");
+                  history.push("/trainingAndDevelopment/planning/create");
                 },
               },
             ]}
