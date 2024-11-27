@@ -1012,6 +1012,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="payscale"
                       label="Payscale"
                       placeholder="Payscale"
+                      showSearch
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payscale: op,
