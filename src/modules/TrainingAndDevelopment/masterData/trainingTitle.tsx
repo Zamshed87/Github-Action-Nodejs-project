@@ -46,14 +46,14 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     },
     {
       title: "Training Title",
-      dataIndex: "trainingTitle",
+      dataIndex: "strName",
       filter: true,
       filterKey: "trainingTitleList",
       filterSearch: true,
     },
     {
       title: "Training Description",
-      dataIndex: "trainingDescription",
+      dataIndex: "strDescription",
       filter: true,
       filterKey: "trainingDescriptionList",
       filterSearch: true,
