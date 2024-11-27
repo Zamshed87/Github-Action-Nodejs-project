@@ -1446,16 +1446,25 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             <PRadio
               name="bankOrMfs"
               type="group"
-              options={[
-                {
-                  value: 0,
-                  label: "Bank Details",
-                },
-                {
-                  value: 1,
-                  label: "Digital/MFS",
-                },
-              ]}
+              options={
+                orgId === 12
+                  ? [
+                      {
+                        value: 0,
+                        label: "Bank Details",
+                      },
+                    ]
+                  : [
+                      {
+                        value: 0,
+                        label: "Bank Details",
+                      },
+                      {
+                        value: 1,
+                        label: "Digital/MFS",
+                      },
+                    ]
+              }
               onChange={(e: any) => {
                 const value = e.target.value;
                 form.setFieldsValue({
