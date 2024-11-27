@@ -29,6 +29,7 @@
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
+    "html2pdf.js": "^0.10.2",
     "lodash": "^4.17.21",
     "material-ui-dropzone": "^3.5.0",
     "materialui-daterange-picker": "^1.1.92",
