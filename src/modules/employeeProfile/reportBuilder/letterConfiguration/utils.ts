@@ -36,6 +36,9 @@ export const customFields = [
   { id: 28, value: "[Current Date]", label: "Current Date" },
   { id: 29, value: "[Father Name]", label: "Father Name" },
   { id: 30, value: "[Mother Name]", label: "Mother Name" },
+  { id: 31, value: "[Spouse Name]", label: "Spouse Name" },
+  { id: 32, value: "[Confirmation Date]", label: "Confirmation Date" },
+  { id: 33, value: "[Last Working Date]", label: "Last Working Date" },
 ];
 
 export const modules = {
