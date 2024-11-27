@@ -79,6 +79,17 @@ export default function SalaryDrawer(props) {
           setValues((prev) => {
             return {
               ...prev,
+              gateway:
+                empBasic?.intBankOrWalletType === 2
+                  ? {
+                      value: empBasic?.intBankWalletId,
+                      label: empBasic?.strBankWalletName,
+                    }
+                  : "",
+              mobile:
+                empBasic?.intBankOrWalletType === 2
+                  ? empBasic?.strAccountNo
+                  : "",
               bankName: {
                 value:
                   empBasic?.intBankOrWalletType === 1
