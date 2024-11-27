@@ -1,23 +1,20 @@
-import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Col, Form, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
   Flex,
   PButton,
-  PCard,
   PCardBody,
   PCardHeader,
   PForm,
   PInput,
 } from "Components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
-import axios from "axios";
-import { message } from "antd";
 import { createTrainingTitle, updateTrainingTitle } from "./helper";
-import { shallowEqual, useSelector } from "react-redux";
-import { EditOutlined } from "@ant-design/icons";
 
 const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // hooks

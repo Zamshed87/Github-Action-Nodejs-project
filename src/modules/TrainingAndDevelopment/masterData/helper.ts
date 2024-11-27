@@ -194,8 +194,8 @@ export const createTrainerInfo = async (
   form: FormInstance<any>,
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  cb: any,
-  setOpenTrainingTitleModal: (arg0: boolean) => void
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
 ) => {
   setLoading(true);
   try {
@@ -214,7 +214,7 @@ export const createTrainerInfo = async (
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
-    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
   } catch (error) {
     toast.warn("Created failed", { toastId: 1222 });
@@ -278,8 +278,8 @@ export const createTrainingCost = async (
   form: FormInstance<any>,
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  cb: any,
-  setOpenTrainingTitleModal: (arg0: boolean) => void
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
 ) => {
   setLoading(true);
   try {
@@ -298,7 +298,7 @@ export const createTrainingCost = async (
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
-    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
   } catch (error) {
     toast.warn("Created failed", { toastId: 1222 });

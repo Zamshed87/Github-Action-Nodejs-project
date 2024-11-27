@@ -1,30 +1,20 @@
-import { Checkbox, Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
   Flex,
   PButton,
-  PCard,
   PCardBody,
   PCardHeader,
   PForm,
   PInput,
 } from "Components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
-import axios from "axios";
-import { message } from "antd";
-import { title } from "process";
-import { dateFormatter } from "utility/dateFormatter";
-import { shallowEqual, useSelector } from "react-redux";
-import {
-  createTrainerInfo,
-  createTrainingType,
-  dataDemo,
-  updateTrainerInfo,
-  updateTrainingType,
-} from "./helper";
+import { createTrainerInfo, updateTrainerInfo } from "./helper";
 
 const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -94,7 +84,10 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
+          <Tooltip
+            placement="bottom"
+            title={rec?.isActive ? "Inactive" : "Active"}
+          >
             <Switch
               size="small"
               checked={rec?.isActive}
@@ -115,7 +108,52 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Edit">
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                form.setFieldsValue({
+                  trainingType: rec?.strName,
+                  remarks: rec?.strRemarks,
+                  singleData: rec,
+                  editAction: true,
+                });
+              }}
+            />
+          </Tooltip>
+
+          {/* <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                deleteTrainingType(rec, setLoading, () => {
+                  landingApiCall();
+                  form.resetFields();
+                });
+              }}
+            />
+          </Tooltip> */}
+        </Flex>
+      ),
+      align: "center",
+      width: 30,
     },
   ];
   const landingApiCall = () => {
@@ -124,6 +162,9 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
   useEffect(() => {
     landingApiCall();
   }, []);
+
+  // Watch for editAction changes
+  const editAction = Form.useWatch("editAction", form);
 
   return (
     <div>
@@ -183,25 +224,44 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
             </Col>
 
             <Col md={6} sm={24}>
+              <Form.Item name="editAction" hidden>
+                <input type="hidden" />
+              </Form.Item>
               <PButton
-                style={{ marginTop: "22px" }}
+                style={{
+                  marginTop: "22px",
+                  backgroundColor: editAction ? "red" : "",
+                }}
                 type="primary"
-                content="Save"
+                content={editAction ? "Edit" : "Save"}
                 onClick={() => {
                   const values = form.getFieldsValue(true);
                   form
                     .validateFields()
                     .then(() => {
-                      console.log(values);
-                      createTrainerInfo(
-                        form,
-                        profileData,
-                        setLoading,
-                        () => {
-                          landingApiCall();
-                        },
-                        setOpenTraingTypeModal
-                      );
+                      editAction
+                        ? updateTrainerInfo(
+                            form,
+                            profileData,
+                            setLoading,
+                            values?.singleData,
+                            false,
+                            () => {
+                              landingApiCall();
+                              form.resetFields();
+                            }
+                          )
+                        : createTrainerInfo(
+                            form,
+                            profileData,
+                            setLoading,
+                            () => {
+                              landingApiCall();
+                              // Reset form after successful submission
+                              form.resetFields();
+                            }
+                            // setOpenTraingTypeModal
+                          );
                     })
                     .catch(() => {
                       console.log("error");

@@ -17,6 +17,7 @@ import axios from "axios";
 import { message } from "antd";
 import { createTrainingCost, updateTrainingCost } from "./helper";
 import { shallowEqual, useSelector } from "react-redux";
+import { EditOutlined } from "@ant-design/icons";
 
 const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -65,7 +66,10 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
+          <Tooltip
+            placement="bottom"
+            title={rec?.isActive ? "Inactive" : "Active"}
+          >
             <Switch
               size="small"
               checked={rec?.isActive}
@@ -88,6 +92,51 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       align: "center",
       width: 40,
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Edit">
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                form.setFieldsValue({
+                  trainingType: rec?.strName,
+                  remarks: rec?.strRemarks,
+                  singleData: rec,
+                  editAction: true,
+                });
+              }}
+            />
+          </Tooltip>
+
+          {/* <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                deleteTrainingType(rec, setLoading, () => {
+                  landingApiCall();
+                  form.resetFields();
+                });
+              }}
+            />
+          </Tooltip> */}
+        </Flex>
+      ),
+      align: "center",
+      width: 30,
+    },
   ];
   const landingApiCall = () => {
     getLandingApi("/trainingType");
@@ -95,6 +144,9 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   useEffect(() => {
     landingApiCall();
   }, []);
+
+  // Watch for editAction changes
+  const editAction = Form.useWatch("editAction", form);
 
   return (
     <div>
@@ -131,24 +183,44 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
               />
             </Col>
             <Col md={6} sm={24}>
+              <Form.Item name="editAction" hidden>
+                <input type="hidden" />
+              </Form.Item>
               <PButton
-                style={{ marginTop: "22px" }}
+                style={{
+                  marginTop: "22px",
+                  backgroundColor: editAction ? "red" : "",
+                }}
                 type="primary"
-                content="Save"
+                content={editAction ? "Edit" : "Save"}
                 onClick={() => {
                   const values = form.getFieldsValue(true);
                   form
                     .validateFields()
                     .then(() => {
-                      createTrainingCost(
-                        form,
-                        profileData,
-                        setLoading,
-                        () => {
-                          landingApiCall();
-                        },
-                        setOpenCostTypeModal
-                      );
+                      editAction
+                        ? updateTrainingCost(
+                            form,
+                            profileData,
+                            setLoading,
+                            values?.singleData,
+                            false,
+                            () => {
+                              landingApiCall();
+                              form.resetFields();
+                            }
+                          )
+                        : createTrainingCost(
+                            form,
+                            profileData,
+                            setLoading,
+                            () => {
+                              landingApiCall();
+                              // Reset form after successful submission
+                              form.resetFields();
+                            }
+                            // setOpenTraingTypeModal
+                          );
                     })
                     .catch(() => {
                       console.log("error");
