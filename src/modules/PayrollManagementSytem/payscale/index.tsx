@@ -86,6 +86,8 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
       title: "PayScale Name",
       dataIndex: "payScaleName",
       filter: true,
+      sorter: true,
+
       filterSearch: true,
 
       width: 50,

@@ -161,7 +161,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onSuccess: (res) => {
         form.setFieldsValue({
           isHoldSalary: res[0]?.IsHold ? true : false,
-          transferType: res[0]?.intOthersAdditionalAmountTransferInto || 3,
+          transferType:
+            res[0]?.intOthersAdditionalAmountTransferInto || orgId === 12
+              ? 1
+              : 3,
         });
         const temp = [...accountsDto];
         temp[0].numAmount = res[0]?.BankPayInAmount || 0;
@@ -955,7 +958,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     <PForm
       form={form}
       initialValues={{
-        transferType: "Cash",
+        transferType: orgId === 12 ? { value: 1, label: "Bank" } : "Cash",
         bankOrMfs: 0,
       }}
       onFinish={submitHandler}
@@ -1009,6 +1012,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="payscale"
                       label="Payscale"
                       placeholder="Payscale"
+                      showSearch
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payscale: op,
@@ -1442,16 +1446,25 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             <PRadio
               name="bankOrMfs"
               type="group"
-              options={[
-                {
-                  value: 0,
-                  label: "Bank Details",
-                },
-                {
-                  value: 1,
-                  label: "Digital/MFS",
-                },
-              ]}
+              options={
+                orgId === 12
+                  ? [
+                      {
+                        value: 0,
+                        label: "Bank Details",
+                      },
+                    ]
+                  : [
+                      {
+                        value: 0,
+                        label: "Bank Details",
+                      },
+                      {
+                        value: 1,
+                        label: "Digital/MFS",
+                      },
+                    ]
+              }
               onChange={(e: any) => {
                 const value = e.target.value;
                 form.setFieldsValue({
