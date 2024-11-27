@@ -165,6 +165,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
 
   // Watch for editAction changes
   const editAction = Form.useWatch("editAction", form);
+  const nameofTrainer = Form.useWatch("nameofTrainer", form);
 
   return (
     <div>
@@ -206,6 +207,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                 placeholder="Name of Organization"
                 label="Name of Organization"
                 name="nameofOrganization"
+                disabled={!nameofTrainer}
                 rules={[
                   {
                     required: true,
