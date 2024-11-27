@@ -104,8 +104,8 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
               }}
               onClick={() => {
                 form.setFieldsValue({
-                  trainingType: rec?.strName,
-                  remarks: rec?.strRemarks,
+                  trainingTitle: rec?.strName,
+                  trainingDescription: rec?.strDescription,
                   singleData: rec,
                   editAction: true,
                 });

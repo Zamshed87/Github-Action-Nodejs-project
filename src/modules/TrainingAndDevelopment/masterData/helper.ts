@@ -121,14 +121,12 @@ export const createTrainingTitle = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
+      strName: values?.trainingTitle,
+      strDescription: values?.trainingDescription,
       intCreatedBy: employeeId,
       isActive: true,
     };
-    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    const res = await axios.post(`/TrainingTitle/Training/Title`, payload);
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
@@ -165,8 +163,8 @@ export const updateTrainingTitle = async (
     } else {
       payload = {
         intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
+        strName: values?.trainingTitle || data?.strName,
+        strDescription: values?.remarks || data?.strDescription,
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -175,7 +173,7 @@ export const updateTrainingTitle = async (
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingTitle/Training/Title/${data?.intId}`,
       payload
     );
     form.resetFields();
