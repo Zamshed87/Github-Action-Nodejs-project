@@ -132,7 +132,7 @@ const Homepage = () => {
       to = "/taskManagement";
       image = task;
     } else if (label === "Performance Management System") {
-      to = "/performancemanagementsystem";
+      to = "/pms/configuration/EvaluationCriteria";
       image = performance;
     } else if (label === "Recruitment") {
       to = "https://devhire.peopledesk.io/";
@@ -140,8 +140,8 @@ const Homepage = () => {
     } else if (label === "Manning") {
       to = "/manning";
       image = requirment;
-    } else if (label === "Training and Development") {
-      to = "/trainingNdevelopment/trainingTime";
+    } else if (label === "Training & Development") {
+      to = "/trainingAndDevelopment/planning";
       image = training;
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
