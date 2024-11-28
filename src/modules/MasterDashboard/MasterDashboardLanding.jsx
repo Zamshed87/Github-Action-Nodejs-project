@@ -65,6 +65,7 @@ const MasterDashboardLanding = () => {
               Hello,{" "}
               <span
                 className="pointer"
+                style={{ color: "green", textDecoration: "underline" }}
                 onClick={() => {
                   history.push("/SelfService/aboutMe");
                 }}
