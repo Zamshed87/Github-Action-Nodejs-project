@@ -178,6 +178,10 @@ export const IncrementProposal = () => {
           setSelectedRow(selected);
         }
       },
+      onError: (res: any) => {
+        setLanding([]);
+        toast.warn(res?.response?.data?.title);
+      },
     });
   };
 

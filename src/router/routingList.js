@@ -78,6 +78,7 @@ import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
 import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
+import IncrementProposalApproval from "modules/CompensationBenefits/incrementProposal/Incr_Proposal_Approval";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3063,6 +3064,10 @@ export const routingList = [
   {
     path: "/approval/assetTransferApproval",
     component: AssetTransferApproval,
+  },
+  {
+    path: "/approval/incrementproposalapproval",
+    component: IncrementProposalApproval,
   },
   // Asset Management end
 

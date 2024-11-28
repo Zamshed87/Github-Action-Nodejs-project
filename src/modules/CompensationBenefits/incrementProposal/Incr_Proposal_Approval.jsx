@@ -112,7 +112,7 @@ export default function IncrementProposalApproval() {
         (value * 100) / _sl?.incrementProposal?.numRecentGrossSalary;
     }
 
-    setLandingApproval(landingApproval);
+    setLandingApproval(data);
   };
   const saveHandler = (values) => {};
   // for multiple approval
@@ -165,6 +165,14 @@ export default function IncrementProposalApproval() {
       yesAlertFunc: () => {
         if (array.length) {
           //   movementApproveReject(newArray, getLandingData, setLoading);
+          approveIncrement(
+            `/ApprovalPipeline/IncrementProposalApplicationApproval`,
+            newArray,
+            () => {
+              getLandingData();
+            },
+            true
+          );
         }
         newArray = [];
       },
@@ -218,7 +226,7 @@ export default function IncrementProposalApproval() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 104) {
+    if (item?.menuReferenceId === 30499) {
       permission = item;
     }
   });
@@ -351,13 +359,13 @@ export default function IncrementProposalApproval() {
             {record?.designation}, {record?.employmentType}
           </div>
         ),
-        sorter: true,
+        // sorter: true,
         filter: true,
       },
       {
         title: "Department",
         dataIndex: "department",
-        sorter: true,
+        // sorter: true,
         filter: true,
       },
 
@@ -379,7 +387,7 @@ export default function IncrementProposalApproval() {
         render: (_, data) => (
           <div>
             {data?.incrementProposal?.numLastIncrementAmount &&
-              dateFormatter(data?.incrementProposal?.numLastIncrementAmount)}
+              data?.incrementProposal?.numLastIncrementAmount}
           </div>
         ),
         filter: false,
@@ -391,7 +399,7 @@ export default function IncrementProposalApproval() {
         render: (_, data) => (
           <div>
             {data?.incrementProposal?.numRecentGrossSalary &&
-              dateFormatter(data?.incrementProposal?.numRecentGrossSalary)}
+              data?.incrementProposal?.numRecentGrossSalary}
           </div>
         ),
         filter: false,
@@ -403,9 +411,7 @@ export default function IncrementProposalApproval() {
         render: (_, data) => (
           <div>
             {data?.incrementProposal?.numIncrementProposalPercentage &&
-              dateFormatter(
-                data?.incrementProposal?.numIncrementProposalPercentage
-              )}
+              data?.incrementProposal?.numIncrementProposalPercentage}
           </div>
         ),
         filter: false,
@@ -417,9 +423,7 @@ export default function IncrementProposalApproval() {
         render: (_, data) => (
           <div>
             {data?.incrementProposal?.numIncrementProposalAmount &&
-              dateFormatter(
-                data?.incrementProposal?.numIncrementProposalAmount
-              )}
+              data?.incrementProposal?.numIncrementProposalAmount}
           </div>
         ),
         filter: false,
@@ -442,18 +446,20 @@ export default function IncrementProposalApproval() {
         title: "Adjust Increment Percentage",
         render: (_, data, index) => (
           <div className="d-flex align-items-center">
+            {console.log({ data })}
             <div>
               <FormikInput
                 classes="input-sm"
-                value={data?.newPercent || 0}
+                value={data?.newPercent}
                 name="newPercent"
-                type="text"
+                type="number"
+                min="0"
                 className="form-control"
                 // placeholder="newPercent"
                 onChange={(e) => {
                   inputHandler(
                     "newPercent",
-                    e.target.value || 0,
+                    +e.target.value || 0,
                     index,
                     landingApproval,
                     setLandingApproval
@@ -474,15 +480,16 @@ export default function IncrementProposalApproval() {
             <div>
               <FormikInput
                 classes="input-sm"
-                value={data?.newAmount || 0}
-                name="newPercent"
-                type="text"
+                value={data?.newAmount}
+                name="newAmount"
+                type="number"
+                min="0"
                 className="form-control"
                 // placeholder="newPercent"
                 onChange={(e) => {
                   inputHandler(
                     "newAmount",
-                    e.target.value || 0,
+                    +e.target.value || 0,
                     index,
                     landingApproval,
                     setLandingApproval
@@ -502,12 +509,12 @@ export default function IncrementProposalApproval() {
         filter: false,
         sorter: false,
       },
-      {
-        title: "Waiting Stage",
-        dataIndex: "waitingStage",
-        filter: false,
-        sorter: false,
-      },
+      // {
+      //   title: "Waiting Stage",
+      //   dataIndex: "waitingStage",
+      //   filter: false,
+      //   sorter: false,
+      // },
 
       {
         title: "Status",

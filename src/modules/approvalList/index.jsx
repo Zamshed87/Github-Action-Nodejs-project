@@ -113,6 +113,12 @@ export default function ApprovalList() {
           icon: BonusIcon,
         });
       }
+      if (item?.pipelineCode === "BABBAPBANDNQNCCD") {
+        arr.push({
+          ...item,
+          icon: BonusIcon,
+        });
+      }
       if (item?.pipelineCode === "BABBAPBANDNQNBQN") {
         arr.push({
           ...item,
