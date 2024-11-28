@@ -1,31 +1,28 @@
 import {
   DataTable,
-  PButton,
   PCard,
   PCardHeader,
   PForm,
   PInput,
+  PRadio,
   PSelect,
 } from "Components";
-import profileImg from "../../../../assets/images/profile.jpg";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
-import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { gray700, gray900 } from "utility/customColor";
-import { APIUrl } from "App";
-import { MovingOutlined } from "@mui/icons-material";
 import { toast } from "react-toastify";
-import IncrementHistoryComponent from "../salaryAssign/DrawerBody/incrementHistoryView";
-import IConfirmModal from "common/IConfirmModal";
-import { salaryHoldAction } from "../salaryAssign/helper";
 import { useHistory, useLocation } from "react-router-dom";
 import { todayDate } from "utility/todayDate";
 import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
+import { Alert } from "@mui/material";
+import { EmployeeInfo } from "./EmployeeInfo";
+import { BankInfo } from "./BankInfo";
+import { DigitalMFS } from "./DigitalMFS";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -71,17 +68,13 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       key: "Others/Additional Amount Transfer Into",
     },
   ]);
-  const [openIncrement, setOpenIncrement] = useState(false);
-  const handleIncrementClose = () => {
-    setOpenIncrement(false);
-  };
+
   // Form Instance
   const [form] = Form.useForm();
 
   // Api Actions
   const salaryAssign = useApiRequest([]);
   const bankDDL = useApiRequest([]);
-  const branchDDL = useApiRequest([]);
   const payscaleApi = useApiRequest([]);
   const breakDownPolicyApi = useApiRequest([]);
   const employeeInfo = useApiRequest([]);
@@ -139,7 +132,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           setRowDto(modifyforGrade);
         } else {
           setRowDto(modify);
-          default_gross_calculation();
+          // new_gross_calculation();
         }
       },
     });
@@ -168,7 +161,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onSuccess: (res) => {
         form.setFieldsValue({
           isHoldSalary: res[0]?.IsHold ? true : false,
-          transferType: res[0]?.intOthersAdditionalAmountTransferInto || 3,
+          transferType:
+            res[0]?.intOthersAdditionalAmountTransferInto || orgId === 12
+              ? 1
+              : 3,
         });
         const temp = [...accountsDto];
         temp[0].numAmount = res[0]?.BankPayInAmount || 0;
@@ -242,8 +238,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
       accountsDto[0].numAmount;
-    console.log(values?.transferType);
-    if (accountSum !== values?.grossAmount) {
+    if (Math.round(accountSum) !== Math.round(values?.grossAmount)) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
@@ -268,16 +263,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
-    if (elementSum !== values?.grossAmount) {
+    if (Math.round(elementSum) !== Math.round(values?.grossAmount)) {
       return toast.warn(
         "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
       );
     }
     const payload = {
-      partId: 0,
+      partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
       intEmployeeBankDetailsId:
-        +employeeInfo?.data[0]?.empEmployeeBankDetail
-          ?.intEmployeeBankDetailsId || 0,
+        +empBankInfo?.data?.empEmployeeBankDetail?.intEmployeeBankDetailsId ||
+        0,
       intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
       isPrimarySalaryAccount: true,
       isActive: true,
@@ -299,7 +294,39 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       strAccountNo: `${values?.accountNo}` || "",
       strSwiftCode: values?.swift || "",
     };
-    if (values?.transferType?.value === 1 || values?.transferType === 1) {
+    const payloadMFS = {
+      partId: employeeInfo?.data[0]?.EmployeeId ? 2 : 1,
+      intEmployeeBankDetailsId:
+        +empBankInfo?.data?.empEmployeeBankDetail?.intEmployeeBankDetailsId ||
+        0,
+      intEmployeeBasicInfoId: +employeeInfo?.data[0]?.EmployeeId || 0,
+      isPrimarySalaryAccount: true,
+      isActive: true,
+      intWorkplaceId: wId || 0,
+      intBusinessUnitId: buId,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+      intBankOrWalletType: 2,
+      intBankWalletId: values?.gateway?.value || 0,
+      strBankWalletName: values?.gateway?.label || "",
+      strDistrict: "",
+      intBankBranchId: 0,
+      strBranchName: "",
+      strRoutingNo: "",
+      strAccountName: "",
+      strAccountNo: `${values?.mobile}` || "",
+      strSwiftCode: "",
+    };
+    values?.gateway?.value &&
+      bankDetailsAction(payloadMFS, setLoading, () => {});
+    if (
+      values?.transferType?.value === 1 ||
+      values?.transferType === 1 ||
+      accountsDto[0].numAmount > 0
+    ) {
       bankDetailsAction(payload, setLoading, () => {});
     }
 
@@ -312,7 +339,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
       };
     });
-
     const salaryAssignPayload = {
       intEmployeeIdList: [
         {
@@ -340,7 +366,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
       intSlabCount:
         values?.salaryType?.value === "Grade"
-          ? values?.slabCount?.value || values?.slabCount
+          ? values?.slabCount?.value || values?.slabCount?.value === 0
+            ? values?.slabCount?.value
+            : values?.slabCount
           : 0,
     };
     salaryAssign.action({
@@ -357,7 +385,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // accounts calculations
   const updateDtoHandler = (e: number, row: any, index: number): any => {
     const { grossAmount } = form.getFieldsValue(true);
-    let temp = [...accountsDto];
+    const temp = [...accountsDto];
 
     // Check for invalid input values
     if (e < 0) {
@@ -379,6 +407,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     const [index1, index2] = [0, 1, 2].filter((i) => i !== index); // get the other two indexes
 
     // Distribute remaining amount between the other two indexes
+    // console.log({ index1 }, temp[index1].numAmount, remainingAmount);
+    // console.log({ index2 }, temp[index2].numAmount, remainingAmount);
     if (temp[index1].numAmount > remainingAmount) {
       temp[index1].numAmount = remainingAmount;
       temp[index2].numAmount = 0;
@@ -386,7 +416,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       temp[index2].numAmount = remainingAmount;
       temp[index1].numAmount = 0;
     } else {
-      temp[index2].numAmount = remainingAmount - temp[index1].numAmount;
+      orgId === 12
+        ? (temp[index1].numAmount = remainingAmount - temp[index2].numAmount)
+        : (temp[index2].numAmount = remainingAmount - temp[index1].numAmount);
     }
 
     // Update accounts percentage for all indexes
@@ -426,7 +458,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   const updateRowDtoHandler = (e: number, row: any, index: number): any => {
     const { grossAmount, salaryType, basedOn, slabCount } =
       form.getFieldsValue(true);
-    let temp = [...rowDto];
+    const temp = [...rowDto];
 
     // Check for invalid input values
     if (e < 0) {
@@ -442,7 +474,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       );
     }
     // Update the selected index with the new amount
-    temp[index].numAmount = e + e * (slabCount || 0);
+    // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
+    if (temp[index]?.basedOn === "Amount") {
+      temp[index].numAmount = e;
+    } else {
+      temp[index].numAmount = e + e * (slabCount || 0);
+    }
     if (temp[index].isBasicSalary) {
       temp[index].baseAmount = e;
     }
@@ -455,102 +492,71 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       basic_or_grade_calculation();
     }
     if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
-      methodAb();
+      new_gross_calculation();
     }
   };
-  const methodAb = () => {
-    const { grossAmount } = form.getFieldsValue(true); // Get the gross amount input
-    const basicElement = rowDto.find((item) => item.isBasicSalary); // Find the basic salary element
-    const basicAmount = basicElement ? basicElement.numAmount : 0;
 
-    // Calculate initial amounts based on dependencies
-    const calculatedRowDto = rowDto.map((item) => {
-      if (item.strBasedOn === "Percentage") {
-        // Calculate based on Basic or Gross dependency
-        if (item.strDependOn === "Basic" && basicAmount > 0) {
-          item.numAmount = Math.ceil(
-            (item.numNumberOfPercent * basicAmount) / 100
-          );
-        } else if (item.strDependOn === "Gross" && grossAmount > 0) {
-          item.numAmount = Math.ceil(
-            (item.numNumberOfPercent * grossAmount) / 100
-          );
-        }
-      }
-      // Retain fixed amounts where strBasedOn is "Amount"
-      return item;
-    });
+  // const default_gross_calculation = (salaryDependsOn = "") => {
+  //   const modifyData: any = [];
+  //   const { grossAmount } = form.getFieldsValue(true);
 
-    // Calculate the total amount
-    let totalCalculatedAmount = calculatedRowDto.reduce(
-      (sum, item) => sum + item.numAmount,
-      0
-    );
+  //   rowDto?.forEach((itm: any) => {
+  //     const obj = {
+  //       ...itm,
+  //       [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+  //         itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+  //           ? Math.ceil(grossAmount)
+  //           : itm?.strBasedOn === "Amount"
+  //           ? Math.ceil(itm?.numAmount)
+  //           : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
+  //       numAmount:
+  //         itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+  //           ? Math.ceil(grossAmount)
+  //           : itm?.strBasedOn === "Amount"
+  //           ? Math.ceil(itm?.numAmount)
+  //           : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
+  //       showPercentage: itm?.numNumberOfPercent,
+  //       levelVariable: itm?.strPayrollElementName
+  //         .toLowerCase()
+  //         .split(" ")
+  //         .join(""),
+  //     };
 
-    // Determine if adjustment is needed
-    const difference = grossAmount - totalCalculatedAmount;
-
-    if (difference !== 0) {
-      // Find the element with the lowest percentage or designated element for adjustment
-      const adjustableElement = calculatedRowDto.reduce((minItem, item) =>
-        item.numNumberOfPercent < minItem.numNumberOfPercent ? item : minItem
-      );
-
-      // Adjust to balance the difference with the Gross amount
-      adjustableElement.numAmount += difference;
-    }
-
-    // Update the state with recalculated values
-    setRowDto(calculatedRowDto);
-  };
-
-  const default_gross_calculation = (salaryDependsOn = "") => {
-    const modifyData: any = [];
+  //     modifyData.push(obj);
+  //   });
+  //   const indexOfLowestAmount = modifyData.reduce(
+  //     (minIndex: any, currentObject: any, currentIndex: any, array: any) => {
+  //       return currentObject.numNumberOfPercent <
+  //         array[minIndex].numNumberOfPercent
+  //         ? currentIndex
+  //         : minIndex;
+  //     },
+  //     0
+  //   );
+  //   adjustOverFollowAmount(
+  //     modifyData,
+  //     grossAmount,
+  //     indexOfLowestAmount,
+  //     setRowDto,
+  //     `${modifyData[indexOfLowestAmount]?.strPayrollElementName
+  //       .toLowerCase()
+  //       .split(" ")
+  //       .join("")}`
+  //   );
+  // };
+  const new_gross_calculation = () => {
     const { grossAmount } = form.getFieldsValue(true);
 
-    rowDto?.forEach((itm: any) => {
-      const obj = {
-        ...itm,
-        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-            ? Math.ceil(grossAmount)
-            : itm?.strBasedOn === "Amount"
-            ? Math.ceil(itm?.numAmount)
-            : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
-        numAmount:
-          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-            ? Math.ceil(grossAmount)
-            : itm?.strBasedOn === "Amount"
-            ? Math.ceil(itm?.numAmount)
-            : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
-        showPercentage: itm?.numNumberOfPercent,
-        levelVariable: itm?.strPayrollElementName
-          .toLowerCase()
-          .split(" ")
-          .join(""),
-      };
-
-      modifyData.push(obj);
+    const modify = rowDto.map((item) => {
+      if (item.strBasedOn === "Percentage") {
+        return {
+          ...item,
+          numAmount: Math.round((grossAmount * item.numNumberOfPercent) / 100),
+        };
+      }
+      return item; // Leave as-is if based on "Amount"
     });
-    const indexOfLowestAmount = modifyData.reduce(
-      (minIndex: any, currentObject: any, currentIndex: any, array: any) => {
-        return currentObject.numNumberOfPercent <
-          array[minIndex].numNumberOfPercent
-          ? currentIndex
-          : minIndex;
-      },
-      0
-    );
-    adjustOverFollowAmount(
-      modifyData,
-      grossAmount,
-      indexOfLowestAmount,
-      setRowDto,
-      `${modifyData[indexOfLowestAmount]?.strPayrollElementName
-        .toLowerCase()
-        .split(" ")
-        .join("")}`
-    );
+    setRowDto(modify);
   };
   const basic_or_grade_calculation = () => {
     let basicAmount = 0;
@@ -578,8 +584,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
-        item.numAmount = (item.numNumberOfPercent * basicAmount) / 100; // Calculate based on percentage of basic salary
+        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100); // Calculate based on percentage of basic salary
+        item.numAmount = Math.round(
+          (item.numNumberOfPercent * basicAmount) / 100
+        ); // Calculate based on percentage of basic salary
       } else {
         amount = item.numAmount; // Use the fixed amount if based on fixed amount
       }
@@ -597,50 +605,91 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     form.setFieldsValue({
       grossAmount: total_gross_amount,
     });
-    const accounts = `Cash Pay (${100}%)`;
-    const temp = [...accountsDto];
-    temp[2].accounts = accounts;
-    temp[2].numAmount = total_gross_amount;
-    temp[0].numAmount = 0;
-    temp[1].numAmount = 0;
+
+    // const accounts = `Cash Pay (${100}%)`;
+    // const temp = [...accountsDto];
+    // temp[2].accounts = accounts;
+    // temp[2].numAmount = total_gross_amount;
+    // temp[0].numAmount = 0;
+    // temp[1].numAmount = 0;
+    // setAccountsDto([...temp]);
+    if (orgId === 12) {
+      accountDetailsSetup("bank", total_gross_amount);
+    } else {
+      accountDetailsSetup("cash", total_gross_amount);
+    }
+
     setRowDto(modified_data);
   };
 
-  const adjustOverFollowAmount = (
-    array = [],
-    grossSalaryAmount: any,
-    indexOfLowestAmount: any,
-    setterFunc: any,
-    payrollElementName: any
-  ): any => {
-    // console.log({ payrollElementName });
-    const totalAmount = array.reduce(
-      (acc, obj) => acc + (obj as any).numAmount,
-      0
-    );
-    const overFollowAmount = totalAmount - grossSalaryAmount;
-    // console.log({
-    //   totalAmount,
-    //   elementList: array,
-    //   grossSalaryAmount,
-    //   overFollowAmount,
-    // });
-    if (overFollowAmount > 0) {
-      // console.log({ isOverFollow: overFollowAmount });
-      (array[indexOfLowestAmount] as any).numAmount =
-        (array[indexOfLowestAmount] as any)?.numAmount - overFollowAmount;
-      (array[indexOfLowestAmount] as any)[payrollElementName] -=
-        overFollowAmount;
-    } else {
-      // console.log({ isNotOverFollow: overFollowAmount });
+  const accountDetailsSetup = (account: any, gross: any) => {
+    const temp = [...accountsDto];
+    let accounts = `Cash Pay (${100}%)`;
+    temp[2].accounts = accounts;
+    temp[2].numAmount = gross;
+    temp[0].numAmount = 0;
+    temp[1].numAmount = 0;
+    temp[1].accounts = "Digital/MFS Pay (0%)";
+    temp[0].accounts = "Bank Pay (0%)";
 
-      (array[indexOfLowestAmount] as any).numAmount =
-        (array[indexOfLowestAmount] as any)?.numAmount + overFollowAmount * -1;
-      (array[indexOfLowestAmount] as any)[payrollElementName] +=
-        overFollowAmount * -1;
+    if (account === "bank") {
+      accounts = `Bank Pay (${100}%)`;
+      temp[0].accounts = accounts;
+      temp[0].numAmount = gross;
+      temp[2].numAmount = 0;
+      temp[2].accounts = "Cash Pay (0%)";
+      temp[1].accounts = "Digital/MFS Pay (0%)";
+
+      temp[1].numAmount = 0;
     }
-    setterFunc(array);
+    if (account === "mfs") {
+      accounts = `Digital/MFS Pay (${100}%)`;
+      temp[1].accounts = accounts;
+      temp[1].numAmount = gross;
+      temp[2].numAmount = 0;
+      temp[0].numAmount = 0;
+      temp[2].accounts = "Cash Pay (0%)";
+      temp[0].accounts = "Bank Pay (0%)";
+    }
+
+    setAccountsDto([...temp]);
   };
+
+  // const adjustOverFollowAmount = (
+  //   array = [],
+  //   grossSalaryAmount: any,
+  //   indexOfLowestAmount: any,
+  //   setterFunc: any,
+  //   payrollElementName: any
+  // ): any => {
+  //   // console.log({ payrollElementName });
+  //   const totalAmount = array.reduce(
+  //     (acc, obj) => acc + (obj as any).numAmount,
+  //     0
+  //   );
+  //   const overFollowAmount = totalAmount - grossSalaryAmount;
+  //   // console.log({
+  //   //   totalAmount,
+  //   //   elementList: array,
+  //   //   grossSalaryAmount,
+  //   //   overFollowAmount,
+  //   // });
+  //   if (overFollowAmount > 0) {
+  //     // console.log({ isOverFollow: overFollowAmount });
+  //     (array[indexOfLowestAmount] as any).numAmount =
+  //       (array[indexOfLowestAmount] as any)?.numAmount - overFollowAmount;
+  //     (array[indexOfLowestAmount] as any)[payrollElementName] -=
+  //       overFollowAmount;
+  //   } else {
+  //     // console.log({ isNotOverFollow: overFollowAmount });
+
+  //     (array[indexOfLowestAmount] as any).numAmount =
+  //       (array[indexOfLowestAmount] as any)?.numAmount + overFollowAmount * -1;
+  //     (array[indexOfLowestAmount] as any)[payrollElementName] +=
+  //       overFollowAmount * -1;
+  //   }
+  //   setterFunc(array);
+  // };
   const header: any = [
     {
       title: "SL",
@@ -678,25 +727,32 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             placeholder="Amount"
             onChange={(e: any) => {
               const values = form.getFieldsValue(true);
-              if (values?.salaryType?.value !== "Grade") {
+              if (
+                values?.salaryType?.value !== "Grade" &&
+                row?.strDependOn !== "Gross" &&
+                index === 0
+              ) {
                 form.setFieldsValue({
                   basicAmount: e,
                 });
               }
-              if (values?.salaryType?.value == "Grade") {
-                form.setFieldsValue({
-                  slabCount: 0,
-                });
-                if (index !== 0) {
-                  rowDto[0].numAmount =
-                    getById?.data?.payScaleElements[0]?.netAmount;
-                  rowDto[0].baseAmount =
-                    getById?.data?.payScaleElements[0]?.netAmount;
-                }
-              }
+              // if (values?.salaryType?.value == "Grade") {
+              //   form.setFieldsValue({
+              //     slabCount: 0,
+              //   });
+              //   if (index !== 0) {
+              //     rowDto[0].numAmount =
+              //       getById?.data?.payScaleElements[0]?.netAmount;
+              //     rowDto[0].baseAmount =
+              //       getById?.data?.payScaleElements[0]?.netAmount;
+              //   }
+              // }
               updateRowDtoHandler(e, row, index);
             }}
-            disabled={row?.strBasedOn !== "Amount" || row?.isBasicSalary}
+            disabled={
+              row?.strBasedOn !== "Amount" ||
+              (row?.strDependOn !== "Gross" && row?.isBasicSalary)
+            }
           />
         </>
       ),
@@ -704,9 +760,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   ];
   const headerAccount: any = [
     {
-      title: "Accounts",
+      title: "",
       dataIndex: "accounts",
-      width: 625,
+      width: 325,
     },
     {
       title: "",
@@ -762,18 +818,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
     });
   };
-  const getBranchDDL = () => {
-    const { bank } = form.getFieldsValue(true);
-    branchDDL?.action({
-      urlKey: "BankBranchDDL",
-      method: "GET",
-      params: {
-        BankId: bank?.value,
-        AccountID: orgId,
-        DistrictId: 0,
-      },
-    });
-  };
+
   useEffect(() => {
     getPayscale();
     getBankDDL();
@@ -786,10 +831,15 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       getAssignedBreakdown();
       form.setFieldsValue({
         grossAmount: (location?.state as any)?.numNetGrossSalary,
+        basicAmount: (location?.state as any)?.numBasicORGross,
         payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
           ? undefined
           : (location?.state as any)?.intSalaryBreakdownHeaderId,
-        basedOn: 1,
+        basedOn:
+          (location?.state as any)?.strDependOn.toLowerCase() === "basic"
+            ? { value: 2, label: "Basic" }
+            : { value: 1, label: "Gross" },
+
         salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
           ? "Grade"
           : "Non-Grade",
@@ -809,6 +859,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
       onSuccess: (res) => {
         form.setFieldsValue({
+          gateway:
+            res?.empEmployeeBankDetail?.intBankOrWalletType === 2
+              ? {
+                  value: res?.empEmployeeBankDetail?.intBankWalletId,
+                  label: res?.empEmployeeBankDetail?.strBankWalletName,
+                }
+              : "",
+          mobile:
+            res?.empEmployeeBankDetail?.intBankOrWalletType === 2
+              ? res?.empEmployeeBankDetail?.strAccountNo
+              : "",
           bank: res?.empEmployeeBankDetail?.intBankWalletId
             ? res?.empEmployeeBankDetail?.intBankWalletId
             : undefined,
@@ -867,7 +928,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               } ${employeeInfo?.data[0]?.intSlabCount}`,
             },
           });
-          let temp = [];
+          const temp = [];
           for (let i = 0; i <= res?.incrementSlabCount; i++) {
             temp.push({
               value: i,
@@ -893,203 +954,25 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
   }, [employeeInfo?.data[0]]);
 
-  // console.log({ rowDto });
-  const holdSalaryHandler = (e: any) => {
-    const confirmObject = {
-      closeOnClickOutside: false,
-      message: `Are your sure?`,
-      yesAlertFunc: () => {
-        const callback = () => {
-          getEmployeeInfo();
-        };
-        salaryHoldAction(
-          e.target.checked,
-          employeeInfo?.data[0]?.EmployeeId,
-          setLoading,
-          callback
-        );
-      },
-      noAlertFunc: () => {
-        // setIsHoldSalary(modifyIsHold);
-      },
-    };
-    IConfirmModal(confirmObject);
-  };
   return employeeFeature?.isView ? (
     <PForm
       form={form}
       initialValues={{
-        transferType: "Cash",
+        transferType: orgId === 12 ? { value: 1, label: "Bank" } : "Cash",
+        bankOrMfs: 0,
       }}
       onFinish={submitHandler}
     >
       <PCard>
-        <PCardHeader
-          title="Salary Assign"
-          // buttonList={[
-          //   {
-          //     type: "primary",
-          //     content: "Save",
-          //     onClick: () => {
-          //       submitHandler();
-          //     },
-          //     disabled: selectedRow?.length > 0 ? false : true,
-          //     //   icon: <AddOutlined />,
-          //   },
-          //   {
-          //     type: "primary-outline",
-          //     content: "Cancel",
-          //     onClick: () => {
-          //       form.resetFields();
-          //       setSelectedRow([]);
-          //       setRowDto((prev) => {
-          //         prev = [];
-          //         return prev;
-          //       });
-          //       // getSalaryLanding();
-          //     },
-          //     // disabled: true,
-          //     //   icon: <AddOutlined />,
-          //   },
-          // ]}
-          submitText="Save"
-        ></PCardHeader>
-        <Row gutter={[10, 2]} className="mb-3 card-style">
-          <Col md={13}>
-            <div
-              className="d-flex justify-content-between align-items-center mt-2"
-              style={{
-                paddingBottom: "10px",
-                marginBottom: "10px",
-                // borderBottom: `1px solid ${gray200}`,
-              }}
-            >
-              <div className="d-flex ">
-                <div
-                  style={{
-                    width:
-                      employeeInfo?.data?.length > 0
-                        ? employeeInfo?.data && "auto"
-                        : "78px",
-                    // width: [].length > 0 ? "auto" : "78px",
-                  }}
-                  className={
-                    employeeInfo?.data?.length > 0
-                      ? employeeInfo?.data &&
-                        "add-image-about-info-card height-auto"
-                      : "add-image-about-info-card"
-                  }
-                >
-                  <label
-                    htmlFor="contained-button-file"
-                    className="label-add-image"
-                  >
-                    {employeeInfo?.data[0]?.ProfileImageUrl ? ( //singleData[0]?.ProfileImageUrl
-                      <img
-                        src={`${APIUrl}/Document/DownloadFile?id=${employeeInfo?.data[0]?.ProfileImageUrl}`}
-                        alt=""
-                        height="78px"
-                        width="78px"
-                        style={{ maxHeight: "78px", minWidth: "78px" }}
-                      />
-                    ) : (
-                      <img
-                        src={profileImg}
-                        alt="iBOS"
-                        height="78px"
-                        width="78px"
-                        style={{ maxHeight: "78px", minWidth: "78px" }}
-                      />
-                    )}
-                  </label>
-                </div>
-                <div className="content-about-info-card ml-3">
-                  <div className="d-flex justify-content-between">
-                    <h4
-                      className="name-about-info"
-                      style={{ marginBottom: "5px" }}
-                    >
-                      {`${employeeInfo?.data[0]?.EmployeeName}  `}
-                      <span style={{ fontWeight: "400", color: gray700 }}>
-                        [{employeeInfo?.data[0]?.EmployeeCode}]
-                      </span>{" "}
-                    </h4>
-                  </div>
-                  <div className="single-info">
-                    <p
-                      className="text-single-info"
-                      style={{ fontWeight: "500", color: gray700 }}
-                    >
-                      <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
-                        Department -
-                      </small>{" "}
-                      {`${employeeInfo?.data[0]?.DepartmentName}`}
-                    </p>
-                  </div>
-                  <div className="single-info">
-                    <p
-                      className="text-single-info"
-                      style={{ fontWeight: "500", color: gray700 }}
-                    >
-                      <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
-                        Designation -
-                      </small>{" "}
-                      {employeeInfo?.data[0]?.DesignationName}
-                    </p>
-                  </div>
-                  <div className="single-info">
-                    <p
-                      className="text-single-info"
-                      style={{ fontWeight: "500", color: gray700 }}
-                    >
-                      <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
-                        Employment Type -
-                      </small>{" "}
-                      {employeeInfo?.data[0]?.strEmploymentType}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md={8}></Col>
-          <div className="">
-            <div className="ml-1">
-              <PInput
-                label="Hold Salary?"
-                type="checkbox"
-                layout="horizontal"
-                name="isHoldSalary"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    holdSalaryHandler(e);
-                  }
-                }}
-              />
-            </div>
-            <div>
-              <p
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenIncrement(true);
-                }}
-                style={{ color: gray900 }}
-                className="d-inline-block mt-2 pointer uplaod-para"
-              >
-                <span style={{ fontSize: "12px" }}>
-                  <MovingOutlined
-                    sx={{
-                      marginRight: "5px",
-                      fontSize: "18px",
-                      color: gray900,
-                    }}
-                  />{" "}
-                  Increment History
-                </span>
-              </p>
-            </div>
-          </div>
-        </Row>
+        <PCardHeader title="Salary Assign" submitText="Save"></PCardHeader>
+        <EmployeeInfo
+          employeeInfo={employeeInfo}
+          getEmployeeInfo={getEmployeeInfo}
+          setLoading={setLoading}
+          orgId={orgId}
+          loading={loading}
+          form={form}
+        />
         <Row gutter={[10, 2]} className="mb-3">
           <Col md={6} sm={12} xs={24}>
             <PSelect
@@ -1129,6 +1012,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       name="payscale"
                       label="Payscale"
                       placeholder="Payscale"
+                      showSearch
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payscale: op,
@@ -1156,10 +1040,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                                   strPayrollElementName: i?.payrollElementName,
                                   strBasedOn: i?.basedOn,
                                   strDependOn: "Basic",
-                                  baseAmount: i?.isBasic ? i?.netAmount : 0,
+                                  baseAmount: i?.isBasic
+                                    ? Math.round(i?.netAmount)
+                                    : 0,
                                   isBasicSalary: i?.isBasic,
                                   numNumberOfPercent: i?.amountOrPercentage,
-                                  numAmount: i?.netAmount,
+                                  numAmount: Math.round(i?.netAmount),
                                   numberOfPercent: i?.amountOrPercentage,
                                 };
                               }
@@ -1181,18 +1067,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                                 value: res?.jobClassId,
                                 label: res?.jobClassName,
                               },
-                              grossAmount: gross,
+                              grossAmount: Math.round(gross),
                             });
-                            accountsDto[2].numAmount = gross;
-                            accountsDto[2].accounts = `Cash Pay (${100}%)`;
-                            accountsDto[2].percentage = 100;
+                            // accountsDto[2].numAmount = gross;
+                            // accountsDto[2].accounts = `Cash Pay (${100}%)`;
+                            // accountsDto[2].percentage = 100;
 
-                            accountsDto[0].numAmount = 0;
-                            accountsDto[0].accounts = `Bank Pay (${0}%)`;
-                            accountsDto[0].percentage = 0;
-                            accountsDto[1].numAmount = 0;
-                            accountsDto[1].accounts = `Digital/MFS Pay (${0}%)`;
-                            accountsDto[1].percentage = 0;
+                            // accountsDto[0].numAmount = 0;
+                            // accountsDto[0].accounts = `Bank Pay (${0}%)`;
+                            // accountsDto[0].percentage = 0;
+                            // accountsDto[1].numAmount = 0;
+                            // accountsDto[1].accounts = `Digital/MFS Pay (${0}%)`;
+                            // accountsDto[1].percentage = 0;
+                            if (orgId === 12) {
+                              accountDetailsSetup("bank", gross);
+                            } else {
+                              accountDetailsSetup("cash", gross);
+                            }
+
                             const temp = [];
                             for (let i = 0; i <= res?.incrementSlabCount; i++) {
                               temp.push({
@@ -1291,6 +1183,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payrollGroup: op,
+                          grossAmount: undefined,
+                          basicAmount: undefined,
+                          basedOn:
+                            (op as any)?.strDependOn?.toLowerCase() === "basic"
+                              ? { value: 2, label: "Basic" }
+                              : { value: 1, label: "Gross" },
                         });
                         getBreakDownPolicyElements();
                       }}
@@ -1306,10 +1204,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                     <PSelect
                       options={[
                         { value: 1, label: "Gross" },
-                        // { value: 2, label: "Basic" },
+                        { value: 2, label: "Basic" },
                       ]}
                       name="basedOn"
                       label="Based On"
+                      disabled={true}
                       placeholder="Based On"
                       onChange={(value, op) => {
                         form.setFieldsValue({
@@ -1360,18 +1259,28 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       label="Gross"
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        const accounts = `Cash Pay (${100}%)`;
-                        const temp = [...accountsDto];
-                        temp[2].accounts = accounts;
-                        temp[2].numAmount = e;
-                        temp[0].numAmount = 0;
-                        temp[1].numAmount = 0;
-                        default_gross_calculation();
-                        // (values?.bankPay * 100) /
-                        //               values?.totalGrossSalary
-                        //             )?.toFixed(6)
+                        // const temp = [...accountsDto];
+                        if (orgId === 12) {
+                          // const accounts = `Bank Pay (${100}%)`;
+                          // temp[0].accounts = accounts;
+                          // temp[0].numAmount = e;
+                          // temp[2].numAmount = 0;
+                          // temp[1].numAmount = 0;
+                          accountDetailsSetup("bank", e);
+                        } else {
+                          accountDetailsSetup("cash", e);
 
-                        setAccountsDto([...temp]);
+                          // const accounts = `Cash Pay (${100}%)`;
+                          // temp[2].accounts = accounts;
+                          // temp[2].numAmount = e;
+                          // temp[0].numAmount = 0;
+                          // temp[1].numAmount = 0;
+                          // (values?.bankPay * 100) /
+                          //               values?.totalGrossSalary
+                          //             )?.toFixed(6)
+                        }
+                        new_gross_calculation();
+                        // setAccountsDto([...temp]);
                       }}
                       rules={[
                         {
@@ -1389,13 +1298,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                       label="Slab Count"
                       placeholder="Slab Count"
                       onChange={(value, op) => {
-                        let temp = [...rowDto];
+                        const temp = [...rowDto];
                         const efficiency =
                           value > getById?.data?.incrementSlabCount
                             ? value % getById?.data?.incrementSlabCount
                             : 0;
                         const actualSlab = value - efficiency;
-                        console.log({ actualSlab, efficiency });
                         temp[0].numAmount =
                           (temp[0].baseAmount ||
                             getById?.data?.payScaleElements[0]?.netAmount) +
@@ -1425,7 +1333,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           <Col xs={12}></Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { grossAmount, basicAmount } = form.getFieldsValue(true);
+              const { grossAmount } = form.getFieldsValue(true);
 
               return (
                 <Col md={6} sm={12} xs={24}>
@@ -1447,187 +1355,157 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             }}
           </Form.Item>
         </Row>
-        {rowDto?.length > 0 ? (
-          <DataTable header={header} bordered data={rowDto || []} />
-        ) : (
-          <NoResult title="No Result Found" para="" />
-        )}
-        <Divider
-          style={{
-            marginBlock: "4px",
-            marginTop: "16px",
-            fontSize: "14px",
-            fontWeight: 600,
-          }}
-          orientation="left"
-        ></Divider>
-        <DataTable header={headerAccount} bordered data={accountsDto || []} />
-        <Divider
-          style={{
-            marginBlock: "4px",
-            marginTop: "16px",
-            fontSize: "14px",
-            fontWeight: 600,
-          }}
-          orientation="left"
-        ></Divider>
         <Form.Item shouldUpdate noStyle>
           {() => {
-            const { transferType } = form.getFieldsValue(true);
-            return (
-              <Row gutter={[10, 2]}>
-                <Col md={3} className="mt-2">
-                  Bank Name
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PSelect
-                    options={bankDDL?.data?.length > 0 ? bankDDL?.data : []}
-                    name="bank"
-                    placeholder="Bank"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        bank: op,
-                      });
-                      getBranchDDL();
-                    }}
-                    rules={[
-                      {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Bank is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Branch Name
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PSelect
-                    options={branchDDL?.data?.length > 0 ? branchDDL?.data : []}
-                    name="branch"
-                    placeholder="Branch"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        branch: op,
-                        routing: (op as any)?.name,
-                      });
-                    }}
-                    rules={[
-                      {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Branch is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Routing No
-                </Col>
-                <Col md={12} className="mt-2">
-                  <PInput
-                    type="number"
-                    name="routing"
-                    placeholder="Routing"
-                    disabled={true}
+            const { grossAmount, salaryType } = form.getFieldsValue(true);
+            const elementSum = rowDto?.reduce(
+              (acc, i) => acc + i?.numAmount,
+              0
+            );
 
-                    // rules={[
-                    //   {
-                    //     // required: basedOn?.value === 2,
-                    //     message: "Basic is required",
-                    //   },
-                    // ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Swift Code
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PInput
-                    type="number"
-                    name="swift"
-                    disabled={true}
-                    placeholder="Swift Code"
-                    // rules={[
-                    //   {
-                    //     // required: basedOn?.value === 2,
-                    //     message: "Basic is required",
-                    //   },
-                    // ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Account Name
-                </Col>
-                <Col md={12} className="mt-2">
-                  {" "}
-                  <PInput
-                    type="text"
-                    name="account"
-                    placeholder="Account Name"
-                    rules={[
+            return (
+              grossAmount > 0 &&
+              salaryType?.label !== "Grade" &&
+              elementSum !== grossAmount && (
+                <Alert
+                  icon={<InfoOutlinedIcon fontSize="inherit" />}
+                  severity="warning"
+                  style={{
+                    // width: "27rem",
+                    // position: "sticky",
+                    height: "84px",
+                    margin: "10px 0",
+                    top: "1px",
+                  }}
+                >
+                  <div>
+                    <div className="mb-3">
+                      <h2>
+                        Gross Amount and Breakdown Sum Amount Mismatch <br />
+                        Adjust By
+                        {elementSum > grossAmount ? " Reducing " : " Adding "}
+                        Amount {Math.abs(elementSum - grossAmount)}
+                      </h2>
+                    </div>
+                    {/* <Divider orientation="left">Small Size</Divider> */}
+                  </div>
+                </Alert>
+              )
+            );
+          }}
+        </Form.Item>
+        {rowDto?.length > 0 ? (
+          <DataTable header={header} bordered data={rowDto || []} />
+        ) : // <NoResult title="No Result Found" para="" />
+        null}
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "16px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          Accounts
+        </Divider>
+        <Row gutter={[10, 1]} className="mb-3">
+          <Col span={12}>
+            <DataTable
+              showHeader={false}
+              header={headerAccount}
+              bordered
+              data={accountsDto.slice(0, 2) || []}
+            />
+          </Col>
+          <Col span={12}>
+            <DataTable
+              showHeader={false}
+              header={headerAccount}
+              bordered
+              data={accountsDto.slice(2) || []}
+            />
+          </Col>
+        </Row>
+        <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            <PRadio
+              name="bankOrMfs"
+              type="group"
+              options={
+                orgId === 12
+                  ? [
                       {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Account Name is required",
+                        value: 0,
+                        label: "Bank Details",
                       },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-                <Col md={3} className="mt-2">
-                  Account No
-                </Col>
-                <Col md={12} className="mt-2">
-                  <PInput
-                    type="number"
-                    name="accountNo"
-                    placeholder="Account No"
-                    rules={[
+                    ]
+                  : [
                       {
-                        required:
-                          transferType?.value === 1 ||
-                          transferType === 1 ||
-                          accountsDto[0].numAmount > 0,
-                        message: "Account No is required",
+                        value: 0,
+                        label: "Bank Details",
                       },
-                    ]}
-                  />
-                </Col>
-                <Col md={7}></Col>
-              </Row>
+                      {
+                        value: 1,
+                        label: "Digital/MFS",
+                      },
+                    ]
+              }
+              onChange={(e: any) => {
+                const value = e.target.value;
+                form.setFieldsValue({
+                  bankOrMfs: value,
+                });
+              }}
+            />
+            {/* <span>Promote?</span> */}
+          </div>
+        </Divider>
+        {/* <Divider
+          style={{
+            marginBlock: "4px",
+            marginTop: "16px",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+          orientation="left"
+        ></Divider> */}
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { bankOrMfs } = form.getFieldsValue(true);
+
+            return bankOrMfs === 1 ? (
+              <DigitalMFS
+                form={form}
+                wgId={wgId}
+                buId={buId}
+                accountsDto={accountsDto}
+              />
+            ) : (
+              <BankInfo
+                form={form}
+                bankDDL={bankDDL}
+                orgId={orgId}
+                accountsDto={accountsDto}
+              />
             );
           }}
         </Form.Item>
       </PCard>
-
-      <IncrementHistoryComponent
-        show={openIncrement}
-        title={"Increment History"}
-        onHide={handleIncrementClose}
-        size="lg"
-        fullscreen=""
-        backdrop="static"
-        classes="default-modal"
-        orgId={orgId}
-        singleData={employeeInfo?.data?.[0]}
-        loading={loading}
-        setLoading={setLoading}
-      />
     </PForm>
   ) : (
     <NotPermittedPage />
