@@ -270,6 +270,7 @@ import QuestionerConfigLanding from "modules/exit-interview/questioner-configure
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
 import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
+import IncrementProposalApproval from "modules/CompensationBenefits/incrementProposal/Incr_Proposal_Approval";
 import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
 import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
@@ -3271,6 +3272,10 @@ export const routingList = [
     path: "/approval/assetTransferApproval",
     component: AssetTransferApproval,
   },
+  {
+    path: "/approval/incrementproposalapproval",
+    component: IncrementProposalApproval,
+  },
   // Asset Management end
 
   //  Trainnning and development starts
@@ -3405,7 +3410,6 @@ export const routingList = [
     path: "/profile/customReportsBuilder/punishmentAction/:recordId",
     component: PunishmentAction,
   },
-
 
   // Exit Interview starts
 
