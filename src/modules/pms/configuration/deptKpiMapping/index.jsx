@@ -61,7 +61,7 @@ const DeptKpiMapping = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30394),
+    () => permissionList.find((item) => item?.menuReferenceId === 30465),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

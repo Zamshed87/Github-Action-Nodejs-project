@@ -46,7 +46,7 @@ const Kpis = () => {
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   const permission = useMemo(
-    () => permissionList?.find((item) => item?.menuReferenceId === 30390),
+    () => permissionList?.find((item) => item?.menuReferenceId === 30461),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

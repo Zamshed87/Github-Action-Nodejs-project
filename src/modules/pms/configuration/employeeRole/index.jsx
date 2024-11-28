@@ -41,7 +41,7 @@ const EmployeeRole = () => {
   }, [buId, orgId]);
 
   const permission = useMemo(
-    () => permissionList?.find((item) => item?.menuReferenceId === 30396),
+    () => permissionList?.find((item) => item?.menuReferenceId === 30467),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

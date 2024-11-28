@@ -78,7 +78,7 @@ const JohariWindow = () => {
     useAxiosGet();
 
   const permission = useMemo(
-    () => permissionList?.find((item) => item?.menuReferenceId === 30418),
+    () => permissionList?.find((item) => item?.menuReferenceId === 30489),
     [permissionList]
   );
   useEffect(() => {

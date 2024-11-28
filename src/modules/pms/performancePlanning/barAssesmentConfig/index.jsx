@@ -20,7 +20,7 @@ const initData = {
 };
 
 const BarAssesmentCongig = () => {
-  // 30417
+  // 30488
   const [fiscalYearDDL, getFiscalYearDDL, fiscalYearDDLloader] = useAxiosGet();
   const [, getAssesmentConfig, assesmentConfigLoader] = useAxiosGet();
   const [, saveData, saveDataLoader] = useAxiosPost();

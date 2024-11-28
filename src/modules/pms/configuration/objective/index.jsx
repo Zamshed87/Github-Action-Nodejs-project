@@ -68,7 +68,7 @@ const PMSObjective = () => {
   }, []);
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30389),
+    () => permissionList.find((item) => item?.menuReferenceId === 30460),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

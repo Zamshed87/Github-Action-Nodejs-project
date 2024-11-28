@@ -55,7 +55,7 @@ const SbuKpiMapping = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30395),
+    () => permissionList.find((item) => item?.menuReferenceId === 30466),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
