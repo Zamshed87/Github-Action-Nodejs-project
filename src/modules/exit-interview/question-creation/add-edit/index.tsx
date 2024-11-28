@@ -6,7 +6,7 @@
  * Date: 12-11-2024
  *
  */
-import { Col, Divider, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -20,63 +20,19 @@ import {
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  getEnumData,
-  getWorkplaceDDL,
-  getWorkplaceGroupDDL,
-} from "common/api/commonApi";
-import { useApiRequest } from "Hooks";
-import { FieldArray, FormikProvider, useFormik } from "formik";
+import { getEnumData } from "common/api/commonApi";
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
-import { Stack } from "@mui/material";
-import * as yup from "yup";
 import SingleQuestionnaire from "./SingleQuestionnaire";
-import uuid from "utility/uuid";
 import { PlusOutlined } from "@ant-design/icons";
-import { saveQuestionnaire } from "./helper";
-
-const validationSchema = yup.object({
-  questions: yup.array().of(
-    yup.object().shape({
-      id: yup.string().required("Question ID is required"),
-      questionTitle: yup.string().required("Question title is required"),
-      questionType: yup.string().required("Question type is required"),
-      ansType: yup.string().required("Answer type is required"),
-      ansTextLength: yup
-        .string()
-        .nullable()
-        .when("ansType", {
-          is: "text",
-          then: yup.string().required("Answer text length is required"),
-          otherwise: yup.string().nullable(),
-        })
-        .when("ansType", {
-          is: "select",
-          then: yup.string().nullable(),
-          otherwise: yup.string().nullable(),
-        }),
-    })
-  ),
-
-  answers: yup.array().of(
-    yup.object().shape({
-      id: yup.string().required("Answer ID is required"),
-      queId: yup.string().required("Question ID for answer is required"),
-      answerDescription: yup.string().when("queId", {
-        is: (queId: string) => queId && queId.length > 0,
-        then: yup
-          .string()
-          .required("Answer description is required for this question"),
-        otherwise: yup.string().nullable(),
-      }),
-    })
-  ),
-});
+import { initDataForEdit, saveQuestionnaire } from "./helper";
+import { toast } from "react-toastify";
+import { getSingleQuestionnaire } from "../helper";
+import Loading from "common/loading/Loading";
 
 const QuestionCreationAddEdit = () => {
   // Router state
@@ -84,23 +40,10 @@ const QuestionCreationAddEdit = () => {
 
   const dispatch = useDispatch();
 
-  const { permissionList, profileData, businessUnitDDL } = useSelector(
+  const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId } = profileData;
-
-  const addLabelValue = (
-    ddlArray: any[],
-    labelField: string,
-    valueField: string
-  ) => {
-    return ddlArray.map((item) => ({
-      ...item,
-      label: item[labelField],
-      value: item[valueField],
-    }));
-  };
 
   //   states
   const [loading, setLoading] = useState(false);
@@ -118,12 +61,11 @@ const QuestionCreationAddEdit = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // api states
-  const workplaceGroupDDL: any = useApiRequest([]);
-  const workplaceDDL = useApiRequest([]);
-
   const [survayTypeDDL, setSurvayTypeDDL] = useState([]);
   const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
+  const [singleData, setSingleData] = useState({});
+
+  const [antForm] = Form.useForm();
 
   const ansDragEnd = (result: DropResult, values: any) => {
     const { source, destination } = result;
@@ -133,9 +75,9 @@ const QuestionCreationAddEdit = () => {
       destination.index === source.index
     )
       return;
-    const temp = values.answers;
-    const draged = temp.splice(source.index, 1);
-    temp.splice(destination.index, 0, draged[0]);
+    // const temp = values?.answers;
+    const draged = values.splice(source.index, 1);
+    values.splice(destination.index, 0, draged[0]);
   };
 
   const queDragEnd = (result: DropResult, values: any) => {
@@ -147,35 +89,37 @@ const QuestionCreationAddEdit = () => {
     )
       return;
 
-    const reorderedQuestions = Array.from(values.questions);
+    const reorderedQuestions = Array.from(values);
     const [removed] = reorderedQuestions.splice(source.index, 1);
     reorderedQuestions.splice(destination.index, 0, removed);
 
     // Update Formik values with the new reordered questions
-    setFieldValue("questions", reorderedQuestions);
+    antForm.setFieldValue("questions", reorderedQuestions);
   };
-
-  const formData: any = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      questions: [],
-      answers: [],
-    },
-    onSubmit: () => {},
-  });
-  const { values, setFieldValue, handleBlur, resetForm } = formData;
-
-  console.log(values);
 
   useEffect(() => {
     getEnumData("QuestionnaireType", setSurvayTypeDDL);
     getEnumData("QuestionnaireQuestionType", setQuestionTypeDDL);
+    quesId && getSingleQuestionnaire(quesId, setSingleData, setLoading);
   }, []);
-
-  console.log(survayTypeDDL, questionTypeDDL);
+  useEffect(() => {
+    if (quesId) {
+      const initData = initDataForEdit(singleData);
+      antForm.setFieldsValue(initData);
+    }
+  }, [singleData]);
 
   return letterConfigPermission?.isCreate ? (
-    <PForm>
+    <PForm
+      form={antForm}
+      initialValues={{
+        survayType: null,
+        survayTitle: "",
+        survayDescription: "",
+        questions: [],
+      }}
+    >
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
           title={quesId ? "Edit Question" : "Create Question"}
@@ -187,9 +131,23 @@ const QuestionCreationAddEdit = () => {
               content: "Save",
               disabled: loading,
               onClick: () => {
-                saveQuestionnaire(values, setLoading, () => {
-                  resetForm();
-                });
+                const values = antForm.getFieldsValue(true);
+                antForm
+                  .validateFields()
+                  .then(() => {
+                    saveQuestionnaire(
+                      quesId,
+                      values,
+                      profileData,
+                      setLoading,
+                      () => {
+                        antForm.resetFields();
+                      }
+                    );
+                  })
+                  .catch(() => {
+                    toast.warning("Please fill the required fields");
+                  });
               },
             },
           ]}
@@ -197,71 +155,12 @@ const QuestionCreationAddEdit = () => {
         <Row gutter={[10, 2]}>
           <Col md={6} sm={24}>
             <PSelect
-              options={
-                addLabelValue(
-                  businessUnitDDL,
-                  "BusinessUnitName",
-                  "BusinessUnitId"
-                ) || []
-              }
-              name="buDDL"
-              label="Business Unit"
-              placeholder="Business Unit"
-              onChange={(value: number, op) => {
-                setFieldValue("buDDL", op);
-                setFieldValue("wgDDL", null);
-                setFieldValue("wDDL", null);
-                getWorkplaceGroupDDL({
-                  workplaceGroupDDL,
-                  orgId,
-                  buId: value,
-                });
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
-          </Col>
-
-          <Col md={6} sm={24}>
-            <PSelect
-              options={workplaceGroupDDL?.data || []}
-              name="wgDDL"
-              label="Workplace Group"
-              placeholder="Workplace Group"
-              onChange={(value, op) => {
-                setFieldValue("wgDDL", op);
-                setFieldValue("wDDL", null);
-                getWorkplaceDDL({
-                  workplaceDDL,
-                  orgId,
-                  buId: values?.buId?.value,
-                  wgId: value,
-                });
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
-          </Col>
-          <Col md={6} sm={24}>
-            <PSelect
-              options={workplaceDDL?.data || []}
-              name="wDDL"
-              label="Workplace"
-              placeholder="Workplace"
-              onChange={(value, op) => {
-                setFieldValue("wDDL", op);
-              }}
-              rules={[{ required: true, message: "Required Field" }]}
-            />
-          </Col>
-        </Row>
-        <Row gutter={[10, 2]}>
-          <Col md={6} sm={24}>
-            <PSelect
               options={survayTypeDDL || []}
               name="survayType"
-              label="Survay Type"
-              placeholder="Survay Type"
+              label="Survey Type"
+              placeholder="Survey Type"
               onChange={(_: number, op) => {
-                setFieldValue("survayType", op);
+                antForm.setFieldValue("survayType", op);
               }}
               rules={[{ required: true, message: "Required Field" }]}
             />
@@ -271,10 +170,10 @@ const QuestionCreationAddEdit = () => {
             <PInput
               type="text"
               name="survayTitle"
-              placeholder="Survay Title"
-              label="Survay Title"
+              placeholder="Survey Title"
+              label="Survey Title"
               onChange={(e) => {
-                setFieldValue("survayTitle", e.target.value);
+                antForm.setFieldValue("survayTitle", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
             />
@@ -283,124 +182,87 @@ const QuestionCreationAddEdit = () => {
             <PInput
               type="text"
               name="survayDescription"
-              placeholder="Survay Description"
-              label="Survay Description"
+              placeholder="Survey Description"
+              label="Survey Description"
               onChange={(e) => {
-                setFieldValue("survayDescription", e.target.value);
+                antForm.setFieldValue("survayDescription", e.target.value);
               }}
               rules={[{ required: true, message: "Required Field" }]}
             />
           </Col>
         </Row>
         <div style={{ marginTop: "16px" }}>
-          <FormikProvider value={formData}>
-            <FieldArray name="questions">
-              {({ push, remove, form }) => (
-                <DragDropContext
-                  onDragEnd={(result) => queDragEnd(result, values)}
-                >
-                  <Stack
-                    direction="column"
-                    spacing={2}
-                    style={{ marginBottom: "20px" }}
-                  >
-                    <Droppable droppableId="AllQuestion">
-                      {(queDropProvided) => (
-                        <Stack
-                          direction="column"
-                          spacing={2}
-                          ref={queDropProvided.innerRef}
-                          {...queDropProvided.droppableProps}
+          <Form.List name="questions">
+            {(fields, { add, remove }) => (
+              <DragDropContext
+                onDragEnd={(result) =>
+                  queDragEnd(result, antForm.getFieldValue("questions"))
+                }
+              >
+                <Droppable droppableId="AllQuestion">
+                  {(queDropProvided) => (
+                    <div
+                      ref={queDropProvided.innerRef}
+                      {...queDropProvided.droppableProps}
+                    >
+                      {fields.map((field, index) => (
+                        <Draggable
+                          key={index}
+                          draggableId={index.toString()}
+                          index={index}
                         >
-                          {form.values.questions.map(
-                            (question: any, index: number) => {
-                              const questionType = `questions[${index}].questionType`;
-                              const questionTitle = `questions[${index}].questionTitle`;
-                              const expectedAns = `questions[${index}].expectedAns`;
-                              const isRequired = `questions[${index}].isRequired`;
-                              const isDraft = `questions[${index}].isDraft`;
-                              const ansTextLength = `questions[${index}].ansTextLength`;
-
-                              return (
-                                <Draggable
-                                  key={question.id}
-                                  draggableId={question.id.toString()}
+                          {(queProvided) => (
+                            <div
+                              className="mt-3"
+                              key={index}
+                              ref={queProvided.innerRef}
+                              {...queProvided.draggableProps}
+                            >
+                              <div
+                                style={{
+                                  backgroundColor: "white",
+                                  padding: "15px",
+                                  width: "75%",
+                                  border: `1px solid rgba(0, 0, 0, 0.12)`,
+                                  boxShadow:
+                                    "0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12)",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                <SingleQuestionnaire
                                   index={index}
-                                >
-                                  {(queProvided) => (
-                                    <div
-                                      key={question.id}
-                                      ref={queProvided.innerRef}
-                                      {...queProvided.draggableProps}
-                                    >
-                                      <div
-                                        style={{
-                                          backgroundColor: "white",
-                                          padding: "15px",
-                                          width: "75%",
-                                          border: `1px solid rgba(0, 0, 0, 0.12)`,
-                                          boxShadow:
-                                            "0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12)",
-                                          borderRadius: "4px",
-                                        }}
-                                      >
-                                        <SingleQuestionnaire
-                                          index={index}
-                                          queProvided={queProvided}
-                                          question={question}
-                                          handleBlur={handleBlur}
-                                          questionType={questionType}
-                                          questionTitle={questionTitle}
-                                          isRequired={isRequired}
-                                          isDraft={isDraft}
-                                          ansTextLength={ansTextLength}
-                                          expectedAns={expectedAns}
-                                          ansDragEnd={ansDragEnd}
-                                          handleQuestionDelete={remove}
-                                          values={form.values}
-                                          setFieldValue={form.setFieldValue}
-                                          errors={form.errors}
-                                          touched={form.touched}
-                                          setValues={form.setValues}
-                                          questionTypeDDL={questionTypeDDL}
-                                        />
-                                      </div>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              );
-                            }
+                                  queProvided={queProvided}
+                                  field={field}
+                                  ansDragEnd={ansDragEnd}
+                                  handleQuestionDelete={remove}
+                                  Form={Form}
+                                  questionTypeDDL={questionTypeDDL}
+                                  antForm={antForm}
+                                />
+                              </div>
+                            </div>
                           )}
+                        </Draggable>
+                      ))}
 
-                          {queDropProvided.placeholder}
-                        </Stack>
-                      )}
-                    </Droppable>
-                    <div>
-                      <PButton
-                        type="primary"
-                        content="Add Question"
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          push({
-                            id: uuid(),
-                            questionTitle: "",
-                            questionType: null,
-                            ansType: null,
-                            isRequired: false,
-                            isDraft: false,
-                            ansTextLength: "",
-                          });
-                        }}
-                        icon={<PlusOutlined />}
-                      />
+                      {queDropProvided.placeholder}
                     </div>
-                  </Stack>
-                  {values.questions?.length > 0 && <Divider />}
-                </DragDropContext>
-              )}
-            </FieldArray>
-          </FormikProvider>
+                  )}
+                </Droppable>
+                <div className="mt-3">
+                  <PButton
+                    type="primary"
+                    content="Add Question"
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      add();
+                    }}
+                    icon={<PlusOutlined />}
+                  />
+                </div>
+              </DragDropContext>
+            )}
+          </Form.List>
         </div>
       </PCard>
     </PForm>

@@ -11,6 +11,7 @@ import IncrementInfo from "./IncrementInfo";
 import Others from "./others/Others";
 import TransferAndPromotionInfo from "./TransferAndPromotionInfo";
 import OAuth from "./OAuth/OAuth";
+import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter";
 
 function OverviewTab({ empId, wgId, buId }) {
   const [index, setIndex] = useState(0);
@@ -22,6 +23,7 @@ function OverviewTab({ empId, wgId, buId }) {
     { name: "Education" },
     { name: "Transfer & Promotion History" },
     { name: "Increment History" },
+    { name: "Reward And Punishment" },
     { name: "Family & Relationships" },
     { name: "Documents" },
     { name: "others" },
@@ -101,10 +103,17 @@ function OverviewTab({ empId, wgId, buId }) {
                     wgId={wgId}
                     buId={buId}
                   />
-                  <Family
+                  <UserEndRewardPunishmentLanding
                     empId={empId}
                     index={index}
                     tabIndex={7}
+                    wgId={wgId}
+                    buId={buId}
+                  />
+                  <Family
+                    empId={empId}
+                    index={index}
+                    tabIndex={8}
                     wgId={wgId}
                     buId={buId}
                   />
@@ -113,16 +122,16 @@ function OverviewTab({ empId, wgId, buId }) {
                     index={index}
                     wgId={wgId}
                     buId={buId}
-                    tabIndex={8}
+                    tabIndex={9}
                   />
                   <Others
                     empId={empId}
                     index={index}
-                    tabIndex={9}
+                    tabIndex={10}
                     wgId={wgId}
                     buId={buId}
                   />
-                  <OAuth empId={empId} index={index} tabIndex={10} />
+                  <OAuth empId={empId} index={index} tabIndex={11} />
                 </div>
               </div>
             </div>

@@ -75,8 +75,13 @@ import SingleIncrement from "modules/CompensationBenefits/Increment/singleInceme
 import QuestionCreationLanding from "modules/exit-interview/question-creation";
 import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
-import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
+import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
+import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
+import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
+import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
+import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -1422,6 +1427,7 @@ export const routingList = [
     path: "/profile/rewardsandpunishmentadd",
     component: RewardsAndPunishmentAdd,
   },
+
   // { path: "/dashboard", component: DashboardModule },
   { path: "/dashboard", component: MasterDashboardLanding },
   { path: "/profile/employee", component: EmployeeFeatureNew },
@@ -3154,6 +3160,18 @@ export const routingList = [
     path: "/profile/customReportsBuilder/letterGenerate/generateLetter/:letterId",
     component: LetterGenAddEdit,
   },
+  {
+    path: "/profile/rewardAndPunishment",
+    component: RewardPunishmentLanding,
+  },
+  {
+    path: "/profile/rewardAndPunishment/letterGenerate",
+    component: RewardPunishmentLetterGenAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/punishmentAction/:recordId",
+    component: PunishmentAction,
+  },
   // Trainnning and development ends
 
   // Exit Interview starts
@@ -3180,8 +3198,16 @@ export const routingList = [
     component: QuestionerAssignLanding,
   },
   {
+    path: "/SelfService/exitInterview",
+    component: EssInterviewLanding,
+  },
+  {
     path: "/profile/exitInterview/interview",
-    component: InterviewLanding,
+    component: EmInterviewLanding,
+  },
+  {
+    path: "/interview",
+    component: InterviewModal,
   },
 
   // Exit Interview ends
