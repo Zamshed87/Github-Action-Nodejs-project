@@ -187,10 +187,6 @@ export const IncrementProposal = () => {
 
   useEffect(() => {
     getEmployee();
-    // getWorkplaceGroup();
-    // empBasicInfo(buId, orgId, employeeId, setEmpInfo);
-
-    // landingApiCall();
   }, []);
   //  Delete Element
   const deleteProposalById = (item: any) => {
