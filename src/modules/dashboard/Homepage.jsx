@@ -140,8 +140,8 @@ const Homepage = () => {
     } else if (label === "Manning") {
       to = "/manning";
       image = requirment;
-    } else if (label === "Training & Development") {
-      to = "/trainingAndDevelopment/training/schedule";
+    } else if (label === "Training and Development") {
+      to = "/trainingNdevelopment/trainingTime";
       image = training;
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
