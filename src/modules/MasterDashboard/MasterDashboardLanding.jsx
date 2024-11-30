@@ -11,6 +11,7 @@ import ManagementDashboardLanding from "./ManagementDashboardLanding/ManagementD
 import SelfDashboardLanding from "./SelfDashboardLanding/SelfDashboardLanding";
 import SupervisorDashboardLanding from "./SupervisorDashboardLanding/SupervisorDashboardLanding";
 import { useHistory } from "react-router-dom";
+import EmployeeBooklet from "./employee-booklet";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
@@ -75,6 +76,18 @@ const MasterDashboardLanding = () => {
               , Welcome Back !
             </h4>
           </div>
+          <div>
+            <button
+              onClick={() => {
+                setValues((prev) => ({
+                  ...prev,
+                  dashboardroleType: { label: "Booklet", value: 4 },
+                }));
+              }}
+            >
+              Booklet
+            </button>
+          </div>
           {values?.dashboardRoles?.length > 1 &&
             (!isOwner || isOfficeAdmin) && (
               <div style={{ width: "120px" }}>
@@ -117,6 +130,9 @@ const MasterDashboardLanding = () => {
             )}
             {values?.dashboardroleType?.value === 3 && (
               <ManagementDashboardLanding setLoading={setLoading} />
+            )}
+            {values?.dashboardroleType?.value === 4 && (
+              <EmployeeBooklet setLoading={setLoading} />
             )}
           </>
         )}

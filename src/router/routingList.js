@@ -77,7 +77,6 @@ import QuestionerConfigLanding from "modules/exit-interview/questioner-configure
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
-import EmployeeBooklet from "modules/employee-booklet";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -3183,10 +3182,6 @@ export const routingList = [
   {
     path: "/profile/exitInterview/interview",
     component: InterviewLanding,
-  },
-  {
-    path: "/employeeBooklet/:empId",
-    component: EmployeeBooklet,
   },
 
   // Exit Interview ends

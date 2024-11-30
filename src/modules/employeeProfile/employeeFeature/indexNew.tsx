@@ -318,12 +318,6 @@ function EmployeeFeatureNew() {
                 });
               },
             },
-            {
-              type: "view",
-              onClick: () => {
-                history.push(`/employeeBooklet/${rec?.intEmployeeBasicInfoId}`);
-              },
-            },
           ]}
         />
       ),
