@@ -15,7 +15,7 @@ import { setBarAssesmentInitialValuesAction } from "../../../../commonRedux/redu
 import AntScrollTable from "../../../../common/AntScrollTable";
 
 const BarAssesmentLanding = () => {
-  // 30425
+  // 30496
   const history = useHistory();
   const dispatch = useDispatch();
   const { barAssesmentInitialValues } = useSelector(

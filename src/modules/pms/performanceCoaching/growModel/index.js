@@ -74,7 +74,7 @@ const GrowthModel = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30420) {
+    if (item?.menuReferenceId === 30491) {
       permission = item;
     }
   });

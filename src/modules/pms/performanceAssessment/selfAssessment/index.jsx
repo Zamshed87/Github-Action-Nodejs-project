@@ -14,7 +14,7 @@ const SelfAssessmentNew = () => {
     profileData: { evaluationCriteriaOfPms },
   } = useSelector((store) => store?.auth, shallowEqual);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30422),
+    () => permissionList.find((item) => item?.menuReferenceId === 30493),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

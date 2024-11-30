@@ -29,7 +29,7 @@ const EvaluationCriteria = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30398),
+    () => permissionList.find((item) => item?.menuReferenceId === 30469),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
