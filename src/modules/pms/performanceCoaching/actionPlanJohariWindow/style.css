@@ -1,0 +1,16 @@
+.actionplan-pdf-section table{
+  width: 100% !important;
+}
+.actionplan-pdf-section table,
+.actionplan-pdf-section th,
+.actionplan-pdf-section td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  background-color: white !important;
+  font-size: 14px !important;
+}
+.actionplan-pdf-section .footer {
+  text-align: end;
+  padding-right: 50px;
+  height: 130px;
+}

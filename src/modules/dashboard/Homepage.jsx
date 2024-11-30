@@ -132,7 +132,7 @@ const Homepage = () => {
       to = "/taskManagement";
       image = task;
     } else if (label === "Performance Management System") {
-      to = "/performancemanagementsystem";
+      to = "/pms/configuration/EvaluationCriteria";
       image = performance;
     } else if (label === "Recruitment") {
       to = "https://devhire.peopledesk.io/";

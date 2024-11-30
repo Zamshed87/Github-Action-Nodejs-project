@@ -1,0 +1,54 @@
+.pmsCommonTable {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.pmsCommonTable,
+.pmsCommonTable th,
+.pmsCommonTable td {
+  border: 1px solid gray;
+}
+.pmsCommonTable td {
+  padding: 10px 5px !important;
+}
+.pmsCommonTable {
+  margin-bottom: 0 !important;
+}
+.pmsCommonTable td,
+.pmsCommonTable th {
+  vertical-align: middle !important;
+}
+.pmsCommonTable th {
+  background: #218c74 !important;
+  color: #ffffff;
+  padding: 8px !important;
+}
+.pmsCommonTable .obj {
+  text-align: left;
+  padding-left: 3px !important;
+  font-weight: 700;
+}
+.pmsCommonTable .bsc {
+  width: 8px;
+  color: #ffffff;
+  font-weight: 700;
+}
+.pmsCommonTable .bsc > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(-180deg) translateX(-5px);
+  writing-mode: vertical-rl;
+}
+.pmsCommonTable .bsc0 {
+  background: #2ecc71;
+}
+.pmsCommonTable .bsc1 {
+  background: #3498db;
+}
+.pmsCommonTable .bsc2 {
+  background: #e67e22;
+}
+.pmsCommonTable .bsc3 {
+  background: coral;
+}
