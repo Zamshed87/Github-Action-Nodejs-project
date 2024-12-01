@@ -20,11 +20,22 @@ const ListOfCost = ({
   setCostField: (data: any[]) => void;
   addHandler: (values: any) => void;
 }) => {
-  const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
+  const [costTypeDDL, getCostTypeDDL, loadingCostType, setCostType] =
+    useAxiosGet();
   const [openCostTypeModal, setOpenCostTypeModal] = useState(false);
 
+  const typeDataSetForCost = (data: any) => {
+    let list: any[] = [];
+    data?.map((item: any) => {
+      list.push({
+        label: item?.strName,
+        value: item?.intId,
+      });
+    });
+    setCostType(list);
+  };
   useEffect(() => {
-    getCostTypeDDL({ url: "/costType" });
+    getCostTypeDDL("/TrainingCostType/Training/CostType", typeDataSetForCost);
   }, []);
 
   const headerCost = [
@@ -170,6 +181,10 @@ const ListOfCost = ({
         width="400"
         onCancel={() => {
           setOpenCostTypeModal(false);
+          getCostTypeDDL(
+            "/TrainingCostType/Training/CostType",
+            typeDataSetForCost
+          );
         }}
         maskClosable={false}
         components={
