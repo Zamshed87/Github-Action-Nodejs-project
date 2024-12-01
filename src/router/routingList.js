@@ -323,6 +323,17 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
+const ManagementViewTask = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
+);
+const ManagementCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/mgmApplication/createTask.js"
+  )
+);
+const ManagementTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/index.js")
+);
 const ExternalTrainingCreate = lazy(() =>
   import("../modules/trainingDevelopment/externalTraining/addEditForm.jsx")
 );
@@ -3401,6 +3412,20 @@ export const routingList = [
   {
     path: "/interview",
     component: InterviewModal,
+  },
+
+  // task management
+  {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
   },
   // pms-----------------------------------------------------------------------////////////////////////////////////////////
   {
