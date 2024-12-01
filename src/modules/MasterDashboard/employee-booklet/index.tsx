@@ -7,10 +7,13 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { getSerial } from "Utils";
 import FlipComponent from "./flip-component";
+import Loading from "common/loading/Loading";
+import { getTransferAndPromotionHistoryById } from "modules/employeeProfile/transferNPromotion/transferNPromotion/helper";
+import { getEmployeeIncrementByEmoloyeeId } from "modules/CompensationBenefits/employeeSalary/salaryAssign/helper";
 
 const EmployeeBooklet = () => {
   // redux
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -18,12 +21,17 @@ const EmployeeBooklet = () => {
   // state
   const [filterList, setFilterList] = useState<any>({});
   const [openBooklet, setOpenBooklet] = useState(false);
+  const [singleData, setSingleData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
+  const [incrementHistoryList, setIncrementHistoryList] = useState([]);
 
   // Form Instance
   const [form] = Form.useForm();
 
   // Api Instance
   const landingApi = useApiRequest({});
+  const empInfo = useApiRequest([]);
 
   type TLandingApi = {
     pagination?: {
@@ -82,6 +90,22 @@ const EmployeeBooklet = () => {
       searchText: value,
     });
   }, 500);
+
+  const getEmpData = (empId: number) => {
+    empInfo.action({
+      urlKey: "EmployeeProfileView",
+      method: "get",
+      params: {
+        employeeId: empId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        setSingleData(res);
+        !empInfo.loading && setOpenBooklet(true);
+      },
+    });
+  };
 
   const header = [
     {
@@ -202,6 +226,7 @@ const EmployeeBooklet = () => {
 
   return (
     <>
+      {loading && <Loading />}
       <PForm
         form={form}
         onFinish={() => {
@@ -243,9 +268,25 @@ const EmployeeBooklet = () => {
               });
             }}
             scroll={{ x: 2000 }}
-            onRow={(record) => ({
+            onRow={(rec) => ({
               onClick: () => {
-                setOpenBooklet(true);
+                getEmpData(rec.intEmployeeBasicInfoId);
+                getTransferAndPromotionHistoryById(
+                  orgId,
+                  rec.intEmployeeBasicInfoId,
+                  setHistoryData,
+                  setLoading,
+                  buId,
+                  wgId
+                );
+                getEmployeeIncrementByEmoloyeeId(
+                  orgId,
+                  rec.intEmployeeBasicInfoId,
+                  setIncrementHistoryList,
+                  setLoading,
+                  wgId,
+                  buId
+                );
               },
               className: "pointer",
             })}
@@ -255,14 +296,20 @@ const EmployeeBooklet = () => {
       <PModal
         style={{ top: 0 }}
         open={openBooklet}
-        bodyStyle={{ height: "85vh" }}
+        bodyStyle={{ height: "80vh" }}
         title={"Employee Booklet"}
-        width={"100vw"}
+        width={"1500px"}
         onCancel={() => {
           setOpenBooklet(false);
         }}
         maskClosable={false}
-        components={<FlipComponent />}
+        components={
+          <FlipComponent
+            singleData={singleData}
+            historyData={historyData}
+            incrementHistory={incrementHistoryList}
+          />
+        }
       />
     </>
   );

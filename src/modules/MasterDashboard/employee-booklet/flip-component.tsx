@@ -5,8 +5,13 @@ import React, { useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import PersonalInfo from "./contents/PersonalInfo";
 import "./booklet.css";
+import { Flex, PButton } from "Components";
+import FixedInfo from "./fixed-info";
+import PromotionHistory from "./contents/PromotionHistory";
+import IncrementHistory from "./contents/IncrementHistory";
+import TransferHistory from "./contents/TransferHistory";
 
-const FlipComponent = () => {
+const FlipComponent = ({ singleData, historyData, incrementHistory }) => {
   const book = useRef();
 
   const goToPreviousPage = () => {
@@ -23,15 +28,24 @@ const FlipComponent = () => {
 
   return (
     <div>
-      <Row gutter={16}>
-        <Col style={{ backgroundColor: "red" }} md={6}></Col>
-        <Col style={{ backgroundColor: "blue" }} md={18}>
+      <Row gutter={8}>
+        <Col md={5}>
+          <FixedInfo singleData={singleData?.employeeProfileLandingView} />
+        </Col>
+        <Col style={{ backgroundColor: "blue", maxWidth: "1100px" }} md={19}>
           <div className="book-wrapper">
-            <button onClick={goToPreviousPage}>Prev page</button>
-            <button onClick={goToNextPage}>Next page</button>
+            <Flex justify="flex-end">
+              <PButton
+                className="mr-2"
+                onClick={goToPreviousPage}
+                content="Prev Page"
+              />
+              <PButton onClick={goToNextPage} content="Next Page" />
+            </Flex>
+
             <HTMLFlipBook
-              width={900}
-              height={600}
+              width={1050}
+              height={550}
               ref={book}
               maxShadowOpacity={3}
               showCover={false}
@@ -40,23 +54,37 @@ const FlipComponent = () => {
               flippingTime={1000}
             >
               <div className="page">
-                <PersonalInfo id={1} />{" "}
+                <PersonalInfo
+                  singleData={singleData?.employeeProfileLandingView}
+                  passportNo={singleData?.empEmployeePhotoIdentity?.strPassport}
+                  nidNo={singleData?.empEmployeePhotoIdentity?.strNid}
+                  empSignatureId={
+                    singleData?.empEmployeePhotoIdentity?.intSignatureFileUrlId
+                  }
+                  birthId={singleData?.empEmployeePhotoIdentity?.strBirthId}
+                  presentAddress={
+                    singleData?.empEmployeeAddress[0]?.strAddressDetails
+                  }
+                  permanentAddress={
+                    singleData?.empEmployeeAddress[1]?.strAddressDetails
+                  }
+                />{" "}
               </div>
               <div className="page">
-                <PersonalInfo id={2} />{" "}
+                <PromotionHistory historyData={historyData} />{" "}
               </div>
               <div className="page">
-                <PersonalInfo id={3} />{" "}
+                <IncrementHistory incrementHistory={incrementHistory} />{" "}
               </div>
               <div className="page">
-                <PersonalInfo id={4} />{" "}
+                <TransferHistory historyData={historyData} />{" "}
               </div>
-              <div className="page">
+              {/* <div className="page">
                 <PersonalInfo id={5} />{" "}
               </div>
               <div className="page">
                 <PersonalInfo id={6} />{" "}
-              </div>
+              </div> */}
             </HTMLFlipBook>
           </div>
         </Col>
