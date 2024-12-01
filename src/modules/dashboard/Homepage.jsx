@@ -141,7 +141,7 @@ const Homepage = () => {
       to = "/manning";
       image = requirment;
     } else if (label === "Training & Development") {
-      to = "/trainingAndDevelopment/planning";
+      to = "/trainingAndDevelopment/dashboard";
       image = training;
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
