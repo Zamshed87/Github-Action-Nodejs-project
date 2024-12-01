@@ -276,4 +276,7 @@ export const apiList = {
   CreateUpdateIncrementProposal:
     "/IncrementProposal/CreateUpdateIncrementProposal",
   GetQuestionLanding: "/Questionnaire/Landing",
+  // GetQuestionLanding: "/Questionnaire/Landing",
+  // GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
+  // GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
 };
