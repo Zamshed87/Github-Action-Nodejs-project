@@ -53,7 +53,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     },
     {
       title: "Name of Trainer",
-      dataIndex: "nameofTrainer",
+      dataIndex: "name",
       filter: true,
       filterKey: "nameofTrainerList",
       filterSearch: true,
@@ -157,7 +157,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     },
   ];
   const landingApiCall = () => {
-    getLandingApi("/TrainingAndDevelopment/GetAllTrainingType");
+    getLandingApi("/TrainerInformation/Training/TrainerInformation");
   };
   useEffect(() => {
     landingApiCall();
@@ -222,6 +222,20 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                 placeholder="Trainer Email"
                 label="Trainer Email"
                 name="trainerEmail"
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PInput
+                type="text"
+                placeholder="Trainer Contact No"
+                label="Trainer Contact No"
+                name="contactNo"
+                rules={[
+                  {
+                    required: true,
+                    message: "Name of Organization is required",
+                  },
+                ]}
               />
             </Col>
 

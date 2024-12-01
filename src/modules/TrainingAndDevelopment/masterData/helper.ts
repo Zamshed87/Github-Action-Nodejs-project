@@ -200,16 +200,19 @@ export const createTrainerInfo = async (
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
+    console.log(values, "values");
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      isActive: true,
+      name: values?.nameofTrainer,
+      organization: values?.nameofOrganization,
+      contactNo: values?.contactNo,
+      email: values?.trainerEmail,
+      isInHouseTrainer: values?.inhouseTrainer || false,
     };
-    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    const res = await axios.post(
+      `/TrainerInformation/Training/TrainerInformation`,
+      payload
+    );
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();

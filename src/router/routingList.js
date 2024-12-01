@@ -3339,7 +3339,7 @@ export const routingList = [
     component: TrainingCost,
   },
   {
-    path: "/trainingAndDevelopment/trainerInfo",
+    path: "/trainingAndDevelopment/trainerInformation",
     component: TrainerInfo,
   },
   {
