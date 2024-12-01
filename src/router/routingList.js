@@ -1506,6 +1506,9 @@ import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/plann
 import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
 import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
 import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType";
+import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
+import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
+import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3333,8 +3336,20 @@ export const routingList = [
     component: TrainingType,
   },
   {
-    path: "/trainingAndDevelopment/trainerInfo",
+    path: "/trainingAndDevelopment/trainingTitle",
+    component: TrainingTitle,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCostType",
+    component: TrainingCost,
+  },
+  {
+    path: "/trainingAndDevelopment/trainerInformation",
     component: TrainerInfo,
+  },
+  {
+    path: "/trainingAndDevelopment/dashboard",
+    component: TnDDashboard,
   },
   // Trainnning and development ends
 

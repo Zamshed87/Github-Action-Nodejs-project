@@ -17,6 +17,7 @@ import axios from "axios";
 import { message } from "antd";
 import { createTrainingCost, updateTrainingCost } from "./helper";
 import { shallowEqual, useSelector } from "react-redux";
+import { EditOutlined } from "@ant-design/icons";
 
 const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -39,8 +40,8 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000,
           index,
         }),
       fixed: "left",
@@ -48,14 +49,14 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     },
     {
       title: "Cost Type",
-      dataIndex: "costType",
+      dataIndex: "strName",
       filter: true,
       filterKey: "costTypeList",
       filterSearch: true,
     },
     {
       title: "Description",
-      dataIndex: "costDescription",
+      dataIndex: "strDescription",
       filter: true,
       filterKey: "costDescriptionList",
       filterSearch: true,
@@ -65,7 +66,10 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Status">
+          <Tooltip
+            placement="bottom"
+            title={rec?.isActive ? "Inactive" : "Active"}
+          >
             <Switch
               size="small"
               checked={rec?.isActive}
@@ -88,13 +92,61 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       align: "center",
       width: 40,
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Edit">
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                form.setFieldsValue({
+                  costType: rec?.strName,
+                  costDescription: rec?.strDescription,
+                  singleData: rec,
+                  editAction: true,
+                });
+              }}
+            />
+          </Tooltip>
+
+          {/* <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                deleteTrainingType(rec, setLoading, () => {
+                  landingApiCall();
+                  form.resetFields();
+                });
+              }}
+            />
+          </Tooltip> */}
+        </Flex>
+      ),
+      align: "center",
+      width: 30,
+    },
   ];
   const landingApiCall = () => {
-    getLandingApi("/trainingType");
+    getLandingApi("/TrainingCostType/Training/CostType");
   };
   useEffect(() => {
     landingApiCall();
   }, []);
+
+  // Watch for editAction changes
+  const editAction = Form.useWatch("editAction", form);
 
   return (
     <div>
@@ -130,31 +182,65 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
                 name="costDescription"
               />
             </Col>
-            <Col md={6} sm={24}>
+            <Col md={6} sm={24} style={{ display: "flex" }}>
+              <Form.Item name="editAction" hidden>
+                <input type="hidden" />
+              </Form.Item>
               <PButton
-                style={{ marginTop: "22px" }}
+                style={{
+                  marginTop: "22px",
+                  backgroundColor: editAction ? "red" : "",
+                }}
                 type="primary"
-                content="Save"
+                content={editAction ? "Edit" : "Save"}
                 onClick={() => {
                   const values = form.getFieldsValue(true);
                   form
                     .validateFields()
                     .then(() => {
-                      createTrainingCost(
-                        form,
-                        profileData,
-                        setLoading,
-                        () => {
-                          landingApiCall();
-                        },
-                        setOpenCostTypeModal
-                      );
+                      editAction
+                        ? updateTrainingCost(
+                            form,
+                            profileData,
+                            setLoading,
+                            values?.singleData,
+                            false,
+                            () => {
+                              landingApiCall();
+                              form.resetFields();
+                            }
+                          )
+                        : createTrainingCost(
+                            form,
+                            profileData,
+                            setLoading,
+                            () => {
+                              landingApiCall();
+                              // Reset form after successful submission
+                              form.resetFields();
+                            }
+                            // setOpenTraingTypeModal
+                          );
                     })
                     .catch(() => {
                       console.log("error");
                     });
                 }}
               />
+              {editAction && (
+                <PButton
+                  style={{
+                    marginTop: "22px",
+                    marginLeft: "10px",
+                  }}
+                  type="primary"
+                  content={"Reset"}
+                  onClick={() => {
+                    landingApiCall();
+                    form.resetFields();
+                  }}
+                />
+              )}
             </Col>
           </Row>
         </PCardBody>
@@ -162,17 +248,17 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={landingApi?.data?.data || []}
-            loading={landingApi?.loading}
+            data={landingApi || []}
+            loading={landingLoading}
             header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
             filterData={landingApi?.data?.filters}
-            onChange={(pagination, filters) => {
-              landingApiCall();
-            }}
+            // onChange={(pagination, filters) => {
+            //   landingApiCall();
+            // }}
           />
         </div>
         {/* </PCard> */}

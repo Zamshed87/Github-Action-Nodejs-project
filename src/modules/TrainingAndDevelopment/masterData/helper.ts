@@ -112,8 +112,8 @@ export const createTrainingTitle = async (
   form: FormInstance<any>,
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  cb: any,
-  setOpenTrainingTitleModal: (arg0: boolean) => void
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
 ) => {
   setLoading(true);
   try {
@@ -121,18 +121,17 @@ export const createTrainingTitle = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
+      strName: values?.trainingTitle,
+      strDescription: values?.trainingDescription,
       intCreatedBy: employeeId,
+      dteCreatedAt: todayDate(),
       isActive: true,
     };
-    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    const res = await axios.post(`/TrainingTitle/Training/Title`, payload);
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
-    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
   } catch (error) {
     toast.warn("Created failed", { toastId: 1222 });
@@ -165,8 +164,8 @@ export const updateTrainingTitle = async (
     } else {
       payload = {
         intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
+        strName: values?.trainingTitle || data?.strName,
+        strDescription: values?.trainingDescription || data?.strDescription,
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -175,7 +174,7 @@ export const updateTrainingTitle = async (
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingTitle/Training/Title/${data?.intId}`,
       payload
     );
     form.resetFields();
@@ -194,27 +193,30 @@ export const createTrainerInfo = async (
   form: FormInstance<any>,
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  cb: any,
-  setOpenTrainingTitleModal: (arg0: boolean) => void
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
 ) => {
   setLoading(true);
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
+    console.log(values, "values");
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      isActive: true,
+      name: values?.nameofTrainer,
+      organization: values?.nameofOrganization,
+      contactNo: values?.contactNo,
+      email: values?.trainerEmail,
+      isInHouseTrainer: values?.inhouseTrainer || false,
     };
-    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    const res = await axios.post(
+      `/TrainerInformation/Training/TrainerInformation`,
+      payload
+    );
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
-    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
   } catch (error) {
     toast.warn("Created failed", { toastId: 1222 });
@@ -241,23 +243,25 @@ export const updateTrainerInfo = async (
       payload = {
         ...data,
         isActive: !data?.isActive,
+        strName: values?.nameofTrainer || data?.name,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
       };
     } else {
       payload = {
         intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
-        intAccountId: orgId,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
+        name: values?.nameofTrainer || data?.name,
+        strName: values?.nameofTrainer || data?.name,
+        organization: values?.nameofOrganization || data?.organization,
+        contactNo: values?.contactNo || data?.contactNo,
+        email: values?.trainerEmail || data?.email,
+        isInHouseTrainer: values?.inhouseTrainer || data?.isInHouseTrainer,
         isActive: data?.isActive,
       };
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingType/Training/Type/${data?.id}`,
       payload
     );
     form.resetFields();
@@ -278,8 +282,8 @@ export const createTrainingCost = async (
   form: FormInstance<any>,
   profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  cb: any,
-  setOpenTrainingTitleModal: (arg0: boolean) => void
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
 ) => {
   setLoading(true);
   try {
@@ -287,18 +291,21 @@ export const createTrainingCost = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
+      strName: values?.costType,
+      strDescription: values?.costDescription,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       isActive: true,
     };
-    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    const res = await axios.post(
+      `/TrainingCostType/Training/CostType`,
+      payload
+    );
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
-    setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
   } catch (error) {
     toast.warn("Created failed", { toastId: 1222 });
@@ -331,8 +338,8 @@ export const updateTrainingCost = async (
     } else {
       payload = {
         intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
+        strName: values?.costType || data?.strName,
+        strDescription: values?.costDescription || data?.strDescription,
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -341,7 +348,7 @@ export const updateTrainingCost = async (
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingCostType/Training/CostType/${data?.intId}`,
       payload
     );
     form.resetFields();

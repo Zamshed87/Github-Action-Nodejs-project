@@ -86,6 +86,13 @@ const TnDPlanningCreateEdit = () => {
     setTrainingType,
   ] = useAxiosGet();
 
+  const [
+    trainingTitleDDL,
+    getTrainingTitleDDL,
+    loadingTrainingTitle,
+    setTrainingTitle,
+  ] = useAxiosGet();
+
   const [upcommi, setUpcommi] = useState(false);
 
   // workplace wise
@@ -212,11 +219,12 @@ const TnDPlanningCreateEdit = () => {
       },
     });
     getWorkplaceGroup();
-    getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSet);
+    getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
+    getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
     getNameOfTrainerOrgDDL("/trainingType");
   }, [profileData?.buId, profileData?.wgId]);
 
-  const typeDataSet = (data: any) => {
+  const typeDataSetForType = (data: any) => {
     let list: any[] = [];
     data?.map((item: any) => {
       list.push({
@@ -225,6 +233,17 @@ const TnDPlanningCreateEdit = () => {
       });
     });
     setTrainingType(list);
+  };
+
+  const typeDataSetForTitle = (data: any) => {
+    let list: any[] = [];
+    data?.map((item: any) => {
+      list.push({
+        label: item?.strName,
+        value: item?.intId,
+      });
+    });
+    setTrainingTitle(list);
   };
 
   const addHandler = (values: any) => {
@@ -410,7 +429,7 @@ const TnDPlanningCreateEdit = () => {
               </Col>
               <Col md={6} sm={12} xs={24}>
                 <PSelect
-                  options={trainingTypeDDL || []}
+                  options={trainingTitleDDL || []}
                   name="trainingTitle"
                   label={
                     <>
@@ -665,7 +684,7 @@ const TnDPlanningCreateEdit = () => {
         width="350"
         onCancel={() => {
           setOpenTraingTypeModal(false);
-          getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSet);
+          getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
         }}
         maskClosable={false}
         components={
@@ -684,6 +703,10 @@ const TnDPlanningCreateEdit = () => {
         width="400"
         onCancel={() => {
           setOpenTrainingTitleModal(false);
+          getTrainingTitleDDL(
+            "/TrainingTitle/Training/Title",
+            typeDataSetForTitle
+          );
         }}
         maskClosable={false}
         components={
