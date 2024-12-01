@@ -113,7 +113,7 @@ export default function ApprovalList() {
           icon: BonusIcon,
         });
       }
-      if (item?.pipelineCode === "BABBAPBANDNQNCCD") {
+      if (item?.pipelineCode === "BABBAPBANDNQNCPN") {
         arr.push({
           ...item,
           icon: BonusIcon,
