@@ -37,8 +37,8 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000,
           index,
         }),
       fixed: "left",
@@ -136,7 +136,7 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     },
   ];
   const landingApiCall = () => {
-    getLandingApi("/trainingType");
+    getLandingApi("/TrainingTitle/Training/Title");
   };
   useEffect(() => {
     landingApiCall();

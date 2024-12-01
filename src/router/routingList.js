@@ -1505,6 +1505,8 @@ import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/plann
 import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
 import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
 import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType";
+import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
+import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3328,6 +3330,14 @@ export const routingList = [
     component: TrainingType,
   },
   {
+    path: "/trainingAndDevelopment/trainingTitle",
+    component: TrainingTitle,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCostType",
+    component: TrainingCost,
+  },
+  {
     path: "/trainingAndDevelopment/trainerInfo",
     component: TrainerInfo,
   },
@@ -3405,7 +3415,6 @@ export const routingList = [
     path: "/profile/customReportsBuilder/punishmentAction/:recordId",
     component: PunishmentAction,
   },
-
 
   // Exit Interview starts
 

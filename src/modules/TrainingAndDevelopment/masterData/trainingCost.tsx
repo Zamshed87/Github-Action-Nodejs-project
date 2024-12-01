@@ -40,8 +40,8 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000,
           index,
         }),
       fixed: "left",
@@ -49,14 +49,14 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     },
     {
       title: "Cost Type",
-      dataIndex: "costType",
+      dataIndex: "strName",
       filter: true,
       filterKey: "costTypeList",
       filterSearch: true,
     },
     {
       title: "Description",
-      dataIndex: "costDescription",
+      dataIndex: "strDescription",
       filter: true,
       filterKey: "costDescriptionList",
       filterSearch: true,
@@ -107,8 +107,8 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
               }}
               onClick={() => {
                 form.setFieldsValue({
-                  trainingType: rec?.strName,
-                  remarks: rec?.strRemarks,
+                  costType: rec?.strName,
+                  costDescription: rec?.strDescription,
                   singleData: rec,
                   editAction: true,
                 });
@@ -139,7 +139,7 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     },
   ];
   const landingApiCall = () => {
-    getLandingApi("/trainingType");
+    getLandingApi("/TrainingCostType/Training/CostType");
   };
   useEffect(() => {
     landingApiCall();
@@ -234,17 +234,17 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={landingApi?.data?.data || []}
-            loading={landingApi?.loading}
+            data={landingApi || []}
+            loading={landingLoading}
             header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
             filterData={landingApi?.data?.filters}
-            onChange={(pagination, filters) => {
-              landingApiCall();
-            }}
+            // onChange={(pagination, filters) => {
+            //   landingApiCall();
+            // }}
           />
         </div>
         {/* </PCard> */}

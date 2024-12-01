@@ -124,6 +124,7 @@ export const createTrainingTitle = async (
       strName: values?.trainingTitle,
       strDescription: values?.trainingDescription,
       intCreatedBy: employeeId,
+      dteCreatedAt: todayDate(),
       isActive: true,
     };
     const res = await axios.post(`/TrainingTitle/Training/Title`, payload);
@@ -164,7 +165,7 @@ export const updateTrainingTitle = async (
       payload = {
         intId: data?.intId,
         strName: values?.trainingTitle || data?.strName,
-        strDescription: values?.remarks || data?.strDescription,
+        strDescription: values?.trainingDescription || data?.strDescription,
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -285,14 +286,17 @@ export const createTrainingCost = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks,
+      strName: values?.costType,
+      strDescription: values?.costDescription,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       isActive: true,
     };
-    const res = await axios.post(`/TrainingType/Training/Type`, payload);
+    const res = await axios.post(
+      `/TrainingCostType/Training/CostType`,
+      payload
+    );
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
@@ -329,8 +333,8 @@ export const updateTrainingCost = async (
     } else {
       payload = {
         intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
+        strName: values?.costType || data?.strName,
+        strDescription: values?.costDescription || data?.strDescription,
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -339,7 +343,7 @@ export const updateTrainingCost = async (
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingCostType/Training/CostType/${data?.intId}`,
       payload
     );
     form.resetFields();
