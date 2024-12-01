@@ -243,15 +243,10 @@ export const updateTrainerInfo = async (
       payload = {
         ...data,
         isActive: !data?.isActive,
-        strName: values?.nameofTrainer || data?.name,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
       };
     } else {
       payload = {
-        intId: data?.intId,
         name: values?.nameofTrainer || data?.name,
-        strName: values?.nameofTrainer || data?.name,
         organization: values?.nameofOrganization || data?.organization,
         contactNo: values?.contactNo || data?.contactNo,
         email: values?.trainerEmail || data?.email,
