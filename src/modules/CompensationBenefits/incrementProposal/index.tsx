@@ -178,15 +178,15 @@ export const IncrementProposal = () => {
           setSelectedRow(selected);
         }
       },
+      onError: (res: any) => {
+        setLanding([]);
+        toast.warn(res?.response?.data?.title);
+      },
     });
   };
 
   useEffect(() => {
     getEmployee();
-    // getWorkplaceGroup();
-    // empBasicInfo(buId, orgId, employeeId, setEmpInfo);
-
-    // landingApiCall();
   }, []);
   //  Delete Element
   const deleteProposalById = (item: any) => {
