@@ -29,7 +29,7 @@ const initData = {
   },
 };
 const IndividualTargetSetup = () => {
-  // 30400
+  // 30471
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 20,

@@ -567,12 +567,14 @@ const AttendanceReport = () => {
               total: landingApi?.data?.totalCount,
             }}
             onChange={(pagination, filters, sorter, extra) => {
+              const values = form.getFieldsValue(true);
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
 
               landingApiCall({
                 pagination,
+                searchText: values?.search
               });
             }}
             scroll={{ x: 2000 }}

@@ -20,7 +20,7 @@ const initData = {
 };
 
 const SbuTargetSetup = () => {
-  // 30402
+  // 30473
   const [currentItem, setCurrentItem] = useState("");
   const [isShowModal, setIsShowModal] = useState(false);
   const [pmTypeDDL, getPMTypeDDL] = useAxiosGet();

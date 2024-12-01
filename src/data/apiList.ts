@@ -268,12 +268,9 @@ export const apiList = {
 
   getCommonEnumData: "/Enum/GetEnums",
   GetInterviewLanding: "/Questionnaire/Assigned/Landing",
+  GetQuestionLanding: "/Questionnaire/Landing",
+=========
   GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
   GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
-  GetSupervisorDDL: "/IncrementProposal/GetSupervisorDDL",
-  GetIncrementProposalLoader: "/IncrementProposal/GetIncrementProposalLoader",
-  DeleteIncrementProposal: "/IncrementProposal/DeleteIncrementProposal",
-  CreateUpdateIncrementProposal:
-    "/IncrementProposal/CreateUpdateIncrementProposal",
-  GetQuestionLanding: "/Questionnaire/Landing",
+>>>>>>>>> Temporary merge branch 2
 };

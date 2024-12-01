@@ -12,7 +12,7 @@ const RoleWiseJDandSpecification = () => {
   const [value, setValue] = useState(0);
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30397),
+    () => permissionList.find((item) => item?.menuReferenceId === 30468),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

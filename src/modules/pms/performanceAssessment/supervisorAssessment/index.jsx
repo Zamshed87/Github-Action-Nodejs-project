@@ -14,7 +14,7 @@ import { setBarAssesmentInitialValuesAction } from "../../../../commonRedux/redu
 import AntScrollTable from "../../../../common/AntScrollTable";
 
 const SupervisorAssessmentLanding = () => {
-  // 30423
+  // 30494
   const history = useHistory();
   const dispatch = useDispatch();
   const ASSESMENTTYPE = "subordinate";

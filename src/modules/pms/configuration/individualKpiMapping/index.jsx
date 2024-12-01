@@ -19,7 +19,7 @@ import IndividualKpiViewModal from "./individualKpiViewModal";
 import AntScrollTable from "../../../../common/AntScrollTable";
 
 const IndividualKpiMapping = () => {
-  // 30391
+  // 30462
   const [selectedData, setSelectedData] = useState(null);
   const [showKpiViewModal, setShowKpiViewModal] = useState(false);
 

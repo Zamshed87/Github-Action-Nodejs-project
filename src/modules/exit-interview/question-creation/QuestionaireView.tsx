@@ -9,7 +9,7 @@ import { assignToEmployee } from "./helper";
 import Loading from "common/loading/Loading";
 
 const QuestionaireView = ({ singleData }: any) => {
-  const { type, title, description, questions } = singleData;
+  const { typeName, title, description, questions } = singleData;
 
   const { profileData } = useSelector(
     (state: any) => state?.auth,
@@ -52,7 +52,7 @@ const QuestionaireView = ({ singleData }: any) => {
       {loading && <Loading />}
       <Flex justify="space-between">
         <div>
-          <SingleInfo label={"Questionaire Type"} value={type || "N/A"} />
+          <SingleInfo label={"Questionaire Type"} value={typeName || "N/A"} />
           <SingleInfo label={"Questionaire Title"} value={title || "N/A"} />
           <SingleInfo
             label={"Questionaire Description"}

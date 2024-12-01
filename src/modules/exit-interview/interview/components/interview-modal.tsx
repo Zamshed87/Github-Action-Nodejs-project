@@ -154,7 +154,7 @@ const InterviewModal = () => {
                 }
                 if (field.typeName === "Textbox") {
                   return (
-                    <Col md={12} sm={24} key={index} className="mt-2">
+                    <Col md={18} sm={24} key={index} className="mt-2">
                       <PInput
                         type="textarea"
                         label={`${field?.title} (Max ${field?.answerTextLength})`}
@@ -213,7 +213,7 @@ const InterviewModal = () => {
                 }
                 if (field.typeName === "Drop-Down List") {
                   return (
-                    <Col md={6} sm={24} key={index} className="mt-2">
+                    <Col md={12} sm={24} key={index} className="mt-2">
                       <PSelect
                         options={
                           createLabelValue(field?.options, "optionName") || []

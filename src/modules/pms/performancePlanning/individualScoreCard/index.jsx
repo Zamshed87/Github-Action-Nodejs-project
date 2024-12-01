@@ -27,7 +27,7 @@ const IndividualScoreCard = () => {
   const [pmTypeDDL, getPMTypeDDL] = useAxiosGet();
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   const individualScoreCardPermission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30414),
+    () => permissionList.find((item) => item?.menuReferenceId === 30485),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

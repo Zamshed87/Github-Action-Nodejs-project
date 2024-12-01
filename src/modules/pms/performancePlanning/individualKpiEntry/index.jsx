@@ -23,7 +23,7 @@ const initData = {
 };
 
 const IndividualKpiEntry = () => {
-  // 30412
+  // 30483
   const {
     profileData: { orgId, buId, intAccountId },
   } = useSelector((store) => store?.auth, shallowEqual);
