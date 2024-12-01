@@ -60,21 +60,21 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     },
     {
       title: "Name of Organization",
-      dataIndex: "nameOfOrganization",
+      dataIndex: "organization",
       filter: true,
       filterKey: "nameOfOrganizationList",
       filterSearch: true,
     },
     {
       title: "Trainer Contact No",
-      dataIndex: "trainerContactNo",
+      dataIndex: "contactNo",
       filter: true,
       filterKey: "nameOfOrganizationList",
       filterSearch: true,
     },
     {
       title: "Trainer Email",
-      dataIndex: "trainerEmail",
+      dataIndex: "email",
       filter: true,
       filterKey: "trainerEmailList",
       filterSearch: true,
@@ -125,8 +125,11 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
               }}
               onClick={() => {
                 form.setFieldsValue({
-                  trainingType: rec?.strName,
-                  remarks: rec?.strRemarks,
+                  nameofTrainer: rec?.name,
+                  nameofOrganization: rec?.organization,
+                  trainerEmail: rec?.email,
+                  contactNo: rec?.contactNo,
+                  inhouseTrainer: rec?.isInHouseTrainer || false,
                   singleData: rec,
                   editAction: true,
                 });
@@ -285,21 +288,21 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                     });
                 }}
               />
+              {editAction && (
+                <PButton
+                  style={{
+                    marginTop: "22px",
+                    marginLeft: "10px",
+                  }}
+                  type="primary"
+                  content={"Reset"}
+                  onClick={() => {
+                    landingApiCall();
+                    form.resetFields();
+                  }}
+                />
+              )}
             </Col>
-            {editAction && (
-              <PButton
-                style={{
-                  marginTop: "22px",
-                  marginLeft: "10px",
-                }}
-                type="primary"
-                content={"Reset"}
-                onClick={() => {
-                  landingApiCall();
-                  form.resetFields();
-                }}
-              />
-            )}
           </Row>
         </PCardBody>
 

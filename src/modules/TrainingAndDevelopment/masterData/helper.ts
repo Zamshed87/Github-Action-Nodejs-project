@@ -243,6 +243,7 @@ export const updateTrainerInfo = async (
       payload = {
         ...data,
         isActive: !data?.isActive,
+        strName: values?.nameofTrainer || data?.name,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
       };
@@ -250,6 +251,7 @@ export const updateTrainerInfo = async (
       payload = {
         intId: data?.intId,
         name: values?.nameofTrainer || data?.name,
+        strName: values?.nameofTrainer || data?.name,
         organization: values?.nameofOrganization || data?.organization,
         contactNo: values?.contactNo || data?.contactNo,
         email: values?.trainerEmail || data?.email,
@@ -259,7 +261,7 @@ export const updateTrainerInfo = async (
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingType/Training/Type/${data?.id}`,
       payload
     );
     form.resetFields();
