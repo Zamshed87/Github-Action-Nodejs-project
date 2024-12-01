@@ -200,7 +200,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
                 name="remarks"
               />
             </Col>
-            <Col md={6} sm={24}>
+            <Col md={6} sm={24} style={{ display: "flex" }}>
               <Form.Item name="editAction" hidden>
                 <input type="hidden" />
               </Form.Item>
@@ -245,6 +245,20 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
                     });
                 }}
               />
+              {editAction && (
+                <PButton
+                  style={{
+                    marginTop: "22px",
+                    marginLeft: "10px",
+                  }}
+                  type="primary"
+                  content={"Reset"}
+                  onClick={() => {
+                    landingApiCall();
+                    form.resetFields();
+                  }}
+                />
+              )}
             </Col>
           </Row>
         </PCardBody>

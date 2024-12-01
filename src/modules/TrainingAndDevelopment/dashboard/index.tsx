@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import PerticipantsChart from "./chart/perticipants";
 import { useDispatch } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import DurationChart from "./chart/duration";
 
 const TnDDashboard = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const TnDDashboard = () => {
           <PerticipantsChart />
         </div>
         <div style={{ height: "200px", width: "600px" }}>
-          <PerticipantsChart />
+          <DurationChart />
         </div>
       </div>
     </div>

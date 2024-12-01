@@ -249,11 +249,11 @@ export const updateTrainerInfo = async (
     } else {
       payload = {
         intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
-        intAccountId: orgId,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
+        name: values?.nameofTrainer || data?.name,
+        organization: values?.nameofOrganization || data?.organization,
+        contactNo: values?.contactNo || data?.contactNo,
+        email: values?.trainerEmail || data?.email,
+        isInHouseTrainer: values?.inhouseTrainer || data?.isInHouseTrainer,
         isActive: data?.isActive,
       };
     }

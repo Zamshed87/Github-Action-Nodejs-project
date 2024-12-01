@@ -175,7 +175,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
         <PCardHeader title={`Total ${landingApi?.length || 0} Trainer`} />
         <PCardBody>
           <Row gutter={[10, 2]}>
-            <Col md={4} sm={24}>
+            <Col md={4} sm={24} style={{ marginTop: "10px" }}>
               <Checkbox
                 name="inhouseTrainer"
                 onChange={(e) => {
@@ -231,15 +231,16 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                 label="Trainer Contact No"
                 name="contactNo"
                 rules={[
+                  { required: true, message: "Contact number is required" },
                   {
-                    required: true,
-                    message: "Name of Organization is required",
+                    pattern: /^[0-9]{11}$/, // Adjust pattern as per your requirements
+                    message: "Contact number must be 11 digits",
                   },
                 ]}
               />
             </Col>
 
-            <Col md={6} sm={24}>
+            <Col md={6} sm={24} style={{ display: "flex" }}>
               <Form.Item name="editAction" hidden>
                 <input type="hidden" />
               </Form.Item>
@@ -285,6 +286,20 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                 }}
               />
             </Col>
+            {editAction && (
+              <PButton
+                style={{
+                  marginTop: "22px",
+                  marginLeft: "10px",
+                }}
+                type="primary"
+                content={"Reset"}
+                onClick={() => {
+                  landingApiCall();
+                  form.resetFields();
+                }}
+              />
+            )}
           </Row>
         </PCardBody>
 
