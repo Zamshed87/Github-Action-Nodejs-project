@@ -46,10 +46,11 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     },
     {
       title: "Inhouser Trainer?",
-      dataIndex: "inhouserTrainer",
+      dataIndex: "isInHouseTrainer",
       filter: true,
       filterKey: "inhouserTrainerList",
       filterSearch: true,
+      render: (isInHouseTrainer: boolean) => (isInHouseTrainer ? "Yes" : "No"),
     },
     {
       title: "Name of Trainer",
@@ -166,6 +167,14 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     landingApiCall();
   }, []);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      onValuesChange: (changedValues: any, allValues: any) => {
+        console.log("Form Values:", allValues);
+      },
+    });
+  }, [form]);
+
   // Watch for editAction changes
   const editAction = Form.useWatch("editAction", form);
   const nameofTrainer = Form.useWatch("nameofTrainer", form);
@@ -179,16 +188,12 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
         <PCardBody>
           <Row gutter={[10, 2]}>
             <Col md={4} sm={24} style={{ marginTop: "10px" }}>
-              <Checkbox
+              <Form.Item
                 name="inhouseTrainer"
-                onChange={(e) => {
-                  form.setFieldsValue({
-                    inhouseTrainer: e.target.checked,
-                  });
-                }}
+                valuePropName="checked" // Ensures the checkbox value is bound correctly
               >
-                Inhouse Trainer?
-              </Checkbox>
+                <Checkbox>Inhouse Trainer?</Checkbox>
+              </Form.Item>
             </Col>
             <Col md={6} sm={24}>
               <PInput
@@ -269,6 +274,9 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                             () => {
                               landingApiCall();
                               form.resetFields();
+                              form.setFieldsValue({
+                                inhouseTrainer: false,
+                              });
                             }
                           )
                         : createTrainerInfo(
@@ -279,6 +287,9 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                               landingApiCall();
                               // Reset form after successful submission
                               form.resetFields();
+                              form.setFieldsValue({
+                                inhouseTrainer: false,
+                              });
                             }
                             // setOpenTraingTypeModal
                           );
