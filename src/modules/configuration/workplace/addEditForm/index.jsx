@@ -4,11 +4,13 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Switch } from "antd";
-import { IoMdAddCircleOutline } from "react-icons/io";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 import { toast } from "react-toastify";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import { AttachmentOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -23,6 +25,10 @@ export default function AddEditForm({
   const getWgDDL = useApiRequest({});
   const createWg = useApiRequest({});
   const SaveWorkplace = useApiRequest({});
+  const [workplaceImage, setWorkplaceImage] = useState([]);
+  const dispatch = useDispatch();
+
+  console.log("workplaceImage", workplaceImage);
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -98,6 +104,7 @@ export default function AddEditForm({
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
+      intImageId: workplaceImage?.[0]?.response?.[0]?.globalFileUrlId || 0,
     };
 
     SaveWorkplace.action({
@@ -147,6 +154,7 @@ export default function AddEditForm({
               name="strWorkplace"
               label="Workplace"
               placeholder="Workplace"
+              disabled={isEdit}
               rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
@@ -156,6 +164,7 @@ export default function AddEditForm({
               name="strWorkplaceCode"
               label="Code"
               placeholder="Code"
+              disabled={isEdit}
               rules={[{ required: true, message: "Code is required" }]}
             />
           </Col>
@@ -168,6 +177,7 @@ export default function AddEditForm({
               showSearch
               filterOption={true}
               placeholder="Business Unit"
+              disabled={isEdit}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   bUnit: op,
@@ -184,6 +194,7 @@ export default function AddEditForm({
               showSearch
               filterOption={true}
               placeholder="Workplace Group"
+              disabled={isEdit}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   wgDDL: op,
@@ -209,6 +220,7 @@ export default function AddEditForm({
                       name="newWorkplaceGroup"
                       label="Add New Workplace Group"
                       placeholder="Add New Workplace Group"
+                      disabled={isEdit}
                       rules={
                         [
                           // {
@@ -221,6 +233,7 @@ export default function AddEditForm({
                   </Col>
                   <Col md={12} className="mt-1">
                     <button
+                      disabled={isEdit}
                       type="button"
                       className="mt-3  btn btn-green  "
                       style={{
@@ -277,12 +290,57 @@ export default function AddEditForm({
               );
             }}
           </Form.Item>
+
+          <Col md={6} sm={24} style={{ marginTop: "21px" }}>
+            <div className="mt-3">
+              <FileUploadComponents
+                propsObj={{
+                  title: "Image Upload",
+                  attachmentList: workplaceImage,
+                  setAttachmentList: setWorkplaceImage,
+                  accountId: orgId,
+                  tableReferrence: "WORKPLACE",
+                  documentTypeId: 15,
+                  userId: employeeId,
+                  buId,
+                  maxCount: 1,
+                  accept: "image/png, image/jpeg, image/jpg",
+                }}
+              />
+            </div>
+            {(workplaceImage?.length > 0 || singleData?.intImageId) && (
+              <p
+                onClick={() => {
+                  dispatch(getDownlloadFileView_Action(singleData?.intImageId));
+                }}
+              >
+                <AttachmentOutlined
+                  sx={{
+                    marginRight: "5px",
+                    color: "#0072E5",
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    color: "#0072E5",
+                    cursor: "pointer",
+                  }}
+                >
+                  {"Attachment"}
+                </span>
+              </p>
+            )}
+          </Col>
+
           {isEdit && (
             <Col
               md={24}
               style={{
                 marginLeft: "-0.5rem",
               }}
+              disabled={isEdit}
             >
               <div
                 className=""
@@ -309,7 +367,7 @@ export default function AddEditForm({
                   }}
                 >
                   <Form.Item name="isActive" valuePropName="checked">
-                    <Switch />
+                    <Switch disabled={!!isEdit} />
                   </Form.Item>
                 </div>
               </div>
