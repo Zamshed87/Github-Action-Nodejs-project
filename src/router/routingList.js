@@ -1497,6 +1497,17 @@ const MonthlyAttendanceReport = lazy(() =>
 const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
+// Training and Development
+import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
+import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
+import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/planningCreateEdit";
+import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
+import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
+import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType";
+import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
+import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
+import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
 //     "../modules/trainingDevelopment/Application/components/TrainingApplicationCreate/index.jsx"
@@ -3292,6 +3303,44 @@ export const routingList = [
     path: "/trainingAndDevelopment/training/attendance/view/:id",
     component: AttendanceView,
   },
+  // Training & Development New
+  {
+    path: "/trainingAndDevelopment/requisition",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/requisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/planning",
+    component: TnDPlanningLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/planning/:type",
+    component: TnDPlanningCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTypes",
+    component: TrainingType,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTitle",
+    component: TrainingTitle,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCostType",
+    component: TrainingCost,
+  },
+  {
+    path: "/trainingAndDevelopment/trainerInformation",
+    component: TrainerInfo,
+  },
+  {
+    path: "/trainingAndDevelopment/dashboard",
+    component: TnDDashboard,
+  },
+  // Trainnning and development ends
 
   //external training start
   {
