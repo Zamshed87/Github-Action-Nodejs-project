@@ -75,6 +75,10 @@ function AboutMeDetails() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Employee Details";
+    () => {
+      document.title = "PeopleDesk";
+    };
   }, []);
 
   return (
