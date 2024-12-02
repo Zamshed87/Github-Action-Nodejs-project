@@ -63,7 +63,7 @@ export const updateTrainingType = async (
       payload = {
         intId: data?.intId,
         strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
+        strRemarks: values?.remarks || "",
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -165,7 +165,7 @@ export const updateTrainingTitle = async (
       payload = {
         intId: data?.intId,
         strName: values?.trainingTitle || data?.strName,
-        strDescription: values?.trainingDescription || data?.strDescription,
+        strDescription: values?.trainingDescription || "",
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -247,9 +247,9 @@ export const updateTrainerInfo = async (
     } else {
       payload = {
         name: values?.nameofTrainer || data?.name,
-        organization: values?.nameofOrganization || data?.organization,
+        organization: values?.nameofOrganization || "",
         contactNo: values?.contactNo || data?.contactNo,
-        email: values?.trainerEmail || data?.email,
+        email: values?.trainerEmail || "",
         isInHouseTrainer: values?.inhouseTrainer || data?.isInHouseTrainer,
         isActive: data?.isActive,
       };
@@ -334,7 +334,7 @@ export const updateTrainingCost = async (
       payload = {
         intId: data?.intId,
         strName: values?.costType || data?.strName,
-        strDescription: values?.costDescription || data?.strDescription,
+        strDescription: values?.costDescription || "",
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,

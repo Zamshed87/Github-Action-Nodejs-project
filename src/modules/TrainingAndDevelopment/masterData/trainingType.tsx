@@ -81,7 +81,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       filterSearch: true,
     },
     {
-      title: "Created Date,",
+      title: "Created Date",
       dataIndex: "dteCreatedAt",
       render: (text: any) => dateFormatter(text),
       filter: true,

@@ -178,7 +178,7 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
               <PInput
                 type="text"
                 placeholder="Description"
-                label="Cost Description"
+                label="Description"
                 name="costDescription"
               />
             </Col>
