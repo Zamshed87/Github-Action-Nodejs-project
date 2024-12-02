@@ -270,4 +270,8 @@ export const apiList = {
   DeleteIncrementProposal: "/IncrementProposal/DeleteIncrementProposal",
   CreateUpdateIncrementProposal:
     "/IncrementProposal/CreateUpdateIncrementProposal",
+  GetRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetRewardPunishmentPagination", // admin end
+  GetUserRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
 };
