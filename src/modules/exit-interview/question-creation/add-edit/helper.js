@@ -8,48 +8,119 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const saveQuestionnaire = async (values, setLoading, cb) => {
+export const saveQuestionnaire = async (
+  quesId,
+  values,
+  profileData,
+  setLoading,
+  cb
+) => {
   setLoading(true);
   try {
-    const question = values?.questions?.map((ques, index) => {
-      const relevantAnswers = values?.answers
-        .filter((answer) => answer.queId === ques.id)
-        .map((item, index) => {
-          return {
-            sortOrder: index + 1,
-            optionName: item?.answerDescription,
-          };
-        });
+    const formattedQuestions = values?.questions?.map((ques, index) => {
+      const relevantAnswers = ques?.answers
+        ? ques?.answers.map((answer, idx) => ({
+            optionName: answer?.answerDescription,
+            sortOrder: idx + 1,
+          }))
+        : [];
+
       return {
-        typeId: ques?.questionType,
+        typeId: parseInt(ques?.questionType),
         title: ques?.questionTitle,
         sortOrder: index + 1,
         answer: ques?.expectedAns,
-        answerTextLength: ques?.ansTextLength || 0,
-        isRequired: ques?.isRequired,
-        saveAsTemplate: ques?.isDraft,
-        options: relevantAnswers || [],
+        answerTextLength: ques?.ansTextLength || 400,
+        isRequired: ques?.isRequired ? true : false,
+        saveAsTemplate: ques?.isDraft ? true : false,
+        options: relevantAnswers,
       };
     });
 
+    if (values?.questions?.length === 0) {
+      return toast.warning("Please add questions");
+    }
+
+    for (const obj of values?.questions || []) {
+      if (
+        !obj ||
+        !obj?.questionType ||
+        !obj?.questionTitle ||
+        !obj?.expectedAns
+      ) {
+        toast.warning("Please fill question fields");
+        return;
+      }
+      if (
+        (obj?.questionType === "0" ||
+          obj?.questionType === "1" ||
+          obj?.questionType === "2") &&
+        (!obj?.answers || obj?.answers?.length === 0)
+      ) {
+        toast.warning("Please add answers");
+        return;
+      }
+      if (
+        (obj?.questionType === "3" || obj?.questionType === "4") &&
+        !obj?.ansTextLength
+      ) {
+        toast.warning("Please add text length");
+        return;
+      }
+      if (
+        (obj?.questionType === "0" ||
+          obj?.questionType === "1" ||
+          obj?.questionType === "2") &&
+        (obj?.answers || obj?.answers?.length > 0)
+      ) {
+        for (const ans of obj?.answers) {
+          if (!ans || !ans.answerDescription) {
+            toast.warning("Please add answer");
+            return;
+          }
+        }
+      }
+    }
+
     const payload = {
-      id: 0,
-      typeId: values?.survayType?.value,
+      id: quesId || 0,
+      typeId: parseInt(values?.survayType?.value),
       title: values?.survayTitle,
       description: values?.survayDescription,
-      businessUnitId: values?.buDDL?.value,
-      workplaceGroupId: values?.wgDDL?.value,
-      workplaceId: values?.wDDL?.value,
-      questions: question,
+      businessUnitId: profileData?.buId,
+      workplaceGroupId: profileData?.wgId,
+      workplaceId: profileData?.wId,
+      questions: formattedQuestions,
     };
 
-    console.log(payload);
-    const res = await axios.post(`/Questionnaire`, payload);
+    const method = quesId ? axios.put : axios.post;
+
+    const res = await method(`/Questionnaire`, payload);
     cb();
-    toast.success(res?.data?.message, { toastId: 1 });
+    toast.success(res?.data?.Message || "Created Sucessfully", { toastId: 1 });
   } catch (error) {
-    toast.warn(error?.response?.data?.message, { toastId: 1 });
+    console.log(error);
+    toast.warn(error?.response?.data?.Message, { toastId: 1 });
   } finally {
     setLoading(false);
   }
+};
+
+export const initDataForEdit = (data) => {
+  return {
+    survayType: { value: data?.typeId, label: data?.typeName },
+    survayTitle: data?.title,
+    survayDescription: data?.description,
+    questions: data?.questions?.map((question) => ({
+      questionType: question?.typeId.toString(),
+      questionTitle: question?.title,
+      expectedAns: question?.answer,
+      ansTextLength: question?.answerTextLength,
+      isRequired: question?.isRequired,
+      isDraft: false,
+      answers: question?.options?.map((option) => ({
+        answerDescription: option.optionName,
+      })),
+    })),
+  };
 };

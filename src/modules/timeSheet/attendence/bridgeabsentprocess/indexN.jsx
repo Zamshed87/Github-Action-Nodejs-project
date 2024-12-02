@@ -43,10 +43,11 @@ function AttendanceRawDataProcess() {
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30383) {
+    if (item?.menuReferenceId === 30421) {
       permission = item;
     }
   });
+//
 
   const dispatch = useDispatch();
   const today = moment().format("YYYY-MM-DD");
