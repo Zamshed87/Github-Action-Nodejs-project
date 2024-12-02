@@ -3,15 +3,15 @@ import BackButton from "../../../../common/BackButton";
 import FormikSelect from "../../../../common/FormikSelect";
 import { gray600, success500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import { getPeopleDeskAllDDL, getPeopleDeskAllDDLWithCode } from "../../../../common/api";
 import { shallowEqual, useSelector } from "react-redux";
 import ReactQuill from "react-quill";
 import FormikError from "../../../../common/login/FormikError";
-import FormikMuiDatePicker from "../../../../common/FormikMuiDatePicker";
 import DefaultInput from "../../../../common/DefaultInput";
+import FormikMuiDatePicker from "common/FormikMuiDatePicker";
 
 function AddEditForm({ propsObj }) {
-  const { employeeId, userName } = useSelector(
+  const { employeeId, userName, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -30,8 +30,8 @@ function AddEditForm({ propsObj }) {
   const [empDDL, setEmpDDL] = useState([]);
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}`,
+    getPeopleDeskAllDDLWithCode(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeName",
       setEmpDDL
@@ -84,7 +84,7 @@ function AddEditForm({ propsObj }) {
                       control: (provided, state) => ({
                         ...provided,
                         minHeight: "auto",
-                        height: values?.empList?.length > 2 ? "auto" : "30px",
+                        height: "auto",
                         borderRadius: "4px",
                         boxShadow: `${success500}!important`,
                         ":hover": {
@@ -96,7 +96,7 @@ function AddEditForm({ propsObj }) {
                       }),
                       valueContainer: (provided, state) => ({
                         ...provided,
-                        height: values?.empList?.length > 2 ? "auto" : "30px",
+                        height: "auto",
                         padding: "0 6px",
                       }),
                       multiValue: (styles) => {

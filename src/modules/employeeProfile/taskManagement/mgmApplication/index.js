@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import { getPeopleDeskAllDDL, getPeopleDeskAllDDLWithCode } from "../../../../common/api";
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
@@ -38,7 +38,7 @@ const ManagementTaskManagement = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  const { buName } = useSelector(
+  const { buName, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -121,8 +121,8 @@ const ManagementTaskManagement = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}`,
+    getPeopleDeskAllDDLWithCode(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeName",
       setEmployeeDDL
