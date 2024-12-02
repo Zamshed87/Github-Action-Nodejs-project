@@ -19,7 +19,7 @@ export const createTrainingType = async (
 
     const payload = {
       strName: values?.trainingType,
-      strRemarks: values?.remarks,
+      strRemarks: values?.remarks || "",
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
@@ -122,7 +122,7 @@ export const createTrainingTitle = async (
 
     const payload = {
       strName: values?.trainingTitle,
-      strDescription: values?.trainingDescription,
+      strDescription: values?.trainingDescription || "",
       intCreatedBy: employeeId,
       dteCreatedAt: todayDate(),
       isActive: true,
@@ -203,10 +203,10 @@ export const createTrainerInfo = async (
     console.log(values, "values");
 
     const payload = {
-      name: values?.nameofTrainer,
-      organization: values?.nameofOrganization,
-      contactNo: values?.contactNo,
-      email: values?.trainerEmail,
+      name: values?.nameofTrainer || "",
+      organization: values?.nameofOrganization || "",
+      contactNo: values?.contactNo || "",
+      email: values?.trainerEmail || "",
       isInHouseTrainer: values?.inhouseTrainer || false,
     };
     const res = await axios.post(
@@ -287,7 +287,7 @@ export const createTrainingCost = async (
 
     const payload = {
       strName: values?.costType,
-      strDescription: values?.costDescription,
+      strDescription: values?.costDescription || "",
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,

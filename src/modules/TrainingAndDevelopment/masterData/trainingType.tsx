@@ -59,7 +59,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
       align: "center",
     },
     {
-      title: "trainingType",
+      title: "Training Type",
       dataIndex: "strName",
       filter: true,
       filterKey: "trainingTypeList",
@@ -68,9 +68,10 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     {
       title: "Remarks",
       dataIndex: "strRemarks",
+      sorter: true,
+      filterKey: "strRemarksList",
       filter: true,
-      filterKey: "remarksList",
-      filterSearch: true,
+      width: 45,
     },
     {
       title: "Created by",
