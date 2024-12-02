@@ -10,31 +10,44 @@ import React, { forwardRef, useState } from "react";
 import { dateFormatter } from "utility/dateFormatter";
 import { postPDFAction } from "utility/downloadFile";
 
-const RewardHistory = forwardRef((props: any, ref: any) => {
-  const rewardData = props?.landingApiReward;
+const PunishmentHistory = forwardRef((props: any, ref: any) => {
+  const punishmentData = props?.landingApiPunishment;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState<any>({});
-  const headerReward: any = [
+
+  const headerPunishment: any = [
     {
       title: "SL",
       render: (_: any, rec: any, index: number) => index + 1,
       fixed: "left",
       align: "center",
     },
+
     {
       title: "Letter Name",
       dataIndex: "letterName",
+      filter: true,
+      filterKey: "letterNameList",
+      filterSearch: true,
+      width: "40px",
     },
+
     {
       title: "Issued By",
       dataIndex: "issueByEmployeeName",
+      filter: true,
+      filterKey: "createdByList",
+      filterSearch: true,
+      width: "40px",
     },
     {
       title: "Issued Date",
       dataIndex: "issueDate",
       render: (data: any) => dateFormatter(data),
+      width: "30px",
     },
+
     {
       title: "Action",
       dataIndex: "letterGenerateId",
@@ -92,11 +105,11 @@ const RewardHistory = forwardRef((props: any, ref: any) => {
         </h1>
       </center>
       <div>
-        {rewardData?.data?.data?.length > 0 ? (
+        {punishmentData?.data?.data?.length > 0 ? (
           <DataTable
             bordered
-            data={rewardData?.data?.data || []}
-            header={headerReward}
+            data={punishmentData?.data?.data || []}
+            header={headerPunishment}
           />
         ) : (
           <NoResult />
@@ -160,4 +173,4 @@ const RewardHistory = forwardRef((props: any, ref: any) => {
   );
 });
 
-export default RewardHistory;
+export default PunishmentHistory;

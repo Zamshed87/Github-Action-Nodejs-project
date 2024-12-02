@@ -32,6 +32,9 @@ const EmployeeBooklet = () => {
   const [loanDto, getLoanDto, loadingData, setResLoanData] = useAxiosGet();
   const [leaveBalanceDto, setLeaveBalanceDto] = useState([]);
 
+  const landingApiReward = useApiRequest({});
+  const landingApiPunishment = useApiRequest({});
+
   // Form Instance
   const [form] = Form.useForm();
 
@@ -313,6 +316,29 @@ const EmployeeBooklet = () => {
                   buId,
                   wgId
                 );
+
+                landingApiReward.action({
+                  urlKey: "GetUserRewardPunishmentLetterLanding",
+                  method: "GET",
+                  params: {
+                    accountId: orgId,
+                    userId: rec.intEmployeeBasicInfoId,
+                    actionType: 1,
+                    pageNo: 0,
+                    pageSize: 5000,
+                  },
+                });
+                landingApiPunishment.action({
+                  urlKey: "GetUserRewardPunishmentLetterLanding",
+                  method: "GET",
+                  params: {
+                    accountId: orgId,
+                    userId: rec.intEmployeeBasicInfoId,
+                    actionType: 2,
+                    pageNo: 0,
+                    pageSize: 5000,
+                  },
+                });
               },
               className: "pointer",
             })}
@@ -336,6 +362,8 @@ const EmployeeBooklet = () => {
             incrementHistory={incrementHistoryList}
             loanDto={loanDto}
             leaveBalanceDto={leaveBalanceDto}
+            landingApiReward={landingApiReward}
+            landingApiPunishment={landingApiPunishment}
           />
         }
       />

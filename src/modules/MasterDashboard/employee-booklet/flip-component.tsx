@@ -13,6 +13,8 @@ import IncrementHistory from "./contents/IncrementHistory";
 import TransferHistory from "./contents/TransferHistory";
 import LoanHistory from "./contents/LoanHistory";
 import LeaveBalanceData from "./contents/LeaveBalanceData";
+import RewardHistory from "./contents/RewardHistory";
+import PunishmentHistory from "./contents/PunishmentHistory";
 
 const FlipComponent = ({
   singleData,
@@ -20,6 +22,8 @@ const FlipComponent = ({
   incrementHistory,
   loanDto,
   leaveBalanceDto,
+  landingApiReward,
+  landingApiPunishment,
 }) => {
   const book = useRef();
 
@@ -93,6 +97,14 @@ const FlipComponent = ({
               </div>
               <div className="page">
                 <LeaveBalanceData leaveBalanceDto={leaveBalanceDto} />{" "}
+              </div>
+              <div className="page">
+                <RewardHistory landingApiReward={landingApiReward} />{" "}
+              </div>
+              <div className="page">
+                <PunishmentHistory
+                  landingApiPunishment={landingApiPunishment}
+                />{" "}
               </div>
             </HTMLFlipBook>
           </div>
