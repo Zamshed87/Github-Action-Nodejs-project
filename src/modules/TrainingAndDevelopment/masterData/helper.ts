@@ -256,7 +256,7 @@ export const updateTrainerInfo = async (
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.id}`,
+      `/TrainerInformation/Training/TrainerInformation/${data?.id}`,
       payload
     );
     form.resetFields();
