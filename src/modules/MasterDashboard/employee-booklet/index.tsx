@@ -10,6 +10,9 @@ import FlipComponent from "./flip-component";
 import Loading from "common/loading/Loading";
 import { getTransferAndPromotionHistoryById } from "modules/employeeProfile/transferNPromotion/transferNPromotion/helper";
 import { getEmployeeIncrementByEmoloyeeId } from "modules/CompensationBenefits/employeeSalary/salaryAssign/helper";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import moment from "moment";
+import { todayDate } from "utility/todayDate";
 
 const EmployeeBooklet = () => {
   // redux
@@ -25,6 +28,7 @@ const EmployeeBooklet = () => {
   const [loading, setLoading] = useState(false);
   const [historyData, setHistoryData] = useState([]);
   const [incrementHistoryList, setIncrementHistoryList] = useState([]);
+  const [loanDto, getLoanDto, loadingData, setResLoanData] = useAxiosGet();
 
   // Form Instance
   const [form] = Form.useForm();
@@ -226,7 +230,7 @@ const EmployeeBooklet = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loadingData) && <Loading />}
       <PForm
         form={form}
         onFinish={() => {
@@ -270,6 +274,16 @@ const EmployeeBooklet = () => {
             scroll={{ x: 2000 }}
             onRow={(rec) => ({
               onClick: () => {
+                // loan data
+                const filterDate = `&fromDate=${moment(
+                  rec?.dteJoiningDate
+                ).format("YYYY-MM-DD")}&toDate=${todayDate()}`;
+                const url = `/Employee/PeopleDeskAllLanding?TableName=LoanApplicationList&intId=${rec.intEmployeeBasicInfoId}&AccountId=${orgId}&BusinessUnitId=${buId}${filterDate}`;
+                getLoanDto(url, (res: any) => {
+                  setResLoanData(res);
+                });
+
+                // basic info data
                 getEmpData(rec.intEmployeeBasicInfoId);
                 getTransferAndPromotionHistoryById(
                   orgId,
@@ -308,6 +322,7 @@ const EmployeeBooklet = () => {
             singleData={singleData}
             historyData={historyData}
             incrementHistory={incrementHistoryList}
+            loanDto={loanDto}
           />
         }
       />

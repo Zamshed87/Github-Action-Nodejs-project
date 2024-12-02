@@ -1,9 +1,9 @@
 .flipbook {
   overflow: hidden !important;
-  width: 1050px;
+  width: 950px;
   height: 550px;
   border-radius: 5px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
 }
 
 .page {
@@ -11,7 +11,7 @@
   height: 100% !important;
   background-color: white;
   border-radius: 4px;
-  margin-left: -20px;
+  margin-left: -10px;
 }
 
 .page > div {

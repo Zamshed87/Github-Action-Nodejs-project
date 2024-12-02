@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 //@ts-nocheck
 
 import { Col, Row } from "antd";
@@ -10,8 +11,14 @@ import FixedInfo from "./fixed-info";
 import PromotionHistory from "./contents/PromotionHistory";
 import IncrementHistory from "./contents/IncrementHistory";
 import TransferHistory from "./contents/TransferHistory";
+import LoanHistory from "./contents/LoanHistory";
 
-const FlipComponent = ({ singleData, historyData, incrementHistory }) => {
+const FlipComponent = ({
+  singleData,
+  historyData,
+  incrementHistory,
+  loanDto,
+}) => {
   const book = useRef();
 
   const goToPreviousPage = () => {
@@ -32,9 +39,9 @@ const FlipComponent = ({ singleData, historyData, incrementHistory }) => {
         <Col md={5}>
           <FixedInfo singleData={singleData?.employeeProfileLandingView} />
         </Col>
-        <Col style={{ backgroundColor: "blue", maxWidth: "1100px" }} md={19}>
+        <Col style={{ maxWidth: "1100px" }} md={19}>
           <div className="book-wrapper">
-            <Flex justify="flex-end">
+            <Flex className=" mb-2" justify="flex-end">
               <PButton
                 className="mr-2"
                 onClick={goToPreviousPage}
@@ -44,7 +51,7 @@ const FlipComponent = ({ singleData, historyData, incrementHistory }) => {
             </Flex>
 
             <HTMLFlipBook
-              width={1050}
+              width={950}
               height={550}
               ref={book}
               maxShadowOpacity={3}
@@ -79,10 +86,10 @@ const FlipComponent = ({ singleData, historyData, incrementHistory }) => {
               <div className="page">
                 <TransferHistory historyData={historyData} />{" "}
               </div>
-              {/* <div className="page">
-                <PersonalInfo id={5} />{" "}
-              </div>
               <div className="page">
+                <LoanHistory loanDto={loanDto} />{" "}
+              </div>
+              {/* <div className="page">
                 <PersonalInfo id={6} />{" "}
               </div> */}
             </HTMLFlipBook>
