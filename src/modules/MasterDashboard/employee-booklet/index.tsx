@@ -13,6 +13,7 @@ import { getEmployeeIncrementByEmoloyeeId } from "modules/CompensationBenefits/e
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import moment from "moment";
 import { todayDate } from "utility/todayDate";
+import { getEmployeeLeaveBalanceAndHistory } from "common/HOCLeave/helperAPI";
 
 const EmployeeBooklet = () => {
   // redux
@@ -29,6 +30,7 @@ const EmployeeBooklet = () => {
   const [historyData, setHistoryData] = useState([]);
   const [incrementHistoryList, setIncrementHistoryList] = useState([]);
   const [loanDto, getLoanDto, loadingData, setResLoanData] = useAxiosGet();
+  const [leaveBalanceDto, setLeaveBalanceDto] = useState([]);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -301,6 +303,16 @@ const EmployeeBooklet = () => {
                   wgId,
                   buId
                 );
+                getEmployeeLeaveBalanceAndHistory(
+                  rec.intEmployeeBasicInfoId,
+                  "LeaveBalance",
+                  setLeaveBalanceDto,
+                  setLoading,
+                  "",
+                  moment().format("yyyy"),
+                  buId,
+                  wgId
+                );
               },
               className: "pointer",
             })}
@@ -323,6 +335,7 @@ const EmployeeBooklet = () => {
             historyData={historyData}
             incrementHistory={incrementHistoryList}
             loanDto={loanDto}
+            leaveBalanceDto={leaveBalanceDto}
           />
         }
       />

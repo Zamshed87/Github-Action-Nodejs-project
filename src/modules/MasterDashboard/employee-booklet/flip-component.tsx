@@ -12,12 +12,14 @@ import PromotionHistory from "./contents/PromotionHistory";
 import IncrementHistory from "./contents/IncrementHistory";
 import TransferHistory from "./contents/TransferHistory";
 import LoanHistory from "./contents/LoanHistory";
+import LeaveBalanceData from "./contents/LeaveBalanceData";
 
 const FlipComponent = ({
   singleData,
   historyData,
   incrementHistory,
   loanDto,
+  leaveBalanceDto,
 }) => {
   const book = useRef();
 
@@ -89,9 +91,9 @@ const FlipComponent = ({
               <div className="page">
                 <LoanHistory loanDto={loanDto} />{" "}
               </div>
-              {/* <div className="page">
-                <PersonalInfo id={6} />{" "}
-              </div> */}
+              <div className="page">
+                <LeaveBalanceData leaveBalanceDto={leaveBalanceDto} />{" "}
+              </div>
             </HTMLFlipBook>
           </div>
         </Col>
