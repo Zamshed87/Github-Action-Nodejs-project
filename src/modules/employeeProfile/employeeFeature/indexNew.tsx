@@ -171,7 +171,7 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strWorkplaceList",
       filterSearch: true,
-      width: 55,
+      width: 62,
       fixed: "left",
     },
 
