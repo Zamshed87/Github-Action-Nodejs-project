@@ -441,6 +441,7 @@ export const IncrementProposal = () => {
     incrementProposalPercentage: "Proposed Increment (%) by Gross Salary",
     incrementProposalAmount: "Proposed Increment Amount by Gross Salary",
     proposedGrossSalary: "Proposed Gross Salary",
+    status: "Status",
     remarks: "Remarks",
   };
   // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
