@@ -13,7 +13,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -205,18 +205,6 @@ export const IncrementProposal = () => {
     });
   };
   const header: any = [
-    // {
-    //     title: "SL",
-    //     render: (_: any, rec: any, index: number) =>
-    //       getSerial({
-    //         currentPage: landingApi?.data?.currentPage,
-    //         pageSize: landingApi?.data?.pageSize,
-    //         index,
-    //       }),
-    //     fixed: "left",
-    //     width: 35,
-    //     align: "center",
-    //   },
     {
       title: "SL",
       render: (_value: any, _row: any, index: number) => index + 1,
@@ -354,6 +342,7 @@ export const IncrementProposal = () => {
       render: (_value: any, row: any, index: number) => (
         <PInput
           type="number"
+          disabled={true}
           value={row?.proposedGrossSalary || 0}
           placeholder="Decimal Number"
           onChange={(e) => {
@@ -389,6 +378,26 @@ export const IncrementProposal = () => {
           }}
         />
       ),
+    },
+    {
+      title: "Status",
+      render: (_: any, rec: any) => {
+        return (
+          <div>
+            {rec?.strEmployeeStatus === "Approved" ? (
+              <Tag color="green">{rec?.status}</Tag>
+            ) : rec?.status === "Rejected" ? (
+              <Tag color="red">{rec?.status}</Tag>
+            ) : rec?.status === "Pending" ? (
+              <Tag color="orange">{rec?.status}</Tag>
+            ) : (
+              <Tag color="default">{rec?.status}</Tag>
+            )}
+          </div>
+        );
+      },
+
+      width: 100,
     },
     {
       title: "",
@@ -428,6 +437,7 @@ export const IncrementProposal = () => {
     incrementProposalPercentage: "Proposed Increment (%) by Gross Salary",
     incrementProposalAmount: "Proposed Increment Amount by Gross Salary",
     proposedGrossSalary: "Proposed Gross Salary",
+    status: "Status",
     remarks: "Remarks",
   };
   // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
