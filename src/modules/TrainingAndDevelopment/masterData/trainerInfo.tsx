@@ -45,11 +45,8 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
       align: "center",
     },
     {
-      title: "Inhouser Trainer?",
+      title: "Inhouse Trainer?",
       dataIndex: "isInHouseTrainer",
-      filter: true,
-      filterKey: "inhouserTrainerList",
-      filterSearch: true,
       render: (isInHouseTrainer: boolean) => (isInHouseTrainer ? "Yes" : "No"),
     },
     {
@@ -230,6 +227,16 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                 placeholder="Trainer Email"
                 label="Trainer Email"
                 name="trainerEmail"
+                rules={[
+                  {
+                    required: true,
+                    message: "Trainer Email is required",
+                  },
+                  {
+                    type: "email",
+                    message: "Please enter a valid email address",
+                  },
+                ]}
               />
             </Col>
             <Col md={6} sm={24}>

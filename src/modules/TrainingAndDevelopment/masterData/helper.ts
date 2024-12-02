@@ -19,7 +19,7 @@ export const createTrainingType = async (
 
     const payload = {
       strName: values?.trainingType,
-      strRemarks: values?.remarks,
+      strRemarks: values?.remarks || "",
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
@@ -63,7 +63,7 @@ export const updateTrainingType = async (
       payload = {
         intId: data?.intId,
         strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || data?.strRemarks,
+        strRemarks: values?.remarks || "",
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -122,7 +122,7 @@ export const createTrainingTitle = async (
 
     const payload = {
       strName: values?.trainingTitle,
-      strDescription: values?.trainingDescription,
+      strDescription: values?.trainingDescription || "",
       intCreatedBy: employeeId,
       dteCreatedAt: todayDate(),
       isActive: true,
@@ -165,7 +165,7 @@ export const updateTrainingTitle = async (
       payload = {
         intId: data?.intId,
         strName: values?.trainingTitle || data?.strName,
-        strDescription: values?.trainingDescription || data?.strDescription,
+        strDescription: values?.trainingDescription || "",
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
@@ -203,10 +203,10 @@ export const createTrainerInfo = async (
     console.log(values, "values");
 
     const payload = {
-      name: values?.nameofTrainer,
-      organization: values?.nameofOrganization,
-      contactNo: values?.contactNo,
-      email: values?.trainerEmail,
+      name: values?.nameofTrainer || "",
+      organization: values?.nameofOrganization || "",
+      contactNo: values?.contactNo || "",
+      email: values?.trainerEmail || "",
       isInHouseTrainer: values?.inhouseTrainer || false,
     };
     const res = await axios.post(
@@ -247,9 +247,9 @@ export const updateTrainerInfo = async (
     } else {
       payload = {
         name: values?.nameofTrainer || data?.name,
-        organization: values?.nameofOrganization || data?.organization,
+        organization: values?.nameofOrganization || "",
         contactNo: values?.contactNo || data?.contactNo,
-        email: values?.trainerEmail || data?.email,
+        email: values?.trainerEmail || "",
         isInHouseTrainer: values?.inhouseTrainer || data?.isInHouseTrainer,
         isActive: data?.isActive,
       };
@@ -287,7 +287,7 @@ export const createTrainingCost = async (
 
     const payload = {
       strName: values?.costType,
-      strDescription: values?.costDescription,
+      strDescription: values?.costDescription || "",
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
@@ -334,7 +334,7 @@ export const updateTrainingCost = async (
       payload = {
         intId: data?.intId,
         strName: values?.costType || data?.strName,
-        strDescription: values?.costDescription || data?.strDescription,
+        strDescription: values?.costDescription || "",
         intAccountId: orgId,
         dteUpdatedAt: todayDate(),
         intUpdatedBy: employeeId,
