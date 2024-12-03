@@ -411,7 +411,6 @@ export default function AddEditForm({
                   value: "DBL",
                   label: "DBL",
                 },
-
                 {
                   value: "SCB",
                   label: "SCB",
@@ -426,25 +425,28 @@ export default function AddEditForm({
                 },
                 {
                   value: "DigitalPayment",
-
                   label: "Digital Payment",
                 },
                 {
                   value: "DBBLAB",
-
                   label: "DBBL Agent Banking",
                 },
                 {
+                  value: "Upay",
+                  label: "Upay",
+                },
+                {
                   value: "UCBL",
-
                   label: "UCBL",
                 },
                 {
                   value: "Upay",
-
                   label: "Upay",
                 },
-                
+                {
+                  value: "BRAC",
+                  label: "BRAC",
+                },
               ]}
               onChange={(value, op) => {
                 form.setFieldsValue({
