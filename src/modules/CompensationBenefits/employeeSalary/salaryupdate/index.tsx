@@ -481,7 +481,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     // Update the selected index with the new amount
     // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
     if (temp[index]?.basedOn === "Amount") {
-      temp[index].numAmount = Math.round(e);
+      temp[index].numAmount = Math.round(e) || 0;
     } else {
       temp[index].numAmount = e + e * (slabCount || 0);
     }
@@ -569,10 +569,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     const values = form.getFieldsValue(true);
     // const { basicAmount } = form.getFieldsValue(true);
     if (values?.salaryType?.value === "Grade") {
-      basicAmount = rowDto[0]?.numAmount;
+      basicAmount = rowDto[0]?.numAmount || 0;
       // basicAmount = rowDto[0]?.numAmount;
     } else {
-      basicAmount = values?.basicAmount;
+      basicAmount = values?.basicAmount || 0;
     }
     for (const item of rowDto) {
       let amount;
@@ -589,17 +589,16 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100); // Calculate based on percentage of basic salary
-        item.numAmount = Math.round(
-          (item.numNumberOfPercent * basicAmount) / 100
-        ); // Calculate based on percentage of basic salary
+        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+        item.numAmount =
+          Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
       } else {
-        amount = item.numAmount; // Use the fixed amount if based on fixed amount
+        amount = item.numAmount || 0; // Use the fixed amount if based on fixed amount
       }
 
       modified_data.push({
         ...item,
-        amount: Math.ceil(amount), // Round to nearest integer
+        amount: Math.round(amount) || 0, // Round to nearest integer
       });
     }
 
@@ -726,11 +725,14 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       render: (value: any, row: any, index: number) => (
         <>
           <PInput
-            type="number"
+            type="text"
             // name={`numAmount_${index}`}
             value={row?.numAmount}
             placeholder="Amount"
             onChange={(e: any) => {
+              if (isNaN(e?.target?.value)) {
+                return toast.warn("Only numeric value allowed");
+              }
               const values = form.getFieldsValue(true);
               if (
                 values?.salaryType?.value !== "Grade" &&
@@ -738,7 +740,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 index === 0
               ) {
                 form.setFieldsValue({
-                  basicAmount: e,
+                  basicAmount: +e?.target?.value,
                 });
               }
               // if (values?.salaryType?.value == "Grade") {
@@ -752,7 +754,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               //       getById?.data?.payScaleElements[0]?.netAmount;
               //   }
               // }
-              updateRowDtoHandler(e, row, index);
+              updateRowDtoHandler(+e?.target?.value, row, index);
             }}
             disabled={
               row?.strBasedOn !== "Amount" ||
@@ -1241,11 +1243,21 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 return (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
-                      type="number"
+                      type="text"
                       name="basicAmount"
                       label="Basic"
                       placeholder="Basic"
-                      onChange={() => basic_or_grade_calculation()}
+                      onChange={(e: any) => {
+                        if (isNaN(e?.target?.value)) {
+                          toast.warn("Only numeric value allowed");
+                          return;
+                        } else {
+                          form.setFieldsValue({
+                            basicAmount: +e?.target?.value,
+                          });
+                          basic_or_grade_calculation();
+                        }
+                      }}
                       rules={[
                         {
                           required: basedOn?.value === 2 || basedOn === 2,
@@ -1259,33 +1271,40 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 return salaryType?.value !== "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
-                      type="number"
+                      type="text"
                       name="grossAmount"
                       label="Gross"
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        // const temp = [...accountsDto];
-                        if (orgId === 12) {
-                          // const accounts = `Bank Pay (${100}%)`;
-                          // temp[0].accounts = accounts;
-                          // temp[0].numAmount = e;
-                          // temp[2].numAmount = 0;
-                          // temp[1].numAmount = 0;
-                          accountDetailsSetup("bank", e);
+                        if (isNaN(e?.target?.value)) {
+                          return toast.warn("Only numeric value allowed");
                         } else {
-                          accountDetailsSetup("cash", e);
+                          // const temp = [...accountsDto];
+                          if (orgId === 12) {
+                            // const accounts = `Bank Pay (${100}%)`;
+                            // temp[0].accounts = accounts;
+                            // temp[0].numAmount = e;
+                            // temp[2].numAmount = 0;
+                            // temp[1].numAmount = 0;
+                            accountDetailsSetup("bank", +e?.target?.value);
+                          } else {
+                            accountDetailsSetup("cash", +e?.target?.value);
 
-                          // const accounts = `Cash Pay (${100}%)`;
-                          // temp[2].accounts = accounts;
-                          // temp[2].numAmount = e;
-                          // temp[0].numAmount = 0;
-                          // temp[1].numAmount = 0;
-                          // (values?.bankPay * 100) /
-                          //               values?.totalGrossSalary
-                          //             )?.toFixed(6)
+                            // const accounts = `Cash Pay (${100}%)`;
+                            // temp[2].accounts = accounts;
+                            // temp[2].numAmount = e;
+                            // temp[0].numAmount = 0;
+                            // temp[1].numAmount = 0;
+                            // (values?.bankPay * 100) /
+                            //               values?.totalGrossSalary
+                            //             )?.toFixed(6)
+                          }
+                          form.setFieldsValue({
+                            grossAmount: +e?.target?.value,
+                          });
+                          new_gross_calculation();
+                          // setAccountsDto([...temp]);
                         }
-                        new_gross_calculation();
-                        // setAccountsDto([...temp]);
                       }}
                       rules={[
                         {
@@ -1367,11 +1386,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               (acc, i) => acc + i?.numAmount,
               0
             );
-
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              elementSum !== grossAmount && (
+              Math.round(elementSum) !== Math.round(grossAmount) && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"

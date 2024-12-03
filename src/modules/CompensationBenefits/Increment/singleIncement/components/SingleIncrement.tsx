@@ -28,6 +28,8 @@ import moment from "moment";
 import IConfirmModal from "common/IConfirmModal";
 import Accordion from "../accordion";
 import { attachment_action } from "common/api";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
 import {
   AttachmentOutlined,
   FileUpload,
@@ -37,6 +39,7 @@ import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { setOrganizationDDLFunc } from "modules/roleExtension/ExtensionCreate/helper";
 import HistoryTransferTable from "modules/employeeProfile/transferNPromotion/transferNPromotion/components/HistoryTransferTable";
 import Loading from "common/loading/Loading";
+import { Alert } from "@mui/material";
 
 type TIncrement = unknown;
 const SingleIncrement: React.FC<TIncrement> = () => {
@@ -45,6 +48,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const regex = /^[0-9]*\.?[0-9]*$/;
+
   const location = useLocation();
   const { id }: any = useParams();
   const history = useHistory();
@@ -701,7 +706,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       basicAmount = rowDto[0]?.numAmount;
       // basicAmount = rowDto[0]?.numAmount;
     } else {
-      basicAmount = values?.basicAmount;
+      basicAmount = values?.basicAmount || 0;
     }
     for (const item of rowDto) {
       let amount;
@@ -718,17 +723,16 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100); // Calculate based on percentage of basic salary
-        item.numAmount = Math.round(
-          (item.numNumberOfPercent * basicAmount) / 100
-        ); // Calculate based on percentage of basic salary
+        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+        item.numAmount =
+          Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
       } else {
-        amount = Math.round(item.numAmount); // Use the fixed amount if based on fixed amount
+        amount = Math.round(item.numAmount) || 0; // Use the fixed amount if based on fixed amount
       }
 
       modified_data.push({
         ...item,
-        amount: Math.round(amount), // Round to nearest integer
+        amount: Math.round(amount) || 0, // Round to nearest integer
       });
     }
 
@@ -824,12 +828,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       render: (value: any, row: any, index: number) => (
         <>
           <PInput
-            type="number"
+            type="text"
             // name={`numAmount_${index}`}
             value={row?.numAmount}
             placeholder="Amount"
             onChange={(e: any) => {
-              console.log({ e });
+              if (isNaN(e?.target?.value)) {
+                return toast.warn("Only numeric value allowed");
+              }
               const values = form.getFieldsValue(true);
               if (
                 values?.salaryType?.value !== "Grade" &&
@@ -837,7 +843,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 index === 0
               ) {
                 form.setFieldsValue({
-                  basicAmount: e,
+                  basicAmount: +e?.target?.value,
                 });
               }
               // if (values?.salaryType?.value == "Grade") {
@@ -851,7 +857,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               //       getById?.data?.payScaleElements[0]?.netAmount;
               //   }
               // }
-              updateRowDtoHandler(e, row, index);
+              updateRowDtoHandler(+e?.target?.value, row, index);
             }}
             disabled={
               row?.strBasedOn !== "Amount" ||
@@ -2216,12 +2222,22 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 return (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
-                      type="number"
+                      type="text"
                       name="basicAmount"
                       disabled={(location?.state as any)?.viewOnly}
                       label="Basic"
                       placeholder="Basic"
-                      onChange={() => basic_or_grade_calculation()}
+                      onChange={(e: any) => {
+                        if (isNaN(e?.target?.value)) {
+                          return toast.warn("Only numeric value allowed");
+                        } else {
+                          form.setFieldsValue({
+                            basicAmount: +e?.target?.value,
+                          });
+
+                          basic_or_grade_calculation();
+                        }
+                      }}
                       rules={[
                         {
                           required: basedOn?.value === 2 || basedOn === 2,
@@ -2235,21 +2251,30 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 return salaryType?.value !== "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
-                      type="number"
+                      type="text"
                       name="grossAmount"
                       disabled={(location?.state as any)?.viewOnly}
                       label="Gross"
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        if (
-                          employeeIncrementByIdApi?.data?.oldGrossAmount > e ||
-                          employeeInfo?.data[0]?.numNetGrossSalary > e
-                        ) {
-                          return toast.warn(
-                            "Amount should be greater than previous amount"
-                          );
+                        if (isNaN(e?.target?.value)) {
+                          return toast.warn("Only numeric value allowed");
+                        } else {
+                          if (
+                            employeeIncrementByIdApi?.data?.oldGrossAmount >
+                              +e?.target?.value ||
+                            employeeInfo?.data[0]?.numNetGrossSalary >
+                              +e?.target?.value
+                          ) {
+                            return toast.warn(
+                              "Amount should be greater than previous amount"
+                            );
+                          }
+                          form.setFieldsValue({
+                            grossAmount: +e?.target?.value,
+                          });
+                          new_gross_calculation();
                         }
-                        new_gross_calculation();
 
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
@@ -2308,7 +2333,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           <Col xs={12}></Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { grossAmount, salaryType } = form.getFieldsValue(true);
+              const { grossAmount } = form.getFieldsValue(true);
 
               return (
                 <Col md={6} sm={12} xs={24}>
@@ -2330,6 +2355,44 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             }}
           </Form.Item>
         </Row>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { grossAmount, salaryType } = form.getFieldsValue(true);
+            const elementSum = rowDto?.reduce(
+              (acc, i) => acc + i?.numAmount,
+              0
+            );
+            return (
+              grossAmount > 0 &&
+              salaryType?.label !== "Grade" &&
+              Math.round(elementSum) !== Math.round(grossAmount) && (
+                <Alert
+                  icon={<InfoOutlinedIcon fontSize="inherit" />}
+                  severity="warning"
+                  style={{
+                    // width: "27rem",
+                    // position: "sticky",
+                    height: "84px",
+                    margin: "10px 0",
+                    top: "1px",
+                  }}
+                >
+                  <div>
+                    <div className="mb-3">
+                      <h2>
+                        Gross Amount and Breakdown Sum Amount Mismatch <br />
+                        Adjust By
+                        {elementSum > grossAmount ? " Reducing " : " Adding "}
+                        Amount {Math.round(Math.abs(elementSum - grossAmount))}
+                      </h2>
+                    </div>
+                    {/* <Divider orientation="left">Small Size</Divider> */}
+                  </div>
+                </Alert>
+              )
+            );
+          }}
+        </Form.Item>
         {rowDto?.length > 0 ? (
           <DataTable header={header} bordered data={rowDto || []} />
         ) : (
