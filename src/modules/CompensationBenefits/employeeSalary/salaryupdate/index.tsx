@@ -124,6 +124,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
             intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
             intPayrollElementTypeId: i?.intSalaryElementId,
+            basedOn: i?.strBasedOn,
           };
         });
         if (employeeInfo?.data[0]?.isGradeBasedSalary) {
@@ -220,6 +221,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         intId: 0,
       },
       onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].numAmount = Math.round(item?.numAmount);
+        });
         setRowDto(res);
       },
     });
@@ -473,10 +477,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         `${row?.strPayrollElementName} can't be greater than gross`
       );
     }
+
     // Update the selected index with the new amount
     // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
     if (temp[index]?.basedOn === "Amount") {
-      temp[index].numAmount = e;
+      temp[index].numAmount = Math.round(e);
     } else {
       temp[index].numAmount = e + e * (slabCount || 0);
     }
@@ -1384,7 +1389,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         Gross Amount and Breakdown Sum Amount Mismatch <br />
                         Adjust By
                         {elementSum > grossAmount ? " Reducing " : " Adding "}
-                        Amount {Math.abs(elementSum - grossAmount)}
+                        Amount {Math.round(Math.abs(elementSum - grossAmount))}
                       </h2>
                     </div>
                     {/* <Divider orientation="left">Small Size</Divider> */}
