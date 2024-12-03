@@ -249,7 +249,12 @@ const TnDPlanningCreateEdit = () => {
       costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
     setCostField([
       ...costField,
-      { id: nextId, costType: values?.costType?.label, ...values },
+      {
+        id: nextId,
+        costTypeId: values?.costType?.value,
+        costType: values?.costType?.label,
+        costValue: values?.costValue,
+      },
     ]);
   };
 
@@ -292,7 +297,7 @@ const TnDPlanningCreateEdit = () => {
     return perPersonCost;
   };
 
-  console.log(perticipantField);
+  console.log(perticipantField, costField);
 
   return (
     <div>
