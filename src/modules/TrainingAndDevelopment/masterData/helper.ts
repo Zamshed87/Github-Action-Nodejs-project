@@ -18,12 +18,8 @@ export const createTrainingType = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.trainingType,
-      strRemarks: values?.remarks || "",
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      isActive: true,
+      name: values?.trainingType,
+      remarks: values?.remarks || "",
     };
     const res = await axios.post(`/TrainingType/Training/Type`, payload);
     form.resetFields();
@@ -56,23 +52,17 @@ export const updateTrainingType = async (
       payload = {
         ...data,
         isActive: !data?.isActive,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
       };
     } else {
       payload = {
-        intId: data?.intId,
-        strName: values?.trainingType || data?.strName,
-        strRemarks: values?.remarks || "",
-        intAccountId: orgId,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
+        name: values?.trainingType || data?.name,
+        remarks: values?.remarks || "",
         isActive: data?.isActive,
       };
     }
 
     const res = await axios.put(
-      `/TrainingType/Training/Type/${data?.intId}`,
+      `/TrainingType/Training/Type/${data?.id}`,
       payload
     );
     form.resetFields();
@@ -93,9 +83,7 @@ export const deleteTrainingType = async (
 ) => {
   setLoading(true);
   try {
-    const res = await axios.delete(
-      `/TrainingType/Training/Type/${data?.intId}`
-    );
+    const res = await axios.delete(`/TrainingType/Training/Type/${data?.id}`);
     toast.success("Deleted Successfully", { toastId: 1222 });
     cb && cb();
     setLoading(false);
@@ -121,11 +109,8 @@ export const createTrainingTitle = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.trainingTitle,
-      strDescription: values?.trainingDescription || "",
-      intCreatedBy: employeeId,
-      dteCreatedAt: todayDate(),
-      isActive: true,
+      name: values?.trainingTitle,
+      description: values?.trainingDescription || "",
     };
     const res = await axios.post(`/TrainingTitle/Training/Title`, payload);
     form.resetFields();
@@ -158,23 +143,17 @@ export const updateTrainingTitle = async (
       payload = {
         ...data,
         isActive: !data?.isActive,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
       };
     } else {
       payload = {
-        intId: data?.intId,
-        strName: values?.trainingTitle || data?.strName,
-        strDescription: values?.trainingDescription || "",
-        intAccountId: orgId,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
+        name: values?.trainingTitle || data?.name,
+        description: values?.trainingDescription || "",
         isActive: data?.isActive,
       };
     }
 
     const res = await axios.put(
-      `/TrainingTitle/Training/Title/${data?.intId}`,
+      `/TrainingTitle/Training/Title/${data?.id}`,
       payload
     );
     form.resetFields();
@@ -218,8 +197,8 @@ export const createTrainerInfo = async (
     cb && cb();
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
-  } catch (error) {
-    toast.warn("Created failed", { toastId: 1222 });
+  } catch (error: any) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
   } finally {
     setLoading(false);
   }
@@ -286,12 +265,8 @@ export const createTrainingCost = async (
     const values = form.getFieldsValue(true);
 
     const payload = {
-      strName: values?.costType,
-      strDescription: values?.costDescription || "",
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      isActive: true,
+      name: values?.costType,
+      description: values?.costDescription || "",
     };
     const res = await axios.post(
       `/TrainingCostType/Training/CostType`,
@@ -327,23 +302,17 @@ export const updateTrainingCost = async (
       payload = {
         ...data,
         isActive: !data?.isActive,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
       };
     } else {
       payload = {
-        intId: data?.intId,
-        strName: values?.costType || data?.strName,
-        strDescription: values?.costDescription || "",
-        intAccountId: orgId,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
+        name: values?.costType || data?.name,
+        description: values?.costDescription || "",
         isActive: data?.isActive,
       };
     }
 
     const res = await axios.put(
-      `/TrainingCostType/Training/CostType/${data?.intId}`,
+      `/TrainingCostType/Training/CostType/${data?.id}`,
       payload
     );
     form.resetFields();
