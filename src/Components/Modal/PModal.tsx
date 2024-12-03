@@ -15,8 +15,6 @@ type PModalType = TModalType & ModalProps;
 export const PModal: React.FC<PModalType> = (property) => {
   const { components, wrapClassName, width, height = null } = property;
 
-  console.log(height);
-
   return (
     <Modal
       bodyStyle={{ maxHeight: height || "520px" }}
