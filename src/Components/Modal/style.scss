@@ -30,7 +30,7 @@
         padding-inline: $modalPadding_x;
         padding-top: $bodyPadding_y;
         margin-bottom: $estFooterHeight + $bodyPadding_y;
-        height: 520px;
+        // max-height: 520px;
         overflow-y: auto;
         // Modal Footer Style
         .ant-modal-footer.modal_footer_button_list {
