@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Col, Form, FormInstance, Row, Tooltip } from "antd";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { BarsOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {
   DataTable,
   Flex,
@@ -11,12 +9,12 @@ import {
   PForm,
   PInput,
 } from "Components";
-import Loading from "common/loading/Loading";
 import { getSerial } from "Utils";
-import { dateFormatter } from "utility/dateFormatter";
-import { BarsOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { Col, Form, Row, Tooltip } from "antd";
+import Loading from "common/loading/Loading";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { data } from "./helper";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -128,7 +126,6 @@ const TnDRequisitionLanding = () => {
     },
   ];
   const landingApiCall = (values: any) => {
-    console.log(values);
     getLandingApi("/TrainingRequisition/Training/TrainingRequisition");
   };
   useEffect(() => {
@@ -205,12 +202,9 @@ const TnDRequisitionLanding = () => {
                     form
                       .validateFields()
                       .then(() => {
-                        console.log(values);
                         landingApiCall(values);
                       })
-                      .catch(() => {
-                        console.log("error");
-                      });
+                      .catch(() => {});
                   }}
                 />
               </Col>

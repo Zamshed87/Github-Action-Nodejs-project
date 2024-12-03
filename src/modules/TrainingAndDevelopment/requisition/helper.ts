@@ -33,7 +33,6 @@ export const createTrainingRequisition = async (
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
-    console.log(values, "values");
 
     const payload = {
       trainingTypeId: values?.trainingType?.value || "",

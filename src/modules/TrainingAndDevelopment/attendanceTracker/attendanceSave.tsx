@@ -110,9 +110,7 @@ const TnDAttendanceSave = () => {
           <Tooltip placement="bottom" title="View">
             <Checkbox
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onChange={() => {
-                console.log("checked");
-              }}
+              onChange={() => {}}
             ></Checkbox>
           </Tooltip>
         </Flex>
@@ -123,7 +121,6 @@ const TnDAttendanceSave = () => {
   ];
 
   const landingApiCall = (values: any) => {
-    console.log(values);
     getLandingApi("/trainingType");
   };
   useEffect(() => {
@@ -151,12 +148,8 @@ const TnDAttendanceSave = () => {
 
                   form
                     .validateFields()
-                    .then(() => {
-                      console.log(values);
-                    })
-                    .catch(() => {
-                      console.log("error");
-                    });
+                    .then(() => {})
+                    .catch(() => {});
                 },
               },
             ]}

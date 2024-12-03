@@ -1,12 +1,11 @@
 import { Col, Row, Tooltip } from "antd";
 import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FormInstance } from "antd/lib/form";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { tr } from "date-fns/locale";
+import { FormInstance } from "antd/lib/form";
 import { PModal } from "Components/Modal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import TrainingCost from "../masterData/trainingCost";
 
 const ListOfCost = ({

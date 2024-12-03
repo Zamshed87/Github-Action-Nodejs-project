@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Col, Form, FormInstance, Row, Tooltip } from "antd";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
+import {
+  CarryOutOutlined,
+  ContainerOutlined,
+  EditOutlined,
+  EyeOutlined,
+  HddOutlined,
+} from "@ant-design/icons";
 import {
   DataTable,
   Flex,
@@ -11,20 +15,15 @@ import {
   PForm,
   PInput,
 } from "Components";
-import Loading from "common/loading/Loading";
 import { getSerial } from "Utils";
-import { dateFormatter } from "utility/dateFormatter";
-import {
-  BarsOutlined,
-  EditOutlined,
-  EyeOutlined,
-  CarryOutOutlined,
-  HddOutlined,
-  ContainerOutlined,
-} from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { Col, Form, Row, Tooltip } from "antd";
+import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { dateFormatter } from "utility/dateFormatter";
 
 import { data } from "./helper";
 const TnDPlanningLanding = () => {
@@ -233,7 +232,6 @@ const TnDPlanningLanding = () => {
   ];
 
   const landingApiCall = (values: any) => {
-    console.log(values);
     getLandingApi("/trainingType");
   };
   useEffect(() => {
@@ -312,12 +310,9 @@ const TnDPlanningLanding = () => {
                     form
                       .validateFields()
                       .then(() => {
-                        console.log(values);
                         landingApiCall(values);
                       })
-                      .catch(() => {
-                        console.log("error");
-                      });
+                      .catch(() => {});
                   }}
                 />
               </Col>

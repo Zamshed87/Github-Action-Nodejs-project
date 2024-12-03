@@ -1,9 +1,7 @@
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import {
-  DataTable,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -12,7 +10,7 @@ import {
   PSelect,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
@@ -114,9 +112,7 @@ const TnDRequisitionCreateEdit = () => {
                               // setOpenTraingTypeModal
                             );
                           })
-                          .catch(() => {
-                            console.log("error");
-                          });
+                          .catch(() => {});
                       },
                     },
                   ]

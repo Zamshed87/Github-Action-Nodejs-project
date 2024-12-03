@@ -3,12 +3,9 @@ import {
   PlusCircleOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import {
-  DataTable,
-  Flex,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -17,22 +14,23 @@ import {
   PSelect,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 // import { requisitionStatus } from "./helper";
-import { trainingModeFixDDL, trainingStatusFixDDL } from "./helper";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { PModal } from "Components/Modal";
-import TrainingType from "../masterData/trainingType";
+import { toast } from "react-toastify";
 import TrainingTitle from "../masterData/trainingTitle";
-import moment from "moment";
-import { setTrainingDuration } from "./helper";
-import { Delete } from "@mui/icons-material";
+import TrainingType from "../masterData/trainingType";
+import {
+  setTrainingDuration,
+  trainingModeFixDDL,
+  trainingStatusFixDDL,
+} from "./helper";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
-import { toast } from "react-toastify";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
@@ -264,7 +262,7 @@ const TnDPlanningCreateEdit = () => {
       return;
     }
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
-    console.log(workplaceGroup, workplace);
+
     const nextId =
       perticipantField.length > 0
         ? perticipantField[perticipantField.length - 1].id + 1
@@ -297,8 +295,6 @@ const TnDPlanningCreateEdit = () => {
     return perPersonCost;
   };
 
-  console.log(perticipantField, costField);
-
   return (
     <div>
       {loading || (loadingTrainingType && <Loading />)}
@@ -324,14 +320,8 @@ const TnDPlanningCreateEdit = () => {
 
                         form
                           .validateFields()
-                          .then(() => {
-                            console.log(values);
-                          })
-                          .catch(() => {
-                            console.log(values);
-
-                            console.log("error");
-                          });
+                          .then(() => {})
+                          .catch(() => {});
                       },
                     },
                   ]
@@ -576,7 +566,6 @@ const TnDPlanningCreateEdit = () => {
                   label="Training Start Time"
                   placeholder="Training Start Time"
                   onChange={(value) => {
-                    console.log(value);
                     form.setFieldsValue({
                       trainingStartTime: value,
                     });

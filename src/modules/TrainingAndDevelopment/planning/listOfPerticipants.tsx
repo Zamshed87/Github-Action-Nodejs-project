@@ -1,13 +1,12 @@
 import { Col, Row, Tooltip } from "antd";
-import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
-import React, { useEffect } from "react";
+import { DataTable, Flex, PButton, PSelect } from "Components";
+import { useEffect } from "react";
 
-import { FormInstance } from "antd/lib/form";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined } from "@ant-design/icons";
-import { tr } from "date-fns/locale";
+import { FormInstance } from "antd/lib/form";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const ListOfPerticipants = ({
   form,

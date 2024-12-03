@@ -1,30 +1,20 @@
-import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Col, Form, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
   Flex,
   PButton,
-  PCard,
   PCardBody,
   PCardHeader,
   PForm,
   PInput,
 } from "Components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
-import axios from "axios";
-import { message } from "antd";
-import { title } from "process";
-import { dateFormatter } from "utility/dateFormatter";
-import { shallowEqual, useSelector } from "react-redux";
-import {
-  createTrainingType,
-  dataDemo,
-  deleteTrainingType,
-  updateTrainingType,
-} from "./helper";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { createTrainingType, updateTrainingType } from "./helper";
 
 const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
@@ -238,9 +228,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
                             setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {
-                      console.log("error");
-                    });
+                    .catch(() => {});
                 }}
               />
               {editAction && (

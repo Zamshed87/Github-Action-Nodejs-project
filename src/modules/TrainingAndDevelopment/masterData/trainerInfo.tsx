@@ -163,9 +163,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      onValuesChange: (changedValues: any, allValues: any) => {
-        console.log("Form Values:", allValues);
-      },
+      onValuesChange: (changedValues: any, allValues: any) => {},
     });
   }, [form]);
 
@@ -294,9 +292,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                             // setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {
-                      console.log("error");
-                    });
+                    .catch(() => {});
                 }}
               />
               {editAction && (

@@ -214,9 +214,7 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
                             // setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {
-                      console.log("error");
-                    });
+                    .catch(() => {});
                 }}
               />
               {editAction && (
