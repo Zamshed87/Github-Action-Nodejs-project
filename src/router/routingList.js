@@ -1507,6 +1507,7 @@ import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType
 import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3339,6 +3340,10 @@ export const routingList = [
   {
     path: "/trainingAndDevelopment/dashboard",
     component: TnDDashboard,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCalender",
+    component: TrainingCalender,
   },
   // Trainnning and development ends
 

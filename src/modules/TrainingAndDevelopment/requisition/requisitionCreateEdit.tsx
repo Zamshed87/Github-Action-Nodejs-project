@@ -86,14 +86,14 @@ const TnDRequisitionCreateEdit = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`Requisition ${type === "create" ? "Create" : "Edit"}`}
+            title={`Requisition ${type}`}
             buttonList={
               type === "view"
                 ? [] // No buttons for "status" type
                 : [
                     {
                       type: "primary",
-                      content: `${type === "create" ? "Save" : "Edit"}`,
+                      content: type,
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {

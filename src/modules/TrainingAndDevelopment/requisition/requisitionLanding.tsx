@@ -15,6 +15,7 @@ import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { data } from "./helper";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -214,7 +215,7 @@ const TnDRequisitionLanding = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={landingApi || []}
+              data={data || []}
               loading={landingApi?.loading}
               header={header}
               pagination={{
