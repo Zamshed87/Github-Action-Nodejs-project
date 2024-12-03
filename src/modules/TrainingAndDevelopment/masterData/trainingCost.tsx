@@ -49,14 +49,14 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     },
     {
       title: "Cost Type",
-      dataIndex: "strName",
+      dataIndex: "name",
       filter: true,
       filterKey: "costTypeList",
       filterSearch: true,
     },
     {
       title: "Description",
-      dataIndex: "strDescription",
+      dataIndex: "description",
       filter: true,
       filterKey: "costDescriptionList",
       filterSearch: true,
@@ -107,8 +107,8 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
               }}
               onClick={() => {
                 form.setFieldsValue({
-                  costType: rec?.strName,
-                  costDescription: rec?.strDescription,
+                  costType: rec?.name,
+                  costDescription: rec?.description,
                   singleData: rec,
                   editAction: true,
                 });

@@ -60,32 +60,32 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     },
     {
       title: "Training Type",
-      dataIndex: "strName",
+      dataIndex: "name",
       filter: true,
       filterKey: "trainingTypeList",
       filterSearch: true,
     },
     {
       title: "Remarks",
-      dataIndex: "strRemarks",
+      dataIndex: "remarks",
       sorter: true,
-      filterKey: "strRemarksList",
+      filterKey: "remarksList",
       filter: true,
       width: 45,
     },
-    {
-      title: "Created by",
-      dataIndex: "intCreatedBy",
-      filter: true,
-      filterKey: "createdByList",
-      filterSearch: true,
-    },
-    {
-      title: "Created Date",
-      dataIndex: "dteCreatedAt",
-      render: (text: any) => dateFormatter(text),
-      filter: true,
-    },
+    // {
+    //   title: "Created by",
+    //   dataIndex: "createdBy",
+    //   filter: true,
+    //   filterKey: "createdByList",
+    //   filterSearch: true,
+    // },
+    // {
+    //   title: "Created Date",
+    //   dataIndex: "createdAt",
+    //   render: (text: any) => dateFormatter(text),
+    //   filter: true,
+    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -132,8 +132,8 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
               }}
               onClick={() => {
                 form.setFieldsValue({
-                  trainingType: rec?.strName,
-                  remarks: rec?.strRemarks,
+                  trainingType: rec?.name,
+                  remarks: rec?.remarks,
                   singleData: rec,
                   editAction: true,
                 });

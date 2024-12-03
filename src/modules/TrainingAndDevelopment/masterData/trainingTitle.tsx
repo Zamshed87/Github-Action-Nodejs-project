@@ -46,14 +46,14 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     },
     {
       title: "Training Title",
-      dataIndex: "strName",
+      dataIndex: "name",
       filter: true,
       filterKey: "trainingTitleList",
       filterSearch: true,
     },
     {
       title: "Training Description",
-      dataIndex: "strDescription",
+      dataIndex: "description",
       filter: true,
       filterKey: "trainingDescriptionList",
       filterSearch: true,
@@ -104,8 +104,8 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
               }}
               onClick={() => {
                 form.setFieldsValue({
-                  trainingTitle: rec?.strName,
-                  trainingDescription: rec?.strDescription,
+                  trainingTitle: rec?.name,
+                  trainingDescription: rec?.description,
                   singleData: rec,
                   editAction: true,
                 });

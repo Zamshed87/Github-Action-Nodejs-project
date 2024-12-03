@@ -229,12 +229,8 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                 name="trainerEmail"
                 rules={[
                   {
-                    required: true,
-                    message: "Trainer Email is required",
-                  },
-                  {
-                    type: "email",
-                    message: "Please enter a valid email address",
+                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Invalid email format",
                   },
                 ]}
               />

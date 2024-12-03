@@ -39,8 +39,12 @@ const TnDRequisitionCreateEdit = () => {
   const { type } = params;
   //   api calls
   const CommonEmployeeDDL = useApiRequest([]);
-  const [trainingTypeDDL, getTrainingTypeDDL, loadingTrainingType] =
-    useAxiosGet();
+  const [
+    trainingTypeDDL,
+    getTrainingTypeDDL,
+    loadingTrainingType,
+    setTrainingType,
+  ] = useAxiosGet();
 
   const [upcommi, setUpcommi] = useState(false);
 
@@ -65,12 +69,19 @@ const TnDRequisitionCreateEdit = () => {
   };
 
   useEffect(() => {
-    getTrainingTypeDDL("/trainingType");
+    getTrainingTypeDDL("/TrainingType/Training/Type", (data: any) => {
+      const list: any = [];
+      data?.map((d: any) => {
+        if (d?.isActive === true)
+          list.push({ label: d?.strName, value: d?.intId });
+      });
+      setTrainingType(list);
+    });
   }, [profileData?.buId, profileData?.wgId]);
 
   return (
     <div>
-      {loading || (loadingTrainingType && <Loading />)}
+      {(loading || loadingTrainingType) && <Loading />}
       <PForm
         form={form}
         initialValues={{ reasonForRequisition: data?.requestor }}
