@@ -440,10 +440,6 @@ export default function AddEditForm({
                   label: "UCBL",
                 },
                 {
-                  value: "Upay",
-                  label: "Upay",
-                },
-                {
                   value: "BRAC",
                   label: "BRAC",
                 },
