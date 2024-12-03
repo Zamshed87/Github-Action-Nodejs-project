@@ -76,21 +76,10 @@ const MasterDashboardLanding = () => {
               , Welcome Back !
             </h4>
           </div>
-          <div>
-            <button
-              onClick={() => {
-                setValues((prev) => ({
-                  ...prev,
-                  dashboardroleType: { label: "Booklet", value: 4 },
-                }));
-              }}
-            >
-              Booklet
-            </button>
-          </div>
+
           {values?.dashboardRoles?.length > 1 &&
             (!isOwner || isOfficeAdmin) && (
-              <div style={{ width: "120px" }}>
+              <div style={{ width: "150px" }}>
                 <FormikSelect
                   isClearable={false}
                   name="userType"

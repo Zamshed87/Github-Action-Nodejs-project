@@ -16,6 +16,9 @@ import LeaveBalanceData from "./contents/LeaveBalanceData";
 import RewardHistory from "./contents/RewardHistory";
 import PunishmentHistory from "./contents/PunishmentHistory";
 import WorkExperienceHistory from "./contents/WorkExperienceHistory";
+import EducationalInfo from "./contents/EducationalInfo";
+import TrainingInfo from "./contents/TrainingInfo";
+import FamilyAndRelationship from "./contents/FamilyAndRelationship";
 
 const FlipComponent = ({
   singleData,
@@ -50,15 +53,20 @@ const FlipComponent = ({
           <div className="book-wrapper">
             <Flex className=" mb-2" justify="flex-end">
               <PButton
+                type="primary"
                 className="mr-2"
                 onClick={goToPreviousPage}
                 content="Prev Page"
               />
-              <PButton onClick={goToNextPage} content="Next Page" />
+              <PButton
+                type="primary"
+                onClick={goToNextPage}
+                content="Next Page"
+              />
             </Flex>
 
             <HTMLFlipBook
-              width={950}
+              width={1090}
               height={550}
               ref={book}
               maxShadowOpacity={3}
@@ -110,6 +118,40 @@ const FlipComponent = ({
               <div className="page">
                 <WorkExperienceHistory
                   workHistory={singleData?.empJobExperience}
+                />
+              </div>
+              <div className="page">
+                <TrainingInfo
+                  trainingHistory={singleData?.empEmployeeTraining}
+                />
+              </div>
+              <div className="page">
+                <EducationalInfo
+                  eduHistory={singleData?.empEmployeeEducation}
+                />
+              </div>
+              <div className="page">
+                <FamilyAndRelationship
+                  familyHistory={singleData?.empEmployeeRelativesContact?.filter(
+                    (dto: any) => dto?.strGrantorNomineeType === "Grantor"
+                  )}
+                  historyType="Family"
+                />
+              </div>
+              <div className="page">
+                <FamilyAndRelationship
+                  familyHistory={singleData?.empEmployeeRelativesContact?.filter(
+                    (dto: any) => dto?.strGrantorNomineeType === "Emergency"
+                  )}
+                  historyType="Emergency"
+                />
+              </div>
+              <div className="page">
+                <FamilyAndRelationship
+                  familyHistory={singleData?.empEmployeeRelativesContact?.filter(
+                    (dto: any) => dto?.strGrantorNomineeType === "Nominee"
+                  )}
+                  historyType="Nominee"
                 />
               </div>
             </HTMLFlipBook>
