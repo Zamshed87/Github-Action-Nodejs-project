@@ -26,11 +26,8 @@ const ListOfCost = ({
 
   const typeDataSetForCost = (data: any) => {
     let list: any[] = [];
-    data?.map((item: any) => {
-      list.push({
-        label: item?.strName,
-        value: item?.intId,
-      });
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
     setCostType(list);
   };

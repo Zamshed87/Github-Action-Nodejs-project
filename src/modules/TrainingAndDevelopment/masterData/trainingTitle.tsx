@@ -54,9 +54,6 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     {
       title: "Training Description",
       dataIndex: "description",
-      filter: true,
-      filterKey: "trainingDescriptionList",
-      filterSearch: true,
     },
     {
       title: "Status",

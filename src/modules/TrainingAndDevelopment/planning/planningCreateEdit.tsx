@@ -226,22 +226,16 @@ const TnDPlanningCreateEdit = () => {
 
   const typeDataSetForType = (data: any) => {
     let list: any[] = [];
-    data?.map((item: any) => {
-      list.push({
-        label: item?.strName,
-        value: item?.intId,
-      });
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
     setTrainingType(list);
   };
 
   const typeDataSetForTitle = (data: any) => {
     let list: any[] = [];
-    data?.map((item: any) => {
-      list.push({
-        label: item?.strName,
-        value: item?.intId,
-      });
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
     setTrainingTitle(list);
   };
@@ -253,7 +247,10 @@ const TnDPlanningCreateEdit = () => {
     }
     const nextId =
       costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
-    setCostField([...costField, { id: nextId, ...values }]);
+    setCostField([
+      ...costField,
+      { id: nextId, costType: values?.costType?.label, ...values },
+    ]);
   };
 
   const addHanderForPerticipant = (values: any) => {

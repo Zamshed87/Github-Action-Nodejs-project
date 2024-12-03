@@ -68,9 +68,6 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     {
       title: "Remarks",
       dataIndex: "remarks",
-      sorter: true,
-      filterKey: "remarksList",
-      filter: true,
       width: 45,
     },
     // {

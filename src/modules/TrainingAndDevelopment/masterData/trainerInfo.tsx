@@ -73,9 +73,6 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     {
       title: "Trainer Email",
       dataIndex: "email",
-      filter: true,
-      filterKey: "trainerEmailList",
-      filterSearch: true,
     },
     {
       title: "Status",

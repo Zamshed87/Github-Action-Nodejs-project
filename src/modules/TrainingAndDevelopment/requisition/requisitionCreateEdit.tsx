@@ -72,8 +72,7 @@ const TnDRequisitionCreateEdit = () => {
     getTrainingTypeDDL("/TrainingType/Training/Type", (data: any) => {
       const list: any = [];
       data?.map((d: any) => {
-        if (d?.isActive === true)
-          list.push({ label: d?.strName, value: d?.intId });
+        if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
       });
       setTrainingType(list);
     });

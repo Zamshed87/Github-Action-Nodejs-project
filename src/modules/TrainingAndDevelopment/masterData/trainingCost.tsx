@@ -57,9 +57,6 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     {
       title: "Description",
       dataIndex: "description",
-      filter: true,
-      filterKey: "costDescriptionList",
-      filterSearch: true,
     },
     {
       title: "Status",
