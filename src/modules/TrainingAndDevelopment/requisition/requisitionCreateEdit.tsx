@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { requisitionStatus } from "./helper";
+import { createTrainingRequisition, requisitionStatus } from "./helper";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
@@ -99,12 +99,20 @@ const TnDRequisitionCreateEdit = () => {
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
-                        const values = form.getFieldsValue(true);
+                        // const values = form.getFieldsValue(true);
 
                         form
                           .validateFields()
                           .then(() => {
-                            console.log(values);
+                            createTrainingRequisition(
+                              form,
+                              profileData,
+                              setLoading,
+                              () => {
+                                form.resetFields();
+                              }
+                              // setOpenTraingTypeModal
+                            );
                           })
                           .catch(() => {
                             console.log("error");

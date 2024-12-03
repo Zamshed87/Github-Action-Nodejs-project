@@ -44,32 +44,32 @@ const TnDRequisitionLanding = () => {
     },
     {
       title: "Requestor",
-      dataIndex: "requestor",
+      dataIndex: "employmentName",
       filter: true,
       filterKey: "requestorList",
       filterSearch: true,
     },
     {
       title: "Training Type",
-      dataIndex: "trainingType",
+      dataIndex: "trainingTypeName",
       filter: true,
       filterKey: "trainingTypeList",
       filterSearch: true,
     },
-    {
-      title: "Created by",
-      dataIndex: "createdBy",
-      filter: true,
-      filterKey: "createdByList",
-      filterSearch: true,
-    },
-    {
-      title: "Created Date",
-      dataIndex: "createdDate",
-      render: (data: any) => dateFormatter(data),
-      filter: true,
-      sorter: true,
-    },
+    // {
+    //   title: "Created by",
+    //   dataIndex: "createdBy",
+    //   filter: true,
+    //   filterKey: "createdByList",
+    //   filterSearch: true,
+    // },
+    // {
+    //   title: "Created Date",
+    //   dataIndex: "createdDate",
+    //   render: (data: any) => dateFormatter(data),
+    //   filter: true,
+    //   sorter: true,
+    // },
     {
       title: "Status",
       dataIndex: "trainingStatus",
@@ -129,7 +129,7 @@ const TnDRequisitionLanding = () => {
   ];
   const landingApiCall = (values: any) => {
     console.log(values);
-    getLandingApi("/trainingType");
+    getLandingApi("/TrainingRequisition/Training/TrainingRequisition");
   };
   useEffect(() => {
     landingApiCall({});
@@ -220,8 +220,7 @@ const TnDRequisitionLanding = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              // data={landingApi?.data?.data || []}
-              data={data}
+              data={landingApi || []}
               loading={landingApi?.loading}
               header={header}
               pagination={{

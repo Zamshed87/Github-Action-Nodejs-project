@@ -1,3 +1,8 @@
+import { FormInstance } from "antd";
+import axios from "axios";
+import { SetStateAction } from "react";
+import { toast } from "react-toastify";
+
 export const requisitionStatus: any[] = [
   {
     label: "Assigned",
@@ -16,6 +21,42 @@ export const requisitionStatus: any[] = [
     value: "Accomplished",
   },
 ];
+
+export const createTrainingRequisition = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+    console.log(values, "values");
+
+    const payload = {
+      trainingTypeId: values?.trainingType?.value || "",
+      employmentId: values?.employee?.value || "",
+      reasonForRequisition: values?.reasonForRequisition || "",
+      objectivesToAchieve: values?.objectivesToAchieve || "",
+      remarks: values?.remarks || "",
+    };
+    const res = await axios.post(
+      `/TrainingRequisition/Training/TrainingRequisition`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error: any) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
 
 export const data: any[] = [
   {
