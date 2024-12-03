@@ -12,7 +12,10 @@ const PromotionHistory = forwardRef((props: any, ref: any) => {
   return (
     <div ref={ref} style={{ fontSize: "12px" }}>
       <center>
-        <h1 style={{ fontSize: "16px" }}> Promotion History</h1>
+        <h1 style={{ fontSize: "16px", marginBottom: "10px" }}>
+          {" "}
+          Promotion History
+        </h1>
       </center>
       {promotionData?.length > 0 ? (
         <div>

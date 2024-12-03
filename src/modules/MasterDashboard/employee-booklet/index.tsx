@@ -234,7 +234,7 @@ const EmployeeBooklet = () => {
   }, [buId, wgId, wId]);
 
   return (
-    <>
+    <div style={{ marginTop: "-40px" }}>
       {(loading || loadingData) && <Loading />}
       <PForm
         form={form}
@@ -244,7 +244,6 @@ const EmployeeBooklet = () => {
       >
         <PCard>
           <PCardHeader
-            exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
@@ -367,7 +366,7 @@ const EmployeeBooklet = () => {
           />
         }
       />
-    </>
+    </div>
   );
 };
 

@@ -15,6 +15,7 @@ import LoanHistory from "./contents/LoanHistory";
 import LeaveBalanceData from "./contents/LeaveBalanceData";
 import RewardHistory from "./contents/RewardHistory";
 import PunishmentHistory from "./contents/PunishmentHistory";
+import WorkExperienceHistory from "./contents/WorkExperienceHistory";
 
 const FlipComponent = ({
   singleData,
@@ -81,30 +82,35 @@ const FlipComponent = ({
                   permanentAddress={
                     singleData?.empEmployeeAddress[1]?.strAddressDetails
                   }
-                />{" "}
+                />
               </div>
               <div className="page">
-                <PromotionHistory historyData={historyData} />{" "}
+                <PromotionHistory historyData={historyData} />
               </div>
               <div className="page">
-                <IncrementHistory incrementHistory={incrementHistory} />{" "}
+                <IncrementHistory incrementHistory={incrementHistory} />
               </div>
               <div className="page">
-                <TransferHistory historyData={historyData} />{" "}
+                <TransferHistory historyData={historyData} />
               </div>
               <div className="page">
-                <LoanHistory loanDto={loanDto} />{" "}
+                <LoanHistory loanDto={loanDto} />
               </div>
               <div className="page">
-                <LeaveBalanceData leaveBalanceDto={leaveBalanceDto} />{" "}
+                <LeaveBalanceData leaveBalanceDto={leaveBalanceDto} />
               </div>
               <div className="page">
-                <RewardHistory landingApiReward={landingApiReward} />{" "}
+                <RewardHistory landingApiReward={landingApiReward} />
               </div>
               <div className="page">
                 <PunishmentHistory
                   landingApiPunishment={landingApiPunishment}
-                />{" "}
+                />
+              </div>
+              <div className="page">
+                <WorkExperienceHistory
+                  workHistory={singleData?.empJobExperience}
+                />
               </div>
             </HTMLFlipBook>
           </div>

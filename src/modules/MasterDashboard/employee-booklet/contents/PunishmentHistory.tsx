@@ -101,7 +101,7 @@ const PunishmentHistory = forwardRef((props: any, ref: any) => {
       {loading && <Loading />}
       <center>
         <h1 style={{ fontSize: "16px", marginBottom: "10px" }}>
-          Reward History
+          Punishment History
         </h1>
       </center>
       <div>

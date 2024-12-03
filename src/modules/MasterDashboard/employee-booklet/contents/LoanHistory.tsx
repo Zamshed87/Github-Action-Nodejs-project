@@ -1,6 +1,7 @@
 import { Attachment, InfoOutlined } from "@mui/icons-material";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
+import NoResult from "common/NoResult";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { DataTable } from "Components";
 import React, { forwardRef } from "react";
@@ -166,16 +167,20 @@ const LoanHistory = forwardRef((props: any, ref: any) => {
   return (
     <div ref={ref} style={{ fontSize: "12px" }}>
       <center>
-        <h1 style={{ fontSize: "16px" }}> Loan History</h1>
+        <h1 style={{ fontSize: "16px", marginBottom: "10px" }}>Loan History</h1>
       </center>
-      <div>
-        <DataTable
-          bordered
-          data={loanData || []}
-          header={header}
-          scroll={{ x: 2000 }}
-        />
-      </div>
+      {loanData?.length > 0 ? (
+        <div>
+          <DataTable
+            bordered
+            data={loanData || []}
+            header={header}
+            scroll={{ x: 2000 }}
+          />
+        </div>
+      ) : (
+        <NoResult />
+      )}
     </div>
   );
 });

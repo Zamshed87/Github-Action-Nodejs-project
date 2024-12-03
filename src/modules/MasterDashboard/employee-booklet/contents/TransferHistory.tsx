@@ -12,7 +12,10 @@ const TransferHistory = forwardRef((props: any, ref: any) => {
   return (
     <div ref={ref} style={{ fontSize: "12px" }}>
       <center>
-        <h1 style={{ fontSize: "16px" }}> Transfer History</h1>
+        <h1 style={{ fontSize: "16px", marginBottom: "10px" }}>
+          {" "}
+          Transfer History
+        </h1>
       </center>
       {transferData?.length > 0 ? (
         <div>

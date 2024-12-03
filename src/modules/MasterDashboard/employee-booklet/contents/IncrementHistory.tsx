@@ -8,7 +8,10 @@ const IncrementHistory = forwardRef((props: any, ref: any) => {
   return (
     <div ref={ref} style={{ fontSize: "12px" }}>
       <center>
-        <h1 style={{ fontSize: "16px" }}> Increment History</h1>
+        <h1 style={{ fontSize: "16px", marginBottom: "10px" }}>
+          {" "}
+          Increment History
+        </h1>
       </center>
       <div>
         {incHistory?.length > 0 ? (
