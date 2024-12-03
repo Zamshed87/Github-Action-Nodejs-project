@@ -238,6 +238,13 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
   const submitHandler = async () => {
     const values = form.getFieldsValue(true);
+    if (!values?.grossAmount) {
+      return toast.warn("Gross Amount is required ");
+    }
+    if (!values?.basicAmount) {
+      return toast.warn("Basic Amount is required ");
+    }
+
     const accountSum =
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
@@ -1238,14 +1245,19 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { basedOn, salaryType } = form.getFieldsValue(true);
+              const { basedOn, grossAmount, basicAmount, salaryType } =
+                form.getFieldsValue(true);
               if (salaryType?.value !== "Grade" && basedOn?.value === 2) {
                 return (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="text"
-                      name="basicAmount"
-                      label="Basic"
+                      value={basicAmount}
+                      label={
+                        <span>
+                          <span className="text-danger ">* </span> Basic{" "}
+                        </span>
+                      }
                       placeholder="Basic"
                       onChange={(e: any) => {
                         if (isNaN(e?.target?.value)) {
@@ -1272,8 +1284,13 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                   <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="text"
-                      name="grossAmount"
-                      label="Gross"
+                      // name="grossAmount"
+                      value={grossAmount}
+                      label={
+                        <span>
+                          <span className="text-danger ">* </span> Gross{" "}
+                        </span>
+                      }
                       placeholder="Gross"
                       onChange={(e: any) => {
                         if (isNaN(e?.target?.value)) {

@@ -57,7 +57,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  console.log({ location });
   // States
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState<any[]>([]);
@@ -424,6 +423,12 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   };
   const submitHandler = async () => {
     const values = form.getFieldsValue(true);
+    if (!values?.grossAmount) {
+      return toast.warn("Gross Amount is required ");
+    }
+    if (!values?.basicAmount) {
+      return toast.warn("Basic Amount is required ");
+    }
 
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
@@ -747,7 +752,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   };
   const new_gross_calculation = () => {
     const { grossAmount } = form.getFieldsValue(true);
-
     const modify = rowDto.map((item) => {
       if (item.strBasedOn === "Percentage") {
         return {
@@ -2217,15 +2221,21 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { basedOn, salaryType } = form.getFieldsValue(true);
+              const { basedOn, grossAmount, basicAmount, salaryType } =
+                form.getFieldsValue(true);
               if (salaryType?.value !== "Grade" && basedOn?.value === 2) {
                 return (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="text"
-                      name="basicAmount"
+                      // name="basicAmount"
+                      value={basicAmount}
                       disabled={(location?.state as any)?.viewOnly}
-                      label="Basic"
+                      label={
+                        <span>
+                          <span className="text-danger ">* </span> Basic{" "}
+                        </span>
+                      }
                       placeholder="Basic"
                       onChange={(e: any) => {
                         if (isNaN(e?.target?.value)) {
@@ -2252,9 +2262,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                   <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="text"
-                      name="grossAmount"
+                      // name="grossAmount"
+                      value={grossAmount}
                       disabled={(location?.state as any)?.viewOnly}
-                      label="Gross"
+                      label={
+                        <span>
+                          <span className="text-danger ">* </span> Gross{" "}
+                        </span>
+                      }
                       placeholder="Gross"
                       onChange={(e: any) => {
                         if (isNaN(e?.target?.value)) {
