@@ -345,9 +345,9 @@ const EmployeeBooklet = () => {
         </PCard>
       </PForm>
       <PModal
-        style={{ top: 0 }}
+        style={{ top: 10 }}
+        height="80vh"
         open={openBooklet}
-        bodyStyle={{ height: "80vh" }}
         title={"Employee Booklet"}
         width={"1500px"}
         onCancel={() => {
