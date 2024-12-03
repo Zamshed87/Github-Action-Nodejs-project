@@ -312,6 +312,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
             intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
             intPayrollElementTypeId: i?.intSalaryElementId,
+            basedOn: i?.strBasedOn,
           };
         });
         form.setFieldsValue({
@@ -383,24 +384,27 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       },
     });
   };
-  //   const getBreakDownPolicyElements = () => {
-  //     const { payrollGroup } = form.getFieldsValue(true);
-  //     breakDownPolicyApi?.action({
-  //       urlKey: "BreakdownNPolicyForSalaryAssign",
-  //       method: "GET",
-  //       params: {
-  //         StrReportType: "BREAKDOWN ELEMENT BY ID",
+  const getBreakDownPolicyElements = () => {
+    const { payrollGroup } = form.getFieldsValue(true);
+    breakDownPolicyApi?.action({
+      urlKey: "BreakdownNPolicyForSalaryAssign",
+      method: "GET",
+      params: {
+        StrReportType: "BREAKDOWN ELEMENT BY ID",
 
-  //         IntAccountId: orgId,
-  //         IntSalaryBreakdownHeaderId: payrollGroup?.value,
-  //         IntWorkplaceId: 0,
-  //         intId: 0,
-  //       },
-  //       onSuccess: (res) => {
-  //         setRowDto(res);
-  //       },
-  //     });
-  //   };
+        IntAccountId: orgId,
+        IntSalaryBreakdownHeaderId: payrollGroup?.value,
+        IntWorkplaceId: 0,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].numAmount = Math.round(item?.numAmount);
+        });
+        setRowDto(res);
+      },
+    });
+  };
 
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
@@ -418,12 +422,20 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
-    if (
-      Math.round(elementSum) !== Math.round(values?.grossAmount) &&
-      values?.salaryType?.value === "Grade"
-    ) {
+    if (Math.round(elementSum) !== Math.round(values?.grossAmount)) {
       return toast.warn(
         "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
+      );
+    }
+    if (
+      values?.basedOn?.value === 2 &&
+      (employeeIncrementByIdApi?.data?.oldGrossAmount >
+        Math.round(values?.grossAmount) ||
+        employeeInfo?.data[0]?.numNetGrossSalary >
+          Math.round(values?.grossAmount))
+    ) {
+      return toast.warn(
+        "Net Amount Must Be Greater than Previous Gross Amount!!!"
       );
     }
 
@@ -543,8 +555,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         employeeIncrementByIdApi?.data?.oldGrossAmount ||
         employeeInfo?.data[0]?.numNetGrossSalary ||
         0,
-      incrementDependOn: "",
-      incrementDependOnValue: 0,
+      incrementDependOn:
+        values?.salaryType?.value !== "Grade" ? values?.basedOn?.label : "",
+      incrementDependOnValue:
+        values?.salaryType?.value !== "Grade"
+          ? values?.basedOn?.value === 2
+            ? values?.basicAmount
+            : values?.grossAmount
+          : 0,
       incrementPercentage: 0,
       incrementAmount:
         Math.round(values?.grossAmount) -
@@ -585,17 +603,21 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           } else {
             createIncrement.action({
               urlKey:
-                values?.salaryType?.value === "Grade" && id
+                // values?.salaryType?.value === "Grade" &&
+                id
                   ? "UpdateEmployeeIncrement"
-                  : values?.salaryType?.value === "Grade"
-                  ? "CreateEmployeeIncrementNew"
-                  : "CreateEmployeeIncrement",
+                  : // values?.salaryType?.value === "Grade"
+                    // ?
+                    "CreateEmployeeIncrementNew",
+              // : "CreateEmployeeIncrement",
               method:
-                values?.salaryType?.value === "Grade" && id ? "put" : "post",
+                // values?.salaryType?.value === "Grade" &&
+                id ? "put" : "post",
               payload:
-                values?.salaryType?.value === "Grade"
-                  ? gradeBasedPayload
-                  : payload,
+                // values?.salaryType?.value === "Grade"
+                //   ?
+                gradeBasedPayload,
+              // : payload,
               toast: true,
               onSuccess: () => {
                 history.push(`/compensationAndBenefits/increment`);
@@ -604,22 +626,22 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           }
         },
         onError: (res) => {
-          if (values?.salaryType?.value === "Grade") {
-            createIncrement.action({
-              urlKey:
-                values?.salaryType?.value === "Grade" && id
-                  ? "UpdateEmployeeIncrement"
-                  : "CreateEmployeeIncrementNew",
-              method:
-                values?.salaryType?.value === "Grade" && id ? "put" : "post",
-              payload: gradeBasedPayload,
-              toast: true,
-              onSuccess: () => {
-                history.push(`/compensationAndBenefits/increment`);
-              },
-            });
-          }
+          // if (values?.salaryType?.value === "Grade") {
+          createIncrement.action({
+            urlKey:
+              // values?.salaryType?.value === "Grade" &&
+              id ? "UpdateEmployeeIncrement" : "CreateEmployeeIncrementNew",
+            method:
+              // values?.salaryType?.value === "Grade" &&
+              id ? "put" : "post",
+            payload: gradeBasedPayload,
+            toast: true,
+            onSuccess: () => {
+              history.push(`/compensationAndBenefits/increment`);
+            },
+          });
         },
+        // },
       });
     } catch (error) {}
   };
@@ -664,6 +686,9 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
     if (basedOn?.value === 2 || salaryType?.value === "Grade") {
       basic_or_grade_calculation();
+    }
+    if (basedOn?.value === 1 && salaryType?.value !== "Grade") {
+      new_gross_calculation();
     }
   };
 
@@ -716,7 +741,20 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     });
     setRowDto(modified_data);
   };
+  const new_gross_calculation = () => {
+    const { grossAmount } = form.getFieldsValue(true);
 
+    const modify = rowDto.map((item) => {
+      if (item.strBasedOn === "Percentage") {
+        return {
+          ...item,
+          numAmount: Math.round((grossAmount * item.numNumberOfPercent) / 100),
+        };
+      }
+      return item; // Leave as-is if based on "Amount"
+    });
+    setRowDto(modify);
+  };
   const transferheader: any = [
     {
       title: "SL",
@@ -791,8 +829,13 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             value={row?.numAmount}
             placeholder="Amount"
             onChange={(e: any) => {
+              console.log({ e });
               const values = form.getFieldsValue(true);
-              if (values?.salaryType?.value !== "Grade") {
+              if (
+                values?.salaryType?.value !== "Grade" &&
+                row?.strDependOn !== "Gross" &&
+                index === 0
+              ) {
                 form.setFieldsValue({
                   basicAmount: e,
                 });
@@ -810,7 +853,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               // }
               updateRowDtoHandler(e, row, index);
             }}
-            disabled={row?.strBasedOn !== "Amount" || row?.isBasicSalary}
+            disabled={
+              row?.strBasedOn !== "Amount" ||
+              (row?.strDependOn !== "Gross" && row?.isBasicSalary)
+            }
           />
         </>
       ),
@@ -837,15 +883,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       );
       //   getAssignedBreakdown();
       form.setFieldsValue({
-        // grossAmount: employeeInfo?.data[0]?.numNetGrossSalary,
-        // payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
-        //   ? undefined
-        //   : employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
-        // // basedOn: 1,
-        // salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
-        //   ? "Grade"
-        //   : "Non-Grade",
-
         employee: {
           value: (location?.state as any)?.singleData?.incrementList?.[0]
             ?.intEmployeeId,
@@ -927,18 +964,25 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           ?.length
           ? true
           : false,
-        basedOn: {
-          value:
-            (location?.state as any)?.singleData?.incrementList?.[0]
-              ?.strIncrementDependOn === "Basic"
-              ? 2
-              : (location?.state as any)?.singleData?.incrementList?.[0]
-                  ?.strIncrementDependOn === "Gross"
-              ? 1
-              : 3,
-          label: (location?.state as any)?.singleData?.incrementList?.[0]
-            ?.strIncrementDependOn,
-        },
+        basedOn:
+          (location?.state as any)?.singleData?.incrementList?.[0]
+            ?.strIncrementDependOn === "Basic"
+            ? { value: 2, label: "Basic" }
+            : { value: 1, label: "Gross" },
+
+        // basedOn: {
+        //   value:
+        //     (location?.state as any)?.singleData?.incrementList?.[0]
+        //       ?.strIncrementDependOn === "Basic"
+        //       ? 2
+        //       :
+        //       (location?.state as any)?.singleData?.incrementList?.[0]
+        //           ?.strIncrementDependOn === "Gross"
+        //       ? 1
+        //       : 3,
+        //   label: (location?.state as any)?.singleData?.incrementList?.[0]
+        //     ?.strIncrementDependOn,
+        // },
         numIncrementPercentageOrAmount: (location?.state as any)?.singleData
           ?.incrementList?.[0]?.numIncrementPercentageOrAmount,
         dteEffectiveDate: moment(
@@ -979,11 +1023,16 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             (acc: any, i: any) => acc + i?.amount,
             0
           );
+          console.log(employeeInfo?.data[0], "here");
           form.setFieldsValue({
             grossAmount: newGross,
+            basicAmount:
+              (location?.state as any)?.singleData?.incrementList?.[0]
+                ?.strIncrementDependOn === "Basic" &&
+              res?.incrementDependOnValue,
             payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
               ? undefined
-              : employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+              : res?.salaryBreakDownHeaderId,
             // basedOn: 1,
 
             dteEffectiveDate: moment(res?.effectiveDate),
@@ -1092,81 +1141,102 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   }, [location?.state]);
 
   useEffect(() => {
-    if (employeeInfo?.data[0]?.isGradeBasedSalary && !id) {
-      getById?.action({
-        urlKey: "GetPayScaleSetupById",
-        method: "get",
-        params: {
-          id: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
-        },
+    if (!id) {
+      employeeInfo?.data[0]?.isGradeBasedSalary &&
+        getById?.action({
+          urlKey: "GetPayScaleSetupById",
+          method: "get",
+          params: {
+            id: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+          },
 
-        onSuccess: (res: any) => {
-          form.setFieldsValue({
-            salaryType: { value: "Grade", label: "Grade" },
-            payscale: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
-            payscaleJobLevel: {
-              value: res?.jobLevelId,
-              label: res?.jobLevelName,
-            },
-            payscaleGrade: {
-              value: res?.jobGradeId,
-              label: res?.jobGradeName,
-            },
-            payscaleClass: {
-              value: res?.jobClassId,
-              label: res?.jobClassName,
-            },
-            slabCount: {
-              value: employeeInfo?.data[0]?.intSlabCount,
-              label: `${
-                employeeInfo?.data[0]?.intSlabCount > res?.incrementSlabCount
-                  ? "Efficiency"
-                  : "Slab"
-              } ${employeeInfo?.data[0]?.intSlabCount}`,
-            },
-          });
-          let temp = [];
-          for (
-            let i = employeeInfo?.data[0]?.intSlabCount;
-            i <= res?.incrementSlabCount;
-            i++
-          ) {
-            temp.push({
-              value: i,
-              label: `Slab ${i}`,
+          onSuccess: (res: any) => {
+            form.setFieldsValue({
+              salaryType: { value: "Grade", label: "Grade" },
+              payscale: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+              payscaleJobLevel: {
+                value: res?.jobLevelId,
+                label: res?.jobLevelName,
+              },
+              payscaleGrade: {
+                value: res?.jobGradeId,
+                label: res?.jobGradeName,
+              },
+              payscaleClass: {
+                value: res?.jobClassId,
+                label: res?.jobClassName,
+              },
+              slabCount: {
+                value: employeeInfo?.data[0]?.intSlabCount,
+                label: `${
+                  employeeInfo?.data[0]?.intSlabCount > res?.incrementSlabCount
+                    ? "Efficiency"
+                    : "Slab"
+                } ${employeeInfo?.data[0]?.intSlabCount}`,
+              },
             });
-          }
-          for (
-            let i = employeeInfo?.data[0]?.intSlabCount;
-            i <= res?.extendedIncrementSlabCount + res?.incrementSlabCount &&
-            res?.extendedIncrementSlabCount !== 0 &&
-            employeeInfo?.data[0]?.intSlabCount !==
-              res?.extendedIncrementSlabCount + res?.incrementSlabCount;
-            i++
-          ) {
-            if (
-              res?.incrementSlabCount +
-                (i - employeeInfo?.data[0]?.intSlabCount + 1) >
-              res?.extendedIncrementSlabCount + res?.incrementSlabCount
+            let temp = [];
+            for (
+              let i = employeeInfo?.data[0]?.intSlabCount;
+              i <= res?.incrementSlabCount;
+              i++
             ) {
-              break;
+              temp.push({
+                value: i,
+                label: `Slab ${i}`,
+              });
             }
-
-            temp.push({
-              value:
+            for (
+              let i = employeeInfo?.data[0]?.intSlabCount;
+              i <= res?.extendedIncrementSlabCount + res?.incrementSlabCount &&
+              res?.extendedIncrementSlabCount !== 0 &&
+              employeeInfo?.data[0]?.intSlabCount !==
+                res?.extendedIncrementSlabCount + res?.incrementSlabCount;
+              i++
+            ) {
+              if (
                 res?.incrementSlabCount +
-                (i - employeeInfo?.data[0]?.intSlabCount + 1),
-              label: `Efficiency ${
-                res?.incrementSlabCount +
-                (i - employeeInfo?.data[0]?.intSlabCount + 1)
-              }`,
-            });
-          }
-          setSlabDDL(temp);
+                  (i - employeeInfo?.data[0]?.intSlabCount + 1) >
+                res?.extendedIncrementSlabCount + res?.incrementSlabCount
+              ) {
+                break;
+              }
 
-          // basic_or_grade_calculation();
-        },
-      });
+              temp.push({
+                value:
+                  res?.incrementSlabCount +
+                  (i - employeeInfo?.data[0]?.intSlabCount + 1),
+                label: `Efficiency ${
+                  res?.incrementSlabCount +
+                  (i - employeeInfo?.data[0]?.intSlabCount + 1)
+                }`,
+              });
+            }
+            setSlabDDL(temp);
+
+            // basic_or_grade_calculation();
+          },
+        });
+      !employeeInfo?.data[0]?.isGradeBasedSalary &&
+        form.setFieldsValue({
+          grossAmount: employeeInfo?.data[0]?.numNetGrossSalary,
+          basicAmount: employeeInfo?.data[0]?.numBasicORGross,
+          payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
+            ? undefined
+            : employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+          basedOn:
+            employeeInfo?.data[0]?.strDependOn.toLowerCase() === "basic"
+              ? { value: 2, label: "Basic" }
+              : { value: 1, label: "Gross" },
+
+          salaryType: employeeInfo?.data[0]?.isGradeBasedSalary
+            ? "Grade"
+            : "Non-Grade",
+          // slabCount: {
+          //   value: employeeInfo?.data[0]?.intSlabCount,
+          //   label: employeeInfo?.data[0]?.intSlabCount,
+          // },
+        });
       getAssignedBreakdown();
     }
   }, [employeeInfo?.data[0]]);
@@ -1482,15 +1552,22 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 </>
               ) : (
                 <>
-                  {/* <Col md={6} sm={12} xs={24}>
+                  <Col md={6} sm={12} xs={24}>
                     <PSelect
                       options={payrollGroupDDL?.data || []}
                       name="payrollGroup"
+                      disabled={(location?.state as any)?.viewOnly}
                       label="Payroll Group"
                       placeholder="Payroll Group"
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payrollGroup: op,
+                          grossAmount: undefined,
+                          basicAmount: undefined,
+                          basedOn:
+                            (op as any)?.strDependOn?.toLowerCase() === "basic"
+                              ? { value: 2, label: "Basic" }
+                              : { value: 1, label: "Gross" },
                         });
                         getBreakDownPolicyElements();
                       }}
@@ -1501,8 +1578,30 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         },
                       ]}
                     />
-                  </Col> */}
+                  </Col>
                   <Col md={6} sm={12} xs={24}>
+                    <PSelect
+                      options={[
+                        { value: 1, label: "Gross" },
+                        { value: 2, label: "Basic" },
+                      ]}
+                      name="basedOn"
+                      label="Based On"
+                      disabled={true}
+                      placeholder="Based On"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          basedOn: op,
+                          basicAmount: undefined,
+                          grossAmount: undefined,
+                        });
+                      }}
+                      rules={[
+                        { required: true, message: "Based On is required" },
+                      ]}
+                    />
+                  </Col>
+                  {/* <Col md={6} sm={12} xs={24}>
                     <PSelect
                       options={[
                         { value: 1, label: "Gross" },
@@ -1525,8 +1624,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         { required: true, message: "Depend is required" },
                       ]}
                     />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
+                  </Col> */}
+                  {/* <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="number"
                       name="numIncrementPercentageOrAmount"
@@ -1545,7 +1644,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         },
                       ]}
                     />
-                  </Col>
+                  </Col> */}
                 </>
               );
             }}
@@ -2116,9 +2215,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               if (salaryType?.value !== "Grade" && basedOn?.value === 2) {
                 return (
                   <Col md={6} sm={12} xs={24}>
-                    {/* <PInput
+                    <PInput
                       type="number"
                       name="basicAmount"
+                      disabled={(location?.state as any)?.viewOnly}
                       label="Basic"
                       placeholder="Basic"
                       onChange={() => basic_or_grade_calculation()}
@@ -2128,20 +2228,29 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                           message: "Basic is required",
                         },
                       ]}
-                    /> */}
+                    />
                   </Col>
                 );
               } else
                 return salaryType?.value !== "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
-                    {/* <PInput
+                    <PInput
                       type="number"
                       name="grossAmount"
+                      disabled={(location?.state as any)?.viewOnly}
                       label="Gross"
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        const accounts = `Cash Pay (${100}%)`;
-                        default_gross_calculation();
+                        if (
+                          employeeIncrementByIdApi?.data?.oldGrossAmount > e ||
+                          employeeInfo?.data[0]?.numNetGrossSalary > e
+                        ) {
+                          return toast.warn(
+                            "Amount should be greater than previous amount"
+                          );
+                        }
+                        new_gross_calculation();
+
                         // (values?.bankPay * 100) /
                         //               values?.totalGrossSalary
                         //             )?.toFixed(6)
@@ -2152,7 +2261,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                           message: "Gross is required",
                         },
                       ]}
-                    /> */}
+                    />
                   </Col>
                 ) : salaryType?.value == "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
@@ -2199,33 +2308,29 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           <Col xs={12}></Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { grossAmount, basicAmount, salaryType } =
-                form.getFieldsValue(true);
+              const { grossAmount, salaryType } = form.getFieldsValue(true);
 
               return (
-                salaryType?.value === "Grade" && (
-                  <Col md={6} sm={12} xs={24}>
-                    <PInput
-                      type="number"
-                      label="Gross Amount"
-                      value={grossAmount}
-                      placeholder="GROSS"
-                      disabled={true}
-                      // rules={[
-                      //   {
-                      //     required: basedOn?.value === 2,
-                      //     message: "Basic is required",
-                      //   },
-                      // ]}
-                    />
-                  </Col>
-                )
+                <Col md={6} sm={12} xs={24}>
+                  <PInput
+                    type="number"
+                    label="Gross Amount"
+                    value={grossAmount}
+                    placeholder="GROSS"
+                    disabled={true}
+                    // rules={[
+                    //   {
+                    //     required: basedOn?.value === 2,
+                    //     message: "Basic is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
               );
             }}
           </Form.Item>
         </Row>
-        {console.log(employeeInfo?.data[0]?.isGradeBasedSalary) as any}
-        {rowDto?.length > 0 && employeeInfo?.data[0]?.isGradeBasedSalary ? (
+        {rowDto?.length > 0 ? (
           <DataTable header={header} bordered data={rowDto || []} />
         ) : (
           <NoResult title="No Result Found" para="" />
