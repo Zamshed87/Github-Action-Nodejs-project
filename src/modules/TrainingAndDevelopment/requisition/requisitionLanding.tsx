@@ -16,6 +16,9 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { data } from "./helper";
+
+import { PModal } from "Components/Modal";
+import RequisitionView from "./requisitionView";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -25,6 +28,7 @@ const TnDRequisitionLanding = () => {
 
   // state
   const [loading, setLoading] = useState(false);
+  const [viewModal, setViewModalModal] = useState(false);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -85,9 +89,10 @@ const TnDRequisitionLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                history.push("/trainingAndDevelopment/requisition/view", {
-                  data: rec,
-                });
+                setViewModalModal(true);
+                // history.push("/trainingAndDevelopment/requisition/view", {
+                //   data: rec,
+                // });
               }}
             />
           </Tooltip>
@@ -230,6 +235,27 @@ const TnDRequisitionLanding = () => {
           </div>
         </PCard>
       </PForm>
+      {/* Training Title Modal */}
+      <PModal
+        open={viewModal}
+        title={"Training Requisition View"}
+        width={1000}
+        onCancel={() => {
+          setViewModalModal(false);
+          // getTrainingTitleDDL(
+          //   "/TrainingTitle/Training/Title",
+          //   typeDataSetForTitle
+          // );
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <RequisitionView
+            // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+            />
+          </>
+        }
+      />
     </div>
   );
 };

@@ -26,6 +26,8 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 
 import { data } from "./helper";
+import { PModal } from "Components/Modal";
+import PlanningView from "./planningView";
 const TnDPlanningLanding = () => {
   // router states
   const history = useHistory();
@@ -37,6 +39,7 @@ const TnDPlanningLanding = () => {
 
   // state
   const [loading, setLoading] = useState(false);
+  const [viewModal, setViewModalModal] = useState(false);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -158,9 +161,10 @@ const TnDPlanningLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                history.push("/trainingAndDevelopment/planning/view", {
-                  data: rec,
-                });
+                setViewModalModal(true);
+                // history.push("/trainingAndDevelopment/planning/view", {
+                //   data: rec,
+                // });
               }}
             />
           </Tooltip>
@@ -338,6 +342,27 @@ const TnDPlanningLanding = () => {
           </div>
         </PCard>
       </PForm>
+      {/* Training Title Modal */}
+      <PModal
+        open={viewModal}
+        title={"Training Planning"}
+        width={1200}
+        onCancel={() => {
+          setViewModalModal(false);
+          // getTrainingTitleDDL(
+          //   "/TrainingTitle/Training/Title",
+          //   typeDataSetForTitle
+          // );
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <PlanningView
+            // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+            />
+          </>
+        }
+      />
     </div>
   );
 };
