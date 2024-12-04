@@ -34,6 +34,8 @@ import ListOfPerticipants from "./listOfPerticipants";
 import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import PlanningInfo from "./planningInfo";
 
+const cardMargin = { marginBottom: "15px" };
+
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
     data?: any;
@@ -49,6 +51,7 @@ const TnDPlanningCreateEdit = () => {
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
   const [openTrainingTitleModal, setOpenTrainingTitleModal] = useState(false);
   const [costField, setCostField] = useState<any>([]);
+  const [trainerOrgField, setTrainerOrgField] = useState<any>([]);
   const [perticipantField, setperticipantField] = useState<any>([]);
 
   const { permissionList, profileData } = useSelector(
@@ -279,6 +282,17 @@ const TnDPlanningCreateEdit = () => {
     ]);
   };
 
+  const addHandlerTrinerOrg = (values: any) => {
+    if (!values?.nameofTrainerOrganization) {
+      toast.error("Trainer is required");
+      return;
+    }
+    setTrainerOrgField([
+      ...trainerOrgField,
+      { ...values?.nameofTrainerOrganization },
+    ]);
+  };
+
   const addHanderForPerticipant = (values: any) => {
     if (!values?.employee) {
       toast.error("Employee is required");
@@ -318,11 +332,6 @@ const TnDPlanningCreateEdit = () => {
     return perPersonCost;
   };
 
-  const nameofTrainerOrganization = Form.useWatch(
-    "nameofTrainerOrganization",
-    form
-  );
-
   return (
     <div>
       {loading || (loadingTrainingType && <Loading />)}
@@ -355,7 +364,7 @@ const TnDPlanningCreateEdit = () => {
                   ]
             }
           />
-          <PCardBody>
+          <PCardBody styles={cardMargin}>
             {/* Planning Info */}
             <PlanningInfo
               form={form}
@@ -371,19 +380,26 @@ const TnDPlanningCreateEdit = () => {
               trainingTitleDDL={trainingTitleDDL}
               setOpenTrainingTitleModal={setOpenTrainingTitleModal}
             />
-
+          </PCardBody>
+          <PCardBody styles={cardMargin}>
             {/* Trainer and Org */}
             <TrainerAndOrgInfo
               form={form}
+              trainerOrgField={trainerOrgField}
+              setTrainerOrgField={setTrainerOrgField}
               nameOfTrainerOrgDDL={nameOfTrainerOrgDDL}
+              addHandler={addHandlerTrinerOrg}
             />
-
+          </PCardBody>
+          <PCardBody styles={cardMargin}>
             <ListOfCost
               form={form}
               costField={costField}
               setCostField={setCostField}
               addHandler={addHandler}
             />
+          </PCardBody>
+          <PCardBody styles={cardMargin}>
             <ListOfPerticipants
               form={form}
               perticipantField={perticipantField}
