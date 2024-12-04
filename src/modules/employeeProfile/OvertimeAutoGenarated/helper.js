@@ -171,6 +171,8 @@ export const overTimeGeneratedDtoCol = (
       isDate: true,
       key: "dteAttendanceDate",
       width: "100px",
+      sorter: true,
+      filter: true,
     },
     {
       title: "Calendar Name",

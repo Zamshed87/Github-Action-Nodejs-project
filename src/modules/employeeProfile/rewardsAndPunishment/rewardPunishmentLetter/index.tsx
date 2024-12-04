@@ -23,6 +23,7 @@ import { getSerial } from "Utils";
 import TemplateViewModal from "./templateViewModal";
 import { ViewRewardPunishmentRecord } from "./letterGenAddEdit/helper";
 import PunishmentExplantion from "./punishmentExplantion";
+import PBadge from "Components/Badge";
 
 const UserEndRewardPunishmentLanding = ({
   empId,
@@ -240,7 +241,14 @@ const UserEndRewardPunishmentLanding = ({
       filterSearch: true,
       width: "40px",
     },
-
+    {
+      title: "Action Name",
+      dataIndex: "actionName",
+      filter: true,
+      filterKey: "actionNameList",
+      filterSearch: true,
+      width: "40px",
+    },
     {
       title: "Issued By",
       dataIndex: "issueByEmployeeName",
@@ -300,6 +308,7 @@ const UserEndRewardPunishmentLanding = ({
           </Tooltip>
           {employeeId === empId && !rec?.isExplanation && (
             <button
+              style={{ border: "none", background: "none" }}
               onClick={() => {
                 ViewRewardPunishmentRecord(
                   rec?.recordId,
@@ -312,7 +321,7 @@ const UserEndRewardPunishmentLanding = ({
                 );
               }}
             >
-              Explanation
+              <PBadge type="warning" text="Explanation" />
             </button>
           )}
         </Flex>

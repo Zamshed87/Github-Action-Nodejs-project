@@ -153,7 +153,7 @@ export default function AssetTransferApproval() {
         isAdmin: isOfficeAdmin,
       },
     ];
-
+//
     const callback = () => {
       getAssetTransferListDataForApproval(
         {
