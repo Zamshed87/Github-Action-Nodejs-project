@@ -130,7 +130,7 @@ const ListOfPerticipants = ({
             options={departmentDDL} // need to change
             name="department"
             label="Department"
-            disabled={!workplace}
+            // disabled={!workplace}
             placeholder="Department"
             onChange={(value, op) => {
               form.setFieldsValue({
@@ -144,7 +144,7 @@ const ListOfPerticipants = ({
             options={positionDDL} // need to change
             name="hrPosition"
             label="HR Position"
-            disabled={!workplace}
+            // disabled={!workplace}
             placeholder="HR Position"
             onChange={(value, op) => {
               form.setFieldsValue({

@@ -87,6 +87,26 @@ export const setTrainingDuration = (form: FormInstance<any>) => {
   }
 };
 
+// validation
+
+export const stepOneValidation = [
+  "bUnit",
+  "workplaceGroup",
+  "workplace",
+  "trainingType",
+  "trainingTitle",
+  // "trainingMode",
+  // "trainingOrganizer",
+  // "trainingStatus",
+  "objectives",
+  "trainingVanue",
+  "trainingStartDate",
+  "trainingStartTime",
+  "trainingEndDate",
+  "trainingEndTime",
+  "nameofTrainerOrganization",
+];
+
 export const data: any[] = [
   {
     requestor: "John Doe",

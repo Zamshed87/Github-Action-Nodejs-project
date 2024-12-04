@@ -26,6 +26,7 @@ import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
   setTrainingDuration,
+  stepOneValidation,
   trainingModeFixDDL,
   trainingStatusFixDDL,
 } from "./helper";
@@ -53,6 +54,8 @@ const TnDPlanningCreateEdit = () => {
   const [costField, setCostField] = useState<any>([]);
   const [trainerOrgField, setTrainerOrgField] = useState<any>([]);
   const [perticipantField, setperticipantField] = useState<any>([]);
+
+  const [planStep, setPlanStep] = useState<string>("");
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -210,6 +213,7 @@ const TnDPlanningCreateEdit = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
+    setPlanStep("SAVE_AND_NEXT");
     getBUnitDDL.action({
       urlKey: "BusinessUnitWithRoleExtension",
       method: "GET",
@@ -332,6 +336,15 @@ const TnDPlanningCreateEdit = () => {
     return perPersonCost;
   };
 
+  const buttonContent = () => {
+    if (planStep === "SAVE_AND_NEXT") return "Save & Next";
+    if (planStep === "SAVE") return "Save";
+
+    if (type === "create") return "Save";
+    if (type === "edit") return "Edit";
+    if (type === "view") return "View";
+  };
+
   return (
     <div>
       {loading || (loadingTrainingType && <Loading />)}
@@ -349,67 +362,79 @@ const TnDPlanningCreateEdit = () => {
                 : [
                     {
                       type: "primary",
-                      content: `${type === "create" ? "Save" : "Edit"}`,
+                      content: buttonContent() || "",
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
                         const values = form.getFieldsValue(true);
 
                         form
-                          .validateFields()
-                          .then(() => {})
+                          .validateFields(stepOneValidation)
+                          .then(() => {
+                            setTimeout(() => {
+                              setPlanStep("SAVE");
+                            }, 500);
+                          })
                           .catch(() => {});
                       },
                     },
                   ]
             }
           />
-          <PCardBody styles={cardMargin}>
-            {/* Planning Info */}
-            <PlanningInfo
-              form={form}
-              getBUnitDDL={getBUnitDDL}
-              workplaceGroup={workplaceGroup}
-              getWorkplace={getWorkplace}
-              workplace={workplace}
-              getEmployeDepartment={getEmployeDepartment}
-              getEmployeePosition={getEmployeePosition}
-              setTrainingDuration={setTrainingDuration}
-              trainingTypeDDL={trainingTypeDDL}
-              setOpenTraingTypeModal={setOpenTraingTypeModal}
-              trainingTitleDDL={trainingTitleDDL}
-              setOpenTrainingTitleModal={setOpenTrainingTitleModal}
-            />
-          </PCardBody>
-          <PCardBody styles={cardMargin}>
-            {/* Trainer and Org */}
-            <TrainerAndOrgInfo
-              form={form}
-              trainerOrgField={trainerOrgField}
-              setTrainerOrgField={setTrainerOrgField}
-              nameOfTrainerOrgDDL={nameOfTrainerOrgDDL}
-              addHandler={addHandlerTrinerOrg}
-            />
-          </PCardBody>
-          <PCardBody styles={cardMargin}>
-            <ListOfCost
-              form={form}
-              costField={costField}
-              setCostField={setCostField}
-              addHandler={addHandler}
-            />
-          </PCardBody>
-          <PCardBody styles={cardMargin}>
-            <ListOfPerticipants
-              form={form}
-              perticipantField={perticipantField}
-              setperticipantField={setperticipantField}
-              addHandler={addHanderForPerticipant}
-              calculatePerPersonCost={calculatePerPersonCost}
-              departmentDDL={empDepartmentDDL?.data || []}
-              positionDDL={positionDDL?.data || []}
-            />
-          </PCardBody>
+          {planStep === "SAVE_AND_NEXT" && (
+            <>
+              <PCardBody styles={cardMargin}>
+                {/* Planning Info */}
+                <PlanningInfo
+                  form={form}
+                  getBUnitDDL={getBUnitDDL}
+                  workplaceGroup={workplaceGroup}
+                  getWorkplace={getWorkplace}
+                  workplace={workplace}
+                  getEmployeDepartment={getEmployeDepartment}
+                  getEmployeePosition={getEmployeePosition}
+                  setTrainingDuration={setTrainingDuration}
+                  trainingTypeDDL={trainingTypeDDL}
+                  setOpenTraingTypeModal={setOpenTraingTypeModal}
+                  trainingTitleDDL={trainingTitleDDL}
+                  setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+                />
+              </PCardBody>
+              <PCardBody styles={cardMargin}>
+                {/* Trainer and Org */}
+                <TrainerAndOrgInfo
+                  form={form}
+                  trainerOrgField={trainerOrgField}
+                  setTrainerOrgField={setTrainerOrgField}
+                  nameOfTrainerOrgDDL={nameOfTrainerOrgDDL}
+                  addHandler={addHandlerTrinerOrg}
+                />
+              </PCardBody>
+            </>
+          )}
+          {planStep === "SAVE" && (
+            <>
+              <PCardBody styles={cardMargin}>
+                <ListOfCost
+                  form={form}
+                  costField={costField}
+                  setCostField={setCostField}
+                  addHandler={addHandler}
+                />
+              </PCardBody>
+              <PCardBody styles={cardMargin}>
+                <ListOfPerticipants
+                  form={form}
+                  perticipantField={perticipantField}
+                  setperticipantField={setperticipantField}
+                  addHandler={addHanderForPerticipant}
+                  calculatePerPersonCost={calculatePerPersonCost}
+                  departmentDDL={empDepartmentDDL?.data || []}
+                  positionDDL={positionDDL?.data || []}
+                />
+              </PCardBody>
+            </>
+          )}
         </PCard>
       </PForm>
       {/* Training Type Modal */}
