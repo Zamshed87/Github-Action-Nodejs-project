@@ -348,7 +348,7 @@ const EmployeeBooklet = () => {
         style={{ top: 10 }}
         height="80vh"
         open={openBooklet}
-        title={"Employee Booklet"}
+        title={"Employee Lifecycle"}
         width={"1500px"}
         onCancel={() => {
           setOpenBooklet(false);
