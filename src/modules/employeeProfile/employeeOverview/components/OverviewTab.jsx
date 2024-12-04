@@ -13,7 +13,7 @@ import TransferAndPromotionInfo from "./TransferAndPromotionInfo";
 import OAuth from "./OAuth/OAuth";
 import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter";
 
-function OverviewTab({ empId, wgId, buId }) {
+function OverviewTab({ empId, wgId, buId, intAccountId }) {
   const [index, setIndex] = useState(0);
   const tabName = [
     { name: "General Info" },
@@ -29,6 +29,11 @@ function OverviewTab({ empId, wgId, buId }) {
     { name: "others" },
     { name: "Social Media Information" },
   ];
+  const filteredTabName =
+    intAccountId !== 12
+      ? tabName.filter((tab) => tab.name !== "Reward And Punishment")
+      : tabName;
+
   return (
     <>
       <div className="overview-filter">
@@ -37,7 +42,7 @@ function OverviewTab({ empId, wgId, buId }) {
             <div className="row">
               <div className="col-md-3">
                 <div className="tabs-name">
-                  {tabName.map((item, i) => {
+                  {filteredTabName?.map((item, i) => {
                     return (
                       <button
                         key={i}
