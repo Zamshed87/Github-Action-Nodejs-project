@@ -166,6 +166,7 @@ const SingleQuestionnaire = ({
                   .then((res) => {
                     console.log(res?.data);
                   });
+                antForm.setFieldValue();
                 console.log(antForm.getFieldValue("questions")[index]);
                 setTempOptions([]);
               }}
