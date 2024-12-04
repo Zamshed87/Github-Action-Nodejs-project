@@ -24,6 +24,7 @@ import {
   success500,
 } from "./../../../../../../utility/customColor";
 import formatAddress from "common/formatAddress";
+import { checkBng } from "utility/regxExp";
 
 const initData = {
   country: "",
@@ -63,10 +64,7 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
-  addressBn: Yup.string().matches(
-    /^[\u0980-\u09FF\s]*$/,
-    "This field should be in Bangla"
-  ),
+  addressBn: Yup.string().matches(checkBng(), "This field should be in Bangla"),
 });
 
 function PresentAddress({ getData, rowDto, empId }) {

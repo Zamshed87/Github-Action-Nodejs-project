@@ -44,7 +44,7 @@ const LeaveBalanceTable = ({
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
 
-  // 🔥🔥 leave balance table is also used in supervisor dashboard. for any kind of change please consider that.
+  // 🔥🔥 leave balance table is also used in supervisor dashboard  and employee booklet. for any kind of change please consider that.
 
   const punishmentPopupContent = (leaveData) => {
     return (

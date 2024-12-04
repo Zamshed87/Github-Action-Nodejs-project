@@ -30,6 +30,7 @@ import { todayDate } from "../../../../../utility/todayDate";
 import "../../employeeOverview.css";
 import { updateEmployeeProfile } from "../helper";
 import { getEmployeeProfileViewData } from "./../../../employeeFeature/helper";
+import { checkBng } from "utility/regxExp";
 
 const initData = {
   name: "",
@@ -58,7 +59,7 @@ const validationSchema = Yup.object().shape({
     "Mobile Number is invalid"
   ),
   relativesNameBn: Yup.string().matches(
-    /^[\u0980-\u09FF\s]*$/,
+    checkBng(),
     "This field should be in Bangla"
   ),
 });
@@ -420,7 +421,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                             }}
                                           />
                                         ),
-                                        onClick: (e) => {
+                                        onClick: () => {
                                           setValues({
                                             ...values,
                                             name:
@@ -496,7 +497,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                           }}
                                         />
                                       ),
-                                      onClick: (e) => {
+                                      onClick: () => {
                                         setValues({
                                           ...values,
                                           name:
