@@ -64,10 +64,10 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
           </div>
         </Col>
       </Row>
-      <Divider style={{ margin: "5px 0", backgroundColor: "lightgray" }} />
+      <Divider style={{ margin: "8px 0", backgroundColor: "lightgray" }} />
       <Row>
         <Col md={8}>
-          <div className="mt-2">
+          <div>
             Religion :{" "}
             <div style={{ fontWeight: "500", fontSize: "14px" }}>
               {singleData?.strReligion || "N/A"}
@@ -75,7 +75,7 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
           </div>
         </Col>
         <Col md={8}>
-          <div className="mt-2">
+          <div>
             Gender :{" "}
             <div style={{ fontWeight: "500", fontSize: "14px" }}>
               {singleData?.strGender || "N/A"}
@@ -83,7 +83,7 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
           </div>
         </Col>
         <Col md={8}>
-          <div className="mt-2">
+          <div>
             Date of Birth :{" "}
             <div style={{ fontWeight: "500", fontSize: "14px" }}>
               {moment(singleData?.dteDateOfBirth).format("DD MMM, YYYY") ||
@@ -145,8 +145,9 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
                   <img
                     src={`${APIUrl}/Document/DownloadFile?id=${empSignatureId}`}
                     alt="Profile"
+                    width="60px"
+                    height="40px"
                     style={{
-                      width: "100%",
                       objectFit: "cover",
                     }}
                   />
@@ -169,7 +170,7 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
           <div className="mt-2">
             Personal Email :{" "}
             <div style={{ fontWeight: "500", fontSize: "14px" }}>
-              {singleData?.strPersonalEmail || "N/A"}
+              {singleData?.strPersonalMail || "N/A"}
             </div>
           </div>
         </Col>
@@ -206,9 +207,10 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
           </div>
         </Col>
       </Row>
+      <Divider style={{ margin: "8px 0", backgroundColor: "lightgray" }} />
       <Row>
         <Col md={12}>
-          <div className="mt-2">
+          <div>
             Present Address :{" "}
             <div style={{ fontWeight: "500", fontSize: "14px" }}>
               {presentAddress || "N/A"}
@@ -216,7 +218,7 @@ const PersonalInfo = forwardRef((props: any, ref: any) => {
           </div>
         </Col>
         <Col md={12}>
-          <div className="mt-2">
+          <div>
             Permanent Address :{" "}
             <div style={{ fontWeight: "500", fontSize: "14px" }}>
               {permanentAddress || "N/A"}

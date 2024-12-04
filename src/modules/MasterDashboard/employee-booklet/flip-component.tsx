@@ -2,7 +2,7 @@
 //@ts-nocheck
 
 import { Col, Row } from "antd";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
 import PersonalInfo from "./contents/PersonalInfo";
 import "./booklet.css";
@@ -42,9 +42,13 @@ const FlipComponent = ({
       book.current.pageFlip().flipNext();
     }
   };
+  document.onkeydown = (e) => {
+    if (e.keyCode === 37) goToPreviousPage();
+    if (e.keyCode === 39) goToNextPage();
+  };
 
   return (
-    <div>
+    <div className="lifeCycle">
       <Row gutter={8}>
         <Col md={5}>
           <FixedInfo singleData={singleData?.employeeProfileLandingView} />

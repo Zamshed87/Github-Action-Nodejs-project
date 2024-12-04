@@ -1,5 +1,6 @@
 .flipbook {
-  overflow: hidden !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden;
   width: 1090px;
   height: 550px;
   border-radius: 5px;
@@ -18,4 +19,8 @@
   font-family: Arial, sans-serif;
   font-size: 1.2em;
   color: #333;
+}
+
+.flipbook::-webkit-scrollbar {
+  display: none !important;
 }
