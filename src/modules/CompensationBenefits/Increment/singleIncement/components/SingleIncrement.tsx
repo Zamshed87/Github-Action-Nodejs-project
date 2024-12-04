@@ -562,7 +562,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       payScaleId: values?.payscale?.value || values?.payscale,
       slabCount: values?.slabCount?.value || values?.slabCount || 0,
       oldGrossAmount:
-        employeeIncrementByIdApi?.data?.oldGrossAmount ||
+        Math.round(employeeIncrementByIdApi?.data?.oldGrossAmount) ||
         employeeInfo?.data[0]?.numNetGrossSalary ||
         0,
       incrementDependOn:
@@ -1017,7 +1017,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             return {
               ...i,
               // strBasedOn: i?.isBasicSalary ? "Amount" : "Percentage",
-              numAmount: i?.amount,
+              numAmount: Math.round(i?.amount),
               numNumberOfPercent: i?.numberOfPercent,
               strBasedOn: i?.dependsOn,
               strDependOn: i?.dependsOn,
