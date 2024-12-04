@@ -2,6 +2,7 @@ import {
   EditOutlined,
   PlusCircleOutlined,
   SaveOutlined,
+  StepForwardOutlined,
 } from "@ant-design/icons";
 import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
@@ -213,7 +214,7 @@ const TnDPlanningCreateEdit = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    setPlanStep("SAVE_AND_NEXT");
+    setPlanStep("STEP_ONE");
     getBUnitDDL.action({
       urlKey: "BusinessUnitWithRoleExtension",
       method: "GET",
@@ -337,8 +338,8 @@ const TnDPlanningCreateEdit = () => {
   };
 
   const buttonContent = () => {
-    if (planStep === "SAVE_AND_NEXT") return "Save & Next";
-    if (planStep === "SAVE") return "Save";
+    if (planStep === "STEP_ONE") return "Next Step";
+    if (planStep === "STEP_TWO") return "Save";
 
     if (type === "create") return "Save";
     if (type === "edit") return "Edit";
@@ -359,10 +360,11 @@ const TnDPlanningCreateEdit = () => {
             buttonList={
               type === "view"
                 ? [] // No buttons for "status" type
-                : [
+                : planStep === "STEP_TWO"
+                ? [
                     {
                       type: "primary",
-                      content: buttonContent() || "",
+                      content: "Save and Finish",
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
@@ -371,8 +373,46 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
+                            // redirect to planning landing
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                  ]
+                : [
+                    {
+                      type: "primary",
+                      content: "Save & Close",
+                      icon:
+                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields(stepOneValidation)
+                          .then(() => {
+                            // redirect to planning landing
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                    {
+                      type: "primary",
+                      content: buttonContent() || "",
+                      icon:
+                        type === "create" ? (
+                          <StepForwardOutlined />
+                        ) : (
+                          <EditOutlined />
+                        ),
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields(stepOneValidation)
+                          .then(() => {
                             setTimeout(() => {
-                              setPlanStep("SAVE");
+                              setPlanStep("STEP_TWO");
                             }, 500);
                           })
                           .catch(() => {});
@@ -381,7 +421,7 @@ const TnDPlanningCreateEdit = () => {
                   ]
             }
           />
-          {planStep === "SAVE_AND_NEXT" && (
+          {planStep === "STEP_ONE" && (
             <>
               <PCardBody styles={cardMargin}>
                 {/* Planning Info */}
@@ -412,7 +452,7 @@ const TnDPlanningCreateEdit = () => {
               </PCardBody>
             </>
           )}
-          {planStep === "SAVE" && (
+          {planStep === "STEP_TWO" && (
             <>
               <PCardBody styles={cardMargin}>
                 <ListOfCost

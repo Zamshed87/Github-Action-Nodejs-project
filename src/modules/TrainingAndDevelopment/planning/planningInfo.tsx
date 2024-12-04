@@ -31,7 +31,7 @@ const PlanningInfo = ({
               bUnit: op,
             });
           }}
-          rules={[{ required: true, message: "District is required" }]}
+          rules={[{ required: true, message: "Business Unit is required" }]}
         />
       </Col>
       <Col md={6} sm={12} xs={24}>
@@ -66,7 +66,7 @@ const PlanningInfo = ({
 
             //   getDesignation();
           }}
-          //   rules={[{ required: true, message: "Workplace is required" }]}
+          rules={[{ required: true, message: "Workplace is required" }]}
         />
       </Col>
 
