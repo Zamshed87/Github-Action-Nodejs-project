@@ -15,7 +15,7 @@ import EmployeeBooklet from "./employee-booklet";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
-  const { strDisplayName, isOwner, isOfficeAdmin } = useSelector(
+  const { strDisplayName, isOwner, isOfficeAdmin, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -106,9 +106,17 @@ const MasterDashboardLanding = () => {
             {values?.dashboardroleType?.value === 1 && (
               <SelfDashboardLanding
                 setLoading={setLoading}
-                setDashboardRoles={(dashboardRoles) =>
-                  setValues((prev) => ({ ...prev, dashboardRoles }))
-                }
+                setDashboardRoles={(dashboardRoles) => {
+                  if (
+                    Array.isArray(dashboardRoles) &&
+                    dashboardRoles.length === 4 &&
+                    ![3, 7, 12].includes(orgId)
+                  ) {
+                    dashboardRoles.pop();
+                  }
+
+                  setValues((prev) => ({ ...prev, dashboardRoles }));
+                }}
               />
             )}
             {values?.dashboardroleType?.value === 2 && (
