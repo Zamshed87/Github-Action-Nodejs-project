@@ -1566,7 +1566,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                     <PSelect
                       options={payrollGroupDDL?.data || []}
                       name="payrollGroup"
-                      disabled={id ? true : false}
+                      disabled={true}
                       label="Payroll Group"
                       placeholder="Payroll Group"
                       onChange={(value, op) => {
