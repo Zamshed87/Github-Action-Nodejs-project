@@ -11,10 +11,11 @@ import ManagementDashboardLanding from "./ManagementDashboardLanding/ManagementD
 import SelfDashboardLanding from "./SelfDashboardLanding/SelfDashboardLanding";
 import SupervisorDashboardLanding from "./SupervisorDashboardLanding/SupervisorDashboardLanding";
 import { useHistory } from "react-router-dom";
+import EmployeeBooklet from "./employee-booklet";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
-  const { strDisplayName, isOwner, isOfficeAdmin } = useSelector(
+  const { strDisplayName, isOwner, isOfficeAdmin, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -65,6 +66,7 @@ const MasterDashboardLanding = () => {
               Hello,{" "}
               <span
                 className="pointer"
+                style={{ color: "green", textDecoration: "underline" }}
                 onClick={() => {
                   history.push("/SelfService/aboutMe");
                 }}
@@ -74,9 +76,10 @@ const MasterDashboardLanding = () => {
               , Welcome Back !
             </h4>
           </div>
+
           {values?.dashboardRoles?.length > 1 &&
             (!isOwner || isOfficeAdmin) && (
-              <div style={{ width: "120px" }}>
+              <div style={{ width: "150px" }}>
                 <FormikSelect
                   isClearable={false}
                   name="userType"
@@ -103,9 +106,17 @@ const MasterDashboardLanding = () => {
             {values?.dashboardroleType?.value === 1 && (
               <SelfDashboardLanding
                 setLoading={setLoading}
-                setDashboardRoles={(dashboardRoles) =>
-                  setValues((prev) => ({ ...prev, dashboardRoles }))
-                }
+                setDashboardRoles={(dashboardRoles) => {
+                  if (
+                    Array.isArray(dashboardRoles) &&
+                    dashboardRoles.length === 4 &&
+                    ![3, 7, 12].includes(orgId)
+                  ) {
+                    dashboardRoles.pop();
+                  }
+
+                  setValues((prev) => ({ ...prev, dashboardRoles }));
+                }}
               />
             )}
             {values?.dashboardroleType?.value === 2 && (
@@ -116,6 +127,9 @@ const MasterDashboardLanding = () => {
             )}
             {values?.dashboardroleType?.value === 3 && (
               <ManagementDashboardLanding setLoading={setLoading} />
+            )}
+            {values?.dashboardroleType?.value === 4 && (
+              <EmployeeBooklet setLoading={setLoading} />
             )}
           </>
         )}
