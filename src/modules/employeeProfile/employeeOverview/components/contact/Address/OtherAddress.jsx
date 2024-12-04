@@ -135,7 +135,8 @@ function OtherAddress({ getData, rowDto, empId }) {
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
-        addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
+        addressDetails:
+          formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -204,7 +205,8 @@ function OtherAddress({ getData, rowDto, empId }) {
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
-        addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
+        addressDetails:
+          formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -275,7 +277,8 @@ function OtherAddress({ getData, rowDto, empId }) {
       postOfficeId: values?.postOffice?.value || singleData?.postOffice?.value,
       postOfficeName:
         values?.postOffice?.label || singleData?.postOffice?.label,
-      addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
+      addressDetails:
+        formatAddress(values?.address) || formatAddress(singleData?.address),
       addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
       companyName: "",
       jobTitle: "",
@@ -658,18 +661,20 @@ function OtherAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        <FormikInput
-                          name="addressBn"
-                          value={values?.addressBn}
-                          onChange={(e) => {
-                            setFieldValue("addressBn", e.target.value);
-                          }}
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Address (In Bangla)"
-                          classes="input-sm"
-                          isDisabled={!values?.district}
-                        />
+                        {orgId === 7 && (
+                          <FormikInput
+                            name="addressBn"
+                            value={values?.addressBn}
+                            onChange={(e) => {
+                              setFieldValue("addressBn", e.target.value);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                            placeholder="Address (In Bangla)"
+                            classes="input-sm"
+                            isDisabled={!values?.district}
+                          />
+                        )}
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
