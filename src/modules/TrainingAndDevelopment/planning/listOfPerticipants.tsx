@@ -1,4 +1,4 @@
-import { Col, Row, Tooltip } from "antd";
+import { Col, Row, Tooltip, Form } from "antd";
 import { DataTable, Flex, PButton, PSelect } from "Components";
 import { useEffect } from "react";
 
@@ -119,6 +119,8 @@ const ListOfPerticipants = ({
     perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
   );
 
+  const workplace = Form.useWatch("workplace", form);
+
   return (
     <div style={{ marginTop: "13px" }}>
       <h1>List of Perticipants</h1>
@@ -128,6 +130,7 @@ const ListOfPerticipants = ({
             options={departmentDDL} // need to change
             name="department"
             label="Department"
+            disabled={!workplace}
             placeholder="Department"
             onChange={(value, op) => {
               form.setFieldsValue({
@@ -141,6 +144,7 @@ const ListOfPerticipants = ({
             options={positionDDL} // need to change
             name="hrPosition"
             label="HR Position"
+            disabled={!workplace}
             placeholder="HR Position"
             onChange={(value, op) => {
               form.setFieldsValue({
