@@ -1,10 +1,14 @@
 import { DeleteOutlined, DragIndicator } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
-import { Col, Divider, Row, Switch } from "antd";
+import { AutoComplete, Col, Divider, Row, Switch } from "antd";
 import { Flex, PButton, PInput, PSelect } from "Components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { shallowEqual, useSelector } from "react-redux";
+import useDebounce from "utility/customHooks/useDebounce";
+import axios from "axios";
 
 const SingleQuestionnaire = ({
   index,
@@ -16,6 +20,30 @@ const SingleQuestionnaire = ({
   questionTypeDDL,
   antForm,
 }: any) => {
+  const { buId, wgId, wId } = useSelector(
+    (state: any) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  const [tempOptions, getTempOptions, , setTempOptions] = useAxiosGet([]);
+  const debounce = useDebounce();
+
+  const getTemp = (srcTxt: string) => {
+    const url = `/Questionnaire/Question/Template/Search/${srcTxt}?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`;
+    getTempOptions(url, (res: any) => {
+      const modifiedObject = res?.map((dto: any) => {
+        return {
+          ...dto,
+          value: dto?.text,
+          label: dto?.text,
+          id: dto?.value,
+        };
+      });
+
+      setTempOptions(modifiedObject);
+    });
+  };
+
   return (
     <Stack direction="column">
       <div>
@@ -119,6 +147,28 @@ const SingleQuestionnaire = ({
               type="text"
               placeholder="Question Title"
               label="Question Title"
+            />
+          </Form.Item>
+        </div>
+        <div className="col-12 col-md-4 py-0 my-0 pl-0">
+          <Form.Item name={[field.name, "questionTitle"]} shouldUpdate>
+            <AutoComplete
+              options={tempOptions || []}
+              placeholder="Outlined"
+              onSearch={(text) => {
+                debounce(() => {
+                  text?.length > 3 && getTemp(text);
+                }, 500);
+              }}
+              onSelect={(_, op) => {
+                axios
+                  .get(`/Questionnaire/Question/Template/${op?.id}`)
+                  .then((res) => {
+                    console.log(res?.data);
+                  });
+                console.log(antForm.getFieldValue("questions")[index]);
+                setTempOptions([]);
+              }}
             />
           </Form.Item>
         </div>
