@@ -2,7 +2,7 @@
 //@ts-nocheck
 
 import { Col, Row } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import PersonalInfo from "./contents/PersonalInfo";
 import "./booklet.css";
