@@ -75,7 +75,7 @@ function JobLocation() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30378) {
+    if (item?.menuReferenceId === 30508) {
       employeeFeature = item;
     }
   });

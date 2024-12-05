@@ -74,7 +74,7 @@ function JobTerritory() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30378) {
+    if (item?.menuReferenceId === 30507) {
       employeeFeature = item;
     }
   });
