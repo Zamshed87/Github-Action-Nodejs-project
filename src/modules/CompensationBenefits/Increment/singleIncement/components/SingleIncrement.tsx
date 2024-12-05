@@ -319,9 +319,9 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             basedOn: i?.strBasedOn,
           };
         });
-        form.setFieldsValue({
-          grossAmount: res[0]?.numNetGrossSalary,
-        });
+        // form.setFieldsValue({
+        //   grossAmount: res[0]?.numNetGrossSalary,
+        // });
         if (employeeInfo?.data[0]?.isGradeBasedSalary) {
           const modifyforGrade = [...modify];
           // modifyforGrade[0].strBasedOn = "Amount";
@@ -600,60 +600,72 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         });
       },
     };
-
-    try {
-      isPromotionEligibleCheckApi.action({
-        urlKey: "IsPromotionEligibleThroughIncrement",
-        method: "post",
-        payload: payload,
-        toast: values?.salaryType?.value === "Grade" ? false : true,
-        onSuccess: (res) => {
-          if (res && orgId === 10022) {
-            IConfirmModal(confirmObject);
-          } else {
-            createIncrement.action({
-              urlKey:
-                // values?.salaryType?.value === "Grade" &&
-                id
-                  ? "UpdateEmployeeIncrement"
-                  : // values?.salaryType?.value === "Grade"
-                    // ?
-                    "CreateEmployeeIncrementNew",
-              // : "CreateEmployeeIncrement",
-              method:
-                // values?.salaryType?.value === "Grade" &&
-                id ? "put" : "post",
-              payload:
-                // values?.salaryType?.value === "Grade"
-                //   ?
-                gradeBasedPayload,
-              // : payload,
-              toast: true,
-              onSuccess: () => {
-                history.push(`/compensationAndBenefits/increment`);
-              },
-            });
-          }
+    if (orgId === 10022) {
+      IConfirmModal(confirmObject);
+    } else {
+      createIncrement.action({
+        urlKey: id ? "UpdateEmployeeIncrement" : "CreateEmployeeIncrementNew",
+        method: id ? "put" : "post",
+        payload: gradeBasedPayload,
+        toast: true,
+        onSuccess: () => {
+          history.push(`/compensationAndBenefits/increment`);
         },
-        onError: (res) => {
-          // if (values?.salaryType?.value === "Grade") {
-          createIncrement.action({
-            urlKey:
-              // values?.salaryType?.value === "Grade" &&
-              id ? "UpdateEmployeeIncrement" : "CreateEmployeeIncrementNew",
-            method:
-              // values?.salaryType?.value === "Grade" &&
-              id ? "put" : "post",
-            payload: gradeBasedPayload,
-            toast: true,
-            onSuccess: () => {
-              history.push(`/compensationAndBenefits/increment`);
-            },
-          });
-        },
-        // },
       });
-    } catch (error) {}
+    }
+    // try {
+    //   isPromotionEligibleCheckApi.action({
+    //     urlKey: "IsPromotionEligibleThroughIncrement",
+    //     method: "post",
+    //     payload: payload,
+    //     toast: values?.salaryType?.value === "Grade" ? false : true,
+    //     onSuccess: (res) => {
+    //       if (res && orgId === 10022) {
+    //         IConfirmModal(confirmObject);
+    //       } else {
+    //         createIncrement.action({
+    //           urlKey:
+    //             // values?.salaryType?.value === "Grade" &&
+    //             id
+    //               ? "UpdateEmployeeIncrement"
+    //               : // values?.salaryType?.value === "Grade"
+    //                 // ?
+    //                 "CreateEmployeeIncrementNew",
+    //           // : "CreateEmployeeIncrement",
+    //           method:
+    //             // values?.salaryType?.value === "Grade" &&
+    //             id ? "put" : "post",
+    //           payload:
+    //             // values?.salaryType?.value === "Grade"
+    //             //   ?
+    //             gradeBasedPayload,
+    //           // : payload,
+    //           toast: true,
+    //           onSuccess: () => {
+    //             history.push(`/compensationAndBenefits/increment`);
+    //           },
+    //         });
+    //       }
+    //     },
+    //     onError: (res) => {
+    //       // if (values?.salaryType?.value === "Grade") {
+    //       createIncrement.action({
+    //         urlKey:
+    //           // values?.salaryType?.value === "Grade" &&
+    //           id ? "UpdateEmployeeIncrement" : "CreateEmployeeIncrementNew",
+    //         method:
+    //           // values?.salaryType?.value === "Grade" &&
+    //           id ? "put" : "post",
+    //         payload: gradeBasedPayload,
+    //         toast: true,
+    //         onSuccess: () => {
+    //           history.push(`/compensationAndBenefits/increment`);
+    //         },
+    //       });
+    //     },
+    //     // },
+    //   });
+    // } catch (error) {}
   };
 
   // elements calculations
@@ -1227,6 +1239,9 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             // basic_or_grade_calculation();
           },
         });
+      form.setFieldsValue({
+        grossAmount: employeeInfo?.data[0]?.numNetGrossSalary,
+      });
       !employeeInfo?.data[0]?.isGradeBasedSalary &&
         form.setFieldsValue({
           grossAmount: employeeInfo?.data[0]?.numNetGrossSalary,
