@@ -455,10 +455,6 @@ const CreateAndEditEmploye = () => {
       urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        // DDLType: "WorkplaceGroup",
-        // BusinessUnitId: buId,
-        // WorkplaceGroupId: wgId, // This should be removed
-        // intId: employeeId,
         accountId: orgId,
         businessUnitId: buId,
       },

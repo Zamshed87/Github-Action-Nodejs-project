@@ -274,6 +274,7 @@ export const apiList = {
     "/RewardPunishment/GetRewardPunishmentPagination", // admin end
   GetUserRewardPunishmentLetterLanding:
     "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
-    GetInterviewLanding: "/Questionnaire/Assigned/Landing",
-    GetQuestionLanding: "/Questionnaire/Landing",
+  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
+  GetQuestionLanding: "/Questionnaire/Landing",
+  EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
 };
