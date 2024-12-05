@@ -226,8 +226,8 @@ const FinalSettlementReport = () => {
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            exportIcon={true}
-            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            // exportIcon={true}
+            title={`Final Settlement Report`}
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
