@@ -14,7 +14,11 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { createTrainingRequisition, requisitionStatus } from "./helper";
+import {
+  createTrainingRequisition,
+  onUpdateTrainingRequisition,
+  requisitionStatus,
+} from "./helper";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
@@ -81,7 +85,33 @@ const TnDRequisitionCreateEdit = () => {
       {(loading || loadingTrainingType) && <Loading />}
       <PForm
         form={form}
-        initialValues={{ reasonForRequisition: data?.requestor }}
+        initialValues={
+          type === "create"
+            ? {}
+            : {
+                reqId: data?.id,
+                reasonForRequisition: data?.reasonForRequisition,
+                employee: {
+                  label: data?.employmentName,
+                  value: data?.employmentTypeId,
+                },
+                trainingType: {
+                  label: data?.trainingTypeName,
+                  value: data?.trainingTypeId,
+                },
+                objectivesToAchieve: data?.objectivesToAchieve,
+                remarks: data?.remarks,
+                requisitionStatus: {
+                  label: data?.status?.label,
+                  value: data?.status?.value,
+                },
+                upcommingTraining: {
+                  label: data?.upcommingTrainingName,
+                  value: data?.upcommingTrainingId,
+                },
+                comments: data?.comments,
+              }
+        }
       >
         <PCard>
           <PCardHeader
@@ -102,15 +132,25 @@ const TnDRequisitionCreateEdit = () => {
                         form
                           .validateFields()
                           .then(() => {
-                            createTrainingRequisition(
-                              form,
-                              profileData,
-                              setLoading,
-                              () => {
-                                form.resetFields();
-                              }
-                              // setOpenTraingTypeModal
-                            );
+                            type === "create"
+                              ? createTrainingRequisition(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  () => {
+                                    form.resetFields();
+                                  }
+                                  // setOpenTraingTypeModal
+                                )
+                              : onUpdateTrainingRequisition(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  () => {
+                                    form.resetFields();
+                                  }
+                                  // setOpenTraingTypeModal
+                                );
                           })
                           .catch(() => {});
                       },
@@ -122,7 +162,6 @@ const TnDRequisitionCreateEdit = () => {
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
-                  disabled={type === "view" || type === "status"}
                   name="employee"
                   label="Employee"
                   placeholder="Search Min 2 char"
@@ -149,7 +188,6 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PSelect
-                  disabled={type === "view" || type === "status"}
                   options={trainingTypeDDL || []}
                   name="trainingType"
                   label="Training Type"
@@ -169,7 +207,6 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Reason For Requisition"
                   label="Reason For Requisition"
@@ -184,7 +221,6 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Objectives to Achieve"
                   label="Objectives to Achieve"
@@ -199,19 +235,18 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Remarks"
                   label="Remarks"
                   name="remarks"
                 />
               </Col>
-              {(type === "view" || type === "status") && (
+              {type === "edit" && (
                 <Col md={6} sm={24}>
                   <PSelect
-                    options={requisitionStatus}
+                    options={[]}
                     name="requisitionStatus"
-                    disabled={type === "view"}
+                    disabled={false}
                     label="Requisition Status"
                     placeholder="Requisition Status"
                     onChange={(value, op) => {
@@ -233,12 +268,11 @@ const TnDRequisitionCreateEdit = () => {
                   />
                 </Col>
               )}
-              {(type === "view" || type === "status") && upcommi && (
+              {type === "edit" && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
                     options={[]}
                     name="upcommingTraining"
-                    disabled={type === "view"}
                     label="upcomming Training"
                     placeholder="upcomming Training"
                     onChange={(value, op) => {
@@ -255,7 +289,7 @@ const TnDRequisitionCreateEdit = () => {
                   />
                 </Col>
               )}
-              {(type === "view" || type === "status") && (
+              {type === "edit" && (
                 <Col md={6} sm={24}>
                   <PInput
                     type="text"

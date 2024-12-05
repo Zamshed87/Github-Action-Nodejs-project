@@ -94,7 +94,7 @@ const TnDRequisitionLanding = () => {
         if (status?.label === "Pending") {
           statusClass = "success p-2 rounded-5";
         } else if (status?.label === "Assigned") {
-          statusClass = "success p-2 rounded-5";
+          statusClass = "secondary p-2 rounded-5";
         } else if (status?.label === "Deferred") {
           statusClass = "warning p-2 rounded-5";
         }
@@ -144,6 +144,9 @@ const TnDRequisitionLanding = () => {
                     });
                   }
                 );
+                history.push("/trainingAndDevelopment/requisition/edit", {
+                  data: rec, // need to change
+                });
               }}
             />
           </Tooltip>

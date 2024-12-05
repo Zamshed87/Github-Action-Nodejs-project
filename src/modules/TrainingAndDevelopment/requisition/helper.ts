@@ -6,19 +6,19 @@ import { toast } from "react-toastify";
 export const requisitionStatus: any[] = [
   {
     label: "Assigned",
-    value: "Assigned",
+    value: 2,
   },
   {
     label: "Deferred",
-    value: "Deferred",
+    value: 3,
   },
   {
     label: "Discarded",
-    value: "Discarded",
+    value: 4,
   },
   {
     label: "Accomplished",
-    value: "Accomplished",
+    value: 5,
   },
 ];
 
@@ -81,6 +81,46 @@ export const ViewTrainingRequistion = async (
   } catch (error: any) {
     toast.warn(error?.response?.data?.Message || "Something went wrong");
     setSingleData({});
+    setLoading(false);
+  }
+};
+
+export const onUpdateTrainingRequisition = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+  // setOpenTrainingTitleModal: (arg0: boolean) => void
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+
+    const payload = {
+      trainingTypeId: values?.trainingType?.value || "",
+      employmentTypeId: values?.employee?.value || "",
+      reasonForRequisition: values?.reasonForRequisition || "",
+      objectivesToAchieve: values?.objectivesToAchieve || "",
+      remarks: values?.remarks || "",
+      statusId: values?.requisitionStatus?.value || "",
+      upcommingTrainingId: values?.upcommingTraining?.value || "",
+      comments: values?.comments || "",
+    };
+    const res = await axios.post(
+      `/TrainingRequisition/Training/TrainingRequisition/${values?.id}`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
     setLoading(false);
   }
 };
