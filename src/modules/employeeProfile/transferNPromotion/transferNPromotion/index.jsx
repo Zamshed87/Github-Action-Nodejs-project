@@ -35,6 +35,7 @@ import { Avatar, DataTable } from "Components";
 import { Tag } from "antd";
 import { getSerial } from "Utils";
 import NoResult from "common/NoResult";
+import { UploadOutlined } from "@ant-design/icons";
 
 const initialValues = {
   search: "",
@@ -451,6 +452,27 @@ export default function TransferAndPromotion() {
                               }}
                             >
                               Process Manually
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              style={{ minWidth: "150px" }}
+                              icon={
+                                <UploadOutlined
+                                  sx={{
+                                    marginRight: "0px",
+                                    fontSize: "15px",
+                                  }}
+                                />
+                              }
+                              className="btn-green"
+                              onClick={() => {
+                                history.push(
+                                  "/profile/transferandpromotion/transferandpromotion/bulk-upload"
+                                );
+                              }}
+                            >
+                              Bulk Upload
                             </button>
                           </li>
                         </ul>

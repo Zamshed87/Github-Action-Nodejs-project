@@ -1,5 +1,8 @@
 import axios from "axios";
+import Remarks from "modules/employeeProfile/employeeOverview/components/others/Remarks";
 import { toast } from "react-toastify";
+import { dateFormatterForInput } from "utility/dateFormatter";
+import { todayDate } from "utility/todayDate";
 
 /* export const getAllTransferAndPromotionLanding = async (
   orgId,
@@ -107,5 +110,67 @@ export const releaseEmpTransferNPromotion = async (
   } catch (error) {
     setLoading(false);
     toast.warn(error?.response?.data?.message);
+  }
+};
+
+export const saveBulkUploadTnP = async (
+  setLoading,
+  setOpen,
+  setErrorData,
+  data,
+  callback
+) => {
+  setLoading(true);
+  try {
+    const res = await axios.post(`/Employee/SaveEmployeeBulkUpload`, data);
+    callback();
+    setLoading(false);
+    toast.success(res?.data?.message || "Successful");
+  } catch (error) {
+    setLoading(false);
+    setErrorData(error?.response?.data?.listData);
+    setOpen(true);
+    error?.response?.data?.listData?.length < 0 &&
+      toast.warn(error?.response?.data?.message || "Failed, try again");
+  }
+};
+
+export const processBulkUploadTnP = async (
+  data,
+  setter,
+  setLoading,
+  intUrlId,
+  orgId,
+  employeeId
+) => {
+  setLoading && setLoading(true);
+  try {
+    const modifiedData = data.map((item) => ({
+      intEmpBulkUploadId: 0,
+      intAccountId: orgId,
+      intUrlId: intUrlId,
+      employeeName: item["Employee Name *"] || "",
+      type: item["Type"] || "",
+      effDate: item["Effective Date * (MM/DD/YYYY)"] || "",
+      bUnit: item["To BusinessUnit"] || "",
+      wGroup: item["To Workplace Group "] || "", // hdhdh
+      workplace: item["To Workplace  "] || "",
+      empType: item["To Employment Type"] || "",
+      strHrPosition: item["To HR Position"] || "",
+      department: item["To Department"] || "",
+      section: item["To Section"] || "",
+      designation: item["To Designation"] + "" || "",
+      superVision: item["To Supervisor"] + "" || "",
+      dottedSupervision: item["To Dotted Supervisor"] + "" || "",
+      lineManager: item["To Line Manager"] + "" || "",
+      Remarks: item["Remarks"] + "" || "",
+    }));
+
+    setter(modifiedData);
+    setLoading && setLoading(false);
+  } catch (error) {
+    setter([]);
+    setLoading && setLoading(false);
+    toast.warn("Failed to process!");
   }
 };
