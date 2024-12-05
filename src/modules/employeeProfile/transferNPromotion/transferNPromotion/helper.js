@@ -151,7 +151,7 @@ export const processBulkUploadTnP = async (
       intUrlId: intUrlId,
       employeeName: item["Employee Name *"] || "",
       type: item["Type"] || "",
-      effDate: item["Effective Date * (MM/DD/YYYY)"] || "",
+      effDate: item["Effective Date * (YYYY-MM-DD)"] || "",
       bUnit: item["To BusinessUnit"] || "",
       wGroup: item["To Workplace Group "] || "", // hdhdh
       workplace: item["To Workplace  "] || "",
@@ -163,7 +163,7 @@ export const processBulkUploadTnP = async (
       superVision: item["To Supervisor"] + "" || "",
       dottedSupervision: item["To Dotted Supervisor"] + "" || "",
       lineManager: item["To Line Manager"] + "" || "",
-      Remarks: item["Remarks"] + "" || "",
+      remarks: item["Remarks"] + "" || "",
     }));
 
     setter(modifiedData);

@@ -18,7 +18,7 @@ import PrimaryButton from "common/PrimaryButton";
 import { downloadFile } from "utility/downloadFile";
 import ScrollableTable from "common/ScrollableTable";
 import AvatarComponent from "common/AvatarComponent";
-import { dateFormatter } from "utility/dateFormatter";
+import { dateFormatter, dateFormatterReport } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import ErrorEmployeeModal from "modules/CompensationBenefits/bulkEmployeeCreate/ErrorEmployeeModal";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -166,7 +166,7 @@ export default function BulkUploadTransferNPromotion() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=7598"
+                                  ? "/document/downloadfile?id=7599"
                                   : "/document/downloadfile?id=2635"
                               }`,
                               "TransNProm",
@@ -259,6 +259,71 @@ export default function BulkUploadTransferNPromotion() {
                                 <td>
                                   <div className="tableBody-title">
                                     {item?.type || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {dateFormatterReport(item?.effDate)}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.bUnit || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.wGroup || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.workplace || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.empType || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.strHrPosition || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.department || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.section || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.designation || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.superVision || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.dottedSupervision || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.lineManager || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.remarks || "-"}
                                   </div>
                                 </td>
                               </tr>
