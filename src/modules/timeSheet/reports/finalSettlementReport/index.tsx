@@ -224,7 +224,7 @@ const FinalSettlementReport = () => {
     <>
       <PForm form={form} initialValues={{}} onFinish={submitHandler}>
         <PCard>
-          {excelLoading && <Loading />}
+          {(excelLoading || landingApi?.loading) && <Loading />}
           <PCardHeader
             // exportIcon={true}
             title={`Final Settlement Report`}
