@@ -30,6 +30,7 @@ import {
 } from "../addEditFile/helper";
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+import { checkBng } from "utility/regxExp";
 
 const CreateAndEditEmploye = () => {
   // router hooks
@@ -790,7 +791,7 @@ const CreateAndEditEmploye = () => {
                       rules={[
                         {
                           message: "This Field Must be in Bangla",
-                          pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                          pattern: new RegExp(checkBng()),
                         },
                       ]}
                     />
@@ -1603,7 +1604,7 @@ const CreateAndEditEmploye = () => {
                         rules={[
                           {
                             message: "This Field Must be in Bangla",
-                            pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                            pattern: new RegExp(checkBng()),
                           },
                         ]}
                       />
@@ -1617,7 +1618,7 @@ const CreateAndEditEmploye = () => {
                         rules={[
                           {
                             message: "This Field Must be in Bangla",
-                            pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                            pattern: new RegExp(checkBng()),
                           },
                         ]}
                       />
