@@ -256,7 +256,10 @@ function AttendanceRawDataProcess() {
         <div className="table-card-body">
           <div className="card-style with-form-card pb-0 my-3">
             <div className="row">
-              <div className="input-field-main col-lg-3">
+              <div
+                className="input-field-main col-lg-4"
+                style={{ overflow: "hidden", width: "100%", zIndex: 10000 }}
+              >
                 <label>Employee</label>
                 <AsyncFormikSelect
                   selectedValue={values?.employee}
@@ -317,7 +320,7 @@ function AttendanceRawDataProcess() {
                 />
               </div>
 
-              <div style={{ marginTop: "21px" }} className="col-lg-3">
+              <div style={{ marginTop: "21px" }} className="col-lg-2">
                 <div className="d-flex">
                   <PrimaryButton
                     type="submit"
@@ -397,26 +400,25 @@ function AttendanceRawDataProcess() {
                   )
                 ))}
             </div> */}
-
-            {res?.data && (
-              <DataTable
-                header={header}
-                bordered
-                data={res?.data || []}
-                pagination={{
-                  current: pages?.current,
-                  pageSize: pages.pageSize, // Page Size From Api Response
-                  total: pages.total, // Total Count From Api Response
-                }}
-                loading={loading}
-                scroll={{ x: 1000 }}
-                onChange={(pagination, filters, sorter, extra) => {
-                  if (extra.action === "sort") return;
-                  landingApi(pagination);
-                }}
-              />
-            )}
           </div>
+          {res?.data && (
+            <DataTable
+              header={header}
+              bordered
+              data={res?.data || []}
+              pagination={{
+                current: pages?.current,
+                pageSize: pages.pageSize, // Page Size From Api Response
+                total: pages.total, // Total Count From Api Response
+              }}
+              loading={loading}
+              scroll={{ x: 1000 }}
+              onChange={(pagination, filters, sorter, extra) => {
+                if (extra.action === "sort") return;
+                landingApi(pagination);
+              }}
+            />
+          )}
         </div>
       </div>
     </form>
