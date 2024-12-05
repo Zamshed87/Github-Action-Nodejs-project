@@ -275,6 +275,7 @@ import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunish
 import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
 import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
 import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
+import FinalSettlementReport from "modules/timeSheet/reports/finalSettlementReport";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -1826,6 +1827,10 @@ export const routingList = [
   {
     path: "/profile/reports/dailyAttendanceReport",
     component: MgmtDailyAttendance,
+  },
+  {
+    path: "/profile/reports/finalSettlementReport",
+    component: FinalSettlementReport,
   },
   {
     path: "/profile/reports/lateReport",

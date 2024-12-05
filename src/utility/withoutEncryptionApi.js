@@ -55,4 +55,5 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
   "/PdfAndExcelReport/GetLeaveHistoryReport",
   "/PdfAndExcelReport/MovementDetailsHistory",
+  "/PdfAndExcelReport/FinalSettlementReportForAll",
 ];
