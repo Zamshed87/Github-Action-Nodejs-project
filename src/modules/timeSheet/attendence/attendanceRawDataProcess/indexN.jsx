@@ -337,7 +337,7 @@ function AttendanceRawDataProcess() {
                     label={"Process"}
                     disabled={loading ? true : false}
                   />
-                  {/* {res?.data && (
+                  {res?.data && (
                     <Button
                       className="btn btn-success flex-center ml-2"
                       onClick={() => {
@@ -354,7 +354,7 @@ function AttendanceRawDataProcess() {
                     >
                       Refresh
                     </Button>
-                  )} */}
+                  )}
                 </div>
               </div>
 
