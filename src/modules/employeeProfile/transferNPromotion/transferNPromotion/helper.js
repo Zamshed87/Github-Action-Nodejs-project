@@ -122,8 +122,11 @@ export const saveBulkUploadTnP = async (
 ) => {
   setLoading(true);
   try {
-    const res = await axios.post(`/Employee/SaveEmployeeBulkUpload`, data);
-    callback();
+    const res = await axios.post(
+      `/Employee/TransferNPromotionBulkUpload`,
+      data
+    );
+    callback(res?.data);
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
   } catch (error) {
@@ -145,24 +148,27 @@ export const processBulkUploadTnP = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    const modifiedData = data.map((item) => ({
+    console.log(data);
+    const modifiedData = data.map((item, index) => ({
+      rowId: index,
       intEmpBulkUploadId: 0,
       intAccountId: orgId,
       intUrlId: intUrlId,
       employeeName: item["Employee Name *"] || "",
-      type: item["Type"] || "",
-      effDate: item["Effective Date * (YYYY-MM-DD)"] || "",
-      bUnit: item["To BusinessUnit"] || "",
-      wGroup: item["To Workplace Group "] || "", // hdhdh
+      employeeCode: "AE-008",
+      transferNpromotionType: item["Type"] || "",
+      effectiveDate: item["Effective Date * (YYYY-MM-DD)"] || "",
+      businessUnit: item["To BusinessUnit"] || "",
+      workplaceGroup: item["To Workplace Group "] || "", // hdhdh
       workplace: item["To Workplace  "] || "",
-      empType: item["To Employment Type"] || "",
-      strHrPosition: item["To HR Position"] || "",
+      employmentType: item["To Employment Type"] || "",
+      hrPosition: item["To HR Position"] || "",
       department: item["To Department"] || "",
       section: item["To Section"] || "",
       designation: item["To Designation"] + "" || "",
-      superVision: item["To Supervisor"] + "" || "",
-      dottedSupervision: item["To Dotted Supervisor"] + "" || "",
-      lineManager: item["To Line Manager"] + "" || "",
+      supervisorCode: item["To Supervisor"] + "" || "",
+      dottedSupervisorCode: item["To Dotted Supervisor"] + "" || "",
+      lineManagerCode: item["To Line Manager"] + "" || "",
       remarks: item["Remarks"] + "" || "",
     }));
 

@@ -35,6 +35,7 @@ export default function BulkUploadTransferNPromotion() {
   }, []);
   const [data, setData] = useState([]);
   const [errorData, setErrorData] = useState([]);
+  const [isSaveData, setIsSaveData] = useState(false);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   // for create state
@@ -77,28 +78,42 @@ export default function BulkUploadTransferNPromotion() {
   // };
 
   // new way
-  const saveHandler = () => {
+  const saveHandler = (v, cb) => {
+    if (isSaveData) {
+      setIsSaveData(false);
+      setData([]);
+      cb();
+      return;
+    }
     const emptyCheck = data?.some(({ strEmployeeCode }) => !strEmployeeCode);
     const isExistSalaryType = data?.some(({ strSalaryType }) => !strSalaryType);
     const isDuplicate =
       new Set(data.map(({ strEmployeeCode }) => strEmployeeCode)).size !==
       data.length;
 
-    const callBack = () => {
-      history.push("/profile/employee");
-      setData([]);
+    const callBack = (list) => {
+      // history.push("/profile/employee");
+      setIsSaveData(true);
+      setData(list);
     };
-    if (isExistSalaryType) {
-      toast.warn("Salary Type is required");
+    if (data?.length <= 0) {
+      toast.warn(
+        "Empty data found, please check your file. Upload and try again"
+      );
       return;
     }
-    if (!data?.length || emptyCheck || isDuplicate) {
-      toast.warn(
-        "Invalid upload, please check your file or follow employee code which must be unique and not empty"
-      );
-    } else {
-      saveBulkUploadTnP(setIsLoading, setOpen, setErrorData, data, callBack);
-    }
+    // if (isExistSalaryType) {
+    //   toast.warn("Salary Type is required");
+    //   return;
+    // }
+    // if (!data?.length || emptyCheck || isDuplicate) {
+    //   toast.warn(
+    //     "Invalid upload, please check your file or follow employee code which must be unique and not empty"
+    //   );
+    // } else {
+    //   saveBulkUploadTnP(setIsLoading, setOpen, setErrorData, data, callBack);
+    // }
+    saveBulkUploadTnP(setIsLoading, setOpen, setErrorData, data, callBack);
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -153,7 +168,7 @@ export default function BulkUploadTransferNPromotion() {
                       <BackButton />
                       <PrimaryButton
                         className="btn btn-green btn-green-disable"
-                        label="Save"
+                        label={isSaveData ? "Reset" : "Save"}
                         type="submit"
                       />
                     </div>
@@ -199,6 +214,9 @@ export default function BulkUploadTransferNPromotion() {
                           <thead>
                             <tr>
                               <th style={{ width: "30px" }}>SL</th>
+                              <th>
+                                <div>Status</div>
+                              </th>
                               <th>
                                 <div>Employee Name</div>
                               </th>
@@ -253,27 +271,32 @@ export default function BulkUploadTransferNPromotion() {
                                 <td className="tableBody-title">{index + 1}</td>
                                 <td>
                                   <div className="tableBody-title">
+                                    {item?.statusMessage || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
                                     {item?.employeeName || "-"}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.type || "-"}
+                                    {item?.transferNpromotionType || "-"}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {dateFormatterReport(item?.effDate)}
+                                    {dateFormatter(item?.effectiveDate)}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.bUnit || "-"}
+                                    {item?.businessUnit || "-"}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.wGroup || "-"}
+                                    {item?.workplaceGroup || "-"}
                                   </div>
                                 </td>
                                 <td>
@@ -283,12 +306,12 @@ export default function BulkUploadTransferNPromotion() {
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.empType || "-"}
+                                    {item?.employmentType || "-"}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.strHrPosition || "-"}
+                                    {item?.hrPosition || "-"}
                                   </div>
                                 </td>
                                 <td>
@@ -308,17 +331,17 @@ export default function BulkUploadTransferNPromotion() {
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.superVision || "-"}
+                                    {item?.supervisorCode || "-"}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.dottedSupervision || "-"}
+                                    {item?.dottedSupervisorCode || "-"}
                                   </div>
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {item?.lineManager || "-"}
+                                    {item?.lineManagerCode || "-"}
                                   </div>
                                 </td>
                                 <td>
