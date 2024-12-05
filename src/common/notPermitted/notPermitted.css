@@ -1,5 +1,5 @@
 .not_permitted .not_permitted_left .img {
-  font-family: sans-serif;
+  font-family: Poppins;
   text-align: center;
   animation: updown 10s ease infinite;
 }
@@ -34,7 +34,7 @@
   width: 100%;
 }
 .not_permitted h1 {
-  font-family: "Noto Sans", sans-serif;
+  font-family: "Poppins", Poppins;
   font-size: 70pt;
   margin: 0;
   color: #6400ff;

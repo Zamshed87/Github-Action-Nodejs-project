@@ -360,7 +360,7 @@ export default function AddEditForm({
                   }}
                 >
                   <Form.Item name="isActive" valuePropName="checked">
-                    <Switch />
+                    <Switch disabled  />
                   </Form.Item>
                 </div>
               </div>

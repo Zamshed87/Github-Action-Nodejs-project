@@ -26,6 +26,7 @@ import store from "./redux/store";
 import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
+import IndividualKpiPresentation from "modules/pms/performancePlanning/individualKpiEntrySelf/kpiPresentation";
 
 export const origin = window.location.origin;
 export const prodUrl = "https://devapp.peopledesk.io";
@@ -118,7 +119,10 @@ Axios.interceptors.response.use(
       if (response?.config?.url?.includes(`${element}`)) return response;
     }
 
-    const decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
+    let decryptedData = null;
+    try {
+      decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
+    } catch {}
     const decryptedRes = {
       status: response.status,
       data: decryptedData,
@@ -212,8 +216,10 @@ function App() {
         return <AuthPage />;
       }
     } else {
-      if (isAuth) {
+      if (isAuth && window?.location?.pathname !== "/kpi/presentation") {
         return <BasePage />;
+      } else if (isAuth && window?.location?.pathname === "/kpi/presentation") {
+        return <IndividualKpiPresentation />;
       } else {
         return <AuthPage />;
       }

@@ -16,7 +16,8 @@ export const createCafeteriaEntry = async (
   payload,
   setLoading,
   cb,
-  placeID
+  placeID,
+  buId
 ) => {
   setLoading && setLoading(true);
   try {
@@ -25,7 +26,7 @@ export const createCafeteriaEntry = async (
         mealFor === 1 ? 1 : 2
       }&MealOption=${mealOption}&MealFor=${mealFor}&CountMeal=${countMeal}&isOwnGuest=${ownGuest}&isPayable=${payable}&Narration=${narration}&ActionBy=${userId}&MealConsumePlaceId=${
         placeID || 0
-      }`,
+      }&businessUnitId=${buId}`,
       payload
     );
     cb && cb();

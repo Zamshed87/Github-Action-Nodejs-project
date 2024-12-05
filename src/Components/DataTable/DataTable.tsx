@@ -36,6 +36,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
     footer,
     checkBoxColWidth = 15,
     nodataStyle,
+    showHeader = true,
   } = property;
   // Pagination Default Value
   const pageSize = paginationSize || 25;
@@ -123,6 +124,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
               sl: index + 1,
             }))}
             loading={loading}
+            showHeader={showHeader}
             rowClassName={rowClassName}
             rowSelection={
               rowSelection &&

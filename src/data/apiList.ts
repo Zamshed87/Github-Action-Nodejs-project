@@ -253,6 +253,10 @@ export const apiList = {
   commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
+  GetRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetRewardPunishmentPagination", // admin end
+  GetUserRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
   IsPromotionEligibleThroughIncrement:
     "/Employee/IsPromotionEligibleThroughIncrement",
   CreateEmployeeIncrement: "/Employee/CreateEmployeeIncrement",
@@ -261,4 +265,11 @@ export const apiList = {
   GetEmployeeIncrementById: "EmployeeIncrement/GetEmployeeIncrementById",
   CommonEmployeeforSalaryDDL: "/Employee/CommonEmployeeforSalaryDDL",
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
+
+  getCommonEnumData: "/Enum/GetEnums",
+  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
+  GetQuestionLanding: "/Questionnaire/Landing",
+  GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
+  GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
+  EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
 };

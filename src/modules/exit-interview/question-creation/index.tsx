@@ -1,5 +1,13 @@
-import { EyeOutlined } from "@ant-design/icons";
-import { Form, Tooltip } from "antd";
+/*
+ * Title: Exit interview landing
+ * Author: Khurshida Meem
+ * Date: 12-11-2024
+ *
+ */
+
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { Form, Switch, Tooltip } from "antd";
+import axios from "axios";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -10,8 +18,10 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
+import { getSingleQuestionnaire } from "./helper";
+import Loading from "common/loading/Loading";
+import QuestionaireView from "./QuestionaireView";
 
 const QuestionCreationLanding = () => {
   // router states
@@ -27,7 +37,7 @@ const QuestionCreationLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId, buId, wgId, wId } = profileData;
+  const { buId, wgId, wId } = profileData;
 
   // menu permission
   let QuestionCreationPermission: any = null;
@@ -51,6 +61,7 @@ const QuestionCreationLanding = () => {
   const [filterList, setFilterList] = useState({});
   const [open, setOpen] = useState(false);
   const [singleData, setSingleData] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // landing calls
   const landingApi = useApiRequest({});
@@ -61,14 +72,12 @@ const QuestionCreationLanding = () => {
       pageSize?: number;
     };
     filters?: any;
-    searchText?: string;
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: 25 },
     filters = filterList,
   }: TLandingApi) => {
     const payload = {
-      accountId: orgId,
       businessUnitId: buId,
       workplaceGroupId: wgId,
       workplaceId: wId,
@@ -76,13 +85,12 @@ const QuestionCreationLanding = () => {
       pageSize: pagination?.pageSize,
       isPaginated: true,
       isHeaderNeeded: true,
-      letterTypeList: filters?.letterType || [],
-      createdByList: filters?.createdByEmployee || [],
-      letterNameList: filters?.letterName || [],
-      issuedEmployeeIdList: filters?.issuedEmployeeName || [],
+      typeList: filters?.type || [],
+      createdByList: filters?.createdBy || [],
+      statusList: filters?.status || [],
     };
     landingApi?.action({
-      urlKey: "GetGeneratedLetterLanding",
+      urlKey: "GetQuestionLanding",
       method: "POST",
       payload: payload,
     });
@@ -91,6 +99,32 @@ const QuestionCreationLanding = () => {
   useEffect(() => {
     landingApiCall({});
   }, [wgId, wId, buId]);
+
+  const [switchStatus, setSwitchStatus] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  useEffect(() => {
+    const initialSwitchStatus = (landingApi?.data?.data || []).reduce(
+      (acc: any, item: any) => {
+        acc[item.id] = item.status === "Active";
+        return acc;
+      },
+      {}
+    );
+    setSwitchStatus(initialSwitchStatus);
+  }, [landingApi?.data?.data]);
+
+  const handleSwitchChange = (checked: boolean, id: number) => {
+    setSwitchStatus((prev) => ({
+      ...prev,
+      [id]: checked,
+    }));
+    axios?.put("/Questionnaire/Active", {
+      id,
+      active: checked,
+    });
+  };
 
   // table column
   const header: any = [
@@ -106,50 +140,83 @@ const QuestionCreationLanding = () => {
       align: "center",
     },
     {
-      title: "Letter Type",
-      dataIndex: "letterType",
+      title: "Survey Type",
+      dataIndex: "type",
       filter: true,
-      filterKey: "letterTypeList",
+      filterKey: "typeList",
       filterSearch: true,
     },
     {
-      title: "Letter Name",
-      dataIndex: "letterName",
-      filter: true,
-      filterKey: "letterNameList",
-      filterSearch: true,
+      title: "Survey Title",
+      dataIndex: "title",
     },
     {
-      title: "Issued To",
-      dataIndex: "issuedEmployeeName",
-      filter: true,
-      filterKey: "issuedEmployeeIdList",
-      filterSearch: true,
+      title: "Created Date",
+      dataIndex: "createdDate",
     },
     {
-      title: "Issued By",
-      dataIndex: "createdByEmployee",
+      title: "Created By",
+      dataIndex: "createdBy",
       filter: true,
       filterKey: "createdByList",
       filterSearch: true,
     },
     {
-      title: "Issued Date",
-      dataIndex: "createdAt",
-      render: (data: any) => dateFormatter(data),
+      title: "Created Date",
+      dataIndex: "createdDate",
     },
-
+    {
+      title: "Number of Questions",
+      dataIndex: "noOfQuestions",
+      width: 50,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      filter: true,
+      filterKey: "statusList",
+      filterSearch: true,
+      render: (_data: any, rec: any) => (
+        <>
+          <Switch
+            size="small"
+            checked={switchStatus[rec.id]}
+            onChange={(checked) => handleSwitchChange(checked, rec.id)}
+          />{" "}
+        </>
+      ),
+      align: "center",
+    },
     {
       title: "Action",
-      dataIndex: "letterGenerateId",
-      render: (generateId: number, rec: any) => (
+      dataIndex: "id",
+      render: (_: number, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                setSingleData(rec);
-                setOpen(true);
+                getSingleQuestionnaire(
+                  rec?.id,
+                  setSingleData,
+                  setLoading,
+                  setOpen
+                );
+              }}
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Edit"}>
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 4px",
+              }}
+              onClick={() => {
+                history.push(
+                  `/profile/exitInterview/questionCreation/edit/${rec.id}`
+                );
               }}
             />
           </Tooltip>
@@ -161,6 +228,7 @@ const QuestionCreationLanding = () => {
 
   return QuestionCreationPermission?.isView ? (
     <>
+      {(loading || landingApi.loading) && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
@@ -186,7 +254,7 @@ const QuestionCreationLanding = () => {
             {landingApi?.data?.totalCount > 0 ? (
               <DataTable
                 bordered
-                data={[]}
+                data={landingApi?.data?.data || []}
                 loading={landingApi?.loading}
                 header={header}
                 pagination={{
@@ -215,14 +283,9 @@ const QuestionCreationLanding = () => {
           setOpen(false);
           setSingleData({});
         }}
-        components={<>hi</>}
+        components={<QuestionaireView singleData={singleData} />}
         width={1000}
       />
-      {/* <div className="d-none">
-        <div ref={printLetterRef}>
-          <LetterPrint singleData={pdfData} />
-        </div>
-      </div> */}
     </>
   ) : (
     <NotPermittedPage />

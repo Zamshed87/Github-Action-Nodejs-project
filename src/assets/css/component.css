@@ -557,7 +557,7 @@
 }
 
 .react-confirm-alert-body {
-  font-family: var(--robotoFont) !important;
+  font-family: Poppins !important;
   width: 280px !important;
   padding: 23px 16px 18px 24px !important;
   text-align: left;
@@ -1167,7 +1167,7 @@ span.cross-chips-icon {
 
 /* list-card */
 .list-card {
-  font-family: var(--robotoFont) !important;
+  font-family: Poppins !important;
 }
 
 .list-card h1,
@@ -1515,7 +1515,7 @@ span.cross-chips-icon {
 }
 
 .notification-popover-header h6 {
-  font-family: Inter;
+  font-family: Poppins;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
@@ -1608,7 +1608,7 @@ span.cross-chips-icon {
 }
 
 .notification-body-header h6 {
-  font-family: "Inter";
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -1617,7 +1617,7 @@ span.cross-chips-icon {
 }
 
 .notification-body-header span {
-  font-family: "Inter";
+  font-family: "Poppins";
   font-size: 12px;
   font-weight: 400;
   line-height: 0px !important;

@@ -11,8 +11,9 @@ import IncrementInfo from "./IncrementInfo";
 import Others from "./others/Others";
 import TransferAndPromotionInfo from "./TransferAndPromotionInfo";
 import OAuth from "./OAuth/OAuth";
+import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter";
 
-function OverviewTab({ empId, wgId, buId }) {
+function OverviewTab({ empId, wgId, buId, intAccountId }) {
   const [index, setIndex] = useState(0);
   const tabName = [
     { name: "General Info" },
@@ -22,11 +23,17 @@ function OverviewTab({ empId, wgId, buId }) {
     { name: "Education" },
     { name: "Transfer & Promotion History" },
     { name: "Increment History" },
+    { name: "Reward And Punishment" },
     { name: "Family & Relationships" },
     { name: "Documents" },
     { name: "others" },
     { name: "Social Media Information" },
   ];
+  const filteredTabName =
+    intAccountId !== 12
+      ? tabName.filter((tab) => tab.name !== "Reward And Punishment")
+      : tabName;
+
   return (
     <>
       <div className="overview-filter">
@@ -35,7 +42,7 @@ function OverviewTab({ empId, wgId, buId }) {
             <div className="row">
               <div className="col-md-3">
                 <div className="tabs-name">
-                  {tabName.map((item, i) => {
+                  {filteredTabName?.map((item, i) => {
                     return (
                       <button
                         key={i}
@@ -101,10 +108,17 @@ function OverviewTab({ empId, wgId, buId }) {
                     wgId={wgId}
                     buId={buId}
                   />
-                  <Family
+                  <UserEndRewardPunishmentLanding
                     empId={empId}
                     index={index}
                     tabIndex={7}
+                    wgId={wgId}
+                    buId={buId}
+                  />
+                  <Family
+                    empId={empId}
+                    index={index}
+                    tabIndex={8}
                     wgId={wgId}
                     buId={buId}
                   />
@@ -113,16 +127,16 @@ function OverviewTab({ empId, wgId, buId }) {
                     index={index}
                     wgId={wgId}
                     buId={buId}
-                    tabIndex={8}
+                    tabIndex={9}
                   />
                   <Others
                     empId={empId}
                     index={index}
-                    tabIndex={9}
+                    tabIndex={10}
                     wgId={wgId}
                     buId={buId}
                   />
-                  <OAuth empId={empId} index={index} tabIndex={10} />
+                  <OAuth empId={empId} index={index} tabIndex={11} />
                 </div>
               </div>
             </div>
