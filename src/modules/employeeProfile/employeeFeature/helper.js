@@ -1195,6 +1195,25 @@ export const columnForHeadOffice = {
   JoiningDate: "Joining Date",
   strEmployeeStatus: "Status",
 };
+export const columnForFinish = {
+  sl: "SL",
+  strWorkplaceGroup: "Work. Group/Location",
+  strWorkplace: "Workplace/Concern",
+  strEmployeeName: "Employee Name",
+  strEmployeeCode: "Employee Id",
+  strReferenceId: "Reference Id",
+  strDesignation: "Designation",
+  strDepartment: "Department",
+  sectionName: "Section",
+  strJobTerritory: "Job Territory",
+  strJobLocation: "Job Location",
+  strSupervisorName: "Supervisor",
+  strLinemanager: "Line Manager",
+  strEmploymentType: "Employment Type",
+  contactNo: "Contact No",
+  JoiningDate: "Joining Date",
+  strEmployeeStatus: "Status",
+};
 
 export const columnForMarketing = {
   sl: "SL",

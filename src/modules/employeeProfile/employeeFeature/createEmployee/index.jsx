@@ -1464,38 +1464,42 @@ const CreateAndEditEmploye = () => {
                     // rules={[{ required: true, message: "HR Position is required" }]}
                   />
                 </Col>
-                <Col md={6} sm={24}>
-                  <PSelect
-                    options={jobTerritoryDDL?.data || []}
-                    name="jobTerritory"
-                    showSearch
-                    filterOption={true}
-                    label="Job Territory"
-                    placeholder="Job Territory"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        jobTerritory: op,
-                      });
-                    }}
-                    // rules={[{ required: true, message: "HR Position is required" }]}
-                  />
-                </Col>
-                <Col md={6} sm={24}>
-                  <PSelect
-                    options={jobLocationDDL?.data || []}
-                    name="jobLocation"
-                    showSearch
-                    filterOption={true}
-                    label="Job Location"
-                    placeholder="Job Location"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        jobLocation: op,
-                      });
-                    }}
-                    // rules={[{ required: true, message: "HR Position is required" }]}
-                  />
-                </Col>
+                {orgId === 5 && (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={jobTerritoryDDL?.data || []}
+                      name="jobTerritory"
+                      showSearch
+                      filterOption={true}
+                      label="Job Territory"
+                      placeholder="Job Territory"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          jobTerritory: op,
+                        });
+                      }}
+                      // rules={[{ required: true, message: "HR Position is required" }]}
+                    />
+                  </Col>
+                )}
+                {orgId === 5 && (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={jobLocationDDL?.data || []}
+                      name="jobLocation"
+                      showSearch
+                      filterOption={true}
+                      label="Job Location"
+                      placeholder="Job Location"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          jobLocation: op,
+                        });
+                      }}
+                      // rules={[{ required: true, message: "HR Position is required" }]}
+                    />
+                  </Col>
+                )}
 
                 {!empId && (
                   <Col className="mt-2" md={6} sm={24}>
