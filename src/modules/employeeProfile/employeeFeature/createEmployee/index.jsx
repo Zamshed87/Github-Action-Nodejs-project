@@ -99,6 +99,8 @@ const CreateAndEditEmploye = () => {
   const userTypeDDL = useApiRequest([]);
   const bloodGroupDDL = useApiRequest([]);
   const holidayDDL = useApiRequest([]);
+  const jobLocationDDL = useApiRequest([]);
+  const jobTerritoryDDL = useApiRequest([]);
 
   const getEmpData = () => {
     getEmployeeProfileViewData(
@@ -207,6 +209,33 @@ const CreateAndEditEmploye = () => {
           res[i].label = item?.strSectionName;
           res[i].value = item?.intSectionId;
         });
+      },
+    });
+  };
+
+  // jobTerritoryDDL
+  const getJobTerritory = () => {
+    const { workplace, workplaceGroup } = form.getFieldsValue(true);
+    jobTerritoryDDL?.action({
+      urlKey: "JobTerritories",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+      },
+    });
+  };
+
+  const getJobLocation = () => {
+    const { workplace, workplaceGroup } = form.getFieldsValue(true);
+    jobLocationDDL?.action({
+      urlKey: "JobLocations",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
       },
     });
   };
@@ -569,6 +598,8 @@ const CreateAndEditEmploye = () => {
       // getPayScaleGradeDDL();
       getEmployeeStatus();
       getEmployeePosition();
+      getJobLocation();
+      getJobTerritory();
       getEmployeeSection();
       // new requirment
       singleData.calenderType?.value === 1
@@ -878,6 +909,8 @@ const CreateAndEditEmploye = () => {
                         getCalendarDDL();
                         getEmployeeSection();
                         getHolidayGroupDDL();
+                        getJobLocation();
+                        getJobTerritory();
                       }
                     }}
                     rules={[
@@ -1426,6 +1459,38 @@ const CreateAndEditEmploye = () => {
                     onChange={(value, op) => {
                       form.setFieldsValue({
                         payScaleGrade: op,
+                      });
+                    }}
+                    // rules={[{ required: true, message: "HR Position is required" }]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={jobTerritoryDDL?.data || []}
+                    name="jobTerritory"
+                    showSearch
+                    filterOption={true}
+                    label="Job Territory"
+                    placeholder="Job Territory"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        jobTerritory: op,
+                      });
+                    }}
+                    // rules={[{ required: true, message: "HR Position is required" }]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={jobLocationDDL?.data || []}
+                    name="jobLocation"
+                    showSearch
+                    filterOption={true}
+                    label="Job Location"
+                    placeholder="Job Location"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        jobLocation: op,
                       });
                     }}
                     // rules={[{ required: true, message: "HR Position is required" }]}

@@ -272,4 +272,8 @@ export const apiList = {
   GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
   GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
   EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
+  JobLocation: "/JobLocation",
+  JobTerritory: "/JobTerritory",
+  JobTerritories: "/PeopleDeskDdl/JobTerritories",
+  JobLocations: "/PeopleDeskDdl/JobLocations",
 };

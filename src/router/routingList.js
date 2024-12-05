@@ -275,6 +275,8 @@ import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunish
 import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
 import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
 import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
+import JobLocation from "modules/configuration/JobLocation";
+import JobTerritory from "modules/configuration/JobTerritory";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -2124,6 +2126,11 @@ export const routingList = [
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
   { path: "/administration/configuration/section", component: Section },
+  { path: "/administration/configuration/jobLocation", component: JobLocation },
+  {
+    path: "/administration/configuration/jobTerritory",
+    component: JobTerritory,
+  },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",

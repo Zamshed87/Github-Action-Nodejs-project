@@ -33,6 +33,11 @@ export const createEditEmpAction = async (
 ) => {
   try {
     let payload = {
+      intJobTerritoryId: values?.jobTerritory?.value || 0,
+      strJobTerritory: values?.jobTerritory?.label || "",
+      intJobLocationId: values?.jobLocation?.value || 0,
+      strJobLocation: values?.jobLocation?.label || "",
+
       presentAddress: formatAddress(values?.presentAddress || ""),
       permanentAddress: formatAddress(values?.permanentAddress || ""),
       presentAddressBn: values?.presentAddressBn,
@@ -429,6 +434,18 @@ export const getEmployeeProfileViewData = async (
             ? {
                 value: empBasic?.employeeProfileLandingView?.intBloodGroupId,
                 label: empBasic?.employeeProfileLandingView?.strBloodGroup,
+              }
+            : undefined,
+          jobLocation: empBasic?.employeeProfileLandingView?.intJobLocationId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intJobLocationId,
+                label: empBasic?.employeeProfileLandingView?.strJobLocation,
+              }
+            : undefined,
+          jobTerritory: empBasic?.employeeProfileLandingView?.intJobTerritoryId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intJobTerritoryId,
+                label: empBasic?.employeeProfileLandingView?.strJobTerritory,
               }
             : undefined,
           gender: empBasic?.employeeProfileLandingView?.intGenderId
