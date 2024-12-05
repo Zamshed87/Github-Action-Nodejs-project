@@ -3,35 +3,17 @@ import React from "react";
 
 const valueStyle = { fontSize: "14px", fontWeight: "550" };
 const labelStyle = { fontSize: "12px" };
-const RequisitionView = () => {
-  interface Data {
-    employee?: string;
-    workplaceGroup?: string;
-    comments?: string;
-    trainingType?: string;
-    upcommingTraining?: string;
-    trainingMode?: string;
-    trainingOrganizer?: string;
-    trainingStatus?: string;
-    objectives?: string;
-    trainingVanue?: string;
-    reasonForRequisition?: string;
-    objectivesToAchieve?: string;
-    trainingEndDate?: string;
-    remarks?: string;
-    requisitionStatus?: string;
-  }
-
-  const data: Data = {};
+const RequisitionView = ({ data }: any) => {
+  console.log(data);
   return (
     <Row gutter={[10, 2]}>
       <Col md={8} sm={24}>
         <div style={labelStyle}>Employee:</div>
-        <div style={valueStyle}>{data?.employee || "N/A"}</div>
+        <div style={valueStyle}>{data?.employmentName || "N/A"}</div>
       </Col>
       <Col md={8} sm={24}>
         <div style={labelStyle}>Training Type:</div>
-        <div style={valueStyle}>{data?.trainingType || "N/A"}</div>
+        <div style={valueStyle}>{data?.trainingTypeName || "N/A"}</div>
       </Col>
       <Col md={8} sm={24}>
         <div style={labelStyle}>Reason For Requisition:</div>
@@ -48,12 +30,12 @@ const RequisitionView = () => {
 
       <Col md={8} sm={24}>
         <div style={labelStyle}>Requisition Status:</div>
-        <div style={valueStyle}>{data?.requisitionStatus || "N/A"}</div>
+        <div style={valueStyle}>{data?.status?.label || "N/A"}</div>
       </Col>
 
       <Col md={8} sm={24}>
         <div style={labelStyle}>Upcoming Training:</div>
-        <div style={valueStyle}>{data?.upcommingTraining || "N/A"}</div>
+        <div style={valueStyle}>{data?.upcommingTrainingName || "N/A"}</div>
       </Col>
 
       <Col md={8} sm={24}>

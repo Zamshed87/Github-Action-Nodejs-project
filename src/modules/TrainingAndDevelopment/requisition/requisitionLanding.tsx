@@ -1,4 +1,9 @@
-import { BarsOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  BarsOutlined,
+  EditOutlined,
+  EyeOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import {
   DataTable,
   Flex,
@@ -15,10 +20,11 @@ import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { data } from "./helper";
+import { data, ViewTrainingRequistion } from "./helper";
 
 import { PModal } from "Components/Modal";
 import RequisitionView from "./requisitionView";
+import Chips from "common/Chips";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -29,6 +35,7 @@ const TnDRequisitionLanding = () => {
   // state
   const [loading, setLoading] = useState(false);
   const [viewModal, setViewModalModal] = useState(false);
+  const [viewData, setViewData] = useState<any>(null);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -38,8 +45,10 @@ const TnDRequisitionLanding = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          // currentPage: landingApi?.data?.currentPage,
+          // pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 2000,
           index,
         }),
       fixed: "left",
@@ -75,10 +84,28 @@ const TnDRequisitionLanding = () => {
     // },
     {
       title: "Status",
-      dataIndex: "trainingStatus",
+      dataIndex: "status",
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
+      render: (status: any) => {
+        let statusClass = "secondary p-2 rounded-5"; // Default class
+
+        if (status?.label === "Pending") {
+          statusClass = "success p-2 rounded-5";
+        } else if (status?.label === "Assigned") {
+          statusClass = "success p-2 rounded-5";
+        } else if (status?.label === "Deferred") {
+          statusClass = "warning p-2 rounded-5";
+        }
+
+        return (
+          <div>
+            <Chips label={status?.label} classess={statusClass} />
+          </div>
+        );
+      },
+      width: 30,
     },
     {
       title: "Action",
@@ -89,7 +116,9 @@ const TnDRequisitionLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                setViewModalModal(true);
+                ViewTrainingRequistion(rec?.id, setLoading, setViewData, () => {
+                  setViewModalModal(true);
+                });
                 // history.push("/trainingAndDevelopment/requisition/view", {
                 //   data: rec,
                 // });
@@ -105,13 +134,20 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingAndDevelopment/requisition/edit", {
-                  data: rec,
-                });
+                ViewTrainingRequistion(
+                  rec?.id,
+                  setLoading,
+                  setViewData,
+                  (d: any) => {
+                    history.push("/trainingAndDevelopment/requisition/edit", {
+                      data: d,
+                    });
+                  }
+                );
               }}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title={"Status"}>
+          {/* <Tooltip placement="bottom" title={"Status"}>
             <BarsOutlined
               style={{
                 color: "green",
@@ -125,7 +161,7 @@ const TnDRequisitionLanding = () => {
                 });
               }}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Flex>
       ),
       align: "center",
@@ -220,8 +256,8 @@ const TnDRequisitionLanding = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={data || []}
-              loading={landingApi?.loading}
+              data={landingApi || []}
+              loading={landingLoading}
               header={header}
               pagination={{
                 pageSize: landingApi?.data?.pageSize,
@@ -251,7 +287,8 @@ const TnDRequisitionLanding = () => {
         components={
           <>
             <RequisitionView
-            // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+              data={viewData}
+              // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
             />
           </>
         }

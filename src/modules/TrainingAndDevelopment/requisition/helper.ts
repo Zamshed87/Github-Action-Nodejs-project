@@ -36,10 +36,11 @@ export const createTrainingRequisition = async (
 
     const payload = {
       trainingTypeId: values?.trainingType?.value || "",
-      employmentId: values?.employee?.value || "",
+      employmentTypeId: values?.employee?.value || "",
       reasonForRequisition: values?.reasonForRequisition || "",
       objectivesToAchieve: values?.objectivesToAchieve || "",
       remarks: values?.remarks || "",
+      statusId: 1,
     };
     const res = await axios.post(
       `/TrainingRequisition/Training/TrainingRequisition`,
@@ -51,8 +52,35 @@ export const createTrainingRequisition = async (
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
   } catch (error: any) {
-    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
   } finally {
+    setLoading(false);
+  }
+};
+
+export const ViewTrainingRequistion = async (
+  recordId: any,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  setSingleData: { (value: any): void; (arg0: {}): void },
+  cb: any
+) => {
+  try {
+    setLoading(true);
+
+    const res = await axios.get(
+      `/TrainingRequisition/Training/TrainingRequisition/${recordId}`
+    );
+    if (res?.data) {
+      cb && cb(res?.data);
+      setLoading(false);
+      setSingleData(res?.data);
+    }
+    setLoading(false);
+  } catch (error: any) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    setSingleData({});
     setLoading(false);
   }
 };
