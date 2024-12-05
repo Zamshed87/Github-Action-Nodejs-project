@@ -110,8 +110,9 @@ function AttendanceRawDataProcess() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    landingApi({ pageSize: 25, current: 1 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wgId]);
   const landingApi = (pagination) => {
     console.log(pagination);
     onGetAttendanceResponse(
