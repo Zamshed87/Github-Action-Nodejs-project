@@ -426,7 +426,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     if (!values?.grossAmount) {
       return toast.warn("Gross Amount is required ");
     }
-    if (!values?.basicAmount) {
+    if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
       return toast.warn("Basic Amount is required ");
     }
 

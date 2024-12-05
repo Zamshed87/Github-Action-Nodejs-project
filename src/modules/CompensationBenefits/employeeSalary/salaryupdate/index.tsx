@@ -241,7 +241,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     if (!values?.grossAmount) {
       return toast.warn("Gross Amount is required ");
     }
-    if (!values?.basicAmount) {
+    if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
       return toast.warn("Basic Amount is required ");
     }
 
@@ -396,8 +396,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // accounts calculations
   const updateDtoHandler = (e: number, row: any, index: number): any => {
     const { grossAmount } = form.getFieldsValue(true);
+    const originalIndex =
+      row?.key === "Bank Pay" ? 0 : row?.key === "Digital/MFS Pay" ? 1 : 2;
     const temp = [...accountsDto];
-
     // Check for invalid input values
     if (e < 0) {
       return toast.warn(`${row?.key} can't be negative`);
@@ -407,18 +408,19 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
 
     // Update the selected index with the new amount
-    temp[index].numAmount = e;
-    temp[index].accounts = `${temp[index].key} (${(
+    temp[originalIndex].numAmount = e;
+    temp[originalIndex].accounts = `${temp[originalIndex].key} (${(
       (e * 100) /
       grossAmount
     ).toFixed(6)}%)`;
 
     // Calculate the remaining amount to be distributed between the other two indexes
     const remainingAmount = grossAmount - e;
-    const [index1, index2] = [0, 1, 2].filter((i) => i !== index); // get the other two indexes
-
+    const [index1, index2] = [0, 1, 2].filter((i) => i !== originalIndex); // get the other two indexes
+    // console.log({ index });
     // Distribute remaining amount between the other two indexes
-    // console.log({ index1 }, temp[index1].numAmount, remainingAmount);
+    // console.log({ temp }, { index }, temp[index].numAmount, remainingAmount);
+    // console.log({ temp }, { index1 }, temp[index1].numAmount, remainingAmount);
     // console.log({ index2 }, temp[index2].numAmount, remainingAmount);
     if (temp[index1].numAmount > remainingAmount) {
       temp[index1].numAmount = remainingAmount;
@@ -449,12 +451,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       (temp[index2].numAmount * 100) /
       grossAmount
     ).toFixed(6);
-    temp[index].accounts = `${temp[index].key} (${(
-      (temp[index].numAmount * 100) /
+    temp[originalIndex].accounts = `${temp[originalIndex].key} (${(
+      (temp[originalIndex].numAmount * 100) /
       grossAmount
     ).toFixed(6)}%)`;
-    temp[index].percentage = (
-      (temp[index].numAmount * 100) /
+    temp[originalIndex].percentage = (
+      (temp[originalIndex].numAmount * 100) /
       grossAmount
     ).toFixed(6);
 
