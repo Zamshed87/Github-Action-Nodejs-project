@@ -271,4 +271,5 @@ export const apiList = {
   GetQuestionLanding: "/Questionnaire/Landing",
   GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
   GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
+  EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
 };

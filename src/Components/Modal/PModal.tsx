@@ -4,6 +4,7 @@ import { PButton, buttonType } from "Components/Button/PButton";
 import "./style.scss";
 type TModalType = {
   components: React.ReactNode;
+  height?: string;
   footerButtons?: {
     type: buttonType;
     content: string;
@@ -12,10 +13,11 @@ type TModalType = {
 };
 type PModalType = TModalType & ModalProps;
 export const PModal: React.FC<PModalType> = (property) => {
-  const { components, wrapClassName, width } = property;
+  const { components, wrapClassName, width, height = null } = property;
 
   return (
     <Modal
+      bodyStyle={{ maxHeight: height || "520px" }}
       {...property}
       wrapClassName={`peopleDeskModalWrapper ${
         wrapClassName ? wrapClassName : ""

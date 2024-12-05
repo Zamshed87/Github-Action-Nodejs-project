@@ -323,6 +323,30 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
+const ManagementViewTask = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
+);
+const ManagementCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/mgmApplication/createTask.js"
+  )
+);
+const ManagementTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/index.js")
+);
+const SelfTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/selfApplication/index.js")
+);
+const SelfViewTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/selfApplication/viewTask.js"
+  )
+);
+const SelfCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/selfApplication/createTask.js"
+  )
+);
 const ExternalTrainingCreate = lazy(() =>
   import("../modules/trainingDevelopment/externalTraining/addEditForm.jsx")
 );
@@ -2204,6 +2228,30 @@ export const routingList = [
     component: ManagementDashboardPermissionCreate,
   },
   {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
+  },
+  {
+    path: "/SelfService/taskManagement",
+    component: SelfTaskManagement,
+  },
+  {
+    path: "/SelfService/taskManagement/create",
+    component: SelfCreateTask,
+  },
+  {
+    path: "/SelfService/taskManagement/view/:id",
+    component: SelfViewTask,
+  },
+  {
     path: "/administration/configuration/managementDashboardPermission/view/:id",
     component: ManagementDashboardPermissionDetails,
   },
@@ -3401,6 +3449,20 @@ export const routingList = [
   {
     path: "/interview",
     component: InterviewModal,
+  },
+
+  // task management
+  {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
   },
   // pms-----------------------------------------------------------------------////////////////////////////////////////////
   {

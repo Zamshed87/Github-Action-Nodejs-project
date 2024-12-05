@@ -1060,3 +1060,6 @@ h6.count {
   .MuiSvgIcon-root {
   padding: 3px;
 }
+.date-time-custom-css input{
+  padding: 5px 10px !important;
+}
