@@ -320,7 +320,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           };
         });
         form.setFieldsValue({
-          grossAmount: res[0]?.numGrossSalary,
+          grossAmount: res[0]?.numNetGrossSalary,
         });
         if (employeeInfo?.data[0]?.isGradeBasedSalary) {
           const modifyforGrade = [...modify];
