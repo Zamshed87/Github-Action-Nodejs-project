@@ -155,7 +155,7 @@ export const processBulkUploadTnP = async (
       intAccountId: orgId,
       intUrlId: intUrlId,
       employeeName: item["Employee Name *"] || "",
-      employeeCode: "AE-008",
+      employeeCode: item["Employee Code *"] || "",
       transferNpromotionType: item["Type"] || "",
       effectiveDate: item["Effective Date * (YYYY-MM-DD)"] || "",
       businessUnit: item["To BusinessUnit"] || "",
