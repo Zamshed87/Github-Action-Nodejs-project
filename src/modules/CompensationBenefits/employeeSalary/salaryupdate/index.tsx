@@ -983,7 +983,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onFinish={submitHandler}
     >
       <PCard>
-        <PCardHeader title="Salary Assign" submitText="Save"></PCardHeader>
+        <PCardHeader
+          backButton
+          title="Salary Assign"
+          submitText="Save"
+        ></PCardHeader>
         <EmployeeInfo
           employeeInfo={employeeInfo}
           getEmployeeInfo={getEmployeeInfo}
