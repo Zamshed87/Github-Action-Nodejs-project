@@ -131,8 +131,9 @@ export const saveBulkUploadTnP = async (
     toast.success(res?.data?.message || "Successful");
   } catch (error) {
     setLoading(false);
-    setErrorData(error?.response?.data?.listData);
-    setOpen(true);
+    toast.warn("Failed, try again");
+    // setErrorData(error?.response?.data?.listData);
+    // setOpen(true);
     error?.response?.data?.listData?.length < 0 &&
       toast.warn(error?.response?.data?.message || "Failed, try again");
   }
@@ -152,7 +153,7 @@ export const processBulkUploadTnP = async (
     const modifiedData = data.map((item, index) => ({
       rowId: index,
       intEmpBulkUploadId: 0,
-      intAccountId: orgId,
+      accountId: orgId,
       intUrlId: intUrlId,
       employeeName: item["Employee Name *"] || "",
       employeeCode: item["Employee Code *"] || "",
