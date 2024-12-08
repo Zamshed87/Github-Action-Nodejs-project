@@ -161,17 +161,16 @@ const SingleQuestionnaire = ({
                 }, 500);
               }}
               onSelect={(_, op) => {
+                const location = antForm.getFieldsValue(true)?.questions[index];
                 axios
                   .get(`/Questionnaire/Question/Template/${op?.id}`)
                   .then((res) => {
+                    antForm.setFieldValue(
+                      location?.expectedAns,
+                      res?.data?.answer
+                    );
                     console.log(res?.data);
                   });
-                antForm.setFieldValue(`questions[${index}].expectedAns`, "Hi");
-                console.log(
-                  antForm.getFieldValue(`questions[${index}].expectedAns`)[
-                    index
-                  ]
-                );
                 setTempOptions([]);
               }}
             />
