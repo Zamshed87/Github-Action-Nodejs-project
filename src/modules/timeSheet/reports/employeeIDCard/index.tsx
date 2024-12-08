@@ -182,17 +182,18 @@ const EmployeePdfLanding = () => {
               cursor: "pointer",
             }}
             onClick={() => {
-              const { isEnglish } = form.getFieldsValue(true);
-              downloadFile(
-                `/PdfAndExcelReport/IdCardPdf?employeeIds=${
-                  rec?.EmployeeId
-                }&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
-                  orgId === 7 ? isEnglish : true
-                }`,
-                "Employee ID Cards",
-                "pdf",
-                setLoading
-              );
+              // const { isEnglish } = form.getFieldsValue(true);
+              // downloadFile(
+              //   `/PdfAndExcelReport/IdCardPdf?employeeIds=${
+              //     rec?.EmployeeId
+              //   }&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
+              //     orgId === 7 ? isEnglish : true
+              //   }`,
+              //   "Employee ID Cards",
+              //   "pdf",
+              //   setLoading
+              // );
+              printIDByOrg(orgId, rec?.EmployeeId);
             }}
           />
         ),
@@ -205,7 +206,24 @@ const EmployeePdfLanding = () => {
     });
     return empIdList.join(",");
   };
+  const printIDByOrg = (orgId: any, empId: any) => {
+    const { isEnglish } = form.getFieldsValue(true);
+    let api = "";
+    if (orgId === 1) {
+      api = `/PdfAndExcelReport/ExportIdCardForMatador?employeeIds=${empId}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=true`;
+    }
+    if (orgId === 7) {
+      api = `/PdfAndExcelReport/${
+        isEnglish
+          ? "ExportIdCardForBangjinInEnglish"
+          : "ExportIdCardForBangjinInBangla"
+      }?employeeIds=${empId}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
+        orgId === 7 ? isEnglish : true
+      }`;
+    }
 
+    downloadFile(api, "Employee ID Cards", "pdf", setLoading);
+  };
   return (
     <PForm
       form={form}
@@ -239,16 +257,17 @@ const EmployeePdfLanding = () => {
                     type: "primary",
                     content: `Download ${selectedRow?.length}`,
                     onClick: () => {
-                      const { isEnglish } = form.getFieldsValue(true);
+                      // const { isEnglish } = form.getFieldsValue(true);
 
-                      downloadFile(
-                        `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
-                          orgId === 7 ? isEnglish : true
-                        }`,
-                        "Employee ID Cards",
-                        "pdf",
-                        setLoading
-                      );
+                      // downloadFile(
+                      //   `/PdfAndExcelReport/IdCardPdf?employeeIds=${selectedEmpIds()}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
+                      //     orgId === 7 ? isEnglish : true
+                      //   }`,
+                      //   "Employee ID Cards",
+                      //   "pdf",
+                      //   setLoading
+                      // );
+                      printIDByOrg(orgId, selectedEmpIds());
                     },
                   },
                 ]
