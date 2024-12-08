@@ -104,15 +104,15 @@ export const onUpdateTrainingRequisition = async (
       objectivesToAchieve: values?.objectivesToAchieve || "",
       remarks: values?.remarks || "",
       statusId: values?.requisitionStatus?.value || "",
-      upcommingTrainingId: values?.upcommingTraining?.value || "",
+      upcommingTrainingId: values?.upcommingTraining?.value || 1, // need to check
       comments: values?.comments || "",
     };
-    const res = await axios.post(
-      `/TrainingRequisition/Training/TrainingRequisition/${values?.id}`,
+    const res = await axios.put(
+      `/TrainingRequisition/Training/TrainingRequisition/${values?.reqId}`,
       payload
     );
     form.resetFields();
-    toast.success("Created Successfully", { toastId: 1222 });
+    toast.success("Updated Successfully", { toastId: 1222 });
     cb && cb();
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);

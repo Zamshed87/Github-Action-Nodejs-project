@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { getEnumData } from "common/api/commonApi";
 const PlanningInfo = ({
   form,
   getBUnitDDL,
@@ -16,6 +17,17 @@ const PlanningInfo = ({
   setOpenTrainingTitleModal,
   trainingTitleDDL,
 }: any) => {
+  const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
+  const [trainingOrganizerTypeDDL, setTrainingOrganizerTypeDDL] = useState<any>(
+    []
+  );
+  const [trainingStatusDDL, setTrainingStatusDDL] = useState<any>([]);
+
+  useEffect(() => {
+    getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
+    getEnumData("TrainingOrganizerType", setTrainingOrganizerTypeDDL);
+    getEnumData("TrainingStatus", setTrainingStatusDDL);
+  }, []);
   return (
     <Row gutter={[10, 2]}>
       <Col md={6} sm={12} xs={24}>
@@ -140,7 +152,7 @@ const PlanningInfo = ({
       </Col>
       <Col md={6} sm={12} xs={24}>
         <PSelect
-          options={[]} // need to change
+          options={trainingModeStatusDDL || []}
           name="trainingMode"
           label="Training Mode"
           placeholder="Training Mode"
@@ -159,7 +171,7 @@ const PlanningInfo = ({
       </Col>
       <Col md={6} sm={12} xs={24}>
         <PSelect
-          options={[]} // need to change
+          options={trainingOrganizerTypeDDL || []}
           name="trainingOrganizer"
           label="Training Organizer"
           placeholder="Training Organizer"
@@ -178,7 +190,7 @@ const PlanningInfo = ({
       </Col>
       <Col md={6} sm={12} xs={24}>
         <PSelect
-          options={[]}
+          options={trainingStatusDDL || []}
           name="trainingStatus"
           label="Training Status"
           placeholder="Training Status"

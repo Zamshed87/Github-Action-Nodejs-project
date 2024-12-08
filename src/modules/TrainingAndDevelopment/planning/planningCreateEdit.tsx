@@ -35,6 +35,7 @@ import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
 import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import PlanningInfo from "./planningInfo";
+import { getEnumData } from "common/api/commonApi";
 
 const cardMargin = { marginBottom: "15px" };
 
@@ -84,7 +85,6 @@ const TnDPlanningCreateEdit = () => {
     loadingTrainerOrg,
     setNameOfTrainerOrg,
   ] = useAxiosGet();
-  const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();

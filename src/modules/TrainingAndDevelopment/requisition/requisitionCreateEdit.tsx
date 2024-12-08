@@ -19,6 +19,7 @@ import {
   onUpdateTrainingRequisition,
   requisitionStatus,
 } from "./helper";
+import { getEnumData } from "common/api/commonApi";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
@@ -30,6 +31,7 @@ const TnDRequisitionCreateEdit = () => {
   const data = location?.state?.data;
 
   const [loading, setLoading] = useState(false);
+  const [reqStatusDDL, setReqStatus] = useState([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -78,6 +80,7 @@ const TnDRequisitionCreateEdit = () => {
       });
       setTrainingType(list);
     });
+    getEnumData("RequisitionStatus", setReqStatus);
   }, [profileData?.buId, profileData?.wgId]);
 
   return (
@@ -244,7 +247,7 @@ const TnDRequisitionCreateEdit = () => {
               {type === "edit" && (
                 <Col md={6} sm={24}>
                   <PSelect
-                    options={[]}
+                    options={reqStatusDDL || []}
                     name="requisitionStatus"
                     disabled={false}
                     label="Requisition Status"

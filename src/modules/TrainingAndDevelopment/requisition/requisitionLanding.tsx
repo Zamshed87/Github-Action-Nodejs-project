@@ -144,9 +144,6 @@ const TnDRequisitionLanding = () => {
                     });
                   }
                 );
-                history.push("/trainingAndDevelopment/requisition/edit", {
-                  data: rec, // need to change
-                });
               }}
             />
           </Tooltip>
