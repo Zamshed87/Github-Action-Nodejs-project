@@ -13,3 +13,16 @@ export const durationDifference = (time_1, time_2) => {
 
   return formattedDuration;
 };
+
+export const dateDuration = (startDate, endDate) => {
+  const start = moment(startDate);
+  const end = moment(endDate);
+
+  const duration = moment.duration(end.diff(start));
+
+  const years = duration.years();
+  const months = duration.months();
+  const days = duration.days();
+
+  return `${years} years ${months} months ${days} days`;
+};
