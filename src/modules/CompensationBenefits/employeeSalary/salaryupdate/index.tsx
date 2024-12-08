@@ -887,7 +887,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               ? res?.empEmployeeBankDetail?.strAccountNo
               : "",
           bank: res?.empEmployeeBankDetail?.intBankWalletId
-            ? res?.empEmployeeBankDetail?.intBankWalletId
+            ? {
+                value: res?.empEmployeeBankDetail?.intBankWalletId,
+                label: res?.empEmployeeBankDetail?.strBankWalletName,
+              }
             : undefined,
           routing: res?.empEmployeeBankDetail?.strRoutingNo
             ? res?.empEmployeeBankDetail?.strRoutingNo
