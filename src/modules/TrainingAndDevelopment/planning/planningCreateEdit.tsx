@@ -373,7 +373,8 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
-                            // redirect to planning landing
+                            console.log(costField, "costField");
+                            console.log(perticipantField, "perticipantField");
                           })
                           .catch(() => {});
                       },
@@ -391,6 +392,11 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
+                            console.log(values, "training plan");
+
+                            console.log(trainerOrgField, "trainerOrgField");
+                            console.log(costField, "costField");
+                            console.log(perticipantField, "perticipantField");
                             // redirect to planning landing
                           })
                           .catch(() => {});
