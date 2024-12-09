@@ -1553,6 +1553,7 @@ function CreateTransferPromotion() {
                         options={organizationTypeList || []}
                         value={values?.orgType}
                         onChange={(valueOption) => {
+                          console.log("valueOption",valueOption)
                           setValues((prev) => ({
                             ...prev,
                             orgType: valueOption,
@@ -1560,6 +1561,7 @@ function CreateTransferPromotion() {
                           }));
                           setOrganizationDDLFunc(
                             orgId,
+                            wgId,
                             buId,
                             employeeId,
                             valueOption,
