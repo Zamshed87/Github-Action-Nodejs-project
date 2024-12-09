@@ -20,6 +20,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import ListOfPerticipants from "../planning/listOfPerticipants";
+import { toast } from "react-toastify";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
@@ -33,6 +34,8 @@ const TnDAttendanceSave = () => {
 
   const [loading, setLoading] = useState(false);
   const [perticipantField, setperticipantField] = useState<any>([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -98,8 +101,71 @@ const TnDAttendanceSave = () => {
     },
   ];
 
+  const addHanderForPerticipant = (values: any) => {
+    if (!values?.employee) {
+      toast.error("Employee is required");
+      return;
+    }
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    const nextId =
+      perticipantField.length > 0
+        ? perticipantField[perticipantField.length - 1].id + 1
+        : 1;
+    setperticipantField([
+      ...perticipantField,
+      {
+        id: nextId,
+        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
+        perticipantId: values?.employee?.value,
+        department: values?.department?.label,
+        departmentId: values?.department?.value,
+        hrPosition: values?.hrPosition?.label,
+        hrPositionId: values?.hrPosition?.value,
+        workplaceGroup: workplaceGroup?.label,
+        workplaceGroupId: workplaceGroup?.value,
+        workplace: workplace?.label,
+        workplaceId: workplace?.value,
+      },
+    ]);
+  };
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
+    empDepartmentDDL?.action({
+      urlKey: "DepartmentIdAll",
+      method: "GET",
+      params: {
+        businessUnitId: profileData?.buId,
+        // workplaceGroupId: workplaceGroup?.value,
+        // workplaceId: workplace?.value,
+
+        accountId: profileData?.orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
+        });
+      },
+    });
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: profileData?.buId,
+        // WorkplaceGroupId: workplaceGroup?.value,
+        // IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
   }, []);
 
   return (
@@ -206,7 +272,7 @@ const TnDAttendanceSave = () => {
               perticipantField={perticipantField}
               setperticipantField={setperticipantField}
               addHandler={addHanderForPerticipant}
-              calculatePerPersonCost={calculatePerPersonCost}
+              // calculatePerPersonCost={calculatePerPersonCost}
               departmentDDL={empDepartmentDDL?.data || []}
               positionDDL={positionDDL?.data || []}
             />{" "}

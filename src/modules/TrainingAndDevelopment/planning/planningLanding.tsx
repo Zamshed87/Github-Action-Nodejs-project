@@ -25,7 +25,7 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 
-import { data, ViewTrainingPlan } from "./helper";
+import { data, ViewTrainingPlan, ViewTrainingPlanDetails } from "./helper";
 import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
 const TnDPlanningLanding = () => {
@@ -41,6 +41,7 @@ const TnDPlanningLanding = () => {
   const [loading, setLoading] = useState(false);
   const [viewModal, setViewModalModal] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
+  const [viewDataDetails, setViewDataDetails] = useState<any>(null);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -51,8 +52,10 @@ const TnDPlanningLanding = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          // currentPage: landingApi?.data?.currentPage,
+          // pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000, // need to change
           index,
         }),
       fixed: "left",
@@ -60,7 +63,7 @@ const TnDPlanningLanding = () => {
     },
     {
       title: "Business Unit",
-      dataIndex: "businessUnit",
+      dataIndex: "businessUnitName",
       filter: true,
       filterKey: "businessUnitList",
       filterSearch: true,
@@ -69,7 +72,7 @@ const TnDPlanningLanding = () => {
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplaceGroupName",
       filter: true,
       filterKey: "workplaceGroupList",
       filterSearch: true,
@@ -78,7 +81,7 @@ const TnDPlanningLanding = () => {
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplaceName",
       filter: true,
       filterKey: "workplaceList",
       filterSearch: true,
@@ -87,7 +90,7 @@ const TnDPlanningLanding = () => {
     },
     {
       title: "Training Type",
-      dataIndex: "trainingType",
+      dataIndex: "trainingTypeName",
       filter: true,
       filterKey: "trainingTypeList",
       filterSearch: true,
@@ -96,7 +99,7 @@ const TnDPlanningLanding = () => {
     },
     {
       title: "Training Title",
-      dataIndex: "trainingTitle",
+      dataIndex: "trainingTitleName",
       filter: true,
       filterKey: "trainingTitleList",
       filterSearch: true,
@@ -114,7 +117,7 @@ const TnDPlanningLanding = () => {
     },
     {
       title: "Training Date & Time",
-      dataIndex: "trainingDateTime",
+      dataIndex: "startDate",
       render: (data: any) => dateFormatter(data),
       sorter: true,
       align: "center",
@@ -163,7 +166,14 @@ const TnDPlanningLanding = () => {
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
                 ViewTrainingPlan(rec?.id, setLoading, setViewData, () => {
-                  setViewModalModal(true);
+                  ViewTrainingPlanDetails(
+                    rec?.id,
+                    setLoading,
+                    setViewDataDetails,
+                    () => {
+                      setViewModalModal(true);
+                    }
+                  );
                 });
               }}
             />
@@ -243,7 +253,7 @@ const TnDPlanningLanding = () => {
   ];
 
   const landingApiCall = (values: any) => {
-    getLandingApi("/trainingType");
+    getLandingApi("/Training/Training/GetAllTraining");
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
@@ -333,9 +343,8 @@ const TnDPlanningLanding = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              // data={landingApi?.data?.data || []}
-              data={data}
-              loading={landingApi?.loading}
+              data={landingApi || []}
+              loading={landingLoading}
               header={header}
               pagination={{
                 pageSize: landingApi?.data?.pageSize,
@@ -366,6 +375,7 @@ const TnDPlanningLanding = () => {
           <>
             <PlanningView
               data={viewData}
+              dataDetails={viewDataDetails}
               // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
             />
           </>

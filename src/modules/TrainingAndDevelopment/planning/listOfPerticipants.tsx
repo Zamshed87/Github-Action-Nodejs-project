@@ -21,7 +21,7 @@ const ListOfPerticipants = ({
   perticipantField: any[];
   setperticipantField: (data: any[]) => void;
   addHandler: (values: any) => void;
-  calculatePerPersonCost: () => number;
+  calculatePerPersonCost?: () => number;
   departmentDDL: any[];
   positionDDL: any[];
 }) => {
@@ -193,21 +193,12 @@ const ListOfPerticipants = ({
           />
         </Col>
       </Row>
-      <Flex justify="flex-end" align="flex-start" className="mr-2">
-        <h1>Per Person Cost: {calculatePerPersonCost()}</h1>
-        {/* <div>
-          <PInput
-            type="text"
-            placeholder="Total Cost:"
-            label="Total Cost:"
-            name="totalCost"
-            value={String(
-              perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
-            )}
-            disabled={true}
-          />
-        </div> */}
-      </Flex>
+      {calculatePerPersonCost && (
+        <Flex justify="flex-end" align="flex-start" className="mr-2">
+          <h1>Per Person Cost: {calculatePerPersonCost()}</h1>
+        </Flex>
+      )}
+
       {perticipantField?.length > 0 && (
         <div className="mb-3 mt-2">
           <DataTable

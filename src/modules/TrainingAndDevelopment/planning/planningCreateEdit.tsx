@@ -342,13 +342,32 @@ const TnDPlanningCreateEdit = () => {
     if (type === "edit") return "Edit";
     if (type === "view") return "View";
   };
-
+  console.log(data, "data");
   return (
     <div>
       {(loading || loadingTrainingType) && <Loading />}
       <PForm
         form={form}
-        initialValues={{ reasonForRequisition: data?.requestor }}
+        initialValues={
+          type === "edit"
+            ? {
+                bUnit: data?.businessUnitId,
+                workplaceGroup: data?.workplaceGroupId,
+                workplace: data?.workplaceId,
+                trainingType: data?.trainingTypeId,
+                trainingTitle: data?.trainingTitleId,
+                trainingMode: data?.trainingModeStatus,
+                trainingOrganizer: data?.trainingOrganizerType,
+                trainingStatus: data?.status,
+                objectives: data?.objectives,
+                trainingVanue: data?.venueAddress,
+                // trainingStartDate: data?.startDate,
+                // trainingStartTime: data?.startTime,
+                // trainingEndDate: data?.endDate,
+                // trainingEndTime: data?.endTime,
+              }
+            : {}
+        }
       >
         <PCard>
           <PCardHeader
@@ -394,7 +413,8 @@ const TnDPlanningCreateEdit = () => {
                 : [
                     {
                       type: "primary",
-                      content: "Save & Close",
+                      content:
+                        type === "edit" ? "Edit & Close" : "Save & Close",
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
