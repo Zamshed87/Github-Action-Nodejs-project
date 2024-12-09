@@ -18,35 +18,54 @@ import { toast } from "react-toastify";
 import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
+  costMap,
   createTrainingPlan,
   createTrainingPlanDetails,
+  editTrainingPlan,
+  editTrainingPlanDetails,
+  perticipantMap,
   setTrainingDuration,
   stepOneValidation,
+  trainerMap,
 } from "./helper";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
 import PlanningInfo from "./planningInfo";
 import TrainerAndOrgInfo from "./trainerAndOrgInfo";
+import moment from "moment";
+import { id } from "date-fns/locale";
 
 const cardMargin = { marginBottom: "15px" };
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
     data?: any;
+    dataDetails?: any;
   }
+  const [form] = Form.useForm();
+  const params = useParams<{ type: string }>();
+  const { type } = params;
 
   const location = useLocation<LocationState>();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const data = location?.state?.data;
+  const { data = {}, dataDetails = {} } = location?.state || {};
 
   const [loading, setLoading] = useState(false);
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
   const [openTrainingTitleModal, setOpenTrainingTitleModal] = useState(false);
-  const [costField, setCostField] = useState<any>([]);
-  const [trainerOrgField, setTrainerOrgField] = useState<any>([]);
-  const [perticipantField, setperticipantField] = useState<any>([]);
+  const [costField, setCostField] = useState<any>(
+    type === "edit" ? costMap(dataDetails?.trainingCostDto) : []
+  );
+  const [trainerOrgField, setTrainerOrgField] = useState<any>(
+    type === "edit" ? trainerMap(dataDetails?.trainingTrainerDto) : []
+  );
+  const [perticipantField, setperticipantField] = useState<any>(
+    type === "edit"
+      ? perticipantMap(dataDetails?.trainingParticipantDto, data)
+      : []
+  );
   const [planId, setPlanId] = useState<number>();
 
   const [planStep, setPlanStep] = useState<string>("");
@@ -78,9 +97,6 @@ const TnDPlanningCreateEdit = () => {
     setNameOfTrainerOrg,
   ] = useAxiosGet();
 
-  const [form] = Form.useForm();
-  const params = useParams<{ type: string }>();
-  const { type } = params;
   //   api calls
   const CommonEmployeeDDL = useApiRequest([]);
   const [
@@ -343,6 +359,7 @@ const TnDPlanningCreateEdit = () => {
     if (type === "view") return "View";
   };
   console.log(data, "data");
+  console.log(dataDetails, "dataDetails");
   return (
     <div>
       {(loading || loadingTrainingType) && <Loading />}
@@ -351,20 +368,47 @@ const TnDPlanningCreateEdit = () => {
         initialValues={
           type === "edit"
             ? {
-                bUnit: data?.businessUnitId,
-                workplaceGroup: data?.workplaceGroupId,
-                workplace: data?.workplaceId,
-                trainingType: data?.trainingTypeId,
-                trainingTitle: data?.trainingTitleId,
-                trainingMode: data?.trainingModeStatus,
-                trainingOrganizer: data?.trainingOrganizerType,
-                trainingStatus: data?.status,
+                idx: data?.id,
+                bUnit: {
+                  value: data?.businessUnitId,
+                  label: data?.businessUnitName,
+                },
+                workplaceGroup: {
+                  value: data?.workplaceGroupId,
+                  label: data?.workplaceGroupName,
+                },
+                workplace: {
+                  value: data?.workplaceId,
+                  label: data?.workplaceName,
+                },
+                trainingType: {
+                  value: data?.trainingTypeId,
+                  label: data?.trainingTypeName,
+                },
+                trainingTitle: {
+                  value: data?.trainingTitleId,
+                  label: data?.trainingTitleName,
+                },
+                trainingMode: {
+                  value: data?.trainingModeStatus?.value,
+                  label: data?.trainingModeStatus?.label,
+                },
+                trainingOrganizer: {
+                  value: data?.trainingOrganizerType?.value,
+                  label: data?.trainingOrganizerType?.label,
+                },
+                trainingStatus: {
+                  value: data?.status?.value,
+                  label: data?.status?.label,
+                },
                 objectives: data?.objectives,
                 trainingVanue: data?.venueAddress,
-                // trainingStartDate: data?.startDate,
-                // trainingStartTime: data?.startTime,
-                // trainingEndDate: data?.endDate,
-                // trainingEndTime: data?.endTime,
+                trainingStartDate: data?.startDate
+                  ? moment(data?.startDate)
+                  : "",
+                // trainingStartTime: moment(data?.startTime).format("HH:mm:ss"),
+                trainingEndDate: data?.endDate ? moment(data?.endDate) : "",
+                // trainingEndTime: moment(data?.endTime).format("HH:mm:ss"),
               }
             : {}
         }
@@ -393,16 +437,27 @@ const TnDPlanningCreateEdit = () => {
                               toast.error("Plan Creation is required");
                               return;
                             }
-                            createTrainingPlanDetails(
-                              planId,
-                              trainerOrgField,
-                              costField,
-                              perticipantField,
-                              setLoading,
-                              () => {
-                                history.goBack();
-                              }
-                            );
+                            type === "edit"
+                              ? editTrainingPlanDetails(
+                                  planId,
+                                  trainerOrgField,
+                                  costField,
+                                  perticipantField,
+                                  setLoading,
+                                  () => {
+                                    history.goBack();
+                                  }
+                                )
+                              : createTrainingPlanDetails(
+                                  planId,
+                                  trainerOrgField,
+                                  costField,
+                                  perticipantField,
+                                  setLoading,
+                                  () => {
+                                    history.goBack();
+                                  }
+                                );
                             console.log(costField, "costField");
                             console.log(perticipantField, "perticipantField");
                           })
@@ -423,15 +478,25 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
-                            createTrainingPlan(
-                              form,
-                              profileData,
-                              setLoading,
-                              () => {
-                                history.goBack();
-                                // HISTORY BACK
-                              }
-                            );
+                            type === "edit"
+                              ? editTrainingPlan(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  () => {
+                                    history.goBack();
+                                    // HISTORY BACK
+                                  }
+                                )
+                              : createTrainingPlan(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  () => {
+                                    history.goBack();
+                                    // HISTORY BACK
+                                  }
+                                );
                             console.log(values, "training plan");
 
                             console.log(trainerOrgField, "trainerOrgField");
@@ -457,20 +522,35 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
-                            createTrainingPlan(
-                              form,
-                              profileData,
-                              setLoading,
-                              (data: {
-                                message: string;
-                                statusCode: number;
-                                autoId: number;
-                                user: any;
-                              }) => {
-                                setPlanId(data?.autoId);
-                                setPlanStep("STEP_TWO");
-                              }
-                            );
+                            type === "edit"
+                              ? editTrainingPlan(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  (data: {
+                                    message: string;
+                                    statusCode: number;
+                                    autoId: number;
+                                    user: any;
+                                  }) => {
+                                    setPlanId(data?.autoId);
+                                    setPlanStep("STEP_TWO");
+                                  }
+                                )
+                              : createTrainingPlan(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  (data: {
+                                    message: string;
+                                    statusCode: number;
+                                    autoId: number;
+                                    user: any;
+                                  }) => {
+                                    setPlanId(data?.autoId);
+                                    setPlanStep("STEP_TWO");
+                                  }
+                                );
                           })
                           .catch(() => {});
                       },

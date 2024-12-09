@@ -104,12 +104,12 @@ const TrainerAndOrgInfo = ({
                 // inHouseTrainer: (op as any)?.isInHouseTrainer ? "Yes" : "No",
               });
             }}
-            rules={[
-              {
-                required: true,
-                message: "Name of Trainer & Organization is required",
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Name of Trainer & Organization is required",
+            //   },
+            // ]}
           />
         </Col>
         <Col md={6} sm={24}>

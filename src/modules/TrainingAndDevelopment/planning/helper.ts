@@ -149,6 +149,48 @@ export const createTrainingPlan = async (
   }
 };
 
+export const editTrainingPlan = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+    console.log(values, "plan");
+    const payload = {
+      trainingTypeId: values?.trainingType?.value || "",
+      trainingTitleId: values?.trainingTitle?.value || "",
+      trainingModeStatus: values?.trainingMode?.value,
+      trainingOrganizerType: values?.trainingOrganizer?.value,
+      status: values?.trainingStatus?.value,
+      venueAddress: values?.trainingVanue || "",
+      objectives: values?.objectives || "",
+      startDate: moment(values?.trainingStartDate).format("YYYY-MM-DD"),
+      endDate: moment(values?.trainingEndDate).format("YYYY-MM-DD"),
+      startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
+      endTime: moment(values?.trainingEndTime).format("HH:mm:ss"),
+    };
+    const res = await axios.put(
+      `/Training/Training/EditTraining/${values?.idx}`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 12022 });
+    cb && cb(res?.data);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
 export const createTrainingPlanDetails = async (
   planId: number,
   trainerOrgFieldList: any[],
@@ -179,6 +221,50 @@ export const createTrainingPlanDetails = async (
 
     const res = await axios.put(
       `/Training/Training/TrainingDetails/${planId}`,
+      payload
+    );
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const editTrainingPlanDetails = async (
+  planId: number,
+  trainerOrgFieldList: any[],
+  costFieldList: any[],
+  perticipantFieldList: any[],
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const payload = {
+      trainingCostPayload: costFieldList.map((cost) => ({
+        trainingId: planId,
+        trainingCostTypeId: cost?.costTypeId,
+        amount: cost?.costValue,
+      })),
+      trainingParticipantPayload: perticipantFieldList.map((participant) => ({
+        trainingId: planId,
+        hrPositionId: participant?.hrPositionId,
+        departmentId: participant?.departmentId,
+        employeeId: participant?.perticipantId,
+      })),
+      trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
+        trainingId: planId,
+        trainerId: trainer?.value,
+      })),
+    };
+
+    const res = await axios.put(
+      `/Training/Training/EditTrainingDetails/${planId}`,
       payload
     );
     toast.success("Created Successfully", { toastId: 1222 });
@@ -239,6 +325,49 @@ export const ViewTrainingPlanDetails = async (
     setSingleData({});
     setLoading(false);
   }
+};
+
+export const costMap = (data: any) => {
+  const list: any[] = [];
+  data.forEach((item: any) => {
+    list.push({
+      id: item?.id,
+      costTypeId: item?.trainingCostTypeId,
+      costType: item?.trainingCostTypeName,
+      costValue: item?.amount,
+    });
+  });
+  return list;
+};
+
+export const trainerMap = (data: any) => {
+  const list: { value: any; label: any }[] = [];
+  data.forEach((item: any) => {
+    list.push({
+      ...item,
+    });
+  });
+  return list;
+};
+
+export const perticipantMap = (data: any, d: any) => {
+  const list: any[] = [];
+  data.forEach((item: any) => {
+    list.push({
+      id: item?.id,
+      perticipant: `${item?.employeeName} - ${item?.employeeId}`,
+      perticipantId: item?.employeeId,
+      department: item?.departmentName,
+      departmentId: item?.departmentId,
+      hrPosition: item?.hrPositionName,
+      hrPositionId: item?.hrPositionId,
+      workplaceGroup: d?.workplaceGroupName,
+      workplaceGroupId: d?.workplaceGroupId,
+      workplace: d?.workplaceName,
+      workplaceId: d?.workplaceId,
+    });
+  });
+  return list;
 };
 
 export const data: any[] = [

@@ -60,6 +60,7 @@ const TnDPlanningLanding = () => {
         }),
       fixed: "left",
       align: "center",
+      width: 40,
     },
     {
       title: "Business Unit",
@@ -114,6 +115,7 @@ const TnDPlanningLanding = () => {
       filterSearch: true,
       width: 100,
       fixed: "left",
+      render: (_: any, rec: any) => rec?.trainingModeStatus?.label,
     },
     {
       title: "Training Date & Time",
@@ -136,25 +138,27 @@ const TnDPlanningLanding = () => {
     //   filterKey: "trainerContactList",
     //   filterSearch: true,
     // },
-    {
-      title: "Created By",
-      dataIndex: "createdBy",
-      filter: true,
-      filterKey: "createdByList",
-      filterSearch: true,
-    },
-    {
-      title: "Created Date",
-      dataIndex: "createdDate",
-      render: (data: any) => dateFormatter(data),
-      sorter: true,
-    },
+    // {
+    //   title: "Created By",
+    //   dataIndex: "createdBy",
+    //   filter: true,
+    //   filterKey: "createdByList",
+    //   filterSearch: true,
+    // },
+    // {
+    //   title: "Created Date",
+    //   dataIndex: "createdDate",
+    //   render: (data: any) => dateFormatter(data),
+    //   sorter: true,
+    // },
     {
       title: "Status",
       dataIndex: "status",
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
+      render: (_: any, rec: any) => rec?.status?.label,
+      width: 50,
     },
     {
       title: "Action",
@@ -188,9 +192,17 @@ const TnDPlanningLanding = () => {
               }}
               onClick={() => {
                 ViewTrainingPlan(rec?.id, setLoading, setViewData, (d: any) => {
-                  history.push("/trainingAndDevelopment/planning/edit", {
-                    data: d,
-                  });
+                  ViewTrainingPlanDetails(
+                    rec?.id,
+                    setLoading,
+                    setViewDataDetails,
+                    (details: any) => {
+                      history.push("/trainingAndDevelopment/planning/edit", {
+                        data: d,
+                        dataDetails: details,
+                      });
+                    }
+                  );
                 });
               }}
             />
