@@ -16,18 +16,18 @@ import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPu
 function OverviewTab({ empId, wgId, buId, intAccountId }) {
   const [index, setIndex] = useState(0);
   const tabName = [
-    { name: "General Info" },
-    { name: "Contact & Places" },
-    { name: "Identification" },
-    { name: "Experience" },
-    { name: "Education" },
-    { name: "Transfer & Promotion History" },
-    { name: "Increment History" },
-    { name: "Reward And Punishment" },
-    { name: "Family & Relationships" },
-    { name: "Documents" },
-    { name: "others" },
-    { name: "Social Media Information" },
+    { name: "General Info", id: 0 },
+    { name: "Contact & Places", id: 1 },
+    { name: "Identification", id: 2 },
+    { name: "Experience", id: 3 },
+    { name: "Education", id: 4 },
+    { name: "Transfer & Promotion History", id: 5 },
+    { name: "Increment History", id: 6 },
+    { name: "Reward And Punishment", id: 7 },
+    { name: "Family & Relationships", id: 8 },
+    { name: "Documents", id: 9 },
+    { name: "others", id: 10 },
+    { name: "Social Media Information", id: 11 },
   ];
   const filteredTabName =
     intAccountId !== 12
@@ -43,13 +43,14 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
               <div className="col-md-3">
                 <div className="tabs-name">
                   {filteredTabName?.map((item, i) => {
+                    console.log(item, "item", intAccountId, "intAccountId");
                     return (
                       <button
                         key={i}
                         className={`btn btn-tab ${
-                          i === index && "btn btn-tab-active"
+                          item.id === index && "btn btn-tab-active"
                         }`}
-                        onClick={() => setIndex(i)}
+                        onClick={() => setIndex(item.id)}
                       >
                         {item.name}
                       </button>
