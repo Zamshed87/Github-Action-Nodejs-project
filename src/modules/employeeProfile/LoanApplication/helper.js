@@ -704,6 +704,13 @@ export const handleDeleteClick = (index, tableData, setTableData) => {
   setTableData(updatedTableData);
 };
 
+// export const handleDeleteClick = (tableData, setTableData) => {
+//  if(tableData.length > 0){
+//    const updatedTableData = tableData.slice(0, -1);
+//    setTableData(updatedTableData);
+//  }
+// };
+
 export const subTotal = (tableData) => {
   return tableData.reduce(function (a, c) {
     return a + c?.intInstallmentAmount;
