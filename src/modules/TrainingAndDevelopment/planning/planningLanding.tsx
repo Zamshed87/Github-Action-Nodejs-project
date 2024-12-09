@@ -25,7 +25,7 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 
-import { data } from "./helper";
+import { data, ViewTrainingPlan } from "./helper";
 import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
 const TnDPlanningLanding = () => {
@@ -40,6 +40,7 @@ const TnDPlanningLanding = () => {
   // state
   const [loading, setLoading] = useState(false);
   const [viewModal, setViewModalModal] = useState(false);
+  const [viewData, setViewData] = useState<any>(null);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -118,20 +119,20 @@ const TnDPlanningLanding = () => {
       sorter: true,
       align: "center",
     },
-    {
-      title: "Name of Trainer",
-      dataIndex: "trainerName",
-      filter: true,
-      filterKey: "trainerNameList",
-      filterSearch: true,
-    },
-    {
-      title: "Trainer Contact No.",
-      dataIndex: "trainerContact",
-      filter: true,
-      filterKey: "trainerContactList",
-      filterSearch: true,
-    },
+    // {
+    //   title: "Name of Trainer",
+    //   dataIndex: "trainerName",
+    //   filter: true,
+    //   filterKey: "trainerNameList",
+    //   filterSearch: true,
+    // },
+    // {
+    //   title: "Trainer Contact No.",
+    //   dataIndex: "trainerContact",
+    //   filter: true,
+    //   filterKey: "trainerContactList",
+    //   filterSearch: true,
+    // },
     {
       title: "Created By",
       dataIndex: "createdBy",
@@ -161,10 +162,9 @@ const TnDPlanningLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                setViewModalModal(true);
-                // history.push("/trainingAndDevelopment/planning/view", {
-                //   data: rec,
-                // });
+                ViewTrainingPlan(rec?.id, setLoading, setViewData, () => {
+                  setViewModalModal(true);
+                });
               }}
             />
           </Tooltip>
@@ -177,8 +177,10 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingAndDevelopment/planning/edit", {
-                  data: rec,
+                ViewTrainingPlan(rec?.id, setLoading, setViewData, (d: any) => {
+                  history.push("/trainingAndDevelopment/planning/edit", {
+                    data: d,
+                  });
                 });
               }}
             />
@@ -358,7 +360,8 @@ const TnDPlanningLanding = () => {
         components={
           <>
             <PlanningView
-            // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+              data={viewData}
+              // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
             />
           </>
         }

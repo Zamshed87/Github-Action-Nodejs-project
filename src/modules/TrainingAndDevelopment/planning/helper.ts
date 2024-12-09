@@ -193,6 +193,31 @@ export const createTrainingPlanDetails = async (
   }
 };
 
+export const ViewTrainingPlan = async (
+  recordId: any,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  setSingleData: { (value: any): void; (arg0: {}): void },
+  cb: any
+) => {
+  try {
+    setLoading(true);
+
+    const res = await axios.get(
+      `/TrainingRequisition/Training/TrainingRequisition/${recordId}`
+    );
+    if (res?.data) {
+      cb && cb(res?.data);
+      setLoading(false);
+      setSingleData(res?.data);
+    }
+    setLoading(false);
+  } catch (error: any) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    setSingleData({});
+    setLoading(false);
+  }
+};
+
 export const data: any[] = [
   {
     requestor: "John Doe",

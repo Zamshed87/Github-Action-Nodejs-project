@@ -3,26 +3,7 @@ import React from "react";
 
 const valueStyle = { fontSize: "14px", fontWeight: "550" };
 const labelStyle = { fontSize: "12px" };
-const PlanningView = () => {
-  interface Data {
-    bUnit?: string;
-    workplaceGroup?: string;
-    workplace?: string;
-    trainingType?: string;
-    trainingTitle?: string;
-    trainingMode?: string;
-    trainingOrganizer?: string;
-    trainingStatus?: string;
-    objectives?: string;
-    trainingVanue?: string;
-    trainingStartDate?: string;
-    trainingStartTime?: string;
-    trainingEndDate?: string;
-    trainingEndTime?: string;
-    trainingDuration?: string;
-  }
-
-  const data: Data = {};
+const PlanningView = ({ data }: any) => {
   return (
     <Row gutter={[10, 2]} style={{ paddingLeft: "15px" }}>
       <Col md={8}>
