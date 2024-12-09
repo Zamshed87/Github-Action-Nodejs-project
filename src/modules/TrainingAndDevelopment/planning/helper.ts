@@ -1,5 +1,8 @@
 import { FormInstance } from "antd";
+import axios from "axios";
 import moment from "moment";
+import { SetStateAction } from "react";
+import { toast } from "react-toastify";
 
 export const trainingModeFixDDL: any[] = [
   {
@@ -95,9 +98,9 @@ export const stepOneValidation = [
   "workplace",
   "trainingType",
   "trainingTitle",
-  // "trainingMode",
-  // "trainingOrganizer",
-  // "trainingStatus",
+  "trainingMode",
+  "trainingOrganizer",
+  "trainingStatus",
   "objectives",
   "trainingVanue",
   "trainingStartDate",
@@ -106,6 +109,89 @@ export const stepOneValidation = [
   "trainingEndTime",
   "nameofTrainerOrganization",
 ];
+
+export const createTrainingPlan = async (
+  form: FormInstance<any>,
+  profileData: { orgId: any; buId: any; wgId: any; wId: any; employeeId: any },
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId } = profileData;
+    const values = form.getFieldsValue(true);
+    console.log(values, "plan");
+    const payload = {
+      trainingTypeId: values?.trainingType?.value || "",
+      trainingTitleId: values?.trainingTitle?.value || "",
+      trainingModeStatus: values?.trainingMode?.value,
+      trainingOrganizerType: values?.trainingOrganizer?.value,
+      status: values?.trainingStatus?.value,
+      venueAddress: values?.trainingVanue || "",
+      objectives: values?.objectives || "",
+      startDate: moment(values?.trainingStartDate).format("YYYY-MM-DD"),
+      endDate: moment(values?.trainingEndDate).format("YYYY-MM-DD"),
+      startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
+      endTime: moment(values?.trainingEndTime).format("HH:mm:ss"),
+    };
+    const res = await axios.post(`/Training/Training/Training`, payload);
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb(res?.data);
+    // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const createTrainingPlanDetails = async (
+  planId: number,
+  trainerOrgFieldList: any[],
+  costFieldList: any[],
+  perticipantFieldList: any[],
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const payload = {
+      trainingCostPayload: costFieldList.map((cost) => ({
+        trainingId: planId,
+        trainingCostTypeId: cost?.costTypeId,
+        amount: cost?.costValue,
+      })),
+      trainingParticipantPayload: perticipantFieldList.map((participant) => ({
+        trainingId: planId,
+        hrPositionId: participant?.hrPositionId,
+        departmentId: participant?.departmentId,
+        employeeId: participant?.perticipantId,
+      })),
+      trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
+        trainingId: planId,
+        trainerId: trainer?.value,
+      })),
+    };
+
+    const res = await axios.put(
+      `/Training/Training/TrainingDetails/${planId}`,
+      payload
+    );
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
 export const data: any[] = [
   {

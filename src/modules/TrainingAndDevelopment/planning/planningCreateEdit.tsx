@@ -1,19 +1,11 @@
 import {
   EditOutlined,
-  PlusCircleOutlined,
   SaveOutlined,
   StepForwardOutlined,
 } from "@ant-design/icons";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import Loading from "common/loading/Loading";
-import {
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
+import { PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -26,16 +18,15 @@ import { toast } from "react-toastify";
 import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
+  createTrainingPlan,
+  createTrainingPlanDetails,
   setTrainingDuration,
   stepOneValidation,
-  trainingModeFixDDL,
-  trainingStatusFixDDL,
 } from "./helper";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
-import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import PlanningInfo from "./planningInfo";
-import { getEnumData } from "common/api/commonApi";
+import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 
 const cardMargin = { marginBottom: "15px" };
 
@@ -56,6 +47,7 @@ const TnDPlanningCreateEdit = () => {
   const [costField, setCostField] = useState<any>([]);
   const [trainerOrgField, setTrainerOrgField] = useState<any>([]);
   const [perticipantField, setperticipantField] = useState<any>([]);
+  const [planId, setPlanId] = useState<number>();
 
   const [planStep, setPlanStep] = useState<string>("");
 
@@ -314,10 +306,15 @@ const TnDPlanningCreateEdit = () => {
       {
         id: nextId,
         perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
+        perticipantId: values?.employee?.value,
         department: values?.department?.label,
+        departmentId: values?.department?.value,
         hrPosition: values?.hrPosition?.label,
+        hrPositionId: values?.hrPosition?.value,
         workplaceGroup: workplaceGroup?.label,
+        workplaceGroupId: workplaceGroup?.value,
         workplace: workplace?.label,
+        workplaceId: workplace?.value,
       },
     ]);
   };
@@ -373,6 +370,20 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
+                            if (!planId) {
+                              toast.error("Plan Creation is required");
+                              return;
+                            }
+                            createTrainingPlanDetails(
+                              planId,
+                              trainerOrgField,
+                              costField,
+                              perticipantField,
+                              setLoading,
+                              () => {
+                                history.goBack();
+                              }
+                            );
                             console.log(costField, "costField");
                             console.log(perticipantField, "perticipantField");
                           })
@@ -392,6 +403,15 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
+                            createTrainingPlan(
+                              form,
+                              profileData,
+                              setLoading,
+                              () => {
+                                history.goBack();
+                                // HISTORY BACK
+                              }
+                            );
                             console.log(values, "training plan");
 
                             console.log(trainerOrgField, "trainerOrgField");
@@ -417,9 +437,20 @@ const TnDPlanningCreateEdit = () => {
                         form
                           .validateFields(stepOneValidation)
                           .then(() => {
-                            setTimeout(() => {
-                              setPlanStep("STEP_TWO");
-                            }, 500);
+                            createTrainingPlan(
+                              form,
+                              profileData,
+                              setLoading,
+                              (data: {
+                                message: string;
+                                statusCode: number;
+                                autoId: number;
+                                user: any;
+                              }) => {
+                                setPlanId(data?.autoId);
+                                setPlanStep("STEP_TWO");
+                              }
+                            );
                           })
                           .catch(() => {});
                       },
@@ -446,6 +477,10 @@ const TnDPlanningCreateEdit = () => {
                   setOpenTrainingTitleModal={setOpenTrainingTitleModal}
                 />
               </PCardBody>
+            </>
+          )}
+          {planStep === "STEP_TWO" && (
+            <>
               <PCardBody styles={cardMargin}>
                 {/* Trainer and Org */}
                 <TrainerAndOrgInfo
@@ -456,10 +491,6 @@ const TnDPlanningCreateEdit = () => {
                   addHandler={addHandlerTrinerOrg}
                 />
               </PCardBody>
-            </>
-          )}
-          {planStep === "STEP_TWO" && (
-            <>
               <PCardBody styles={cardMargin}>
                 <ListOfCost
                   form={form}
