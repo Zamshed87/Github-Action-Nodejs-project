@@ -1532,6 +1532,7 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
+import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3344,14 +3345,14 @@ export const routingList = [
     path: "/trainingAndDevelopment/training/requisition/view/:id",
     component: RequisitionDetails,
   },
-  {
-    path: "/trainingAndDevelopment/training/attendance",
-    component: TrainingAttendanceLanding,
-  },
-  {
-    path: "/trainingAndDevelopment/training/attendance/view/:id",
-    component: AttendanceView,
-  },
+  // {
+  //   path: "/trainingAndDevelopment/training/attendance",
+  //   component: TrainingAttendanceLanding,
+  // },
+  // {
+  //   path: "/trainingAndDevelopment/training/attendance/view/:id",
+  //   component: AttendanceView,
+  // },
   // Training & Development New
   {
     path: "/trainingAndDevelopment/requisition",
@@ -3392,6 +3393,10 @@ export const routingList = [
   {
     path: "/trainingAndDevelopment/trainingCalender",
     component: TrainingCalender,
+  },
+  {
+    path: "/trainingAndDevelopment/training/attendance",
+    component: TnDAttendanceSave,
   },
   // Trainnning and development ends
 

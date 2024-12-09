@@ -1,6 +1,7 @@
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { Col, Form, FormInstance, Row, Tooltip, Checkbox } from "antd";
 import Loading from "common/loading/Loading";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   DataTable,
   Flex,
@@ -15,63 +16,40 @@ import {
 
 import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import ListOfPerticipants from "../planning/listOfPerticipants";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
     data?: any;
   }
 
+  const dispatch = useDispatch();
   const location = useLocation<LocationState>();
   const history = useHistory();
   const data = location?.state?.data;
 
   const [loading, setLoading] = useState(false);
+  const [perticipantField, setperticipantField] = useState<any>([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
+  let permission = null;
+
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30356) {
+      permission = item;
+    }
+  });
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
   const { type } = params;
   //   api calls
-  const CommonEmployeeDDL = useApiRequest([]);
-  const [trainingTypeDDL, getTrainingTypeDDL, loadingTrainingType] =
-    useAxiosGet();
-  const [trainingTitleDDL, getTrainingTitleDDL, loadingTrainingTitle] =
-    useAxiosGet();
-  const [landingApi, getLandingApi, landingLoading, , landingError] =
-    useAxiosGet();
-
-  const [upcommi, setUpcommi] = useState(false);
-
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        workplaceGroupId: profileData?.wgId,
-        searchText: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-        });
-      },
-    });
-  };
-
-  useEffect(() => {
-    getTrainingTypeDDL("/trainingType");
-  }, [profileData?.buId, profileData?.wgId]);
 
   // table column
   const header: any = [
@@ -120,16 +98,13 @@ const TnDAttendanceSave = () => {
     },
   ];
 
-  const landingApiCall = (values: any) => {
-    getLandingApi("/trainingType");
-  };
   useEffect(() => {
-    landingApiCall({});
+    dispatch(setFirstLevelNameAction("Training & Development"));
   }, []);
 
   return (
     <div>
-      {loading || (loadingTrainingType && <Loading />)}
+      {loading && <Loading />}
       <PForm
         form={form}
         initialValues={{ reasonForRequisition: data?.requestor }}
@@ -156,170 +131,86 @@ const TnDAttendanceSave = () => {
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PSelect
-                  disabled={type === "view" || type === "status"}
-                  options={trainingTypeDDL || []}
-                  name="trainingType"
-                  label="Training Type"
-                  placeholder="Training Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingType: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Type is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={trainingTitleDDL || []}
-                  name="trainingTitle"
-                  label="Training Title"
-                  placeholder="Training Title"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingTitle: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Title is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={[]}
-                  name="trainingMode"
-                  label="Training Mode"
-                  placeholder="Training Mode"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingMode: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Mode is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={[]} // need to change
-                  name="trainingOrganizer"
-                  label="Training Organizer"
-                  placeholder="Training Organizer"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingOrganizer: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Organizer is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={[]}
-                  name="trainingStatus"
-                  label="Training Status"
-                  placeholder="Training Status"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingStatus: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Status is required",
-                    },
-                  ]}
-                />
-              </Col>
-
-              <Col md={6} sm={24}>
+              <Col md={4} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Training Vanue"
-                  label="Training Vanue"
-                  name="trainingVanue"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Vanue is required",
-                    },
-                  ]}
+                  placeholder="Training Title"
+                  label="Training Title"
+                  name="trainingTitle"
+                  disabled={true}
                 />
               </Col>
-              <Col md={6} sm={24}>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Mode"
+                  label="Training Mode"
+                  name="trainingMode"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Organizer"
+                  label="Training Organizer"
+                  name="trainingOrganizer"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Venue"
+                  label="Training Venue"
+                  name="trainingVenue"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Status"
+                  label="Training Status"
+                  name="trainingStatus"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
                 <PInput
                   type="text"
                   placeholder="Training Duration"
                   label="Training Duration"
                   name="trainingDuration"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Duration is required",
-                    },
-                  ]}
+                  disabled={true}
                 />
               </Col>
-
               <Col md={6} sm={24}>
                 <PInput
                   type="date"
                   name="attendanceDate"
                   label="Attendance Date"
-                  placeholder="Training Start Date"
+                  placeholder="Attendance Date"
                   onChange={(value) => {
                     form.setFieldsValue({
                       attendanceDate: value,
                     });
                   }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Attendance Date is required",
-                    },
-                  ]}
                 />
               </Col>
             </Row>
           </PCardBody>
-          <div className="mb-3">
-            <DataTable
-              bordered
-              // data={landingApi?.data?.data || []}
-              data={data}
-              loading={landingApi?.loading}
-              header={header}
-              pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
-              }}
-              filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
-                landingApiCall({});
-              }}
-            />
-          </div>
+          <PCardBody>
+            <ListOfPerticipants
+              form={form}
+              perticipantField={perticipantField}
+              setperticipantField={setperticipantField}
+              addHandler={addHanderForPerticipant}
+              calculatePerPersonCost={calculatePerPersonCost}
+              departmentDDL={empDepartmentDDL?.data || []}
+              positionDDL={positionDDL?.data || []}
+            />{" "}
+          </PCardBody>
         </PCard>
       </PForm>
     </div>

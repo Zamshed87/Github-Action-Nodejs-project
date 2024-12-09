@@ -194,8 +194,13 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                history.push("/trainingAndDevelopment/planning/status", {
-                  data: rec,
+                ViewTrainingPlan(rec?.id, setLoading, setViewData, (d: any) => {
+                  history.push("/trainingAndDevelopment/training/attendance", {
+                    data: d,
+                  });
+                });
+                history.push("/trainingAndDevelopment/training/attendance", {
+                  data: rec, // need to change this
                 });
               }}
             />

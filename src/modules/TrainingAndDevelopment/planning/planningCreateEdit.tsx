@@ -345,7 +345,7 @@ const TnDPlanningCreateEdit = () => {
 
   return (
     <div>
-      {loading || (loadingTrainingType && <Loading />)}
+      {(loading || loadingTrainingType) && <Loading />}
       <PForm
         form={form}
         initialValues={{ reasonForRequisition: data?.requestor }}
