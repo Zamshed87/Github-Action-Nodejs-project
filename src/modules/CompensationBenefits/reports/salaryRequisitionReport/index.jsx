@@ -13,9 +13,7 @@ import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/newSelectCustomStyle";
-import { getMonthName } from "./../../../../utility/monthIdToMonthName";
 import { getSalaryDetailsReportRDLC } from "./helper";
 import { downloadFile, getPDFAction } from "../../../../utility/downloadFile";
 
@@ -31,7 +29,7 @@ const initData = {
 export default function SalaryDetailsReport() {
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, wgId, buName, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -178,8 +176,9 @@ export default function SalaryDetailsReport() {
                       <button
                         style={{
                           padding: "0px 10px",
+                          marginTop: "21px",
                         }}
-                        className="btn btn-green btn-green-disable mt-4"
+                        className="btn btn-green btn-green-disable"
                         type="submit"
                         disabled={!values?.payrollPolicy}
                       >
@@ -188,10 +187,10 @@ export default function SalaryDetailsReport() {
                       {requisitionData?.length > 0 && (
                         <button
                           style={{
-                            marginTop: "23px",
+                            marginTop: "21px",
                             padding: "0px 10px",
                           }}
-                          className="btn btn-green btn-green-disable mt-4 ml-2"
+                          className="btn btn-green btn-green-disable ml-2"
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -213,7 +212,8 @@ export default function SalaryDetailsReport() {
                 className="table-card-heading"
                 style={{ marginBottom: "12px" }}
               >
-                <div className="d-flex align-center-center">
+                {/* 🔥🔥 Requirement to omit worked for banik 🔥🔥 */}
+                {/* <div className="d-flex align-center-center">
                   {requisitionData?.length > 0 && (
                     <div>
                       <h2>Business Unit: {buName || "N/A"}</h2>
@@ -225,7 +225,7 @@ export default function SalaryDetailsReport() {
                       </div>
                     </div>
                   )}
-                </div>
+                </div> */}
                 {requisitionData?.length > 0 && (
                   <ul className="d-flex flex-wrap align-items-center justify-content-center">
                     <li style={{ cursor: "pointer" }} className="pr-2">
