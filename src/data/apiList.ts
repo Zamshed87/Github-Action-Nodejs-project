@@ -277,4 +277,5 @@ export const apiList = {
   GetInterviewLanding: "/Questionnaire/Assigned/Landing",
   GetQuestionLanding: "/Questionnaire/Landing",
   EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
+  MarketVisitReport: "/MarketVisitReport/MarketVisitReport",
 };
