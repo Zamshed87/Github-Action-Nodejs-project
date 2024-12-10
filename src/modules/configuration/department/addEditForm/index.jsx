@@ -7,6 +7,7 @@ import { Switch } from "antd";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
+import { checkBng } from "utility/regxExp";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -69,6 +70,7 @@ export default function AddEditForm({
         ? singleData?.intDepartmentId
         : 0,
       strDepartment: values?.strDepartment || "",
+      strDepartmentBn: values?.strDepartmentBn || null,
       strDepartmentCode: values?.strDepartmentCode,
       isActive: values?.isActive,
       isDeleted: true,
@@ -82,7 +84,7 @@ export default function AddEditForm({
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
       intWorkplaceId: values?.workplace?.value || wId,
-      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId
+      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
     };
 
     saveDepartment.action({
@@ -151,7 +153,7 @@ export default function AddEditForm({
   };
   useEffect(() => {
     getWorkplaceGroup();
-    if(singleData){
+    if (singleData) {
       getWorkplace();
     }
   }, [buId]);
@@ -184,6 +186,22 @@ export default function AddEditForm({
               ]}
             />
           </Col>
+          {orgId === 7 && (
+            <Col md={12} sm={24}>
+              <PInput
+                type="text"
+                name="strDepartmentBn"
+                label="Department Name (In Bangla)"
+                placeholder="Department Name (In Bangla)"
+                rules={[
+                  {
+                    message: "This Field Must be in Bangla",
+                    pattern: new RegExp(checkBng()),
+                  },
+                ]}
+              />
+            </Col>
+          )}
           <Col md={12} sm={24}>
             <PInput
               type="text"

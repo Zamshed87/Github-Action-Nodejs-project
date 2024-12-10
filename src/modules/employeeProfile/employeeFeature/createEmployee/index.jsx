@@ -376,7 +376,7 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strDepartment;
+          res[i].label = item?.strDepartmentBn;
           res[i].value = item?.intDepartmentId;
         });
       },
