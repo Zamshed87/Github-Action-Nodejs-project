@@ -25,6 +25,9 @@ import CreateLoanApplicationModal from "./components/CreateLoanApplicationModal"
 import ViewLoanApplicationModal from "./components/ViewLoanApplicationModal";
 import { selfServiceLoanReqDtoColumns } from "./helper";
 
+const fromDate = monthFirstDate();
+const toDate = monthLastDate();
+
 const initData = {
   search: "",
   status: "",
@@ -44,22 +47,6 @@ const initData = {
   maximumAmount: "",
   installmentStatus: "",
 };
-
-// status DDL
-// const statusDDL = [
-//   { value: "Pending", label: "Pending" },
-//   { value: "Approved", label: "Approved" },
-//   { value: "Process", label: "Process" },
-//   { value: "Rejected", label: "Rejected" },
-// ];
-
-// loanStatus DDL
-// const loanStatusDDL = [
-//   { value: "Not Started", label: "Not Started" },
-//   { value: "Hold", label: "Hold" },
-//   { value: "Completed", label: "Completed" },
-//   { value: "Running", label: "Running" },
-// ];
 
 const Application = () => {
   const dispatch = useDispatch();
@@ -89,75 +76,20 @@ const Application = () => {
   const [rowDto, getLoanData, loadingData, setResLoanData] = useAxiosGet();
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
+
   const getData = (fromDate, toDate) => {
-    // getPeopleDeskAllLanding(
-    //   "LoanApplicationList",
-    //   orgId,
-    //   buId,
-    //   "",
-    //   setRowDto,
-    //   setAllData
-    //   setLoading
-    // );
-    // let status = statusId ? `&intStatusId=${statusId}` : "";
     const filterDate = `&fromDate=${fromDate}&toDate=${toDate}`;
     const url = `/Employee/PeopleDeskAllLanding?TableName=LoanApplicationList&intId=${employeeId}&AccountId=${orgId}&BusinessUnitId=${buId}${filterDate}`;
     getLoanData(url, (res) => {
       setResLoanData(res);
-      // setAllData(res);
     });
   };
 
   useEffect(() => {
-    getData(initData?.fromDate, initData?.toDate);
+    getData(fromDate, toDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, []);
 
-  // active & inactive filter
-  /*   const statusTypeFilter = (statusType) => {
-    const newRowData = [...allData];
-    let modifyRowData = [];
-    if (statusType === "Approved") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.applicationStatus === "Approved"
-      );
-    } else if (statusType === "Pending") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.applicationStatus === "Pending"
-      );
-    } else if (statusType === "Process") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.applicationStatus === "Process"
-      );
-    } else if (statusType === "Rejected") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.applicationStatus === "Rejected"
-      );
-    }
-    setRowDto(modifyRowData);
-  };
-  const loanStatusTypeFilter = (statusType) => {
-    const newRowData = [...allData];
-    let modifyRowData = [];
-    if (statusType === "Not Started") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.installmentStatus === "Not Started"
-      );
-    } else if (statusType === "Hold") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.installmentStatus === "Hold"
-      );
-    } else if (statusType === "Completed") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.installmentStatus === "Completed"
-      );
-    } else if (statusType === "Running") {
-      modifyRowData = newRowData?.filter(
-        (item) => item?.installmentStatus === "Running"
-      );
-    }
-    setRowDto(modifyRowData);
-  }; */
   const setSingleDataAction = (data) => {
     setSingleData({
       status: data?.applicationStatus,
@@ -357,6 +289,8 @@ const Application = () => {
           fileId={fileId}
           setFileId={setFileId}
           setSingleData={setSingleData}
+          fromDate={fromDate}
+          toDate={toDate}
         />
       </ViewModal>
       <ViewModal
@@ -387,134 +321,3 @@ const Application = () => {
 
 export default Application;
 
-//  demo table
-
-/* 
-                      <ScrollableTable
-                        classes="salary-process-table"
-                        secondClasses="table-card-styled tableOne scroll-table-height"
-                      >
-                        <thead>
-                          <tr>
-                            <th style={{ width: "30px" }}>SL</th>
-                            <th>Code</th>
-                            <th>
-                              <div>Employee</div>
-                            </th>
-                            <th>
-                              <div>Designation</div>
-                            </th>
-                            <th>
-                              <div>Department</div>
-                            </th>
-                            <th>
-                              <div>Loan Type</div>
-                            </th>
-                            <th className="text-right">
-                              <div>Loan Amount</div>
-                            </th>
-                            <th className="text-right">
-                              <div>Installment Amount</div>
-                            </th>
-                            <th className="text-center">
-                              <div>Installments</div>
-                            </th>
-                            <th className="text-right">
-                              <div>Approve Loan Amount</div>
-                            </th>
-                            <th className="text-right">
-                              <div>Approve Installment Amount</div>
-                            </th>
-                            <th className="text-center">
-                              <div>Approve Installments</div>
-                            </th>
-                            <th>
-                              <div className="table-th d-flex align-items-center">
-                                Application Status
-                                <span>
-                                  <Select
-                                    sx={{
-                                      "& .MuiOutlinedInput-notchedOutline": {
-                                        border: "none !important",
-                                      },
-                                      "& .MuiSelect-select": {
-                                        paddingRight: "22px !important",
-                                        marginTop: "-15px",
-                                      },
-                                    }}
-                                    className="selectBtn"
-                                    name="status"
-                                    IconComponent={ArrowDropDown}
-                                    value={values?.status}
-                                    onChange={(e) => {
-                                      setFieldValue("status", "");
-                                      setStatus(e.target.value?.label);
-                                      statusTypeFilter(e.target.value?.label);
-                                    }}
-                                  >
-                                    {statusDDL?.length > 0 &&
-                                      statusDDL?.map((item, index) => {
-                                        return (
-                                          <MenuItem key={index} value={item}>
-                                            {item?.label}
-                                          </MenuItem>
-                                        );
-                                      })}
-                                  </Select>
-                                </span>
-                              </div>
-                            </th>
-                            <th>
-                              <div className="table-th d-flex align-items-center">
-                                Loan Status
-                                <span>
-                                  <Select
-                                    sx={{
-                                      "& .MuiOutlinedInput-notchedOutline": {
-                                        border: "none !important",
-                                      },
-                                      "& .MuiSelect-select": {
-                                        paddingRight: "22px !important",
-                                        marginTop: "-15px",
-                                      },
-                                    }}
-                                    className="selectBtn"
-                                    name="loanStatus"
-                                    IconComponent={ArrowDropDown}
-                                    value={values?.loanStatus}
-                                    onChange={(e) => {
-                                      setFieldValue("loanStatus", "");
-                                      setLoanStatus(e.target.value?.label);
-                                      loanStatusTypeFilter(
-                                        e.target.value?.label
-                                      );
-                                    }}
-                                  >
-                                    {loanStatusDDL?.length > 0 &&
-                                      loanStatusDDL?.map((item, index) => {
-                                        return (
-                                          <MenuItem key={index} value={item}>
-                                            {item?.label}
-                                          </MenuItem>
-                                        );
-                                      })}
-                                  </Select>
-                                </span>
-                              </div>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <CardTable
-                            rowDto={rowDto}
-                            setView={setView}
-                            getData={getData}
-                            setSingleData={setSingleData}
-                            setShow={setShow}
-                            setFileId={setFileId}
-                            setLoading={setLoading}
-                            selfEmployee={selfEmployee}
-                          />
-                        </tbody>
-                      </ScrollableTable>
-                    */

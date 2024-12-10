@@ -67,6 +67,8 @@ const CreateLoanApplicationModal = ({
   fileId,
   setFileId,
   setSingleData,
+  fromDate,
+  toDate
 }) => {
   const [employeeDDL, setEmployeeDDL] = useState([]);
   const [loanType, setLoanType] = useState([]);
@@ -132,7 +134,6 @@ const CreateLoanApplicationModal = ({
   const onButtonClick = () => {
     inputFile.current.click();
   };
-
   return (
     <Formik
       enableReinitialize={true}
@@ -147,7 +148,7 @@ const CreateLoanApplicationModal = ({
       validationSchema={validationSchema}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
-          getData();
+          getData(fromDate, toDate);
           resetForm(initData);
           setFileId("");
           setSingleData("");
