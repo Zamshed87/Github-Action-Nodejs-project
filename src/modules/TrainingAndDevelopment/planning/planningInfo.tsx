@@ -299,6 +299,7 @@ const PlanningInfo = ({
             ]}
           />
         </Col>
+
         {/* <Col md={6} sm={24}>
           <PInput
             type="date"
@@ -339,6 +340,9 @@ const PlanningInfo = ({
               },
             ]}
           />
+        </Col>
+        <Col md={6} sm={24}>
+          <h1>Training Duration: {}</h1>
         </Col>
         {isMultipleDayTraining && (
           <Col md={6} sm={24}>
