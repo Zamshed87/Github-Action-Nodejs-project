@@ -226,7 +226,7 @@ export default function IncrementProposalApproval() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30499) {
+    if (item?.menuReferenceId === 30506) {
       permission = item;
     }
   });
