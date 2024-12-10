@@ -22,6 +22,7 @@ import { dateFormatter, dateFormatterReport } from "utility/dateFormatter";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import ErrorEmployeeModal from "modules/CompensationBenefits/bulkEmployeeCreate/ErrorEmployeeModal";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import Chips from "common/Chips";
 
 const initData = {
   files: "",
@@ -94,7 +95,13 @@ export default function BulkUploadTransferNPromotion() {
     const callBack = (list) => {
       // history.push("/profile/employee");
       setIsSaveData(true);
-      setData(list);
+
+      const mergedData = data.map((item) => {
+        const listItem = list.find((l) => l.rowId === item.rowId);
+        return listItem ? { ...item, ...listItem } : item;
+      });
+
+      setData(mergedData);
     };
     if (data?.length <= 0) {
       toast.warn(
@@ -214,9 +221,7 @@ export default function BulkUploadTransferNPromotion() {
                           <thead>
                             <tr>
                               <th style={{ width: "30px" }}>SL</th>
-                              <th>
-                                <div>Status</div>
-                              </th>
+
                               <th>
                                 <div>Employee Name</div>
                               </th>
@@ -262,6 +267,9 @@ export default function BulkUploadTransferNPromotion() {
                               <th>
                                 <div>Remarks</div>
                               </th>
+                              <th>
+                                <div>Status</div>
+                              </th>
                             </tr>
                           </thead>
 
@@ -269,11 +277,7 @@ export default function BulkUploadTransferNPromotion() {
                             {data.map((item, index) => (
                               <tr key={index}>
                                 <td className="tableBody-title">{index + 1}</td>
-                                <td>
-                                  <div className="tableBody-title">
-                                    {item?.statusMessage || "-"}
-                                  </div>
-                                </td>
+
                                 <td>
                                   <div className="tableBody-title">
                                     {item?.employeeName || "-"}
@@ -347,6 +351,16 @@ export default function BulkUploadTransferNPromotion() {
                                 <td>
                                   <div className="tableBody-title">
                                     {item?.remarks || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    <Chips
+                                      label={item?.statusMessage}
+                                      classess={
+                                        item?.isInserted ? "success" : "warning"
+                                      }
+                                    />{" "}
                                   </div>
                                 </td>
                               </tr>
