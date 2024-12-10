@@ -89,6 +89,7 @@ export const loanCrudAction = async (
       remainingBalance: 0,
       businessUnitId: buId,
       workPlaceGrop: wgId,
+      IntInterest: 0,
     };
     const res = await axios.post(`/Employee/LoanCRUD`, payload);
     setLoading(false);
