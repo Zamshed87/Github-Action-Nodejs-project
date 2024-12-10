@@ -246,6 +246,7 @@ const TnDPlanningCreateEdit = () => {
       "/TrainerInformation/Training/TrainerInformation",
       typeDataSetForTrainerOrg
     );
+    setTrainingDuration(form);
   }, [profileData?.buId, profileData?.wgId]);
 
   const typeDataSetForTrainerOrg = (data: any) => {
@@ -406,9 +407,13 @@ const TnDPlanningCreateEdit = () => {
                 trainingStartDate: data?.startDate
                   ? moment(data?.startDate)
                   : "",
-                // trainingStartTime: moment(data?.startTime).format("HH:mm:ss"),
+                trainingStartTime: data?.startTime
+                  ? moment(data?.startTime, "HH:mm:ss A")
+                  : "",
                 trainingEndDate: data?.endDate ? moment(data?.endDate) : "",
-                // trainingEndTime: moment(data?.endTime).format("HH:mm:ss"),
+                trainingEndTime: data?.endTime
+                  ? moment(data?.endTime, "HH:mm:ss A")
+                  : "",
               }
             : {}
         }
