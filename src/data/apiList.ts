@@ -253,10 +253,6 @@ export const apiList = {
   commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
-  GetRewardPunishmentLetterLanding:
-    "/RewardPunishment/GetRewardPunishmentPagination", // admin end
-  GetUserRewardPunishmentLetterLanding:
-    "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
   IsPromotionEligibleThroughIncrement:
     "/Employee/IsPromotionEligibleThroughIncrement",
   CreateEmployeeIncrement: "/Employee/CreateEmployeeIncrement",
@@ -267,9 +263,18 @@ export const apiList = {
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
 
   getCommonEnumData: "/Enum/GetEnums",
-  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
-  GetQuestionLanding: "/Questionnaire/Landing",
   GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
   GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
+  GetSupervisorDDL: "/IncrementProposal/GetSupervisorDDL",
+  GetIncrementProposalLoader: "/IncrementProposal/GetIncrementProposalLoader",
+  DeleteIncrementProposal: "/IncrementProposal/DeleteIncrementProposal",
+  CreateUpdateIncrementProposal:
+    "/IncrementProposal/CreateUpdateIncrementProposal",
+  GetRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetRewardPunishmentPagination", // admin end
+  GetUserRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
+  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
+  GetQuestionLanding: "/Questionnaire/Landing",
   EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
 };

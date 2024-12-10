@@ -269,6 +269,8 @@ import QuestionCreationLanding from "modules/exit-interview/question-creation";
 import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
+import IncrementProposalApproval from "modules/CompensationBenefits/incrementProposal/Incr_Proposal_Approval";
 import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
 import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
@@ -1521,6 +1523,17 @@ const MonthlyAttendanceReport = lazy(() =>
 const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
+// Training and Development
+import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
+import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
+import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/planningCreateEdit";
+import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
+import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
+import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType";
+import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
+import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
+import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
 //     "../modules/trainingDevelopment/Application/components/TrainingApplicationCreate/index.jsx"
@@ -2580,6 +2593,11 @@ export const routingList = [
   },
 
   // compensationAndBenefits
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/incrementProposal",
+    component: IncrementProposal,
+  },
   {
     path: "/compensationAndBenefits/configuration/payrollElementAndRule",
     component: PayrollElementsRules,
@@ -3305,6 +3323,10 @@ export const routingList = [
     path: "/approval/assetTransferApproval",
     component: AssetTransferApproval,
   },
+  {
+    path: "/approval/incrementproposalapproval",
+    component: IncrementProposalApproval,
+  },
   // Asset Management end
 
   //  Trainnning and development starts
@@ -3340,6 +3362,44 @@ export const routingList = [
     path: "/trainingAndDevelopment/training/attendance/view/:id",
     component: AttendanceView,
   },
+  // Training & Development New
+  {
+    path: "/trainingAndDevelopment/requisition",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/requisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/planning",
+    component: TnDPlanningLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/planning/:type",
+    component: TnDPlanningCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTypes",
+    component: TrainingType,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTitle",
+    component: TrainingTitle,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCostType",
+    component: TrainingCost,
+  },
+  {
+    path: "/trainingAndDevelopment/trainerInformation",
+    component: TrainerInfo,
+  },
+  {
+    path: "/trainingAndDevelopment/dashboard",
+    component: TnDDashboard,
+  },
+  // Trainnning and development ends
 
   //external training start
   {
@@ -3413,7 +3473,6 @@ export const routingList = [
     path: "/profile/customReportsBuilder/punishmentAction/:recordId",
     component: PunishmentAction,
   },
-  // Trainnning and development ends
 
   // Exit Interview starts
 
