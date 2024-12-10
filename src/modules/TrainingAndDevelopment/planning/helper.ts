@@ -185,7 +185,7 @@ export const editTrainingPlan = async (
       payload
     );
     form.resetFields();
-    toast.success("Created Successfully", { toastId: 12022 });
+    toast.success("Edited Successfully", { toastId: 12022 });
     cb && cb(res?.data);
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
@@ -277,7 +277,7 @@ export const editTrainingPlanDetails = async (
       `/Training/Training/EditTrainingDetails/${planId}`,
       payload
     );
-    toast.success("Created Successfully", { toastId: 1222 });
+    toast.success("Edited Successfully", { toastId: 1222 });
     cb && cb();
     setLoading(false);
   } catch (error: any) {

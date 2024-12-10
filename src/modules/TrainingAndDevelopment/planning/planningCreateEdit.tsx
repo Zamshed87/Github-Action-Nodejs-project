@@ -246,7 +246,12 @@ const TnDPlanningCreateEdit = () => {
       "/TrainerInformation/Training/TrainerInformation",
       typeDataSetForTrainerOrg
     );
-    setTrainingDuration(form);
+    if (type === "edit") {
+      setTrainingDuration(form);
+      getWorkplace();
+      getEmployeDepartment();
+      getEmployeePosition();
+    }
   }, [profileData?.buId, profileData?.wgId]);
 
   const typeDataSetForTrainerOrg = (data: any) => {
@@ -348,7 +353,7 @@ const TnDPlanningCreateEdit = () => {
       perPersonCost: perPersonCost,
       totalCost: totalCost,
     });
-    return perPersonCost;
+    return perPersonCost ? perPersonCost : 0;
   };
 
   const buttonContent = () => {

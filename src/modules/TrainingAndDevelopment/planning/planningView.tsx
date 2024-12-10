@@ -157,41 +157,47 @@ const PlanningView = ({ data, dataDetails }: any) => {
         <div style={labelStyle}>Training Duration:</div>
         <div style={valueStyle}>{data?.trainingDuration || "N/A"}</div>
       </Col>
-      <h1>List of Trainer & Organization</h1>
 
       {dataDetails?.trainingTrainerDto?.length > 0 && (
-        <div className="mb-3 mt-2">
-          <DataTable
-            bordered
-            data={dataDetails?.trainingTrainerDto || []}
-            loading={false}
-            header={headerTrainer}
-          />
-        </div>
+        <>
+          <h1>List of Trainer & Organization</h1>
+          <div className="mb-3 mt-2">
+            <DataTable
+              bordered
+              data={dataDetails?.trainingTrainerDto || []}
+              loading={false}
+              header={headerTrainer}
+            />
+          </div>
+        </>
       )}
-      <h1>List of Training Cost</h1>
 
       {dataDetails?.trainingCostDto?.length > 0 && (
-        <div className="mb-3 mt-2">
-          <DataTable
-            bordered
-            data={dataDetails?.trainingCostDto || []}
-            loading={false}
-            header={headerCost}
-          />
-        </div>
+        <>
+          <h1>List of Training Cost</h1>
+          <div className="mb-3 mt-2">
+            <DataTable
+              bordered
+              data={dataDetails?.trainingCostDto || []}
+              loading={false}
+              header={headerCost}
+            />
+          </div>
+        </>
       )}
-      <h1>List of Participants</h1>
 
       {dataDetails?.trainingParticipantDto?.length > 0 && (
-        <div className="mb-3 mt-2">
-          <DataTable
-            bordered
-            data={dataDetails?.trainingParticipantDto || []}
-            loading={false}
-            header={headerPer}
-          />
-        </div>
+        <>
+          <h1>List of Participants</h1>
+          <div className="mb-3 mt-2">
+            <DataTable
+              bordered
+              data={dataDetails?.trainingParticipantDto || []}
+              loading={false}
+              header={headerPer}
+            />
+          </div>
+        </>
       )}
     </Row>
   );
