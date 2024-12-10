@@ -30,6 +30,7 @@ const getWorkplaceWithGroup = async (apiUrl, value, label, setter, cb) => {
     cb && cb();
   } catch (error) {}
 };
+
 export const setOrganizationDDLFunc = (
   orgId,
   wgId,
@@ -38,6 +39,7 @@ export const setOrganizationDDLFunc = (
   valueOption,
   setOrganizationDDL
 ) => {
+  console.log("HI", valueOption);
   return valueOption?.value === 1
     ? getPeopleDeskAllDDL(
         // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
