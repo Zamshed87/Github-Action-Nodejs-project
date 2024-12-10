@@ -261,6 +261,7 @@ const PlanningInfo = ({
           name="trainingStartTime"
           label="Training Start Time"
           placeholder="Training Start Time"
+          format="h:mm:ss A"
           onChange={(value) => {
             form.setFieldsValue({
               trainingStartTime: value,
@@ -301,6 +302,7 @@ const PlanningInfo = ({
           name="trainingEndTime"
           label="Training End Time"
           placeholder="Training End Time"
+          format="h:mm:ss A"
           onChange={(value) => {
             form.setFieldsValue({
               trainingEndTime: value,

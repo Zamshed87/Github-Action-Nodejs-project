@@ -4,47 +4,47 @@ import moment from "moment";
 import { SetStateAction } from "react";
 import { toast } from "react-toastify";
 
-export const trainingModeFixDDL: any[] = [
-  {
-    label: "Online",
-    value: "Online",
-  },
-  {
-    label: "Classroom",
-    value: "Classroom",
-  },
-  {
-    label: "Residential",
-    value: "Residential",
-  },
-  {
-    label: "Workshop",
-    value: "Workshop",
-  },
-  {
-    label: "Foreign",
-    value: "Foreign",
-  },
-];
+// export const trainingModeFixDDL: any[] = [
+//   {
+//     label: "Online",
+//     value: "Online",
+//   },
+//   {
+//     label: "Classroom",
+//     value: "Classroom",
+//   },
+//   {
+//     label: "Residential",
+//     value: "Residential",
+//   },
+//   {
+//     label: "Workshop",
+//     value: "Workshop",
+//   },
+//   {
+//     label: "Foreign",
+//     value: "Foreign",
+//   },
+// ];
 
-export const trainingStatusFixDDL: any[] = [
-  {
-    label: "Upcoming",
-    value: "Upcoming",
-  },
-  {
-    label: "Ongoing",
-    value: "Ongoing",
-  },
-  {
-    label: "Completed",
-    value: "Completed",
-  },
-  {
-    label: "Cencaled",
-    value: "Cencaled",
-  },
-];
+// export const trainingStatusFixDDL: any[] = [
+//   {
+//     label: "Upcoming",
+//     value: "Upcoming",
+//   },
+//   {
+//     label: "Ongoing",
+//     value: "Ongoing",
+//   },
+//   {
+//     label: "Completed",
+//     value: "Completed",
+//   },
+//   {
+//     label: "Cencaled",
+//     value: "Cencaled",
+//   },
+// ];
 
 export const setTrainingDuration = (form: FormInstance<any>) => {
   const {
@@ -60,6 +60,13 @@ export const setTrainingDuration = (form: FormInstance<any>) => {
     trainingEndDate &&
     trainingEndTime
   ) {
+    console.log(
+      trainingStartDate,
+      trainingStartTime,
+      trainingEndDate,
+      trainingEndTime,
+      "date time"
+    );
     // Combine date and time
     const trainingStartDateTime = moment(
       `${moment(trainingStartDate).format("YYYY-MM-DD")}T${moment(
@@ -247,17 +254,20 @@ export const editTrainingPlanDetails = async (
   try {
     const payload = {
       trainingCostPayload: costFieldList.map((cost) => ({
+        id: cost?.id,
         trainingId: planId,
         trainingCostTypeId: cost?.costTypeId,
         amount: cost?.costValue,
       })),
       trainingParticipantPayload: perticipantFieldList.map((participant) => ({
+        id: participant?.id,
         trainingId: planId,
         hrPositionId: participant?.hrPositionId,
         departmentId: participant?.departmentId,
         employeeId: participant?.perticipantId,
       })),
       trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
+        id: trainer?.id,
         trainingId: planId,
         trainerId: trainer?.value,
       })),

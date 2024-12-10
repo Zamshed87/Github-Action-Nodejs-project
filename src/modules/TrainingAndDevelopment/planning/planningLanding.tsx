@@ -1,9 +1,13 @@
 import {
   CarryOutOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
   ContainerOutlined,
   EditOutlined,
   EyeOutlined,
   HddOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import {
   DataTable,
@@ -16,7 +20,7 @@ import {
   PInput,
 } from "Components";
 import { getSerial } from "Utils";
-import { Col, Form, Row, Tooltip } from "antd";
+import { Col, Form, Row, Tag, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useState } from "react";
@@ -28,6 +32,7 @@ import { dateFormatter } from "utility/dateFormatter";
 import { data, ViewTrainingPlan, ViewTrainingPlanDetails } from "./helper";
 import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
+import Chips from "common/Chips";
 const TnDPlanningLanding = () => {
   // router states
   const history = useHistory();
@@ -157,8 +162,34 @@ const TnDPlanningLanding = () => {
       filter: true,
       filterKey: "statusList",
       filterSearch: true,
-      render: (_: any, rec: any) => rec?.status?.label,
-      width: 50,
+      render: (status: any) => (
+        <>
+          {status?.label === "Upcoming" && (
+            <Tag icon={<ClockCircleOutlined />} color="default">
+              Upcoming
+            </Tag>
+          )}
+          {status?.label === "Ongoing" && (
+            <Tag
+              icon={<SyncOutlined style={{ paddingTop: "1px" }} spin />}
+              color="processing"
+            >
+              Ongoing
+            </Tag>
+          )}
+          {status?.label === "Completed" && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              Completed
+            </Tag>
+          )}
+          {status?.label === "Canceled" && (
+            <Tag icon={<CloseCircleOutlined />} color="magenta">
+              Canceled
+            </Tag>
+          )}
+        </>
+      ),
+      width: 100,
     },
     {
       title: "Action",
