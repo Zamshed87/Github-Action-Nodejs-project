@@ -47,23 +47,13 @@ import { toast } from "react-toastify";
 // ];
 
 export const setTrainingDuration = (form: FormInstance<any>) => {
-  const {
-    trainingStartDate,
-    trainingStartTime,
-    trainingEndDate,
-    trainingEndTime,
-  } = form.getFieldsValue(true);
+  const { trainingStartDate, trainingStartTime, trainingEndTime } =
+    form.getFieldsValue(true);
 
-  if (
-    trainingStartDate &&
-    trainingStartTime &&
-    trainingEndDate &&
-    trainingEndTime
-  ) {
+  if (trainingStartDate && trainingStartTime && trainingEndTime) {
     console.log(
       trainingStartDate,
       trainingStartTime,
-      trainingEndDate,
       trainingEndTime,
       "date time"
     );
@@ -74,7 +64,7 @@ export const setTrainingDuration = (form: FormInstance<any>) => {
       ).format("HH:mm:ss.SSS")}Z`
     );
     const trainingEndDateTime = moment(
-      `${moment(trainingEndDate).format("YYYY-MM-DD")}T${moment(
+      `${moment(trainingStartDate).format("YYYY-MM-DD")}T${moment(
         trainingEndTime
       ).format("HH:mm:ss.SSS")}Z`
     );
