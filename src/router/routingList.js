@@ -1535,6 +1535,8 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
 import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
+import TnDAssessment from "modules/TrainingAndDevelopment/assessment/assessment";
+import TnDFeedback from "modules/TrainingAndDevelopment/feedback/feedback";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3408,6 +3410,14 @@ export const routingList = [
   {
     path: "/trainingAndDevelopment/training/attendance",
     component: TnDAttendanceSave,
+  },
+  {
+    path: "/trainingAndDevelopment/training/assessment",
+    component: TnDAssessment,
+  },
+  {
+    path: "/trainingAndDevelopment/training/feedback",
+    component: TnDFeedback,
   },
   // Trainnning and development ends
 
