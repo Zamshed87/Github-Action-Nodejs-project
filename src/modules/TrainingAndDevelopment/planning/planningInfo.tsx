@@ -330,25 +330,27 @@ const PlanningInfo = ({
       </Row>
       {/* <Row gutter={[10, 2]}> */}
 
-      {trainingStatus && (
+      {
         <Flex justify="space-between" align="flex-start" className="mr-2 mt-2">
           <Col md={4} sm={24} style={{ marginTop: "10px" }}>
             <Form.Item name="isMultipleDayTraining" valuePropName="checked">
               <Checkbox>Multiple Days Training?</Checkbox>
             </Form.Item>
           </Col>
-          <Chip
-            label={`${trainingStatus?.label}`}
-            color={
-              trainingStatus?.value === 1
-                ? "primary"
-                : trainingStatus?.value === 2
-                ? "secondary"
-                : "default"
-            }
-          />
+          {trainingStatus && (
+            <Chip
+              label={`${trainingStatus?.label}`}
+              color={
+                trainingStatus?.value === 1
+                  ? "primary"
+                  : trainingStatus?.value === 2
+                  ? "secondary"
+                  : "default"
+              }
+            />
+          )}
         </Flex>
-      )}
+      }
       {/* </Row> */}
       <Row gutter={[10, 2]}>
         <Col md={6} sm={24}>
