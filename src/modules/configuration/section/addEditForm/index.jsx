@@ -2,11 +2,11 @@ import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Switch } from "antd";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { todayDate } from "utility/todayDate";
+import { shallowEqual, useSelector } from "react-redux";
+import { checkBng } from "utility/regxExp";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -16,7 +16,6 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
   // const debounce = useDebounce();
   const getBUnitDDL = useApiRequest({});
   const getDepartment = useApiRequest({});
@@ -26,10 +25,6 @@ export default function AddEditForm({
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const [loading, setLoading] = useState(false);
-
-  // states
 
   // ddls
   useEffect(() => {
@@ -78,10 +73,11 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       // actionTypeId: singleData?.intDepartmentId ? 2 : 1,
       sectionId: singleData?.sectionId || 0,
       sectionName: values?.sectionName || "",
+      sectionNameBn: values?.sectionNameBn || null,
       accountId: orgId,
       businessUnitId: buId,
       actionBy: employeeId,
@@ -98,6 +94,7 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
   useEffect(() => {
@@ -141,6 +138,22 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Section Name is required" }]}
             />
           </Col>
+          {orgId === 7 && (
+            <Col md={12} sm={24}>
+              <PInput
+                type="text"
+                name="sectionNameBn"
+                label="Section Name (In Bangla)"
+                placeholder="Section Name (In Bangla)"
+                rules={[
+                  {
+                    message: "This Field Must be in Bangla",
+                    pattern: new RegExp(checkBng()),
+                  },
+                ]}
+              />
+            </Col>
+          )}
 
           <Col md={12} sm={24}>
             <PSelect
@@ -223,7 +236,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
-          loading={loading}
+          loading={saveDepartment.loading}
         />
       </PForm>
     </>

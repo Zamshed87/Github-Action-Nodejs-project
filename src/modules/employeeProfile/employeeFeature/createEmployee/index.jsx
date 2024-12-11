@@ -204,7 +204,10 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strSectionName;
+          res[i].label =
+            orgId === 7 && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
           res[i].value = item?.intSectionId;
         });
       },
@@ -376,7 +379,8 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strDepartmentBn;
+          res[i].label =
+            orgId === 7 ? item?.strDepartmentBn : item?.strDepartment;
           res[i].value = item?.intDepartmentId;
         });
       },
@@ -397,7 +401,8 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.designationName;
+          res[i].label =
+            orgId === 7 ? item?.designationBn : item?.designationName;
           res[i].value = item?.designationId;
         });
       },

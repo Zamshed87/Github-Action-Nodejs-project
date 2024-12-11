@@ -336,6 +336,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
+          loading={saveDepartment.loading}
         />
       </PForm>
     </>
