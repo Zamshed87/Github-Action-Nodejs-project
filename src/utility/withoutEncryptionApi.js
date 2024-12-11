@@ -58,4 +58,5 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/ExportIdCardForMatador",
   "/PdfAndExcelReport/ExportIdCardForBangjinInEnglish",
   "/PdfAndExcelReport/ExportIdCardForBangjinInBangla",
+  "/MarketVisitReport/MarketVisitReport",
 ];

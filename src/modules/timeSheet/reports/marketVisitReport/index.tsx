@@ -20,7 +20,7 @@ import { getDateOfYear } from "utility/dateFormatter";
 import {} from "react-icons/md";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
-import { downloadFile } from "utility/downloadFile";
+import { downloadFile, getPDFAction } from "utility/downloadFile";
 
 const MarketVisitReport = () => {
   const dispatch = useDispatch();
@@ -100,7 +100,6 @@ const MarketVisitReport = () => {
       params: {
         format: "html",
         intAccountId: orgId,
-        IntWorkplaceGroupId: wgId,
         intWorkplaceId: wId,
         employeeId: values?.employee?.value || 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -141,6 +140,7 @@ const MarketVisitReport = () => {
           {(excelLoading || landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
+            printIcon={true}
             title={`Market Visit Report`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
@@ -154,13 +154,11 @@ const MarketVisitReport = () => {
                 try {
                   const values = form.getFieldsValue(true);
                   downloadFile(
-                    `/PdfAndExcelReport/MovementDetailsHistory?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&IntWorkplaceGroupId=${wgId}&DteFromDate=${moment(
+                    `/MarketVisitReport/MarketVisitReport?format=excel&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
                       values?.fromDate
-                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
+                    ).format("YYYY-MM-DD")}&toDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}&StrStatus=${
-                      values?.status?.value || 1
-                    }&StrSearch=${values?.search || ""}`,
+                    ).format("YYYY-MM-DD")}&strSearch=${values?.search || ""}`,
                     "Movement Details History",
                     "xlsx",
                     setLoading
@@ -172,6 +170,17 @@ const MarketVisitReport = () => {
                 }
               };
               excelLanding();
+            }}
+            pdfExport={() => {
+              const values = form.getFieldsValue(true);
+              getPDFAction(
+                `/MarketVisitReport/MarketVisitReport?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
+                  values?.fromDate
+                ).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format(
+                  "YYYY-MM-DD"
+                )}&strSearch=${values?.search || ""}`,
+                setLoading
+              );
             }}
           />
           <PCardBody className="mb-3">
