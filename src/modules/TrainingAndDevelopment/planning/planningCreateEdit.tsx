@@ -19,6 +19,7 @@ import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
   addHandlerTriningTimes,
+  changeTrainingStatus,
   costMap,
   createTrainingPlan,
   createTrainingPlanDetails,
@@ -361,7 +362,7 @@ const TnDPlanningCreateEdit = () => {
 
       return 0;
     });
-
+    changeTrainingStatus(form, trainingTime);
     setTrainingTime(newTrainingTime);
   };
 

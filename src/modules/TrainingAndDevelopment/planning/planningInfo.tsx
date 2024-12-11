@@ -3,6 +3,7 @@ import { Checkbox, Col, Form, Row, Tooltip } from "antd";
 import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { getEnumData } from "common/api/commonApi";
+import { changeTrainingStatus } from "./helper";
 const PlanningInfo = ({
   form,
   getBUnitDDL,
@@ -444,8 +445,18 @@ const PlanningInfo = ({
           </Col>
         )}
       </Row>
+      {
+        <Flex justify="flex-end" align="flex-start" className="mr-2 mt-2">
+          <h1>
+            {/* Training Status: {changeTrainingStatus(form, trainingTime)?.label} */}
+            Training Status:{" "}
+            {form && form.getFieldValue("trainingStatus")?.label}
+          </h1>
+        </Flex>
+      }
+
       {trainingTime?.length > 0 && (
-        <Flex justify="flex-end" align="flex-start" className="mr-2 mt-4">
+        <Flex justify="flex-end" align="flex-start" className="mr-2 mt-2">
           <h1>Total Training Duration: {calculateTotalDuration()}</h1>
         </Flex>
       )}

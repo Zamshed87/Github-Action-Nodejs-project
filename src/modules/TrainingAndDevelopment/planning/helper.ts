@@ -430,6 +430,33 @@ export const addHandlerTriningTimes = (
   setTrainingTime(newTrainingTime);
 };
 
+export const changeTrainingStatus = (form: any, trainingTime: any) => {
+  const now = moment();
+  let status = { label: "Upcoming", value: 1 };
+
+  console.log(trainingTime, "trainingTime");
+
+  trainingTime.forEach((item: any) => {
+    const startDateTime = moment(
+      `${item.trainingStartDate}T${item.trainingStartTime}`,
+      "YYYY-MM-DDThh:mm:ss A"
+    );
+    const endDateTime = moment(
+      `${item.trainingStartDate}T${item.trainingEndTime}`,
+      "YYYY-MM-DDThh:mm:ss A"
+    );
+    console.log(startDateTime, endDateTime, "start end");
+    if (now.isBetween(startDateTime, endDateTime)) {
+      status = { label: "Ongoing", value: 2 };
+    } else if (now.isAfter(endDateTime)) {
+      status = { label: "Completed", value: 3 };
+    }
+  });
+
+  form.setFieldsValue({ trainingStatus: status });
+  return status;
+};
+
 export const data: any[] = [
   {
     requestor: "John Doe",
