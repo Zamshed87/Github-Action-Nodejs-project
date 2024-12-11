@@ -110,9 +110,9 @@ const MarketVisitReport = () => {
     });
   };
 
-  useEffect(() => {
-    landingApiCall();
-  }, [wId]);
+  // useEffect(() => {
+  //   landingApiCall();
+  // }, [wId]);
 
   const searchFunc = debounce((value) => {
     landingApiCall({
