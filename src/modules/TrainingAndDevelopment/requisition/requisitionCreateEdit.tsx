@@ -50,6 +50,13 @@ const TnDRequisitionCreateEdit = () => {
     setTrainingType,
   ] = useAxiosGet();
 
+  const [
+    upcommingTrainingDDL,
+    getUpcommingTrainingDDL,
+    loadingUpcommingTraining,
+    setUpcommingTraining,
+  ] = useAxiosGet();
+
   const [upcommi, setUpcommi] = useState(false);
 
   const getEmployee = (value: any) => {
@@ -80,6 +87,17 @@ const TnDRequisitionCreateEdit = () => {
       });
       setTrainingType(list);
     });
+    getUpcommingTrainingDDL(
+      "/Training/Training/GetAllTraining",
+      (data: any) => {
+        const list: any = [];
+        data?.map((d: any) => {
+          if (d?.status?.value == 1 || d?.status?.value == 2)
+            list.push({ label: d?.trainingTitleName, value: d?.id });
+        });
+        setUpcommingTraining(list);
+      }
+    );
     getEnumData("RequisitionStatus", setReqStatus);
   }, [profileData?.buId, profileData?.wgId]);
 
@@ -151,6 +169,7 @@ const TnDRequisitionCreateEdit = () => {
                                   setLoading,
                                   () => {
                                     form.resetFields();
+                                    history.goBack();
                                   }
                                   // setOpenTraingTypeModal
                                 );
@@ -274,9 +293,9 @@ const TnDRequisitionCreateEdit = () => {
               {type === "edit" && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
-                    options={[]}
+                    options={upcommingTrainingDDL || []}
                     name="upcommingTraining"
-                    label="upcomming Training"
+                    label="Upcomming Training"
                     placeholder="upcomming Training"
                     onChange={(value, op) => {
                       form.setFieldsValue({
