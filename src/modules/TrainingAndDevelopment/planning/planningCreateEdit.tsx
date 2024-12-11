@@ -508,7 +508,7 @@ const TnDPlanningCreateEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: "Save and Finish",
+                      content: "Next Step",
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
@@ -539,7 +539,54 @@ const TnDPlanningCreateEdit = () => {
                                   perticipantField,
                                   setLoading,
                                   () => {
+                                    setPlanId(data?.autoId);
+                                    setPlanStep("STEP_THREE");
+                                  }
+                                );
+                            console.log(costField, "costField");
+                            console.log(perticipantField, "perticipantField");
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                  ]
+                : planStep === "STEP_THREE"
+                ? [
+                    {
+                      type: "primary",
+                      content: "Save & Close",
+                      icon:
+                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields(stepOneValidation)
+                          .then(() => {
+                            if (!planId) {
+                              toast.error("Plan Creation is required");
+                              return;
+                            }
+                            type === "edit"
+                              ? editTrainingPlanDetails(
+                                  planId,
+                                  trainerOrgField,
+                                  costField,
+                                  perticipantField,
+                                  setLoading,
+                                  () => {
                                     history.goBack();
+                                  }
+                                )
+                              : createTrainingPlanDetails(
+                                  planId,
+                                  trainerOrgField,
+                                  costField,
+                                  perticipantField,
+                                  setLoading,
+                                  () => {
+                                    setPlanId(data?.autoId);
+                                    setPlanStep("STEP_THREE");
                                   }
                                 );
                             console.log(costField, "costField");
@@ -658,7 +705,7 @@ const TnDPlanningCreateEdit = () => {
                   ]
             }
           />
-          {planStep === "STEP_ONE" && (
+          {(planStep === "STEP_ONE" || planStep === "STEP_THREE") && (
             <>
               <PCardBody styles={cardMargin}>
                 {/* Planning Info */}
@@ -679,6 +726,8 @@ const TnDPlanningCreateEdit = () => {
                   trainingTime={trainingTime}
                   setTrainingTime={setTrainingTime}
                   addHandler={addHandlerTriningTime}
+                  // new step add
+                  planStep={planStep}
                 />
               </PCardBody>
             </>
