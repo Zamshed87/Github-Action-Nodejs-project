@@ -259,6 +259,15 @@ const TnDAttendanceSave = () => {
               <Col md={4} sm={24}>
                 <PInput
                   type="text"
+                  placeholder="Training Type"
+                  label="Training Type"
+                  name="trainingTitle"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
                   placeholder="Training Title"
                   label="Training Title"
                   name="trainingTitle"
@@ -319,6 +328,9 @@ const TnDAttendanceSave = () => {
                       attendanceDate: value,
                     });
                   }}
+                  rules={[
+                    { required: true, message: "Attendance Date is required" },
+                  ]}
                 />
               </Col>
               <Col md={2} sm={24} style={{ marginTop: "22px" }}>
