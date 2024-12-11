@@ -22,7 +22,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import ListOfPerticipants from "../planning/listOfPerticipants";
 import { toast } from "react-toastify";
-import { PModal } from "Components/Modal";
+import { ViewTrainingPlan, ViewTrainingPlanDetails } from "../planning/helper";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
@@ -46,7 +46,8 @@ const TnDAttendanceSave = () => {
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const [showTable, setShowTable] = useState(false);
-  const [openParticipantsModal, setopenParticipantsModal] = useState(false);
+  const [viewData, setViewData] = useState<any>(null);
+  const [viewDataDetails, setViewDataDetails] = useState<any>(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -331,7 +332,25 @@ const TnDAttendanceSave = () => {
                 <PButton
                   type="primary"
                   content="Add Participants"
-                  onClick={() => setopenParticipantsModal(true)}
+                  onClick={() =>
+                    ViewTrainingPlan(4, setLoading, setViewData, (d: any) => {
+                      ViewTrainingPlanDetails(
+                        4, //need to change
+                        setLoading,
+                        setViewDataDetails,
+                        (details: any) => {
+                          history.push(
+                            "/trainingAndDevelopment/planning/edit",
+                            {
+                              data: d,
+                              dataDetails: details,
+                              onlyPerticipant: true,
+                            }
+                          );
+                        }
+                      );
+                    })
+                  }
                 />
               </Col>
             </Row>
@@ -352,32 +371,6 @@ const TnDAttendanceSave = () => {
               positionDDL={positionDDL?.data || []}
             />{" "}
           </PCardBody> */}
-          <PModal
-            open={openParticipantsModal}
-            title={"Participants"}
-            width="400"
-            onCancel={() => {
-              setopenParticipantsModal(false);
-              // getTrainingTitleDDL(
-              //   "/TrainingTitle/Training/Title",
-              //   typeDataSetForTitle
-              // );
-            }}
-            maskClosable={false}
-            components={
-              <>
-                <ListOfPerticipants
-                  form={form}
-                  perticipantField={perticipantField}
-                  setperticipantField={setperticipantField}
-                  addHandler={addHanderForPerticipant}
-                  // calculatePerPersonCost={calculatePerPersonCost}
-                  departmentDDL={empDepartmentDDL?.data || []}
-                  positionDDL={positionDDL?.data || []}
-                />
-              </>
-            }
-          />
         </PCard>
       </PForm>
     </div>
