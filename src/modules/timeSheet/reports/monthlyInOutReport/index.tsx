@@ -323,7 +323,7 @@ const MonthlyInOutReport = () => {
                       };
                     });
                     createCommonExcelFile({
-                      titleWithDate: `Monthly Attendance Report  - ${dateFormatter(
+                      titleWithDate: `Monthly In-Out Report  - ${dateFormatter(
                         moment(values?.fromDate).format("YYYY-MM-DD")
                       )} to ${dateFormatter(
                         moment(values?.toDate).format("YYYY-MM-DD")
