@@ -708,7 +708,7 @@ export const IncrementProposal = () => {
                   // onSearch={(value) => {
                   //   getEmployee(value);
                   // }}
-                  // showSearch
+                  showSearch
                   // filterOption={false}
                   rules={[
                     {
