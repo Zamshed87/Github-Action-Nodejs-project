@@ -108,6 +108,10 @@ const PlanningInfo = ({
 
   const isMultipleDayTraining = Form.useWatch("isMultipleDayTraining", form);
   const trainingStatus = Form.useWatch("trainingStatus", form);
+  const trainingEndTime = Form.useWatch("trainingEndTime", form);
+  const trainingStartTime = Form.useWatch("trainingStartTime", form);
+  const trainingStartDate = Form.useWatch("trainingStartDate", form);
+
   console.log("planStep", "trainingStatus", planStep, trainingStatus);
   return (
     <>
@@ -350,17 +354,34 @@ const PlanningInfo = ({
                 </Form.Item>
               </Col>
               {/* {trainingStatus && ( */}
-              <Chip
-                // label={`${trainingStatus?.label}`}
-                label={form.getFieldValue("trainingStatus")?.label}
-                color={
-                  trainingStatus?.value === 1
-                    ? "primary"
-                    : trainingStatus?.value === 2
-                    ? "secondary"
-                    : "default"
-                }
-              />
+
+              {(trainingEndTime || trainingStartTime || trainingStartDate) &&
+                !isMultipleDayTraining && (
+                  <Chip
+                    // label={`${trainingStatus?.label}`}
+                    label={form.getFieldValue("trainingStatus")?.label}
+                    color={
+                      form.getFieldValue("trainingStatus")?.value === 1
+                        ? "primary"
+                        : trainingStatus?.value === 2
+                        ? "secondary"
+                        : "default"
+                    }
+                  />
+                )}
+              {isMultipleDayTraining && (
+                <Chip
+                  label={form.getFieldValue("trainingStatus")?.label}
+                  color={
+                    form.getFieldValue("trainingStatus")?.value === 1
+                      ? "primary"
+                      : form.getFieldValue("trainingStatus")?.value === 2
+                      ? "secondary"
+                      : "default"
+                  }
+                />
+              )}
+
               {/* )} */}
             </Flex>
           }
