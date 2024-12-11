@@ -36,6 +36,7 @@ const TnDAttendanceSave = () => {
   const [perticipantField, setperticipantField] = useState<any>([]);
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
+  const [showTable, setShowTable] = useState(false);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -66,22 +67,24 @@ const TnDAttendanceSave = () => {
       width: 120,
     },
     {
-      title: "Department",
-      dataIndex: "department",
-    },
-    {
       title: "HR Position",
       dataIndex: "hrPosition",
       width: 50,
     },
     {
-      title: "workplaceGroup",
-      dataIndex: "workplaceGroup",
+      title: "Department",
+      dataIndex: "department",
       width: 50,
     },
     {
-      title: "workplace",
-      dataIndex: "workplace",
+      title: "Workplace",
+      dataIndex: "Workplace",
+      width: 50,
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroup",
+      width: 60,
     },
     {
       title: "Attendance",
@@ -97,7 +100,55 @@ const TnDAttendanceSave = () => {
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
+    },
+  ];
+
+  const demoData = [
+    {
+      key: "1",
+      perticipant: "John Doe",
+      hrPosition: "Manager",
+      department: "HR",
+      Workplace: "Head Office",
+      workplaceGroup: "Group A",
+      action: null,
+    },
+    {
+      key: "2",
+      perticipant: "Jane Smith",
+      hrPosition: "Developer",
+      department: "IT",
+      Workplace: "Remote",
+      workplaceGroup: "Group B",
+      action: null,
+    },
+    {
+      key: "3",
+      perticipant: "Robert Brown",
+      hrPosition: "Analyst",
+      department: "Finance",
+      Workplace: "Branch Office",
+      workplaceGroup: "Group C",
+      action: null,
+    },
+    {
+      key: "4",
+      perticipant: "Emily Johnson",
+      hrPosition: "Designer",
+      department: "Marketing",
+      Workplace: "Remote",
+      workplaceGroup: "Group A",
+      action: null,
+    },
+    {
+      key: "5",
+      perticipant: "Michael Wilson",
+      hrPosition: "Intern",
+      department: "Operations",
+      Workplace: "Head Office",
+      workplaceGroup: "Group B",
+      action: null,
     },
   ];
 
@@ -251,12 +302,10 @@ const TnDAttendanceSave = () => {
                   disabled={true}
                 />
               </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
+              <Col md={4} sm={24}>
+                <PSelect
                   name="attendanceDate"
                   label="Attendance Date"
-                  placeholder="Attendance Date"
                   onChange={(value) => {
                     form.setFieldsValue({
                       attendanceDate: value,
@@ -264,9 +313,28 @@ const TnDAttendanceSave = () => {
                   }}
                 />
               </Col>
+              <Col md={2} sm={24} style={{ marginTop: "22px" }}>
+                <PButton
+                  type="primary"
+                  content="View"
+                  onClick={() => setShowTable(!showTable)}
+                />
+              </Col>
+              <Col md={6} sm={24} style={{ marginTop: "22px" }}>
+                <PButton
+                  type="primary"
+                  content="Add Participants"
+                  onClick={() => setShowTable(!showTable)}
+                />
+              </Col>
             </Row>
           </PCardBody>
-          <PCardBody>
+          {showTable && (
+            <PCardBody>
+              <DataTable bordered data={demoData || []} header={header} />
+            </PCardBody>
+          )}
+          {/* <PCardBody>
             <ListOfPerticipants
               form={form}
               perticipantField={perticipantField}
@@ -276,7 +344,7 @@ const TnDAttendanceSave = () => {
               departmentDDL={empDepartmentDDL?.data || []}
               positionDDL={positionDDL?.data || []}
             />{" "}
-          </PCardBody>
+          </PCardBody> */}
         </PCard>
       </PForm>
     </div>
