@@ -157,8 +157,8 @@ const MarketVisitReport = () => {
                       values?.fromDate
                     ).format("YYYY-MM-DD")}&toDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}&strSearch=${values?.search || ""}`,
-                    "Movement Details History",
+                    ).format("YYYY-MM-DD")}&strSearch=${values?.search || ""}&employeeId=${values?.employee?.value || 0}`,
+                    "Market Visit Report",
                     "xlsx",
                     setLoading
                   );
@@ -177,7 +177,7 @@ const MarketVisitReport = () => {
                   values?.fromDate
                 ).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format(
                   "YYYY-MM-DD"
-                )}&strSearch=${values?.search || ""}`,
+                )}&employeeId=${values?.employee?.value || 0}&strSearch=${values?.search || ""}`,
                 setLoading
               );
             }}
