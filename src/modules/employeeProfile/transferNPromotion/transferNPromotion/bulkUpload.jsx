@@ -226,6 +226,9 @@ export default function BulkUploadTransferNPromotion() {
                                 <div>Employee Name</div>
                               </th>
                               <th>
+                                <div>Employee Code</div>
+                              </th>
+                              <th>
                                 <div>Type</div>
                               </th>
                               <th>
@@ -281,6 +284,11 @@ export default function BulkUploadTransferNPromotion() {
                                 <td>
                                   <div className="tableBody-title">
                                     {item?.employeeName || "-"}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {item?.employeeCode || "-"}
                                   </div>
                                 </td>
                                 <td>
