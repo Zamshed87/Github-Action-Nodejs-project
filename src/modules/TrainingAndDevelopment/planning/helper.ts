@@ -47,8 +47,12 @@ import { toast } from "react-toastify";
 // ];
 
 export const setTrainingDuration = (form: FormInstance<any>) => {
-  const { trainingStartDate, trainingStartTime, trainingEndTime } =
-    form.getFieldsValue(true);
+  const {
+    trainingStartDate,
+    trainingStartTime,
+    trainingEndTime,
+    isMultipleDayTraining,
+  } = form.getFieldsValue(true);
 
   if (trainingStartDate && trainingStartTime && trainingEndTime) {
     console.log(
@@ -81,12 +85,37 @@ export const setTrainingDuration = (form: FormInstance<any>) => {
       form.setFieldsValue({
         trainingDuration: `${hours} hours ${minutes} minutes`,
       });
+
+      if (!isMultipleDayTraining) {
+        updateSingleDayTrainingStatus(
+          form,
+          trainingStartDateTime,
+          trainingEndDateTime
+        );
+      }
     } else {
       form.setFieldsValue({
         trainingDuration: `End date-time must be after start date-time.`,
       });
     }
   }
+};
+
+const updateSingleDayTrainingStatus = (
+  form: any,
+  startDateTime: moment.Moment,
+  endDateTime: moment.Moment
+) => {
+  const now = moment();
+  let status = { label: "Upcoming", value: 1 };
+
+  if (now.isBetween(startDateTime, endDateTime)) {
+    status = { label: "Ongoing", value: 2 };
+  } else if (now.isAfter(endDateTime)) {
+    status = { label: "Completed", value: 3 };
+  }
+
+  form.setFieldsValue({ trainingStatus: status });
 };
 
 // validation
