@@ -128,14 +128,14 @@ export const stepOneValidation = [
   "trainingTitle",
   "trainingMode",
   "trainingOrganizer",
-  "trainingStatus",
+  // "trainingStatus",
   "objectives",
   "trainingVanue",
-  "trainingStartDate",
-  "trainingStartTime",
-  "trainingEndDate",
-  "trainingEndTime",
-  "nameofTrainerOrganization",
+  // "trainingStartDate",
+  // "trainingStartTime",
+  // "trainingEndDate",
+  // "trainingEndTime",
+  // "nameofTrainerOrganization",
 ];
 
 export const createTrainingPlan = async (
@@ -248,6 +248,7 @@ export const createTrainingPlanDetails = async (
         trainingId: planId,
         trainerId: trainer?.value,
       })),
+      trainingSchedulePayload: [], // need to check
     };
 
     const res = await axios.put(
