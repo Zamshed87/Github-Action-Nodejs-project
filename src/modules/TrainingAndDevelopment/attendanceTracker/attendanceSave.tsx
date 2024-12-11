@@ -13,6 +13,7 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import { perticipantMap } from "./helper";
 
 import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
@@ -21,22 +22,31 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import ListOfPerticipants from "../planning/listOfPerticipants";
 import { toast } from "react-toastify";
+import { PModal } from "Components/Modal";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
     data?: any;
+    dataDetails?: any;
   }
+  const [form] = Form.useForm();
+  const params = useParams<{ type: string }>();
+  const { type } = params;
 
   const dispatch = useDispatch();
   const location = useLocation<LocationState>();
   const history = useHistory();
-  const data = location?.state?.data;
-
   const [loading, setLoading] = useState(false);
-  const [perticipantField, setperticipantField] = useState<any>([]);
+  const { data = {}, dataDetails = {} } = location?.state || {};
+  const [perticipantField, setperticipantField] = useState<any>(
+    type === "edit"
+      ? perticipantMap(dataDetails?.trainingParticipantDto, data)
+      : []
+  );
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const [showTable, setShowTable] = useState(false);
+  const [openParticipantsModal, setopenParticipantsModal] = useState(false);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -50,9 +60,6 @@ const TnDAttendanceSave = () => {
     }
   });
 
-  const [form] = Form.useForm();
-  const params = useParams<{ type: string }>();
-  const { type } = params;
   //   api calls
 
   // table column
@@ -324,7 +331,7 @@ const TnDAttendanceSave = () => {
                 <PButton
                   type="primary"
                   content="Add Participants"
-                  onClick={() => setShowTable(!showTable)}
+                  onClick={() => setopenParticipantsModal(true)}
                 />
               </Col>
             </Row>
@@ -345,6 +352,32 @@ const TnDAttendanceSave = () => {
               positionDDL={positionDDL?.data || []}
             />{" "}
           </PCardBody> */}
+          <PModal
+            open={openParticipantsModal}
+            title={"Participants"}
+            width="400"
+            onCancel={() => {
+              setopenParticipantsModal(false);
+              // getTrainingTitleDDL(
+              //   "/TrainingTitle/Training/Title",
+              //   typeDataSetForTitle
+              // );
+            }}
+            maskClosable={false}
+            components={
+              <>
+                <ListOfPerticipants
+                  form={form}
+                  perticipantField={perticipantField}
+                  setperticipantField={setperticipantField}
+                  addHandler={addHanderForPerticipant}
+                  // calculatePerPersonCost={calculatePerPersonCost}
+                  departmentDDL={empDepartmentDDL?.data || []}
+                  positionDDL={positionDDL?.data || []}
+                />
+              </>
+            }
+          />
         </PCard>
       </PForm>
     </div>
