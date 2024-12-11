@@ -74,6 +74,7 @@ const PlanningInfo = ({
                 const updatedperticipantField = trainingTime.filter(
                   (item: any) => item.id !== rec.id
                 );
+                changeTrainingStatus(form, updatedperticipantField);
                 setTrainingTime(updatedperticipantField);
               }}
             />
