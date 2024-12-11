@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
+  addHandlerTriningTimes,
   costMap,
   createTrainingPlan,
   createTrainingPlanDetails,
@@ -305,34 +306,7 @@ const TnDPlanningCreateEdit = () => {
   };
 
   const addHandlerTriningTime = (values: any) => {
-    if (
-      !values?.trainingStartTime ||
-      !values?.trainingEndTime ||
-      !values?.trainingStartDate
-    ) {
-      toast.error("Training date and Time is required");
-      return;
-    }
-    console.log(values, "values");
-    console.log(trainingTime, "trainingTime");
-    const nextId =
-      trainingTime.length > 0
-        ? trainingTime[trainingTime.length - 1].id + 1
-        : 1;
-    setTrainingTime([
-      ...trainingTime,
-      {
-        id: nextId,
-        trainingStartTime: moment(values?.trainingStartTime).format(
-          "hh:mm:ss A"
-        ),
-        trainingEndTime: moment(values?.trainingEndTime).format("hh:mm:ss A"),
-        trainingStartDate: moment(values?.trainingStartDate).format(
-          "YYYY-MM-DD"
-        ),
-        trainingDuration: values?.trainingDuration,
-      },
-    ]);
+    addHandlerTriningTimes(values, trainingTime, setTrainingTime);
   };
 
   const addHandlerTrinerOrg = (values: any) => {
