@@ -362,7 +362,7 @@ const TnDPlanningCreateEdit = () => {
 
       return 0;
     });
-    changeTrainingStatus(form, trainingTime);
+    changeTrainingStatus(form, newTrainingTime);
     setTrainingTime(newTrainingTime);
   };
 

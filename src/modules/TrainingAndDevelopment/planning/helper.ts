@@ -434,24 +434,27 @@ export const changeTrainingStatus = (form: any, trainingTime: any) => {
   const now = moment();
   let status = { label: "Upcoming", value: 1 };
 
-  console.log(trainingTime, "trainingTime");
+  if (trainingTime.length > 0) {
+    const firstItem = trainingTime[0];
+    const lastItem = trainingTime[trainingTime.length - 1];
 
-  trainingTime.forEach((item: any) => {
-    const startDateTime = moment(
-      `${item.trainingStartDate}T${item.trainingStartTime}`,
+    const firstStartDateTime = moment(
+      `${firstItem.trainingStartDate}T${firstItem.trainingStartTime}`,
       "YYYY-MM-DDThh:mm:ss A"
     );
-    const endDateTime = moment(
-      `${item.trainingStartDate}T${item.trainingEndTime}`,
+    const lastEndDateTime = moment(
+      `${lastItem.trainingStartDate}T${lastItem.trainingEndTime}`,
       "YYYY-MM-DDThh:mm:ss A"
     );
-    console.log(startDateTime, endDateTime, "start end");
-    if (now.isBetween(startDateTime, endDateTime)) {
+
+    console.log(firstStartDateTime, lastEndDateTime, "start end");
+
+    if (now.isBetween(firstStartDateTime, lastEndDateTime)) {
       status = { label: "Ongoing", value: 2 };
-    } else if (now.isAfter(endDateTime)) {
+    } else if (now.isAfter(lastEndDateTime)) {
       status = { label: "Completed", value: 3 };
     }
-  });
+  }
 
   form.setFieldsValue({ trainingStatus: status });
   return status;
