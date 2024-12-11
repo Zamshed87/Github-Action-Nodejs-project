@@ -3,6 +3,8 @@ import { Checkbox, Col, Form, Row, Tooltip } from "antd";
 import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { getEnumData } from "common/api/commonApi";
+import { changeTrainingStatus } from "./helper";
+import { Chip } from "@mui/material";
 const PlanningInfo = ({
   form,
   getBUnitDDL,
@@ -73,6 +75,7 @@ const PlanningInfo = ({
                 const updatedperticipantField = trainingTime.filter(
                   (item: any) => item.id !== rec.id
                 );
+                changeTrainingStatus(form, updatedperticipantField);
                 setTrainingTime(updatedperticipantField);
               }}
             />
@@ -103,6 +106,7 @@ const PlanningInfo = ({
   };
 
   const isMultipleDayTraining = Form.useWatch("isMultipleDayTraining", form);
+  const trainingStatus = Form.useWatch("trainingStatus", form);
 
   return (
     <>
@@ -271,6 +275,7 @@ const PlanningInfo = ({
             name="trainingStatus"
             label="Training Status"
             placeholder="Training Status"
+            disabled={true}
             onChange={(value, op) => {
               form.setFieldsValue({
                 trainingStatus: op,
@@ -323,13 +328,28 @@ const PlanningInfo = ({
         />
       </Col> */}
       </Row>
-      <Row gutter={[10, 2]}>
-        <Col md={4} sm={24} style={{ marginTop: "10px" }}>
-          <Form.Item name="isMultipleDayTraining" valuePropName="checked">
-            <Checkbox>Multiple Days Training?</Checkbox>
-          </Form.Item>
-        </Col>
-      </Row>
+      {/* <Row gutter={[10, 2]}> */}
+
+      {trainingStatus && (
+        <Flex justify="space-between" align="flex-start" className="mr-2 mt-2">
+          <Col md={4} sm={24} style={{ marginTop: "10px" }}>
+            <Form.Item name="isMultipleDayTraining" valuePropName="checked">
+              <Checkbox>Multiple Days Training?</Checkbox>
+            </Form.Item>
+          </Col>
+          <Chip
+            label={`${trainingStatus?.label}`}
+            color={
+              trainingStatus?.value === 1
+                ? "primary"
+                : trainingStatus?.value === 2
+                ? "secondary"
+                : "default"
+            }
+          />
+        </Flex>
+      )}
+      {/* </Row> */}
       <Row gutter={[10, 2]}>
         <Col md={6} sm={24}>
           <PInput
@@ -429,6 +449,7 @@ const PlanningInfo = ({
             ]}
           />
         </Col>
+
         {isMultipleDayTraining && (
           <Col md={6} sm={24}>
             <PButton
@@ -443,8 +464,9 @@ const PlanningInfo = ({
           </Col>
         )}
       </Row>
+
       {trainingTime?.length > 0 && (
-        <Flex justify="flex-end" align="flex-start" className="mr-2 mt-4">
+        <Flex justify="flex-end" align="flex-start" className="mr-2 mt-2">
           <h1>Total Training Duration: {calculateTotalDuration()}</h1>
         </Flex>
       )}

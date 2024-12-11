@@ -47,8 +47,12 @@ import { toast } from "react-toastify";
 // ];
 
 export const setTrainingDuration = (form: FormInstance<any>) => {
-  const { trainingStartDate, trainingStartTime, trainingEndTime } =
-    form.getFieldsValue(true);
+  const {
+    trainingStartDate,
+    trainingStartTime,
+    trainingEndTime,
+    isMultipleDayTraining,
+  } = form.getFieldsValue(true);
 
   if (trainingStartDate && trainingStartTime && trainingEndTime) {
     console.log(
@@ -81,12 +85,37 @@ export const setTrainingDuration = (form: FormInstance<any>) => {
       form.setFieldsValue({
         trainingDuration: `${hours} hours ${minutes} minutes`,
       });
+
+      if (!isMultipleDayTraining) {
+        updateSingleDayTrainingStatus(
+          form,
+          trainingStartDateTime,
+          trainingEndDateTime
+        );
+      }
     } else {
       form.setFieldsValue({
         trainingDuration: `End date-time must be after start date-time.`,
       });
     }
   }
+};
+
+const updateSingleDayTrainingStatus = (
+  form: any,
+  startDateTime: moment.Moment,
+  endDateTime: moment.Moment
+) => {
+  const now = moment();
+  let status = { label: "Upcoming", value: 1 };
+
+  if (now.isBetween(startDateTime, endDateTime)) {
+    status = { label: "Ongoing", value: 2 };
+  } else if (now.isAfter(endDateTime)) {
+    status = { label: "Completed", value: 3 };
+  }
+
+  form.setFieldsValue({ trainingStatus: status });
 };
 
 // validation
@@ -374,6 +403,90 @@ export const perticipantMap = (data: any, d: any) => {
     });
   });
   return list;
+};
+
+export const addHandlerTriningTimes = (
+  values: any,
+  trainingTime: any,
+  setTrainingTime: any
+) => {
+  if (
+    !values?.trainingStartTime ||
+    !values?.trainingEndTime ||
+    !values?.trainingStartDate
+  ) {
+    toast.error("Training date and Time is required");
+    return;
+  }
+  console.log(values, "values");
+  console.log(trainingTime, "trainingTime");
+  const nextId =
+    trainingTime.length > 0 ? trainingTime[trainingTime.length - 1].id + 1 : 1;
+  const newTrainingTime = [
+    ...trainingTime,
+    {
+      id: nextId,
+      trainingStartTime: moment(values?.trainingStartTime).format("hh:mm:ss A"),
+      trainingEndTime: moment(values?.trainingEndTime).format("hh:mm:ss A"),
+      trainingStartDate: moment(values?.trainingStartDate).format("YYYY-MM-DD"),
+      trainingDuration: values?.trainingDuration,
+    },
+  ];
+
+  newTrainingTime.sort((a, b) => {
+    const dateA = moment(a.trainingStartDate).format("YYYY-MM-DD");
+    const dateB = moment(b.trainingStartDate).format("YYYY-MM-DD");
+    if (dateA < dateB) return -1;
+    if (dateA > dateB) return 1;
+
+    const startTimeA = moment(a.trainingStartTime, "hh:mm:ss A").format(
+      "HH:mm:ss"
+    );
+    const startTimeB = moment(b.trainingStartTime, "hh:mm:ss A").format(
+      "HH:mm:ss"
+    );
+    if (startTimeA < startTimeB) return -1;
+    if (startTimeA > startTimeB) return 1;
+
+    const endTimeA = moment(a.trainingEndTime, "hh:mm:ss A").format("HH:mm:ss");
+    const endTimeB = moment(b.trainingEndTime, "hh:mm:ss A").format("HH:mm:ss");
+    if (endTimeA < endTimeB) return -1;
+    if (endTimeA > endTimeB) return 1;
+
+    return 0;
+  });
+
+  setTrainingTime(newTrainingTime);
+};
+
+export const changeTrainingStatus = (form: any, trainingTime: any) => {
+  const now = moment();
+  let status = { label: "Upcoming", value: 1 };
+
+  if (trainingTime.length > 0) {
+    const firstItem = trainingTime[0];
+    const lastItem = trainingTime[trainingTime.length - 1];
+
+    const firstStartDateTime = moment(
+      `${firstItem.trainingStartDate}T${firstItem.trainingStartTime}`,
+      "YYYY-MM-DDThh:mm:ss A"
+    );
+    const lastEndDateTime = moment(
+      `${lastItem.trainingStartDate}T${lastItem.trainingEndTime}`,
+      "YYYY-MM-DDThh:mm:ss A"
+    );
+
+    console.log(firstStartDateTime, lastEndDateTime, "start end");
+
+    if (now.isBetween(firstStartDateTime, lastEndDateTime)) {
+      status = { label: "Ongoing", value: 2 };
+    } else if (now.isAfter(lastEndDateTime)) {
+      status = { label: "Completed", value: 3 };
+    }
+  }
+
+  form.setFieldsValue({ trainingStatus: status });
+  return status;
 };
 
 export const data: any[] = [

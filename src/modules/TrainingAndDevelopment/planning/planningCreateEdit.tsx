@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
+  addHandlerTriningTimes,
+  changeTrainingStatus,
   costMap,
   createTrainingPlan,
   createTrainingPlanDetails,
@@ -319,7 +321,7 @@ const TnDPlanningCreateEdit = () => {
       trainingTime.length > 0
         ? trainingTime[trainingTime.length - 1].id + 1
         : 1;
-    setTrainingTime([
+    const newTrainingTime = [
       ...trainingTime,
       {
         id: nextId,
@@ -332,7 +334,36 @@ const TnDPlanningCreateEdit = () => {
         ),
         trainingDuration: values?.trainingDuration,
       },
-    ]);
+    ];
+
+    newTrainingTime.sort((a, b) => {
+      const dateA = moment(a.trainingStartDate).format("YYYY-MM-DD");
+      const dateB = moment(b.trainingStartDate).format("YYYY-MM-DD");
+      if (dateA < dateB) return -1;
+      if (dateA > dateB) return 1;
+
+      const startTimeA = moment(a.trainingStartTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      const startTimeB = moment(b.trainingStartTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      if (startTimeA < startTimeB) return -1;
+      if (startTimeA > startTimeB) return 1;
+
+      const endTimeA = moment(a.trainingEndTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      const endTimeB = moment(b.trainingEndTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      if (endTimeA < endTimeB) return -1;
+      if (endTimeA > endTimeB) return 1;
+
+      return 0;
+    });
+    changeTrainingStatus(form, newTrainingTime);
+    setTrainingTime(newTrainingTime);
   };
 
   const addHandlerTrinerOrg = (values: any) => {
