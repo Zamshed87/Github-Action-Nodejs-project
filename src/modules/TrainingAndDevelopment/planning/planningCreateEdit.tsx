@@ -29,6 +29,7 @@ import {
   setTrainingDuration,
   stepOneValidation,
   trainerMap,
+  ViewTrainingPlan,
 } from "./helper";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
@@ -43,6 +44,7 @@ const TnDPlanningCreateEdit = () => {
   interface LocationState {
     data?: any;
     dataDetails?: any;
+    onlyPerticipant?: boolean;
   }
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -52,7 +54,11 @@ const TnDPlanningCreateEdit = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { data = {}, dataDetails = {} } = location?.state || {};
+  const {
+    data = {},
+    dataDetails = {},
+    onlyPerticipant,
+  } = location?.state || {};
 
   const [loading, setLoading] = useState(false);
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
@@ -256,6 +262,9 @@ const TnDPlanningCreateEdit = () => {
       getWorkplace();
       getEmployeDepartment();
       getEmployeePosition();
+    }
+    if (onlyPerticipant) {
+      setPlanStep("STEP_TWO");
     }
   }, [profileData?.buId, profileData?.wgId]);
 
@@ -559,7 +568,23 @@ const TnDPlanningCreateEdit = () => {
                                   profileData,
                                   setLoading,
                                   () => {
-                                    history.goBack();
+                                    if (onlyPerticipant) {
+                                      ViewTrainingPlan(
+                                        data?.id,
+                                        setLoading,
+                                        (d: any) => {
+                                          history.push(
+                                            "/trainingAndDevelopment/training/attendance",
+                                            {
+                                              data: d,
+                                            }
+                                          );
+                                        }
+                                      );
+                                    } else {
+                                      history.goBack();
+                                    }
+
                                     // HISTORY BACK
                                   }
                                 )
@@ -658,7 +683,7 @@ const TnDPlanningCreateEdit = () => {
               </PCardBody>
             </>
           )}
-          {planStep === "STEP_TWO" && (
+          {planStep === "STEP_TWO" && !onlyPerticipant && (
             <>
               <PCardBody styles={cardMargin}>
                 {/* Trainer and Org */}
@@ -690,6 +715,19 @@ const TnDPlanningCreateEdit = () => {
                 />
               </PCardBody>
             </>
+          )}
+          {onlyPerticipant && (
+            <PCardBody styles={cardMargin}>
+              <ListOfPerticipants
+                form={form}
+                perticipantField={perticipantField}
+                setperticipantField={setperticipantField}
+                addHandler={addHanderForPerticipant}
+                calculatePerPersonCost={calculatePerPersonCost}
+                departmentDDL={empDepartmentDDL?.data || []}
+                positionDDL={positionDDL?.data || []}
+              />
+            </PCardBody>
           )}
         </PCard>
       </PForm>

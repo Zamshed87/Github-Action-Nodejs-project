@@ -1535,6 +1535,8 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
 import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
+import TnDAssessment from "modules/TrainingAndDevelopment/assessment/assessment";
+import TnDFeedback from "modules/TrainingAndDevelopment/feedback/feedback";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3366,7 +3368,7 @@ export const routingList = [
   // },
   // Training & Development New
   {
-    path: "/trainingAndDevelopment/requisition",
+    path: "/trainingAndDevelopment/trainingRequisition",
     component: TnDRequisitionLanding,
   },
   {
@@ -3374,7 +3376,7 @@ export const routingList = [
     component: TnDRequisitionCreateEdit,
   },
   {
-    path: "/trainingAndDevelopment/planning",
+    path: "/trainingAndDevelopment/trainingPlan",
     component: TnDPlanningLanding,
   },
   {
@@ -3382,19 +3384,19 @@ export const routingList = [
     component: TnDPlanningCreateEdit,
   },
   {
-    path: "/trainingAndDevelopment/trainingTypes",
+    path: "/trainingAndDevelopment/configuration/trainingTypes",
     component: TrainingType,
   },
   {
-    path: "/trainingAndDevelopment/trainingTitle",
+    path: "/trainingAndDevelopment/configuration/trainingTitle",
     component: TrainingTitle,
   },
   {
-    path: "/trainingAndDevelopment/trainingCostType",
+    path: "/trainingAndDevelopment/configuration/trainingCostType",
     component: TrainingCost,
   },
   {
-    path: "/trainingAndDevelopment/trainerInformation",
+    path: "/trainingAndDevelopment/configuration/trainerInformation",
     component: TrainerInfo,
   },
   {
@@ -3402,12 +3404,20 @@ export const routingList = [
     component: TnDDashboard,
   },
   {
-    path: "/trainingAndDevelopment/trainingCalender",
+    path: "/trainingAndDevelopment/reports/trainingCalendar",
     component: TrainingCalender,
   },
   {
     path: "/trainingAndDevelopment/training/attendance",
     component: TnDAttendanceSave,
+  },
+  {
+    path: "/trainingAndDevelopment/training/assessment",
+    component: TnDAssessment,
+  },
+  {
+    path: "/trainingAndDevelopment/training/feedback",
+    component: TnDFeedback,
   },
   // Trainnning and development ends
 

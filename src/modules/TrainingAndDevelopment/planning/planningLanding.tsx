@@ -200,16 +200,21 @@ const TnDPlanningLanding = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                ViewTrainingPlan(rec?.id, setLoading, setViewData, () => {
-                  ViewTrainingPlanDetails(
-                    rec?.id,
-                    setLoading,
-                    setViewDataDetails,
-                    () => {
-                      setViewModalModal(true);
-                    }
-                  );
-                });
+                ViewTrainingPlan(
+                  rec?.id,
+                  setLoading,
+                  () => {
+                    ViewTrainingPlanDetails(
+                      rec?.id,
+                      setLoading,
+                      setViewDataDetails,
+                      () => {
+                        setViewModalModal(true);
+                      }
+                    );
+                  },
+                  setViewData
+                );
               }}
             />
           </Tooltip>
@@ -222,19 +227,24 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                ViewTrainingPlan(rec?.id, setLoading, setViewData, (d: any) => {
-                  ViewTrainingPlanDetails(
-                    rec?.id,
-                    setLoading,
-                    setViewDataDetails,
-                    (details: any) => {
-                      history.push("/trainingAndDevelopment/planning/edit", {
-                        data: d,
-                        dataDetails: details,
-                      });
-                    }
-                  );
-                });
+                ViewTrainingPlan(
+                  rec?.id,
+                  setLoading,
+                  (d: any) => {
+                    ViewTrainingPlanDetails(
+                      rec?.id,
+                      setLoading,
+                      setViewDataDetails,
+                      (details: any) => {
+                        history.push("/trainingAndDevelopment/planning/edit", {
+                          data: d,
+                          dataDetails: details,
+                        });
+                      }
+                    );
+                  },
+                  setViewData
+                );
               }}
             />
           </Tooltip>
@@ -247,14 +257,22 @@ const TnDPlanningLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                ViewTrainingPlan(rec?.id, setLoading, setViewData, (d: any) => {
-                  history.push("/trainingAndDevelopment/training/attendance", {
-                    data: d,
-                  });
-                });
-                history.push("/trainingAndDevelopment/training/attendance", {
-                  data: rec, // need to change this
-                });
+                ViewTrainingPlan(
+                  rec?.id,
+                  setLoading,
+                  (d: any) => {
+                    history.push(
+                      "/trainingAndDevelopment/training/attendance",
+                      {
+                        data: d,
+                      }
+                    );
+                  },
+                  setViewData
+                );
+                // history.push("/trainingAndDevelopment/training/attendance", {
+                //   data: rec, // need to change this
+                // });
               }}
             />
           </Tooltip>
