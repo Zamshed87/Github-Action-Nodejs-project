@@ -271,6 +271,7 @@ const PlanningInfo = ({
             name="trainingStatus"
             label="Training Status"
             placeholder="Training Status"
+            disabled={true}
             onChange={(value, op) => {
               form.setFieldsValue({
                 trainingStatus: op,

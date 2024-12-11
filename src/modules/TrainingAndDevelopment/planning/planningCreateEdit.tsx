@@ -306,7 +306,63 @@ const TnDPlanningCreateEdit = () => {
   };
 
   const addHandlerTriningTime = (values: any) => {
-    addHandlerTriningTimes(values, trainingTime, setTrainingTime);
+    if (
+      !values?.trainingStartTime ||
+      !values?.trainingEndTime ||
+      !values?.trainingStartDate
+    ) {
+      toast.error("Training date and Time is required");
+      return;
+    }
+    console.log(values, "values");
+    console.log(trainingTime, "trainingTime");
+    const nextId =
+      trainingTime.length > 0
+        ? trainingTime[trainingTime.length - 1].id + 1
+        : 1;
+    const newTrainingTime = [
+      ...trainingTime,
+      {
+        id: nextId,
+        trainingStartTime: moment(values?.trainingStartTime).format(
+          "hh:mm:ss A"
+        ),
+        trainingEndTime: moment(values?.trainingEndTime).format("hh:mm:ss A"),
+        trainingStartDate: moment(values?.trainingStartDate).format(
+          "YYYY-MM-DD"
+        ),
+        trainingDuration: values?.trainingDuration,
+      },
+    ];
+
+    newTrainingTime.sort((a, b) => {
+      const dateA = moment(a.trainingStartDate).format("YYYY-MM-DD");
+      const dateB = moment(b.trainingStartDate).format("YYYY-MM-DD");
+      if (dateA < dateB) return -1;
+      if (dateA > dateB) return 1;
+
+      const startTimeA = moment(a.trainingStartTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      const startTimeB = moment(b.trainingStartTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      if (startTimeA < startTimeB) return -1;
+      if (startTimeA > startTimeB) return 1;
+
+      const endTimeA = moment(a.trainingEndTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      const endTimeB = moment(b.trainingEndTime, "hh:mm:ss A").format(
+        "HH:mm:ss"
+      );
+      if (endTimeA < endTimeB) return -1;
+      if (endTimeA > endTimeB) return 1;
+
+      return 0;
+    });
+
+    setTrainingTime(newTrainingTime);
   };
 
   const addHandlerTrinerOrg = (values: any) => {
