@@ -105,6 +105,16 @@ const MarketVisitReport = () => {
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         strSearch: searchText || "",
       },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "Something went wrong",
+          {
+            toastId: "marketvisitreport_error",
+          }
+        );
+      },
     });
   };
 
@@ -117,6 +127,7 @@ const MarketVisitReport = () => {
       searchText: value,
     });
   }, 500);
+
 
   return employeeFeature?.isView ? (
     <>
@@ -150,6 +161,7 @@ const MarketVisitReport = () => {
             onExport={() => {
               const excelLanding = async () => {
                 setExcelLoading(true);
+                if(landingApi?.data?.length === 0) return null;
                 try {
                   const values = form.getFieldsValue(true);
                   downloadFile(
@@ -157,13 +169,16 @@ const MarketVisitReport = () => {
                       values?.fromDate
                     ).format("YYYY-MM-DD")}&toDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}&strSearch=${values?.search || ""}&employeeId=${values?.employee?.value || 0}`,
+                    ).format("YYYY-MM-DD")}&strSearch=${
+                      values?.search || ""
+                    }&employeeId=${values?.employee?.value || 0}`,
                     "Market Visit Report",
                     "xlsx",
                     setLoading
                   );
                   setExcelLoading(false);
                 } catch (error: any) {
+                  console.log("error", error);
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
                 }
@@ -171,15 +186,28 @@ const MarketVisitReport = () => {
               excelLanding();
             }}
             pdfExport={() => {
-              const values = form.getFieldsValue(true);
-              getPDFAction(
-                `/MarketVisitReport/MarketVisitReport?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
-                  values?.fromDate
-                ).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format(
-                  "YYYY-MM-DD"
-                )}&employeeId=${values?.employee?.value || 0}&strSearch=${values?.search || ""}`,
-                setLoading
-              );
+              try {
+                const values = form.getFieldsValue(true);
+                getPDFAction(
+                  `/MarketVisitReport/MarketVisitReport?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
+                    values?.fromDate
+                  ).format("YYYY-MM-DD")}&toDate=${moment(
+                    values?.toDate
+                  ).format("YYYY-MM-DD")}&employeeId=${
+                    values?.employee?.value || 0
+                  }&strSearch=${values?.search || ""}`,
+                  setLoading
+                );
+              } catch (error: any) {
+                toast.error(
+                  error?.response?.data?.message ||
+                    error?.message ||
+                    "Something went wrong",
+                  {
+                    toastId: "marketvisitreport_error",
+                  }
+                );
+              }
             }}
           />
           <PCardBody className="mb-3">
@@ -216,6 +244,7 @@ const MarketVisitReport = () => {
                   name="employee"
                   label="Select a Employee"
                   placeholder="Search Min 2 char"
+                  allowClear={true}
                   options={CommonEmployeeDDL?.data || []}
                   loading={CommonEmployeeDDL?.loading}
                   onChange={(value, op) => {
