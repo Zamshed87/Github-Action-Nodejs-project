@@ -316,8 +316,8 @@ export const editTrainingPlanDetails = async (
 export const ViewTrainingPlan = async (
   recordId: any,
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  setSingleData: { (value: any): void; (arg0: {}): void },
-  cb: any
+  cb: any,
+  setSingleData?: { (value: any): void; (arg0: {}): void }
 ) => {
   try {
     setLoading(true);
@@ -326,12 +326,12 @@ export const ViewTrainingPlan = async (
     if (res?.data) {
       cb && cb(res?.data);
       setLoading(false);
-      setSingleData(res?.data);
+      setSingleData && setSingleData(res?.data);
     }
     setLoading(false);
   } catch (error: any) {
     toast.warn(error?.response?.data?.Message || "Something went wrong");
-    setSingleData({});
+    setSingleData && setSingleData({});
     setLoading(false);
   }
 };
