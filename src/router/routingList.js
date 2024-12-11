@@ -3366,7 +3366,7 @@ export const routingList = [
   // },
   // Training & Development New
   {
-    path: "/trainingAndDevelopment/requisition",
+    path: "/trainingAndDevelopment/trainingRequisition",
     component: TnDRequisitionLanding,
   },
   {
@@ -3374,7 +3374,7 @@ export const routingList = [
     component: TnDRequisitionCreateEdit,
   },
   {
-    path: "/trainingAndDevelopment/planning",
+    path: "/trainingAndDevelopment/trainingPlan",
     component: TnDPlanningLanding,
   },
   {
@@ -3382,19 +3382,19 @@ export const routingList = [
     component: TnDPlanningCreateEdit,
   },
   {
-    path: "/trainingAndDevelopment/trainingTypes",
+    path: "/trainingAndDevelopment/configuration/trainingTypes",
     component: TrainingType,
   },
   {
-    path: "/trainingAndDevelopment/trainingTitle",
+    path: "/trainingAndDevelopment/configuration/trainingTitle",
     component: TrainingTitle,
   },
   {
-    path: "/trainingAndDevelopment/trainingCostType",
+    path: "/trainingAndDevelopment/configuration/trainingCostType",
     component: TrainingCost,
   },
   {
-    path: "/trainingAndDevelopment/trainerInformation",
+    path: "/trainingAndDevelopment/configuration/trainerInformation",
     component: TrainerInfo,
   },
   {
@@ -3402,7 +3402,7 @@ export const routingList = [
     component: TnDDashboard,
   },
   {
-    path: "/trainingAndDevelopment/trainingCalender",
+    path: "/trainingAndDevelopment/reports/trainingCalendar",
     component: TrainingCalender,
   },
   {
