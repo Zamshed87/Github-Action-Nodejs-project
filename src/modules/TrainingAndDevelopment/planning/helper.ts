@@ -60,13 +60,15 @@ export const setTrainingDuration = (form: FormInstance<any>) => {
     // Combine date and time
     const trainingStartDateTime = moment(
       `${moment(trainingStartDate).format("YYYY-MM-DD")}T${moment(
-        trainingStartTime
-      ).format("HH:mm:ss.SSS")}Z`
+        trainingStartTime,
+        "hh:mm:ss A"
+      ).format("HH:mm:ss")}Z`
     );
     const trainingEndDateTime = moment(
       `${moment(trainingStartDate).format("YYYY-MM-DD")}T${moment(
-        trainingEndTime
-      ).format("HH:mm:ss.SSS")}Z`
+        trainingEndTime,
+        "hh:mm:ss A"
+      ).format("HH:mm:ss")}Z`
     );
 
     // Calculate duration
@@ -200,17 +202,20 @@ export const createTrainingPlanDetails = async (
   try {
     const payload = {
       trainingCostPayload: costFieldList.map((cost) => ({
+        id: 0,
         trainingId: planId,
         trainingCostTypeId: cost?.costTypeId,
         amount: cost?.costValue,
       })),
       trainingParticipantPayload: perticipantFieldList.map((participant) => ({
+        id: 0,
         trainingId: planId,
         hrPositionId: participant?.hrPositionId,
         departmentId: participant?.departmentId,
         employeeId: participant?.perticipantId,
       })),
       trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
+        id: 0,
         trainingId: planId,
         trainerId: trainer?.value,
       })),
@@ -244,20 +249,20 @@ export const editTrainingPlanDetails = async (
   try {
     const payload = {
       trainingCostPayload: costFieldList.map((cost) => ({
-        id: cost?.id,
+        id: cost?.idx || 0,
         trainingId: planId,
         trainingCostTypeId: cost?.costTypeId,
         amount: cost?.costValue,
       })),
       trainingParticipantPayload: perticipantFieldList.map((participant) => ({
-        id: participant?.id,
+        id: participant?.idx || 0,
         trainingId: planId,
         hrPositionId: participant?.hrPositionId,
         departmentId: participant?.departmentId,
         employeeId: participant?.perticipantId,
       })),
       trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
-        id: trainer?.id,
+        id: trainer?.idx || 0,
         trainingId: planId,
         trainerId: trainer?.value,
       })),
@@ -331,7 +336,7 @@ export const costMap = (data: any) => {
   const list: any[] = [];
   data.forEach((item: any) => {
     list.push({
-      id: item?.id,
+      idx: item?.id,
       costTypeId: item?.trainingCostTypeId,
       costType: item?.trainingCostTypeName,
       costValue: item?.amount,
@@ -345,6 +350,7 @@ export const trainerMap = (data: any) => {
   data.forEach((item: any) => {
     list.push({
       ...item,
+      idx: item?.id,
     });
   });
   return list;
@@ -354,7 +360,7 @@ export const perticipantMap = (data: any, d: any) => {
   const list: any[] = [];
   data.forEach((item: any) => {
     list.push({
-      id: item?.id,
+      idx: item?.id,
       perticipant: `${item?.employeeName} - ${item?.employeeId}`,
       perticipantId: item?.employeeId,
       department: item?.departmentName,

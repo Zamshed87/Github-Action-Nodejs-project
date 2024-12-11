@@ -66,6 +66,9 @@ const TnDPlanningCreateEdit = () => {
       ? perticipantMap(dataDetails?.trainingParticipantDto, data)
       : []
   );
+  const [trainingTime, setTrainingTime] = useState<any>(
+    type === "edit" ? dataDetails?.trainingTimeDto : []
+  );
   const [planId, setPlanId] = useState<number>();
 
   const [planStep, setPlanStep] = useState<string>("");
@@ -297,6 +300,37 @@ const TnDPlanningCreateEdit = () => {
         costTypeId: values?.costType?.value,
         costType: values?.costType?.label,
         costValue: values?.costValue,
+      },
+    ]);
+  };
+
+  const addHandlerTriningTime = (values: any) => {
+    if (
+      !values?.trainingStartTime ||
+      !values?.trainingEndTime ||
+      !values?.trainingStartDate
+    ) {
+      toast.error("Training date and Time is required");
+      return;
+    }
+    console.log(values, "values");
+    console.log(trainingTime, "trainingTime");
+    const nextId =
+      trainingTime.length > 0
+        ? trainingTime[trainingTime.length - 1].id + 1
+        : 1;
+    setTrainingTime([
+      ...trainingTime,
+      {
+        id: nextId,
+        trainingStartTime: moment(values?.trainingStartTime).format(
+          "hh:mm:ss A"
+        ),
+        trainingEndTime: moment(values?.trainingEndTime).format("hh:mm:ss A"),
+        trainingStartDate: moment(values?.trainingStartDate).format(
+          "YYYY-MM-DD"
+        ),
+        trainingDuration: values?.trainingDuration,
       },
     ]);
   };
@@ -585,6 +619,10 @@ const TnDPlanningCreateEdit = () => {
                   setOpenTraingTypeModal={setOpenTraingTypeModal}
                   trainingTitleDDL={trainingTitleDDL}
                   setOpenTrainingTitleModal={setOpenTrainingTitleModal}
+                  // Multiple Training Time
+                  trainingTime={trainingTime}
+                  setTrainingTime={setTrainingTime}
+                  addHandler={addHandlerTriningTime}
                 />
               </PCardBody>
             </>

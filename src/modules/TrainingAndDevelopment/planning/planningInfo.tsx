@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Checkbox, Col, Form, Row } from "antd";
-import { PButton, PInput, PSelect } from "Components";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Row, Tooltip } from "antd";
+import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
+import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { getEnumData } from "common/api/commonApi";
 const PlanningInfo = ({
   form,
@@ -16,6 +16,9 @@ const PlanningInfo = ({
   setOpenTraingTypeModal,
   setOpenTrainingTitleModal,
   trainingTitleDDL,
+  trainingTime,
+  setTrainingTime,
+  addHandler,
 }: any) => {
   const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
   const [trainingOrganizerTypeDDL, setTrainingOrganizerTypeDDL] = useState<any>(
@@ -28,6 +31,76 @@ const PlanningInfo = ({
     getEnumData("TrainingOrganizerType", setTrainingOrganizerTypeDDL);
     getEnumData("TrainingStatus", setTrainingStatusDDL);
   }, []);
+
+  const header = [
+    {
+      title: "SL",
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+      title: "Start Date",
+      dataIndex: "trainingStartDate",
+      width: 80,
+    },
+    {
+      title: "Start Time",
+      dataIndex: "trainingStartTime",
+    },
+    {
+      title: "End Time",
+      dataIndex: "trainingEndTime",
+      width: 50,
+    },
+    {
+      title: "Duration",
+      dataIndex: "trainingDuration",
+      width: 50,
+    },
+    {
+      title: "Action",
+      dataIndex: "status",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                const updatedperticipantField = trainingTime.filter(
+                  (item: any) => item.id !== rec.id
+                );
+                setTrainingTime(updatedperticipantField);
+              }}
+            />
+          </Tooltip>
+        </Flex>
+      ),
+      align: "center",
+      width: 40,
+    },
+  ];
+
+  const calculateTotalDuration = () => {
+    let totalMinutes = 0;
+
+    trainingTime.forEach((item: any) => {
+      const [hoursStr, minutesStr] = item.trainingDuration
+        .split(" ")
+        .filter((_: any, index: number) => index % 2 === 0);
+      const hours = parseInt(hoursStr);
+      const minutes = parseInt(minutesStr);
+      totalMinutes += hours * 60 + minutes;
+    });
+
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+
+    return `${totalHours} hours ${remainingMinutes} minutes`;
+  };
 
   const isMultipleDayTraining = Form.useWatch("isMultipleDayTraining", form);
 
@@ -342,7 +415,19 @@ const PlanningInfo = ({
           />
         </Col>
         <Col md={6} sm={24}>
-          <h1>Training Duration: {}</h1>
+          <PInput
+            type="text"
+            placeholder="Training Duration"
+            label="Training Duration"
+            disabled={true}
+            name="trainingDuration"
+            rules={[
+              {
+                required: true,
+                message: "Training Duration is required",
+              },
+            ]}
+          />
         </Col>
         {isMultipleDayTraining && (
           <Col md={6} sm={24}>
@@ -352,13 +437,27 @@ const PlanningInfo = ({
               content="Add"
               onClick={() => {
                 const values = form.getFieldsValue(true);
-
-                // addHandler(values);
+                addHandler(values);
               }}
             />
           </Col>
         )}
       </Row>
+      {trainingTime?.length > 0 && (
+        <Flex justify="flex-end" align="flex-start" className="mr-2 mt-4">
+          <h1>Total Training Duration: {calculateTotalDuration()}</h1>
+        </Flex>
+      )}
+      {trainingTime?.length > 0 && (
+        <div className="mb-3 mt-2">
+          <DataTable
+            bordered
+            data={trainingTime || []}
+            loading={false}
+            header={header}
+          />
+        </div>
+      )}
     </>
   );
 };
