@@ -1118,6 +1118,12 @@ const CreateTransferPromotion = lazy(() =>
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/createTransferPromotion.jsx"
   )
 );
+const BulkUploadTransferNPromotion = lazy(() =>
+  import(
+    "../modules/employeeProfile/transferNPromotion/transferNPromotion/bulkUpload.jsx"
+  )
+);
+
 const ViewTransferNPromotion = lazy(() =>
   import(
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/viewTransferNPromotion.jsx"
@@ -2874,6 +2880,10 @@ export const routingList = [
   {
     path: "/profile/transferandpromotion/transferandpromotion/create",
     component: CreateTransferPromotion,
+  },
+  {
+    path: "/profile/transferandpromotion/transferandpromotion/bulk-upload",
+    component: BulkUploadTransferNPromotion,
   },
   {
     path: "/profile/transferandpromotion/transferandpromotion/edit/:id",
