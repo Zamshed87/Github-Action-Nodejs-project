@@ -1541,6 +1541,7 @@ import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType
 import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1788,6 +1789,10 @@ export const routingList = [
   {
     path: "/profile/reports/movementDetailsHistory",
     component: MovementHistoryDetails,
+  },
+  {
+    path: "/profile/reports/marketVisit",
+    component: MarketVisitReport,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
