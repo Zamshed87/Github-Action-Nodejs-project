@@ -1,5 +1,5 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row, Tooltip, Checkbox } from "antd";
+import { SaveOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -16,13 +16,10 @@ import {
 import { perticipantMap } from "./helper";
 
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import ListOfPerticipants from "../planning/listOfPerticipants";
 import { toast } from "react-toastify";
-import { ViewTrainingPlan, ViewTrainingPlanDetails } from "../planning/helper";
 const TnDFeedback = () => {
   interface LocationState {
     data?: any;
@@ -47,6 +44,7 @@ const TnDFeedback = () => {
   const [showTable, setShowTable] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+  const [rowData, setRowData] = useState<any>(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -94,16 +92,40 @@ const TnDFeedback = () => {
       width: 60,
     },
     {
-      title: "Send Request",
-      dataIndex: "action",
+      title: (
+        <>
+          Send Request
+          <br />
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rowData?.every((item: any) => item.isRequested)}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) => ({
+                  ...item,
+                  isRequested: e.target.checked,
+                }))
+              );
+            }}
+          />
+        </>
+      ),
+      dataIndex: "isRequested",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="View">
-            <Checkbox
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onChange={() => {}}
-            ></Checkbox>
-          </Tooltip>
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rec.isRequested}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) =>
+                  item.key === rec.key
+                    ? { ...item, isRequested: e.target.checked }
+                    : item
+                )
+              );
+            }}
+          />
         </Flex>
       ),
       align: "center",
@@ -119,7 +141,7 @@ const TnDFeedback = () => {
       department: "HR",
       Workplace: "Head Office",
       workplaceGroup: "Group A",
-      action: null,
+      isRequested: false,
     },
     {
       key: "2",
@@ -128,7 +150,7 @@ const TnDFeedback = () => {
       department: "IT",
       Workplace: "Remote",
       workplaceGroup: "Group B",
-      action: null,
+      isRequested: false,
     },
     {
       key: "3",
@@ -137,7 +159,7 @@ const TnDFeedback = () => {
       department: "Finance",
       Workplace: "Branch Office",
       workplaceGroup: "Group C",
-      action: null,
+      isRequested: false,
     },
     {
       key: "4",
@@ -146,7 +168,7 @@ const TnDFeedback = () => {
       department: "Marketing",
       Workplace: "Remote",
       workplaceGroup: "Group A",
-      action: null,
+      isRequested: false,
     },
     {
       key: "5",
@@ -155,7 +177,7 @@ const TnDFeedback = () => {
       department: "Operations",
       Workplace: "Head Office",
       workplaceGroup: "Group B",
-      action: null,
+      isRequested: false,
     },
   ];
 
@@ -224,6 +246,10 @@ const TnDFeedback = () => {
         });
       },
     });
+  }, []);
+
+  useEffect(() => {
+    setRowData(demoData);
   }, []);
 
   return (
@@ -343,7 +369,7 @@ const TnDFeedback = () => {
           </PCardBody>
           {showTable && (
             <PCardBody>
-              <DataTable bordered data={demoData || []} header={header} />
+              <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
         </PCard>

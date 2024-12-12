@@ -1,5 +1,5 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row, Tooltip, Checkbox } from "antd";
+import { SaveOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -16,11 +16,9 @@ import {
 import { perticipantMap } from "./helper";
 
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import ListOfPerticipants from "../planning/listOfPerticipants";
 import { toast } from "react-toastify";
 import { ViewTrainingPlan, ViewTrainingPlanDetails } from "../planning/helper";
 
@@ -48,6 +46,7 @@ const TnDAttendanceSave = () => {
   const [showTable, setShowTable] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+  const [rowData, setRowData] = useState<any>(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -95,16 +94,40 @@ const TnDAttendanceSave = () => {
       width: 60,
     },
     {
-      title: "Attendance",
-      dataIndex: "action",
+      title: (
+        <>
+          Attendance
+          <br />
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rowData?.every((item: any) => item.isAttendance)}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) => ({
+                  ...item,
+                  isAttendance: e.target.checked,
+                }))
+              );
+            }}
+          />
+        </>
+      ),
+      dataIndex: "isAttendance",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="View">
-            <Checkbox
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onChange={() => {}}
-            ></Checkbox>
-          </Tooltip>
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rec.isAttendance}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) =>
+                  item.key === rec.key
+                    ? { ...item, isAttendance: e.target.checked }
+                    : item
+                )
+              );
+            }}
+          />
         </Flex>
       ),
       align: "center",
@@ -120,7 +143,7 @@ const TnDAttendanceSave = () => {
       department: "HR",
       Workplace: "Head Office",
       workplaceGroup: "Group A",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "2",
@@ -129,7 +152,7 @@ const TnDAttendanceSave = () => {
       department: "IT",
       Workplace: "Remote",
       workplaceGroup: "Group B",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "3",
@@ -138,7 +161,7 @@ const TnDAttendanceSave = () => {
       department: "Finance",
       Workplace: "Branch Office",
       workplaceGroup: "Group C",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "4",
@@ -147,7 +170,7 @@ const TnDAttendanceSave = () => {
       department: "Marketing",
       Workplace: "Remote",
       workplaceGroup: "Group A",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "5",
@@ -156,7 +179,7 @@ const TnDAttendanceSave = () => {
       department: "Operations",
       Workplace: "Head Office",
       workplaceGroup: "Group B",
-      action: null,
+      isAttendance: false,
     },
   ];
 
@@ -225,6 +248,10 @@ const TnDAttendanceSave = () => {
         });
       },
     });
+  }, []);
+
+  useEffect(() => {
+    setRowData(demoData);
   }, []);
 
   return (
@@ -369,7 +396,7 @@ const TnDAttendanceSave = () => {
           </PCardBody>
           {showTable && (
             <PCardBody>
-              <DataTable bordered data={demoData || []} header={header} />
+              <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
           {/* <PCardBody>

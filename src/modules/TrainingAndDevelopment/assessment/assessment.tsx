@@ -1,5 +1,5 @@
 import { SaveOutlined } from "@ant-design/icons";
-import { Checkbox, Col, Form, Row, Tooltip } from "antd";
+import { Checkbox, Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -45,6 +45,7 @@ const TnDAssessment = () => {
   const [showTable, setShowTable] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+  const [rowData, setRowData] = useState<any>(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -92,16 +93,40 @@ const TnDAssessment = () => {
       width: 60,
     },
     {
-      title: "Send Request",
-      dataIndex: "action",
+      title: (
+        <>
+          Send Request
+          <br />
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rowData?.every((item: any) => item.isRequested)}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) => ({
+                  ...item,
+                  isRequested: e.target.checked,
+                }))
+              );
+            }}
+          />
+        </>
+      ),
+      dataIndex: "isRequested",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="View">
-            <Checkbox
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onChange={() => {}}
-            ></Checkbox>
-          </Tooltip>
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rec.isRequested}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) =>
+                  item.key === rec.key
+                    ? { ...item, isRequested: e.target.checked }
+                    : item
+                )
+              );
+            }}
+          />
         </Flex>
       ),
       align: "center",
@@ -117,7 +142,7 @@ const TnDAssessment = () => {
       department: "HR",
       Workplace: "Head Office",
       workplaceGroup: "Group A",
-      action: null,
+      isRequested: false,
     },
     {
       key: "2",
@@ -126,7 +151,7 @@ const TnDAssessment = () => {
       department: "IT",
       Workplace: "Remote",
       workplaceGroup: "Group B",
-      action: null,
+      isRequested: false,
     },
     {
       key: "3",
@@ -135,7 +160,7 @@ const TnDAssessment = () => {
       department: "Finance",
       Workplace: "Branch Office",
       workplaceGroup: "Group C",
-      action: null,
+      isRequested: false,
     },
     {
       key: "4",
@@ -144,7 +169,7 @@ const TnDAssessment = () => {
       department: "Marketing",
       Workplace: "Remote",
       workplaceGroup: "Group A",
-      action: null,
+      isRequested: false,
     },
     {
       key: "5",
@@ -153,7 +178,7 @@ const TnDAssessment = () => {
       department: "Operations",
       Workplace: "Head Office",
       workplaceGroup: "Group B",
-      action: null,
+      isRequested: false,
     },
   ];
 
@@ -222,6 +247,10 @@ const TnDAssessment = () => {
         });
       },
     });
+  }, []);
+
+  useEffect(() => {
+    setRowData(demoData);
   }, []);
 
   return (
@@ -341,7 +370,7 @@ const TnDAssessment = () => {
           </PCardBody>
           {showTable && (
             <PCardBody>
-              <DataTable bordered data={demoData || []} header={header} />
+              <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
         </PCard>
