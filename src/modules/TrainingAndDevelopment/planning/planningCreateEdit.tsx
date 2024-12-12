@@ -551,8 +551,40 @@ const TnDPlanningCreateEdit = () => {
             backButton
             title={`Training Plan ${type === "create" ? "Create" : "Edit"}`}
             buttonList={
-              type === "view"
-                ? [] // No buttons for "status" type
+              onlyPerticipant
+                ? [
+                    {
+                      type: "primary",
+                      content: "Edit Perticipants",
+                      icon: <EditOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields([
+                            "employee",
+                            "department",
+                            "hrPosition",
+                          ])
+                          .then(() => {
+                            editTrainingPlanDetails(
+                              data?.id,
+                              [],
+                              [],
+                              perticipantField,
+                              setLoading,
+                              () => {
+                                history.goBack();
+                              }
+                            );
+
+                            console.log(costField, "costField");
+                            console.log(perticipantField, "perticipantField");
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                  ] // No buttons for "status" type
                 : planStep === "STEP_TWO"
                 ? [
                     {
