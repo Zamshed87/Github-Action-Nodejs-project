@@ -1,5 +1,5 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row, Tooltip, Checkbox } from "antd";
+import { SaveOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -16,13 +16,11 @@ import {
 import { perticipantMap } from "./helper";
 
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import ListOfPerticipants from "../planning/listOfPerticipants";
 import { toast } from "react-toastify";
-import { PModal } from "Components/Modal";
+import { ViewTrainingPlan, ViewTrainingPlanDetails } from "../planning/helper";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
@@ -46,7 +44,9 @@ const TnDAttendanceSave = () => {
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const [showTable, setShowTable] = useState(false);
-  const [openParticipantsModal, setopenParticipantsModal] = useState(false);
+  const [viewData, setViewData] = useState<any>(null);
+  const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+  const [rowData, setRowData] = useState<any>(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -94,16 +94,40 @@ const TnDAttendanceSave = () => {
       width: 60,
     },
     {
-      title: "Attendance",
-      dataIndex: "action",
+      title: (
+        <>
+          Attendance
+          <br />
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rowData?.every((item: any) => item.isAttendance)}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) => ({
+                  ...item,
+                  isAttendance: e.target.checked,
+                }))
+              );
+            }}
+          />
+        </>
+      ),
+      dataIndex: "isAttendance",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="View">
-            <Checkbox
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onChange={() => {}}
-            ></Checkbox>
-          </Tooltip>
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rec.isAttendance}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) =>
+                  item.key === rec.key
+                    ? { ...item, isAttendance: e.target.checked }
+                    : item
+                )
+              );
+            }}
+          />
         </Flex>
       ),
       align: "center",
@@ -119,7 +143,7 @@ const TnDAttendanceSave = () => {
       department: "HR",
       Workplace: "Head Office",
       workplaceGroup: "Group A",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "2",
@@ -128,7 +152,7 @@ const TnDAttendanceSave = () => {
       department: "IT",
       Workplace: "Remote",
       workplaceGroup: "Group B",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "3",
@@ -137,7 +161,7 @@ const TnDAttendanceSave = () => {
       department: "Finance",
       Workplace: "Branch Office",
       workplaceGroup: "Group C",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "4",
@@ -146,7 +170,7 @@ const TnDAttendanceSave = () => {
       department: "Marketing",
       Workplace: "Remote",
       workplaceGroup: "Group A",
-      action: null,
+      isAttendance: false,
     },
     {
       key: "5",
@@ -155,7 +179,7 @@ const TnDAttendanceSave = () => {
       department: "Operations",
       Workplace: "Head Office",
       workplaceGroup: "Group B",
-      action: null,
+      isAttendance: false,
     },
   ];
 
@@ -226,6 +250,10 @@ const TnDAttendanceSave = () => {
     });
   }, []);
 
+  useEffect(() => {
+    setRowData(demoData);
+  }, []);
+
   return (
     <div>
       {loading && <Loading />}
@@ -255,6 +283,15 @@ const TnDAttendanceSave = () => {
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Type"
+                  label="Training Type"
+                  name="trainingTitle"
+                  disabled={true}
+                />
+              </Col>
               <Col md={4} sm={24}>
                 <PInput
                   type="text"
@@ -318,6 +355,9 @@ const TnDAttendanceSave = () => {
                       attendanceDate: value,
                     });
                   }}
+                  rules={[
+                    { required: true, message: "Attendance Date is required" },
+                  ]}
                 />
               </Col>
               <Col md={2} sm={24} style={{ marginTop: "22px" }}>
@@ -331,14 +371,32 @@ const TnDAttendanceSave = () => {
                 <PButton
                   type="primary"
                   content="Add Participants"
-                  onClick={() => setopenParticipantsModal(true)}
+                  onClick={() =>
+                    ViewTrainingPlan(4, setLoading, setViewData, (d: any) => {
+                      ViewTrainingPlanDetails(
+                        4, //need to change
+                        setLoading,
+                        setViewDataDetails,
+                        (details: any) => {
+                          history.push(
+                            "/trainingAndDevelopment/planning/edit",
+                            {
+                              data: d,
+                              dataDetails: details,
+                              onlyPerticipant: true,
+                            }
+                          );
+                        }
+                      );
+                    })
+                  }
                 />
               </Col>
             </Row>
           </PCardBody>
           {showTable && (
             <PCardBody>
-              <DataTable bordered data={demoData || []} header={header} />
+              <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
           {/* <PCardBody>
@@ -352,32 +410,6 @@ const TnDAttendanceSave = () => {
               positionDDL={positionDDL?.data || []}
             />{" "}
           </PCardBody> */}
-          <PModal
-            open={openParticipantsModal}
-            title={"Participants"}
-            width="400"
-            onCancel={() => {
-              setopenParticipantsModal(false);
-              // getTrainingTitleDDL(
-              //   "/TrainingTitle/Training/Title",
-              //   typeDataSetForTitle
-              // );
-            }}
-            maskClosable={false}
-            components={
-              <>
-                <ListOfPerticipants
-                  form={form}
-                  perticipantField={perticipantField}
-                  setperticipantField={setperticipantField}
-                  addHandler={addHanderForPerticipant}
-                  // calculatePerPersonCost={calculatePerPersonCost}
-                  departmentDDL={empDepartmentDDL?.data || []}
-                  positionDDL={positionDDL?.data || []}
-                />
-              </>
-            }
-          />
         </PCard>
       </PForm>
     </div>
