@@ -21,6 +21,7 @@ import {} from "react-icons/md";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
+import { isDevServer } from "App";
 
 const MarketVisitReport = () => {
   const dispatch = useDispatch();
@@ -150,7 +151,7 @@ const MarketVisitReport = () => {
           {(excelLoading || landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
-            printIcon={true}
+            printIcon={isDevServer}
             title={`Market Visit Report`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
