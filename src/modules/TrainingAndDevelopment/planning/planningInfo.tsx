@@ -22,6 +22,7 @@ const PlanningInfo = ({
   setTrainingTime,
   addHandler,
   planStep,
+  type,
 }: any) => {
   const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
   const [trainingOrganizerTypeDDL, setTrainingOrganizerTypeDDL] = useState<any>(
@@ -510,7 +511,7 @@ const PlanningInfo = ({
 
           {trainingTime?.length > 0 && (
             <Flex justify="flex-end" align="flex-start" className="mr-2 mt-2">
-              <Chip
+              {/* <Chip
                 label={form.getFieldValue("trainingStatus")?.label}
                 color={
                   form.getFieldValue("trainingStatus")?.value === 1
@@ -519,7 +520,7 @@ const PlanningInfo = ({
                     ? "secondary"
                     : "default"
                 }
-              />
+              /> */}
 
               <h1>Total Training Duration: {calculateTotalDuration()}</h1>
             </Flex>

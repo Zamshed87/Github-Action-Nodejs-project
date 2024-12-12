@@ -561,3 +561,12 @@ export const changeTrainingStatus = (form: any, trainingTime: any) => {
   form.setFieldsValue({ trainingStatus: status });
   return status;
 };
+
+export const calculateDuration = (startTime: string, endTime: string) => {
+  const start = moment(startTime, "HH:mm:ss");
+  const end = moment(endTime, "HH:mm:ss");
+  const duration = moment.duration(end.diff(start));
+  const hours = Math.floor(duration.asHours());
+  const minutes = duration.minutes();
+  return `${hours} hours ${minutes} minutes`;
+};

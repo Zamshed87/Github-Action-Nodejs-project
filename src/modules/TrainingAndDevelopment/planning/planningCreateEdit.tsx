@@ -19,6 +19,7 @@ import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
 import {
   addHandlerTriningTimes,
+  calculateDuration,
   changeTrainingStatus,
   costMap,
   createTrainingPlan,
@@ -470,7 +471,18 @@ const TnDPlanningCreateEdit = () => {
   useEffect(() => {
     if (planStep === "STEP_THREE") {
       ViewTrainingSchedule(planId, setLoading, (d: any) => {
-        setTrainingTime(d);
+        const mappedTrainingTime = d.map((item: any) => ({
+          id: item.id,
+          trainingStartTime: moment(item.startTime, "HH:mm:ss").format(
+            "hh:mm:ss A"
+          ),
+          trainingEndTime: moment(item.endTime, "HH:mm:ss").format(
+            "hh:mm:ss A"
+          ),
+          trainingStartDate: moment(item.trainingDate).format("YYYY-MM-DD"),
+          trainingDuration: calculateDuration(item.startTime, item.endTime),
+        }));
+        setTrainingTime(mappedTrainingTime);
       });
     }
   }, [planStep]);
@@ -765,6 +777,7 @@ const TnDPlanningCreateEdit = () => {
                   addHandler={addHandlerTriningTime}
                   // new step add
                   planStep={planStep}
+                  type={type}
                 />
               </PCardBody>
             </>
