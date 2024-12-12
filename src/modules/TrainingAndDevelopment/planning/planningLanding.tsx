@@ -115,9 +115,6 @@ const TnDPlanningLanding = () => {
     {
       title: "Training Mode",
       dataIndex: "trainingMode",
-      filter: true,
-      filterKey: "trainingModeList",
-      filterSearch: true,
       width: 100,
       fixed: "left",
       render: (_: any, rec: any) => rec?.trainingModeStatus?.label,

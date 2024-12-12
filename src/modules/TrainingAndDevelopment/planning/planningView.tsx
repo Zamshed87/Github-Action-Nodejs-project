@@ -133,29 +133,9 @@ const PlanningView = ({ data, dataDetails }: any) => {
         <div style={labelStyle}>Objectives/ Key Learnings/ Outcomes:</div>
         <div style={valueStyle}>{data?.objectives || "N/A"}</div>
       </Col>
-      <Col md={8} style={{ marginTop: "10px" }}>
+      <Col md={8} style={{ marginTop: "10px", marginBottom: "20px" }}>
         <div style={labelStyle}>Training Venue:</div>
         <div style={valueStyle}>{data?.venueAddress || "N/A"}</div>
-      </Col>
-      <Col md={8} style={{ marginTop: "10px" }}>
-        <div style={labelStyle}>Training Start Date:</div>
-        <div style={valueStyle}>{dateFormatter(data?.startDate) || "N/A"}</div>
-      </Col>
-      <Col md={8} style={{ marginTop: "10px" }}>
-        <div style={labelStyle}>Training Start Time:</div>
-        <div style={valueStyle}>{data?.startTime || "N/A"}</div>
-      </Col>
-      <Col md={8} style={{ marginTop: "10px" }}>
-        <div style={labelStyle}>Training End Date:</div>
-        <div style={valueStyle}>{dateFormatter(data?.endDate) || "N/A"}</div>
-      </Col>
-      <Col md={8} style={{ marginTop: "10px" }}>
-        <div style={labelStyle}>Training End Time:</div>
-        <div style={valueStyle}>{data?.endTime || "N/A"}</div>
-      </Col>
-      <Col md={8} style={{ marginTop: "10px", marginBottom: "20px" }}>
-        <div style={labelStyle}>Training Duration:</div>
-        <div style={valueStyle}>{data?.trainingDuration || "N/A"}</div>
       </Col>
 
       {dataDetails?.trainingTrainerDto?.length > 0 && (
