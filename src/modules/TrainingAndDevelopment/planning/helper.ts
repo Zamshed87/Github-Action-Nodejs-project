@@ -571,7 +571,7 @@ export const cancelTrainingPlan = async (
     setLoading(true);
 
     const res = await axios.put(
-      `/Training/Training/CancelTraining/${recordId}`
+      `/Training/Training/TrainingStatus?id=${recordId}`
     );
     if (res?.data) {
       cb && cb(res?.data);
