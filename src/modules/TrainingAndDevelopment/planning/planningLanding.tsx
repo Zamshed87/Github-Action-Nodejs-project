@@ -7,6 +7,7 @@ import {
   EditOutlined,
   EyeOutlined,
   HddOutlined,
+  MenuOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import {
@@ -20,7 +21,7 @@ import {
   PInput,
 } from "Components";
 import { getSerial } from "Utils";
-import { Col, Form, Row, Tag, Tooltip } from "antd";
+import { Col, Dropdown, Form, MenuProps, Row, Tag, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useState } from "react";
@@ -29,10 +30,15 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 
-import { ViewTrainingPlan, ViewTrainingPlanDetails } from "./helper";
+import {
+  cancelTrainingPlan,
+  ViewTrainingPlan,
+  ViewTrainingPlanDetails,
+} from "./helper";
 import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
 import Chips from "common/Chips";
+import IConfirmModal from "common/IConfirmModal";
 const TnDPlanningLanding = () => {
   // router states
   const history = useHistory();
@@ -192,123 +198,135 @@ const TnDPlanningLanding = () => {
       title: "Action",
       dataIndex: "action",
       render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="View">
-            <EyeOutlined
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onClick={() => {
-                ViewTrainingPlan(
-                  rec?.id,
-                  setLoading,
-                  () => {
-                    ViewTrainingPlanDetails(
-                      rec?.id,
-                      setLoading,
-                      setViewDataDetails,
-                      () => {
-                        setViewModalModal(true);
-                      }
-                    );
-                  },
-                  setViewData
-                );
-              }}
-            />
-          </Tooltip>
-          <Tooltip placement="bottom" title="Edit">
-            <EditOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                ViewTrainingPlan(
-                  rec?.id,
-                  setLoading,
-                  (d: any) => {
-                    ViewTrainingPlanDetails(
-                      rec?.id,
-                      setLoading,
-                      setViewDataDetails,
-                      (details: any) => {
-                        history.push("/trainingAndDevelopment/planning/edit", {
-                          data: d,
-                          dataDetails: details,
-                        });
-                      }
-                    );
-                  },
-                  setViewData
-                );
-              }}
-            />
-          </Tooltip>
-          <Tooltip placement="bottom" title="Attendance">
-            <CarryOutOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                ViewTrainingPlan(
-                  rec?.id,
-                  setLoading,
-                  (d: any) => {
-                    history.push(
-                      "/trainingAndDevelopment/training/attendance",
-                      {
-                        data: d,
-                      }
-                    );
-                  },
-                  setViewData
-                );
-                // history.push("/trainingAndDevelopment/training/attendance", {
-                //   data: rec, // need to change this
-                // });
-              }}
-            />
-          </Tooltip>
-          <Tooltip placement="bottom" title="Feedback">
-            <HddOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                history.push("/trainingAndDevelopment/planning/status", {
-                  data: rec,
-                });
-              }}
-            />
-          </Tooltip>
-          <Tooltip placement="bottom" title="Assessment">
-            <ContainerOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                history.push("/trainingAndDevelopment/planning/status", {
-                  data: rec,
-                });
-              }}
-            />
-          </Tooltip>
-        </Flex>
+        <Dropdown menu={{ items: getMenuItems(rec) }} trigger={["click"]}>
+          <MenuOutlined onClick={(e) => e.preventDefault()} />
+        </Dropdown>
       ),
       align: "center",
-      width: 120,
+      width: 60,
     },
   ];
+
+  const getMenuItems = (rec: any): MenuProps["items"] => [
+    {
+      label: (
+        <h1
+          rel="noopener noreferrer"
+          onClick={() => {
+            ViewTrainingPlan(
+              rec?.id,
+              setLoading,
+              () => {
+                ViewTrainingPlanDetails(
+                  rec?.id,
+                  setLoading,
+                  setViewDataDetails,
+                  () => {
+                    setViewModalModal(true);
+                  }
+                );
+              },
+              setViewData
+            );
+          }}
+        >
+          View
+        </h1>
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <h1
+          onClick={() => {
+            ViewTrainingPlan(
+              rec?.id,
+              setLoading,
+              (d: any) => {
+                ViewTrainingPlanDetails(
+                  rec?.id,
+                  setLoading,
+                  setViewDataDetails,
+                  (details: any) => {
+                    history.push("/trainingAndDevelopment/planning/edit", {
+                      data: d,
+                      dataDetails: details,
+                    });
+                  }
+                );
+              },
+              setViewData
+            );
+          }}
+          rel="noopener noreferrer"
+        >
+          Edit
+        </h1>
+      ),
+      key: "1",
+    },
+    {
+      label: (
+        <h1
+          onClick={() => {
+            ViewTrainingPlan(
+              rec?.id,
+              setLoading,
+              (d: any) => {
+                history.push("/trainingAndDevelopment/training/attendance", {
+                  data: d,
+                });
+              },
+              setViewData
+            );
+            // history.push("/trainingAndDevelopment/training/attendance", {
+            //   data: rec, // need to change this
+            // });
+          }}
+          rel="noopener noreferrer"
+        >
+          Attendance
+        </h1>
+      ),
+      key: "2",
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: (
+        <h1
+          style={{ color: "red" }}
+          onClick={() => {
+            doCancelConfirmation(rec);
+          }}
+          rel="noopener noreferrer"
+        >
+          Cancel
+        </h1>
+      ),
+      key: "3",
+    },
+  ];
+
+  const doCancelConfirmation = (rec: any) => {
+    let payload = {};
+    const callback = () => {
+      landingApiCall({});
+    };
+
+    payload = {};
+
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do you want to cancel this training?`,
+      yesAlertFunc: () => {
+        cancelTrainingPlan(rec?.id, setLoading, callback);
+      },
+      noAlertFunc: () => null,
+    };
+    IConfirmModal(confirmObject);
+  };
 
   const landingApiCall = (values: any) => {
     getLandingApi("/Training/Training/GetAllTraining");

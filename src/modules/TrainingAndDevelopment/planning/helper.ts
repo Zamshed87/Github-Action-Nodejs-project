@@ -562,6 +562,28 @@ export const changeTrainingStatus = (form: any, trainingTime: any) => {
   return status;
 };
 
+export const cancelTrainingPlan = async (
+  recordId: any,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  try {
+    setLoading(true);
+
+    const res = await axios.put(
+      `/Training/Training/CancelTraining/${recordId}`
+    );
+    if (res?.data) {
+      cb && cb(res?.data);
+      setLoading(false);
+    }
+    setLoading(false);
+  } catch (error: any) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    setLoading(false);
+  }
+};
+
 export const calculateDuration = (startTime: string, endTime: string) => {
   const start = moment(startTime, "HH:mm:ss");
   const end = moment(endTime, "HH:mm:ss");
