@@ -303,6 +303,14 @@ const TnDPlanningCreateEdit = () => {
       toast.error("Cost Value is required");
       return;
     }
+    const isDuplicate = costField.some(
+      (cost: any) => cost.costTypeId === values?.costType?.value
+    );
+
+    if (isDuplicate) {
+      toast.error("Cost type already exists");
+      return;
+    }
     const nextId =
       costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
     setCostField([
@@ -381,6 +389,15 @@ const TnDPlanningCreateEdit = () => {
       toast.error("Trainer is required");
       return;
     }
+    const isDuplicate = trainerOrgField.some(
+      (org: any) => org.name === values?.nameofTrainerOrganization?.name
+    );
+
+    if (isDuplicate) {
+      toast.error("Trainer & organization already exists");
+      return;
+    }
+
     setTrainerOrgField([
       ...trainerOrgField,
       { ...values?.nameofTrainerOrganization },
@@ -394,6 +411,15 @@ const TnDPlanningCreateEdit = () => {
     }
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
+    const isDuplicate = perticipantField.some(
+      (participant: any) =>
+        participant.perticipantId === values?.employee?.value
+    );
+
+    if (isDuplicate) {
+      toast.error("Participant already exists");
+      return;
+    }
     const nextId =
       perticipantField.length > 0
         ? perticipantField[perticipantField.length - 1].id + 1

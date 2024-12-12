@@ -72,7 +72,7 @@ const TrainerAndOrgInfo = ({
               }}
               onClick={() => {
                 const updatedCostField = trainerOrgField?.filter(
-                  (item: any) => item.id !== rec.id
+                  (item: any) => item.name !== rec.name
                 );
                 setTrainerOrgField(updatedCostField);
               }}

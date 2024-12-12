@@ -102,7 +102,7 @@ const ListOfPerticipants = ({
               }}
               onClick={() => {
                 const updatedperticipantField = perticipantField.filter(
-                  (item) => item.id !== rec.id
+                  (item) => item.perticipantId !== rec.perticipantId
                 );
                 setperticipantField(updatedperticipantField);
               }}

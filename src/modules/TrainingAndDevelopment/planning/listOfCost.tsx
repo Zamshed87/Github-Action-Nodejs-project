@@ -62,7 +62,7 @@ const ListOfCost = ({
               }}
               onClick={() => {
                 const updatedCostField = costField.filter(
-                  (item) => item.id !== rec.id
+                  (item) => item.costTypeId !== rec.costTypeId
                 );
                 setCostField(updatedCostField);
               }}
