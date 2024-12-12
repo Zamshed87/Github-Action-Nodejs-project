@@ -137,6 +137,12 @@ const ListOfPerticipants = ({
                 department: op,
               });
             }}
+            rules={[
+              {
+                required: true,
+                message: "Department is required",
+              },
+            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -151,6 +157,12 @@ const ListOfPerticipants = ({
                 hrPosition: op,
               });
             }}
+            rules={[
+              {
+                required: true,
+                message: "HR Position is required",
+              },
+            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -187,7 +199,12 @@ const ListOfPerticipants = ({
             content="Add"
             onClick={() => {
               const values = form.getFieldsValue(true);
-
+              form
+                .validateFields(["employee", "department", "hrPosition"])
+                .then(() => {
+                  addHandler(values);
+                })
+                .catch(() => {});
               addHandler(values);
             }}
           />

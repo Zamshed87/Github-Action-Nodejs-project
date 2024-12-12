@@ -107,12 +107,12 @@ const ListOfCost = ({
                 costType: op,
               });
             }}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "Cost Type is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: true,
+                message: "Cost Type is required",
+              },
+            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -121,12 +121,12 @@ const ListOfCost = ({
             placeholder="Cost Value"
             label="Cost Value"
             name="costValue"
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "Cost Value is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: true,
+                message: "Cost Value is required",
+              },
+            ]}
           />
         </Col>
 
@@ -137,7 +137,12 @@ const ListOfCost = ({
             content="Add"
             onClick={() => {
               const values = form.getFieldsValue(true);
-
+              form
+                .validateFields(["costValue", "costType"])
+                .then(() => {
+                  addHandler(values);
+                })
+                .catch(() => {});
               addHandler(values);
             }}
           />
