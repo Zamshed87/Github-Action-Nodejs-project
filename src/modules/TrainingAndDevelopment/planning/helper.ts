@@ -409,6 +409,31 @@ export const ViewTrainingPlanDetails = async (
   }
 };
 
+export const ViewTrainingSchedule = async (
+  recordId: any,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any,
+  setSingleData?: { (value: any): void; (arg0: {}): void }
+) => {
+  try {
+    setLoading(true);
+
+    const res = await axios.get(
+      `/Training/Training/TrainingScheduleDetails/${recordId}`
+    );
+    if (res?.data) {
+      cb && cb(res?.data);
+      setLoading(false);
+      setSingleData && setSingleData(res?.data);
+    }
+    setLoading(false);
+  } catch (error: any) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    setSingleData && setSingleData({});
+    setLoading(false);
+  }
+};
+
 export const costMap = (data: any) => {
   const list: any[] = [];
   data.forEach((item: any) => {

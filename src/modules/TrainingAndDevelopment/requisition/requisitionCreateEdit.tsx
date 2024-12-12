@@ -99,6 +99,9 @@ const TnDRequisitionCreateEdit = () => {
       }
     );
     getEnumData("RequisitionStatus", setReqStatus);
+    if (type === "edit" && data?.status?.value == 2) {
+      setUpcommi(true);
+    }
   }, [profileData?.buId, profileData?.wgId]);
 
   return (
@@ -127,8 +130,8 @@ const TnDRequisitionCreateEdit = () => {
                   value: data?.status?.value,
                 },
                 upcommingTraining: {
-                  label: data?.upcommingTrainingName,
-                  value: data?.upcommingTrainingId,
+                  label: data?.upcommingTraining?.label,
+                  value: data?.upcommingTraining?.value,
                 },
                 comments: data?.comments,
               }

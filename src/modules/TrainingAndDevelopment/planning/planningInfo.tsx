@@ -89,10 +89,11 @@ const PlanningInfo = ({
   ];
 
   const calculateTotalDuration = () => {
+    if (trainingTime?.length < 1) return "0 hours 0 minutes";
     let totalMinutes = 0;
 
-    trainingTime.forEach((item: any) => {
-      const [hoursStr, minutesStr] = item.trainingDuration
+    trainingTime?.forEach((item: any) => {
+      const [hoursStr, minutesStr] = item?.trainingDuration
         .split(" ")
         .filter((_: any, index: number) => index % 2 === 0);
       const hours = parseInt(hoursStr);
@@ -111,6 +112,12 @@ const PlanningInfo = ({
   const trainingEndTime = Form.useWatch("trainingEndTime", form);
   const trainingStartTime = Form.useWatch("trainingStartTime", form);
   const trainingStartDate = Form.useWatch("trainingStartDate", form);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      isMultipleDayTraining: true,
+    });
+  }, []);
 
   console.log("planStep", "trainingStatus", planStep, trainingStatus);
   return (
@@ -348,14 +355,14 @@ const PlanningInfo = ({
               align="flex-start"
               className="mr-2 mt-2"
             >
-              <Col md={4} sm={24} style={{ marginTop: "10px" }}>
+              {/* <Col md={4} sm={24} style={{ marginTop: "10px" }}>
                 <Form.Item name="isMultipleDayTraining" valuePropName="checked">
                   <Checkbox>Multiple Days Training?</Checkbox>
                 </Form.Item>
-              </Col>
+              </Col> */}
               {/* {trainingStatus && ( */}
 
-              {(trainingEndTime || trainingStartTime || trainingStartDate) &&
+              {/* {(trainingEndTime || trainingStartTime || trainingStartDate) &&
                 !isMultipleDayTraining && (
                   <Chip
                     // label={`${trainingStatus?.label}`}
@@ -380,7 +387,7 @@ const PlanningInfo = ({
                       : "default"
                   }
                 />
-              )}
+              )} */}
 
               {/* )} */}
             </Flex>
@@ -486,7 +493,7 @@ const PlanningInfo = ({
               />
             </Col>
 
-            {isMultipleDayTraining && (
+            {form.getFieldValue("isMultipleDayTraining") && (
               <Col md={6} sm={24}>
                 <PButton
                   style={{ marginTop: "22px" }}
@@ -501,12 +508,23 @@ const PlanningInfo = ({
             )}
           </Row>
 
-          {isMultipleDayTraining && trainingTime?.length > 0 && (
+          {trainingTime?.length > 0 && (
             <Flex justify="flex-end" align="flex-start" className="mr-2 mt-2">
+              <Chip
+                label={form.getFieldValue("trainingStatus")?.label}
+                color={
+                  form.getFieldValue("trainingStatus")?.value === 1
+                    ? "primary"
+                    : form.getFieldValue("trainingStatus")?.value === 2
+                    ? "secondary"
+                    : "default"
+                }
+              />
+
               <h1>Total Training Duration: {calculateTotalDuration()}</h1>
             </Flex>
           )}
-          {isMultipleDayTraining && trainingTime?.length > 0 && (
+          {trainingTime?.length > 0 && (
             <div className="mb-3 mt-2">
               <DataTable
                 bordered

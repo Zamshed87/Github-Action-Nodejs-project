@@ -31,6 +31,7 @@ import {
   stepOneValidation,
   trainerMap,
   ViewTrainingPlan,
+  ViewTrainingSchedule,
 } from "./helper";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
@@ -465,6 +466,15 @@ const TnDPlanningCreateEdit = () => {
     if (type === "edit") return "Edit";
     if (type === "view") return "View";
   };
+
+  useEffect(() => {
+    if (planStep === "STEP_THREE") {
+      ViewTrainingSchedule(planId, setLoading, (d: any) => {
+        setTrainingTime(d);
+      });
+    }
+  }, [planStep]);
+
   console.log(data, "data");
   console.log(dataDetails, "dataDetails");
   return (
@@ -535,7 +545,8 @@ const TnDPlanningCreateEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: "Next Step",
+                      content:
+                        type === "edit" ? "Edit & Next Step" : "Next Step",
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
@@ -556,7 +567,7 @@ const TnDPlanningCreateEdit = () => {
                                   perticipantField,
                                   setLoading,
                                   () => {
-                                    history.goBack();
+                                    setPlanStep("STEP_THREE");
                                   }
                                 )
                               : createTrainingPlanDetails(
@@ -580,7 +591,8 @@ const TnDPlanningCreateEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: "Save & Close",
+                      content:
+                        type === "edit" ? "Edit & Close" : "Save & Close",
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
