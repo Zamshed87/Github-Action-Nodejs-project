@@ -277,6 +277,8 @@ import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunish
 import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
 import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
 import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
+import JobLocation from "modules/configuration/JobLocation";
+import JobTerritory from "modules/configuration/JobTerritory";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -1118,6 +1120,12 @@ const CreateTransferPromotion = lazy(() =>
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/createTransferPromotion.jsx"
   )
 );
+const BulkUploadTransferNPromotion = lazy(() =>
+  import(
+    "../modules/employeeProfile/transferNPromotion/transferNPromotion/bulkUpload.jsx"
+  )
+);
+
 const ViewTransferNPromotion = lazy(() =>
   import(
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/viewTransferNPromotion.jsx"
@@ -2166,6 +2174,11 @@ export const routingList = [
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
   { path: "/administration/configuration/section", component: Section },
+  { path: "/administration/configuration/jobLocation", component: JobLocation },
+  {
+    path: "/administration/configuration/jobTerritory",
+    component: JobTerritory,
+  },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",
@@ -2879,6 +2892,10 @@ export const routingList = [
   {
     path: "/profile/transferandpromotion/transferandpromotion/create",
     component: CreateTransferPromotion,
+  },
+  {
+    path: "/profile/transferandpromotion/transferandpromotion/bulk-upload",
+    component: BulkUploadTransferNPromotion,
   },
   {
     path: "/profile/transferandpromotion/transferandpromotion/edit/:id",
