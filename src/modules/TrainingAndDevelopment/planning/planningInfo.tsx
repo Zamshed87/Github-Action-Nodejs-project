@@ -41,7 +41,7 @@ const PlanningInfo = ({
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Start Date",
+      title: "Training Date",
       dataIndex: "trainingStartDate",
       width: 80,
     },
@@ -501,12 +501,12 @@ const PlanningInfo = ({
             )}
           </Row>
 
-          {trainingTime?.length > 0 && (
+          {isMultipleDayTraining && trainingTime?.length > 0 && (
             <Flex justify="flex-end" align="flex-start" className="mr-2 mt-2">
               <h1>Total Training Duration: {calculateTotalDuration()}</h1>
             </Flex>
           )}
-          {trainingTime?.length > 0 && (
+          {isMultipleDayTraining && trainingTime?.length > 0 && (
             <div className="mb-3 mt-2">
               <DataTable
                 bordered

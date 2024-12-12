@@ -23,6 +23,7 @@ import {
   costMap,
   createTrainingPlan,
   createTrainingPlanDetails,
+  createTrainingSchedule,
   editTrainingPlan,
   editTrainingPlanDetails,
   perticipantMap,
@@ -539,7 +540,6 @@ const TnDPlanningCreateEdit = () => {
                                   perticipantField,
                                   setLoading,
                                   () => {
-                                    setPlanId(data?.autoId);
                                     setPlanStep("STEP_THREE");
                                   }
                                 );
@@ -578,17 +578,16 @@ const TnDPlanningCreateEdit = () => {
                                     history.goBack();
                                   }
                                 )
-                              : createTrainingPlanDetails(
+                              : createTrainingSchedule(
                                   planId,
-                                  trainerOrgField,
-                                  costField,
-                                  perticipantField,
+                                  trainingTime,
+                                  form,
                                   setLoading,
                                   () => {
-                                    setPlanId(data?.autoId);
-                                    setPlanStep("STEP_THREE");
+                                    history.goBack();
                                   }
                                 );
+                            console.log(trainingTime, "trainingTime");
                             console.log(costField, "costField");
                             console.log(perticipantField, "perticipantField");
                           })

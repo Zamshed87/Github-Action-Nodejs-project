@@ -314,6 +314,53 @@ export const editTrainingPlanDetails = async (
   }
 };
 
+export const createTrainingSchedule = async (
+  planId: number,
+  trainingTime: any,
+  form: FormInstance<any>,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const values = form.getFieldsValue(true);
+    let payload = [];
+    if (!values?.isMultipleDayTraining) {
+      payload.push({
+        id: 0,
+        trainingId: planId,
+        trainingDate: values?.trainingStartDate,
+        startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
+        endTime: (values?.trainingEndTime).format("HH:mm:ss"),
+        trainingDuration: values?.trainingDuration,
+      });
+    } else {
+      payload = trainingTime?.map((time: any) => ({
+        id: 0,
+        trainingId: planId,
+        trainingDate: time?.trainingStartDate,
+        startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
+        endTime: (values?.trainingEndTime).format("HH:mm:ss"),
+        trainingDuration: time?.trainingDuration,
+      }));
+    }
+
+    const res = await axios.put(
+      `/Training/Training/TrainingScheduleDetails/${planId}`,
+      payload
+    );
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
 export const ViewTrainingPlan = async (
   recordId: any,
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
@@ -489,46 +536,3 @@ export const changeTrainingStatus = (form: any, trainingTime: any) => {
   form.setFieldsValue({ trainingStatus: status });
   return status;
 };
-
-export const data: any[] = [
-  {
-    requestor: "John Doe",
-    trainingType: "Leadership",
-    createdBy: "Admin",
-    createdDate: "2023-11-20T10:00:00Z",
-    trainingStatus: "Pending",
-    letterGenerateId: 101,
-  },
-  {
-    requestor: "Jane Smith",
-    trainingType: "Technical",
-    createdBy: "Manager",
-    createdDate: "2023-11-18T15:30:00Z",
-    trainingStatus: "Completed",
-    letterGenerateId: 102,
-  },
-  {
-    requestor: "Alice Johnson",
-    trainingType: "Soft Skills",
-    createdBy: "Coordinator",
-    createdDate: "2023-11-19T08:45:00Z",
-    trainingStatus: "In Progress",
-    letterGenerateId: 103,
-  },
-  {
-    requestor: "Bob Brown",
-    trainingType: "Compliance",
-    createdBy: "Admin",
-    createdDate: "2023-11-17T12:00:00Z",
-    trainingStatus: "Pending",
-    letterGenerateId: 104,
-  },
-  {
-    requestor: "Charlie Davis",
-    trainingType: "Leadership",
-    createdBy: "HR",
-    createdDate: "2023-11-21T09:20:00Z",
-    trainingStatus: "Approved",
-    letterGenerateId: 105,
-  },
-];

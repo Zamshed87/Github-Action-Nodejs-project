@@ -29,7 +29,7 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 
-import { data, ViewTrainingPlan, ViewTrainingPlanDetails } from "./helper";
+import { ViewTrainingPlan, ViewTrainingPlanDetails } from "./helper";
 import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
 import Chips from "common/Chips";
