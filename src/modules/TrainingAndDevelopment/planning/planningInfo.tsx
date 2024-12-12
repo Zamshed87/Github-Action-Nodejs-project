@@ -399,8 +399,8 @@ const PlanningInfo = ({
               <PInput
                 type="date"
                 name="trainingStartDate"
-                label="Training Start Date"
-                placeholder="Training Start Date"
+                label="Training Date"
+                placeholder="Training Date"
                 onChange={(value) => {
                   form.setFieldsValue({
                     trainingStartDate: value,
