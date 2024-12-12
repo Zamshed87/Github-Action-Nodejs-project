@@ -592,3 +592,22 @@ export const calculateDuration = (startTime: string, endTime: string) => {
   const minutes = duration.minutes();
   return `${hours} hours ${minutes} minutes`;
 };
+
+export const calculateTotalDuration = (trainingTime: any) => {
+  if (trainingTime?.length < 1) return "0 hours 0 minutes";
+  let totalMinutes = 0;
+
+  trainingTime?.forEach((item: any) => {
+    const [hoursStr, minutesStr] = item?.trainingDuration
+      .split(" ")
+      .filter((_: any, index: number) => index % 2 === 0);
+    const hours = parseInt(hoursStr);
+    const minutes = parseInt(minutesStr);
+    totalMinutes += hours * 60 + minutes;
+  });
+
+  const totalHours = Math.floor(totalMinutes / 60);
+  const remainingMinutes = totalMinutes % 60;
+
+  return `${totalHours} hours ${remainingMinutes} minutes`;
+};

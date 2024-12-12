@@ -34,6 +34,7 @@ import {
   cancelTrainingPlan,
   ViewTrainingPlan,
   ViewTrainingPlanDetails,
+  ViewTrainingSchedule,
 } from "./helper";
 import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
@@ -53,6 +54,7 @@ const TnDPlanningLanding = () => {
   const [viewModal, setViewModalModal] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+  const [scheduleDetails, setScheduleDetails] = useState<any>(null);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -222,7 +224,14 @@ const TnDPlanningLanding = () => {
                   setLoading,
                   setViewDataDetails,
                   () => {
-                    setViewModalModal(true);
+                    ViewTrainingSchedule(
+                      rec?.id,
+                      setLoading,
+                      setScheduleDetails,
+                      () => {
+                        setViewModalModal(true);
+                      }
+                    );
                   }
                 );
               },
@@ -452,6 +461,7 @@ const TnDPlanningLanding = () => {
             <PlanningView
               data={viewData}
               dataDetails={viewDataDetails}
+              scheduleDetails={scheduleDetails}
               // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
             />
           </>
