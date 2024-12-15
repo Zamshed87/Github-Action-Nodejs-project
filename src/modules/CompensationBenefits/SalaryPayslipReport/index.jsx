@@ -568,6 +568,21 @@ const SalaryPayslipReport = () => {
                               </>
                             ) : null}
                           </tr>
+                          <tr>
+                            {orgId === 4 ? (
+                              <>
+                                <td style={{ textAlign: "left" }}>
+                                  <p>Late Joining Deduction</p>
+                                </td>
+                                <td style={{ textAlign: "right" }} colSpan="3">
+                                  <p>
+                                    {salaryHeaderData[0]?.intLateJoining *
+                                      salaryHeaderData[0]?.numPerDaySalary || 0}
+                                  </p>
+                                </td>
+                              </>
+                            ) : null}
+                          </tr>
                           {/* <tr>
                             <td style={{ textAlign: "left" }}>
                               <p>Others</p>
@@ -590,7 +605,9 @@ const SalaryPayslipReport = () => {
                                   numTotal(viewPaySlipData, "numAmount", 0) +
                                     (salaryHeaderData[0]?.numTaxAmount || 0) +
                                     (salaryHeaderData[0]?.numLoanAmount || 0) +
-                                    (salaryHeaderData[0]?.numPFAmount || 0)
+                                    (salaryHeaderData[0]?.numPFAmount || 0) +
+                                    (salaryHeaderData[0]?.intLateJoining *
+                                      salaryHeaderData[0]?.numPerDaySalary || 0)
                                 )}
                               </p>
                             </th>
