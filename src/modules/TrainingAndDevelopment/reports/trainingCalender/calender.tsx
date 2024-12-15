@@ -8,6 +8,7 @@ import { useApiRequest } from "Hooks";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import UserInfoCommonField from "../userInfoCommonField";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const getListData = (value: moment.Moment) => {
   let listData: { type: string; content: string }[] = []; // Specify the type of listData
@@ -54,6 +55,8 @@ const TrainingCalender: React.FC = () => {
   );
   const { buId, wgId, employeeId, orgId } = profileData;
   const [form] = Form.useForm();
+  const [calenderData, getCalenderData, loadingCalender, setCalenderData] =
+    useAxiosGet();
 
   const monthCellRender = (value: moment.Moment) => {
     const num = getMonthData(value);
@@ -67,48 +70,77 @@ const TrainingCalender: React.FC = () => {
 
   const days = [
     {
-      Date: "2024-12-20T00:00:00",
-      Events: [
+      date: "2024-12-01T00:00:00",
+      trainingCalendarDto: [
         {
-          TrainingId: 1,
-          TrainingTitle: "Leadership Training",
-          TrainingName: "Advanced Leadership Skills",
-          StartTime: "09:00:00",
-          EndTime: "12:00:00",
-          VenueAddress: "123 Business St., City",
-          Objectives: "Improve leadership skills",
-          TrainingModeStatus: 1,
-          TrainingOrganizerType: 2,
-          Status: 1,
+          trainingId: 17,
+          trainingTitle: "Kotlin Development",
+          trainingDate: "2024-12-01T00:00:00",
+          trainingName: "Database Management",
+          startTime: "03:00:00",
+          endTime: "06:00:00",
+          venueAddress: "asdasd",
+          objectives: "aasd",
+          trainingModeStatus: 0,
+          trainingOrganizerType: 0,
+          status: null,
         },
         {
-          TrainingId: 2,
-          TrainingTitle: "Leadership Training",
-          TrainingName: "Effective Communication",
-          StartTime: "13:00:00",
-          EndTime: "16:00:00",
-          VenueAddress: "123 Business St., City",
-          Objectives: "Enhance communication skills",
-          TrainingModeStatus: 1,
-          TrainingOrganizerType: 2,
-          Status: 1,
+          trainingId: 19,
+          trainingTitle: "Kotlin Development",
+          trainingDate: "2024-12-01T00:00:00",
+          trainingName: "Database Management",
+          startTime: "06:00:00",
+          endTime: "19:00:00",
+          venueAddress: "ASDASD",
+          objectives: "ADNAN",
+          trainingModeStatus: 0,
+          trainingOrganizerType: 0,
+          status: null,
+        },
+        {
+          trainingId: 21,
+          trainingTitle: "SQL",
+          trainingDate: "2024-12-01T00:00:00",
+          trainingName: "Database Management",
+          startTime: "01:00:00",
+          endTime: "02:00:00",
+          venueAddress: "dddd",
+          objectives: "sdfsdf",
+          trainingModeStatus: 0,
+          trainingOrganizerType: 0,
+          status: null,
+        },
+        {
+          trainingId: 26,
+          trainingTitle: "Kotlin Development",
+          trainingDate: "2024-12-01T00:00:00",
+          trainingName: "Database Management",
+          startTime: "01:00:00",
+          endTime: "04:00:00",
+          venueAddress: "sdss",
+          objectives: "dfsgsd",
+          trainingModeStatus: 0,
+          trainingOrganizerType: 0,
+          status: null,
         },
       ],
     },
     {
-      Date: "2024-12-21T00:00:00",
-      Events: [
+      date: "2024-12-08T00:00:00",
+      trainingCalendarDto: [
         {
-          TrainingId: 3,
-          TrainingTitle: "Technical Skills Training",
-          TrainingName: "Advanced Java Programming",
-          StartTime: "10:00:00",
-          EndTime: "16:00:00",
-          VenueAddress: "456 Tech Ave., City",
-          Objectives: "Enhance Java programming skills",
-          TrainingModeStatus: 1,
-          TrainingOrganizerType: 1,
-          Status: 1,
+          trainingId: 25,
+          trainingTitle: "Kotlin Development",
+          trainingDate: "2024-12-08T00:00:00",
+          trainingName: "DevOps ",
+          startTime: "03:00:00",
+          endTime: "20:00:00",
+          venueAddress: "asdasd",
+          objectives: "asdad",
+          trainingModeStatus: 0,
+          trainingOrganizerType: 0,
+          status: null,
         },
       ],
     },
@@ -116,19 +148,19 @@ const TrainingCalender: React.FC = () => {
 
   const getListData = (value: moment.Moment) => {
     const date = value.format("YYYY-MM-DD");
-    console.log(date);
-    const day = days.find((d) => moment(d.Date).format("YYYY-MM-DD") === date); // will be the main data for a month
-    return day ? day.Events : [];
+    const day = days.find((d) => moment(d?.date).format("YYYY-MM-DD") === date);
+    return day ? day?.trainingCalendarDto : [];
   };
+
   const dateCellRender = (value: moment.Moment) => {
     const listData = getListData(value);
     return (
       <ul className="events">
         {listData.map((item: any) => (
-          <li key={item.TrainingId}>
+          <li key={item.trainingId}>
             <Badge
               status="success"
-              text={`${item.TrainingName} (${item.StartTime} - ${item.EndTime})`}
+              text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
             />
           </li>
         ))}
@@ -199,6 +231,24 @@ const TrainingCalender: React.FC = () => {
               {monthOptions}
             </Select>
           </Col>
+          <Col>
+            <PButton
+              type="primary"
+              content="View"
+              onClick={() => {
+                const values = form.getFieldsValue(true);
+                form
+                  .validateFields()
+                  .then(() => {
+                    console.log(values);
+                    // landingApiCall(values);
+
+                    // have to add the api call here
+                  })
+                  .catch(() => {});
+              }}
+            />
+          </Col>
         </Row>
       </div>
     );
@@ -206,6 +256,11 @@ const TrainingCalender: React.FC = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
+    const currentMonth = moment().format("MM");
+    const currentYear = moment().format("YYYY");
+    getCalenderData(
+      `/Training/Training/Calander?businessUnitId=0&workplaceGroupId=0&workplaceId=0&month=${currentMonth}&year=${currentYear}`
+    );
   }, []);
 
   return (
