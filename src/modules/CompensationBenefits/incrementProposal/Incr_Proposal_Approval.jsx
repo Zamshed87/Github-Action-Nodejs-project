@@ -509,6 +509,35 @@ export default function IncrementProposalApproval() {
         filter: false,
         sorter: false,
       },
+      {
+        title: "Remarks",
+        render: (_, data, index) => (
+          <div className="d-flex align-items-center">
+            <div>
+              <FormikInput
+                classes="input-sm"
+                value={values?.remarks}
+                name="remarks"
+                type="text"
+                className="form-control"
+                placeholder="Remarks"
+                onChange={(e) => {
+                  inputHandler(
+                    "remarks",
+                    e.target.value,
+                    index,
+                    landingApproval,
+                    setLandingApproval
+                  );
+                }}
+              />
+            </div>
+          </div>
+        ),
+        filter: false,
+        sorter: false,
+        width: "130px",
+      },
       // {
       //   title: "Waiting Stage",
       //   dataIndex: "waitingStage",

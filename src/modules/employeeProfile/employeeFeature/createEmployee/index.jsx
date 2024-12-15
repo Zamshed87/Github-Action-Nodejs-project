@@ -31,6 +31,7 @@ import {
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { checkBng } from "utility/regxExp";
+import { commonDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
 
 const CreateAndEditEmploye = () => {
   // router hooks
@@ -1490,6 +1491,24 @@ const CreateAndEditEmploye = () => {
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           jobLocation: op,
+                        });
+                      }}
+                      // rules={[{ required: true, message: "HR Position is required" }]}
+                    />
+                  </Col>
+                )}
+                {orgId === 7 && (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={commonDDL}
+                      name="isTakeHomePay"
+                      showSearch
+                      filterOption={true}
+                      label="Take Home Pay"
+                      placeholder="Take Home Pay"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          isTakeHomePay: value,
                         });
                       }}
                       // rules={[{ required: true, message: "HR Position is required" }]}
