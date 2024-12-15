@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Row,
   Col,
@@ -14,6 +14,8 @@ import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import { PButton, PCard, PCardBody, PForm, PInput } from "Components";
+import { useDispatch } from "react-redux";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const { Title } = Typography;
 
@@ -140,6 +142,11 @@ const statisticsColumns = [
 ];
 
 const TnDDashboard = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Training & Development"));
+  }, []);
+
   // Form Instance
   const [form] = Form.useForm();
   return (
