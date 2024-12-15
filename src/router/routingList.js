@@ -1543,6 +1543,7 @@ import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType
 import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
 import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
 
@@ -1792,6 +1793,10 @@ export const routingList = [
   {
     path: "/profile/reports/movementDetailsHistory",
     component: MovementHistoryDetails,
+  },
+  {
+    path: "/profile/reports/marketVisit",
+    component: MarketVisitReport,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
