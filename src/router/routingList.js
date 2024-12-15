@@ -1546,6 +1546,7 @@ import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
 import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
+import TnDInventory from "modules/TrainingAndDevelopment/reports/trainingInventory/inventory";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3440,6 +3441,10 @@ export const routingList = [
   {
     path: "/trainingAndDevelopment/training/feedback",
     component: TnDFeedback,
+  },
+  {
+    path: "/trainingAndDevelopment/reports/trainingInventory",
+    component: TnDInventory,
   },
   // Trainnning and development ends
 
