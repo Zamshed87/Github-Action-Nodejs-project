@@ -1532,9 +1532,6 @@ const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
 // Training and Development
-import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
-import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
-import TnDInventory from "modules/TrainingAndDevelopment/reports/trainingInventory/inventory";
 import TnDAssessment from "modules/TrainingAndDevelopment/assessment/assessment";
 import TnDFeedback from "modules/TrainingAndDevelopment/feedback/feedback";
 import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
@@ -1547,6 +1544,9 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
+import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
+import TnDInventory from "modules/TrainingAndDevelopment/reports/trainingInventory/inventory";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
