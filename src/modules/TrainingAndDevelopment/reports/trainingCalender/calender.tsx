@@ -68,16 +68,69 @@ const TrainingCalender: React.FC = () => {
     ) : null;
   };
 
+  const days = [
+    {
+      Date: "2024-12-20T00:00:00",
+      Events: [
+        {
+          TrainingId: 1,
+          TrainingTitle: "Leadership Training",
+          TrainingName: "Advanced Leadership Skills",
+          StartTime: "09:00:00",
+          EndTime: "12:00:00",
+          VenueAddress: "123 Business St., City",
+          Objectives: "Improve leadership skills",
+          TrainingModeStatus: 1,
+          TrainingOrganizerType: 2,
+          Status: 1,
+        },
+        {
+          TrainingId: 2,
+          TrainingTitle: "Leadership Training",
+          TrainingName: "Effective Communication",
+          StartTime: "13:00:00",
+          EndTime: "16:00:00",
+          VenueAddress: "123 Business St., City",
+          Objectives: "Enhance communication skills",
+          TrainingModeStatus: 1,
+          TrainingOrganizerType: 2,
+          Status: 1,
+        },
+      ],
+    },
+    {
+      Date: "2024-12-21T00:00:00",
+      Events: [
+        {
+          TrainingId: 3,
+          TrainingTitle: "Technical Skills Training",
+          TrainingName: "Advanced Java Programming",
+          StartTime: "10:00:00",
+          EndTime: "16:00:00",
+          VenueAddress: "456 Tech Ave., City",
+          Objectives: "Enhance Java programming skills",
+          TrainingModeStatus: 1,
+          TrainingOrganizerType: 1,
+          Status: 1,
+        },
+      ],
+    },
+  ];
+
+  const getListData = (value: moment.Moment) => {
+    const date = value.format("YYYY-MM-DD");
+    const day = days.find((d) => moment(d.Date).format("YYYY-MM-DD") === date);
+    return day ? day.Events : [];
+  };
   const dateCellRender = (value: moment.Moment) => {
-    console.log(value, "dateCellRender");
     const listData = getListData(value);
     return (
       <ul className="events">
-        {listData.map((item) => (
-          <li key={item.content}>
+        {listData.map((item: any) => (
+          <li key={item.TrainingId}>
             <Badge
-              status={item.type as BadgeProps["status"]}
-              text={item.content}
+              status="success"
+              text={`${item.TrainingName} (${item.StartTime} - ${item.EndTime})`}
             />
           </li>
         ))}
