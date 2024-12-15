@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { BadgeProps, CalendarProps } from "antd";
 import { Badge, Calendar, Col, Form, Row, Select, SelectProps } from "antd";
 import moment from "moment";
@@ -9,6 +9,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import UserInfoCommonField from "../userInfoCommonField";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import Loading from "common/loading/Loading";
 
 const getListData = (value: moment.Moment) => {
   let listData: { type: string; content: string }[] = []; // Specify the type of listData
@@ -172,7 +173,12 @@ const TrainingCalender: React.FC = () => {
     value: moment.Moment,
     mode: CalendarProps<moment.Moment>["mode"]
   ) => {
+    const month = value.format("MM");
+    const year = value.format("YYYY");
     console.log(value.format("YYYY-MM"), mode); // This will log only the month and year
+    getCalenderData(
+      `/Training/Training/Calander?businessUnitId=0&workplaceGroupId=0&workplaceId=0&month=${month}&year=${year}`
+    );
   };
 
   const customHeaderRender = ({ value, onChange }: any) => {
@@ -231,24 +237,6 @@ const TrainingCalender: React.FC = () => {
               {monthOptions}
             </Select>
           </Col>
-          <Col>
-            <PButton
-              type="primary"
-              content="View"
-              onClick={() => {
-                const values = form.getFieldsValue(true);
-                form
-                  .validateFields()
-                  .then(() => {
-                    console.log(values);
-                    // landingApiCall(values);
-
-                    // have to add the api call here
-                  })
-                  .catch(() => {});
-              }}
-            />
-          </Col>
         </Row>
       </div>
     );
@@ -265,6 +253,7 @@ const TrainingCalender: React.FC = () => {
 
   return (
     <div>
+      {loadingCalender && <Loading />}
       <PForm form={form} initialValues={{}}>
         {/* <PCard> */}
         <PCardHeader title="Training Calander" />
