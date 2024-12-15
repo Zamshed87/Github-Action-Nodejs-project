@@ -178,6 +178,13 @@ const TrainingCalender: React.FC = () => {
     });
   };
 
+  const onPanelChange = (
+    value: moment.Moment,
+    mode: CalendarProps<moment.Moment>["mode"]
+  ) => {
+    console.log(value.format("YYYY-MM-DD"), mode);
+  };
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
     getBUnitDDL.action({
@@ -284,6 +291,7 @@ const TrainingCalender: React.FC = () => {
       </PForm>
       <div style={{ height: "40%", width: "100%", padding: "30px" }}>
         <Calendar
+          onPanelChange={onPanelChange}
           dateCellRender={dateCellRender}
           monthCellRender={monthCellRender}
         />
