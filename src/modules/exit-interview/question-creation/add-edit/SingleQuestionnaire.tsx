@@ -141,7 +141,7 @@ const SingleQuestionnaire = ({
             />
           </Form.Item>
         </div>
-        <div className="col-12 col-md-4 py-0 my-0 pl-0">
+        {/* <div className="col-12 col-md-4 py-0 my-0 pl-0">
           <Form.Item name={[field.name, "questionTitle"]} shouldUpdate>
             <PInput
               type="text"
@@ -149,27 +149,64 @@ const SingleQuestionnaire = ({
               label="Question Title"
             />
           </Form.Item>
-        </div>
-        <div className="col-12 col-md-4 py-0 my-0 pl-0">
+        </div> */}
+        <div className="col-12 col-md-4 py-0 my-0 pl-0 PeopleDeskInputWrapper">
+          <label
+            style={{
+              fontSize: "12px",
+              lineHeight: "normal",
+              fontWeight: 500,
+              marginBottom: "2px",
+            }}
+          >
+            Question Title
+          </label>
+
           <Form.Item name={[field.name, "questionTitle"]} shouldUpdate>
             <AutoComplete
               options={tempOptions || []}
-              placeholder="Outlined"
+              placeholder="Question Title"
               onSearch={(text) => {
                 debounce(() => {
                   text?.length > 3 && getTemp(text);
                 }, 500);
               }}
               onSelect={(_, op) => {
-                const location = antForm.getFieldsValue(true)?.questions[index];
                 axios
                   .get(`/Questionnaire/Question/Template/${op?.id}`)
                   .then((res) => {
-                    antForm.setFieldValue(
-                      location?.expectedAns,
-                      res?.data?.answer
+                    const questions = antForm.getFieldValue("questions") || [];
+
+                    // Modify the specific question object
+                    const updatedQuestions = questions.map(
+                      (q: any, idx: number) =>
+                        idx === index
+                          ? {
+                              ...q,
+                              expectedAns: res.data.answer,
+                              questionType: {
+                                label: res?.data?.questionTypeName,
+                                value: res?.data?.questionTypeId,
+                              },
+                              ansTextLength: res?.data?.answerTextLength,
+                              answers:
+                                res?.data?.options?.length > 0
+                                  ? res?.data?.options?.map((op: any) => {
+                                      return {
+                                        ...op,
+                                        answerDescription: op?.optionName,
+                                      };
+                                    })
+                                  : [],
+                            }
+                          : q
                     );
-                    console.log(res?.data);
+
+                    antForm.setFieldsValue({
+                      questions: updatedQuestions,
+                    });
+
+                    console.log(antForm.getFieldsValue(true));
                   });
                 setTempOptions([]);
               }}
