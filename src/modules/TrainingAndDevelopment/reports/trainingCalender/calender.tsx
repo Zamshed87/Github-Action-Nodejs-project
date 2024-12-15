@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import type { BadgeProps, CalendarProps } from "antd";
-import { Badge, Calendar, Col, Form, Row } from "antd";
+import { Badge, Calendar, Col, Form, Row, Select, SelectProps } from "antd";
 import moment from "moment";
 import "./calender.css";
 import { PButton, PCardBody, PCardHeader, PForm, PSelect } from "Components";
@@ -119,7 +119,8 @@ const TrainingCalender: React.FC = () => {
 
   const getListData = (value: moment.Moment) => {
     const date = value.format("YYYY-MM-DD");
-    const day = days.find((d) => moment(d.Date).format("YYYY-MM-DD") === date);
+    console.log(date);
+    const day = days.find((d) => moment(d.Date).format("YYYY-MM-DD") === date); // will be the main data for a month
     return day ? day.Events : [];
   };
   const dateCellRender = (value: moment.Moment) => {
@@ -182,7 +183,68 @@ const TrainingCalender: React.FC = () => {
     value: moment.Moment,
     mode: CalendarProps<moment.Moment>["mode"]
   ) => {
-    console.log(value.format("YYYY-MM-DD"), mode);
+    console.log(value.format("YYYY-MM"), mode); // This will log only the month and year
+  };
+
+  const customHeaderRender = ({ value, onChange }: any) => {
+    const monthOptions = [];
+    const current = value.clone();
+    const localeData = value.localeData();
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      current.month(i);
+      months.push(localeData.monthsShort(current));
+    }
+
+    for (let index = 0; index < 12; index++) {
+      monthOptions.push(
+        <Select.Option key={index} value={index}>
+          {months[index]}
+        </Select.Option>
+      );
+    }
+
+    const month = value.month();
+    const year = value.year();
+    const yearOptions = [];
+    for (let i = year - 10; i < year + 10; i += 1) {
+      yearOptions.push(
+        <Select.Option key={i} value={i}>
+          {i}
+        </Select.Option>
+      );
+    }
+
+    return (
+      <div style={{ padding: 8 }}>
+        <Row justify="end" gutter={8}>
+          <Col>
+            <Select
+              value={year}
+              onChange={(newYear) => {
+                const now = value.clone().year(newYear);
+                onChange(now);
+              }}
+              style={{ width: 100 }}
+            >
+              {yearOptions}
+            </Select>
+          </Col>
+          <Col>
+            <Select
+              value={month}
+              onChange={(newMonth) => {
+                const now = value.clone().month(newMonth);
+                onChange(now);
+              }}
+              style={{ width: 100 }}
+            >
+              {monthOptions}
+            </Select>
+          </Col>
+        </Row>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -268,7 +330,7 @@ const TrainingCalender: React.FC = () => {
                 rules={[{ required: true, message: "Workplace is required" }]}
               />
             </Col>
-            <Col md={6} sm={24}>
+            {/* <Col md={6} sm={24}>
               <PButton
                 style={{ marginTop: "22px" }}
                 type="primary"
@@ -278,24 +340,26 @@ const TrainingCalender: React.FC = () => {
                   form
                     .validateFields()
                     .then(() => {
+                      console.log(values);
                       // landingApiCall(values);
                     })
                     .catch(() => {});
                 }}
               />
-            </Col>
+            </Col> */}
           </Row>
         </PCardBody>
 
         {/* </PCard> */}
+        <div style={{ height: "40%", width: "100%", padding: "30px" }}>
+          <Calendar
+            onPanelChange={onPanelChange}
+            dateCellRender={dateCellRender}
+            monthCellRender={monthCellRender}
+            headerRender={customHeaderRender}
+          />
+        </div>
       </PForm>
-      <div style={{ height: "40%", width: "100%", padding: "30px" }}>
-        <Calendar
-          onPanelChange={onPanelChange}
-          dateCellRender={dateCellRender}
-          monthCellRender={monthCellRender}
-        />
-      </div>
     </div>
   );
 };
