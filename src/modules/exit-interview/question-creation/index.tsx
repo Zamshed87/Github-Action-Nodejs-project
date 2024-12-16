@@ -200,7 +200,8 @@ const QuestionCreationLanding = () => {
                   rec?.id,
                   setSingleData,
                   setLoading,
-                  setOpen
+                  setOpen,
+                  rec?.status
                 );
               }}
             />

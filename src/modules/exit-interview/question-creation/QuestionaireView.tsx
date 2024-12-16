@@ -9,7 +9,7 @@ import { assignToEmployee } from "./helper";
 import Loading from "common/loading/Loading";
 
 const QuestionaireView = ({ singleData }: any) => {
-  const { typeName, title, description, questions } = singleData;
+  const { typeName, title, description, questions, isActive } = singleData;
 
   const { profileData } = useSelector(
     (state: any) => state?.auth,
@@ -59,38 +59,40 @@ const QuestionaireView = ({ singleData }: any) => {
             value={description || "N/A"}
           />
         </div>
-        <div>
-          <PSelect
-            style={{ width: "250px" }}
-            label="Assign to"
-            placeholder="Search Min 2 char"
-            options={CommonEmployeeDDL?.data || []}
-            loading={CommonEmployeeDDL?.loading}
-            onChange={(value, op: any) => {
-              setEmployee(op);
-            }}
-            onSearch={(value) => {
-              getEmployee(value);
-            }}
-            showSearch
-            filterOption={false}
-            allowClear={true}
-          />
-          <PButton
-            disabled={!employee}
-            style={{ marginLeft: "auto", marginTop: "4px" }}
-            type="primary"
-            content="Assign"
-            onClick={() => {
-              assignToEmployee(
-                singleData?.id,
-                employee?.value,
-                setEmployee,
-                setLoading
-              );
-            }}
-          />
-        </div>
+        {isActive && (
+          <div>
+            <PSelect
+              style={{ width: "250px" }}
+              label="Assign to"
+              placeholder="Search Min 2 char"
+              options={CommonEmployeeDDL?.data || []}
+              loading={CommonEmployeeDDL?.loading}
+              onChange={(value, op: any) => {
+                setEmployee(op);
+              }}
+              onSearch={(value) => {
+                getEmployee(value);
+              }}
+              showSearch
+              filterOption={false}
+              allowClear={true}
+            />
+            <PButton
+              disabled={!employee}
+              style={{ marginLeft: "auto", marginTop: "4px" }}
+              type="primary"
+              content="Assign"
+              onClick={() => {
+                assignToEmployee(
+                  singleData?.id,
+                  employee?.value,
+                  setEmployee,
+                  setLoading
+                );
+              }}
+            />
+          </div>
+        )}
       </Flex>
       <div style={{ marginTop: "10px" }}>
         <h2>

@@ -5,7 +5,8 @@ export const getSingleQuestionnaire = async (
   id,
   setData,
   setLoading,
-  setOpen
+  setOpen,
+  status
 ) => {
   setLoading && setLoading(true);
   try {
@@ -13,6 +14,7 @@ export const getSingleQuestionnaire = async (
     setData({
       ...res.data,
       id,
+      isActive: status === "Inactive" ? false : true,
     });
     setOpen && setOpen(true);
   } catch (error) {

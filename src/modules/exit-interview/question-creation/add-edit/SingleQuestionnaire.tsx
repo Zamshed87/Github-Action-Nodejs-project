@@ -141,15 +141,6 @@ const SingleQuestionnaire = ({
             />
           </Form.Item>
         </div>
-        {/* <div className="col-12 col-md-4 py-0 my-0 pl-0">
-          <Form.Item name={[field.name, "questionTitle"]} shouldUpdate>
-            <PInput
-              type="text"
-              placeholder="Question Title"
-              label="Question Title"
-            />
-          </Form.Item>
-        </div> */}
         <div className="col-12 col-md-4 py-0 my-0 pl-0 PeopleDeskInputWrapper">
           <label
             style={{
@@ -184,10 +175,8 @@ const SingleQuestionnaire = ({
                           ? {
                               ...q,
                               expectedAns: res.data.answer,
-                              questionType: {
-                                label: res?.data?.questionTypeName,
-                                value: res?.data?.questionTypeId,
-                              },
+                              questionType:
+                                res?.data?.questionTypeId?.toString(),
                               ansTextLength: res?.data?.answerTextLength,
                               answers:
                                 res?.data?.options?.length > 0
@@ -205,8 +194,6 @@ const SingleQuestionnaire = ({
                     antForm.setFieldsValue({
                       questions: updatedQuestions,
                     });
-
-                    console.log(antForm.getFieldsValue(true));
                   });
                 setTempOptions([]);
               }}
