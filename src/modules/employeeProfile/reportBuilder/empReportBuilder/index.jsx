@@ -25,10 +25,7 @@ import {
   salaryDetailsExcelColumn,
   salaryDetailsExcelData,
 } from "./excel/excelStyle";
-import {
-  getColumnNameForReport,
-  getCustomReportData,
-} from "./helper";
+import { getColumnNameForReport, getCustomReportData } from "./helper";
 import { getBuDetails } from "common/api";
 
 const initialValues = {
@@ -45,7 +42,7 @@ const EmployeeReportBuilder = () => {
   }, []);
 
   // eslint-disable-next-line no-unused-vars
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -74,7 +71,6 @@ const EmployeeReportBuilder = () => {
     enableReinitialize: true,
     validationSchema,
     initialValues,
-    onSubmit: (values) => {},
   });
 
   useEffect(() => {
@@ -175,7 +171,7 @@ const EmployeeReportBuilder = () => {
     let newArr = [];
 
     for (let index = 0; index < tableRow.length; index++) {
-      let element = tableRow[index];
+      const element = tableRow[index];
       newArr = {
         ...newArr,
         [element?.value]: element?.label,
@@ -217,6 +213,11 @@ const EmployeeReportBuilder = () => {
     setShowingData(filteredData);
   };
 
+  useEffect(() => {
+    wgId > 1 &&
+      getCustomReportData(orgId, buId, setLandingData, setLoading, wgId);
+  }, [wgId]);
+
   return (
     <div style={{ height: "100vh !important" }}>
       <form onSubmit={handleSubmit}>
@@ -250,7 +251,7 @@ const EmployeeReportBuilder = () => {
                       touched={touched}
                     />
                   </div>
-                  {console.log("showingData",showingData)}
+                  {console.log("showingData", showingData)}
                   <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                     <div>
                       <Droppable droppableId="AllQuestion">
@@ -259,7 +260,7 @@ const EmployeeReportBuilder = () => {
                             ref={queDropProvided.innerRef}
                             {...queDropProvided.droppableProps}
                           >
-                            {showingData?.slice(0,-5)?.map((item, index) => {
+                            {showingData?.slice(0, -5)?.map((item, index) => {
                               return (
                                 <Draggable
                                   key={index}
@@ -271,7 +272,6 @@ const EmployeeReportBuilder = () => {
                                       ref={queProvided.innerRef}
                                       {...queProvided.draggableProps}
                                       {...queProvided.dragHandleProps}
-                                      index={index}
                                     >
                                       <DragIndicatorIcon
                                         sx={{ fontSize: "12px" }}
@@ -359,7 +359,8 @@ const EmployeeReportBuilder = () => {
                         orgId,
                         buId,
                         setLandingData,
-                        setLoading
+                        setLoading,
+                        wgId
                       );
                     }}
                   >
@@ -476,7 +477,7 @@ const EmployeeReportBuilder = () => {
 
                         {selectedColumn?.map((item, index) => {
                           return (
-                            <th style={{ width: "120px" }}>
+                            <th key={index} style={{ width: "120px" }}>
                               <div>{item?.label}</div>
                             </th>
                           );
