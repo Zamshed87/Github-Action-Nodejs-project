@@ -1497,7 +1497,7 @@ const CreateAndEditEmploye = () => {
                     />
                   </Col>
                 )}
-                {orgId === 7 && (
+                {orgId === 12 && (
                   <Col md={6} sm={24}>
                     <PSelect
                       options={commonDDL}
@@ -1508,7 +1508,7 @@ const CreateAndEditEmploye = () => {
                       placeholder="Take Home Pay"
                       onChange={(value, op) => {
                         form.setFieldsValue({
-                          isTakeHomePay: value,
+                          isTakeHomePay: op,
                         });
                       }}
                       // rules={[{ required: true, message: "HR Position is required" }]}
