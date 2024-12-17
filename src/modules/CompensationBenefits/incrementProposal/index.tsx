@@ -11,6 +11,8 @@ import {
   TableButton,
 } from "Components";
 import type { RangePickerProps } from "antd/es/date-picker";
+import { InfoOutlined } from "@mui/icons-material";
+import profileImg from "../../../assets/images/profile.jpg";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tag } from "antd";
@@ -22,12 +24,14 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { dateFormatter } from "utility/dateFormatter";
+import { Popover } from "@mui/material";
 
 import { yearDDLAction } from "utility/yearDDL";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
+import PopoverHistory from "./ApprovalLogInfo";
 
 export const IncrementProposal = () => {
   const dispatch = useDispatch();
@@ -37,6 +41,10 @@ export const IncrementProposal = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [landing, setLanding] = useState<any[]>([]);
+  const [anchorElHistory, setAnchorElHistory] = useState(null);
+  const [selectedSingleEmployee, setSelectedSingleEmployee] = useState([]);
+  const openHistory = Boolean(anchorElHistory);
+  const idHistory = openHistory ? "simple-popover" : undefined;
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30338),
@@ -381,9 +389,27 @@ export const IncrementProposal = () => {
     },
     {
       title: "Status",
-      render: (_: any, rec: any) => {
-        return (
-          <div>
+      width: 150,
+
+      // render: (_: any, rec: any) => {
+      //   return (
+      //     <div>
+      //       {rec?.strEmployeeStatus === "Approved" ? (
+      //         <Tag color="green">{rec?.status}</Tag>
+      //       ) : rec?.status === "Rejected" ? (
+      //         <Tag color="red">{rec?.status}</Tag>
+      //       ) : rec?.status === "Pending" ? (
+      //         <Tag color="orange">{rec?.status}</Tag>
+      //       ) : (
+      //         <Tag color="default">{rec?.status}</Tag>
+      //       )}
+
+      //     </div>
+      //   );
+      // },
+      render: (_: any, rec: any) => (
+        <div className="d-flex align-items-center">
+          <span className="ml-2">
             {rec?.strEmployeeStatus === "Approved" ? (
               <Tag color="green">{rec?.status}</Tag>
             ) : rec?.status === "Rejected" ? (
@@ -393,11 +419,20 @@ export const IncrementProposal = () => {
             ) : (
               <Tag color="default">{rec?.status}</Tag>
             )}
-          </div>
-        );
-      },
-
-      width: 100,
+          </span>
+          {rec?.approvalLog?.length > 0 && (
+            <InfoOutlined
+              className="ml-2"
+              sx={{ cursor: "pointer", fontSize: "17px" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setAnchorElHistory(e.currentTarget as any);
+                setSelectedSingleEmployee(rec);
+              }}
+            />
+          )}
+        </div>
+      ),
     },
     {
       title: "",
@@ -871,6 +906,32 @@ export const IncrementProposal = () => {
             checkBoxColWidth={50}
           />
         </PCard>
+        <Popover
+          sx={{
+            "& .MuiPaper-root": {
+              width: "600px",
+              minHeight: "200px",
+              borderRadius: "4px",
+            },
+          }}
+          id={idHistory}
+          open={openHistory}
+          anchorEl={anchorElHistory}
+          onClose={() => {
+            setAnchorElHistory(null);
+          }}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+        >
+          <PopoverHistory
+            propsObj={{
+              selectedSingleEmployee,
+              profileImg,
+            }}
+          />
+        </Popover>
       </PForm>
     </>
   ) : (
