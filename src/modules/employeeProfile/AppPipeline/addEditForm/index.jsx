@@ -3,23 +3,19 @@ import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
 import { labelChangeByOrgId } from "utility/strLabelChange";
-import { DataTable, TableButton } from "Components";
+import { DataTable } from "Components";
+import { approverDDL, header, sequence, submitHandler } from "./helper";
 
 export default function AddEditForm({
   setIsAddEditForm,
   getData,
-  // empBasic,
   isEdit,
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
-  // const debounce = useDebounce();
   const [tableData, setTableData] = useState([]);
   const [deletedRow, setDeletedRow] = useState([]);
   const [isStrStatus, setIsStrStatus] = useState(false);
@@ -34,22 +30,7 @@ export default function AddEditForm({
     (state) => state?.auth?.keywords,
     shallowEqual
   );
-  const approverDDL = (orgId) => {
-    switch (orgId) {
-      case 10015:
-        return [
-          { value: 1, label: supervisor || "Reporting Line" },
-          { value: 2, label: "Team Leader" },
-          { value: 3, label: "User Group" },
-        ];
-      default:
-        return [
-          { value: 1, label: supervisor || "Supervisor" },
-          { value: 2, label: "Line Manager" },
-          { value: 3, label: "User Group" },
-        ];
-    }
-  };
+
   const { orgId, buId, employeeId, wgId, wId, wName, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -57,7 +38,6 @@ export default function AddEditForm({
 
   const [loading, setLoading] = useState(false);
 
-  // ddls
   useEffect(() => {
     getWgDDL.action({
       urlKey: "WorkplaceGroupIdAll",
@@ -92,12 +72,10 @@ export default function AddEditForm({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
-        // id: singleData?.intBusinessUnitId,
         DDLType: "usergroup",
         WorkplaceGroupId: wgId,
         BusinessUnitId: buId,
         intId: employeeId || 0,
-        // intWorkplaceId: wId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -106,8 +84,6 @@ export default function AddEditForm({
         });
       },
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
   useEffect(() => {
     getPipelineDDL.action({
@@ -123,53 +99,11 @@ export default function AddEditForm({
         });
       },
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
-  // states
-
-  // Pages Start From Here code from above will be removed soon
 
   // Form Instance
   const [form] = Form.useForm();
   // submit
-  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
-    const cb = () => {
-      resetForm();
-      setIsAddEditForm(false);
-      getData();
-    };
-    if (!tableData?.length)
-      return toast.warn(
-        `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
-      );
-    const payload = {
-      isActive: true,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: employeeId,
-      intPipelineHeaderId: singleData?.intPipelineHeaderId || 0,
-      strPipelineName: values?.pipelineName?.label,
-      strApplicationType: values?.pipelineName?.value,
-      strRemarks: values?.remarks || "",
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intWorkplaceGroupId: values?.orgName?.value || wgId,
-      intWorkplaceId: values?.workplace?.value ? values?.workplace?.value : 0, //  || wId,
-      isValidate: true,
-      approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
-    };
-    savePipeline.action({
-      urlKey: "ApprovalPipelineCreateNUpdate",
-      method: "POST",
-      payload: payload,
-      onSuccess: () => {
-        cb();
-      },
-      toast: true,
-    });
-  };
 
   useEffect(() => {
     if (singleData?.intPipelineHeaderId) {
@@ -226,63 +160,7 @@ export default function AddEditForm({
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
-  // Header
-  const header = [
-    {
-      title: "SL",
-      render: (_, rec, index) => index + 1,
-      align: "center",
-      width: 50,
-    },
-    {
-      title: "Approver",
-      dataIndex: "approver",
-      sorter: true,
-    },
-    {
-      title: "Sequence Order",
-      dataIndex: "intShortOrder",
-      sorter: true,
-    },
-    {
-      title: "Status Title",
-      dataIndex: "strStatusTitle",
-      sorter: true,
-    },
-    {
-      title: "User Group",
-      dataIndex: "userGroup",
-      sorter: true,
-    },
 
-    {
-      width: 50,
-      align: "center",
-      render: (_, rec, index) => (
-        <>
-          <TableButton
-            buttonsList={[
-              {
-                type: "delete",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  // store deleted data,we have to send it to back end for edit
-                  const data = [...deletedRow];
-                  data.push({
-                    ...rec,
-                    isCreate: false,
-                    isDelete: true,
-                  });
-                  setDeletedRow(data);
-                  remover(index);
-                },
-              },
-            ]}
-          />
-        </>
-      ),
-    },
-  ];
   return (
     <PForm
       form={form}
@@ -294,11 +172,18 @@ export default function AddEditForm({
           resetForm: form.resetFields,
           setIsAddEditForm,
           isEdit,
+          tableData,
+          employeeId,
+          singleData,
+          orgId,
+          buId,
+          wgId,
+          deletedRow,
+          savePipeline,
         });
       }}
       initialValues={{
         orgName: { value: wgId, label: wgName },
-        // workplace: { value: wId, label: wName },
       }}
     >
       <Row gutter={[10, 2]}>
@@ -348,7 +233,6 @@ export default function AddEditForm({
                 workplace: op,
               });
             }}
-            // rules={[{ required: true, message: "Workplace is required" }]}
           />
         </Col>
         <Col md={12} sm={24}>
@@ -375,12 +259,11 @@ export default function AddEditForm({
             name="remarks"
             label="Remarks"
             placeholder="Remarks"
-            // rules={[{ required: true, message: "remarks is required" }]}
           />
         </Col>
         <Col md={12} sm={24}>
           <PSelect
-            options={approverDDL(orgId)}
+            options={approverDDL(orgId, supervisor)}
             name="approver"
             label="Approver"
             showSearch
@@ -390,30 +273,36 @@ export default function AddEditForm({
               form.setFieldsValue({
                 approver: op,
                 strTitle: `${op?.label}`,
+                // strTitlePending: `${op?.label}`,
                 userGroup: undefined,
               });
               setIsStrStatus(true);
             }}
-            // rules={[{ required: true, message: "Approver is required" }]}
           />
         </Col>
         <Col md={12} sm={24}>
           <PInput
             type="text"
-            addOnBefore={isStrStatus && "Approved By"}
+            addOnBefore={isStrStatus && "Pre-Approved By"}
             name="strTitle"
-            label="Approve Status"
-            placeholder="Approve Status"
+            label="Pre-Approval Status"
+            placeholder="Pre-Approval Status"
             disabled={!form.getFieldValue("approver")}
-            // rules={[{ required: true, message: "remarks is required" }]}
+          />
+        </Col>
+        <Col md={12} sm={24}>
+          <PInput
+            type="text"
+            addOnBefore={isStrStatus && "Pending Approval By"}
+            name="strTitlePending"
+            label="Pending Approval Status"
+            placeholder="Pending Approval Status"
+            disabled={!form.getFieldValue("approver")}
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver } = form.getFieldsValue();
-
-            // const empType = employeeType?.label;
-
             return (
               <>
                 {approver?.value === 3 ? (
@@ -446,28 +335,7 @@ export default function AddEditForm({
         </Form.Item>
         <Col md={12} sm={24}>
           <PSelect
-            options={[
-              { value: 1, label: "1" },
-              { value: 2, label: "2" },
-              { value: 3, label: "3" },
-              { value: 4, label: "4" },
-              { value: 5, label: "5" },
-              { value: 6, label: "6" },
-              { value: 7, label: "7" },
-              { value: 8, label: "8" },
-              { value: 9, label: "9" },
-              { value: 10, label: "10" },
-              { value: 11, label: "11" },
-              { value: 12, label: "12" },
-              { value: 13, label: "13" },
-              { value: 14, label: "14" },
-              { value: 15, label: "15" },
-              { value: 16, label: "16" },
-              { value: 17, label: "17" },
-              { value: 18, label: "18" },
-              { value: 19, label: "19" },
-              { value: 20, label: "20" },
-            ]}
+            options={sequence}
             name="sequence"
             label="Sequence Order"
             showSearch
@@ -478,20 +346,12 @@ export default function AddEditForm({
                 sequence: op,
               });
             }}
-            rules={
-              [
-                // { required: true, message: "Sequence Order is required" },
-              ]
-            }
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { userGroup, strTitle, sequence, approver } =
               form.getFieldsValue();
-
-            // const empType = employeeType?.label;
-
             return (
               <>
                 <Col span={2} className="mt-1">
@@ -501,8 +361,6 @@ export default function AddEditForm({
                     style={{
                       width: "auto",
                       height: "auto",
-                      // margin: "0.4em 0 0 0.7em",
-                      // padding: " 0 2rem",
                     }}
                     onClick={() => {
                       if (sequence === undefined || approver === undefined) {
@@ -575,8 +433,7 @@ export default function AddEditForm({
             <DataTable
               bordered
               data={tableData?.length > 0 ? tableData : []}
-              // loading={landingApi?.loading}
-              header={header}
+              header={header(deletedRow, setDeletedRow, remover)}
             />
           )}
         </Col>

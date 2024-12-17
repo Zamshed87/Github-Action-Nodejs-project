@@ -212,7 +212,7 @@ function CommonAppPipeline() {
       <PModal
         open={open}
         title={id ? "Edit Approval Pipeline" : "Create Approval Pipeline"}
-        width=""
+        width={1000}
         onCancel={() => {
           setId("");
           setOpen(false);
