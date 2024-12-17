@@ -33,7 +33,9 @@ export const saveQuestionnaire = async (
         answerTextLength: ques?.ansTextLength || 400,
         isRequired: ques?.isRequired ? true : false,
         saveAsTemplate: ques?.isDraft ? true : false,
-        options: relevantAnswers,
+        options: ["0", "1", "2"].includes(ques?.questionType)
+          ? relevantAnswers
+          : [],
       };
     });
 

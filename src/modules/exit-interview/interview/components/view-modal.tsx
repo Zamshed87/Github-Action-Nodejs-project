@@ -20,6 +20,22 @@ const ViewModal = ({ singleData }: any) => {
     return false;
   };
 
+  const QuesType = (qType: string) => {
+    switch (qType) {
+      case "Radio Button":
+        return "Single Choice";
+
+      case "Textbox":
+        return "Short Answer";
+      case "Checkbox":
+        return "Multiple Choice (Select All That Apply)";
+      case "Drop-Down List":
+        return "Selected From the List";
+      default:
+        return "Detailed Response (Rich Text)";
+    }
+  };
+
   return (
     <div>
       <div style={{ fontSize: "12px" }}>
@@ -57,8 +73,8 @@ const ViewModal = ({ singleData }: any) => {
                 {ques?.title}
                 {ques?.isRequired && <span style={{ color: "red" }}> *</span>}
               </p>
-              <small style={{ fontSize: "12px" }}>
-                Question type is {ques?.typeName}
+              <small className="mb-2" style={{ fontSize: "12px" }}>
+                {QuesType(ques?.typeName)}
               </small>
               {ques?.typeName === "Radio Button" &&
                 ques?.options?.map((op: any, index: number) => (

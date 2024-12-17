@@ -34,19 +34,18 @@ export const getCustomReportData = async (
   buId,
   setter,
   setLoading,
-  cb
+  wgId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=EmployeeProfileAllLandingForCustomReport&AccountId=${orgId}&BusinessUnitId=${buId}`
+      `/Employee/PeopleDeskAllLanding?TableName=EmployeeProfileAllLandingForCustomReport&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`
     );
-    cb && cb();
     setter(res?.data);
     // setAlldata && setAlldata(res?.data);
-    setLoading && setLoading(false);
   } catch (error) {
     setter([]);
+  } finally {
     setLoading && setLoading(false);
   }
 };
