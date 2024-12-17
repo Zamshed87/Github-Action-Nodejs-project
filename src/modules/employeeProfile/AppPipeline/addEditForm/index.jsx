@@ -1,7 +1,7 @@
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Checkbox, Col, Form, InputNumber, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -19,6 +19,7 @@ export default function AddEditForm({
   const [tableData, setTableData] = useState([]);
   const [deletedRow, setDeletedRow] = useState([]);
   const [isStrStatus, setIsStrStatus] = useState(false);
+  const [randomCount, setRandomCount] = useState(false);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
@@ -333,7 +334,7 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
-        <Col md={12} sm={24}>
+        {/* <Col md={12} sm={24}>
           <PSelect
             options={sequence}
             name="sequence"
@@ -347,40 +348,85 @@ export default function AddEditForm({
               });
             }}
           />
+        </Col> */}
+        <Col md={4} sm={24} className="mt-4">
+          <Form.Item name="randomCount" valuePropName="checked">
+            <Checkbox
+              onChange={(e) => {
+                const checked = e.target.checked;
+                form.setFieldsValue({
+                  randomCount: checked,
+                  randomCountValue: undefined,
+                });
+                setRandomCount(checked);
+              }}
+            >
+              Random Count
+            </Checkbox>
+          </Form.Item>
         </Col>
+
+        <Form.Item
+          name="randomCountValue"
+          className="mt-4"
+          style={{
+            display: randomCount ? "block" : "none",
+            marginRight:"10px"
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Please enter a count",
+            },
+            {
+              validator: (_, value) => {
+                if (value > tableData.length) {
+                  return Promise.reject(
+                    "Count cannot be greater than table length"
+                  );
+                }
+                return Promise.resolve();
+              },
+            },
+          ]}
+        >
+          <InputNumber
+            min={1}
+            max={tableData.length}
+            placeholder="Enter Count"
+            onChange={(value) =>
+              form.setFieldsValue({ randomCountValue: value })
+            }
+          />
+        </Form.Item>
+
         <Form.Item shouldUpdate noStyle>
           {() => {
-            const { userGroup, strTitle, sequence, approver } =
-              form.getFieldsValue();
+            const { approver, userGroup, strTitle } = form.getFieldsValue();
             return (
               <>
                 <Col span={2} className="mt-1">
                   <button
                     type="button"
-                    className="mt-3  btn btn-green  "
+                    className="mt-3 btn btn-green"
                     style={{
                       width: "auto",
                       height: "auto",
                     }}
                     onClick={() => {
-                      if (sequence === undefined || approver === undefined) {
-                        return toast.warn(
-                          "Please fill up the sequence and approver field"
-                        );
+                      if (approver === undefined) {
+                        return toast.warn("Please fill up the approver field");
                       }
                       if (approver?.value === 3 && userGroup === undefined) {
                         return toast.warn(
                           "Please fill up the User Group field"
                         );
                       }
+
                       const exists = tableData.filter(
                         (item) =>
                           item?.approver === approver?.label &&
                           approver?.label !== "User Group"
-                      );
-
-                      const sequenceExists = tableData.filter(
-                        (item) => item?.intShortOrder === sequence?.value
                       );
 
                       const userGroupExists = tableData.filter(
@@ -390,10 +436,11 @@ export default function AddEditForm({
 
                       if (exists?.length > 0)
                         return toast.warn("Already exists approver");
-                      if (sequenceExists?.length > 0)
-                        return toast.warn("Already exists sequence");
                       if (userGroupExists?.length > 0)
                         return toast.warn("Already exists user group");
+
+                      // Dynamic Sequence (based on tableData length)
+                      const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
                       const obj = {
@@ -404,7 +451,7 @@ export default function AddEditForm({
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
                         intUserGroupHeaderId: userGroup?.value || 0,
-                        intShortOrder: sequence?.value,
+                        intShortOrder: newSequence,
                         isCreate: true,
                         isDelete: false,
                         strStatusTitle: `Approved By ${strTitle}`,
@@ -413,12 +460,11 @@ export default function AddEditForm({
 
                       setTableData(data);
                       form.setFieldsValue({
-                        sequence: undefined,
                         approver: undefined,
                         strTitle: undefined,
+                        strTitlePending: undefined,
                         userGroup: undefined,
                       });
-                      setIsStrStatus(false);
                     }}
                   >
                     Add
@@ -428,6 +474,7 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
+{console.log("tableData",tableData)}
         <Col md={24} sm={24} style={{ marginTop: "1rem" }}>
           {tableData?.length > 0 && (
             <DataTable
