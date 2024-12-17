@@ -14,13 +14,19 @@ import {
   PSelect,
 } from "Components";
 import { perticipantMap } from "./helper";
-
+import { saveAttendace } from "./helper";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ViewTrainingPlan, ViewTrainingPlanDetails } from "../planning/helper";
+import {
+  ViewTrainingPlan,
+  ViewTrainingPlanDetails,
+  ViewTrainingSchedule,
+} from "../planning/helper";
+import moment from "moment";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
@@ -43,10 +49,10 @@ const TnDAttendanceSave = () => {
   );
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
-  const [showTable, setShowTable] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
   const [rowData, setRowData] = useState<any>(null);
+  const [attendanceDDL, setAttendanceDDL] = useState(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -66,11 +72,11 @@ const TnDAttendanceSave = () => {
   const header: any = [
     {
       title: "SL",
-      render: (_: any, __: any, index: number) => index + 1,
+      render: (_: any, __: any, index: number) => index,
     },
     {
       title: "Participants List",
-      dataIndex: "perticipant",
+      dataIndex: "participantName",
       width: 120,
     },
     {
@@ -85,7 +91,7 @@ const TnDAttendanceSave = () => {
     },
     {
       title: "Workplace",
-      dataIndex: "Workplace",
+      dataIndex: "workplace",
       width: 50,
     },
     {
@@ -100,29 +106,29 @@ const TnDAttendanceSave = () => {
           <br />
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rowData?.every((item: any) => item.isAttendance)}
+            checked={rowData?.every((item: any) => item.attendanceStatus === 0)}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) => ({
                   ...item,
-                  isAttendance: e.target.checked,
+                  attendanceStatus: e.target.checked ? 0 : 1,
                 }))
               );
             }}
           />
         </>
       ),
-      dataIndex: "isAttendance",
+      dataIndex: "attendanceStatus",
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rec.isAttendance}
+            checked={rec.attendanceStatus === 0}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) =>
-                  item.key === rec.key
-                    ? { ...item, isAttendance: e.target.checked }
+                  item.uId === rec.uId
+                    ? { ...item, attendanceStatus: e.target.checked ? 0 : 1 }
                     : item
                 )
               );
@@ -132,54 +138,6 @@ const TnDAttendanceSave = () => {
       ),
       align: "center",
       width: 40,
-    },
-  ];
-
-  const demoData = [
-    {
-      key: "1",
-      perticipant: "John Doe",
-      hrPosition: "Manager",
-      department: "HR",
-      Workplace: "Head Office",
-      workplaceGroup: "Group A",
-      isAttendance: false,
-    },
-    {
-      key: "2",
-      perticipant: "Jane Smith",
-      hrPosition: "Developer",
-      department: "IT",
-      Workplace: "Remote",
-      workplaceGroup: "Group B",
-      isAttendance: false,
-    },
-    {
-      key: "3",
-      perticipant: "Robert Brown",
-      hrPosition: "Analyst",
-      department: "Finance",
-      Workplace: "Branch Office",
-      workplaceGroup: "Group C",
-      isAttendance: false,
-    },
-    {
-      key: "4",
-      perticipant: "Emily Johnson",
-      hrPosition: "Designer",
-      department: "Marketing",
-      Workplace: "Remote",
-      workplaceGroup: "Group A",
-      isAttendance: false,
-    },
-    {
-      key: "5",
-      perticipant: "Michael Wilson",
-      hrPosition: "Intern",
-      department: "Operations",
-      Workplace: "Head Office",
-      workplaceGroup: "Group B",
-      isAttendance: false,
     },
   ];
 
@@ -211,6 +169,9 @@ const TnDAttendanceSave = () => {
       },
     ]);
   };
+
+  const [landingApi, getLandingApi, landingLoading, , landingError] =
+    useAxiosGet();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
@@ -251,15 +212,35 @@ const TnDAttendanceSave = () => {
   }, []);
 
   useEffect(() => {
-    setRowData(demoData);
+    ViewTrainingSchedule(data?.id, setLoading, (responseData: any) => {
+      const formattedData = responseData.map((item: any) => ({
+        ...item,
+        value: item.id,
+        label: `${moment(item?.trainingDate).format("DD-MM-YYYY")}[${moment(
+          item.startTime,
+          "HH:mm"
+        ).format("hh:mm A")}-${moment(item?.endTime, "HH:mm").format(
+          "hh:mm A"
+        )}]`,
+      }));
+      setAttendanceDDL(formattedData);
+    });
   }, []);
 
   return (
     <div>
-      {loading && <Loading />}
+      {(loading || landingLoading) && <Loading />}
       <PForm
         form={form}
-        initialValues={{ reasonForRequisition: data?.requestor }}
+        initialValues={{
+          trainingTypeName: data?.trainingTypeName,
+          trainingTitle: data?.trainingTitleName,
+          trainingMode: data?.trainingModeStatus?.label,
+          trainingOrganizer: data?.trainingOrganizerType?.label,
+          trainingVenue: data?.venueAddress,
+          trainingStatus: data?.status?.label,
+          trainingDuration: "TEST",
+        }}
       >
         <PCard>
           <PCardHeader
@@ -272,7 +253,9 @@ const TnDAttendanceSave = () => {
                 icon: <SaveOutlined />,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
-
+                  saveAttendace(form, data, rowData, setLoading, () => {
+                    history.push("/trainingAndDevelopment/trainingPlan");
+                  });
                   form
                     .validateFields()
                     .then(() => {})
@@ -288,8 +271,7 @@ const TnDAttendanceSave = () => {
                   type="text"
                   placeholder="Training Type"
                   label="Training Type"
-                  name="trainingTitle"
-                  disabled={true}
+                  name="trainingTypeName"
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -298,7 +280,6 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Title"
                   label="Training Title"
                   name="trainingTitle"
-                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -307,7 +288,6 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Mode"
                   label="Training Mode"
                   name="trainingMode"
-                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -316,7 +296,6 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Organizer"
                   label="Training Organizer"
                   name="trainingOrganizer"
-                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -325,7 +304,6 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Venue"
                   label="Training Venue"
                   name="trainingVenue"
-                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -334,37 +312,49 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Status"
                   label="Training Status"
                   name="trainingStatus"
-                  disabled={true}
                 />
               </Col>
-              <Col md={4} sm={24}>
+              {/* <Col md={4} sm={24}>
                 <PInput
                   type="text"
                   placeholder="Training Duration"
                   label="Training Duration"
                   name="trainingDuration"
-                  disabled={true}
                 />
-              </Col>
-              <Col md={4} sm={24}>
+              </Col> */}
+              <Col md={6} sm={24}>
                 <PSelect
                   name="attendanceDate"
                   label="Attendance Date"
-                  onChange={(value) => {
+                  onChange={(value, op) => {
                     form.setFieldsValue({
-                      attendanceDate: value,
+                      attendanceDate: op,
                     });
                   }}
                   rules={[
                     { required: true, message: "Attendance Date is required" },
                   ]}
+                  options={attendanceDDL || []}
                 />
               </Col>
               <Col md={2} sm={24} style={{ marginTop: "22px" }}>
                 <PButton
                   type="primary"
                   content="View"
-                  onClick={() => setShowTable(!showTable)}
+                  onClick={() => {
+                    const values = form.getFieldsValue(true);
+                    getLandingApi(
+                      `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
+                      (data: any) => {
+                        setRowData(
+                          data.map((item: any, index: number) => ({
+                            ...item,
+                            uId: index,
+                          }))
+                        );
+                      }
+                    );
+                  }}
                 />
               </Col>
               <Col md={6} sm={24} style={{ marginTop: "22px" }}>
@@ -394,7 +384,7 @@ const TnDAttendanceSave = () => {
               </Col>
             </Row>
           </PCardBody>
-          {showTable && (
+          {!landingLoading && rowData?.length > 0 && (
             <PCardBody>
               <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
