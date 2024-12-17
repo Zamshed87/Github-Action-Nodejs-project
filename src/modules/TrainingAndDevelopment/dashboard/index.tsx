@@ -85,6 +85,7 @@ const pieConfig = {
     type: "outer",
     content: "{name} {percentage}",
   },
+  legend: false || undefined,
 };
 
 // Column Chart Config
@@ -215,7 +216,7 @@ const TnDDashboard = () => {
           </PCardBody>
         </PCard>
       </PForm>
-      <Row gutter={16} style={{ marginTop: "40px" }}>
+      <Row gutter={24} style={{ marginTop: "40px" }}>
         {/* Left Metrics Table */}
         <Col span={6}>
           <Table
@@ -229,12 +230,28 @@ const TnDDashboard = () => {
 
         {/* Middle Pie Chart */}
         <Col span={6}>
-          <Pie {...pieConfig} />
+          <Pie
+            {...pieConfig}
+            style={{
+              marginTop: "0px",
+              paddingTop: "0px",
+              width: "220px",
+              height: "200px",
+            }}
+          />
         </Col>
 
         {/* Right Pie Chart */}
         <Col span={6}>
-          <Pie {...pieConfig} />
+          <Pie
+            {...pieConfig}
+            style={{
+              marginTop: "0px",
+              paddingTop: "0px",
+              width: "220px",
+              height: "200px",
+            }}
+          />
         </Col>
 
         {/* Summary Table */}
@@ -250,6 +267,55 @@ const TnDDashboard = () => {
       </Row>
 
       <Divider />
+      <Row gutter={24} style={{ marginTop: "40px" }}>
+        {/* Left Metrics Table */}
+        <Col span={6}>
+          <Table
+            dataSource={tableData}
+            columns={tableColumns}
+            pagination={false}
+            bordered
+            size="middle"
+          />
+        </Col>
+
+        {/* Middle Pie Chart */}
+        <Col span={6}>
+          <Pie
+            {...pieConfig}
+            style={{
+              marginTop: "0px",
+              paddingTop: "0px",
+              width: "220px",
+              height: "200px",
+            }}
+          />
+        </Col>
+
+        {/* Right Pie Chart */}
+        <Col span={6}>
+          <Pie
+            {...pieConfig}
+            style={{
+              marginTop: "0px",
+              paddingTop: "0px",
+              width: "220px",
+              height: "200px",
+            }}
+          />
+        </Col>
+
+        {/* Summary Table */}
+        <Col span={6}>
+          <Table
+            dataSource={statisticsData}
+            columns={statisticsColumns}
+            pagination={false}
+            bordered
+            size="middle"
+          />
+        </Col>
+      </Row>
 
       {/* Bar Charts */}
       <Row gutter={16}>
