@@ -9,6 +9,7 @@ import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import formatAddress from "common/formatAddress";
+import { commonDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
 
 // const getYearMonth2 = (value) => {
 //   let splitMonth = value?.split("-");
@@ -86,7 +87,7 @@ export const createEditEmpAction = async (
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
       isSalaryHold: values?.isSalaryHold,
-      isTakeHomePay: values?.isTakeHomePay,
+      isTakeHomePay: values?.isTakeHomePay?.value,
       isActive: true,
       isUserInactive: false,
       isRemoteAttendance: false,
@@ -607,7 +608,9 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,
-          isTakeHomePay: empBasic?.employeeProfileLandingView?.isTakeHomePay,
+          isTakeHomePay: empBasic?.employeeProfileLandingView?.isTakeHomePay
+            ? commonDDL[1]
+            : commonDDL[0],
           contractualFromDate: empBasic?.employeeProfileLandingView
             ?.dteContractFromDate
             ? moment(empBasic?.employeeProfileLandingView?.dteContractFromDate)
