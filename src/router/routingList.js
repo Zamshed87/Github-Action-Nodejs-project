@@ -279,6 +279,7 @@ import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLand
 import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
 import JobLocation from "modules/configuration/JobLocation";
 import JobTerritory from "modules/configuration/JobTerritory";
+import FinalSettlementReport from "modules/timeSheet/reports/finalSettlementReport";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -1876,6 +1877,10 @@ export const routingList = [
   {
     path: "/profile/reports/dailyAttendanceReport",
     component: MgmtDailyAttendance,
+  },
+  {
+    path: "/profile/reports/finalSettlementReport",
+    component: FinalSettlementReport,
   },
   {
     path: "/profile/reports/lateReport",
