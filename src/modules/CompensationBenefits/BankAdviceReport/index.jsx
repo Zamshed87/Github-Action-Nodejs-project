@@ -391,8 +391,6 @@ const BankAdviceReport = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(orgId);
-
   return (
     <form onSubmit={handleSubmit}>
       {(loading || tenMsBankAdvice?.loading) && <Loading />}
