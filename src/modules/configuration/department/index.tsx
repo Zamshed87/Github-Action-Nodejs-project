@@ -104,10 +104,22 @@ function Department() {
       title: "Business Unit",
       dataIndex: "strBusinessUnit",
       sorter: true,
-      align: "center",
+      align: "left",
       width: 20,
-
-      //   fixed: "left",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sorter: true,
+      align: "left",
+      width: 20,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      align: "left",
+      width: 20,
     },
     {
       title: "Cost Center Division",

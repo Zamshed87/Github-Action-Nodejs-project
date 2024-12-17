@@ -8,10 +8,6 @@
 
 ==========================================*/
 
-/*==================================
-font-family: 'Inter', sans-serif;
-==================================== */
-
 /*-------------------------------------
 	Fonts
 --------------------------------------*/
@@ -20,7 +16,7 @@ font-family: 'Inter', sans-serif;
   src: local("Poppins"), url("../fonts/Poppins-Regular.ttf") format("truetype");
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 /*-------------------------------------
 	variable
@@ -195,7 +191,8 @@ label {
   -o-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  font-family: var(--interFont);
+  font-family: Poppins;
+  letter-spacing: 0.3px;
 }
 
 .table thead th {
@@ -965,7 +962,7 @@ h6.count {
 
 .pfAccountCard .bold {
   /* Body/Medium */
-  font-family: "Inter";
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -976,7 +973,7 @@ h6.count {
 }
 
 .tab-panel {
-  font-family: "Inter";
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -985,7 +982,7 @@ h6.count {
 
 .tab-panel .css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
   color: #299647 !important;
-  font-family: "Inter";
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -993,7 +990,7 @@ h6.count {
 }
 
 .tab-panel .MuiTab-root {
-  font-family: "Inter";
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -1001,7 +998,7 @@ h6.count {
 }
 
 .tab-panel .css-ahj2mt-MuiTypography-root {
-  font-family: "Inter";
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400 !important;
   font-size: 12px !important;
@@ -1062,4 +1059,7 @@ h6.count {
   .css-8935tu-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-root
   .MuiSvgIcon-root {
   padding: 3px;
+}
+.date-time-custom-css input{
+  padding: 5px 10px !important;
 }

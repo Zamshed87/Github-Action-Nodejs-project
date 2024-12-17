@@ -1,3 +1,196 @@
+// pms----------------------------------------
+const AssessmentByHR = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/assessmentByHR/index.jsx")
+);
+const SupervisorAssessmentLanding = lazy(() =>
+  import("../modules/pms/performanceAssessment/supervisorAssessment/index.jsx")
+);
+const SupervisorAssessmentNew = lazy(() =>
+  import(
+    "../modules/pms/performanceAssessment/supervisorAssessment/supervisorAssessment.jsx"
+  )
+);
+const SupervisorAssessment = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/supervisorAssessment/index.jsx")
+);
+const BarAssesment = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/barAssesment/index.jsx")
+);
+const BarAssessmentEvaluationForSupervisor = lazy(() =>
+  import(
+    "../modules/pms/performanceAssessment/supervisorAssessment/barAssessmentEvaluationForSupervisor.jsx"
+  )
+);
+const BarAssesmentEvaluation = lazy(() =>
+  import(
+    "../modules/pms/valuesAndCompetencies/barAssesment/evaluation/index.jsx"
+  )
+);
+const SelfAssessmentNew = lazy(() =>
+  import("../modules/pms/performanceAssessment/selfAssessment/index.jsx")
+);
+const SelfAssessment = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/selfAssessment/index.jsx")
+);
+const NineBoxGrid = lazy(() => import("../modules/pms/nineBoxGrid/index.jsx"));
+// const CoreValues = lazy(() =>
+//   import("../modules/pms/configuration/behavioralFactor/coreValues/index.jsx")
+// );
+// const CoreCompetencies = lazy(() =>
+//   import("../modules/pms/configuration/coreCompetencies/index.jsx")
+// );
+const EmployeeRole = lazy(() =>
+  import("../modules/pms/configuration/employeeRole/index.jsx")
+);
+
+const GrowthModel = lazy(() =>
+  import("../modules/pms/performanceCoaching/growModel/index.js")
+);
+const IDP = lazy(() => import("../modules/pms/idp/index.jsx"));
+const ActionPlanGrowModelLanding = lazy(() =>
+  import("../modules/pms/performanceCoaching/actionPlanGrowModel/index.jsx")
+);
+const ActionPlanCreate = lazy(() =>
+  import("../modules/pms/performancePlanning/actionPlan/create.jsx")
+);
+const BarAssesmentConfig = lazy(() =>
+  import("../modules/pms/performancePlanning/barAssesmentConfig/index.jsx")
+);
+const ActionPlanJohariWindow = lazy(() =>
+  import("../modules/pms/performanceCoaching/actionPlanJohariWindow/index.jsx")
+);
+const WorkPlan = lazy(() =>
+  import("../modules/pms/performancePlanning/workPlan/index.jsx")
+);
+const IndividualKpiEntry = lazy(() =>
+  import("../modules/pms/performancePlanning/individualKpiEntry/index.jsx")
+);
+// const IndividualKpiResult = lazy(() =>
+//   import("../modules/pms/performancePlanning/individualKpiResult/index.jsx")
+// );
+const IndividualKpiEntrySelf = lazy(() =>
+  import("../modules/pms/performancePlanning/individualKpiEntrySelf/index.jsx")
+);
+const DepartmentalKpiEntry = lazy(() =>
+  import("../modules/pms/performancePlanning/departmentalKpiEntry/index.jsx")
+);
+const SbuKpiEntry = lazy(() =>
+  import("../modules/pms/performancePlanning/sbuKpiEntry/index.jsx")
+);
+const IndividualScoreCard = lazy(() =>
+  import("../modules/pms/performancePlanning/individualScoreCard/index.jsx")
+);
+
+const EisenhowerMatrix = lazy(() =>
+  import("../modules/pms/performancePlanning/eisenhowerMatrix/index.jsx")
+);
+const JohariWindow = lazy(() =>
+  import("../modules/pms/performanceCoaching/johariWindow/index.jsx")
+);
+
+const DesignationWiseMapping = lazy(() =>
+  import(
+    "../modules/pms/configuration/kpimapping/createNUpdateKpi/DesignationWiseMapping.jsx"
+  )
+);
+const DepartmentWiseMapping = lazy(() =>
+  import(
+    "../modules/pms/configuration/kpimapping/createNUpdateKpi/DepartmentWiseMapping.jsx"
+  )
+);
+const EmployeeWiseMapping = lazy(() =>
+  import(
+    "../modules/pms/configuration/kpimapping/createNUpdateKpi/EmployeeWiseMapping.jsx"
+  )
+);
+const CreateKPI = lazy(() =>
+  import("../modules/pms/configuration/kpis/CreateKPI.jsx")
+);
+const Kpis = lazy(() => import("../modules/pms/configuration/kpis/index.jsx"));
+// const KpiMapping = lazy(() =>
+//   import("../modules/pms/configuration/kpimapping/index.jsx")
+// );
+const IndividualKpiMapping = lazy(() =>
+  import("../modules/pms/configuration/individualKpiMapping/index.jsx")
+);
+const PMSObjective = lazy(() =>
+  import("../modules/pms/configuration/objective/index.jsx")
+);
+const EvaluationCriteria = lazy(() =>
+  import("../modules/pms/configuration/evaluationCriteria/index.jsx")
+);
+const BehavioralFactor = lazy(() =>
+  import("../modules/pms/configuration/behavioralFactor/index.jsx")
+);
+const EvaluationCriteriaCreateEdit = lazy(() =>
+  import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
+);
+const ObjectiveCreateAndEdit = lazy(() =>
+  import("../modules/pms/configuration/objective/ObjectiveCreateAndEdit.jsx")
+);
+const DeptKpiMapping = lazy(() =>
+  import("../modules/pms/configuration/deptKpiMapping/index.jsx")
+);
+const DeptKpiCreateAndEdit = lazy(() =>
+  import("../modules/pms/configuration/deptKpiMapping/deptKpiCreateAndEdit.jsx")
+);
+const SbuKpiMapping = lazy(() =>
+  import("../modules/pms/configuration/sbuKpiMapping/index.jsx")
+);
+const SbuKpiCreateAndEdit = lazy(() =>
+  import("../modules/pms/configuration/sbuKpiMapping/sbuKpiCreateAndEdit.jsx")
+);
+// const PMSTargetSetup = lazy(() =>
+//   import("../modules/pms/targetSetup/targetSetup/index.jsx")
+// );
+const Individualtarget = lazy(() =>
+  import("../modules/pms/targetSetup/individualTargetSetup/index.jsx")
+);
+
+const DepartmentaltargetSetupLanding = lazy(() =>
+  import("../modules/pms/targetSetup/departmentalTargetSetup/index.jsx")
+);
+const SbuTargetSetupLanding = lazy(() =>
+  import("../modules/pms/targetSetup/sbuTargetSetup/index.jsx")
+);
+
+const IndividualtargetView = lazy(() =>
+  import(
+    "../modules/pms/targetSetup/individualTargetSetup/individualTargetViewEdit.jsx"
+  )
+);
+const CopyKpi = lazy(() =>
+  import("../modules/pms/targetSetup/copyKpi/index.jsx")
+);
+const PerformanceDialogReport = lazy(() =>
+  import("../modules/pms/report/PerformaceDialogReport/index.jsx")
+);
+
+const PerformanceEvaluationReport = lazy(() =>
+  import("../modules/pms/report/performanceEvaluation/index.jsx")
+);
+const IDPReport = lazy(() =>
+  import("../modules/pms/report/idpReport/index.jsx")
+);
+const PerformanceReport = lazy(() =>
+  import("../modules/pms/report/performanceReport/index.jsx")
+);
+
+const PerformanceMarkingView = lazy(() =>
+  import("../modules/pms/report/performanceMarking/view.jsx")
+);
+
+const PerformanceMarking = lazy(() =>
+  import("../modules/pms/report/performanceMarking/index.jsx")
+);
+const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
+const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
+const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
+const RoleWiseJDandSpecification = lazy(() =>
+  import("../modules/pms/configuration/roleWiseJD&Specification/index.jsx")
+);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// --------------
+
 import BulkSalaryAssign from "modules/CompensationBenefits/employeeSalary/bulkSalaryAssign";
 import SummaryCostCenterReport from "modules/CompensationBenefits/reports/summaryCostCenterReport";
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
@@ -75,8 +268,17 @@ import SingleIncrement from "modules/CompensationBenefits/Increment/singleInceme
 import QuestionCreationLanding from "modules/exit-interview/question-creation";
 import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
-import InterviewLanding from "modules/exit-interview/interview";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
+import IncrementProposalApproval from "modules/CompensationBenefits/incrementProposal/Incr_Proposal_Approval";
+import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
+import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
+import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
+import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
+import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
+import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
+import JobLocation from "modules/configuration/JobLocation";
+import JobTerritory from "modules/configuration/JobTerritory";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -124,6 +326,30 @@ const ShiftManagementLog = lazy(() =>
 );
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
+);
+const ManagementViewTask = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
+);
+const ManagementCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/mgmApplication/createTask.js"
+  )
+);
+const ManagementTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/index.js")
+);
+const SelfTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/selfApplication/index.js")
+);
+const SelfViewTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/selfApplication/viewTask.js"
+  )
+);
+const SelfCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/selfApplication/createTask.js"
+  )
 );
 const ExternalTrainingCreate = lazy(() =>
   import("../modules/trainingDevelopment/externalTraining/addEditForm.jsx")
@@ -894,6 +1120,12 @@ const CreateTransferPromotion = lazy(() =>
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/createTransferPromotion.jsx"
   )
 );
+const BulkUploadTransferNPromotion = lazy(() =>
+  import(
+    "../modules/employeeProfile/transferNPromotion/transferNPromotion/bulkUpload.jsx"
+  )
+);
+
 const ViewTransferNPromotion = lazy(() =>
   import(
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/viewTransferNPromotion.jsx"
@@ -932,7 +1164,7 @@ const SelfExpenseApplicationView = lazy(() =>
   import("../modules/expense/updatedExpanseApp/viewForm.jsx")
 );
 const FoodDetailsReport = lazy(() =>
-  import("../modules/FoodDetailsReport/index.jsx")
+  import("../modules/FoodDetailsReport/index.tsx")
 );
 const GrievanceDetails = lazy(() =>
   import("../modules/grievanceManagement/components/GrievanceDetails.jsx")
@@ -1145,11 +1377,11 @@ const PayrollGrossWiseBasicForm = lazy(() =>
     "../modules/PayrollManagementSytem/PayrollGrossWiseBasic/addEditForm/index.jsx"
   )
 );
-const PmsDashboard = lazy(() => import("../modules/pms/dashboard/index.jsx"));
-const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
-const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
-const Kpis = lazy(() => import("../modules/pms/kpis/index.jsx"));
-const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
+// const PmsDashboard = lazy(() => import("../modules/pms/dashboard/index.jsx"));
+// const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
+// const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
+// const Kpis = lazy(() => import("../modules/pms/kpis/index.jsx"));
+// const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
 const PolicyUpload = lazy(() => import("../modules/policyUpload/index.jsx"));
 const RemoteAttendanceApproval = lazy(() =>
   import("../modules/remoteAttendanceLocation/approval/index.jsx")
@@ -1299,6 +1531,18 @@ const MonthlyAttendanceReport = lazy(() =>
 const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
+// Training and Development
+import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
+import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
+import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/planningCreateEdit";
+import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
+import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
+import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType";
+import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
+import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
+import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
 //     "../modules/trainingDevelopment/Application/components/TrainingApplicationCreate/index.jsx"
@@ -1422,6 +1666,7 @@ export const routingList = [
     path: "/profile/rewardsandpunishmentadd",
     component: RewardsAndPunishmentAdd,
   },
+
   // { path: "/dashboard", component: DashboardModule },
   { path: "/dashboard", component: MasterDashboardLanding },
   { path: "/profile/employee", component: EmployeeFeatureNew },
@@ -1544,6 +1789,10 @@ export const routingList = [
   {
     path: "/profile/reports/movementDetailsHistory",
     component: MovementHistoryDetails,
+  },
+  {
+    path: "/profile/reports/marketVisit",
+    component: MarketVisitReport,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
@@ -1925,6 +2174,11 @@ export const routingList = [
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
   { path: "/administration/configuration/section", component: Section },
+  { path: "/administration/configuration/jobLocation", component: JobLocation },
+  {
+    path: "/administration/configuration/jobTerritory",
+    component: JobTerritory,
+  },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",
@@ -2003,6 +2257,30 @@ export const routingList = [
   {
     path: "/administration/configuration/managementDashboardPermission/edit/:id",
     component: ManagementDashboardPermissionCreate,
+  },
+  {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
+  },
+  {
+    path: "/SelfService/taskManagement",
+    component: SelfTaskManagement,
+  },
+  {
+    path: "/SelfService/taskManagement/create",
+    component: SelfCreateTask,
+  },
+  {
+    path: "/SelfService/taskManagement/view/:id",
+    component: SelfViewTask,
   },
   {
     path: "/administration/configuration/managementDashboardPermission/view/:id",
@@ -2333,6 +2611,11 @@ export const routingList = [
   },
 
   // compensationAndBenefits
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/incrementProposal",
+    component: IncrementProposal,
+  },
   {
     path: "/compensationAndBenefits/configuration/payrollElementAndRule",
     component: PayrollElementsRules,
@@ -2611,6 +2894,10 @@ export const routingList = [
     component: CreateTransferPromotion,
   },
   {
+    path: "/profile/transferandpromotion/transferandpromotion/bulk-upload",
+    component: BulkUploadTransferNPromotion,
+  },
+  {
     path: "/profile/transferandpromotion/transferandpromotion/edit/:id",
     component: CreateTransferPromotion,
   },
@@ -2628,26 +2915,26 @@ export const routingList = [
   },
 
   // Performance & Management
-  {
-    path: "/performancemanagementsystem/pms/dshboard",
-    component: PmsDashboard,
-  },
-  {
-    path: "/performancemanagementsystem/pms/strategicplan",
-    component: StrPlan,
-  },
-  {
-    path: "/performancemanagementsystem/pms/kpi",
-    component: Kpis,
-  },
-  {
-    path: "/performancemanagementsystem/pms/individualkpi",
-    component: IndividualKpi,
-  },
-  {
-    path: "/performancemanagementsystem/pms/individualkpi/create",
-    component: IndKpiEntry,
-  },
+  // {
+  //   path: "/performancemanagementsystem/pms/dshboard",
+  //   component: PmsDashboard,
+  // },
+  // {
+  //   path: "/performancemanagementsystem/pms/strategicplan",
+  //   component: StrPlan,
+  // },
+  // {
+  //   path: "/performancemanagementsystem/pms/kpi",
+  //   component: Kpis,
+  // },
+  // {
+  //   path: "/performancemanagementsystem/pms/individualkpi",
+  //   component: IndividualKpi,
+  // },
+  // {
+  //   path: "/performancemanagementsystem/pms/individualkpi/create",
+  //   component: IndKpiEntry,
+  // },
 
   // Reward & Punishment
   {
@@ -3058,6 +3345,10 @@ export const routingList = [
     path: "/approval/assetTransferApproval",
     component: AssetTransferApproval,
   },
+  {
+    path: "/approval/incrementproposalapproval",
+    component: IncrementProposalApproval,
+  },
   // Asset Management end
 
   //  Trainnning and development starts
@@ -3093,6 +3384,44 @@ export const routingList = [
     path: "/trainingAndDevelopment/training/attendance/view/:id",
     component: AttendanceView,
   },
+  // Training & Development New
+  {
+    path: "/trainingAndDevelopment/requisition",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/requisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/planning",
+    component: TnDPlanningLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/planning/:type",
+    component: TnDPlanningCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTypes",
+    component: TrainingType,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTitle",
+    component: TrainingTitle,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCostType",
+    component: TrainingCost,
+  },
+  {
+    path: "/trainingAndDevelopment/trainerInformation",
+    component: TrainerInfo,
+  },
+  {
+    path: "/trainingAndDevelopment/dashboard",
+    component: TnDDashboard,
+  },
+  // Trainnning and development ends
 
   //external training start
   {
@@ -3154,7 +3483,18 @@ export const routingList = [
     path: "/profile/customReportsBuilder/letterGenerate/generateLetter/:letterId",
     component: LetterGenAddEdit,
   },
-  // Trainnning and development ends
+  {
+    path: "/profile/rewardAndPunishment",
+    component: RewardPunishmentLanding,
+  },
+  {
+    path: "/profile/rewardAndPunishment/letterGenerate",
+    component: RewardPunishmentLetterGenAddEdit,
+  },
+  {
+    path: "/profile/customReportsBuilder/punishmentAction/:recordId",
+    component: PunishmentAction,
+  },
 
   // Exit Interview starts
 
@@ -3180,8 +3520,366 @@ export const routingList = [
     component: QuestionerAssignLanding,
   },
   {
+    path: "/SelfService/exitInterview",
+    component: EssInterviewLanding,
+  },
+  {
     path: "/profile/exitInterview/interview",
-    component: InterviewLanding,
+    component: EmInterviewLanding,
+  },
+  {
+    path: "/interview",
+    component: InterviewModal,
+  },
+
+  // task management
+  {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
+  },
+  // pms-----------------------------------------------------------------------////////////////////////////////////////////
+  {
+    path: "/pms/targetsetup/EmployeeTarget",
+    component: Individualtarget,
+  },
+  {
+    path: "/pms/targetsetup/EmployeeTarget/edit/:empId",
+    component: IndividualtargetView,
+  },
+  {
+    path: "/pms/targetsetup/EmployeeTarget/view/:empId",
+    component: IndividualtargetView,
+  },
+  // {
+  //   path: "/pms/targetsetup/DeptTarget/create",
+  //   component: CreateEditDeptTarget,
+  // },
+  {
+    path: "/pms/targetsetup/DeptTarget",
+    component: DepartmentaltargetSetupLanding,
+  },
+  // {
+  //   path: "/pms/targetsetup/SBUTarget/create",
+  //   component: CreateSBUTarget,
+  // },
+  // {
+  //   path: "/pms/targetsetup/SBUTarget",
+  //   component: SBUTargetLanding,
+  // },
+  {
+    path: "/pms/targetsetup/SBUTarget",
+    component: SbuTargetSetupLanding,
+  },
+
+  {
+    path: "/pms/targetsetup/CopyKPI",
+    component: CopyKpi,
+  },
+  {
+    path: "/pms/targetsetup/EmployeeTarget",
+    component: Individualtarget,
+  },
+  {
+    path: "/pms/targetsetup/EmployeeTarget/edit/:empId",
+    component: IndividualtargetView,
+  },
+  {
+    path: "/pms/targetsetup/EmployeeTarget/view/:empId",
+    component: IndividualtargetView,
+  },
+  // {
+  //   path: "/pms/targetsetup/DeptTarget/create",
+  //   component: CreateEditDeptTarget,
+  // },
+  {
+    path: "/pms/targetsetup/DeptTarget",
+    component: DepartmentaltargetSetupLanding,
+  },
+  // {
+  //   path: "/pms/targetsetup/SBUTarget/create",
+  //   component: CreateSBUTarget,
+  // },
+  // {
+  //   path: "/pms/targetsetup/SBUTarget",
+  //   component: SBUTargetLanding,
+  // },
+  {
+    path: "/pms/targetsetup/SBUTarget",
+    component: SbuTargetSetupLanding,
+  },
+
+  {
+    path: "/pms/targetsetup/CopyKPI",
+    component: CopyKpi,
+  },
+  {
+    path: "/pms/configuration/EvaluationCriteria/edit/:id",
+    component: EvaluationCriteriaCreateEdit,
+  },
+  {
+    path: "/pms/configuration/EvaluationCriteria/create",
+    component: EvaluationCriteriaCreateEdit,
+  },
+  {
+    path: "/pms/configuration/EvaluationCriteria",
+    component: EvaluationCriteria,
+  },
+  {
+    path: "/pms/configuration/BehavioralFactor",
+    component: BehavioralFactor,
+  },
+  {
+    path: "/pms/configuration/objective",
+    component: PMSObjective,
+  },
+  {
+    path: "/pms/configuration/objective/create",
+    component: ObjectiveCreateAndEdit,
+  },
+  {
+    path: "/pms/configuration/objective/edit",
+    component: ObjectiveCreateAndEdit,
+  },
+  {
+    path: "/pms/configuration/deptkpimapping",
+    component: DeptKpiMapping,
+  },
+  {
+    path: "/pms/configuration/deptkpimapping/create",
+    component: DeptKpiCreateAndEdit,
+  },
+  {
+    path: "/pms/configuration/deptkpimapping/edit",
+    component: DeptKpiCreateAndEdit,
+  },
+  {
+    path: "/pms/configuration/subkpimapping",
+    component: SbuKpiMapping,
+  },
+  {
+    path: "/pms/configuration/subkpimapping/create",
+    component: SbuKpiCreateAndEdit,
+  },
+  {
+    path: "/pms/configuration/subkpimapping/edit",
+    component: SbuKpiCreateAndEdit,
+  },
+  {
+    path: "/pms/report/performanceDialogReport",
+    component: PerformanceDialogReport,
+  },
+  {
+    path: "/pms/report/performanceEvalutationReport",
+    component: PerformanceEvaluationReport,
+  },
+  {
+    path: "/pms/report/idpreport",
+    component: IDPReport,
+  },
+  {
+    path: "/pms/report/PerformanceReport",
+    component: PerformanceReport,
+  },
+  {
+    path: "/pms/report/PerformanceMarking/view",
+    component: PerformanceMarkingView,
+  },
+  {
+    path: "/pms/report/PerformanceMarking",
+    component: PerformanceMarking,
+  },
+  {
+    path: "/performancemanagementsystem/pms/strategicplan",
+    component: StrPlan,
+  },
+  // {
+  //   path: "/pms/configuration/corevalues",
+  //   component: CoreValues,
+  // },
+  // {
+  //   path: "/pms/configuration/corecompetency",
+  //   component: CoreCompetencies,
+  // },
+  {
+    path: "/pms/configuration/role",
+    component: EmployeeRole,
+  },
+  // {
+  //   path: "/pms/configuration/kpimapping",
+  //   component: KpiMapping,
+  // },
+  {
+    path: "/pms/configuration/kpimapping",
+    component: IndividualKpiMapping,
+  },
+  {
+    path: "/pms/configuration/kpis",
+    component: Kpis,
+  },
+  {
+    path: "/pms/configuration/RoleWiseJDSpec",
+    component: RoleWiseJDandSpecification,
+  },
+  {
+    path: "/pms/configuration/kpimapping/employeeWise/create",
+    component: EmployeeWiseMapping,
+  },
+  {
+    path: "/pms/configuration/kpimapping/employeeWise/edit/:id",
+    component: EmployeeWiseMapping,
+  },
+  {
+    path: "/pms/configuration/kpimapping/departmentWise/create",
+    component: DepartmentWiseMapping,
+  },
+  {
+    path: "/pms/configuration/kpimapping/departmentWise/edit/:id",
+    component: DepartmentWiseMapping,
+  },
+  {
+    path: "/pms/configuration/kpimapping/designationWise/create",
+    component: DesignationWiseMapping,
+  },
+  {
+    path: "/pms/configuration/kpimapping/designationWise/edit/:id",
+    component: DesignationWiseMapping,
+  },
+  {
+    path: "/pms/configuration/kpis/create",
+    component: CreateKPI,
+  },
+  {
+    path: "/pms/configuration/kpis/edit/:id",
+    component: CreateKPI,
+  },
+  {
+    path: "/pms/performanceAssessment/assessmentByHr",
+    component: AssessmentByHR,
+  },
+  // {
+  //   path: "/pms/valuesAndCompetencies/assessmentByHr",
+  //   component: AssessmentByHR,
+  // },
+  {
+    path: "/pms/performanceAssessment/supervisorAssessment/new",
+    component: SupervisorAssessment,
+  },
+  {
+    path: "/pms/performanceAssessment/supervisorAssessment",
+    component: SupervisorAssessmentLanding,
+  },
+  {
+    path: "/pms/performanceAssessment/BARAssessment/evaluationBSCForSupervisor/:id/:yearId/:quarterId",
+    component: SupervisorAssessmentNew,
+  },
+  {
+    path: "/pms/performanceAssessment/BARAssessment/evaluationForSupervisor/:id/:yearId/:quarterId",
+    component: BarAssessmentEvaluationForSupervisor,
+  },
+  {
+    path: "/pms/performanceAssessment/BARAssessment/evaluation/:id/:yearId/:quarterId",
+    component: BarAssesmentEvaluation,
+  },
+  {
+    path: "/pms/performanceAssessment/BARAssessment",
+    component: BarAssesment,
+  },
+  // {
+  //   path: "/pms/valuesAndCompetencies/supervisorAssessment",
+  //   component: SupervisorAssessment,
+  // },
+  // {
+  //   path: "/pms/valuesAndCompetencies/selfAssessment",
+  //   component: SelfAssessment,
+  // },
+  {
+    path: "/pms/performanceAssessment/selfAssessment/new",
+    component: SelfAssessment,
+  },
+  {
+    path: "/pms/performanceAssessment/selfAssessment",
+    component: SelfAssessmentNew,
+  },
+  {
+    path: "/pms/9BoxGrid",
+    component: NineBoxGrid,
+  },
+  {
+    path: "/performancemanagementsystem/pms/individualkpi",
+    component: IndividualKpi,
+  },
+  {
+    path: "/performancemanagementsystem/pms/individualkpi/create",
+    component: IndKpiEntry,
+  },
+  {
+    path: "/pms/performancePlanning/workPlan",
+    component: WorkPlan,
+  },
+  {
+    path: "/pms/performancePlanning/individualKpiEntry",
+    component: IndividualKpiEntry,
+  },
+  // {
+  //   path: "/pms/performancePlanning/individualKpiResult",
+  //   component: IndividualKpiResult,
+  // },
+  {
+    path: "/pms/performancePlanning/individualKpiResult",
+    component: IndividualKpiEntrySelf,
+  },
+  {
+    path: "/pms/performancePlanning/DepartmentalKPIEntry",
+    component: DepartmentalKpiEntry,
+  },
+  {
+    path: "/pms/performancePlanning/SBUKPIEntry",
+    component: SbuKpiEntry,
+  },
+  {
+    path: "/pms/performancePlanning/individualScorecard",
+    component: IndividualScoreCard,
+  },
+
+  {
+    path: "/pms/performancePlanning/eisenhowerMatrix",
+    component: EisenhowerMatrix,
+  },
+  {
+    path: "/pms/performancePlanning/actionPlan",
+    component: ActionPlanCreate,
+  },
+  {
+    path: "/pms/performancePlanning/BARAssessConfig",
+    component: BarAssesmentConfig,
+  },
+  {
+    path: "/pms/performanceCoaching/johariWindow",
+    component: JohariWindow,
+  },
+  {
+    path: "/pms/performanceCoaching/actionPlanJohariWindow",
+    component: ActionPlanJohariWindow,
+  },
+  {
+    path: "/pms/performanceCoaching/growModel",
+    component: GrowthModel,
+  },
+  {
+    path: "/pms/performanceCoaching/actionPlanGROWModel",
+    component: ActionPlanGrowModelLanding,
+  },
+  {
+    path: "/pms/idp",
+    component: IDP,
   },
 
   // Exit Interview ends

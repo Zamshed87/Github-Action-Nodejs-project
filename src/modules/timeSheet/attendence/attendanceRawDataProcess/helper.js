@@ -5,11 +5,12 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 import * as Yup from "yup";
 
 export const initialValues = {
-  fromDate: "",
-  toDate: "",
+  fromDate: todayDate(),
+  toDate: todayDate(),
   employee: "",
 };
 
@@ -57,10 +58,7 @@ export const validationSchema = Yup.object().shape({
 export const onPostAttendanceResponse = async ({ setLoading, payload, cb }) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.post(
-      `/Employee/AttendenceRawDataProcessLog`,
-      payload
-    );
+    const res = await axios.post(`/Employee/RequestAttendanceProcess`, payload);
     if (res?.data) {
       toast.success(res?.data?.message);
       setLoading && setLoading(false);
@@ -90,10 +88,10 @@ export const onGetAttendanceResponse = async (
     if (res?.data) {
       setRes(res?.data);
       setPages?.({
-        current: res?.data?.currentPage, 
+        current: res?.data?.currentPage,
         pageSize: res?.data?.pageSize, // Page Size From Api Response
-        total: res?.data?.totalCount, 
-      })
+        total: res?.data?.totalCount,
+      });
     }
     setLoading(false);
   } catch (error) {

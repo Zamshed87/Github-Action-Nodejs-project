@@ -19,7 +19,11 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
-import { columnForHeadOffice, getTableDataEmployee } from "./helper";
+import {
+  columnForFinish,
+  columnForHeadOffice,
+  getTableDataEmployee,
+} from "./helper";
 import "./styles.css";
 import Loading from "common/loading/Loading";
 
@@ -29,7 +33,7 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, wId, buName } = useSelector(
+  const { orgId, buId, wgId, wId, buName } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -171,7 +175,7 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strWorkplaceList",
       filterSearch: true,
-      width: 55,
+      width: 62,
       fixed: "left",
     },
 
@@ -223,6 +227,27 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strSectionList",
       filterSearch: true,
+      width: 50,
+    },
+    {
+      title: "Job Territory",
+      dataIndex: "strJobTerritory",
+      // sorter: true,
+      // filter: true,
+      // filterKey: "strSectionList",
+      // filterSearch: true,
+      width: 50,
+      hidden: orgId === 5 ? false : true,
+    },
+    {
+      title: "Job Location",
+      dataIndex: "strJobLocation",
+      // sorter: true,
+      // filter: true,
+      // filterKey: "strSectionList",
+      // filterSearch: true,
+      hidden: orgId === 5 ? false : true,
+
       width: 50,
     },
     {
@@ -322,7 +347,7 @@ function EmployeeFeatureNew() {
         />
       ),
     },
-  ];
+  ].filter((i) => !i?.hidden);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -503,11 +528,17 @@ function EmployeeFeatureNew() {
                           ?.strBusinessUnitAddress,
                       businessUnit: buName,
                       tableHeader:
-                        wgId === 3 ? columnForHeadOffice : columnForHeadOffice,
+                        orgId === 5
+                          ? columnForFinish
+                          : wgId === 3
+                          ? columnForHeadOffice
+                          : columnForHeadOffice,
                       getTableData: () =>
                         getTableDataEmployee(
                           newData,
-                          wgId === 3
+                          orgId === 5
+                            ? Object.keys(columnForFinish)
+                            : wgId === 3
                             ? Object.keys(columnForHeadOffice)
                             : Object.keys(columnForHeadOffice)
                         ),
@@ -535,6 +566,7 @@ function EmployeeFeatureNew() {
                     setExcelLoading(false);
                   }
                 } catch (error: any) {
+                  console.log({ error });
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
                   // console.log(error?.message);

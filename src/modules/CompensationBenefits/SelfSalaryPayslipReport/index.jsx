@@ -430,7 +430,12 @@ const SelfSalaryPayslipReport = () => {
                       ))}
                     <tr>
                       <td style={{ textAlign: "left" }}>
-                        <p>Tax</p>
+                        <p>
+                          Tax{" "}
+                          {salaryHeaderData[0]?.isTakeHomePay
+                            ? "(Company Pay)"
+                            : ""}
+                        </p>
                       </td>
                       <td style={{ textAlign: "right" }} colSpan="3">
                         <p>{salaryHeaderData[0]?.numTaxAmount || 0}</p>

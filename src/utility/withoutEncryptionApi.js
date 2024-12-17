@@ -54,4 +54,9 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/TopSheetNAdvice",
   "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
   "/PdfAndExcelReport/GetLeaveHistoryReport",
+  "/PdfAndExcelReport/MovementDetailsHistory",
+  "/PdfAndExcelReport/ExportIdCardForMatador",
+  "/PdfAndExcelReport/ExportIdCardForBangjinInEnglish",
+  "/PdfAndExcelReport/ExportIdCardForBangjinInBangla",
+  "/MarketVisitReport/MarketVisitReport",
 ];

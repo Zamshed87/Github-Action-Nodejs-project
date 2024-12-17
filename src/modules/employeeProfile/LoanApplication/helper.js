@@ -398,6 +398,7 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
       code: data?.employeeCode,
       designation: data?.designationName,
       department: data?.departmentName,
+      employeeImageUrl: data?.employeeImageUrl,
     },
     loanType: {
       value: data?.loanTypeId,
@@ -643,7 +644,6 @@ export const handleAmendmentClick = (
   item,
   clickedRowIndex
 ) => {
-
   const updatedTableData = [...tableData];
 
   // Calculate the new date based on the clicked row or the last row
@@ -703,6 +703,13 @@ export const handleDeleteClick = (index, tableData, setTableData) => {
 
   setTableData(updatedTableData);
 };
+
+// export const handleDeleteClick = (tableData, setTableData) => {
+//  if(tableData.length > 0){
+//    const updatedTableData = tableData.slice(0, -1);
+//    setTableData(updatedTableData);
+//  }
+// };
 
 export const subTotal = (tableData) => {
   return tableData.reduce(function (a, c) {

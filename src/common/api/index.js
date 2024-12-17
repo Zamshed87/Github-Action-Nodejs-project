@@ -767,3 +767,50 @@ export const getBuDetails = async (buId = 0, setter, setLoading) => {
     setter?.([]);
   }
 };
+export const getAsyncEmployeeCommonApi = async ({
+  orgId,
+  buId,
+  intId,
+  value,
+  minSearchLength = 3,
+}) => {
+  if (value?.length < minSearchLength) return;
+  try {
+    const response = await axios.get(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoSearchDDL&AccountId=${
+        orgId || 0
+      }&BusinessUnitId=${buId || 0}&intId=${intId || 0}&SearchText=${
+        value || ""
+      }`
+    );
+
+    const modifiedEmployeeDDL = Array.from(response?.data, (item) => ({
+      ...item,
+      value: item?.EmployeeId,
+      label: item?.EmployeeName,
+    }));
+    return modifiedEmployeeDDL;
+  } catch (_) {
+    return [];
+  }
+};
+export const getAsyncEmployeeApi = async ({
+  orgId,
+  buId,
+  intId,
+  value,
+  minSearchLength = 3,
+}) => {
+  if (value?.length < minSearchLength) return;
+  try {
+    const response = await axios.get(
+      `/PMS/EmployeeInfoDDLSearch?AccountId=${orgId || 0}&BusinessUnitId=${
+        buId || 0
+      }&Search=${value || ""}`
+    );
+
+    return response?.data;
+  } catch (_) {
+    return [];
+  }
+};

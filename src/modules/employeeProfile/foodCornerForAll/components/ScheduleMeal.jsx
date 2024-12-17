@@ -3,7 +3,13 @@ import { IconButton, Tooltip } from "@mui/material";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { createCafeteriaEntry } from "../helper";
 
-const ScheduleMeal = ({ scheduleMeal, getLandingData, values,employeeId }) => {
+const ScheduleMeal = ({
+  scheduleMeal,
+  getLandingData,
+  values,
+  employeeId,
+  buId,
+}) => {
   // const { employeeId } = useSelector(
   //   (state) => state?.auth?.profileData,
   //   shallowEqual
@@ -53,7 +59,9 @@ const ScheduleMeal = ({ scheduleMeal, getLandingData, values,employeeId }) => {
                                     "",
                                     () => {
                                       getLandingData(values);
-                                    }
+                                    },
+                                    "",
+                                    buId
                                   );
                                 }}
                               />

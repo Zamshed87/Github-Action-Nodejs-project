@@ -121,7 +121,7 @@ function Calendar() {
       setRowDto
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, wId]);
+  }, [buId, wId]);
 
   // assign colors to shift on shift load
   useEffect(() => {

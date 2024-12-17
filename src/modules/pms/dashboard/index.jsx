@@ -35,7 +35,7 @@ const PmsDashboard = () => {
   const [state, setState] = useState({
     currentBreakpoint: "lg",
     compactType: "horizontal",
-    mounted: false,
+    mounted: false, 
     layouts: { lg: [] },
   });
 

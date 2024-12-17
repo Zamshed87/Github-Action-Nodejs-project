@@ -261,4 +261,25 @@ export const apiList = {
   GetEmployeeIncrementById: "EmployeeIncrement/GetEmployeeIncrementById",
   CommonEmployeeforSalaryDDL: "/Employee/CommonEmployeeforSalaryDDL",
   GetLeaveHistoryReport: "/PdfAndExcelReport/GetLeaveHistoryReport",
+
+  getCommonEnumData: "/Enum/GetEnums",
+  GetDailyCafeteriaReport: "/Cafeteria/GetDailyCafeteriaReport",
+  GetCafeteriaReportALL: "/Cafeteria/GetCafeteriaReportALL",
+  GetSupervisorDDL: "/IncrementProposal/GetSupervisorDDL",
+  GetIncrementProposalLoader: "/IncrementProposal/GetIncrementProposalLoader",
+  DeleteIncrementProposal: "/IncrementProposal/DeleteIncrementProposal",
+  CreateUpdateIncrementProposal:
+    "/IncrementProposal/CreateUpdateIncrementProposal",
+  GetRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetRewardPunishmentPagination", // admin end
+  GetUserRewardPunishmentLetterLanding:
+    "/RewardPunishment/GetUserWiseRewardPunishmentPagination", // user end
+  GetInterviewLanding: "/Questionnaire/Assigned/Landing",
+  GetQuestionLanding: "/Questionnaire/Landing",
+  EmployeeCommonDDL: "/Employee/EmployeeCommonDDL",
+  MarketVisitReport: "/MarketVisitReport/MarketVisitReport",
+  JobLocation: "/JobLocation",
+  JobTerritory: "/JobTerritory",
+  JobTerritories: "/PeopleDeskDdl/JobTerritories",
+  JobLocations: "/PeopleDeskDdl/JobLocations",
 };
