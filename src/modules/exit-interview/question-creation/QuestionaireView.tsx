@@ -5,11 +5,12 @@ import { useApiRequest } from "Hooks";
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useSelector } from "react-redux";
-import { assignToEmployee } from "./helper";
+import { assignToEmployee, getChipData } from "./helper";
 import Loading from "common/loading/Loading";
+import { Tag } from "antd";
 
 const QuestionaireView = ({ singleData }: any) => {
-  const { typeName, title, description, questions, isActive } = singleData;
+  const { typeName, title, description, questions, status } = singleData;
 
   const { profileData } = useSelector(
     (state: any) => state?.auth,
@@ -52,47 +53,59 @@ const QuestionaireView = ({ singleData }: any) => {
       {loading && <Loading />}
       <Flex justify="space-between">
         <div>
-          <SingleInfo label={"Questionaire Type"} value={typeName || "N/A"} />
+          <Flex align="center">
+            <SingleInfo label={"Questionaire Type"} value={typeName || "N/A"} />{" "}
+            <Tag
+              style={{
+                borderRadius: "50px",
+                fontWeight: 600,
+                marginLeft: "8px",
+              }}
+              className={`${getChipData(status)?.class}`}
+            >
+              {getChipData(status)?.label}
+            </Tag>
+          </Flex>
+
           <SingleInfo label={"Questionaire Title"} value={title || "N/A"} />
           <SingleInfo
             label={"Questionaire Description"}
             value={description || "N/A"}
           />
         </div>
-        {isActive && (
-          <div>
-            <PSelect
-              style={{ width: "250px" }}
-              label="Assign to"
-              placeholder="Search Min 2 char"
-              options={CommonEmployeeDDL?.data || []}
-              loading={CommonEmployeeDDL?.loading}
-              onChange={(value, op: any) => {
-                setEmployee(op);
-              }}
-              onSearch={(value) => {
-                getEmployee(value);
-              }}
-              showSearch
-              filterOption={false}
-              allowClear={true}
-            />
-            <PButton
-              disabled={!employee}
-              style={{ marginLeft: "auto", marginTop: "4px" }}
-              type="primary"
-              content="Assign"
-              onClick={() => {
-                assignToEmployee(
-                  singleData?.id,
-                  employee?.value,
-                  setEmployee,
-                  setLoading
-                );
-              }}
-            />
-          </div>
-        )}
+        <div>
+          <PSelect
+            style={{ width: "250px" }}
+            label="Assign to"
+            placeholder="Search Min 2 char"
+            options={CommonEmployeeDDL?.data || []}
+            loading={CommonEmployeeDDL?.loading}
+            onChange={(value, op: any) => {
+              setEmployee(op);
+            }}
+            onSearch={(value) => {
+              getEmployee(value);
+            }}
+            showSearch
+            filterOption={false}
+            allowClear={true}
+            disabled={status === "Inactive"}
+          />
+          <PButton
+            disabled={!employee || status === "Inactive"}
+            style={{ marginLeft: "auto", marginTop: "4px" }}
+            type="primary"
+            content="Assign"
+            onClick={() => {
+              assignToEmployee(
+                singleData?.id,
+                employee?.value,
+                setEmployee,
+                setLoading
+              );
+            }}
+          />
+        </div>
       </Flex>
       <div style={{ marginTop: "10px" }}>
         <h2>
@@ -118,18 +131,23 @@ const QuestionaireView = ({ singleData }: any) => {
               ))}
             {data?.typeId === 2 && (
               <PSelect
+                className="mt-2"
                 style={{ maxWidth: "250px" }}
                 options={getValueLabel(data?.options) || []}
                 placeholder="Select"
               />
             )}
             {data?.typeId === 3 && (
-              <div style={{ maxWidth: "250px" }}>
+              <div className="mt-2" style={{ maxWidth: "250px" }}>
                 <PInput type="text" placeholder="Text" />
               </div>
             )}
             {data?.typeId === 4 && (
-              <ReactQuill preserveWhitespace={true} placeholder="Write..." />
+              <ReactQuill
+                className="mt-2"
+                preserveWhitespace={true}
+                placeholder="Write..."
+              />
             )}
           </div>
         ))}

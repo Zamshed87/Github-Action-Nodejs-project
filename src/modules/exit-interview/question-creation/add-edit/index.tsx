@@ -6,10 +6,11 @@
  * Date: 12-11-2024
  *
  */
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tag } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
+  Flex,
   PButton,
   PCard,
   PCardHeader,
@@ -31,7 +32,7 @@ import SingleQuestionnaire from "./SingleQuestionnaire";
 import { PlusOutlined } from "@ant-design/icons";
 import { initDataForEdit, saveQuestionnaire } from "./helper";
 import { toast } from "react-toastify";
-import { getSingleQuestionnaire } from "../helper";
+import { getChipData, getSingleQuestionnaire } from "../helper";
 import Loading from "common/loading/Loading";
 
 const QuestionCreationAddEdit = () => {
@@ -63,7 +64,7 @@ const QuestionCreationAddEdit = () => {
 
   const [survayTypeDDL, setSurvayTypeDDL] = useState([]);
   const [questionTypeDDL, setQuestionTypeDDL] = useState([]);
-  const [singleData, setSingleData] = useState({});
+  const [singleData, setSingleData] = useState<any>({});
 
   const [antForm] = Form.useForm();
 
@@ -122,7 +123,24 @@ const QuestionCreationAddEdit = () => {
       {loading && <Loading />}
       <PCard>
         <PCardHeader
-          title={quesId ? "Edit Question" : "Create Question"}
+          title={
+            <Flex align="center">
+              <div>{quesId ? "Edit Question" : "Create Question"}</div>
+              {quesId && !loading && (
+                <Tag
+                  style={{
+                    borderRadius: "50px",
+                    fontWeight: 600,
+                    marginLeft: "8px",
+                  }}
+                  className={`${getChipData(singleData?.status)?.class}`}
+                >
+                  {getChipData(singleData?.status)?.label}
+                </Tag>
+              )}
+            </Flex>
+          }
+          // title={quesId ? "Edit Question" : "Create Question"}
           backButton={true}
           buttonList={[
             {

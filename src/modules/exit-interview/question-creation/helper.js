@@ -5,8 +5,7 @@ export const getSingleQuestionnaire = async (
   id,
   setData,
   setLoading,
-  setOpen,
-  status
+  setOpen
 ) => {
   setLoading && setLoading(true);
   try {
@@ -14,7 +13,6 @@ export const getSingleQuestionnaire = async (
     setData({
       ...res.data,
       id,
-      isActive: status === "Inactive" ? false : true,
     });
     setOpen && setOpen(true);
   } catch (error) {
@@ -39,5 +37,14 @@ export const assignToEmployee = async (id, empId, setData, setLoading) => {
     toast.warning(res?.data?.Message || "Something went wrong");
   } finally {
     setLoading && setLoading(false);
+  }
+};
+
+export const getChipData = (label) => {
+  switch (label) {
+    case "Active":
+      return { label: "Active", class: "success" };
+    default:
+      return { label: "Inactive", class: "danger" };
   }
 };

@@ -168,7 +168,7 @@ const QuestionCreationLanding = () => {
     {
       title: "Number of Questions",
       dataIndex: "noOfQuestions",
-      width: 50,
+      width: 60,
     },
     {
       title: "Status",
@@ -200,8 +200,7 @@ const QuestionCreationLanding = () => {
                   rec?.id,
                   setSingleData,
                   setLoading,
-                  setOpen,
-                  rec?.status
+                  setOpen
                 );
               }}
             />
