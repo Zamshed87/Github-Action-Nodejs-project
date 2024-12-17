@@ -270,9 +270,6 @@ function CreateTransferPromotion() {
     },
   };
 
-  console.log(state?.singleData);
-  console.log(state?.singleData?.empTransferNpromotionUserRoleVmList);
-
   const {
     setFieldValue,
     setValues,
