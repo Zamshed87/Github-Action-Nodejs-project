@@ -59,6 +59,9 @@ const TrainingCalender: React.FC = () => {
   const [calenderData, getCalenderData, loadingCalender, setCalenderData] =
     useAxiosGet();
 
+  const [month, setMonth] = useState(moment().format("MM"));
+  const [year, setYear] = useState(moment().format("YYYY"));
+
   const monthCellRender = (value: moment.Moment) => {
     const num = getMonthData(value);
     return num ? (
@@ -173,12 +176,15 @@ const TrainingCalender: React.FC = () => {
     value: moment.Moment,
     mode: CalendarProps<moment.Moment>["mode"]
   ) => {
+    const values = form.getFieldsValue(true);
     const month = value.format("MM");
     const year = value.format("YYYY");
     console.log(value.format("YYYY-MM"), mode); // This will log only the month and year
-    getCalenderData(
-      `/Training/Training/Calander?businessUnitId=0&workplaceGroupId=0&workplaceId=0&month=${month}&year=${year}`
-    );
+    setMonth(month);
+    setYear(year);
+    // getCalenderData(
+    //   `/Training/Training/Calander?businessUnitId=${values?.bUnit?.value}&workplaceGroupId=${values?.workplaceGroup?.value}&workplaceId=${values?.workplace?.value}&month=${month}&year=${year}`
+    // );
   };
 
   const customHeaderRender = ({ value, onChange }: any) => {
@@ -242,19 +248,51 @@ const TrainingCalender: React.FC = () => {
     );
   };
 
+  const bUnit = Form.useWatch("bUnit", form);
+  const workplaceGroup = Form.useWatch("workplaceGroup", form);
+  const workplace = Form.useWatch("workplace", form);
+
+  useEffect(() => {
+    const values = form.getFieldsValue(true);
+    console.log(month, year, bUnit, workplaceGroup, workplace);
+    if (
+      month &&
+      year &&
+      bUnit &&
+      bUnit?.intBusinessUnitId !== 0 &&
+      workplaceGroup &&
+      workplaceGroup?.intWorkplaceGroupId !== 0 &&
+      workplace &&
+      workplace?.intWorkplaceId !== 0
+    ) {
+      getCalenderData(
+        `/Training/Training/Calander?businessUnitId=${
+          values?.bUnit?.value || 0
+        }&workplaceGroupId=${values?.workplaceGroup?.value || 0}&workplaceId=${
+          values?.workplace?.value || 0
+        }&month=${month}&year=${year}`
+      );
+    }
+  }, [month, year, bUnit, workplaceGroup, workplace]);
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    const currentMonth = moment().format("MM");
-    const currentYear = moment().format("YYYY");
     getCalenderData(
-      `/Training/Training/Calander?businessUnitId=0&workplaceGroupId=0&workplaceId=0&month=${currentMonth}&year=${currentYear}`
+      `/Training/Training/Calander?businessUnitId=${0}&workplaceGroupId=${0}&workplaceId=${0}&month=${month}&year=${year}`
     );
   }, []);
 
   return (
     <div>
       {loadingCalender && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          bUnit: { label: "All", value: 0 },
+          workplaceGroup: { label: "All", value: 0 },
+          workplace: { label: "All", value: 0 },
+        }}
+      >
         {/* <PCard> */}
         <PCardHeader title="Training Calander" />
         <PCardBody styles={{ marginTop: "20px" }}>

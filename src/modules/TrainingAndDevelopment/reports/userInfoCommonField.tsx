@@ -31,6 +31,7 @@ const UserInfoCommonField = ({ form }: any) => {
           res[i].label = item?.strWorkplaceGroup;
           res[i].value = item?.intWorkplaceGroupId;
         });
+        res.unshift({ label: "All", value: 0 });
       },
     });
   };
@@ -51,6 +52,7 @@ const UserInfoCommonField = ({ form }: any) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
         });
+        res.unshift({ label: "All", value: 0 });
       },
     });
   };
@@ -69,6 +71,7 @@ const UserInfoCommonField = ({ form }: any) => {
           res[i].label = item?.strBusinessUnit;
           res[i].value = item?.intBusinessUnitId;
         });
+        res.unshift({ label: "All", value: 0 });
       },
     });
     getWorkplaceGroup();
