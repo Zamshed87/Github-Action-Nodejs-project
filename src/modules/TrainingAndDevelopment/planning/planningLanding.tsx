@@ -300,6 +300,50 @@ const TnDPlanningLanding = () => {
       key: "2",
     },
     {
+      label: (
+        <h1
+          onClick={() => {
+            ViewTrainingPlan(
+              rec?.id,
+              setLoading,
+              (d: any) => {
+                history.push("/trainingAndDevelopment/training/feedback", {
+                  data: d,
+                });
+              },
+              setViewData
+            );
+          }}
+          rel="noopener noreferrer"
+        >
+          Feedback
+        </h1>
+      ),
+      key: "3",
+    },
+    {
+      label: (
+        <h1
+          onClick={() => {
+            ViewTrainingPlan(
+              rec?.id,
+              setLoading,
+              (d: any) => {
+                history.push("/trainingAndDevelopment/training/assessment", {
+                  data: d,
+                });
+              },
+              setViewData
+            );
+          }}
+          rel="noopener noreferrer"
+        >
+          Assessment
+        </h1>
+      ),
+      key: "4",
+    },
+    {
       type: "divider",
     },
     {
@@ -314,7 +358,7 @@ const TnDPlanningLanding = () => {
           Cancel
         </h1>
       ),
-      key: "3",
+      key: "5",
     },
   ];
 
