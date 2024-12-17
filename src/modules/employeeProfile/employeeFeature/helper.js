@@ -87,7 +87,7 @@ export const createEditEmpAction = async (
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
       isSalaryHold: values?.isSalaryHold,
-      isTakeHomePay: values?.isTakeHomePay?.value || values?.isTakeHomePay,
+      isTakeHomePay: values?.isTakeHomePay?.value,
       isActive: true,
       isUserInactive: false,
       isRemoteAttendance: false,
