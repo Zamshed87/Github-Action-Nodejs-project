@@ -11,7 +11,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import DownloadIcon from "@mui/icons-material/Download";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tooltip } from "antd";
+import { Col, Collapse, Form, Row, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -24,10 +24,11 @@ import { todayDate } from "utility/todayDate";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 
 const FinalSettlementReport = () => {
+  const { Panel } = Collapse;
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { orgId, buId, wgId, employeeId },
+    profileData: { orgId, buId, wgId, employeeId, intAccountId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -51,6 +52,11 @@ const FinalSettlementReport = () => {
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const CommonEmployeeDDL = useApiRequest([]);
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
 
   // navTitle
   useEffect(() => {
@@ -61,9 +67,6 @@ const FinalSettlementReport = () => {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
       urlKey: "WorkplaceGroupWithRoleExtension",
@@ -95,6 +98,7 @@ const FinalSettlementReport = () => {
         empId: employeeId,
       },
       onSuccess: (res: any) => {
+        console.log("res", res);
         res.forEach((item: any, i: any) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
@@ -104,13 +108,14 @@ const FinalSettlementReport = () => {
   };
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    const { workplaceGroup } = form.getFieldsValue(true);
 
     CommonEmployeeDDL?.action({
       urlKey: "CommonEmployeeDDL",
       method: "GET",
       params: {
         businessUnitId: buId,
-        workplaceGroupId: wgId,
+        workplaceGroupId: workplaceGroup?.value || 0,
         // workplaceId: wId,
         searchText: value,
       },
@@ -122,76 +127,92 @@ const FinalSettlementReport = () => {
       },
     });
   };
+  const getEmploymentType = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "DepartmentIdAll",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+
+        accountId: orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
+        });
+      },
+    });
+  };
+  const getEmployeDesignation = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDesignationDDL?.action({
+      urlKey: "DesignationIdAll",
+      method: "GET",
+      params: {
+        accountId: intAccountId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
+        });
+      },
+    });
+  };
+  const getEmployeePosition = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
 
   useEffect(() => {
     getWorkplaceGroup();
   }, []);
-  // const header = [
-  //   { title: "SL", dataIndex: "sl", width: 50, align: "center", fixed: "left" },
-  //   {
-  //     title: "Workplace Group",
-  //     dataIndex: "workplaceGroup",
-  //     filter: true,
-  //     width: 150,
-  //   },
-  //   { title: "Workplace", dataIndex: "workplace", filter: true, width: 150 },
-  //   {
-  //     title: "Employee Name",
-  //     dataIndex: "employeeName",
-  //     filter: true,
-  //     width: 150,
-  //   },
-  //   { title: "Employee Code", dataIndex: "employeeCode", width: 150 },
-  //   {
-  //     title: "Designation",
-  //     dataIndex: "designation",
-  //     filter: true,
-  //     width: 150,
-  //   },
-  //   { title: "Department", dataIndex: "department", filter: true, width: 150 },
-  //   { title: "Section", dataIndex: "section", filter: true, width: 150 },
-  //   { title: "HR Position", dataIndex: "hrPosition", filter: true, width: 150 },
-  //   {
-  //     title: "Employment Type",
-  //     dataIndex: "employmentType",
-  //     filter: true,
-  //     width: 150,
-  //   },
-  //   { title: "Joining Date", dataIndex: "joiningDate", width: 150 },
-  //   { title: "Service Length", dataIndex: "serviceLength", width: 150 },
-  //   { title: "Salary Type", dataIndex: "salaryType", width: 150 },
-  //   { title: "Payroll Group", dataIndex: "payrollGroup", width: 150 },
-  //   { title: "Gross Salary", dataIndex: "grossSalary", width: 150 },
-  //   { title: "Basic", dataIndex: "basic", width: 100 },
-  //   { title: "House", dataIndex: "house", width: 100 },
-  //   { title: "Medical", dataIndex: "medical", width: 100 },
-  //   { title: "Transport / Conveyance", dataIndex: "transport", width: 150 },
-  //   { title: "Remaining Loan Amount", dataIndex: "remainingLoan", width: 150 },
-  //   { title: "PF Fund (Own Contribution)", dataIndex: "pfOwn", width: 200 },
-  //   {
-  //     title: "PF Fund (Company Contribution)",
-  //     dataIndex: "pfCompany",
-  //     width: 200,
-  //   },
-  //   { title: "Overtime", dataIndex: "overtime", width: 100 },
-  //   { title: "Expense", dataIndex: "expense", width: 100 },
-  //   { title: "Tax", dataIndex: "tax", width: 100 },
-  //   {
-  //     title: "Earnings / Allowance (TA/DA, Others)",
-  //     dataIndex: "earningsAllowance",
-  //     width: 250,
-  //   },
-  //   {
-  //     title: "Deductions (Lunch, Others)",
-  //     dataIndex: "deductions",
-  //     width: 200,
-  //   },
-  //   {
-  //     title: "Total Attendance (P, LWP, A)",
-  //     dataIndex: "totalAttendance",
-  //     width: 200,
-  //   },
-  // ];
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
@@ -201,7 +222,34 @@ const FinalSettlementReport = () => {
   };
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
-    const workplaceList = values?.workplace?.map((i: any) => i?.value);
+
+    const workplaceIdList = (values?.workplace
+      ?.map((i: any) => i?.value || 0)
+      ?.join(",") || '') || ''; 
+    
+    const employeeTypeIdList = (values?.employeeType
+      ?.map((i: any) => i?.value || 0)
+      ?.join(",") || '') || '';
+    
+    const departmentIdList = (values?.department
+      ?.map((i: any) => i?.value || 0)
+      ?.join(",") || '') || '';
+    
+    const sectionIdList = (values?.section
+      ?.map((i: any) => i?.value || 0)
+      ?.join(",") || '') || '';
+    
+    const designationIdList = (values?.designation
+      ?.map((i: any) => i?.value || 0)
+      ?.join(",") || '') || '';
+    
+    const hrPositionIdList = (values?.hrPosition
+      ?.map((i: any) => i?.value || 0)
+      ?.join(",") || '') || '';
+    
+
+    console.log("values", values);
+    console.log("workplaceList", workplaceIdList);
     landingApi?.action({
       method: "get",
       urlKey: "FinalSettlementReportForAll",
@@ -210,10 +258,16 @@ const FinalSettlementReport = () => {
         intAccountId: orgId,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        // workPlaceGroupId: values?.workplaceGroup?.value,
-        // FiscalYearId: values?.fiscalYear?.value,
-        // strWorkPlaceList: workplaceList?.length > 0 ? `${workplaceList}` : 0,
-        status: values?.status?.value,
+        intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
+        strWorkplaceIdList: workplaceIdList || "",
+        strEmployeeIdList: values?.employee?.value || "",
+        strEmployeeCodeList: values?.employee?.employeeCode || "",
+        strDesignationIdList: designationIdList || "",
+        strDepartmentIdList: departmentIdList || "",
+        strSectionIdList: sectionIdList || "",
+        strHrPositionIdList: hrPositionIdList || "",
+        strEmploymentTypeIdList: employeeTypeIdList || "",
+        intStatus: 0,
       },
       onSuccess: (res) => {
         setData(res);
@@ -230,155 +284,246 @@ const FinalSettlementReport = () => {
             title={`Final Settlement Report`}
           />
           <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  rules={[
-                    {
-                      required: true,
-                      message: "from Date is required",
-                    },
-                  ]}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  rules={[
-                    {
-                      required: true,
-                      message: "To Date is required",
-                    },
-                  ]}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
+            <Collapse defaultActiveKey={["1"]} expandIconPosition="end">
+              <Panel header="Collapsable" key="1">
+                <Row gutter={[10, 2]}>
+                  <Col md={5} sm={12} xs={24}>
+                    <PInput
+                      type="date"
+                      name="fromDate"
+                      label="From Date"
+                      placeholder="From Date"
+                      rules={[
+                        {
+                          required: true,
+                          message: "from Date is required",
+                        },
+                      ]}
+                      onChange={(value) => {
+                        form.setFieldsValue({
+                          fromDate: value,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PInput
+                      type="date"
+                      name="toDate"
+                      label="To Date"
+                      placeholder="To Date"
+                      disabledDate={disabledDate}
+                      rules={[
+                        {
+                          required: true,
+                          message: "To Date is required",
+                        },
+                      ]}
+                      onChange={(value) => {
+                        form.setFieldsValue({
+                          toDate: value,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      options={workplaceGroup?.data || []}
+                      name="workplaceGroup"
+                      label="Workplace Group"
+                      placeholder="Workplace Group"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          workplaceGroup: op,
+                          workplace: undefined,
+                          department: undefined,
+                          section: undefined,
+                          designation: undefined,
+                          hrPosition: undefined,
+                          employeeType: undefined,
+                        });
+                        if (value) {
+                          getWorkplace();
+                          getEmployeDepartment();
+                          getEmployeDesignation();
+                          getEmploymentType();
+                          getEmployeePosition();
+                        }
+                      }}
+                      rules={[
+                        { required: true, message: "Workplace is required" },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={workplace?.data || []}
+                      name="workplace"
+                      label="Workplace/Concern"
+                      placeholder="Workplace/Concern"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          workplace: op,
+                          department: undefined,
+                          section: undefined,
+                          designation: undefined,
+                          hrPosition: undefined,
+                          employeeType: undefined,
+                        });
+                        if (value) {
+                          getEmployeDepartment();
+                          getEmployeDesignation();
+                          getEmploymentType();
+                          getEmployeePosition();
+                        }
+                      }}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      name="employee"
+                      label="Employee"
+                      placeholder="Search Min 2 char"
+                      options={CommonEmployeeDDL?.data || []}
+                      loading={CommonEmployeeDDL?.loading}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          employee: op,
+                        });
+                      }}
+                      onSearch={(value) => {
+                        getEmployee(value);
+                      }}
+                      showSearch
+                      filterOption={false}
+                    />
+                  </Col>
+
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={employmentTypeDDL?.data || []}
+                      name="employeeType"
+                      label="Employment Type"
+                      placeholder="Employment Type"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          employeeType: op,
+                        });
+                      }}
+                    />
+                  </Col>
+
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={empDepartmentDDL?.data || []}
+                      name="department"
+                      showSearch
+                      filterOption={true}
+                      label="Department"
+                      allowClear
+                      placeholder="Department"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          department: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={empSectionDDL.data || []}
+                      name="section"
+                      showSearch
+                      allowClear
+                      filterOption={true}
+                      label="Section"
+                      placeholder="Section"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          section: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      mode="multiple"
+                      options={empDesignationDDL.data || []}
+                      showSearch
+                      filterOption={true}
+                      name="designation"
+                      label="Designation"
+                      placeholder="Designation"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          designation: op,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md={5} sm={12} xs={24}>
+                    <PSelect
+                      options={positionDDL?.data || []}
+                      name="hrPosition"
+                      showSearch
+                      filterOption={true}
+                      label="HR Position"
+                      placeholder="HR Position"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          hrPosition: op,
+                        });
+                      }}
+                    />
+                  </Col>
+
+                  {/* <Col md={5} sm={12} xs={24}>
                 <PSelect
-                  name="employee"
-                  label="Employee"
-                  placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
-                  loading={CommonEmployeeDDL?.loading}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      employee: op,
-                    });
-                    // empBasicInfo(buId, orgId, value, setEmpInfo);
-                  }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
-                  showSearch
-                  filterOption={false}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  name="status"
-                  label="Status"
-                  placeholder=""
+                  mode="multiple"
                   options={[
-                    { value: 2, label: "All" },
-                    { value: 1, label: "Active" },
-                    { value: 0, label: "Inactive" },
+                    {
+                      value: 1,
+                      label: "Friday",
+                    },
+                    { value: 2, label: "Saturday" },
+                    { value: 3, label: "Sunday" },
+                    { value: 4, label: "Monday" },
+                    { value: 5, label: "Tuseday" },
+                    { value: 6, label: "Wednesday" },
+                    { value: 7, label: "Thursday" },
                   ]}
+                  name="offday"
+                  label="Off Day"
+                  placeholder=" Off Day"
                   onChange={(value, op) => {
                     form.setFieldsValue({
-                      status: op,
+                      offday: op,
                     });
-                    // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
-                  showSearch
-                  filterOption={false}
-                />
-              </Col>
-              {/* <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  //   disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  //   disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Off Day is required",
+                    },
+                  ]}
                 />
               </Col> */}
 
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
+                  <Col
+                    style={{
+                      marginTop: "23px",
+                    }}
+                  >
+                    <PButton type="primary" action="submit" content="View" />
+                  </Col>
+                </Row>
+              </Panel>
+            </Collapse>
           </PCardBody>
-
-          {/* <DataTable
-            bordered
-            data={landingApi?.data?.data || []}
-            loading={landingApi?.loading}
-            header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
-            filterData={landingApi?.data?.employeeHeader}
-            onChange={(pagination, filters, sorter, extra) => {
-              // Return if sort function is called
-              if (extra.action === "sort") return;
-              setFilterList(filters);
-              landingApiCall({
-                pagination,
-                filerList: filters,
-              });
-            }}
-            scroll={{ x: 2000 }}
-          /> */}
 
           <div>
             {data && (
@@ -391,15 +536,34 @@ const FinalSettlementReport = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const workplaceList = values?.workplace?.map(
-                          (i: any) => i?.value
-                        );
+                        
+                        const workplaceIdList = (values?.workplace
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || ''; 
+                        
+                        const employeeTypeIdList = (values?.employeeType
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const departmentIdList = (values?.department
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const sectionIdList = (values?.section
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const designationIdList = (values?.designation
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const hrPositionIdList = (values?.hrPosition
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
 
-                        const url = `/PdfAndExcelReport/FinalSettlementReportForAll?strPartName=excelView&intAccountId=${orgId}&fromDate=${moment(
-                          values?.fromDate
-                        ).format("YYYY-MM-DD")}&toDate=${moment(
-                          values?.toDate
-                        ).format("YYYY-MM-DD")}`;
+                          const url = `/PdfAndExcelReport/FinalSettlementReportForAll?strPartName=excelView&intAccountId=${orgId}&fromDate=${moment(values?.fromDate).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format("YYYY-MM-DD")}&intWorkplaceGroupId=${values?.workplaceGroup?.value || 0}&strWorkplaceIdList=${workplaceIdList || ""}&strEmployeeIdList=${employeeTypeIdList || ""}&strEmployeeCodeList=&strDesignationIdList=${designationIdList || ""}&strDepartmentIdList=${departmentIdList || ""}&strSectionIdList=${sectionIdList || ""}&strHrPositionIdList=${hrPositionIdList || ""}&strEmploymentTypeIdList=${employeeTypeIdList || ""}&intStatus=0`;
+
 
                         downloadFile(
                           url,
@@ -433,15 +597,33 @@ const FinalSettlementReport = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const workplaceList = values?.workplace?.map(
-                          (i: any) => i?.value
-                        );
+                        const workplaceIdList = (values?.workplace
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || ''; 
+                        
+                        const employeeTypeIdList = (values?.employeeType
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const departmentIdList = (values?.department
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const sectionIdList = (values?.section
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const designationIdList = (values?.designation
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
+                        const hrPositionIdList = (values?.hrPosition
+                          ?.map((i: any) => i?.value || 0)
+                          ?.join(",") || '') || '';
+                        
 
-                        const url = `/PdfAndExcelReport/FinalSettlementReportForAll?strPartName=pdfView&intAccountId=${orgId}&fromDate=${moment(
-                          values?.fromDate
-                        ).format("YYYY-MM-DD")}&toDate=${moment(
-                          values?.toDate
-                        ).format("YYYY-MM-DD")}`;
+                          const url = `/PdfAndExcelReport/FinalSettlementReportForAll?strPartName=pdfView&intAccountId=${orgId}&fromDate=${moment(values?.fromDate).format("YYYY-MM-DD")}&toDate=${moment(values?.toDate).format("YYYY-MM-DD")}&intWorkplaceGroupId=${values?.workplaceGroup?.value || 0}&strWorkplaceIdList=${workplaceIdList || ""}&strEmployeeIdList=${employeeTypeIdList || ""}&strEmployeeCodeList=&strDesignationIdList=${designationIdList || ""}&strDepartmentIdList=${departmentIdList || ""}&strSectionIdList=${sectionIdList || ""}&strHrPositionIdList=${hrPositionIdList || ""}&strEmploymentTypeIdList=${employeeTypeIdList || ""}&intStatus=0`;
+
 
                         getPDFAction(url, setExcelLoading);
                       }}
