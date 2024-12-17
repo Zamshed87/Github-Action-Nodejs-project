@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import type { BadgeProps, CalendarProps } from "antd";
-import { Badge, Calendar, Col, Form, Row, Select, SelectProps } from "antd";
+import {
+  Badge,
+  Calendar,
+  Col,
+  Descriptions,
+  Form,
+  List,
+  Row,
+  Select,
+  SelectProps,
+} from "antd";
 import moment from "moment";
 import "./calender.css";
 import { PButton, PCardBody, PCardHeader, PForm, PSelect } from "Components";
@@ -10,37 +20,10 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import UserInfoCommonField from "../userInfoCommonField";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import Loading from "common/loading/Loading";
+import { PModal } from "Components/Modal";
 
-const getListData = (value: moment.Moment) => {
-  let listData: { type: string; content: string }[] = []; // Specify the type of listData
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: "warning", content: "This is war" },
-        { type: "success", content: "This is us" },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: "warning", content: "This is war." },
-        { type: "success", content: "This ist." },
-        { type: "error", content: "Thient." },
-      ];
-      break;
-    case 16:
-      listData = [
-        { type: "warning", content: "This it" },
-        { type: "success", content: "This.." },
-        { type: "error", content: "Th1." },
-        { type: "error", content: "Thist 2." },
-        { type: "error", content: "This int 3." },
-        { type: "error", content: "This ient 4." },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-};
+const valueStyle = { fontSize: "14px", fontWeight: "550" };
+const labelStyle = { fontSize: "12px" };
 
 const getMonthData = (value: moment.Moment) => {
   if (value.month() === 8) {
@@ -58,6 +41,11 @@ const TrainingCalender: React.FC = () => {
   const [form] = Form.useForm();
   const [calenderData, getCalenderData, loadingCalender, setCalenderData] =
     useAxiosGet();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalData, setModalData] = useState([]);
+
+  const [month, setMonth] = useState(moment().format("MM"));
+  const [year, setYear] = useState(moment().format("YYYY"));
 
   const monthCellRender = (value: moment.Moment) => {
     const num = getMonthData(value);
@@ -69,100 +57,47 @@ const TrainingCalender: React.FC = () => {
     ) : null;
   };
 
-  const days = [
-    {
-      date: "2024-12-01T00:00:00",
-      trainingCalendarDto: [
-        {
-          trainingId: 17,
-          trainingTitle: "Kotlin Development",
-          trainingDate: "2024-12-01T00:00:00",
-          trainingName: "Database Management",
-          startTime: "03:00:00",
-          endTime: "06:00:00",
-          venueAddress: "asdasd",
-          objectives: "aasd",
-          trainingModeStatus: 0,
-          trainingOrganizerType: 0,
-          status: null,
-        },
-        {
-          trainingId: 19,
-          trainingTitle: "Kotlin Development",
-          trainingDate: "2024-12-01T00:00:00",
-          trainingName: "Database Management",
-          startTime: "06:00:00",
-          endTime: "19:00:00",
-          venueAddress: "ASDASD",
-          objectives: "ADNAN",
-          trainingModeStatus: 0,
-          trainingOrganizerType: 0,
-          status: null,
-        },
-        {
-          trainingId: 21,
-          trainingTitle: "SQL",
-          trainingDate: "2024-12-01T00:00:00",
-          trainingName: "Database Management",
-          startTime: "01:00:00",
-          endTime: "02:00:00",
-          venueAddress: "dddd",
-          objectives: "sdfsdf",
-          trainingModeStatus: 0,
-          trainingOrganizerType: 0,
-          status: null,
-        },
-        {
-          trainingId: 26,
-          trainingTitle: "Kotlin Development",
-          trainingDate: "2024-12-01T00:00:00",
-          trainingName: "Database Management",
-          startTime: "01:00:00",
-          endTime: "04:00:00",
-          venueAddress: "sdss",
-          objectives: "dfsgsd",
-          trainingModeStatus: 0,
-          trainingOrganizerType: 0,
-          status: null,
-        },
-      ],
-    },
-    {
-      date: "2024-12-08T00:00:00",
-      trainingCalendarDto: [
-        {
-          trainingId: 25,
-          trainingTitle: "Kotlin Development",
-          trainingDate: "2024-12-08T00:00:00",
-          trainingName: "DevOps ",
-          startTime: "03:00:00",
-          endTime: "20:00:00",
-          venueAddress: "asdasd",
-          objectives: "asdad",
-          trainingModeStatus: 0,
-          trainingOrganizerType: 0,
-          status: null,
-        },
-      ],
-    },
-  ];
-
   const getListData = (value: moment.Moment) => {
     const date = value.format("YYYY-MM-DD");
-    const day = days.find((d) => moment(d?.date).format("YYYY-MM-DD") === date);
+    const day = calenderData?.days?.find(
+      (d: any) => moment(d?.date).format("YYYY-MM-DD") === date
+    );
     return day ? day?.trainingCalendarDto : [];
   };
 
   const dateCellRender = (value: moment.Moment) => {
     const listData = getListData(value);
     return (
-      <ul className="events">
+      <ul
+        className="events"
+        onClick={() => {
+          setModalData(listData);
+          setIsModalVisible(true);
+        }}
+      >
         {listData.map((item: any) => (
           <li key={item.trainingId}>
-            <Badge
-              status="success"
-              text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
-            />
+            {item?.status?.value == 3 ? (
+              <Badge
+                status="error"
+                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
+              />
+            ) : item?.status?.value == 1 ? (
+              <Badge
+                status="processing"
+                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
+              />
+            ) : item?.status?.value == 0 ? (
+              <Badge
+                status="warning"
+                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
+              />
+            ) : (
+              <Badge
+                status="success"
+                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
+              />
+            )}
           </li>
         ))}
       </ul>
@@ -173,12 +108,15 @@ const TrainingCalender: React.FC = () => {
     value: moment.Moment,
     mode: CalendarProps<moment.Moment>["mode"]
   ) => {
+    const values = form.getFieldsValue(true);
     const month = value.format("MM");
     const year = value.format("YYYY");
     console.log(value.format("YYYY-MM"), mode); // This will log only the month and year
-    getCalenderData(
-      `/Training/Training/Calander?businessUnitId=0&workplaceGroupId=0&workplaceId=0&month=${month}&year=${year}`
-    );
+    setMonth(month);
+    setYear(year);
+    // getCalenderData(
+    //   `/Training/Training/Calander?businessUnitId=${values?.bUnit?.value}&workplaceGroupId=${values?.workplaceGroup?.value}&workplaceId=${values?.workplace?.value}&month=${month}&year=${year}`
+    // );
   };
 
   const customHeaderRender = ({ value, onChange }: any) => {
@@ -242,19 +180,51 @@ const TrainingCalender: React.FC = () => {
     );
   };
 
+  const bUnit = Form.useWatch("bUnit", form);
+  const workplaceGroup = Form.useWatch("workplaceGroup", form);
+  const workplace = Form.useWatch("workplace", form);
+
+  useEffect(() => {
+    const values = form.getFieldsValue(true);
+    console.log(month, year, bUnit, workplaceGroup, workplace);
+    if (
+      month &&
+      year &&
+      bUnit &&
+      bUnit?.intBusinessUnitId !== 0 &&
+      workplaceGroup &&
+      workplaceGroup?.intWorkplaceGroupId !== 0 &&
+      workplace &&
+      workplace?.intWorkplaceId !== 0
+    ) {
+      getCalenderData(
+        `/Training/Training/Calander?businessUnitId=${
+          values?.bUnit?.value || 0
+        }&workplaceGroupId=${values?.workplaceGroup?.value || 0}&workplaceId=${
+          values?.workplace?.value || 0
+        }&month=${month}&year=${year}`
+      );
+    }
+  }, [month, year, bUnit, workplaceGroup, workplace]);
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    const currentMonth = moment().format("MM");
-    const currentYear = moment().format("YYYY");
     getCalenderData(
-      `/Training/Training/Calander?businessUnitId=0&workplaceGroupId=0&workplaceId=0&month=${currentMonth}&year=${currentYear}`
+      `/Training/Training/Calander?businessUnitId=${0}&workplaceGroupId=${0}&workplaceId=${0}&month=${month}&year=${year}`
     );
   }, []);
 
   return (
     <div>
       {loadingCalender && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          bUnit: { label: "All", value: 0 },
+          workplaceGroup: { label: "All", value: 0 },
+          workplace: { label: "All", value: 0 },
+        }}
+      >
         {/* <PCard> */}
         <PCardHeader title="Training Calander" />
         <PCardBody styles={{ marginTop: "20px" }}>
@@ -290,6 +260,41 @@ const TrainingCalender: React.FC = () => {
           />
         </div>
       </PForm>
+      <PModal
+        open={isModalVisible}
+        title={""}
+        width={450}
+        onCancel={() => {
+          setIsModalVisible(false);
+        }}
+        maskClosable={false}
+        components={
+          <List
+            dataSource={modalData}
+            renderItem={(item: any) => (
+              <List.Item>
+                <Descriptions bordered>
+                  <Descriptions.Item label="Training Title" span={3}>
+                    {item.trainingTitle}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Time" span={3}>
+                    {`${item.startTime} - ${item.endTime}`}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Status" span={3}>
+                    {item?.status?.label || "N/A"}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Training Mode" span={3}>
+                    {item?.trainingModeStatus?.label || "N/A"}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Objectives" span={3}>
+                    {item.objectives}
+                  </Descriptions.Item>
+                </Descriptions>
+              </List.Item>
+            )}
+          />
+        }
+      />
     </div>
   );
 };
