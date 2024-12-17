@@ -343,17 +343,22 @@ const TnDAttendanceSave = () => {
                   content="View"
                   onClick={() => {
                     const values = form.getFieldsValue(true);
-                    getLandingApi(
-                      `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
-                      (data: any) => {
-                        setRowData(
-                          data.map((item: any, index: number) => ({
-                            ...item,
-                            uId: index,
-                          }))
+                    form
+                      .validateFields()
+                      .then(() => {
+                        getLandingApi(
+                          `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
+                          (data: any) => {
+                            setRowData(
+                              data.map((item: any, index: number) => ({
+                                ...item,
+                                uId: index,
+                              }))
+                            );
+                          }
                         );
-                      }
-                    );
+                      })
+                      .catch(() => {});
                   }}
                 />
               </Col>
@@ -362,23 +367,28 @@ const TnDAttendanceSave = () => {
                   type="primary"
                   content="Add Participants"
                   onClick={() =>
-                    ViewTrainingPlan(4, setLoading, setViewData, (d: any) => {
-                      ViewTrainingPlanDetails(
-                        4, //need to change
-                        setLoading,
-                        setViewDataDetails,
-                        (details: any) => {
-                          history.push(
-                            "/trainingAndDevelopment/planning/edit",
-                            {
-                              data: d,
-                              dataDetails: details,
-                              onlyPerticipant: true,
-                            }
-                          );
-                        }
-                      );
-                    })
+                    ViewTrainingPlan(
+                      data?.id,
+                      setLoading,
+                      setViewData,
+                      (d: any) => {
+                        ViewTrainingPlanDetails(
+                          data?.id,
+                          setLoading,
+                          setViewDataDetails,
+                          (details: any) => {
+                            history.push(
+                              "/trainingAndDevelopment/planning/edit",
+                              {
+                                data: d,
+                                dataDetails: details,
+                                onlyPerticipant: true,
+                              }
+                            );
+                          }
+                        );
+                      }
+                    )
                   }
                 />
               </Col>
