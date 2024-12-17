@@ -1497,7 +1497,7 @@ const CreateAndEditEmploye = () => {
                     />
                   </Col>
                 )}
-                {orgId === 7 && (
+                {orgId === 12 && (
                   <Col md={6} sm={24}>
                     <PSelect
                       options={commonDDL}
