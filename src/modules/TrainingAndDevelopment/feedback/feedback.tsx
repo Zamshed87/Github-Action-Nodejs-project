@@ -66,6 +66,39 @@ const TnDFeedback = () => {
     }
   });
 
+  const { buId, wgId, wId } = profileData;
+
+  // landing calls
+  const ddlApi = useApiRequest({});
+
+  const ddlApiCall = () => {
+    const payload = {
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      isPaginated: false,
+      isHeaderNeeded: true,
+      typeList: [
+        {
+          value: 2,
+          label: "Training Feedback",
+        },
+      ],
+      // createdByList: filters?.createdBy || [],
+      statusList: [
+        {
+          value: "Active",
+          label: "Active",
+        },
+      ],
+    };
+    ddlApi?.action({
+      urlKey: "GetQuestionLanding",
+      method: "POST",
+      payload: payload,
+    });
+  };
+
   //   api calls
 
   // table column
@@ -175,6 +208,8 @@ const TnDFeedback = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
+    ddlApiCall();
+
     empDepartmentDDL?.action({
       urlKey: "DepartmentIdAll",
       method: "GET",
@@ -330,6 +365,7 @@ const TnDFeedback = () => {
               <Col md={6} sm={24}>
                 <PSelect
                   name="feedbackform"
+                  options={ddlApi?.data?.data || []}
                   label="Feedback Form"
                   onChange={(op) => {
                     form.setFieldsValue({
