@@ -12,15 +12,13 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import { saveAssessment } from "./helper";
 import { useApiRequest } from "Hooks";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { ViewTrainingSchedule } from "../planning/helper";
-import { perticipantMap, saveAssessment } from "./helper";
 
 const TnDAssessment = () => {
   interface LocationState {
@@ -36,15 +34,8 @@ const TnDAssessment = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { data = {}, dataDetails = {} } = location?.state || {};
-  const [perticipantField, setperticipantField] = useState<any>(
-    type === "edit"
-      ? perticipantMap(dataDetails?.trainingParticipantDto, data)
-      : []
-  );
-  const empDepartmentDDL = useApiRequest([]);
-  const positionDDL = useApiRequest([]);
+
   const [rowData, setRowData] = useState<any>(null);
-  const [assessmentDDL, setAssessmentDDL] = useState(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -57,6 +48,31 @@ const TnDAssessment = () => {
       permission = item;
     }
   });
+
+  const { buId, wgId, wId } = profileData;
+
+  // landing calls
+  const ddlApi = useApiRequest({});
+
+  const ddlApiCall = () => {
+    const payload = {
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      isPaginated: false,
+      isHeaderNeeded: true,
+      typeList: [1],
+      pageNo: 1,
+      pageSize: 500,
+      statusList: [],
+      createdByList: [],
+    };
+    ddlApi?.action({
+      urlKey: "GetQuestionLanding",
+      method: "POST",
+      payload: payload,
+    });
+  };
 
   //   api calls
 
@@ -138,57 +154,23 @@ const TnDAssessment = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        // workplaceGroupId: workplaceGroup?.value,
-        // workplaceId: workplace?.value,
-
-        accountId: profileData?.orgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-    positionDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Position",
-        BusinessUnitId: profileData?.buId,
-        // WorkplaceGroupId: workplaceGroup?.value,
-        // IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.PositionName;
-          res[i].value = item?.PositionId;
-        });
-      },
-    });
+    ddlApiCall();
+    landingApiCall();
   }, []);
 
-  useEffect(() => {
-    ViewTrainingSchedule(data?.id, setLoading, (responseData: any) => {
-      const formattedData = responseData.map((item: any) => ({
-        ...item,
-        value: item.id,
-        label: `${moment(item?.trainingDate).format("DD-MM-YYYY")}[${moment(
-          item.startTime,
-          "HH:mm"
-        ).format("hh:mm A")}-${moment(item?.endTime, "HH:mm").format(
-          "hh:mm A"
-        )}]`,
-      }));
-      setAssessmentDDL(formattedData);
-    });
-  }, []);
+  const landingApiCall = () => {
+    getLandingApi(
+      `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=&attendanceDate=`,
+      (data: any) => {
+        setRowData(
+          data.map((item: any, index: number) => ({
+            ...item,
+            uId: index,
+          }))
+        );
+      }
+    );
+  };
 
   return (
     <div>
@@ -202,13 +184,12 @@ const TnDAssessment = () => {
           trainingOrganizer: data?.trainingOrganizerType?.label,
           trainingVenue: data?.venueAddress,
           trainingStatus: data?.status?.label,
-          trainingDuration: "TEST",
         }}
       >
         <PCard>
           <PCardHeader
             backButton
-            title={`Training Assessment`}
+            title={`Training Feedback`}
             buttonList={[
               {
                 type: "primary",
@@ -294,43 +275,23 @@ const TnDAssessment = () => {
               <Col md={6} sm={24}>
                 <PSelect
                   name="assessmentform"
+                  options={
+                    ddlApi?.data?.data?.map((item: any) => ({
+                      label: item?.title,
+                      value: item?.id,
+                    })) || []
+                  }
                   label="Assessment Form"
-                  onChange={(value, op) => {
+                  onChange={(op) => {
                     form.setFieldsValue({
-                      attendanceDate: op,
+                      assessmentform: op,
                     });
                   }}
                   rules={[
-                    { required: true, message: "Assessment Form is required" },
+                    { required: true, message: "Feedback Form is required" },
                   ]}
-                  options={assessmentDDL || []}
                 />
               </Col>
-              {/* <Col md={2} sm={24} style={{ marginTop: "22px" }}>
-                <PButton
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        getLandingApi(
-                          `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
-                          (data: any) => {
-                            setRowData(
-                              data.map((item: any, index: number) => ({
-                                ...item,
-                                uId: index,
-                              }))
-                            );
-                          }
-                        );
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col> */}
             </Row>
           </PCardBody>
           {!landingLoading && rowData && (
@@ -338,17 +299,6 @@ const TnDAssessment = () => {
               <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
-          {/* <PCardBody>
-            <ListOfPerticipants
-              form={form}
-              perticipantField={perticipantField}
-              setperticipantField={setperticipantField}
-              addHandler={addHanderForPerticipant}
-              // calculatePerPersonCost={calculatePerPersonCost}
-              departmentDDL={empDepartmentDDL?.data || []}
-              positionDDL={positionDDL?.data || []}
-            />{" "}
-          </PCardBody> */}
         </PCard>
       </PForm>
     </div>
