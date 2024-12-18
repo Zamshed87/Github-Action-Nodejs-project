@@ -443,6 +443,10 @@ export default function AddEditForm({
                   value: "BRAC",
                   label: "BRAC",
                 },
+                {
+                  value: "EFTN",
+                  label: "EFTN",
+                },
               ]}
               onChange={(value, op) => {
                 form.setFieldsValue({
