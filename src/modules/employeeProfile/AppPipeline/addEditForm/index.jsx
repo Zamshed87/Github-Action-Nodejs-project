@@ -7,7 +7,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { labelChangeByOrgId } from "utility/strLabelChange";
 import { DataTable } from "Components";
-import { approverDDL, header, sequence, submitHandler } from "./helper";
+import { approverDDL, header, submitHandler } from "./helper";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -20,6 +20,7 @@ export default function AddEditForm({
   const [deletedRow, setDeletedRow] = useState([]);
   const [isStrStatus, setIsStrStatus] = useState(false);
   const [randomCount, setRandomCount] = useState(false);
+  const [random, setRandom] = useState(false);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
@@ -151,6 +152,7 @@ export default function AddEditForm({
             isCreate: false,
             isDelete: false,
             strStatusTitle: item?.globalPipelineRow?.strStatusTitle,
+            randomCount: item?.globalPipelineRow?.randomCount || false,
           }));
           setTableData(rowData);
         },
@@ -274,7 +276,7 @@ export default function AddEditForm({
               form.setFieldsValue({
                 approver: op,
                 strTitle: `${op?.label}`,
-                // strTitlePending: `${op?.label}`,
+                strTitlePending: `${op?.label}`,
                 userGroup: undefined,
               });
               setIsStrStatus(true);
@@ -286,9 +288,9 @@ export default function AddEditForm({
             type="text"
             addOnBefore={isStrStatus && "Pre-Approved By"}
             name="strTitle"
-            label="Pre-Approval Status"
-            placeholder="Pre-Approval Status"
-            disabled={!form.getFieldValue("approver")}
+            label="Before Approval Status"
+            placeholder="Pending For"
+            // disabled={!form.getFieldValue("approver")}
           />
         </Col>
         <Col md={12} sm={24}>
@@ -296,9 +298,9 @@ export default function AddEditForm({
             type="text"
             addOnBefore={isStrStatus && "Pending Approval By"}
             name="strTitlePending"
-            label="Pending Approval Status"
-            placeholder="Pending Approval Status"
-            disabled={!form.getFieldValue("approver")}
+            label="After Approval Status"
+            placeholder="Approved By"
+            // disabled={!form.getFieldValue("approver")}
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
@@ -359,6 +361,8 @@ export default function AddEditForm({
                   randomCountValue: undefined,
                 });
                 setRandomCount(checked);
+                setTableData([]);
+                setRandom(checked);
               }}
             >
               Random Count
@@ -371,7 +375,7 @@ export default function AddEditForm({
           className="mt-4"
           style={{
             display: randomCount ? "block" : "none",
-            marginRight:"10px"
+            marginRight: "10px",
           }}
           rules={[
             {
@@ -402,7 +406,7 @@ export default function AddEditForm({
 
         <Form.Item shouldUpdate noStyle>
           {() => {
-            const { approver, userGroup, strTitle } = form.getFieldsValue();
+            const { approver, userGroup, strTitle, strTitlePending } = form.getFieldsValue();
             return (
               <>
                 <Col span={2} className="mt-1">
@@ -455,6 +459,7 @@ export default function AddEditForm({
                         isCreate: true,
                         isDelete: false,
                         strStatusTitle: `Approved By ${strTitle}`,
+                        strStatusTitlePending: `Pending For ${strTitlePending}`,
                       };
                       data.push(obj);
 
@@ -474,13 +479,13 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
-{console.log("tableData",tableData)}
+        {console.log("tableData", tableData)}
         <Col md={24} sm={24} style={{ marginTop: "1rem" }}>
           {tableData?.length > 0 && (
             <DataTable
               bordered
               data={tableData?.length > 0 ? tableData : []}
-              header={header(deletedRow, setDeletedRow, remover)}
+              header={header(deletedRow, setDeletedRow, remover, random)}
             />
           )}
         </Col>

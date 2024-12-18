@@ -21,7 +21,7 @@ export const approverDDL = (orgId, supervisor) => {
 };
 
 // Header
-export const header = (deletedRow, setDeletedRow, remover) => [
+export const header = (deletedRow, setDeletedRow, remover, random) => [
   {
     title: "SL",
     render: (_, rec, index) => index + 1,
@@ -32,15 +32,22 @@ export const header = (deletedRow, setDeletedRow, remover) => [
     title: "Approver",
     dataIndex: "approver",
     sorter: true,
+    width: 100,
   },
   {
     title: "Sequence Order",
     dataIndex: "intShortOrder",
     sorter: true,
+    isHidden: random,
   },
   {
-    title: "Status Title",
+    title: "Before Approve Status Title",
     dataIndex: "strStatusTitle",
+    sorter: true,
+  },
+  {
+    title: "After Approve Status Title",
+    dataIndex: "strStatusTitlePending",
     sorter: true,
   },
   {
@@ -76,7 +83,7 @@ export const header = (deletedRow, setDeletedRow, remover) => [
       </>
     ),
   },
-];
+].filter((item) => !item.isHidden);
 
 export const sequence = [
   { value: 1, label: "1" },
