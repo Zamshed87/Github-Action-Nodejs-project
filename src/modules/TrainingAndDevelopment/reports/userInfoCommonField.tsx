@@ -8,21 +8,24 @@ import { boolean } from "yup";
 const UserInfoCommonField = ({
   form,
   isDepartment,
+  isDesignation,
 }: {
   form: any;
   isDepartment?: boolean;
+  isDesignation?: boolean;
 }) => {
   const dispatch = useDispatch();
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId } = profileData;
+  const { buId, wgId, employeeId, orgId, wId } = profileData;
 
   const getBUnitDDL = useApiRequest({});
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
+  const designationApi = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   // workplace wise
   const getWorkplaceGroup = () => {
@@ -82,6 +85,27 @@ const UserInfoCommonField = ({
         res.forEach((item: any, i: number) => {
           res[i].label = item?.strDepartment;
           res[i].value = item?.intDepartmentId;
+        });
+      },
+    });
+  };
+
+  const getDesignation = () => {
+    const { businessUnit, workplaceGroup, workplace } =
+      form.getFieldsValue(true);
+    designationApi?.action({
+      urlKey: "DesignationIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: businessUnit?.value || buId,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
         });
       },
     });
@@ -154,10 +178,11 @@ const UserInfoCommonField = ({
             if (isDepartment) {
               getEmployeDepartment();
             }
+            if (isDesignation) {
+              getDesignation();
+            }
             //
             // getEmployeePosition();
-
-            //   getDesignation();
           }}
           rules={[{ required: true, message: "Workplace is required" }]}
         />
@@ -181,6 +206,20 @@ const UserInfoCommonField = ({
                 message: "Department is required",
               },
             ]}
+          />
+        </Col>
+      )}
+      {isDesignation && (
+        <Col md={6}>
+          <PSelect
+            options={designationApi?.data || []}
+            name="designation"
+            label="Designation"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                designation: op,
+              });
+            }}
           />
         </Col>
       )}

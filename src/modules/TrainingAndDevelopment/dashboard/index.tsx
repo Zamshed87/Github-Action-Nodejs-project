@@ -194,7 +194,11 @@ const TnDDashboard = () => {
                   ]}
                 />
               </Col>
-              <UserInfoCommonField form={form} isDepartment={true} />
+              <UserInfoCommonField
+                form={form}
+                isDepartment={true}
+                isDesignation={true}
+              />
 
               <Col md={6} sm={24}>
                 <PButton
