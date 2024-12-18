@@ -22,16 +22,15 @@ const { Title } = Typography;
 
 // Table Data
 const tableData = [
-  { key: "1", name: "Total Training Count", value: "Info." },
-  { key: "2", name: "Total Training Hour", value: "Info." },
-  { key: "3", name: "Total Participant", value: "Info." },
-  { key: "4", name: "Total Feedback Count", value: "Info." },
-  { key: "5", name: "Total Assessment Count", value: "Info." },
+  { key: "1", name: "Classroom" },
+  { key: "2", name: "Online" },
+  { key: "3", name: "Offline" },
+  { key: "4", name: "Total" },
+  { key: "5", name: "Total A" },
 ];
 
 const tableColumns = [
-  { title: "Metric", dataIndex: "name", key: "name" },
-  { title: "Value", dataIndex: "value", key: "value" },
+  { title: "Training Mode", dataIndex: "name", key: "name", width: 30 },
 ];
 
 // Pie Chart Data
@@ -404,9 +403,45 @@ const TnDDashboard = () => {
           </PCardBody>
         </PCard>
       </PForm>
-      <Row gutter={24} style={{ marginTop: "40px" }}>
+      <Row gutter={24} style={{ marginTop: "30px" }}>
         {/* Left Metrics Table */}
-        <Col span={6}>
+        <Col span={4}>
+          <Card
+            size="small"
+            title="Total Training Count"
+            style={{ width: 200 }}
+          >
+            <p>50</p>
+          </Card>
+          <Card size="small" title="Total Training Hour" style={{ width: 200 }}>
+            <p>345</p>
+          </Card>
+          <Card size="small" title="Total Participant" style={{ width: 200 }}>
+            <p>85</p>
+          </Card>
+          <Card
+            size="small"
+            title="Total Feedback Count"
+            style={{ width: 200 }}
+          >
+            <p>185</p>
+          </Card>
+          <Card
+            size="small"
+            title="Total Assessment Count"
+            style={{ width: 200 }}
+          >
+            <p>15</p>
+          </Card>
+        </Col>
+        <Col span={2}>
+          <Table
+            dataSource={tableData}
+            columns={tableColumns}
+            pagination={false}
+            bordered
+            size="middle"
+          />
           <Table
             dataSource={tableData}
             columns={tableColumns}
@@ -417,7 +452,7 @@ const TnDDashboard = () => {
         </Col>
 
         {/* Middle Pie Chart */}
-        <Col span={6}>
+        <Col span={5}>
           <Pie
             {...pieConfig}
             style={{
@@ -428,9 +463,18 @@ const TnDDashboard = () => {
             }}
           />
         </Col>
+        <Col span={2}>
+          <Table
+            dataSource={tableData}
+            columns={tableColumns}
+            pagination={false}
+            bordered
+            size="middle"
+          />
+        </Col>
 
         {/* Right Pie Chart */}
-        <Col span={6}>
+        <Col span={5}>
           <Pie
             {...pieConfig}
             style={{
@@ -443,14 +487,34 @@ const TnDDashboard = () => {
         </Col>
 
         {/* Summary Table */}
-        <Col span={6}>
-          <Table
-            dataSource={statisticsData}
-            columns={statisticsColumns}
-            pagination={false}
-            bordered
-            size="middle"
-          />
+        <Col span={4}>
+          <Card
+            size="small"
+            title="Total Training Count"
+            style={{ width: 200 }}
+          >
+            <p>50</p>
+          </Card>
+          <Card size="small" title="Total Training Hour" style={{ width: 200 }}>
+            <p>345</p>
+          </Card>
+          <Card size="small" title="Total Participant" style={{ width: 200 }}>
+            <p>85</p>
+          </Card>
+          <Card
+            size="small"
+            title="Total Feedback Count"
+            style={{ width: 200 }}
+          >
+            <p>185</p>
+          </Card>
+          <Card
+            size="small"
+            title="Total Assessment Count"
+            style={{ width: 200 }}
+          >
+            <p>15</p>
+          </Card>
         </Col>
       </Row>
 
