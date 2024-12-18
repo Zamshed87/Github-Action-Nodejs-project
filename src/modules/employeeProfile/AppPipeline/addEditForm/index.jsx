@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { labelChangeByOrgId } from "utility/strLabelChange";
 import { DataTable } from "Components";
 import { approverDDL, header, submitHandler } from "./helper";
+import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -21,9 +22,11 @@ export default function AddEditForm({
   const [isStrStatus, setIsStrStatus] = useState(false);
   const [randomCount, setRandomCount] = useState(false);
   const [random, setRandom] = useState(false);
+  const [isSequence, setIsSequence] = useState(true);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
+  const CommonEmployeeDDL = useApiRequest([]);
   const getWgDDL = useApiRequest({});
   const getWDDL = useApiRequest({});
   const getPipelineDDL = useApiRequest({});
@@ -39,6 +42,27 @@ export default function AddEditForm({
   );
 
   const [loading, setLoading] = useState(false);
+
+  const getEmployee = (value) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        // workplaceId: wId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
 
   useEffect(() => {
     getWgDDL.action({
@@ -256,14 +280,14 @@ export default function AddEditForm({
             rules={[{ required: true, message: "Pipeline Name is required" }]}
           />
         </Col>
-        <Col md={12} sm={24}>
+        {/* <Col md={12} sm={24}>
           <PInput
             type="text"
             name="remarks"
             label="Remarks"
             placeholder="Remarks"
           />
-        </Col>
+        </Col> */}
         <Col md={12} sm={24}>
           <PSelect
             options={approverDDL(orgId, supervisor)}
@@ -283,10 +307,40 @@ export default function AddEditForm({
             }}
           />
         </Col>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { approver } = form.getFieldsValue();
+            return (
+              approver?.label === "Individual Employee" && (
+                <Col md={12} sm={24} xs={24}>
+                  <PSelect
+                    name="employee"
+                    label="Select a Employee"
+                    placeholder="Search Min 2 char"
+                    allowClear={true}
+                    options={CommonEmployeeDDL?.data || []}
+                    loading={CommonEmployeeDDL?.loading}
+                    onChange={(value, op) => {
+                      console.log("op", op);
+                      form.setFieldsValue({
+                        employee: op,
+                      });
+                    }}
+                    onSearch={(value) => {
+                      getEmployee(value);
+                    }}
+                    showSearch
+                    filterOption={false}
+                  />
+                </Col>
+              )
+            );
+          }}
+        </Form.Item>
         <Col md={12} sm={24}>
           <PInput
             type="text"
-            addOnBefore={isStrStatus && "Pre-Approved By"}
+            addOnBefore={isStrStatus && "Pending For"}
             name="strTitle"
             label="Before Approval Status"
             placeholder="Pending For"
@@ -296,7 +350,7 @@ export default function AddEditForm({
         <Col md={12} sm={24}>
           <PInput
             type="text"
-            addOnBefore={isStrStatus && "Pending Approval By"}
+            addOnBefore={isStrStatus && "Approved By"}
             name="strTitlePending"
             label="After Approval Status"
             placeholder="Approved By"
@@ -336,33 +390,60 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
-        {/* <Col md={12} sm={24}>
-          <PSelect
-            options={sequence}
-            name="sequence"
-            label="Sequence Order"
-            showSearch
-            filterOption={true}
-            placeholder="Sequence Order"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                sequence: op,
-              });
-            }}
-          />
-        </Col> */}
+
         <Col md={4} sm={24} className="mt-4">
-          <Form.Item name="randomCount" valuePropName="checked">
+          <Form.Item
+            name="isSequence"
+            valuePropName="checked"
+            initialValue={true}
+          >
             <Checkbox
               onChange={(e) => {
                 const checked = e.target.checked;
-                form.setFieldsValue({
-                  randomCount: checked,
-                  randomCountValue: undefined,
-                });
-                setRandomCount(checked);
-                setTableData([]);
-                setRandom(checked);
+                if (checked) {
+                  form.setFieldsValue({
+                    isSequence: true,
+                    randomCount: false,
+                  });
+                  setIsSequence(true);
+                  setRandomCount(false);
+                  setRandom(false);
+                } else {
+                  form.setFieldsValue({
+                    isSequence: false,
+                  });
+                  setIsSequence(false);
+                }
+              }}
+            >
+              Sequence
+            </Checkbox>
+          </Form.Item>
+        </Col>
+
+        <Col md={4} sm={24} className="mt-4">
+          <Form.Item
+            name="randomCount"
+            valuePropName="checked"
+            initialValue={false}
+          >
+            <Checkbox
+              onChange={(e) => {
+                const checked = e.target.checked;
+                if (checked) {
+                  form.setFieldsValue({
+                    randomCount: true,
+                    isSequence: false,
+                  });
+                  setRandomCount(true);
+                  setIsSequence(false);
+                  setRandom(true);
+                } else {
+                  form.setFieldsValue({
+                    randomCount: false,
+                  });
+                  setRandomCount(false);
+                }
               }}
             >
               Random Count
@@ -406,7 +487,8 @@ export default function AddEditForm({
 
         <Form.Item shouldUpdate noStyle>
           {() => {
-            const { approver, userGroup, strTitle, strTitlePending } = form.getFieldsValue();
+            const { approver, userGroup, strTitle, strTitlePending, employee } =
+              form.getFieldsValue();
             return (
               <>
                 <Col span={2} className="mt-1">
@@ -449,7 +531,10 @@ export default function AddEditForm({
                       const data = [...tableData];
                       const obj = {
                         approver: approver?.label,
-                        userGroup: userGroup?.label || "",
+                        userGroup:
+                          userGroup?.label ||
+                          employee?.employeeNameWithCode ||
+                          "",
                         intPipelineRowId: 0,
                         intPipelineHeaderId: 0,
                         isSupervisor: approver?.value === 1,
@@ -469,6 +554,7 @@ export default function AddEditForm({
                         strTitle: undefined,
                         strTitlePending: undefined,
                         userGroup: undefined,
+                        employee: undefined,
                       });
                     }}
                   >
@@ -479,13 +565,12 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
-        {console.log("tableData", tableData)}
-        <Col md={24} sm={24} style={{ marginTop: "1rem" }}>
-          {tableData?.length > 0 && (
-            <DataTable
-              bordered
-              data={tableData?.length > 0 ? tableData : []}
-              header={header(deletedRow, setDeletedRow, remover, random)}
+        <Col md={24} sm={24}>
+          {tableData.length > 0 && (
+            <DraggableTable
+              tableData={tableData}
+              setTableData={setTableData}
+              header={header(deletedRow, setDeletedRow, remover, random, isSequence)}
             />
           )}
         </Col>

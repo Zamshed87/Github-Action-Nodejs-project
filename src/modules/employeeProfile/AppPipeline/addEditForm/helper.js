@@ -21,69 +21,74 @@ export const approverDDL = (orgId, supervisor) => {
 };
 
 // Header
-export const header = (deletedRow, setDeletedRow, remover, random) => [
-  {
-    title: "SL",
-    render: (_, rec, index) => index + 1,
-    align: "center",
-    width: 50,
-  },
-  {
-    title: "Approver",
-    dataIndex: "approver",
-    sorter: true,
-    width: 100,
-  },
-  {
-    title: "Sequence Order",
-    dataIndex: "intShortOrder",
-    sorter: true,
-    isHidden: random,
-  },
-  {
-    title: "Before Approve Status Title",
-    dataIndex: "strStatusTitle",
-    sorter: true,
-  },
-  {
-    title: "After Approve Status Title",
-    dataIndex: "strStatusTitlePending",
-    sorter: true,
-  },
-  {
-    title: "User Group",
-    dataIndex: "userGroup",
-    sorter: true,
-  },
-
-  {
-    width: 50,
-    align: "center",
-    render: (_, rec, index) => (
-      <>
-        <TableButton
-          buttonsList={[
-            {
-              type: "delete",
-              onClick: (e) => {
-                e.stopPropagation();
-                // store deleted data,we have to send it to back end for edit
-                const data = [...deletedRow];
-                data.push({
-                  ...rec,
-                  isCreate: false,
-                  isDelete: true,
-                });
-                setDeletedRow(data);
-                remover(index);
-              },
-            },
-          ]}
+export const header = (
+  deletedRow,
+  setDeletedRow,
+  remover,
+  random,
+  isSequence
+) =>
+  [
+    {
+      title: "SL",
+      render: (_, rec, index) => index + 1,
+      align: "center",
+      width: 50,
+    },
+    {
+      title: "Approver",
+      dataIndex: "approver",
+      sorter: true,
+    },
+    {
+      title: "Sequence Order",
+      dataIndex: "intShortOrder",
+      sorter: true,
+      isHidden: random || !isSequence,
+      width: 150,
+    },
+    {
+      title: "Before Approve Status Title",
+      dataIndex: "strStatusTitle",
+      sorter: true,
+    },
+    {
+      title: "After Approve Status Title",
+      dataIndex: "strStatusTitlePending",
+      sorter: true,
+    },
+    {
+      title: "User Group/Employee",
+      dataIndex: "userGroup",
+      sorter: true,
+    },
+    {
+      title: "Action",
+      width: 50,
+      align: "center",
+      render: (_, rec, index) => (
+        <i
+          className="fa fa-trash"
+          style={{
+            fontSize: "16px",
+            color: "#ff4d4f",
+            cursor: "pointer",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            const data = [...deletedRow];
+            data.push({
+              ...rec,
+              isCreate: false,
+              isDelete: true,
+            });
+            setDeletedRow(data);
+            remover(index);
+          }}
         />
-      </>
-    ),
-  },
-].filter((item) => !item.isHidden);
+      ),
+    },
+  ].filter((col) => !col.isHidden);
 
 export const sequence = [
   { value: 1, label: "1" },
@@ -120,6 +125,8 @@ export const submitHandler = ({
   buId,
   wgId,
   deletedRow,
+  isSequence,
+  random,
   savePipeline,
 }) => {
   const cb = () => {
@@ -131,23 +138,56 @@ export const submitHandler = ({
     return toast.warn(
       `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
     );
+  // const payload = {
+  //   isActive: true,
+  //   dteCreatedAt: todayDate(),
+  //   intCreatedBy: employeeId,
+  //   dteUpdatedAt: todayDate(),
+  //   intUpdatedBy: employeeId,
+  //   intPipelineHeaderId: singleData?.intPipelineHeaderId || 0,
+  //   strPipelineName: values?.pipelineName?.label,
+  //   strApplicationType: values?.pipelineName?.value,
+  //   strRemarks: values?.remarks || "",
+  //   intAccountId: orgId,
+  //   intBusinessUnitId: buId,
+  //   intWorkplaceGroupId: values?.orgName?.value || wgId,
+  //   intWorkplaceId: values?.workplace?.value ? values?.workplace?.value : 0, //  || wId,
+  //   isValidate: true,
+  //   approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
+  // };
   const payload = {
-    isActive: true,
-    dteCreatedAt: todayDate(),
-    intCreatedBy: employeeId,
-    dteUpdatedAt: todayDate(),
-    intUpdatedBy: employeeId,
-    intPipelineHeaderId: singleData?.intPipelineHeaderId || 0,
-    strPipelineName: values?.pipelineName?.label,
-    strApplicationType: values?.pipelineName?.value,
-    strRemarks: values?.remarks || "",
-    intAccountId: orgId,
-    intBusinessUnitId: buId,
-    intWorkplaceGroupId: values?.orgName?.value || wgId,
-    intWorkplaceId: values?.workplace?.value ? values?.workplace?.value : 0, //  || wId,
-    isValidate: true,
-    approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
+    header: {
+      sl: 0,
+      id: singleData?.intPipelineHeaderId || 0,
+      applicationTypeId: values?.pipelineName?.value || 0,
+      applicationType: values?.pipelineName?.label || "",
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: values?.orgName?.value || wgId,
+      workplaceGroupName: values?.orgName?.label || "",
+      workplaceId: values?.workplace?.value || 0,
+      workplaceName: values?.workplace?.label || "",
+      isInSequence: isSequence,
+      randomApproverCount: random ? tableData?.length || 0 : 0,
+      isActive: true,
+      createdBy: employeeId,
+      createdAt: todayDate(),
+    },
+    row: tableData.map((item) => ({
+      id: item?.intPipelineRowId || 0,
+      configHeaderId: singleData?.intPipelineHeaderId || 0,
+      approverTypeId: item?.approver?.value || 0,
+      approverType: item?.approver || "",
+      beforeApproveStatus: item?.strStatusTitle || "",
+      afterApproveStatus: item?.strStatusTitlePending || "",
+      sequenceId: random ? 0 : item?.intShortOrder || 0,
+      isActive: true,
+      createdBy: employeeId,
+      createdAt: todayDate(),
+      userGroupOrEmployeeId: item?.userGroup || 0,
+    })),
   };
+  
   savePipeline.action({
     urlKey: "ApprovalPipelineCreateNUpdate",
     method: "POST",
