@@ -86,6 +86,7 @@ const UserInfoCommonField = ({
           res[i].label = item?.strDepartment;
           res[i].value = item?.intDepartmentId;
         });
+        res.unshift({ label: "All", value: 0 });
       },
     });
   };
@@ -107,6 +108,7 @@ const UserInfoCommonField = ({
           res[i].label = item?.designationName;
           res[i].value = item?.designationId;
         });
+        res.unshift({ label: "All", value: 0 });
       },
     });
   };

@@ -13,9 +13,10 @@ import { Pie, Line, Column } from "@ant-design/plots";
 import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
 import UserInfoCommonField from "../reports/userInfoCommonField";
-import { PButton, PCard, PCardBody, PForm, PInput } from "Components";
+import { PButton, PCard, PCardBody, PForm, PInput, PSelect } from "Components";
 import { useDispatch } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const { Title } = Typography;
 
@@ -144,9 +145,48 @@ const statisticsColumns = [
 
 const TnDDashboard = () => {
   const dispatch = useDispatch();
+  const [
+    trainingTypeDDL,
+    getTrainingTypeDDL,
+    loadingTrainingType,
+    setTrainingType,
+  ] = useAxiosGet();
+  const [
+    nameOfTrainerOrgDDL,
+    getNameOfTrainerOrgDDL,
+    loadingTrainerOrg,
+    setNameOfTrainerOrg,
+  ] = useAxiosGet();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
+    getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
+    getNameOfTrainerOrgDDL(
+      "/TrainerInformation/Training/TrainerInformation",
+      typeDataSetForTrainerOrg
+    );
   }, []);
+  const typeDataSetForTrainerOrg = (data: any) => {
+    const list: any[] = [];
+    data?.map((d: any) => {
+      if (d?.isActive === true)
+        list.push({
+          label: `${d?.name} - ${d?.organization}`,
+          value: d?.id,
+          ...d,
+        });
+    });
+    list.unshift({ label: "All", value: 0 });
+    setNameOfTrainerOrg(list);
+  };
+
+  const typeDataSetForType = (data: any) => {
+    const list: any[] = [];
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
+    });
+    list.unshift({ label: "All", value: 0 });
+    setTrainingType(list);
+  };
 
   // Form Instance
   const [form] = Form.useForm();
@@ -199,6 +239,45 @@ const TnDDashboard = () => {
                 isDepartment={true}
                 isDesignation={true}
               />
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingTypeDDL || []}
+                  name="trainingType"
+                  label={"Training Type"}
+                  placeholder="Training Type"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingType: op,
+                    });
+                  }}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Training Type is required",
+                  //   },
+                  // ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={nameOfTrainerOrgDDL || []}
+                  name="nameofTrainerOrganization"
+                  label="Name of Trainer & Organization"
+                  placeholder="Name of Trainer & Organization"
+                  onChange={(value, op) => {
+                    console.log(op);
+                    form.setFieldsValue({
+                      nameofTrainerOrganization: op,
+                    });
+                  }}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Name of Trainer & Organization is required",
+                  //   },
+                  // ]}
+                />
+              </Col>
 
               <Col md={6} sm={24}>
                 <PButton
