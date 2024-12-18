@@ -34,6 +34,7 @@ import { TopSheetReport } from "./TopSheetReport";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 import { MdPrint } from "react-icons/md";
+import { APIUrl } from "../../../App";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,10 @@ const BankAdviceReport = () => {
   const [landingView, setLandingView] = useState("");
   const [pdfDto, setPdfDto] = useState([]);
   const [adviceType, setAdviceType] = useState([]);
+  const contentRef = useRef();
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+  });
 
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
@@ -61,10 +66,8 @@ const BankAdviceReport = () => {
     total: 0,
   });
 
-  const { orgId, buId, employeeId, strBusinessUnit, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, strBusinessUnit, wgId, intLogoUrlId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
     useFormik({
@@ -82,6 +85,8 @@ const BankAdviceReport = () => {
     });
   const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+  const letterhead =
+    "https://i.ibb.co.com/nnTRpVV/10-Minute-School-Logo-svg.png";
 
   const topSheetRef = useRef();
 
@@ -936,12 +941,16 @@ const BankAdviceReport = () => {
                                 toastId: 3,
                               });
                             }
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
-                            getPDFAction(
-                              url,
-                              setLoading,
-                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
-                            );
+                            if (orgId === 4) {
+                              reactToPrintFn();
+                            } else {
+                              const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
+                              getPDFAction(
+                                url,
+                                setLoading,
+                                `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
+                              );
+                            }
                           },
                         },
                         {
@@ -1099,6 +1108,87 @@ const BankAdviceReport = () => {
               <NoResult />
             )} */}
             <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+              {orgId === 4 && (
+                <div style={{ display: "none" }}>
+                  <div ref={contentRef}>
+                    <div
+                      className="invoice-header"
+                      style={{
+                        backgroundImage: `url(${APIUrl}/Document/DownloadFile?id=${intLogoUrlId})`,
+                        backgroundRepeat: "no-repeat",
+                        height: "150px",
+                        backgroundSize: "contain",
+                        position: "fixed",
+                        width: "200px",
+                        top: "70px",
+                        right: "70px",
+                      }}
+                    ></div>
+                    <div
+                      className="invoice-footer"
+                      style={{
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center bottom",
+                        bottom: "40px",
+                        position: "fixed",
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      Flat C-1, Rosy Palace, House 358-360, Road-5, Avenue-4,
+                      Mirpur DOHS, Dhaka-1216 <br /> Mobile: 01892698507 |
+                      Website: 10minuteschool.com
+                    </div>
+                    <table>
+                      <thead>
+                        <tr>
+                          <td
+                            style={{
+                              border: "none",
+                            }}
+                          >
+                            {/* place holder for the fixed-position header */}
+                            <div
+                              style={{
+                                height: "150px",
+                              }}
+                            ></div>
+                          </td>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {/* CONTENT GOES HERE */}
+                        <div
+                          style={{ marginTop: "70px", marginLeft: "70px" }}
+                          dangerouslySetInnerHTML={{
+                            __html: landingView,
+                          }}
+                        />
+                      </tbody>
+
+                      <tfoot>
+                        <tr>
+                          <td
+                            style={{
+                              border: "none",
+                            }}
+                          >
+                            {/* place holder for the fixed-position footer */}
+                            <div
+                              style={{
+                                height: "100px",
+                              }}
+                            ></div>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              )}
               <div
                 dangerouslySetInnerHTML={{
                   __html: landingView,

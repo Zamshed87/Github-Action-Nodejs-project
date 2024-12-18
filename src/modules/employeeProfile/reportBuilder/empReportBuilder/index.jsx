@@ -213,6 +213,11 @@ const EmployeeReportBuilder = () => {
     setShowingData(filteredData);
   };
 
+  useEffect(() => {
+    wgId > 1 &&
+      getCustomReportData(orgId, buId, setLandingData, setLoading, wgId);
+  }, [wgId]);
+
   return (
     <div style={{ height: "100vh !important" }}>
       <form onSubmit={handleSubmit}>
