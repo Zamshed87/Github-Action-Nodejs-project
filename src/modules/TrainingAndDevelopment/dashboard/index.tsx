@@ -13,10 +13,19 @@ import { Pie, Line, Column } from "@ant-design/plots";
 import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
 import UserInfoCommonField from "../reports/userInfoCommonField";
-import { PButton, PCard, PCardBody, PForm, PInput, PSelect } from "Components";
+import {
+  DataTable,
+  PButton,
+  PCard,
+  PCardBody,
+  PForm,
+  PInput,
+  PSelect,
+} from "Components";
 import { useDispatch } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { getSerial } from "Utils";
 
 const { Title } = Typography;
 
@@ -145,6 +154,8 @@ const statisticsColumns = [
 
 const TnDDashboard = () => {
   const dispatch = useDispatch();
+  const [landingApi, getLandingApi, landingLoading, , landingError] =
+    useAxiosGet();
   const [
     trainingTypeDDL,
     getTrainingTypeDDL,
@@ -157,6 +168,9 @@ const TnDDashboard = () => {
     loadingTrainerOrg,
     setNameOfTrainerOrg,
   ] = useAxiosGet();
+  const landingApiCall = (values: any) => {
+    getLandingApi("/Training/Training/GetAllTraining");
+  };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
@@ -164,6 +178,7 @@ const TnDDashboard = () => {
       "/TrainerInformation/Training/TrainerInformation",
       typeDataSetForTrainerOrg
     );
+    landingApiCall({});
   }, []);
   const typeDataSetForTrainerOrg = (data: any) => {
     const list: any[] = [];
@@ -187,6 +202,105 @@ const TnDDashboard = () => {
     list.unshift({ label: "All", value: 0 });
     setTrainingType(list);
   };
+
+  const header: any = [
+    {
+      title: "SL",
+      render: (_: any, rec: any, index: number) =>
+        getSerial({
+          // currentPage: landingApi?.data?.currentPage,
+          // pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000, // need to change
+          index,
+        }),
+      fixed: "left",
+      align: "center",
+      width: 40,
+    },
+    {
+      title: "Organization",
+      dataIndex: "organizationName",
+      filter: true,
+      filterKey: "organizationList",
+      filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Training Date",
+      dataIndex: "trainingDate",
+      filter: true,
+      filterKey: "trainingDateList",
+      filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Training Type",
+      dataIndex: "trainingTypeName",
+      filter: true,
+      filterKey: "trainingTypeList",
+      filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Training Title",
+      dataIndex: "trainingTitleName",
+      filter: true,
+      filterKey: "trainingTitleList",
+      filterSearch: true,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Training Organizer",
+      dataIndex: "trainingOrganizerName",
+      filter: true,
+      filterKey: "trainingOrganizerList",
+      filterSearch: true,
+      width: 150,
+    },
+    {
+      title: "Training Venue",
+      dataIndex: "trainingVenue",
+      filter: true,
+      filterKey: "trainingVenueList",
+      filterSearch: true,
+      width: 150,
+    },
+    {
+      title: "Training Mode",
+      dataIndex: "trainingMode",
+      width: 100,
+      render: (_: any, rec: any) => rec?.trainingModeStatus?.label,
+    },
+    {
+      title: "Training Duration",
+      dataIndex: "trainingDuration",
+      filter: true,
+      filterKey: "trainingDurationList",
+      filterSearch: true,
+      width: 150,
+    },
+    {
+      title: "Total Participants",
+      dataIndex: "totalParticipants",
+      filter: true,
+      filterKey: "totalParticipantsList",
+      filterSearch: true,
+      width: 150,
+    },
+    {
+      title: "Trainer Details",
+      dataIndex: "trainerDetails",
+      filter: true,
+      filterKey: "trainerDetailsList",
+      filterSearch: true,
+      width: 150,
+    },
+  ];
 
   // Form Instance
   const [form] = Form.useForm();
@@ -424,6 +538,39 @@ const TnDDashboard = () => {
       <Card title="Month-Wise Training Summary">
         <Line {...lineConfig} />
       </Card>
+      <Card title="Upcoming Training">
+        <DataTable
+          bordered
+          data={landingApi || []}
+          loading={landingLoading}
+          header={header}
+          pagination={{
+            pageSize: landingApi?.data?.pageSize,
+            total: landingApi?.data?.totalCount,
+          }}
+          filterData={landingApi?.data?.filters}
+          // onChange={(pagination, filters) => {
+          //   landingApiCall({});
+          // }}
+        />
+      </Card>
+      {/* <div className="mb-3 mt-5">
+        <h1>Upcoming Training</h1>
+        <DataTable
+          bordered
+          data={landingApi || []}
+          loading={landingLoading}
+          header={header}
+          pagination={{
+            pageSize: landingApi?.data?.pageSize,
+            total: landingApi?.data?.totalCount,
+          }}
+          filterData={landingApi?.data?.filters}
+          // onChange={(pagination, filters) => {
+          //   landingApiCall({});
+          // }}
+        />
+      </div> */}
     </div>
   );
 };
