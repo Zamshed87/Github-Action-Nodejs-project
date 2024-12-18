@@ -3,18 +3,30 @@ import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { boolean } from "yup";
 
-const UserInfoCommonField = ({ form }: any) => {
+const UserInfoCommonField = ({
+  form,
+  isDepartment,
+  isDesignation,
+}: {
+  form: any;
+  isDepartment?: boolean;
+  isDesignation?: boolean;
+}) => {
   const dispatch = useDispatch();
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId } = profileData;
+  const { buId, wgId, employeeId, orgId, wId } = profileData;
 
   const getBUnitDDL = useApiRequest({});
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const designationApi = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -51,6 +63,50 @@ const UserInfoCommonField = ({ form }: any) => {
         res.forEach((item: any, i: any) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
+        });
+        res.unshift({ label: "All", value: 0 });
+      },
+    });
+  };
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "DepartmentIdAll",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+
+        accountId: orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
+        });
+        res.unshift({ label: "All", value: 0 });
+      },
+    });
+  };
+
+  const getDesignation = () => {
+    const { businessUnit, workplaceGroup, workplace } =
+      form.getFieldsValue(true);
+    designationApi?.action({
+      urlKey: "DesignationIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: businessUnit?.value || buId,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
         });
         res.unshift({ label: "All", value: 0 });
       },
@@ -121,14 +177,54 @@ const UserInfoCommonField = ({ form }: any) => {
             form.setFieldsValue({
               workplace: op,
             });
-            // getEmployeDepartment();
+            if (isDepartment) {
+              getEmployeDepartment();
+            }
+            if (isDesignation) {
+              getDesignation();
+            }
+            //
             // getEmployeePosition();
-
-            //   getDesignation();
           }}
           rules={[{ required: true, message: "Workplace is required" }]}
         />
       </Col>
+      {isDepartment && (
+        <Col md={6} sm={24}>
+          <PSelect
+            options={empDepartmentDDL?.data || []}
+            name="department"
+            label="Department"
+            // disabled={!workplace}
+            placeholder="Department"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                department: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Department is required",
+              },
+            ]}
+          />
+        </Col>
+      )}
+      {isDesignation && (
+        <Col md={6}>
+          <PSelect
+            options={designationApi?.data || []}
+            name="designation"
+            label="Designation"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                designation: op,
+              });
+            }}
+          />
+        </Col>
+      )}
     </>
   );
 };
