@@ -72,7 +72,7 @@ const TnDAttendanceSave = () => {
   const header: any = [
     {
       title: "SL",
-      render: (_: any, __: any, index: number) => index,
+      render: (_: any, __: any, index: number) => index + 1,
     },
     {
       title: "Participants List",
@@ -239,7 +239,6 @@ const TnDAttendanceSave = () => {
           trainingOrganizer: data?.trainingOrganizerType?.label,
           trainingVenue: data?.venueAddress,
           trainingStatus: data?.status?.label,
-          trainingDuration: "TEST",
         }}
       >
         <PCard>
@@ -272,6 +271,7 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Type"
                   label="Training Type"
                   name="trainingTypeName"
+                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -280,6 +280,7 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Title"
                   label="Training Title"
                   name="trainingTitle"
+                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -288,6 +289,7 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Mode"
                   label="Training Mode"
                   name="trainingMode"
+                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -296,6 +298,7 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Organizer"
                   label="Training Organizer"
                   name="trainingOrganizer"
+                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -304,6 +307,7 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Venue"
                   label="Training Venue"
                   name="trainingVenue"
+                  disabled={true}
                 />
               </Col>
               <Col md={4} sm={24}>
@@ -312,6 +316,7 @@ const TnDAttendanceSave = () => {
                   placeholder="Training Status"
                   label="Training Status"
                   name="trainingStatus"
+                  disabled={true}
                 />
               </Col>
               {/* <Col md={4} sm={24}>
@@ -325,7 +330,7 @@ const TnDAttendanceSave = () => {
               <Col md={6} sm={24}>
                 <PSelect
                   name="attendanceDate"
-                  label="Attendance Date"
+                  label="Attendance Date & Time"
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       attendanceDate: op,
@@ -394,7 +399,7 @@ const TnDAttendanceSave = () => {
               </Col>
             </Row>
           </PCardBody>
-          {!landingLoading && rowData?.length > 0 && (
+          {!landingLoading && rowData && (
             <PCardBody>
               <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>

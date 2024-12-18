@@ -60,3 +60,36 @@ export const perticipantMap = (data: any, d: any) => {
   });
   return list;
 };
+
+export const saveAssessment = async (
+  form: FormInstance<any>,
+  data: any,
+  rowData: any,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const payload = rowData.map((item: any) => ({
+      trainingId: data?.id,
+      employeeId: item?.employeeId,
+      attendanceId: item?.attendanceId || 0,
+      dteAttendanceDate: form.getFieldValue("attendanceDate")?.trainingDate,
+      attendanceStatus: item?.attendanceStatus,
+      scheduleId: item?.trainingScheduleId || 0,
+    }));
+    const res = await axios.post(
+      `/TrainingAttendance/SaveBulkTrainingAttendance`,
+      payload
+    );
+    form.resetFields();
+    toast.success("Attendance Saved Successfully", { toastId: 1222 });
+    cb && cb();
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};

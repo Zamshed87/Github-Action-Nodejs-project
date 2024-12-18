@@ -5,7 +5,6 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import {
   DataTable,
   Flex,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -13,13 +12,15 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import { perticipantMap } from "./helper";
-
 import { useApiRequest } from "Hooks";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { ViewTrainingSchedule } from "../planning/helper";
+import { perticipantMap, saveAssessment } from "./helper";
 
 const TnDAssessment = () => {
   interface LocationState {
@@ -42,10 +43,8 @@ const TnDAssessment = () => {
   );
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
-  const [showTable, setShowTable] = useState(false);
-  const [viewData, setViewData] = useState<any>(null);
-  const [viewDataDetails, setViewDataDetails] = useState<any>(null);
   const [rowData, setRowData] = useState<any>(null);
+  const [assessmentDDL, setAssessmentDDL] = useState(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -69,7 +68,7 @@ const TnDAssessment = () => {
     },
     {
       title: "Participants List",
-      dataIndex: "perticipant",
+      dataIndex: "participantName",
       width: 120,
     },
     {
@@ -84,7 +83,7 @@ const TnDAssessment = () => {
     },
     {
       title: "Workplace",
-      dataIndex: "Workplace",
+      dataIndex: "workplace",
       width: 50,
     },
     {
@@ -99,12 +98,12 @@ const TnDAssessment = () => {
           <br />
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rowData?.every((item: any) => item.isRequested)}
+            checked={rowData?.every((item: any) => item.attendanceStatus === 0)}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) => ({
                   ...item,
-                  isRequested: e.target.checked,
+                  attendanceStatus: e.target.checked ? 0 : 1,
                 }))
               );
             }}
@@ -116,12 +115,12 @@ const TnDAssessment = () => {
         <Flex justify="center">
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rec.isRequested}
+            checked={rec.attendanceStatus === 0}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) =>
-                  item.key === rec.key
-                    ? { ...item, isRequested: e.target.checked }
+                  item.uId === rec.uId
+                    ? { ...item, attendanceStatus: e.target.checked ? 0 : 1 }
                     : item
                 )
               );
@@ -134,82 +133,8 @@ const TnDAssessment = () => {
     },
   ];
 
-  const demoData = [
-    {
-      key: "1",
-      perticipant: "John Doe",
-      hrPosition: "Manager",
-      department: "HR",
-      Workplace: "Head Office",
-      workplaceGroup: "Group A",
-      isRequested: false,
-    },
-    {
-      key: "2",
-      perticipant: "Jane Smith",
-      hrPosition: "Developer",
-      department: "IT",
-      Workplace: "Remote",
-      workplaceGroup: "Group B",
-      isRequested: false,
-    },
-    {
-      key: "3",
-      perticipant: "Robert Brown",
-      hrPosition: "Analyst",
-      department: "Finance",
-      Workplace: "Branch Office",
-      workplaceGroup: "Group C",
-      isRequested: false,
-    },
-    {
-      key: "4",
-      perticipant: "Emily Johnson",
-      hrPosition: "Designer",
-      department: "Marketing",
-      Workplace: "Remote",
-      workplaceGroup: "Group A",
-      isRequested: false,
-    },
-    {
-      key: "5",
-      perticipant: "Michael Wilson",
-      hrPosition: "Intern",
-      department: "Operations",
-      Workplace: "Head Office",
-      workplaceGroup: "Group B",
-      isRequested: false,
-    },
-  ];
-
-  const addHanderForPerticipant = (values: any) => {
-    if (!values?.employee) {
-      toast.error("Employee is required");
-      return;
-    }
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    const nextId =
-      perticipantField.length > 0
-        ? perticipantField[perticipantField.length - 1].id + 1
-        : 1;
-    setperticipantField([
-      ...perticipantField,
-      {
-        id: nextId,
-        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
-        perticipantId: values?.employee?.value,
-        department: values?.department?.label,
-        departmentId: values?.department?.value,
-        hrPosition: values?.hrPosition?.label,
-        hrPositionId: values?.hrPosition?.value,
-        workplaceGroup: workplaceGroup?.label,
-        workplaceGroupId: workplaceGroup?.value,
-        workplace: workplace?.label,
-        workplaceId: workplace?.value,
-      },
-    ]);
-  };
+  const [landingApi, getLandingApi, landingLoading, , landingError] =
+    useAxiosGet();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
@@ -250,7 +175,19 @@ const TnDAssessment = () => {
   }, []);
 
   useEffect(() => {
-    setRowData(demoData);
+    ViewTrainingSchedule(data?.id, setLoading, (responseData: any) => {
+      const formattedData = responseData.map((item: any) => ({
+        ...item,
+        value: item.id,
+        label: `${moment(item?.trainingDate).format("DD-MM-YYYY")}[${moment(
+          item.startTime,
+          "HH:mm"
+        ).format("hh:mm A")}-${moment(item?.endTime, "HH:mm").format(
+          "hh:mm A"
+        )}]`,
+      }));
+      setAssessmentDDL(formattedData);
+    });
   }, []);
 
   return (
@@ -258,7 +195,15 @@ const TnDAssessment = () => {
       {loading && <Loading />}
       <PForm
         form={form}
-        initialValues={{ reasonForRequisition: data?.requestor }}
+        initialValues={{
+          trainingTypeName: data?.trainingTypeName,
+          trainingTitle: data?.trainingTitleName,
+          trainingMode: data?.trainingModeStatus?.label,
+          trainingOrganizer: data?.trainingOrganizerType?.label,
+          trainingVenue: data?.venueAddress,
+          trainingStatus: data?.status?.label,
+          trainingDuration: "TEST",
+        }}
       >
         <PCard>
           <PCardHeader
@@ -271,7 +216,9 @@ const TnDAssessment = () => {
                 icon: <SaveOutlined />,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
-
+                  saveAssessment(form, data, rowData, setLoading, () => {
+                    history.push("/trainingAndDevelopment/trainingPlan");
+                  });
                   form
                     .validateFields()
                     .then(() => {})
@@ -287,7 +234,7 @@ const TnDAssessment = () => {
                   type="text"
                   placeholder="Training Type"
                   label="Training Type"
-                  name="trainingTitle"
+                  name="trainingTypeName"
                   disabled={true}
                 />
               </Col>
@@ -336,43 +283,72 @@ const TnDAssessment = () => {
                   disabled={true}
                 />
               </Col>
-              <Col md={4} sm={24}>
+              {/* <Col md={4} sm={24}>
                 <PInput
                   type="text"
                   placeholder="Training Duration"
                   label="Training Duration"
                   name="trainingDuration"
-                  disabled={true}
                 />
-              </Col>
-              <Col md={4} sm={24}>
+              </Col> */}
+              <Col md={6} sm={24}>
                 <PSelect
                   name="assessmentform"
                   label="Assessment Form"
-                  onChange={(value) => {
+                  onChange={(value, op) => {
                     form.setFieldsValue({
-                      attendanceDate: value,
+                      attendanceDate: op,
                     });
                   }}
                   rules={[
                     { required: true, message: "Assessment Form is required" },
                   ]}
+                  options={assessmentDDL || []}
                 />
               </Col>
-              <Col md={2} sm={24} style={{ marginTop: "22px" }}>
+              {/* <Col md={2} sm={24} style={{ marginTop: "22px" }}>
                 <PButton
                   type="primary"
                   content="View"
-                  onClick={() => setShowTable(!showTable)}
+                  onClick={() => {
+                    const values = form.getFieldsValue(true);
+                    form
+                      .validateFields()
+                      .then(() => {
+                        getLandingApi(
+                          `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
+                          (data: any) => {
+                            setRowData(
+                              data.map((item: any, index: number) => ({
+                                ...item,
+                                uId: index,
+                              }))
+                            );
+                          }
+                        );
+                      })
+                      .catch(() => {});
+                  }}
                 />
-              </Col>
+              </Col> */}
             </Row>
           </PCardBody>
-          {showTable && (
+          {!landingLoading && rowData && (
             <PCardBody>
               <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
+          {/* <PCardBody>
+            <ListOfPerticipants
+              form={form}
+              perticipantField={perticipantField}
+              setperticipantField={setperticipantField}
+              addHandler={addHanderForPerticipant}
+              // calculatePerPersonCost={calculatePerPersonCost}
+              departmentDDL={empDepartmentDDL?.data || []}
+              positionDDL={positionDDL?.data || []}
+            />{" "}
+          </PCardBody> */}
         </PCard>
       </PForm>
     </div>
