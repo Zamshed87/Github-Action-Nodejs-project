@@ -164,9 +164,9 @@ const TnDPlanningLanding = () => {
     {
       title: "Status",
       dataIndex: "status",
-      filter: true,
-      filterKey: "statusList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "statusList",
+      // filterSearch: true,
       render: (status: any) => (
         <>
           {status?.label === "Upcoming" && (
