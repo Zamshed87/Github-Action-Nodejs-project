@@ -1,18 +1,6 @@
-import React, { useEffect } from "react";
-import {
-  Row,
-  Col,
-  Card,
-  Table,
-  Statistic,
-  Typography,
-  Divider,
-  Form,
-} from "antd";
-import { Pie, Line, Column } from "@ant-design/plots";
-import DurationChart from "./chart/duration";
-import PerticipantsChart from "./chart/perticipants";
-import UserInfoCommonField from "../reports/userInfoCommonField";
+import { Line, Pie } from "@ant-design/plots";
+import { Card, Col, Divider, Form, Row, Table, Typography } from "antd";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   DataTable,
   PButton,
@@ -22,10 +10,13 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
+import UserInfoCommonField from "../reports/userInfoCommonField";
+import DurationChart from "./chart/duration";
+import PerticipantsChart from "./chart/perticipants";
 
 const { Title } = Typography;
 
