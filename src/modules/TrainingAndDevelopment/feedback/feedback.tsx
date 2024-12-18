@@ -5,7 +5,6 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import {
   DataTable,
   Flex,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -13,19 +12,12 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import { perticipantMap } from "./helper";
 import { saveFeedback } from "./helper";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  ViewTrainingPlan,
-  ViewTrainingPlanDetails,
-  ViewTrainingSchedule,
-} from "../planning/helper";
-import moment from "moment";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const TnDFeedback = () => {
@@ -42,17 +34,8 @@ const TnDFeedback = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { data = {}, dataDetails = {} } = location?.state || {};
-  const [perticipantField, setperticipantField] = useState<any>(
-    type === "edit"
-      ? perticipantMap(dataDetails?.trainingParticipantDto, data)
-      : []
-  );
-  const empDepartmentDDL = useApiRequest([]);
-  const positionDDL = useApiRequest([]);
-  const [viewData, setViewData] = useState<any>(null);
-  const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+
   const [rowData, setRowData] = useState<any>(null);
-  const [attendanceDDL, setAttendanceDDL] = useState(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -78,19 +61,11 @@ const TnDFeedback = () => {
       workplaceId: wId,
       isPaginated: false,
       isHeaderNeeded: true,
-      typeList: [
-        {
-          value: 2,
-          label: "Training Feedback",
-        },
-      ],
-      // createdByList: filters?.createdBy || [],
-      statusList: [
-        {
-          value: "Active",
-          label: "Active",
-        },
-      ],
+      typeList: [2],
+      pageNo: 1,
+      pageSize: 500,
+      statusList: [],
+      createdByList: [],
     };
     ddlApi?.action({
       urlKey: "GetQuestionLanding",
@@ -174,93 +149,28 @@ const TnDFeedback = () => {
     },
   ];
 
-  const addHanderForPerticipant = (values: any) => {
-    if (!values?.employee) {
-      toast.error("Employee is required");
-      return;
-    }
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    const nextId =
-      perticipantField.length > 0
-        ? perticipantField[perticipantField.length - 1].id + 1
-        : 1;
-    setperticipantField([
-      ...perticipantField,
-      {
-        id: nextId,
-        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
-        perticipantId: values?.employee?.value,
-        department: values?.department?.label,
-        departmentId: values?.department?.value,
-        hrPosition: values?.hrPosition?.label,
-        hrPositionId: values?.hrPosition?.value,
-        workplaceGroup: workplaceGroup?.label,
-        workplaceGroupId: workplaceGroup?.value,
-        workplace: workplace?.label,
-        workplaceId: workplace?.value,
-      },
-    ]);
-  };
-
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
     ddlApiCall();
-
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        // workplaceGroupId: workplaceGroup?.value,
-        // workplaceId: workplace?.value,
-
-        accountId: profileData?.orgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-    positionDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Position",
-        BusinessUnitId: profileData?.buId,
-        // WorkplaceGroupId: workplaceGroup?.value,
-        // IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.PositionName;
-          res[i].value = item?.PositionId;
-        });
-      },
-    });
+    landingApiCall();
   }, []);
 
-  useEffect(() => {
-    ViewTrainingSchedule(data?.id, setLoading, (responseData: any) => {
-      const formattedData = responseData.map((item: any) => ({
-        ...item,
-        value: item.id,
-        label: `${moment(item?.trainingDate).format("DD-MM-YYYY")}[${moment(
-          item.startTime,
-          "HH:mm"
-        ).format("hh:mm A")}-${moment(item?.endTime, "HH:mm").format(
-          "hh:mm A"
-        )}]`,
-      }));
-      setAttendanceDDL(formattedData);
-    });
-  }, []);
+  const landingApiCall = () => {
+    getLandingApi(
+      `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=&attendanceDate=`,
+      (data: any) => {
+        setRowData(
+          data.map((item: any, index: number) => ({
+            ...item,
+            uId: index,
+          }))
+        );
+      }
+    );
+  };
 
   return (
     <div>
@@ -365,7 +275,12 @@ const TnDFeedback = () => {
               <Col md={6} sm={24}>
                 <PSelect
                   name="feedbackform"
-                  options={ddlApi?.data?.data || []}
+                  options={
+                    ddlApi?.data?.data?.map((item: any) => ({
+                      label: item?.title,
+                      value: item?.id,
+                    })) || []
+                  }
                   label="Feedback Form"
                   onChange={(op) => {
                     form.setFieldsValue({
@@ -377,31 +292,6 @@ const TnDFeedback = () => {
                   ]}
                 />
               </Col>
-              {/* <Col md={2} sm={24} style={{ marginTop: "22px" }}>
-                <PButton
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        getLandingApi(
-                          `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
-                          (data: any) => {
-                            setRowData(
-                              data.map((item: any, index: number) => ({
-                                ...item,
-                                uId: index,
-                              }))
-                            );
-                          }
-                        );
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col> */}
             </Row>
           </PCardBody>
           {!landingLoading && rowData && (
@@ -409,17 +299,6 @@ const TnDFeedback = () => {
               <DataTable bordered data={rowData || []} header={header} />
             </PCardBody>
           )}
-          {/* <PCardBody>
-            <ListOfPerticipants
-              form={form}
-              perticipantField={perticipantField}
-              setperticipantField={setperticipantField}
-              addHandler={addHanderForPerticipant}
-              // calculatePerPersonCost={calculatePerPersonCost}
-              departmentDDL={empDepartmentDDL?.data || []}
-              positionDDL={positionDDL?.data || []}
-            />{" "}
-          </PCardBody> */}
         </PCard>
       </PForm>
     </div>

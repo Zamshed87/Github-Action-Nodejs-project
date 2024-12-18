@@ -42,13 +42,7 @@ const TnDAttendanceSave = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { data = {}, dataDetails = {} } = location?.state || {};
-  const [perticipantField, setperticipantField] = useState<any>(
-    type === "edit"
-      ? perticipantMap(dataDetails?.trainingParticipantDto, data)
-      : []
-  );
-  const empDepartmentDDL = useApiRequest([]);
-  const positionDDL = useApiRequest([]);
+
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
   const [rowData, setRowData] = useState<any>(null);
@@ -141,77 +135,12 @@ const TnDAttendanceSave = () => {
     },
   ];
 
-  const addHanderForPerticipant = (values: any) => {
-    if (!values?.employee) {
-      toast.error("Employee is required");
-      return;
-    }
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    const nextId =
-      perticipantField.length > 0
-        ? perticipantField[perticipantField.length - 1].id + 1
-        : 1;
-    setperticipantField([
-      ...perticipantField,
-      {
-        id: nextId,
-        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
-        perticipantId: values?.employee?.value,
-        department: values?.department?.label,
-        departmentId: values?.department?.value,
-        hrPosition: values?.hrPosition?.label,
-        hrPositionId: values?.hrPosition?.value,
-        workplaceGroup: workplaceGroup?.label,
-        workplaceGroupId: workplaceGroup?.value,
-        workplace: workplace?.label,
-        workplaceId: workplace?.value,
-      },
-    ]);
-  };
-
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        // workplaceGroupId: workplaceGroup?.value,
-        // workplaceId: workplace?.value,
 
-        accountId: profileData?.orgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-    positionDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Position",
-        BusinessUnitId: profileData?.buId,
-        // WorkplaceGroupId: workplaceGroup?.value,
-        // IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.PositionName;
-          res[i].value = item?.PositionId;
-        });
-      },
-    });
-  }, []);
-
-  useEffect(() => {
     ViewTrainingSchedule(data?.id, setLoading, (responseData: any) => {
       const formattedData = responseData.map((item: any) => ({
         ...item,
