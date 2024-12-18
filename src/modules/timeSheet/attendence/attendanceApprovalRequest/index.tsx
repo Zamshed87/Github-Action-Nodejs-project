@@ -504,7 +504,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
           />
         </PCardHeader>
 
-        <div className="mt-4">
+        <div>
           <DataTable
             header={header}
             bordered
