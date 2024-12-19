@@ -3181,7 +3181,7 @@ export const routingList = [
   },
   // report for payslip
   {
-    path: "/compensationAndBenefits/salaryPaySlip",
+    path: "/compensationAndBenefits/salaryPaySlip/payslip",
     component: SalaryPayslipReport,
   },
   // report for salary advice/bank advice
