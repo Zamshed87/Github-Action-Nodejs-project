@@ -249,7 +249,7 @@ const AttendanceReport = () => {
       filter: true,
       filterKey: "strDesignationList",
       filterSearch: true,
-      width: 100,
+      width: 120,
     },
 
     {
@@ -259,7 +259,7 @@ const AttendanceReport = () => {
       filter: true,
       filterKey: "strDepartmentList",
       filterSearch: true,
-      width: 100,
+      width: 120,
     },
     {
       title: "Section",
@@ -388,7 +388,7 @@ const AttendanceReport = () => {
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            exportIcon={true}
+            exportIcon={landingApi?.data?.totalCount > 0 ? true : false}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
@@ -539,11 +539,9 @@ const AttendanceReport = () => {
                     });
                     getWorkplace();
                   }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
+                  rules={[
+                    { required: true, message: "Workplace Group is required" },
+                  ]}
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
@@ -560,7 +558,7 @@ const AttendanceReport = () => {
                       workplace: op,
                     });
                   }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
+                  rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
 
