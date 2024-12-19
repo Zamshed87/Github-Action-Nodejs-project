@@ -135,7 +135,7 @@ const MgmtInOutReport = () => {
         businessUnitId: buId,
         isHeaderNeed: true,
         workplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        workplaceId: values?.workplace?.value,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
         isPaginated: true,
