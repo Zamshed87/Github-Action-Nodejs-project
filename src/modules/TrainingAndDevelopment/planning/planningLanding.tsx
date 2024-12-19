@@ -40,6 +40,7 @@ import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
 import Chips from "common/Chips";
 import IConfirmModal from "common/IConfirmModal";
+import moment from "moment";
 const TnDPlanningLanding = () => {
   // router states
   const history = useHistory();
@@ -382,7 +383,18 @@ const TnDPlanningLanding = () => {
   };
 
   const landingApiCall = (values: any) => {
-    getLandingApi("/Training/Training/GetAllTraining");
+    const formatDate = (date: string) => {
+      return moment(date).format("YYYY-MM-DD");
+    };
+
+    const apiUrl =
+      values?.fromDate && values?.toDate
+        ? `/Training/Training/GetAllTraining?fromDate=${formatDate(
+            values?.fromDate
+          )}&toDate=${formatDate(values?.toDate)}`
+        : "/Training/Training/GetAllTraining";
+
+    getLandingApi(apiUrl);
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
@@ -475,14 +487,14 @@ const TnDPlanningLanding = () => {
               data={landingApi || []}
               loading={landingLoading}
               header={header}
-              pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
-              }}
+              // pagination={{
+              //   pageSize: landingApi?.data?.pageSize,
+              //   total: landingApi?.data?.totalCount,
+              // }}
               filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
-                landingApiCall({});
-              }}
+              // onChange={(pagination, filters) => {
+              //   landingApiCall({});
+              // }}
             />
           </div>
         </PCard>

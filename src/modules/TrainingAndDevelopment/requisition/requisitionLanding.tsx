@@ -25,6 +25,7 @@ import { data, ViewTrainingRequistion } from "./helper";
 import { PModal } from "Components/Modal";
 import RequisitionView from "./requisitionView";
 import Chips from "common/Chips";
+import moment from "moment";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -168,7 +169,20 @@ const TnDRequisitionLanding = () => {
     },
   ];
   const landingApiCall = (values: any) => {
-    getLandingApi("/TrainingRequisition/Training/TrainingRequisition");
+    const { fromDate, toDate } = values;
+
+    const formatDate = (date: string) => {
+      return moment(date).format("YYYY-MM-DD");
+    };
+
+    const apiUrl =
+      fromDate && toDate
+        ? `/TrainingRequisition/Training/TrainingRequisition?status=2&fromDate=${formatDate(
+            fromDate
+          )}&toDate=${formatDate(toDate)}`
+        : "/TrainingRequisition/Training/TrainingRequisition";
+
+    getLandingApi(apiUrl);
   };
   useEffect(() => {
     landingApiCall({});
