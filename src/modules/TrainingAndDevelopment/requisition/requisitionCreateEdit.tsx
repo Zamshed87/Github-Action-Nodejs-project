@@ -88,11 +88,11 @@ const TnDRequisitionCreateEdit = () => {
       setTrainingType(list);
     });
     getUpcommingTrainingDDL(
-      "/Training/Training/GetAllTraining?status=2",
+      "/Training/Training/GetAllTraining?fromDate=2020-10-19&toDate=2025-12-19",
       (data: any) => {
         const list: any = [];
         data?.map((d: any) => {
-          if (d?.status?.value == 1 || d?.status?.value == 2)
+          if (d?.status?.value == 1 || d?.status?.value == 0)
             list.push({ label: d?.trainingTitleName, value: d?.id });
         });
         setUpcommingTraining(list);
