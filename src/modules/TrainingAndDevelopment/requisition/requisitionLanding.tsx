@@ -28,6 +28,8 @@ import Chips from "common/Chips";
 import moment from "moment";
 import { dateFormatter } from "utility/dateFormatter";
 const TnDRequisitionLanding = () => {
+  const defaultToDate = moment();
+  const defaultFromDate = moment().subtract(2, "months");
   // router states
   const history = useHistory();
   // hooks
@@ -169,18 +171,21 @@ const TnDRequisitionLanding = () => {
     },
   ];
   const landingApiCall = (values: any) => {
-    const { fromDate, toDate } = values;
-
     const formatDate = (date: string) => {
       return moment(date).format("YYYY-MM-DD");
     };
 
-    const apiUrl =
-      fromDate && toDate
-        ? `/TrainingRequisition/Training/TrainingRequisition?status=2&fromDate=${formatDate(
-            fromDate
-          )}&toDate=${formatDate(toDate)}`
-        : "/TrainingRequisition/Training/TrainingRequisition";
+    let fromDate = values?.fromDate;
+    let toDate = values?.toDate;
+
+    if (!fromDate || !toDate) {
+      toDate = moment().toISOString();
+      fromDate = moment().subtract(2, "months").toISOString();
+    }
+
+    const apiUrl = `/TrainingRequisition/Training/TrainingRequisition?fromDate=${formatDate(
+      fromDate
+    )}&toDate=${formatDate(toDate)}`;
 
     getLandingApi(apiUrl);
   };
@@ -191,7 +196,13 @@ const TnDRequisitionLanding = () => {
   return (
     <div>
       {loading || (landingLoading && <Loading />)}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          fromDate: defaultFromDate,
+          toDate: defaultToDate,
+        }}
+      >
         <PCard>
           <PCardHeader
             title={`Total ${

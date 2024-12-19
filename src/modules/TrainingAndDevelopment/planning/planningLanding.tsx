@@ -42,6 +42,8 @@ import Chips from "common/Chips";
 import IConfirmModal from "common/IConfirmModal";
 import moment from "moment";
 const TnDPlanningLanding = () => {
+  const defaultToDate = moment();
+  const defaultFromDate = moment().subtract(2, "months");
   // router states
   const history = useHistory();
   const dispatch = useDispatch();
@@ -387,12 +389,17 @@ const TnDPlanningLanding = () => {
       return moment(date).format("YYYY-MM-DD");
     };
 
-    const apiUrl =
-      values?.fromDate && values?.toDate
-        ? `/Training/Training/GetAllTraining?fromDate=${formatDate(
-            values?.fromDate
-          )}&toDate=${formatDate(values?.toDate)}`
-        : "/Training/Training/GetAllTraining";
+    let fromDate = values?.fromDate;
+    let toDate = values?.toDate;
+
+    if (!fromDate || !toDate) {
+      toDate = moment().toISOString();
+      fromDate = moment().subtract(2, "months").toISOString();
+    }
+
+    const apiUrl = `/Training/Training/GetAllTraining?fromDate=${formatDate(
+      fromDate
+    )}&toDate=${formatDate(toDate)}`;
 
     getLandingApi(apiUrl);
   };
@@ -404,8 +411,14 @@ const TnDPlanningLanding = () => {
 
   return (
     <div>
-      {loading || (landingLoading && <Loading />)}
-      <PForm form={form} initialValues={{}}>
+      {(loading || landingLoading) && <Loading />}
+      <PForm
+        form={form}
+        initialValues={{
+          fromDate: defaultFromDate,
+          toDate: defaultToDate,
+        }}
+      >
         <PCard>
           <PCardHeader
             title={`Total ${
