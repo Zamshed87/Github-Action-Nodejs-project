@@ -17,20 +17,126 @@ import { getSerial } from "Utils";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
+import {
+  TeamOutlined,
+  ClockCircleOutlined,
+  UserOutlined,
+  MessageOutlined,
+  FileTextOutlined,
+  UserSwitchOutlined,
+  DollarCircleOutlined,
+  CalculatorOutlined,
+} from "@ant-design/icons";
+import { BarChartOutlined, PieChartOutlined } from "@mui/icons-material";
 
 const { Title } = Typography;
 
+// need to refactor code
+
+const data = [
+  {
+    title: "Total Training Count",
+    count: 45,
+    icon: <TeamOutlined style={{ fontSize: "30px", color: "#4caf50" }} />,
+  },
+  {
+    title: "Total Training Hour",
+    count: 56,
+    icon: (
+      <ClockCircleOutlined style={{ fontSize: "30px", color: "#ff9800" }} />
+    ),
+  },
+  {
+    title: "Total Participant",
+    count: 177,
+    icon: <UserOutlined style={{ fontSize: "30px", color: "#3f51b5" }} />,
+  },
+  {
+    title: "Total Feedback Count",
+    count: 333,
+    icon: <MessageOutlined style={{ fontSize: "30px", color: "#e91e63" }} />,
+  },
+  {
+    title: "Total Assessment Count",
+    count: 62,
+    icon: <FileTextOutlined style={{ fontSize: "30px", color: "#607d8b" }} />,
+  },
+];
+
+const data2 = [
+  {
+    title: "Total Attendance Count",
+    count: 22,
+    icon: <UserSwitchOutlined style={{ fontSize: "30px", color: "#673ab7" }} />,
+  },
+  {
+    title: "Total Training Cost",
+    count: 34,
+    icon: (
+      <DollarCircleOutlined style={{ fontSize: "30px", color: "#4caf50" }} />
+    ),
+  },
+  {
+    title: "Cost Per Participant",
+    count: 21,
+    icon: <CalculatorOutlined style={{ fontSize: "30px", color: "#ff5722" }} />,
+  },
+  {
+    title: "Actual Cost Per Participant",
+    count: 56,
+    icon: <BarChartOutlined style={{ fontSize: "30px", color: "#009688" }} />,
+  },
+  {
+    title: "Actual Cost Per Hour",
+    count: 33,
+    icon: <PieChartOutlined style={{ fontSize: "30px", color: "#2196f3" }} />,
+  },
+];
+
 // Table Data
 const tableData = [
-  { key: "1", name: "Classroom" },
-  { key: "2", name: "Online" },
-  { key: "3", name: "Offline" },
-  { key: "4", name: "Total" },
-  { key: "5", name: "Total A" },
+  { key: "1", name: "Classroom", noOfTraining: 30 },
+  { key: "2", name: "Online", noOfTraining: 20 },
+  { key: "3", name: "Offline", noOfTraining: 10 },
+  { key: "4", name: "Total", noOfTraining: 60 },
+  { key: "5", name: "Total A", noOfTraining: 60 },
 ];
 
 const tableColumns = [
-  { title: "Training Mode", dataIndex: "name", key: "name", width: 30 },
+  { title: "Training Mode", dataIndex: "name", key: "name", width: 40 },
+  {
+    title: "No. of Training",
+    dataIndex: "noOfTraining",
+    key: "noOfTraining",
+    width: 30,
+  },
+];
+
+const tableColumns2 = [
+  {
+    title: "Participant",
+    dataIndex: "noOfTraining",
+    key: "noOfTraining",
+    width: 10,
+  },
+];
+
+const tableColumns3 = [
+  {
+    title: "Total Cost (BDT)",
+    dataIndex: "noOfTraining",
+    key: "totalCost",
+    width: 10,
+  },
+];
+
+const tableColumns4 = [
+  {
+    title: "Cost Per Participant (BDT)",
+    dataIndex: "noOfTraining",
+    key: "costPerParticipant",
+    width: 10,
+  },
 ];
 
 // Pie Chart Data
@@ -76,14 +182,14 @@ const lineData = [
 
 // Pie Chart Config
 const pieConfig = {
-  appendPadding: 5,
   data: pieData,
   angleField: "value",
   colorField: "type",
-  radius: 0.8,
   label: {
-    type: "outer",
-    content: "{name} {percentage}",
+    text: "value",
+    style: {
+      fontWeight: "bold",
+    },
   },
   legend: false || undefined,
 };
@@ -292,6 +398,25 @@ const TnDDashboard = () => {
     },
   ];
 
+  const getRandomGradient = () => {
+    const colors = [
+      "#ff7e5f",
+      "#feb47b",
+      "#4facfe",
+      "#00f2fe",
+      "#a18cd1",
+      "#fbc2eb",
+      "#fad0c4",
+      "#ff9a9e",
+      "#ff6a88",
+      "#c471ed",
+    ];
+
+    const randomColor1 = colors[Math.floor(Math.random() * colors.length)];
+    const randomColor2 = colors[Math.floor(Math.random() * colors.length)];
+    return `linear-gradient(135deg, ${randomColor1}, ${randomColor2})`;
+  };
+
   // Form Instance
   const [form] = Form.useForm();
   return (
@@ -403,171 +528,214 @@ const TnDDashboard = () => {
           </PCardBody>
         </PCard>
       </PForm>
-      <Row gutter={24} style={{ marginTop: "30px" }}>
+      <Row
+        gutter={[24, 24]} // Evenly spaced rows and columns
+        style={{ justifyContent: "center" }} // Center align content
+      >
+        {data.map((item, index) => (
+          <Col xs={24} sm={12} md={8} lg={4} xl={4} key={index}>
+            <Card
+              hoverable
+              style={{
+                height: "150px", // Fixed height for all cards
+                border: "1px solid #f0f0f0",
+                width: "200px",
+                borderRadius: "8px",
+                textAlign: "center",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.3s, background 0.3s",
+              }}
+              bodyStyle={{
+                padding: "35px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = getRandomGradient())
+              }
+              onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
+            >
+              <div style={{ marginBottom: "10px" }}>{item.icon}</div>
+              <h3
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                  margin: 0,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {item.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  margin: 0,
+                  marginTop: "10px",
+                  color: "#333",
+                }}
+              >
+                {item.count}
+              </p>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+      <Divider />
+      <Row
+        gutter={[24, 24]} // Evenly spaced rows and columns
+        style={{ justifyContent: "center" }} // Center align content
+      >
+        {data2.map((item, index) => (
+          <Col xs={24} sm={12} md={8} lg={4} xl={4} key={index}>
+            <Card
+              hoverable
+              style={{
+                height: "150px", // Fixed height for all cards
+                border: "1px solid #f0f0f0",
+                width: "200px",
+                borderRadius: "8px",
+                textAlign: "center",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.3s, background 0.3s",
+              }}
+              bodyStyle={{
+                padding: "35px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = getRandomGradient())
+              }
+              onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
+            >
+              <div style={{ marginBottom: "10px" }}>{item.icon}</div>
+              <h3
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                  margin: 0,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {item.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  margin: 0,
+                  marginTop: "10px",
+                  color: "#333",
+                }}
+              >
+                {item.count}
+              </p>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+      <Divider />
+      <Row gutter={32} style={{ marginTop: "30px" }}>
         {/* Left Metrics Table */}
         <Col span={4}>
-          <Card
-            size="small"
-            title="Total Training Count"
-            style={{ width: 200 }}
-          >
-            <p>50</p>
-          </Card>
-          <Card size="small" title="Total Training Hour" style={{ width: 200 }}>
-            <p>345</p>
-          </Card>
-          <Card size="small" title="Total Participant" style={{ width: 200 }}>
-            <p>85</p>
-          </Card>
-          <Card
-            size="small"
-            title="Total Feedback Count"
-            style={{ width: 200 }}
-          >
-            <p>185</p>
-          </Card>
-          <Card
-            size="small"
-            title="Total Assessment Count"
-            style={{ width: 200 }}
-          >
-            <p>15</p>
-          </Card>
-        </Col>
-        <Col span={2}>
           <Table
             dataSource={tableData}
             columns={tableColumns}
             pagination={false}
-            bordered
-            size="middle"
-          />
-          <Table
-            dataSource={tableData}
-            columns={tableColumns}
-            pagination={false}
-            bordered
-            size="middle"
+            size="small"
           />
         </Col>
 
         {/* Middle Pie Chart */}
-        <Col span={5}>
-          <Pie
-            {...pieConfig}
-            style={{
-              marginTop: "0px",
-              paddingTop: "0px",
-              width: "220px",
-              height: "200px",
-            }}
-          />
+        <Col
+          span={3}
+          style={{
+            margin: "0px",
+            padding: "0px",
+            height: "200px",
+            width: "200px",
+          }}
+        >
+          <Pie {...pieConfig} />
         </Col>
-        <Col span={2}>
+        <Col span={3}>
           <Table
             dataSource={tableData}
-            columns={tableColumns}
+            columns={tableColumns2}
             pagination={false}
             bordered
-            size="middle"
+            size="small"
           />
         </Col>
 
         {/* Right Pie Chart */}
-        <Col span={5}>
-          <Pie
-            {...pieConfig}
-            style={{
-              marginTop: "0px",
-              paddingTop: "0px",
-              width: "220px",
-              height: "200px",
-            }}
+        <Col
+          span={3}
+          style={{
+            margin: "0px",
+            padding: "0px",
+            height: "200px",
+            width: "200px",
+          }}
+        >
+          <Pie {...pieConfig} />
+        </Col>
+
+        <Col span={2}>
+          <Table
+            dataSource={tableData}
+            columns={tableColumns3}
+            pagination={false}
+            bordered
+            size="small"
           />
         </Col>
 
-        {/* Summary Table */}
-        <Col span={4}>
-          <Card
-            size="small"
-            title="Total Training Count"
-            style={{ width: 200 }}
-          >
-            <p>50</p>
-          </Card>
-          <Card size="small" title="Total Training Hour" style={{ width: 200 }}>
-            <p>345</p>
-          </Card>
-          <Card size="small" title="Total Participant" style={{ width: 200 }}>
-            <p>85</p>
-          </Card>
-          <Card
-            size="small"
-            title="Total Feedback Count"
-            style={{ width: 200 }}
-          >
-            <p>185</p>
-          </Card>
-          <Card
-            size="small"
-            title="Total Assessment Count"
-            style={{ width: 200 }}
-          >
-            <p>15</p>
-          </Card>
+        <Col
+          span={3}
+          style={{
+            margin: "0px",
+            padding: "0px",
+            height: "200px",
+            width: "200px",
+          }}
+        >
+          <Pie {...pieConfig} />
         </Col>
+        <Col span={3}>
+          <Table
+            dataSource={tableData}
+            columns={tableColumns4} // f
+            pagination={false}
+            bordered
+            size="small"
+          />
+        </Col>
+        <Col
+          span={3}
+          style={{
+            margin: "0px",
+            padding: "0px",
+            height: "200px",
+            width: "200px",
+          }}
+        >
+          <Pie {...pieConfig} />
+        </Col>
+
+        {/* Summary Table */}
       </Row>
 
       <Divider />
-      <Row gutter={24} style={{ marginTop: "40px" }}>
-        {/* Left Metrics Table */}
-        <Col span={6}>
-          <Table
-            dataSource={tableData}
-            columns={tableColumns}
-            pagination={false}
-            bordered
-            size="middle"
-          />
-        </Col>
-
-        {/* Middle Pie Chart */}
-        <Col span={6}>
-          <Pie
-            {...pieConfig}
-            style={{
-              marginTop: "0px",
-              paddingTop: "0px",
-              width: "220px",
-              height: "200px",
-            }}
-          />
-        </Col>
-
-        {/* Right Pie Chart */}
-        <Col span={6}>
-          <Pie
-            {...pieConfig}
-            style={{
-              marginTop: "0px",
-              paddingTop: "0px",
-              width: "220px",
-              height: "200px",
-            }}
-          />
-        </Col>
-
-        {/* Summary Table */}
-        <Col span={6}>
-          <Table
-            dataSource={statisticsData}
-            columns={statisticsColumns}
-            pagination={false}
-            bordered
-            size="middle"
-          />
-        </Col>
-      </Row>
 
       {/* Bar Charts */}
       <Row gutter={16}>
