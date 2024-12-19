@@ -9,19 +9,18 @@ import {
 } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
+import { paginationSize } from "common/AntTable";
+import { getPeopleDeskAllDDL } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { debounce } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { getDateOfYear } from "utility/dateFormatter";
-import {} from "react-icons/md";
-import { debounce } from "lodash";
 import { toast } from "react-toastify";
-import { downloadFile, getPDFAction } from "utility/downloadFile";
-import { isDevServer } from "App";
+import { getDateOfYear } from "utility/dateFormatter";
+import { getPDFAction } from "utility/downloadFile";
 
 const MarketVisitReport = () => {
   const dispatch = useDispatch();
@@ -39,7 +38,7 @@ const MarketVisitReport = () => {
 
   const landingApi = useApiRequest({});
   const CommonEmployeeDDL = useApiRequest([]);
-
+  const [payrollPeiodDDL, setPayrollPeiodDDL] = useState([]);
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -68,12 +67,9 @@ const MarketVisitReport = () => {
   };
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Market Visit Report";
-    () => {
-      document.title = "PeopleDesk";
-    };
-  }, []);
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Multiple Payslip";
+  }, [dispatch]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -95,16 +91,16 @@ const MarketVisitReport = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "MarketVisitReport",
+      urlKey: "GetBanglaPaysilp",
       method: "GET",
       params: {
-        format: "html",
-        intAccountId: orgId,
-        intWorkplaceId: wId,
+        Format: "HTML",
+        IntAccountId: orgId,
+        IntWorkplaceId: wId,
         employeeId: values?.employee?.value || 0,
-        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        strSearch: searchText || "",
+        Month: moment(values?.date).format("MM"),
+        Year: moment(values?.date).format("YYYY"),
+        SalaryGenerateRequestId: values?.salaryCode || 0,
       },
       onError: (error: any) => {
         toast.error(
@@ -123,21 +119,17 @@ const MarketVisitReport = () => {
   //   landingApiCall();
   // }, [wId]);
 
-  const searchFunc = debounce((value) => {
+  const searchFunc = debounce((value: any) => {
     landingApiCall({
       searchText: value,
     });
   }, 500);
 
-
   return employeeFeature?.isView ? (
     <>
       <PForm
         form={form}
-        initialValues={{
-          fromDate: moment(getDateOfYear("first")),
-          toDate: moment(getDateOfYear("last")),
-        }}
+        initialValues={{}}
         onFinish={() => {
           landingApiCall({
             pagination: {
@@ -150,41 +142,13 @@ const MarketVisitReport = () => {
         <PCard>
           {(excelLoading || landingApi?.loading || loading) && <Loading />}
           <PCardHeader
-            exportIcon={true}
-            printIcon={isDevServer}
+            printIcon={true}
             title={`Market Visit Report`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
                 search: e?.target?.value,
               });
-            }}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                if(landingApi?.data?.length === 0) return null;
-                try {
-                  const values = form.getFieldsValue(true);
-                  downloadFile(
-                    `/MarketVisitReport/MarketVisitReport?format=excel&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
-                      values?.fromDate
-                    ).format("YYYY-MM-DD")}&toDate=${moment(
-                      values?.toDate
-                    ).format("YYYY-MM-DD")}&strSearch=${
-                      values?.search || ""
-                    }&employeeId=${values?.employee?.value || 0}`,
-                    "Market Visit Report",
-                    "xlsx",
-                    setLoading
-                  );
-                  setExcelLoading(false);
-                } catch (error: any) {
-                  console.log("error", error);
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                }
-              };
-              excelLanding();
             }}
             pdfExport={() => {
               try {
@@ -216,26 +180,26 @@ const MarketVisitReport = () => {
               <Col md={5} sm={12} xs={24}>
                 <PInput
                   type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
+                  name="date"
+                  label="Date"
+                  picker="month"
+                  placeholder="Date"
                   onChange={(value) => {
+                    const values = form.getFieldsValue(true);
                     form.setFieldsValue({
-                      fromDate: value,
+                      date: value,
                     });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
+                    const month = moment(value).format("MM");
+                    const year = moment(value).format("YYYY");
+
+                    getPeopleDeskAllDDL(
+                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
+                        values?.employee?.value || 0
+                      }&IntMonth=${month || 0}&IntYear=${year || 0}`,
+                      "SalaryGenerateRequestId",
+                      "SalaryCode",
+                      setPayrollPeiodDDL
+                    );
                   }}
                 />
               </Col>
@@ -249,15 +213,40 @@ const MarketVisitReport = () => {
                   options={CommonEmployeeDDL?.data || []}
                   loading={CommonEmployeeDDL?.loading}
                   onChange={(value, op) => {
+                    const values = form.getFieldsValue(true);
+                    const month = moment(values?.date).format("MM");
+                    const year = moment(values?.date).format("YYYY");
                     form.setFieldsValue({
                       employee: op,
                     });
+                    getPeopleDeskAllDDL(
+                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
+                        value || 0
+                      }&IntMonth=${month || 0}&IntYear=${year || 0}`,
+                      "SalaryGenerateRequestId",
+                      "SalaryCode",
+                      setPayrollPeiodDDL
+                    );
                   }}
                   onSearch={(value) => {
                     getEmployee(value);
                   }}
                   showSearch
                   filterOption={false}
+                />
+              </Col>
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  name="salaryCode"
+                  label="Salary Code"
+                  placeholder="Salary Code"
+                  allowClear={true}
+                  options={payrollPeiodDDL || []}
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      salaryCode: value,
+                    });
+                  }}
                 />
               </Col>
 
