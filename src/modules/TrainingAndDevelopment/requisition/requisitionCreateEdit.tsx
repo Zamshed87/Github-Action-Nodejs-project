@@ -88,7 +88,7 @@ const TnDRequisitionCreateEdit = () => {
       setTrainingType(list);
     });
     getUpcommingTrainingDDL(
-      "/Training/Training/GetAllTraining",
+      "/Training/Training/GetAllTraining?status=2",
       (data: any) => {
         const list: any = [];
         data?.map((d: any) => {

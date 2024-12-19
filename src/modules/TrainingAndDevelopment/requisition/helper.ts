@@ -104,7 +104,7 @@ export const onUpdateTrainingRequisition = async (
       objectivesToAchieve: values?.objectivesToAchieve || "",
       remarks: values?.remarks || "",
       statusId: values?.requisitionStatus?.value || "",
-      upcommingTrainingId: values?.upcommingTraining?.value || 1, // need to check
+      upcommingTrainingId: values?.upcommingTraining?.value, // need to check
       comments: values?.comments || "",
     };
     const res = await axios.put(
