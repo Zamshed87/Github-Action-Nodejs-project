@@ -1,4 +1,5 @@
 import { Line, Pie } from "@ant-design/plots";
+import "./style.css";
 import { Card, Col, Divider, Form, Row, Table, Typography } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -60,6 +61,33 @@ const data = [
     title: "Total Assessment Count",
     count: 62,
     icon: <FileTextOutlined style={{ fontSize: "30px", color: "#607d8b" }} />,
+  },
+  {
+    title: "Total Attendance Count",
+    count: 22,
+    icon: <UserSwitchOutlined style={{ fontSize: "30px", color: "#673ab7" }} />,
+  },
+  {
+    title: "Total Training Cost",
+    count: 34,
+    icon: (
+      <DollarCircleOutlined style={{ fontSize: "30px", color: "#4caf50" }} />
+    ),
+  },
+  {
+    title: "Cost Per Participant",
+    count: 21,
+    icon: <CalculatorOutlined style={{ fontSize: "30px", color: "#ff5722" }} />,
+  },
+  {
+    title: "Actual Cost Per Participant",
+    count: 56,
+    icon: <BarChartOutlined style={{ fontSize: "30px", color: "#009688" }} />,
+  },
+  {
+    title: "Actual Cost Per Hour",
+    count: 33,
+    icon: <PieChartOutlined style={{ fontSize: "30px", color: "#2196f3" }} />,
   },
 ];
 
@@ -530,7 +558,9 @@ const TnDDashboard = () => {
       </PForm>
       <Row
         gutter={[24, 24]} // Evenly spaced rows and columns
-        style={{ justifyContent: "center" }} // Center align content
+        style={{
+          justifyContent: "space-between",
+        }} // Center align content
       >
         {data.map((item, index) => (
           <Col xs={24} sm={12} md={8} lg={4} xl={4} key={index}>
@@ -546,11 +576,11 @@ const TnDDashboard = () => {
                 transition: "transform 0.3s, background 0.3s",
               }}
               bodyStyle={{
-                padding: "35px",
+                padding: "20px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "space-between",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.background = getRandomGradient())
@@ -586,63 +616,6 @@ const TnDDashboard = () => {
         ))}
       </Row>
       <Divider />
-      <Row
-        gutter={[24, 24]} // Evenly spaced rows and columns
-        style={{ justifyContent: "center" }} // Center align content
-      >
-        {data2.map((item, index) => (
-          <Col xs={24} sm={12} md={8} lg={4} xl={4} key={index}>
-            <Card
-              hoverable
-              style={{
-                height: "150px", // Fixed height for all cards
-                border: "1px solid #f0f0f0",
-                width: "200px",
-                borderRadius: "8px",
-                textAlign: "center",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                transition: "transform 0.3s, background 0.3s",
-              }}
-              bodyStyle={{
-                padding: "35px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = getRandomGradient())
-              }
-              onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
-            >
-              <div style={{ marginBottom: "10px" }}>{item.icon}</div>
-              <h3
-                style={{
-                  fontSize: "13px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {item.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  marginTop: "10px",
-                  color: "#333",
-                }}
-              >
-                {item.count}
-              </p>
-            </Card>
-          </Col>
-        ))}
-      </Row>
       <Divider />
       <Row gutter={32} style={{ marginTop: "30px" }}>
         {/* Left Metrics Table */}
