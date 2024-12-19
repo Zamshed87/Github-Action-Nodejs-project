@@ -207,7 +207,10 @@ export default function RosterSetup() {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             e.stopPropagation();
-                            setIsRosterSetup(true);
+                            history.push(
+                              "/administration/timeManagement/rosterSetup/create"
+                            );
+                            // setIsRosterSetup(true);
                           }}
                         />
                       </li>

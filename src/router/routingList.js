@@ -2116,6 +2116,10 @@ export const routingList = [
     component: UnderCreateRosterSetup,
   },
   {
+    path: "/administration/timeManagement/rosterSetup/create",
+    component: UnderCreateRosterSetup,
+  },
+  {
     path: "/administration/timeManagement/offdaySetup/:id/:rosterName",
     component: UnderCreateOffdaySetup,
   },
