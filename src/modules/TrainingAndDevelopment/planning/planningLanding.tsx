@@ -124,7 +124,7 @@ const TnDPlanningLanding = () => {
     {
       title: "Training Mode",
       dataIndex: "trainingMode",
-      width: 100,
+      width: 80,
       fixed: "left",
       render: (_: any, rec: any) => rec?.trainingModeStatus?.label,
     },
@@ -149,19 +149,19 @@ const TnDPlanningLanding = () => {
     //   filterKey: "trainerContactList",
     //   filterSearch: true,
     // },
-    // {
-    //   title: "Created By",
-    //   dataIndex: "createdBy",
-    //   filter: true,
-    //   filterKey: "createdByList",
-    //   filterSearch: true,
-    // },
-    // {
-    //   title: "Created Date",
-    //   dataIndex: "createdDate",
-    //   render: (data: any) => dateFormatter(data),
-    //   sorter: true,
-    // },
+    {
+      title: "Created By",
+      dataIndex: "createdByName",
+      filter: true,
+      filterKey: "createdByList",
+      filterSearch: true,
+    },
+    {
+      title: "Created Date",
+      dataIndex: "createdAt",
+      render: (data: any) => dateFormatter(data),
+      sorter: true,
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -195,7 +195,7 @@ const TnDPlanningLanding = () => {
           )}
         </>
       ),
-      width: 100,
+      width: 120,
     },
     {
       title: "Action",

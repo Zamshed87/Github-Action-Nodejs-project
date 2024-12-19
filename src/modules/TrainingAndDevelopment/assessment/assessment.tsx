@@ -160,7 +160,7 @@ const TnDAssessment = () => {
 
   const landingApiCall = () => {
     getLandingApi(
-      `/TrainingAttendance/GetAllParticipantByTrainingId?trainingId=&attendanceDate=`,
+      `/TrainingAssessment/AssessmentParticipant?trainingId=${data?.id}`,
       (data: any) => {
         setRowData(
           data.map((item: any, index: number) => ({

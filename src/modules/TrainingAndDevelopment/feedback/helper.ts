@@ -79,7 +79,7 @@ export const saveFeedback = async (
       scheduleId: item?.trainingScheduleId || 0,
     }));
     const res = await axios.post(
-      `/TrainingAttendance/SaveBulkTrainingAttendance`,
+      `/TrainingFeedback/BulkTrainingFeedback`,
       payload
     );
     form.resetFields();

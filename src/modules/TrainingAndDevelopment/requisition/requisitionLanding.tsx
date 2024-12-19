@@ -26,6 +26,7 @@ import { PModal } from "Components/Modal";
 import RequisitionView from "./requisitionView";
 import Chips from "common/Chips";
 import moment from "moment";
+import { dateFormatter } from "utility/dateFormatter";
 const TnDRequisitionLanding = () => {
   // router states
   const history = useHistory();
@@ -69,20 +70,19 @@ const TnDRequisitionLanding = () => {
       filterKey: "trainingTypeList",
       filterSearch: true,
     },
-    // {
-    //   title: "Created by",
-    //   dataIndex: "createdBy",
-    //   filter: true,
-    //   filterKey: "createdByList",
-    //   filterSearch: true,
-    // },
-    // {
-    //   title: "Created Date",
-    //   dataIndex: "createdDate",
-    //   render: (data: any) => dateFormatter(data),
-    //   filter: true,
-    //   sorter: true,
-    // },
+    {
+      title: "Created By",
+      dataIndex: "createdByName",
+      filter: true,
+      filterKey: "createdByList",
+      filterSearch: true,
+    },
+    {
+      title: "Created Date",
+      dataIndex: "createdAt",
+      render: (data: any) => dateFormatter(data),
+      sorter: true,
+    },
     {
       title: "Status",
       dataIndex: "status",
