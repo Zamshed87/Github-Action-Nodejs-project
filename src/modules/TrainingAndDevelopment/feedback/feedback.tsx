@@ -89,54 +89,61 @@ const TnDFeedback = () => {
     },
     {
       title: "HR Position",
-      dataIndex: "hrPosition",
+      dataIndex: "hrPositionName",
       width: 50,
     },
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "departmentName",
       width: 50,
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplaceName",
       width: 50,
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplaceGroupName",
       width: 60,
+    },
+    {
+      title: "Feedback Count",
+      dataIndex: "privouslyFeedbackSubmittedCount",
+      width: 50,
     },
     {
       title: (
         <>
-          Send Request
+          Feedback Done
           <br />
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rowData?.every((item: any) => item.attendanceStatus === 0)}
+            checked={rowData?.every(
+              (item: any) => item.isFeedbackDone === true
+            )}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) => ({
                   ...item,
-                  attendanceStatus: e.target.checked ? 0 : 1,
+                  isFeedbackDone: e.target.checked,
                 }))
               );
             }}
           />
         </>
       ),
-      dataIndex: "isRequested",
+      dataIndex: "isFeedbackDone",
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rec.attendanceStatus === 0}
+            checked={rec.isFeedbackDone === true}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) =>
                   item.uId === rec.uId
-                    ? { ...item, attendanceStatus: e.target.checked ? 0 : 1 }
+                    ? { ...item, isFeedbackDone: e.target.checked }
                     : item
                 )
               );
@@ -171,7 +178,6 @@ const TnDFeedback = () => {
       }
     );
   };
-
   return (
     <div>
       {loading && <Loading />}
@@ -284,7 +290,7 @@ const TnDFeedback = () => {
                   label="Feedback Form"
                   onChange={(op) => {
                     form.setFieldsValue({
-                      attendanceDate: op,
+                      feedbackform: op,
                     });
                   }}
                   rules={[

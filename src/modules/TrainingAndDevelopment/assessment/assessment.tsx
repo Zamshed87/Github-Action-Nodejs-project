@@ -89,22 +89,27 @@ const TnDAssessment = () => {
     },
     {
       title: "HR Position",
-      dataIndex: "hrPosition",
+      dataIndex: "hrPositionName",
       width: 50,
     },
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "departmentName",
       width: 50,
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplaceName",
       width: 50,
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplaceGroupName",
+      width: 60,
+    },
+    {
+      title: "Assessment Count",
+      dataIndex: "privouslyAssessmentSubmittedCount",
       width: 60,
     },
     {
@@ -114,29 +119,31 @@ const TnDAssessment = () => {
           <br />
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rowData?.every((item: any) => item.attendanceStatus === 0)}
+            checked={rowData?.every(
+              (item: any) => item.isAssessmentDone === true
+            )}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) => ({
                   ...item,
-                  attendanceStatus: e.target.checked ? 0 : 1,
+                  isAssessmentDone: e.target.checked,
                 }))
               );
             }}
           />
         </>
       ),
-      dataIndex: "isRequested",
+      dataIndex: "isAssessmentDone",
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rec.attendanceStatus === 0}
+            checked={rec.isAssessmentDone === true}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) =>
                   item.uId === rec.uId
-                    ? { ...item, attendanceStatus: e.target.checked ? 0 : 1 }
+                    ? { ...item, isAssessmentDone: e.target.checked }
                     : item
                 )
               );
@@ -288,7 +295,7 @@ const TnDAssessment = () => {
                     });
                   }}
                   rules={[
-                    { required: true, message: "Feedback Form is required" },
+                    { required: true, message: "Assessment Form is required" },
                   ]}
                 />
               </Col>

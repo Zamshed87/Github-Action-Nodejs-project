@@ -69,21 +69,21 @@ export const saveFeedback = async (
   cb: any
 ) => {
   setLoading(true);
+  const filteredRowData = rowData.filter((item: any) => item?.isFeedbackDone);
   try {
-    const payload = rowData.map((item: any) => ({
+    const payload = filteredRowData.map((item: any) => ({
       trainingId: data?.id,
       employeeId: item?.employeeId,
-      attendanceId: item?.attendanceId || 0,
-      dteAttendanceDate: form.getFieldValue("attendanceDate")?.trainingDate,
-      attendanceStatus: item?.attendanceStatus,
-      scheduleId: item?.trainingScheduleId || 0,
+      feedbackId: item?.feedbackId || 0,
     }));
     const res = await axios.post(
-      `/TrainingFeedback/BulkTrainingFeedback`,
+      `/TrainingFeedback/BulkTrainingFeedback?questionnaireHeaderId=${form.getFieldValue(
+        "feedbackform"
+      )}`,
       payload
     );
     form.resetFields();
-    toast.success("Attendance Saved Successfully", { toastId: 1222 });
+    toast.success("Feedback Saved Successfully", { toastId: 1222 });
     cb && cb();
   } catch (error: any) {
     const errorMessage =

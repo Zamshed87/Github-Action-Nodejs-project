@@ -69,17 +69,16 @@ export const saveAssessment = async (
   cb: any
 ) => {
   setLoading(true);
+  const filteredRowData = rowData.filter((item: any) => item?.isAssessmentDone);
   try {
-    const payload = rowData.map((item: any) => ({
+    const payload = filteredRowData.map((item: any) => ({
       trainingId: data?.id,
       employeeId: item?.employeeId,
-      attendanceId: item?.attendanceId || 0,
-      dteAttendanceDate: form.getFieldValue("attendanceDate")?.trainingDate,
-      attendanceStatus: item?.attendanceStatus,
-      scheduleId: item?.trainingScheduleId || 0,
     }));
     const res = await axios.post(
-      `/TrainingAssessment/BulkTrainingAssessment`,
+      `/TrainingAssessment/BulkTrainingAssessment?questionnaireHeaderId=${form.getFieldValue(
+        "assessmentform"
+      )}`,
       payload
     );
     form.resetFields();
