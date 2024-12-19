@@ -160,7 +160,7 @@ const TnDFeedback = () => {
 
   const landingApiCall = () => {
     getLandingApi(
-      `/TrainingFeedback/FeedbackParticipant?trainingId=${data?.id}`,
+      `/TrainingFeedback/FeedbackParticipant/${data?.id}`,
       (data: any) => {
         setRowData(
           data.map((item: any, index: number) => ({

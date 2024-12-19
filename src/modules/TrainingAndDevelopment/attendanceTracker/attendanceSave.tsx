@@ -75,22 +75,22 @@ const TnDAttendanceSave = () => {
     },
     {
       title: "HR Position",
-      dataIndex: "hrPosition",
+      dataIndex: "hrPositionName",
       width: 50,
     },
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "departmentName",
       width: 50,
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplaceName",
       width: 50,
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplaceGroupName",
       width: 60,
     },
     {
@@ -100,12 +100,17 @@ const TnDAttendanceSave = () => {
           <br />
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rowData?.every((item: any) => item.attendanceStatus === 0)}
+            checked={rowData?.every(
+              (item: any) => item.attendanceStatus?.value == 0
+            )}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) => ({
                   ...item,
-                  attendanceStatus: e.target.checked ? 0 : 1,
+                  attendanceStatus: {
+                    ...item.attendanceStatus,
+                    value: e.target.checked ? 0 : 1,
+                  },
                 }))
               );
             }}
@@ -117,12 +122,18 @@ const TnDAttendanceSave = () => {
         <Flex justify="center">
           <Checkbox
             style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rec.attendanceStatus === 0}
+            checked={rec.attendanceStatus?.value == 0}
             onChange={(e) => {
               setRowData(
                 rowData.map((item: any) =>
                   item.uId === rec.uId
-                    ? { ...item, attendanceStatus: e.target.checked ? 0 : 1 }
+                    ? {
+                        ...item,
+                        attendanceStatus: {
+                          ...item.attendanceStatus,
+                          value: e.target.checked ? 0 : 1,
+                        },
+                      }
                     : item
                 )
               );
@@ -281,7 +292,7 @@ const TnDAttendanceSave = () => {
                       .validateFields()
                       .then(() => {
                         getLandingApi(
-                          `/TrainingAttendance/Participant?trainingId=${data?.id}&attendanceDate=${values?.attendanceDate?.trainingDate}`,
+                          `/TrainingAttendance/Participant/${data?.id}?attendanceDate=${values?.attendanceDate?.trainingDate}`,
                           (data: any) => {
                             setRowData(
                               data.map((item: any, index: number) => ({
