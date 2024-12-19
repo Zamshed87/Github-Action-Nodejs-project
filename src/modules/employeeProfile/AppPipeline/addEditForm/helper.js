@@ -129,6 +129,7 @@ export const submitHandler = ({
   random,
   savePipeline,
 }) => {
+  console.log("submit")
   const cb = () => {
     resetForm();
     setIsAddEditForm(false);

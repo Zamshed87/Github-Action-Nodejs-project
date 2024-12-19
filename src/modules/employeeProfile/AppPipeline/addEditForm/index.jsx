@@ -207,6 +207,8 @@ export default function AddEditForm({
           wgId,
           deletedRow,
           savePipeline,
+          isSequence,
+          random,
         });
       }}
       initialValues={{
@@ -460,10 +462,6 @@ export default function AddEditForm({
           }}
           rules={[
             {
-              required: true,
-              message: "Please enter a count",
-            },
-            {
               validator: (_, value) => {
                 if (value > tableData.length) {
                   return Promise.reject(
@@ -570,7 +568,13 @@ export default function AddEditForm({
             <DraggableTable
               tableData={tableData}
               setTableData={setTableData}
-              header={header(deletedRow, setDeletedRow, remover, random, isSequence)}
+              header={header(
+                deletedRow,
+                setDeletedRow,
+                remover,
+                random,
+                isSequence
+              )}
             />
           )}
         </Col>
