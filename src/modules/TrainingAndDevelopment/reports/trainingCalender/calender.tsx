@@ -3,6 +3,7 @@ import type { BadgeProps, CalendarProps } from "antd";
 import {
   Badge,
   Calendar,
+  Card,
   Col,
   Descriptions,
   Form,
@@ -21,9 +22,7 @@ import UserInfoCommonField from "../userInfoCommonField";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import Loading from "common/loading/Loading";
 import { PModal } from "Components/Modal";
-
-const valueStyle = { fontSize: "14px", fontWeight: "550" };
-const labelStyle = { fontSize: "12px" };
+import "./calender.css";
 
 const getMonthData = (value: moment.Moment) => {
   if (value.month() === 8) {
@@ -68,39 +67,45 @@ const TrainingCalender: React.FC = () => {
   const dateCellRender = (value: moment.Moment) => {
     const listData = getListData(value);
     return (
-      <ul
+      <div
         className="events"
         onClick={() => {
           setModalData(listData);
           setIsModalVisible(true);
         }}
       >
-        {listData.map((item: any) => (
-          <li key={item.trainingId}>
-            {item?.status?.value == 3 ? (
-              <Badge
-                status="error"
-                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
-              />
-            ) : item?.status?.value == 1 ? (
-              <Badge
-                status="processing"
-                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
-              />
-            ) : item?.status?.value == 0 ? (
-              <Badge
-                status="warning"
-                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
-              />
-            ) : (
-              <Badge
-                status="success"
-                text={`${item.trainingTitle} (${item.startTime} - ${item.endTime})`}
-              />
-            )}
-          </li>
-        ))}
-      </ul>
+        <ul>
+          {listData.map((item: any) => (
+            <li key={item.trainingId}>
+              {item?.status?.value == 3 ? (
+                <Badge
+                  className="custom-badge"
+                  status="error"
+                  text={`${item.trainingTitle} `}
+                />
+              ) : item?.status?.value == 1 ? (
+                <Badge
+                  className="custom-badge"
+                  status="processing"
+                  text={`${item.trainingTitle}`}
+                />
+              ) : item?.status?.value == 0 ? (
+                <Badge
+                  className="custom-badge"
+                  status="warning"
+                  text={`${item.trainingTitle}`}
+                />
+              ) : (
+                <Badge
+                  className="custom-badge"
+                  status="success"
+                  text={`${item.trainingTitle}`}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   };
 
@@ -251,15 +256,23 @@ const TrainingCalender: React.FC = () => {
         </PCardBody>
 
         {/* </PCard> */}
-        <div style={{ height: "40%", width: "100%", padding: "30px" }}>
+        {/* <div style={{ height: "40%", width: "100%", padding: "30px" }}>
           <Calendar
             onPanelChange={onPanelChange}
             dateCellRender={dateCellRender}
             monthCellRender={monthCellRender}
             headerRender={customHeaderRender}
           />
-        </div>
+        </div> */}
       </PForm>
+      <div className="calendar-container">
+        <Calendar
+          onPanelChange={onPanelChange}
+          dateCellRender={dateCellRender}
+          monthCellRender={monthCellRender}
+          headerRender={customHeaderRender}
+        />
+      </div>
       <PModal
         open={isModalVisible}
         title={""}
@@ -273,23 +286,35 @@ const TrainingCalender: React.FC = () => {
             dataSource={modalData}
             renderItem={(item: any) => (
               <List.Item>
-                <Descriptions bordered>
-                  <Descriptions.Item label="Training Title" span={3}>
-                    {item.trainingTitle}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Time" span={3}>
-                    {`${item.startTime} - ${item.endTime}`}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Status" span={3}>
-                    {item?.status?.label || "N/A"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Training Mode" span={3}>
-                    {item?.trainingModeStatus?.label || "N/A"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Objectives" span={3}>
-                    {item.objectives}
-                  </Descriptions.Item>
-                </Descriptions>
+                <Card bordered={true} style={{ width: "100%" }}>
+                  <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                      <h3>{item.trainingTitle}</h3>
+                    </Col>
+                    <Col span={12}>
+                      <p>
+                        <strong>Time:</strong>{" "}
+                        {`${item.startTime} - ${item.endTime}`}
+                      </p>
+                    </Col>
+                    <Col span={12}>
+                      <p>
+                        <strong>Status:</strong> {item?.status?.label || "N/A"}
+                      </p>
+                    </Col>
+                    <Col span={12}>
+                      <p>
+                        <strong>Training Mode:</strong>{" "}
+                        {item?.trainingModeStatus?.label || "N/A"}
+                      </p>
+                    </Col>
+                    <Col span={12}>
+                      <p>
+                        <strong>Objectives:</strong> {item.objectives}
+                      </p>
+                    </Col>
+                  </Row>
+                </Card>
               </List.Item>
             )}
           />
