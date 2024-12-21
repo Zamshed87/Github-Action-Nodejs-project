@@ -32,7 +32,7 @@ const MgmtInOutReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId },
+    profileData: { buId, wId, wgId, employeeId, orgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -134,8 +134,8 @@ const MgmtInOutReport = () => {
         accountId: orgId,
         businessUnitId: buId,
         isHeaderNeed: true,
-        workplaceGroupId: values?.workplaceGroup?.value,
-        workplaceId: values?.workplace?.value,
+        workplaceGroupId: values?.workplaceGroup?.value || wgId,
+        WorkplaceList: values?.workplace?.value || wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
         isPaginated: true,
@@ -308,9 +308,11 @@ const MgmtInOutReport = () => {
                     });
                     getWorkplace();
                   }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
+                  rules={
+                    [
+                      // { required: true, message: "Workplace Group is required" },
+                    ]
+                  }
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
@@ -325,7 +327,7 @@ const MgmtInOutReport = () => {
                       workplace: op,
                     });
                   }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
+                  // rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
 
