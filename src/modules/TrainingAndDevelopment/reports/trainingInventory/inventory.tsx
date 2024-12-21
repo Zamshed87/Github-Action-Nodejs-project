@@ -16,7 +16,7 @@ import {
   PSelect,
 } from "Components";
 import { getSerial } from "Utils";
-import { Col, Form, Row, Space, Tooltip } from "antd";
+import { Button, Col, Form, Row, Space, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -27,9 +27,16 @@ import Chips from "common/Chips";
 import UserInfoCommonField from "../userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
 import { filter } from "lodash";
+import { shallowEqual, useSelector } from "react-redux";
 const TnDInventory = () => {
   // router states
   const history = useHistory();
+
+  const { permissionList, profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  const { intAccountId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -62,14 +69,14 @@ const TnDInventory = () => {
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplaceGroupName",
       filter: true,
       filterKey: "workplaceGroupList",
       filterSearch: true,
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplaceName",
       filter: true,
       filterKey: "workplaceList",
       filterSearch: true,
@@ -80,15 +87,15 @@ const TnDInventory = () => {
     },
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "designationName",
     },
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "departmentName",
     },
     {
       title: "No of Training",
-      dataIndex: "noOfTraining",
+      dataIndex: "numberOfTraining",
       filter: true,
       filterKey: "noOfTrainingList",
       filterSearch: true,
@@ -109,22 +116,20 @@ const TnDInventory = () => {
       dataIndex: "status",
       render: (_: any, rec: any) => (
         <Space size="middle">
-          <Tooltip placement="bottom" title="Delete">
-            {/* <DeleteOutlined
-              style={{
-                color: 'red',
-                fontSize: '14px',
-                cursor: 'pointer',
-                margin: '0 5px',
-              }}
+          <Tooltip placement="bottom" title="Training Details">
+            <Button
+              type="link"
               onClick={() => {
-                const updatedperticipantField = trainingTime.filter(
-                  (item: any) => item.id !== rec.id
+                history.push(
+                  `/trainingAndDevelopment/reports/trainingInventory/details`,
+                  {
+                    data: rec,
+                  }
                 );
-                changeTrainingStatus(form, updatedperticipantField);
-                setTrainingTime(updatedperticipantField);
               }}
-            /> */}
+            >
+              Details
+            </Button>
           </Tooltip>
         </Space>
       ),
@@ -148,7 +153,7 @@ const TnDInventory = () => {
     setTrainingTitle(list);
   };
   const landingApiCall = (values: any) => {
-    getLandingApi("/TrainingRequisition/Training/TrainingRequisition");
+    getLandingApi(`/TrainingReport/TrainingInventoryReport/${intAccountId}`);
   };
   useEffect(() => {
     landingApiCall({});
