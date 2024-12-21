@@ -164,9 +164,9 @@ const AttendanceReport = () => {
     // });
     const payload = {
       intBusinessUnitId: buId,
-      intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
+      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
 
-      workplaceList: workplaceList?.length > 0 ? `${workplaceList}` : 0,
+      workplaceList: workplaceList?.length > 0 ? `${workplaceList}` : wId,
       pageNo: pagination?.current || 1,
       pageSize: pagination?.pageSize || 25,
       isPaginated: true,
@@ -539,9 +539,11 @@ const AttendanceReport = () => {
                     });
                     getWorkplace();
                   }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
+                  rules={
+                    [
+                      // { required: true, message: "Workplace Group is required" },
+                    ]
+                  }
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
@@ -558,7 +560,7 @@ const AttendanceReport = () => {
                       workplace: op,
                     });
                   }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
+                  // rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
 
