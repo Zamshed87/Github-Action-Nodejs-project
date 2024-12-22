@@ -183,4 +183,5 @@ export const column = {
   // specialLeave: "Special Leave",
   weekend: "Off Day",
   holiday: "Holiday",
+  totalSinglePunchDays: "Single Punch Count",
 };

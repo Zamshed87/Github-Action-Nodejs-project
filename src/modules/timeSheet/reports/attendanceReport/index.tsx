@@ -348,6 +348,11 @@ const AttendanceReport = () => {
       dataIndex: "holiday",
       width: 80,
     },
+    {
+      title: "Single Punch Count",
+      dataIndex: "totalSinglePunchDays",
+      width: 120,
+    },
   ];
   const searchFunc = debounce((value) => {
     landingApiCall({
