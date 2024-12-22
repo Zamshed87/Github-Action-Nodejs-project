@@ -9,7 +9,7 @@ import DemoImage from "../../../../../assets/images/avatar_logo.jpg";
 import { gray900 } from "../../../../../utility/customColor";
 import { Tag } from "antd";
 import { shallowEqual, useSelector } from "react-redux";
-import { orgIds } from "utility/orgForBanglaField";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const iconStyle = {
   fontSize: "16px",
@@ -68,7 +68,7 @@ const About = ({ empInfo }) => {
               </Tag>
             </div>
           </div>
-          {orgIds.includes(orgId) && (
+          {orgIdsForBn.includes(orgId) && (
             <h4 className="name-about-info">
               {empInfo?.strEmployeeNameBn || "N/A"}
             </h4>

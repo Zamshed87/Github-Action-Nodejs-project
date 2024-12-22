@@ -25,7 +25,7 @@ import {
 } from "./../../../../../../utility/customColor";
 import formatAddress from "common/formatAddress";
 import { checkBng } from "utility/regxExp";
-import { orgIds } from "utility/orgForBanglaField";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   country: "",
@@ -676,7 +676,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        {orgIds.includes(orgId) && (
+                        {orgIdsForBn.includes(orgId) && (
                           <FormikInput
                             name="addressBn"
                             value={values?.addressBn}
@@ -787,7 +787,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                                       rowDto?.presentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {orgIds.includes(orgId) &&
+                                {orgIdsForBn.includes(orgId) &&
                                   rowDto?.presentAddress?.length > 0 &&
                                   rowDto?.presentAddress[0]
                                     ?.strAddressDetailsBn && (

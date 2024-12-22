@@ -31,7 +31,7 @@ import "../../employeeOverview.css";
 import { updateEmployeeProfile } from "../helper";
 import { getEmployeeProfileViewData } from "./../../../employeeFeature/helper";
 import { checkBng } from "utility/regxExp";
-import { orgIds } from "utility/orgForBanglaField";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   name: "",
@@ -190,7 +190,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                         classes="input-sm"
                       />
                     </div>
-                    {orgIds.includes(orgId) && (
+                    {orgIdsForBn.includes(orgId) && (
                       <div>
                         <FormikInput
                           value={values?.relativesNameBn}
@@ -578,7 +578,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             <small>Name</small>
                           </div>
                         </div>
-                        {orgIds.includes(orgId) && (
+                        {orgIdsForBn.includes(orgId) && (
                           <div className="row mb-3">
                             <div className="col-lg-1">
                               <Avatar className="overviewAvatar">

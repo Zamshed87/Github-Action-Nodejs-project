@@ -25,7 +25,7 @@ import { todayDate } from "../../../../../../utility/todayDate";
 import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 import formatAddress from "common/formatAddress";
 import { checkBng } from "utility/regxExp";
-import { orgIds } from "utility/orgForBanglaField";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   country: "",
@@ -660,7 +660,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        {orgIds.includes(orgId) && (
+                        {orgIdsForBn.includes(orgId) && (
                           <FormikInput
                             name="addressBn"
                             value={values?.addressBn}
@@ -769,7 +769,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                                       rowDto?.otherAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {orgIds.includes(orgId) &&
+                                {orgIdsForBn.includes(orgId) &&
                                   rowDto?.otherAddress?.length > 0 &&
                                   rowDto?.otherAddress[0]
                                     ?.strAddressDetailsBn && (
