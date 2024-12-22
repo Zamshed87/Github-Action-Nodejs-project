@@ -301,7 +301,11 @@ export default function UnderCreateRosterSetup() {
                                 type="button"
                                 className="btn btn-green btn-green-disable"
                                 label="Clear"
-                                onClick={() => setRowDto([])}
+                                onClick={() => {
+                                  setFieldValue("calendarName", "");
+                                  setFieldValue("noOfChangeDays", "");
+                                  setRowDto([]);
+                                }}
                               />
                             </div>
                           )}
@@ -393,71 +397,71 @@ export default function UnderCreateRosterSetup() {
                             Add
                           </button>
                         </div>
-                      </div>
-                    </div>
-                    <div className="table-UnderCreateRosterSetup-main">
-                      <div className="d-flex align-items-center"></div>
+                        <div className="table-UnderCreateRosterSetup-main">
+                          <div className="d-flex align-items-center"></div>
 
-                      {rowDto?.length > 0 && (
-                        <>
-                          <div className="table-card-body">
-                            <div className="table-card-styled tableOne">
-                              <table className="table">
-                                <thead style={{ color: "#212529" }}>
-                                  <tr>
-                                    <th>
-                                      <div
-                                        className="sortable"
-                                        onClick={() => {
-                                          setCalendarOrder((prev) =>
-                                            prev === "desc" ? "asc" : "desc"
-                                          );
-                                          commonSortByFilter(
-                                            calendarOrder,
-                                            "calenderName"
-                                          );
-                                        }}
-                                      >
-                                        <span>Calendar</span>
-                                        <div>
-                                          <SortingIcon
-                                            viewOrder={calendarOrder}
-                                          ></SortingIcon>
-                                        </div>
-                                      </div>
-                                    </th>
-                                    <th className="text-center">
-                                      No. of change days
-                                    </th>
-                                    <th>Next Calendar</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {rowDto?.map((item, index) => (
-                                    <tr key={index}>
-                                      <td>
-                                        <div className="content tableBody-title">
-                                          {item?.calenderName}
-                                        </div>
-                                      </td>
-                                      <td>
-                                        <div className="content tableBody-title text-center">
-                                          {item?.noOfDaysChange}
-                                        </div>
-                                      </td>
-                                      <td>
-                                        <div className="content tableBody-title text-start">
-                                          {item?.nextCalendarName}
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </>
-                      )}
+                          {rowDto?.length > 0 && (
+                            <>
+                              <div className="table-card-body">
+                                <div className="table-card-styled tableOne">
+                                  <table className="table">
+                                    <thead style={{ color: "#212529" }}>
+                                      <tr>
+                                        <th>
+                                          <div
+                                            className="sortable"
+                                            onClick={() => {
+                                              setCalendarOrder((prev) =>
+                                                prev === "desc" ? "asc" : "desc"
+                                              );
+                                              commonSortByFilter(
+                                                calendarOrder,
+                                                "calenderName"
+                                              );
+                                            }}
+                                          >
+                                            <span>Calendar</span>
+                                            <div>
+                                              <SortingIcon
+                                                viewOrder={calendarOrder}
+                                              ></SortingIcon>
+                                            </div>
+                                          </div>
+                                        </th>
+                                        <th className="text-center">
+                                          No. of change days
+                                        </th>
+                                        <th>Next Calendar</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {rowDto?.map((item, index) => (
+                                        <tr key={index}>
+                                          <td>
+                                            <div className="content tableBody-title">
+                                              {item?.calenderName}
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div className="content tableBody-title text-center">
+                                              {item?.noOfDaysChange}
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div className="content tableBody-title text-start">
+                                              {item?.nextCalendarName}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
