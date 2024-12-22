@@ -76,6 +76,8 @@ const ListOfCost = ({
   ];
 
   console.log(costField.reduce((acc, item) => acc + Number(item.costValue), 0));
+  const values = form.getFieldsValue(true);
+  console.log(values);
 
   return (
     <div style={{ marginTop: "13px" }}>

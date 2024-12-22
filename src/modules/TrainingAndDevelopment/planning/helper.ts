@@ -163,7 +163,7 @@ export const createTrainingPlan = async (
       endTime: moment(values?.trainingEndTime).format("HH:mm:ss"),
     };
     const res = await axios.post(`/Training/Training/Training`, payload);
-    form.resetFields();
+    // form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb(res?.data);
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
@@ -205,7 +205,7 @@ export const editTrainingPlan = async (
       `/Training/Training/EditTraining/${values?.idx}`,
       payload
     );
-    form.resetFields();
+    // form.resetFields();
     toast.success("Edited Successfully", { toastId: 12022 });
     cb && cb(res?.data);
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);

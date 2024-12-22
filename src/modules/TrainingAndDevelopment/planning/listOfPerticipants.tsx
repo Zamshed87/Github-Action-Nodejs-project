@@ -119,7 +119,11 @@ const ListOfPerticipants = ({
     perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
   );
 
-  const workplace = Form.useWatch("workplace", form);
+  // const workplace = Form.useWatch("workplace", form);
+
+  const values = form.getFieldsValue(true);
+
+  console.log("workplaceGroup", values);
 
   return (
     <div style={{ marginTop: "13px" }}>

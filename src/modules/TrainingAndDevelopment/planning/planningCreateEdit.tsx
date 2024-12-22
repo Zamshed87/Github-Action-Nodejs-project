@@ -489,6 +489,9 @@ const TnDPlanningCreateEdit = () => {
 
   console.log(data, "data");
   console.log(dataDetails, "dataDetails");
+  const values = form.getFieldsValue(true);
+  console.log(values);
+
   return (
     <div>
       {(loading || loadingTrainingType) && <Loading />}
