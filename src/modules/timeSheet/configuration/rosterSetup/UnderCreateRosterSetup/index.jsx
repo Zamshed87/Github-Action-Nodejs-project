@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Edit } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -21,19 +20,32 @@ import ViewModal from "../../../../../common/ViewModal";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { createTimeSheetAction } from "../../../helper";
 import RosterSetupCreate from "../addEditForm";
+import * as Yup from "yup";
 import "./styles.css";
+import axios from "axios";
 const initData = {
   calendarName: "",
   noOfChangeDays: "",
   nextCalendar: "",
 };
 
+const validationSchema = Yup.object({
+  rosterGroupName: Yup.string().required("Roster name is required"),
+  orgName: Yup.object({
+    label: Yup.string().required("Workplace Group is required"),
+    value: Yup.string().required("Workplace Group is required"),
+  }),
+  workplace: Yup.object({
+    label: Yup.string().required("Workplace  is required"),
+    value: Yup.string().required("Workplace  is required"),
+  }).typeError("Workplace is required"),
+});
+
 export default function UnderCreateRosterSetup() {
   const history = useHistory();
   const params = useParams();
-  const location = useLocation();
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, wgName, wName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -52,31 +64,77 @@ export default function UnderCreateRosterSetup() {
 
     // firstRowCalId and lastRowNextCalId should be equal
     if (firstRowCalId !== lastRowNextCalId) return toast.warn("Invalid circle");
-    const temp = rowDto?.map((item) => {
-      return {
-        calenderName: item?.calendarName || item?.calenderName,
-        rosterGroupId: item?.rosterGroupId,
-        calendarId: +item?.calendarId,
-        noOfDaysChange: item?.noOfDaysChange,
-        nextCalenderId: +item?.nextCalenderId,
-        nextCalendarName: item?.nextCalendarName,
-        IntCreatedBy: item?.insertByUserId || employeeId,
-      };
-    });
-    const payload = {
-      partType: "Roster",
+
+    const createRosterPayload = {
+      partType: "RosterGroup",
+      employeeId: employeeId,
+      autoId: +params?.id || 0,
+      value: "",
+      IntCreatedBy: employeeId,
+      isActive: true,
       businessUnitId: buId,
-      timeSheetRosterJsons: [...temp],
+      accountId: orgId,
+      holidayGroupName: "",
+      year: 0,
+      holidayGroupId: 0,
+      holidayName: "",
+      fromDate: null,
+      toDate: null,
+      totalDays: 0,
+      calenderCode: "",
+      calendarName: "",
+      startTime: "00:00:00",
+      extendedStartTime: "00:00:00",
+      lastStartTime: "00:00:00",
+      endTime: "00:00:00",
+      minWorkHour: 0,
+      isConfirm: true,
+      exceptionOffdayName: "",
+      isAlternativeDay: true,
+      exceptionOffdayGroupId: 0,
+      weekOfMonth: "",
+      weekOfMonthId: 0,
+      daysOfWeek: "",
+      daysOfWeekId: 0,
+      remarks: "",
+      rosterGroupName: values?.rosterGroupName,
+      workplaceId: values?.workplace?.value || 0,
+      workplaceGroupId: values?.orgName?.value || 0,
+      overtimeDate: "2022-05-08T09:13:19.700Z",
+      overtimeHour: 0,
+      reason: "",
+      breakStartTime: "",
+      breakEndTime: "",
+      timeSheetRosterJsons: [],
     };
-    // if(params?.id){
-    //   let payload = {
-    //     partType: "Roster",
-    //     businessUnitId: buId,
-    //     timeSheetRosterJsons: [...rowDto],
 
-    //   };
+    axios
+      .post(`/TimeSheet/TimeSheetCRUD`, createRosterPayload)
+      .then((res) => {
+        const temp = rowDto?.map((item) => {
+          return {
+            calenderName: item?.calendarName || item?.calenderName,
+            rosterGroupId: res?.data?.autoId,
+            calendarId: +item?.calendarId,
+            noOfDaysChange: item?.noOfDaysChange,
+            nextCalenderId: +item?.nextCalenderId,
+            nextCalendarName: item?.nextCalendarName,
+            IntCreatedBy: item?.insertByUserId || employeeId,
+          };
+        });
+        const rosterCyclePayload = {
+          partType: "Roster",
+          businessUnitId: buId,
+          timeSheetRosterJsons: [...temp],
+        };
+        res?.data?.autoId &&
+          createTimeSheetAction(rosterCyclePayload, setLoading, cb);
+      })
+      .catch((err) =>
+        toast.warn(err?.response?.data?.message || "Something went wrong")
+      );
 
-    createTimeSheetAction(payload, setLoading, cb);
+    //
   };
   const setter = (values) => {
     // rosterGroup id means edit, user must clear all row data for editing
@@ -145,14 +203,14 @@ export default function UnderCreateRosterSetup() {
   };
 
   useEffect(() => {
-    getData();
+    params?.id && getData();
   }, [orgId, buId, params, wgId]);
 
-  useEffect(() => {
-    if (location?.state !== wgId) {
-      history.push(`/administration/timeManagement/rosterSetup`);
-    }
-  }, [wgId]);
+  // useEffect(() => {
+  //   if (location?.state !== wgId) {
+  //     history.push(`/administration/timeManagement/rosterSetup`);
+  //   }
+  // }, [wgId]);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -173,22 +231,18 @@ export default function UnderCreateRosterSetup() {
           ...prev?.sort((a, b) => (b[property] > a[property] ? -1 : 1)),
         ]);
   };
-  // const {permissionList} = useSelector(
-  //   (state) => state?.auth,
-  //   shallowEqual
-  // );
-
-  // let permission = null;
-  // permissionList.forEach(item => {
-  //   if(item?.menuReferenceId === 42){
-  //     permission = item;
-  //   }
 
   return (
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={initData}
+        initialValues={{
+          ...initData,
+          rosterGroupName: params?.rosterName || "",
+          orgName: { value: wgId, label: wgName },
+          workplace: { value: wId, label: wName },
+        }}
+        validationSchema={validationSchema}
         onSubmit={(values) => {
           saveHandler(values, () => {
             // don't reset form, not use ful for the purpose
@@ -209,33 +263,51 @@ export default function UnderCreateRosterSetup() {
                     <div className="header-UnderCreateRosterSetup mt-5">
                       <div className="header-left">
                         <BackButton />
-                        <h4>{params?.rosterName}</h4>
-                        <button
-                          type="button"
-                          onClick={() => setIsRosterSetup(true)}
-                          className="border-icon holiday-icon-edit"
-                        >
-                          <Edit sx={{ fontSize: "1rem" }} />
-                        </button>
+                        <h4>
+                          {params?.id ? params?.rosterName : "Create Roster"}
+                        </h4>
                       </div>
                       <div>
                         <PrimaryButton
                           type="submit"
                           className="btn btn-green btn-green-disable"
                           label="Save"
+                          disabled={!values?.rosterGroupName}
                         />
                       </div>
                     </div>
-                    <div
-                      className="body-UnderCreateRosterSetup"
-                      style={{ marginTop: "-25px" }}
-                    >
-                      <div className="col-md-6 p-0">
+                    <div style={{ marginTop: "-25px" }}>
+                      <RosterSetupCreate
+                        id={params?.id}
+                        setFieldValue={setFieldValue}
+                        errors={errors}
+                        touched={touched}
+                        values={values}
+                      />
+                    </div>
+                    <div>
+                      <div
+                        className="card-style"
+                        style={{ padding: "4px 12px 12px" }}
+                      >
                         <div
-                          className="card-style"
-                          style={{ padding: "4px 12px 12px" }}
+                          className="d-flex align-items-start  justify-content-between"
+                          style={{ marginTop: "12px" }}
                         >
-                          <div className="col-12 p-0">
+                          <h4>Roster Cycle Configuration</h4>
+                          {rowDto?.length > 0 && (
+                            <div>
+                              <PrimaryButton
+                                type="button"
+                                className="btn btn-green btn-green-disable"
+                                label="Clear"
+                                onClick={() => setRowDto([])}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <div className="row">
+                          <div className="col-3">
                             <div className="input-field">
                               <label htmlFor="">Calendar </label>
                               <FormikSelect
@@ -259,7 +331,7 @@ export default function UnderCreateRosterSetup() {
                               />
                             </div>
                           </div>
-                          <div className="col-12 p-0">
+                          <div className="col-3">
                             <div className="input-field">
                               <label htmlFor="">No. of change days </label>
                               <FormikInput
@@ -281,7 +353,7 @@ export default function UnderCreateRosterSetup() {
                               />
                             </div>
                           </div>
-                          <div className="col-12 p-0">
+                          <div className="col-3">
                             <div className="input-field">
                               <label htmlFor="">Next Calendar</label>
                               <FormikSelect
@@ -311,11 +383,12 @@ export default function UnderCreateRosterSetup() {
                             disabled={
                               !values?.noOfChangeDays ||
                               !values?.nextCalendar ||
-                              !values?.calendarName
+                              !values?.calendarName ||
+                              !values?.rosterGroupName
                             }
                             type="button"
-                            className="btn btn-green"
-                            style={{ marginTop: "12px" }}
+                            className="btn btn-green col-3"
+                            style={{ marginTop: "21px", maxWidth: "60px" }}
                           >
                             Add
                           </button>
@@ -323,80 +396,68 @@ export default function UnderCreateRosterSetup() {
                       </div>
                     </div>
                     <div className="table-UnderCreateRosterSetup-main">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div
-                          className="d-flex align-items-end justify-content-end"
-                          style={{ margin: "12px 0px" }}
-                        >
-                          <h4>Roster Cycle</h4>
-                        </div>
-                        <div>
-                          <PrimaryButton
-                            type="button"
-                            className="btn btn-green btn-green-disable"
-                            label="Clear"
-                            onClick={() => setRowDto([])}
-                          />
-                        </div>
-                      </div>
+                      <div className="d-flex align-items-center"></div>
 
-                      <div className="table-card-body">
-                        <div className="table-card-styled tableOne">
-                          <table className="table">
-                            <thead style={{ color: "#212529" }}>
-                              <tr>
-                                <th>
-                                  <div
-                                    className="sortable"
-                                    onClick={() => {
-                                      setCalendarOrder((prev) =>
-                                        prev === "desc" ? "asc" : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        calendarOrder,
-                                        "calenderName"
-                                      );
-                                    }}
-                                  >
-                                    <span>Calendar</span>
-                                    <div>
-                                      <SortingIcon
-                                        viewOrder={calendarOrder}
-                                      ></SortingIcon>
-                                    </div>
-                                  </div>
-                                </th>
-                                <th className="text-center">
-                                  No. of change days
-                                </th>
-                                <th>Next Calendar</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {rowDto?.length > 0 &&
-                                rowDto?.map((item, index) => (
-                                  <tr key={index}>
-                                    <td>
-                                      <div className="content tableBody-title">
-                                        {item?.calenderName}
+                      {rowDto?.length > 0 && (
+                        <>
+                          <div className="table-card-body">
+                            <div className="table-card-styled tableOne">
+                              <table className="table">
+                                <thead style={{ color: "#212529" }}>
+                                  <tr>
+                                    <th>
+                                      <div
+                                        className="sortable"
+                                        onClick={() => {
+                                          setCalendarOrder((prev) =>
+                                            prev === "desc" ? "asc" : "desc"
+                                          );
+                                          commonSortByFilter(
+                                            calendarOrder,
+                                            "calenderName"
+                                          );
+                                        }}
+                                      >
+                                        <span>Calendar</span>
+                                        <div>
+                                          <SortingIcon
+                                            viewOrder={calendarOrder}
+                                          ></SortingIcon>
+                                        </div>
                                       </div>
-                                    </td>
-                                    <td>
-                                      <div className="content tableBody-title text-center">
-                                        {item?.noOfDaysChange}
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="content tableBody-title text-start">
-                                        {item?.nextCalendarName}
-                                      </div>
-                                    </td>
+                                    </th>
+                                    <th className="text-center">
+                                      No. of change days
+                                    </th>
+                                    <th>Next Calendar</th>
                                   </tr>
-                                ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
+                                </thead>
+                                <tbody>
+                                  {rowDto?.map((item, index) => (
+                                    <tr key={index}>
+                                      <td>
+                                        <div className="content tableBody-title">
+                                          {item?.calenderName}
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div className="content tableBody-title text-center">
+                                          {item?.noOfDaysChange}
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div className="content tableBody-title text-start">
+                                          {item?.nextCalendarName}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
