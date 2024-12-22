@@ -16,14 +16,17 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { debounce } from "lodash";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
-import { getDateOfYear } from "utility/dateFormatter";
-import { getPDFAction } from "utility/downloadFile";
 
 const MarketVisitReport = () => {
   const dispatch = useDispatch();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+  });
   const {
     permissionList,
     profileData: { buId, wgId, orgId, wId },
@@ -154,13 +157,13 @@ const MarketVisitReport = () => {
             }}
             pdfExport={() => {
               try {
-                const values = form.getFieldsValue(true);
-                getPDFAction(
-                  `/SalaryReport/GetBanglaPaysilp?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&month=${month || 0}&year=${year || 0}&employeeId=${
-                    values?.employee?.value || 0
-                  }&salaryGenerateRequestId=${values?.salaryCode || 0}`,
-                  setLoading
-                );
+                reactToPrintFn();
+                // getPDFAction(
+                //   `/SalaryReport/GetBanglaPaysilp?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&month=${month || 0}&year=${year || 0}&employeeId=${
+                //     values?.employee?.value || 0
+                //   }&salaryGenerateRequestId=${values?.salaryCode || 0}`,
+                //   setLoading
+                // );
               } catch (error: any) {
                 toast.error(
                   error?.response?.data?.message ||
@@ -275,6 +278,56 @@ const MarketVisitReport = () => {
           </div>
         ) : null}
       </PForm>
+      <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+        <div style={{ display: "none" }}>
+          <div ref={contentRef}>
+            <div className="invoice-header"></div>
+            <table>
+              <thead>
+                <tr>
+                  <td
+                    style={{
+                      border: "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "150px",
+                      }}
+                    ></div>
+                  </td>
+                </tr>
+              </thead>
+
+              <tbody>
+                {/* CONTENT GOES HERE */}
+                <div
+                  style={{ marginTop: "70px", marginLeft: "70px" }}
+                  dangerouslySetInnerHTML={{
+                    __html: landingApi?.data,
+                  }}
+                />
+              </tbody>
+
+              <tfoot>
+                <tr>
+                  <td
+                    style={{
+                      border: "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100px",
+                      }}
+                    ></div>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
     </>
   ) : (
     <NotPermittedPage />
