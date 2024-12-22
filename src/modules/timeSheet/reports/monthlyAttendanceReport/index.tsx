@@ -181,9 +181,9 @@ const MonthlyAttendanceReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
-      ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+    // const workplaceList = `${values?.workplace
+    //   ?.map((item: any) => item?.intWorkplaceId)
+    //   .join(",")}`;
     const deptList = `${values?.department
       ?.map((item: any) => item?.value)
       .join(",")}`;
