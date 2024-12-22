@@ -1532,6 +1532,7 @@ const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
 // Training and Development
+import TnDInventoryDetails from "modules/TrainingAndDevelopment/reports/trainingInventory/inventoryDetails";
 import TnDAssessment from "modules/TrainingAndDevelopment/assessment/assessment";
 import TnDFeedback from "modules/TrainingAndDevelopment/feedback/feedback";
 import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
@@ -3445,6 +3446,10 @@ export const routingList = [
   {
     path: "/trainingAndDevelopment/reports/trainingInventory",
     component: TnDInventory,
+  },
+  {
+    path: "/trainingAndDevelopment/reports/trainingInventory/details",
+    component: TnDInventoryDetails,
   },
   // Trainnning and development ends
 
