@@ -7,6 +7,7 @@ import {
   greenColor,
 } from "../../../../../utility/customColor";
 import { shallowEqual, useSelector } from "react-redux";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const Contact = ({ empContact, empAddress, objProps }) => {
   const { values, setFieldValue, isShowCheckBox } = objProps;
@@ -79,7 +80,7 @@ const Contact = ({ empContact, empAddress, objProps }) => {
                   : ""}
               </small>
             </p>
-            {orgId === 7 && (
+            {orgIdsForBn.includes(orgId) && (
               <p>
                 Permanent Address (In Bangla) -{" "}
                 <small>{empAddress?.[0]?.strAddressDetailsBn}</small>
@@ -102,7 +103,7 @@ const Contact = ({ empContact, empAddress, objProps }) => {
                   : ""}
               </small>
             </p>
-            {orgId === 7 && (
+            {orgIdsForBn.includes(orgId) && (
               <p>
                 Present Address (In Bangla) -{" "}
                 <small>{empAddress?.[1]?.strAddressDetailsBn}</small>
@@ -125,7 +126,7 @@ const Contact = ({ empContact, empAddress, objProps }) => {
                   : ""}
               </small>
             </p>
-            {orgId === 7 && (
+            {orgIdsForBn.includes(orgId) && (
               <p>
                 Other Address (In Bangla) -{" "}
                 <small>{empAddress?.[2]?.strAddressDetailsBn}</small>

@@ -23,6 +23,7 @@ import "../aboutMe.css";
 import AccordionCom from "../accordion";
 import { empProfilePicUpload } from "../helper";
 import { Tag } from "antd";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const Input = styled("input")({
   display: "none",
@@ -159,7 +160,7 @@ const ProfileCard = ({
               </div>
             )}
           </div>
-          {orgId === 7 && (
+          {orgIdsForBn.includes(orgId) && (
             <h4 className="name-about-info">
               {empBasic?.strEmployeeNameBn || "N/A"}
             </h4>
