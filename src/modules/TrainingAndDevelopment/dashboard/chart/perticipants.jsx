@@ -26,7 +26,6 @@ const PerticipantsChart = () => {
       {
         type: "text",
         position: ["50%", "0%"], // Centered at the top
-        content: "Monthly Participants",
         style: {
           fontSize: 15,
           fontWeight: "bold",

@@ -214,12 +214,15 @@ const pieConfig = {
   angleField: "value",
   colorField: "type",
   label: {
-    text: "value",
-    style: {
-      fontWeight: "bold",
-    },
+    type: "inner",
+    content: "{value}",
   },
   legend: false || undefined,
+  interactions: [
+    {
+      type: "element-active",
+    },
+  ],
 };
 
 // Column Chart Config
@@ -556,15 +559,50 @@ const TnDDashboard = () => {
           </PCardBody>
         </PCard>
       </PForm>
-      <Row
-        gutter={[24, 24]} // Evenly spaced rows and columns
-        style={{
-          justifyContent: "space-between",
-        }} // Center align content
-      >
+      <div className="grid-container">
         {data.map((item, index) => (
-          <Col xs={24} sm={12} md={8} lg={4} xl={4} key={index}>
-            <Card
+          <div
+            className="grid-item"
+            key={index}
+            style={{
+              height: "150px", // Fixed height for all cards
+              border: "1px solid #f0f0f0",
+              width: "237px",
+              borderRadius: "8px",
+              textAlign: "center",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.3s, background 0.3s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = getRandomGradient())
+            }
+            onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
+          >
+            <div style={{ marginBottom: "10px" }}>{item.icon}</div>
+            <h3
+              style={{
+                fontSize: "13px",
+                fontWeight: "bold",
+                margin: 0,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {item.title}
+            </h3>
+            <p
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                margin: 0,
+                marginTop: "10px",
+                color: "#333",
+              }}
+            >
+              {item.count}
+            </p>
+            {/* <Card
               hoverable
               style={{
                 height: "150px", // Fixed height for all cards
@@ -587,34 +625,14 @@ const TnDDashboard = () => {
               }
               onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
             >
-              <div style={{ marginBottom: "10px" }}>{item.icon}</div>
-              <h3
-                style={{
-                  fontSize: "13px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {item.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  marginTop: "10px",
-                  color: "#333",
-                }}
-              >
-                {item.count}
-              </p>
-            </Card>
-          </Col>
+              
+            </Card> */}
+          </div>
+          // <Col key={index} span={4} style={{ flex: "0 0 20%" }}>
+
+          // </Col>
         ))}
-      </Row>
+      </div>
       <Divider />
       <Divider />
       <Row gutter={32} style={{ marginTop: "30px" }}>
@@ -732,7 +750,9 @@ const TnDDashboard = () => {
 
       {/* Line Chart */}
       <Card title="Month-Wise Training Summary">
-        <Line {...lineConfig} />
+        <div style={{ height: "250px" }}>
+          <Line {...lineConfig} />
+        </div>
       </Card>
       <Card title="Upcoming Training">
         <DataTable

@@ -26,7 +26,6 @@ const DurationChart = () => {
       {
         type: "text",
         position: ["50%", "0%"], // Centered at the top
-        content: "Duration in Hours",
         style: {
           fontSize: 15,
           fontWeight: "bold",
