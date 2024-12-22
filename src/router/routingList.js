@@ -760,6 +760,9 @@ const SalaryGenerateView = lazy(() =>
 const SalaryPayslipReport = lazy(() =>
   import("../modules/CompensationBenefits/SalaryPayslipReport/index.jsx")
 );
+const MultiSalaryPayslipReport = lazy(() =>
+  import("../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx")
+);
 const SalaryTaxCertificate = lazy(() =>
   import("../modules/CompensationBenefits/salaryTaxCertificate/index.jsx")
 );
@@ -3181,8 +3184,12 @@ export const routingList = [
   },
   // report for payslip
   {
-    path: "/compensationAndBenefits/salaryPaySlip",
+    path: "/compensationAndBenefits/salaryPaySlip/payslip",
     component: SalaryPayslipReport,
+  },
+  {
+    path: "/compensationAndBenefits/salaryPaySlip/multiplePaySlip",
+    component: MultiSalaryPayslipReport,
   },
   // report for salary advice/bank advice
   {
