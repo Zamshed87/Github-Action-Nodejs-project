@@ -32,6 +32,7 @@ import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { checkBng } from "utility/regxExp";
 import { commonDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
+import { orgIds } from "utility/orgForBanglaField";
 
 const CreateAndEditEmploye = () => {
   // router hooks
@@ -809,7 +810,7 @@ const CreateAndEditEmploye = () => {
                     }
                   />
                 </Col>
-                {orgId === 7 && (
+                {orgIds.includes(orgId) && (
                   <Col md={6} sm={24}>
                     <PInput
                       type="text"
@@ -1681,7 +1682,7 @@ const CreateAndEditEmploye = () => {
                     placeholder="Present Address"
                   />
                 </Col>
-                {orgId === 7 && (
+                {orgIds.includes(orgId) && (
                   <>
                     <Col md={12} sm={24}>
                       <PInput
