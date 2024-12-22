@@ -35,6 +35,7 @@ import { fromToDateList } from "../helper";
 import { gray600 } from "utility/customColor";
 import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import axios from "axios";
+import Department from "modules/configuration/department";
 
 const MonthlyInOutReport = () => {
   const dispatch = useDispatch();
@@ -66,6 +67,9 @@ const MonthlyInOutReport = () => {
   //   api states
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -116,6 +120,49 @@ const MonthlyInOutReport = () => {
       },
     });
   };
+
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "DepartmentIdAll",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+
+        accountId: orgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
+        });
+      },
+    });
+  };
+
+  const getEmployeDesignation = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDesignationDDL?.action({
+      urlKey: "DesignationIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
+        });
+      },
+    });
+  };
   // data call
   type TLandingApi = {
     pagination?: {
@@ -134,27 +181,33 @@ const MonthlyInOutReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
-      ?.map((item: any) => item?.intWorkplaceId)
+    // const workplaceList = `${values?.workplace
+    //   ?.map((item: any) => item?.intWorkplaceId)
+    //   .join(",")}`;
+    const deptList = `${values?.department
+      ?.map((item: any) => item?.value)
       .join(",")}`;
-
+    const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
       params: {
-        ReportType: "monthly_in_out_attendance_report_for_all_employee",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+        reportType: "monthly_in_out_attendance_report_for_all_employee",
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: values?.workplaceGroup?.value || wgId,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: values?.workplaceGroup?.value ? workplaceList : `${wId}`,
-        PageNo: pagination.current || pages?.current,
-        PageSize: pagination.pageSize || pages?.pageSize,
-        EmployeeId: 0,
-        IsPaginated: true,
-        DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
+        WorkplaceList: values?.workplace?.value || wId,
+        pageNo: pagination.current || pages?.current,
+        pageSize: pagination.pageSize || pages?.pageSize,
+        employeeId: 0,
+        isPaginated: true,
+        dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        searchTxt: searchText,
+        // isXls: false,
+        departments: values?.department?.length > 0 ? deptList : "",
+        designations: values?.designation?.length > 0 ? desigList : "",
       },
     });
   };
@@ -294,6 +347,12 @@ const MonthlyInOutReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+                  const deptList = `${values?.department
+                    ?.map((item: any) => item?.value)
+                    .join(",")}`;
+                  const desigList = `${values?.designation?.map(
+                    (item: any) => item?.value
+                  )}`;
                   const res = await axios.get(
                     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?reportType=monthly_in_out_attendance_report_for_all_employee&accountId=${orgId}&dteFromDate=${moment(
                       values?.fromDate
@@ -302,12 +361,12 @@ const MonthlyInOutReport = () => {
                     ).format("YYYY-MM-DD")}&employeeId=0&workplaceGroupId=${
                       values?.workplaceGroup?.value || wgId
                     }&WorkplaceList=${
-                      values?.workplaceGroup?.value
-                        ? values?.workplace
-                            ?.map((item: any) => item?.intWorkplaceId)
-                            .join(",")
-                        : wId
-                    }&pageNo=1&pageSize=1000&isPaginated=false&businessUnitId=${buId}`
+                      values?.workplace?.value || wId
+                    }&pageNo=1&pageSize=1000&isPaginated=false&businessUnitId=${buId}&departments=${
+                      values?.department?.length > 0 ? deptList : ""
+                    }&designations=${
+                      values?.designation?.length > 0 ? desigList : ""
+                    }`
                   );
 
                   if (res?.data) {
@@ -422,6 +481,8 @@ const MonthlyInOutReport = () => {
                     form.setFieldsValue({
                       workplaceGroup: op,
                       workplace: undefined,
+                      department: undefined,
+                      designation: undefined,
                     });
                     getWorkplace();
                   }}
@@ -438,18 +499,64 @@ const MonthlyInOutReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
-                  mode="multiple"
+                  // mode="multiple"
                   maxTagCount={"responsive"}
                   disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,
+                      department: undefined,
+                      designation: undefined,
                     });
+                    getEmployeDesignation();
+                    getEmployeDepartment();
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
-
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { workplace } = form.getFieldsValue(true);
+                  return (
+                    <>
+                      <Col md={5} sm={12} xs={24}>
+                        <PSelect
+                          options={empDepartmentDDL?.data || []}
+                          name="department"
+                          label="Department"
+                          placeholder="Department"
+                          mode="multiple"
+                          maxTagCount={"responsive"}
+                          disabled={workplace?.length > 1 ? true : false}
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              department: op,
+                            });
+                          }}
+                          // rules={[{ required: true, message: "Workplace is required" }]}
+                        />
+                      </Col>
+                      <Col md={5} sm={12} xs={24}>
+                        <PSelect
+                          options={empDesignationDDL?.data || []}
+                          name="designation"
+                          label="Designation"
+                          placeholder="Designation"
+                          mode="multiple"
+                          maxTagCount={"responsive"}
+                          disabled={workplace?.length > 1 ? true : false}
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              designation: op,
+                            });
+                          }}
+                          // rules={[{ required: true, message: "Workplace is required" }]}
+                        />
+                      </Col>
+                    </>
+                  );
+                }}
+              </Form.Item>
               <Col
                 style={{
                   marginTop: "23px",
