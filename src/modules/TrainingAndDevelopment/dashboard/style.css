@@ -47,7 +47,3 @@
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
-.antv-g2-legend .g2-html-legend-pagenation {
-  display: none !important;
-}
