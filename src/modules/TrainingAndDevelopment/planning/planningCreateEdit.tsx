@@ -28,6 +28,7 @@ import {
   createTrainingSchedule,
   editTrainingPlan,
   editTrainingPlanDetails,
+  editTrainingSchedule,
   perticipantMap,
   setTrainingDuration,
   stepOneValidation,
@@ -473,7 +474,7 @@ const TnDPlanningCreateEdit = () => {
     if (planStep === "STEP_THREE") {
       ViewTrainingSchedule(planId, setLoading, (d: any) => {
         const mappedTrainingTime = d.map((item: any) => ({
-          id: item.id,
+          idx: item.id,
           trainingStartTime: moment(item.startTime, "HH:mm:ss").format(
             "hh:mm:ss A"
           ),
@@ -557,27 +558,6 @@ const TnDPlanningCreateEdit = () => {
             buttonList={
               onlyPerticipant
                 ? [
-                    // previous step
-                    {
-                      type: "secondary",
-                      content: "Previous Step",
-                      icon: <StepBackwardOutlined />,
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
-
-                        form
-                          .validateFields()
-                          .then(() => {
-                            if (!planId) {
-                              toast.error("Plan Creation is required");
-                              return;
-                            }
-                            setPlanStep("STEP_TWO");
-                          })
-                          .catch(() => {});
-                      },
-                    },
-                    // previous step
                     {
                       type: "primary",
                       content: "Edit Perticipants",
@@ -586,11 +566,7 @@ const TnDPlanningCreateEdit = () => {
                         const values = form.getFieldsValue(true);
 
                         form
-                          .validateFields([
-                            "employee",
-                            "department",
-                            "hrPosition",
-                          ])
+                          .validateFields([])
                           .then(() => {
                             editTrainingPlanDetails(
                               data?.id,
@@ -621,7 +597,7 @@ const TnDPlanningCreateEdit = () => {
                         const values = form.getFieldsValue(true);
 
                         form
-                          .validateFields()
+                          .validateFields([])
                           .then(() => {
                             if (!planId) {
                               toast.error("Plan Creation is required");
@@ -733,6 +709,27 @@ const TnDPlanningCreateEdit = () => {
                   ]
                 : planStep === "STEP_THREE"
                 ? [
+                    // previous step
+                    {
+                      type: "secondary",
+                      content: "Previous Step",
+                      icon: <StepBackwardOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields([])
+                          .then(() => {
+                            if (!planId) {
+                              toast.error("Plan Creation is required");
+                              return;
+                            }
+                            setPlanStep("STEP_TWO");
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                    // previous step
                     {
                       type: "primary",
                       content:
@@ -743,18 +740,17 @@ const TnDPlanningCreateEdit = () => {
                         const values = form.getFieldsValue(true);
 
                         form
-                          .validateFields(stepOneValidation)
+                          .validateFields([])
                           .then(() => {
                             if (!planId) {
                               toast.error("Plan Creation is required");
                               return;
                             }
                             type === "edit"
-                              ? editTrainingPlanDetails(
+                              ? editTrainingSchedule(
                                   planId,
-                                  trainerOrgField,
-                                  costField,
-                                  perticipantField,
+                                  trainingTime,
+                                  form,
                                   setLoading,
                                   () => {
                                     history.goBack();

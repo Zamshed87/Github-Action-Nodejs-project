@@ -1,3 +1,4 @@
+import { id } from "date-fns/locale";
 import { FormInstance } from "antd";
 import axios from "axios";
 import moment from "moment";
@@ -164,7 +165,7 @@ export const createTrainingPlan = async (
     };
     const res = await axios.post(`/Training/Training/Training`, payload);
     // form.resetFields();
-    toast.success("Created Successfully", { toastId: 1222 });
+    // toast.success("Created Successfully", { toastId: 1222 });
     cb && cb(res?.data);
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
@@ -206,7 +207,7 @@ export const editTrainingPlan = async (
       payload
     );
     // form.resetFields();
-    toast.success("Edited Successfully", { toastId: 12022 });
+    // toast.success("Edited Successfully", { toastId: 12022 });
     cb && cb(res?.data);
     // setOpenTrainingTitleModal && setOpenTrainingTitleModal(false);
     setLoading(false);
@@ -255,7 +256,7 @@ export const createTrainingPlanDetails = async (
       `/Training/Training/TrainingDetails/${planId}`,
       payload
     );
-    toast.success("Created Successfully", { toastId: 1222 });
+    // toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
     setLoading(false);
   } catch (error: any) {
@@ -302,7 +303,7 @@ export const editTrainingPlanDetails = async (
       `/Training/Training/EditTrainingDetails/${planId}`,
       payload
     );
-    toast.success("Edited Successfully", { toastId: 1222 });
+    // toast.success("Edited Successfully", { toastId: 1222 });
     cb && cb();
     setLoading(false);
   } catch (error: any) {
@@ -339,8 +340,8 @@ export const createTrainingSchedule = async (
         id: 0,
         trainingId: planId,
         trainingDate: time?.trainingStartDate,
-        startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
-        endTime: (values?.trainingEndTime).format("HH:mm:ss"),
+        startTime: moment(time?.trainingStartTime).format("HH:mm:ss"),
+        endTime: (time?.trainingEndTime).format("HH:mm:ss"),
         trainingDuration: time?.trainingDuration,
       }));
     }
@@ -349,10 +350,61 @@ export const createTrainingSchedule = async (
       `/Training/Training/TrainingScheduleDetails/${planId}`,
       payload
     );
-    toast.success("Created Successfully", { toastId: 1222 });
+    // toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
     setLoading(false);
   } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const editTrainingSchedule = async (
+  planId: number,
+  trainingTime: any,
+  form: FormInstance<any>,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const values = form.getFieldsValue(true);
+    let payload = [];
+    console.log(trainingTime, "trainingTime");
+    if (!values?.isMultipleDayTraining) {
+      payload.push({
+        id: 0,
+        trainingId: planId,
+        trainingDate: values?.trainingStartDate,
+        startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
+        endTime: (values?.trainingEndTime).format("HH:mm:ss"),
+        trainingDuration: values?.trainingDuration,
+      });
+    } else {
+      payload = trainingTime?.map((time: any) => ({
+        id: time?.idx || 0,
+        trainingId: planId,
+        trainingDate: time?.trainingStartDate,
+        startTime: moment(time?.trainingStartTime, "hh:mm:ss A").format(
+          "HH:mm:ss"
+        ),
+        endTime: moment(time?.trainingEndTime, "hh:mm:ss A").format("HH:mm:ss"),
+        trainingDuration: time?.trainingDuration,
+      }));
+    }
+
+    const res = await axios.put(
+      `/Training/Training/EditTrainingScheduleDetails/${planId}`,
+      payload
+    );
+    // toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setLoading(false);
+  } catch (error: any) {
+    console.log(error, "error");
     const errorMessage =
       error?.response?.data?.Message || "Something went wrong";
     toast.warn(errorMessage);
