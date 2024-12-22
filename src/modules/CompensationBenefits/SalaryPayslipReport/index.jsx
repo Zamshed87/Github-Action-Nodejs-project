@@ -99,7 +99,7 @@ const SalaryPayslipReport = () => {
 
   let employeeFeature = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30272) {
+    if (item?.menuReferenceId === 30517) {
       employeeFeature = item;
     }
   });

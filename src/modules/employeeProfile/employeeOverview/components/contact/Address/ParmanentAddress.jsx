@@ -21,6 +21,7 @@ import FormikSelect from "./../../../../../../common/FormikSelect";
 import { todayDate } from "./../../../../../../utility/todayDate";
 import formatAddress from "common/formatAddress";
 import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   country: "",
@@ -638,7 +639,7 @@ function ParmanentAddress({ getData, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        {orgId === 7 && (
+                        {orgIdsForBn.includes(orgId) && (
                           <FormikInput
                             name="addressBn"
                             value={values?.addressBn}
@@ -749,7 +750,7 @@ function ParmanentAddress({ getData, empId }) {
                                       rowDto?.permanentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {orgId === 7 &&
+                                {orgIdsForBn.includes(orgId) &&
                                   rowDto?.permanentAddress?.length > 0 &&
                                   rowDto?.permanentAddress[0]
                                     ?.strAddressDetailsBn && (
