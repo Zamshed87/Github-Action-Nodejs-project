@@ -41,6 +41,8 @@ const MarketVisitReport = () => {
   const [payrollPeiodDDL, setPayrollPeiodDDL] = useState([]);
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
 
   // Form Instance
   const [form] = Form.useForm();
@@ -94,13 +96,13 @@ const MarketVisitReport = () => {
       urlKey: "GetBanglaPaysilp",
       method: "GET",
       params: {
-        Format: "HTML",
-        IntAccountId: orgId,
-        IntWorkplaceId: wId,
+        format: "HTML",
+        intAccountId: orgId,
+        intWorkplaceId: wId,
         employeeId: values?.employee?.value || 0,
-        Month: moment(values?.date).format("MM"),
-        Year: moment(values?.date).format("YYYY"),
-        SalaryGenerateRequestId: values?.salaryCode || 0,
+        month: moment(values?.date).format("MM"),
+        year: moment(values?.date).format("YYYY"),
+        salaryGenerateRequestId: values?.salaryCode || 0,
       },
       onError: (error: any) => {
         toast.error(
@@ -143,7 +145,7 @@ const MarketVisitReport = () => {
           {(excelLoading || landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             printIcon={true}
-            title={`Market Visit Report`}
+            title={`Multiple Pay Slip`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
@@ -154,13 +156,9 @@ const MarketVisitReport = () => {
               try {
                 const values = form.getFieldsValue(true);
                 getPDFAction(
-                  `/MarketVisitReport/MarketVisitReport?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
-                    values?.fromDate
-                  ).format("YYYY-MM-DD")}&toDate=${moment(
-                    values?.toDate
-                  ).format("YYYY-MM-DD")}&employeeId=${
+                  `/SalaryReport/GetBanglaPaysilp?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&month=${month || 0}&year=${year || 0}&employeeId=${
                     values?.employee?.value || 0
-                  }&strSearch=${values?.search || ""}`,
+                  }&salaryGenerateRequestId=${values?.salaryCode || 0}`,
                   setLoading
                 );
               } catch (error: any) {
@@ -191,6 +189,8 @@ const MarketVisitReport = () => {
                     });
                     const month = moment(value).format("MM");
                     const year = moment(value).format("YYYY");
+                    setMonth(month);
+                    setYear(year);
 
                     getPeopleDeskAllDDL(
                       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
