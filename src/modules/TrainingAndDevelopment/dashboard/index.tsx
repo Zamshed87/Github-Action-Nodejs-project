@@ -1,17 +1,18 @@
 import { Line, Pie } from "@ant-design/plots";
 import "./style.css";
-import { Card, Col, Divider, Form, Row, Table, Typography } from "antd";
+import { Card, Col, Divider, Drawer, Form, Row, Table, Typography } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   DataTable,
   PButton,
   PCard,
   PCardBody,
+  PCardHeader,
   PForm,
   PInput,
   PSelect,
 } from "Components";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
@@ -29,6 +30,7 @@ import {
   CalculatorOutlined,
 } from "@ant-design/icons";
 import { BarChartOutlined, PieChartOutlined } from "@mui/icons-material";
+import { PModal } from "Components/Modal";
 
 const { Title } = Typography;
 
@@ -281,6 +283,7 @@ const statisticsColumns = [
 
 const TnDDashboard = () => {
   const dispatch = useDispatch();
+
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
   const [
@@ -329,6 +332,8 @@ const TnDDashboard = () => {
     list.unshift({ label: "All", value: 0 });
     setTrainingType(list);
   };
+
+  const [openFilter, setOpenFilter] = useState(false);
 
   const header: any = [
     {
@@ -454,111 +459,131 @@ const TnDDashboard = () => {
     <div style={{ padding: "10px" }}>
       <PForm form={form} initialValues={{}}>
         <PCard>
-          <PCardBody>
-            <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "From Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "To Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <UserInfoCommonField
-                form={form}
-                isDepartment={true}
-                isDesignation={true}
-              />
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={trainingTypeDDL || []}
-                  name="trainingType"
-                  label={"Training Type"}
-                  placeholder="Training Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingType: op,
-                    });
-                  }}
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Training Type is required",
-                  //   },
-                  // ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={nameOfTrainerOrgDDL || []}
-                  name="nameofTrainerOrganization"
-                  label="Name of Trainer & Organization"
-                  placeholder="Name of Trainer & Organization"
-                  onChange={(value, op) => {
-                    console.log(op);
-                    form.setFieldsValue({
-                      nameofTrainerOrganization: op,
-                    });
-                  }}
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Name of Trainer & Organization is required",
-                  //   },
-                  // ]}
-                />
-              </Col>
-
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        // landingApiCall(values);
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col>
-            </Row>
-          </PCardBody>
+          <PCardHeader
+            title={``}
+            buttonList={[
+              {
+                type: "primary",
+                content: "Filter",
+                icon: "plus",
+                onClick: () => {
+                  setOpenFilter(true);
+                },
+              },
+            ]}
+          />
         </PCard>
       </PForm>
+      <Drawer
+        title="Filter"
+        onClose={() => setOpenFilter(false)}
+        open={openFilter}
+      >
+        <PForm form={form} initialValues={{}}>
+          <Row gutter={[10, 2]}>
+            <Col md={12} sm={24}>
+              <PInput
+                type="date"
+                name="fromDate"
+                label="From Date"
+                placeholder="From Date"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    fromDate: value,
+                  });
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "From Date is required",
+                  },
+                ]}
+              />
+            </Col>
+            <Col md={12} sm={24}>
+              <PInput
+                type="date"
+                name="toDate"
+                label="To Date"
+                placeholder="To Date"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    toDate: value,
+                  });
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "To Date is required",
+                  },
+                ]}
+              />
+            </Col>
+            <UserInfoCommonField
+              form={form}
+              isDepartment={true}
+              isDesignation={true}
+              col={12}
+            />
+            <Col md={12} sm={12} xs={24}>
+              <PSelect
+                options={trainingTypeDDL || []}
+                name="trainingType"
+                label={"Training Type"}
+                placeholder="Training Type"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    trainingType: op,
+                  });
+                }}
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Training Type is required",
+                //   },
+                // ]}
+              />
+            </Col>
+            <Col md={12} sm={12} xs={24}>
+              <PSelect
+                options={nameOfTrainerOrgDDL || []}
+                name="nameofTrainerOrganization"
+                label="Name of Trainer & Organization"
+                placeholder="Name of Trainer & Organization"
+                onChange={(value, op) => {
+                  console.log(op);
+                  form.setFieldsValue({
+                    nameofTrainerOrganization: op,
+                  });
+                }}
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Name of Trainer & Organization is required",
+                //   },
+                // ]}
+              />
+            </Col>
+
+            <Col md={12} sm={24}>
+              <PButton
+                style={{ marginTop: "35px" }}
+                type="primary"
+                content="View"
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      // landingApiCall(values);
+                    })
+                    .catch(() => {});
+                }}
+              />
+            </Col>
+          </Row>
+        </PForm>
+      </Drawer>
       <div className="grid-container">
         {data.map((item, index) => (
           <div
@@ -567,7 +592,7 @@ const TnDDashboard = () => {
             style={{
               height: "150px", // Fixed height for all cards
               border: "1px solid #f0f0f0",
-              width: "237px",
+              width: "242px",
               borderRadius: "8px",
               textAlign: "center",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",

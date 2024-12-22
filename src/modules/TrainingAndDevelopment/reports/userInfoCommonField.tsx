@@ -9,10 +9,12 @@ const UserInfoCommonField = ({
   form,
   isDepartment,
   isDesignation,
+  col,
 }: {
   form: any;
   isDepartment?: boolean;
   isDesignation?: boolean;
+  col?: number;
 }) => {
   const dispatch = useDispatch();
   const { permissionList, profileData } = useSelector(
@@ -134,7 +136,7 @@ const UserInfoCommonField = ({
   }, [buId, wgId]);
   return (
     <>
-      <Col md={6} sm={12} xs={24}>
+      <Col md={col || 6} sm={12} xs={24}>
         <PSelect
           options={getBUnitDDL?.data?.length > 0 ? getBUnitDDL?.data : []}
           name="bUnit"
@@ -150,7 +152,7 @@ const UserInfoCommonField = ({
           rules={[{ required: true, message: "Business Unit is required" }]}
         />
       </Col>
-      <Col md={6} sm={12} xs={24}>
+      <Col md={col || 6} sm={12} xs={24}>
         <PSelect
           options={workplaceGroup?.data || []}
           name="workplaceGroup"
@@ -166,7 +168,7 @@ const UserInfoCommonField = ({
           rules={[{ required: true, message: "Workplace Group is required" }]}
         />
       </Col>
-      <Col md={6} sm={12} xs={24}>
+      <Col md={col || 6} sm={12} xs={24}>
         <PSelect
           options={workplace?.data || []}
           name="workplace"
@@ -190,7 +192,7 @@ const UserInfoCommonField = ({
         />
       </Col>
       {isDepartment && (
-        <Col md={6} sm={24}>
+        <Col md={col || 6} sm={12} xs={24}>
           <PSelect
             options={empDepartmentDDL?.data || []}
             name="department"
@@ -212,7 +214,7 @@ const UserInfoCommonField = ({
         </Col>
       )}
       {isDesignation && (
-        <Col md={6}>
+        <Col md={col || 6} sm={12} xs={24}>
           <PSelect
             options={designationApi?.data || []}
             name="designation"
