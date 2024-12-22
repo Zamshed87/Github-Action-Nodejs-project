@@ -13,7 +13,6 @@ import {
   SelectProps,
 } from "antd";
 import moment from "moment";
-import "./calender.css";
 import { PButton, PCardBody, PCardHeader, PForm, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -68,6 +67,7 @@ const TrainingCalender: React.FC = () => {
     const listData = getListData(value);
     return (
       <div
+        id="dashboard-calendar-specific"
         className="events"
         onClick={() => {
           setModalData(listData);
@@ -76,7 +76,7 @@ const TrainingCalender: React.FC = () => {
       >
         <ul>
           {listData.map((item: any) => (
-            <li key={item.trainingId}>
+            <li key={item.trainingId} id="dashboard-calendar-specific">
               {item?.status?.value == 3 ? (
                 <Badge
                   className="custom-badge"
@@ -265,7 +265,7 @@ const TrainingCalender: React.FC = () => {
           />
         </div> */}
       </PForm>
-      <div className="calendar-container">
+      <div id="dashboard-calendar-specific" className="calendar-container">
         <Calendar
           onPanelChange={onPanelChange}
           dateCellRender={dateCellRender}

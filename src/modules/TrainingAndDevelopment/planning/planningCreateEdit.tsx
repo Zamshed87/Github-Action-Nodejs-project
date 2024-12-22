@@ -1,6 +1,7 @@
 import {
   EditOutlined,
   SaveOutlined,
+  StepBackwardOutlined,
   StepForwardOutlined,
 } from "@ant-design/icons";
 import { Form } from "antd";
@@ -556,6 +557,27 @@ const TnDPlanningCreateEdit = () => {
             buttonList={
               onlyPerticipant
                 ? [
+                    // previous step
+                    {
+                      type: "secondary",
+                      content: "Previous Step",
+                      icon: <StepBackwardOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields()
+                          .then(() => {
+                            if (!planId) {
+                              toast.error("Plan Creation is required");
+                              return;
+                            }
+                            setPlanStep("STEP_TWO");
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                    // previous step
                     {
                       type: "primary",
                       content: "Edit Perticipants",
@@ -590,12 +612,87 @@ const TnDPlanningCreateEdit = () => {
                   ] // No buttons for "status" type
                 : planStep === "STEP_TWO"
                 ? [
+                    // previous step
+                    {
+                      type: "secondary",
+                      content: "Previous Step",
+                      icon: <StepBackwardOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields()
+                          .then(() => {
+                            if (!planId) {
+                              toast.error("Plan Creation is required");
+                              return;
+                            }
+                            setPlanStep("STEP_ONE");
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                    // previous step
+                    // save and close
+                    {
+                      type: "primary",
+                      content:
+                        type === "edit" ? "Edit & Close" : "Save & Close",
+                      icon:
+                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+
+                        form
+                          .validateFields(stepOneValidation)
+                          .then(() => {
+                            if (!planId) {
+                              toast.error("Plan Creation is required");
+                              return;
+                            }
+                            type === "edit"
+                              ? editTrainingPlanDetails(
+                                  planId,
+                                  trainerOrgField,
+                                  costField,
+                                  perticipantField,
+                                  setLoading,
+                                  () => {
+                                    history.goBack();
+                                  }
+                                )
+                              : createTrainingPlanDetails(
+                                  planId,
+                                  trainerOrgField,
+                                  costField,
+                                  perticipantField,
+                                  setLoading,
+                                  () => {
+                                    history.goBack();
+                                  }
+                                );
+                            console.log(values, "training plan");
+
+                            console.log(trainerOrgField, "trainerOrgField");
+                            console.log(costField, "costField");
+                            console.log(perticipantField, "perticipantField");
+                            // redirect to planning landing
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                    // save and close
+
                     {
                       type: "primary",
                       content:
                         type === "edit" ? "Edit & Next Step" : "Next Step",
                       icon:
-                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                        type === "create" ? (
+                          <StepForwardOutlined />
+                        ) : (
+                          <EditOutlined />
+                        ),
                       onClick: () => {
                         const values = form.getFieldsValue(true);
 
