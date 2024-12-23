@@ -1,12 +1,7 @@
 import { Col, Row, Tooltip } from "antd";
-import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
-import { useEffect, useState } from "react";
+import { DataTable, Flex, PButton, PSelect } from "Components";
 
-import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { FormInstance } from "antd/lib/form";
-import { PModal } from "Components/Modal";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import TrainingCost from "../masterData/trainingCost";
+import { DeleteOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
 const TrainerAndOrgInfo = ({
   nameOfTrainerOrgDDL,

@@ -567,7 +567,7 @@ const TnDDashboard = () => {
 
             <Col md={12} sm={24}>
               <PButton
-                style={{ marginTop: "35px" }}
+                style={{ marginTop: "39px" }}
                 type="primary"
                 content="View"
                 onClick={() => {

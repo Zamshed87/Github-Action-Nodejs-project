@@ -13,20 +13,17 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import { perticipantMap } from "./helper";
-import { saveAttendace } from "./helper";
-import { useApiRequest } from "Hooks";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import {
   ViewTrainingPlan,
   ViewTrainingPlanDetails,
   ViewTrainingSchedule,
 } from "../planning/helper";
-import moment from "moment";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { saveAttendace } from "./helper";
 
 const TnDAttendanceSave = () => {
   interface LocationState {

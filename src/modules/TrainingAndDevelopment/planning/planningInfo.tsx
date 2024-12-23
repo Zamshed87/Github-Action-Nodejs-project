@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Checkbox, Col, Form, Row, Tooltip } from "antd";
-import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Col, Form, Row, Tooltip } from "antd";
 import { getEnumData } from "common/api/commonApi";
+import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
+import { useEffect, useState } from "react";
 import { changeTrainingStatus } from "./helper";
-import { Chip } from "@mui/material";
 const PlanningInfo = ({
   form,
   getBUnitDDL,

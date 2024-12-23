@@ -12,13 +12,12 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import { saveAssessment } from "./helper";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { saveAssessment } from "./helper";
 
 const TnDAssessment = () => {
   interface LocationState {

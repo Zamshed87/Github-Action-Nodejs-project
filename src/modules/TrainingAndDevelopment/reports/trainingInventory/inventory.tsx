@@ -1,33 +1,21 @@
 import {
-  BarsOutlined,
-  EditOutlined,
-  EyeOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
-import {
   DataTable,
-  Flex,
   PButton,
   PCard,
   PCardBody,
-  PCardHeader,
   PForm,
   PInput,
   PSelect,
 } from "Components";
-import { getSerial } from "Utils";
 import { Button, Col, Form, Row, Space, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-import { PModal } from "Components/Modal";
-import Chips from "common/Chips";
-import UserInfoCommonField from "../userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
-import { filter } from "lodash";
 import { shallowEqual, useSelector } from "react-redux";
+import UserInfoCommonField from "../userInfoCommonField";
 const TnDInventory = () => {
   // router states
   const history = useHistory();

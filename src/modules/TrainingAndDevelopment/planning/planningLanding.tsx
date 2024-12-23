@@ -1,18 +1,12 @@
 import {
-  CarryOutOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-  ContainerOutlined,
-  EditOutlined,
-  EyeOutlined,
-  HddOutlined,
   MenuOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import {
   DataTable,
-  Flex,
   PButton,
   PCard,
   PCardBody,
@@ -21,7 +15,7 @@ import {
   PInput,
 } from "Components";
 import { getSerial } from "Utils";
-import { Col, Dropdown, Form, MenuProps, Row, Tag, Tooltip } from "antd";
+import { Col, Dropdown, Form, MenuProps, Row, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useState } from "react";
@@ -30,17 +24,16 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 
+import { PModal } from "Components/Modal";
+import IConfirmModal from "common/IConfirmModal";
+import moment from "moment";
 import {
   cancelTrainingPlan,
   ViewTrainingPlan,
   ViewTrainingPlanDetails,
   ViewTrainingSchedule,
 } from "./helper";
-import { PModal } from "Components/Modal";
 import PlanningView from "./planningView";
-import Chips from "common/Chips";
-import IConfirmModal from "common/IConfirmModal";
-import moment from "moment";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");

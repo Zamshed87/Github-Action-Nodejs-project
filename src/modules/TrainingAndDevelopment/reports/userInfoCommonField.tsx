@@ -1,9 +1,8 @@
 import { Col } from "antd";
 import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { boolean } from "yup";
 
 const UserInfoCommonField = ({
   form,
