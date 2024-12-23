@@ -627,39 +627,10 @@ const TnDDashboard = () => {
             >
               {item.count}
             </p>
-            {/* <Card
-              hoverable
-              style={{
-                height: "150px", // Fixed height for all cards
-                border: "1px solid #f0f0f0",
-                width: "200px",
-                borderRadius: "8px",
-                textAlign: "center",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                transition: "transform 0.3s, background 0.3s",
-              }}
-              bodyStyle={{
-                padding: "20px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = getRandomGradient())
-              }
-              onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
-            >
-              
-            </Card> */}
           </div>
-          // <Col key={index} span={4} style={{ flex: "0 0 20%" }}>
-
-          // </Col>
         ))}
       </div>
-      <Divider />
-      <Divider />
+
       <Row gutter={32} style={{ marginTop: "30px" }}>
         {/* Left Metrics Table */}
         <Col span={4}>
@@ -751,8 +722,6 @@ const TnDDashboard = () => {
         {/* Summary Table */}
       </Row>
 
-      <Divider />
-
       {/* Bar Charts */}
       <Row gutter={16}>
         <Col span={12}>
@@ -770,8 +739,6 @@ const TnDDashboard = () => {
           </Card>
         </Col>
       </Row>
-
-      <Divider />
 
       {/* Line Chart */}
       <Card title="Month-Wise Training Summary">
@@ -795,23 +762,6 @@ const TnDDashboard = () => {
           // }}
         />
       </Card>
-      {/* <div className="mb-3 mt-5">
-        <h1>Upcoming Training</h1>
-        <DataTable
-          bordered
-          data={landingApi || []}
-          loading={landingLoading}
-          header={header}
-          pagination={{
-            pageSize: landingApi?.data?.pageSize,
-            total: landingApi?.data?.totalCount,
-          }}
-          filterData={landingApi?.data?.filters}
-          // onChange={(pagination, filters) => {
-          //   landingApiCall({});
-          // }}
-        />
-      </div> */}
     </div>
   );
 };
