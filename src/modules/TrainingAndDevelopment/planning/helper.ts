@@ -340,8 +340,10 @@ export const createTrainingSchedule = async (
         id: 0,
         trainingId: planId,
         trainingDate: time?.trainingStartDate,
-        startTime: moment(time?.trainingStartTime).format("HH:mm:ss"),
-        endTime: (time?.trainingEndTime).format("HH:mm:ss"),
+        startTime: moment(time?.trainingStartTime, "hh:mm:ss A").format(
+          "HH:mm:ss"
+        ),
+        endTime: moment(time?.trainingEndTime, "hh:mm:ss A").format("HH:mm:ss"),
         trainingDuration: time?.trainingDuration,
       }));
     }

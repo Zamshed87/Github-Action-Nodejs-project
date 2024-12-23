@@ -74,7 +74,12 @@ const PlanningInfo = ({
               }}
               onClick={() => {
                 const updatedperticipantField = trainingTime.filter(
-                  (item: any) => item.id !== rec.id
+                  (item: any) =>
+                    !(
+                      item.trainingStartTime === rec.trainingStartTime &&
+                      item.trainingEndTime === rec.trainingEndTime &&
+                      item.trainingStartDate === rec.trainingStartDate
+                    )
                 );
                 changeTrainingStatus(form, updatedperticipantField);
                 setTrainingTime(updatedperticipantField);
