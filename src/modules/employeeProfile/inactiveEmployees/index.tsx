@@ -25,8 +25,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getDateOfYear } from "utility/dateFormatter";
-import { MdOutlineGroupAdd } from "react-icons/md";
-
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
@@ -40,6 +38,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { getSerial } from "Utils";
+import { UserAddOutlined } from "@ant-design/icons";
 
 const ActiveInactiveEmployeeReport = () => {
   const dispatch = useDispatch();
@@ -297,29 +296,35 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "Status",
       dataIndex: "strStatus",
+      align: "center",
       render: (_: any, rec: any) => (
-        <div className="d-flex align-items-center justify-content-center">
-          <div>
-            {rec?.strStatus === "Inactive" && (
-              <Tag color="red">{rec?.strStatus}</Tag>
-            )}
-          </div>
-
-          <Tooltip title="Active">
-            <button
-              type="button"
-              className="iconButton mt-0 mt-md-2 mt-lg-0 ml-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                activeUserHandler(rec);
-              }}
-            >
-              <MdOutlineGroupAdd />
-            </button>
-          </Tooltip>
+        <div>
+          {rec?.strStatus === "Inactive" && (
+            <Tag color="red">{rec?.strStatus}</Tag>
+          )}
         </div>
       ),
-      width: 80,
+      width: 100,
+    },
+    {
+      title: "",
+      dataIndex: "strStatus",
+      align: "center",
+      render: (_: any, rec: any) => (
+        <Tooltip title="Active">
+          <button
+            type="button"
+            style={{ border: "none" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              activeUserHandler(rec);
+            }}
+          >
+            <UserAddOutlined />
+          </button>
+        </Tooltip>
+      ),
+      width: 30,
     },
   ];
   const searchFunc = debounce((value) => {
