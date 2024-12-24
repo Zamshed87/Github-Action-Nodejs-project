@@ -58,7 +58,7 @@ const ActiveInactiveEmployeeReport = () => {
   const landingApi = useApiRequest({});
   //   const debounce = useDebounce();
 
-  const [, setFilterList] = useState({});
+  const [filterList, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -134,6 +134,7 @@ const ActiveInactiveEmployeeReport = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
+    filerList,
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
@@ -142,16 +143,25 @@ const ActiveInactiveEmployeeReport = () => {
       urlKey: "GetInactiveEmployeeList",
       method: "GET",
       params: {
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        IsXls: false,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        PageNo: pagination.current || 1,
-        PageSize: pagination.pageSize || 25,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        WorkplaceId: values?.workplace?.value,
+        accountId: orgId,
+        businessUnitId: buId,
+        isXls: false,
+        workplaceGroupId: values?.workplaceGroup?.value,
+        pageNo: pagination.current || 1,
+        pageSize: pagination.pageSize || 25,
+        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        workplaceId: values?.workplace?.value,
         searchTxt: searchText,
+        isHeaderNeed: true,
+        departments:
+          filerList?.strDepartment?.length > 0
+            ? `${filerList?.strDepartment}`
+            : "",
+        designations:
+          filerList?.strDesignation?.length > 0
+            ? `${filerList?.strDesignation}`
+            : "",
       },
     });
   };
@@ -231,15 +241,23 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "Designation",
       dataIndex: "strDesignation",
-
-      width: 100,
+      // dataIndex: "designation",
+      // sorter: true,
+      filter: true,
+      filterKey: "strDesignationList",
+      filterSearch: true,
+      width: 130,
     },
 
     {
       title: "Department",
       dataIndex: "strDepartment",
-
-      width: 100,
+      // dataIndex: "department",
+      // sorter: true,
+      filter: true,
+      filterKey: "strDepartmentList",
+      filterSearch: true,
+      width: 130,
     },
     {
       title: "Section",
@@ -344,17 +362,27 @@ const ActiveInactiveEmployeeReport = () => {
                 try {
                   const values = form.getFieldsValue(true);
                   getExcelData(
-                    `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${
+                    `/Employee/GetInactiveEmployeeList?businessUnitId=${buId}&workplaceGroupId=${
                       values?.workplaceGroup?.value || wgId
-                    }&WorkplaceId=${
+                    }&workplaceId=${
                       values?.workplace?.value || wId
-                    }&IsXls=true&PageNo=1&PageSize=10000&FromDate=${moment(
+                    }&isXls=true&pageNo=1&pageSize=10000&fromDate=${moment(
                       values?.fromDate
-                    ).format("YYYY-MM-DD")}&ToDate=${moment(
+                    ).format("YYYY-MM-DD")}&toDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}`,
+                    ).format(
+                      "YYYY-MM-DD"
+                    )}&isXls=false&isHeaderNeed=true&departments=${
+                      (filterList as any)?.strDepartment?.length > 0
+                        ? (filterList as any)?.strDepartment
+                        : ""
+                    }&designations=${
+                      (filterList as any)?.strDesignation?.length > 0
+                        ? (filterList as any)?.strDesignation
+                        : ""
+                    }`,
                     (res: any) => {
-                      const newData = res?.data?.map(
+                      const newData = res?.datas?.map(
                         (item: any, index: any) => {
                           return {
                             ...item,
@@ -488,9 +516,10 @@ const ActiveInactiveEmployeeReport = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.data || []}
+            data={landingApi?.data?.datas || []}
             loading={landingApi?.loading}
             header={header}
+            filterData={landingApi?.data?.employeeHeader}
             pagination={{
               pageSize: landingApi?.data?.pageSize,
               total: landingApi?.data?.totalCount,
@@ -502,6 +531,7 @@ const ActiveInactiveEmployeeReport = () => {
 
               landingApiCall({
                 pagination,
+                filerList: filters,
               });
             }}
             // scroll={{ x: 2000 }}

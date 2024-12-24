@@ -32,7 +32,7 @@ const MgmtInOutReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId },
+    profileData: { buId, wId, wgId, employeeId, orgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -44,7 +44,7 @@ const MgmtInOutReport = () => {
 
   const landingApi = useApiRequest({});
 
-  const [, setFilterList] = useState({});
+  const [filterList, setFilterList] = useState({});
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -59,7 +59,7 @@ const MgmtInOutReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Need Confirmation";
+    document.title = "Invalid In/Out Report";
     () => {
       document.title = "PeopleDesk";
     };
@@ -120,25 +120,32 @@ const MgmtInOutReport = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
+    filerList,
+
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-
+    // /TimeSheetReport/TimeManagementDynamicPIVOTReport?
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
       params: {
-        ReportType: "InvalidInOutAttendanceData",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
-        PageNo: pagination.current || pages?.current,
-        PageSize: pagination.pageSize || pages?.pageSize,
-        IsPaginated: true,
-        DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
+        reportType: "InvalidInOutAttendanceData",
+        accountId: orgId,
+        businessUnitId: buId,
+        isHeaderNeed: true,
+        workplaceGroupId: values?.workplaceGroup?.value || wgId,
+        WorkplaceList: values?.workplace?.value || wId,
+        pageNo: pagination.current || pages?.current,
+        pageSize: pagination.pageSize || pages?.pageSize,
+        isPaginated: true,
+        dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        searchTxt: searchText,
+        departments:
+          filerList?.department?.length > 0 ? `${filerList?.department}` : "",
+        designations:
+          filerList?.designation?.length > 0 ? `${filerList?.designation}` : "",
       },
     });
   };
@@ -159,19 +166,19 @@ const MgmtInOutReport = () => {
 
     {
       title: "Employee Id",
-      dataIndex: "EmployeeId",
+      dataIndex: "employeeId",
       width: 30,
       fixed: "left",
     },
 
     {
       title: "Employee Name",
-      dataIndex: "EmployeeName",
+      dataIndex: "employeeName",
       render: (_: any, rec: any) => {
         return (
           <div className="d-flex align-items-center">
-            <Avatar title={rec?.EmployeeName} />
-            <span className="ml-2">{rec?.EmployeeName}</span>
+            <Avatar title={rec?.employeeName} />
+            <span className="ml-2">{rec?.employeeName}</span>
           </div>
         );
       },
@@ -181,38 +188,45 @@ const MgmtInOutReport = () => {
 
     {
       title: "Designation",
-      dataIndex: "Designation",
-
+      dataIndex: "designation",
+      sorter: true,
+      filter: true,
+      filterKey: "strDesignationList",
+      filterSearch: true,
       width: 50,
     },
     {
       title: "Department",
-      dataIndex: "Department",
-
+      dataIndex: "department",
+      sorter: true,
+      filter: true,
+      filterKey: "strDepartmentList",
+      filterSearch: true,
       width: 50,
     },
 
     {
       title: "Date",
-      dataIndex: "AttendanceDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.AttendanceDate),
+      dataIndex: "attendanceDate",
+      render: (_: any, rec: any) => dateFormatter(rec?.attendanceDate),
       width: 30,
     },
 
     {
       title: "Attendance Time",
-      dataIndex: "AttendanceTime",
+      dataIndex: "attendanceTime",
       width: 30,
     },
     {
       title: "Attendance Source",
-      dataIndex: "AttendanceSource",
+      dataIndex: "attendanceSource",
       width: 50,
     },
   ];
   const searchFunc = debounce((value) => {
     landingApiCall({
       searchText: value,
+      filerList: filterList,
     });
   }, 500);
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -286,7 +300,7 @@ const MgmtInOutReport = () => {
                   name="workplaceGroup"
                   label="Workplace Group"
                   placeholder="Workplace Group"
-                  disabled={+id ? true : false}
+                  // disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplaceGroup: op,
@@ -296,7 +310,7 @@ const MgmtInOutReport = () => {
                   }}
                   rules={
                     [
-                      //   { required: true, message: "Workplace Group is required" },
+                      // { required: true, message: "Workplace Group is required" },
                     ]
                   }
                 />
@@ -307,7 +321,7 @@ const MgmtInOutReport = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
-                  disabled={+id ? true : false}
+                  // disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,
@@ -329,14 +343,18 @@ const MgmtInOutReport = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
             pagination={{
               pageSize: pages?.pageSize,
-              total: landingApi?.data[0]?.totalCount,
+              total: landingApi?.data?.data?.[0]?.totalCount,
             }}
+            filterData={landingApi?.data?.employeeHeader}
             onChange={(pagination, filters, sorter, extra) => {
+              const values = form.getFieldsValue(true);
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
@@ -347,6 +365,8 @@ const MgmtInOutReport = () => {
               });
               landingApiCall({
                 pagination,
+                searchText: values?.search,
+                filerList: filters,
               });
             }}
           />

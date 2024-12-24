@@ -180,14 +180,14 @@ export const getTableDataConfirmation = (row, keys) => {
 // excel columns
 export const column = {
   sl: "SL",
-  EmployeeCode: "Code",
-  EmployeeName: "Employee Name",
+  employeeCode: "Code",
+  employeeName: "Employee Name",
   strEmploymentType: "Employment Type",
-  DepartmentName: "Department",
-  DesignationName: "Designation",
-  SupervisorName: "Supervisor",
-  JoiningDate: "Joining Date",
-  ServiceLength: "Service Length",
-  ConfirmationDate: "Confirmation Date",
+  departmentName: "Department",
+  designationName: "Designation",
+  supervisorName: "Supervisor",
+  joiningDate: "Joining Date",
+  serviceLength: "Service Length",
+  confirmationDate: "Confirmation Date",
   dteProbationaryCloseDate: "Probation Close Date",
 };
