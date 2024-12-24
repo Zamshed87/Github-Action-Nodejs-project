@@ -280,10 +280,10 @@ const TnDDashboard = () => {
     setNameOfTrainerOrg,
   ] = useAxiosGet();
   const landingApiCall = (values: any) => {
-    getSummaryCard(
-      `/Training/Dashboard/SummaryCard${formateFilterData(values)}`
-    );
-    getTrininingModeSummary("/Training/Dashboard/TrainingMode");
+    getSummaryCard(`/Dashboard/Training/Dashboard/SummaryCard`);
+
+    // ${formateFilterData(values)}
+    getTrininingModeSummary("/Dashboard/Training/Dashboard/TrainingMode");
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
