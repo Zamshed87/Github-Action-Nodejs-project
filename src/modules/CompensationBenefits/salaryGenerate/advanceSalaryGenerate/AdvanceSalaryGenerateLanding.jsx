@@ -471,7 +471,7 @@ const AdvanceSalaryGenerateLanding = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     history.push({
-                      pathname: `/compensationAndBenefits/payrollProcess/generateSalary/edit/${item?.intSalaryGenerateRequestId}`,
+                      pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/${item?.intSalaryGenerateRequestId}`,
                       state: item,
                     });
                   }}

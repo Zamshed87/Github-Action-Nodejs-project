@@ -26,14 +26,16 @@ export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
 export const createAdvSalaryGenerateRequest = async (
   payload,
   setLoading,
-  cb
+  cb,
+  isRegenerate = false
 ) => {
   setLoading && setLoading(true);
+  let api = `/AdvanceSalary/AdvanceSalaryGenerate`;
+  if (isRegenerate) {
+    api = `/AdvanceSalary/AdvanceSalaryReGenerate`;
+  }
   try {
-    const res = await axios.post(
-      `/Payroll/BulkAdvanceSalaryGenerate?fromDate=${payload?.fromDate}&toDate=${payload?.todate}`,
-      payload
-    );
+    const res = await axios.post(api, payload);
     cb && cb();
     toast.success(res.data?.[0].returnMessage || "Successfully");
     setLoading && setLoading(false);

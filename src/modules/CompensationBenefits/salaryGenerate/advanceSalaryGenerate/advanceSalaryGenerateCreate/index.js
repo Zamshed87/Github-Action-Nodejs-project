@@ -1,4 +1,3 @@
-// import axios from "axios";
 import MasterFilter from "common/MasterFilter";
 import MultiCheckedSelect from "common/MultiCheckedSelect";
 import { useFormik } from "formik";
@@ -220,7 +219,12 @@ const AdvanceSalaryGenerateCreate = () => {
     //   res?.data?.length > 0
     //     ? setOpen(true)
     //     :
-    createAdvSalaryGenerateRequest(payload, setLoading, callback);
+    createAdvSalaryGenerateRequest(
+      payload,
+      setLoading,
+      callback,
+      +params?.id ? true : false
+    );
     // }
   };
   const salaryGeneratepayloadHandler = (
@@ -323,7 +327,12 @@ const AdvanceSalaryGenerateCreate = () => {
       closeOnClickOutside: false,
       message: "Do you want to generate all employee salary?",
       yesAlertFunc: async () => {
-        createAdvSalaryGenerateRequest(payload, setLoading, callback);
+        createAdvSalaryGenerateRequest(
+          payload,
+          setLoading,
+          callback,
+          +params?.id ? true : false
+        );
       },
       noAlertFunc: () => {
         //
