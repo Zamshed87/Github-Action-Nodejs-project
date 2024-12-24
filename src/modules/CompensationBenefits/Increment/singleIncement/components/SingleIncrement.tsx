@@ -20,8 +20,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { todayDate } from "utility/todayDate";
-import { bankDetailsAction } from "modules/employeeProfile/aboutMe/helper";
-import { gray700 } from "utility/customColor";
+import { gray700, gray900 } from "utility/customColor";
 import { getEmployeeProfileViewData } from "modules/employeeProfile/employeeFeature/helper";
 import { getTransferAndPromotionHistoryById } from "../helper";
 import moment from "moment";
@@ -29,10 +28,13 @@ import IConfirmModal from "common/IConfirmModal";
 import Accordion from "../accordion";
 import { attachment_action } from "common/api";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { IconButton } from "@mui/material";
+import pdfIcon from "assets/images/pdfIcon.svg";
 
 import {
   AttachmentOutlined,
   FileUpload,
+  SaveAlt,
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
@@ -40,16 +42,26 @@ import { setOrganizationDDLFunc } from "modules/roleExtension/ExtensionCreate/he
 import HistoryTransferTable from "modules/employeeProfile/transferNPromotion/transferNPromotion/components/HistoryTransferTable";
 import Loading from "common/loading/Loading";
 import { Alert } from "@mui/material";
+import { useReactToPrint } from "react-to-print";
+import { dateFormatterReport } from "utility/dateFormatter";
+import { convert_number_to_word } from "utility/numberToWord";
 
 type TIncrement = unknown;
 const SingleIncrement: React.FC<TIncrement> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId, employeeId } = useSelector(
+  const { orgId, buId, wgId, wId, employeeId, buName, userName } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
-  const regex = /^[0-9]*\.?[0-9]*$/;
+  // const regex = /^[0-9]*\.?[0-9]*$/;
+  const contentRef = useRef<HTMLDivElement>(null);
 
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    pageStyle:
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: portrait ! important}}",
+    documentTitle: `Overtime Daily Report ${todayDate()}`,
+  });
   const location = useLocation();
   const { id }: any = useParams();
   const history = useHistory();
@@ -58,7 +70,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     shallowEqual
   );
   // States
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState<any[]>([]);
   const [transferRowDto, setTransferRowDtoRowDto] = useState<any[]>([]);
   const [slabDDL, setSlabDDL] = useState<any[]>([]);
@@ -1045,7 +1057,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             (acc: any, i: any) => acc + i?.amount,
             0
           );
-          console.log(employeeInfo?.data[0], "here");
+          // console.log(employeeInfo?.data[0], "here");
           form.setFieldsValue({
             grossAmount: newGross,
             basicAmount:
@@ -1395,7 +1407,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                     <p
                       style={{
                         color: gray700,
-                        fontSize: "12px",
+                        fontSize: "15px",
                         fontWeight: "400",
                       }}
                     >
@@ -2118,7 +2130,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                           form.setFieldsValue({
                             orgType: op,
                           });
-                          console.log({ op });
+                          // console.log({ op });
                           setOrganizationDDLFunc(
                             orgId,
                             wgId,
@@ -2230,7 +2242,54 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             }}
           </Form.Item>
         </Row>
-        <Row gutter={[10, 2]} className="mb-3"></Row>
+        <Row gutter={[10, 2]} className="mb-3">
+          {(location?.state as any)?.singleData?.incrementList[0]?.strStatus ===
+            "Approved By Admin" && (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                reactToPrintFn();
+              }}
+              style={{
+                height: "32px",
+                width: "199px",
+                boxSizing: "border-box",
+                border: " 1px solid #EAECF0",
+                borderRadius: "4px",
+              }}
+              className="d-flex justify-content-between align-items-center"
+            >
+              <div className="d-flex justify-content-center align-items-center">
+                <div>
+                  <img
+                    className="pb-1"
+                    style={{ width: "23px", height: "23px" }}
+                    src={pdfIcon}
+                    alt=""
+                  />
+                </div>
+                <p
+                  style={{
+                    color: "#344054",
+                    fontSize: "12px",
+                    fontWeight: 400,
+                  }}
+                  className="pl-2"
+                >
+                  Increment Letter
+                </p>
+              </div>
+              <div>
+                <SaveAlt
+                  sx={{
+                    color: gray900,
+                    fontSize: "16px",
+                  }}
+                />
+              </div>
+            </IconButton>
+          )}
+        </Row>
 
         {/* calculation rows */}
         <Row className="mb-2">
@@ -2333,7 +2392,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                             ? value % getById?.data?.incrementSlabCount
                             : 0;
                         const actualSlab = value - efficiency;
-                        console.log({ actualSlab, efficiency });
+                        // console.log({ actualSlab, efficiency });
                         temp[0].numAmount =
                           (temp[0].baseAmount ||
                             getById?.data?.payScaleElements[0]?.netAmount) +
@@ -2429,6 +2488,135 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           <NoResult title="No Result Found" para="" />
         )}
       </PCard>
+      <div className="d-none">
+        {console.log(employeeInfo?.data) as any}
+        {/* {
+          console.log(
+            (location?.state as any)?.singleData?.incrementList[0]
+          ) as any
+        } */}
+        <div
+          ref={contentRef}
+          style={{
+            fontFamily: "Arial, sans-serif",
+            padding: "20px",
+            margin: "150px 0",
+          }}
+        >
+          <h2 style={{ fontSize: "16px" }} className="my-2">
+            Congratulations!
+          </h2>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
+            In recognition of your previous performance, we are glad to inform
+            you that the {buName} (
+            {
+              (empBasic as any)?.employeeProfileLandingView
+                ?.strWorkplaceGroupName
+            }
+            ) Management has decided to give you an increment of{" "}
+            <strong>
+              {employeeIncrementByIdApi?.data?.incrementAmount} BDT
+            </strong>{" "}
+            and add the monthly cash allowance of <strong>{34} BDT</strong> to
+            your monthly salary. Both these changes will be effective from{" "}
+            <strong>
+              {dateFormatterReport(
+                employeeIncrementByIdApi?.data?.effectiveDate
+              )}
+            </strong>
+            . Your revised monthly salary breakdown is as follows:
+          </p>
+          {/* <h3>Your revised monthly salary breakdown is as follows:</h3> */}
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              margin: "50px auto 5px auto",
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={{ border: "1px solid black", padding: "5px" }}>
+                  Salary Components
+                </th>
+                <th
+                  style={{
+                    border: "1px solid black",
+                    padding: "5px",
+                    textAlign: "right",
+                  }}
+                >
+                  Amount (BDT)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rowDto.map((item, index) => (
+                <tr key={index}>
+                  <td style={{ border: "1px solid black", padding: "5px" }}>
+                    {item.strPayrollElementName}
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "5px",
+                      textAlign: "right",
+                    }}
+                  >
+                    {item.amount}
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td style={{ border: "1px solid black", padding: "5px" }}>
+                  <strong>Total Gross Salary</strong>
+                </td>
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "5px",
+                    textAlign: "right",
+                  }}
+                >
+                  <strong>{form.getFieldsValue(true).grossAmount}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="mb-2" style={{ fontSize: "16px", lineHeight: "1.5" }}>
+            In Words:{" "}
+            <strong>
+              {convert_number_to_word(form.getFieldsValue(true).grossAmount)}
+            </strong>
+          </p>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
+            We appreciate your contribution and excellent work over the last
+            year. Thank you for your agility and focus on delivering business
+            results and taking{" "}
+            {
+              (empBasic as any)?.employeeProfileLandingView
+                ?.strWorkplaceGroupName
+            }{" "}
+            forward.
+          </p>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }} className="my-2">
+            With best wishes,
+          </p>
+          <p
+            className="mt-5"
+            style={{
+              width: "20%",
+              borderBottom: "1px solid #000",
+            }}
+          ></p>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }} className="mt-2">
+            {userName}
+          </p>
+
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{userName}</p>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{buName}</p>
+        </div>
+      </div>
     </PForm>
   ) : (
     <NotPermittedPage />
