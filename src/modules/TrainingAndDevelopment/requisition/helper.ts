@@ -1,5 +1,6 @@
 import { FormInstance } from "antd";
 import axios from "axios";
+import moment from "moment";
 import { SetStateAction } from "react";
 import { toast } from "react-toastify";
 
@@ -124,6 +125,10 @@ export const onUpdateTrainingRequisition = async (
   } finally {
     setLoading(false);
   }
+};
+
+export const formatDate = (date: string) => {
+  return moment(date).format("YYYY-MM-DD");
 };
 
 export const data: any[] = [

@@ -20,7 +20,7 @@ import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { data, ViewTrainingRequistion } from "./helper";
+import { data, formatDate, ViewTrainingRequistion } from "./helper";
 
 import { PModal } from "Components/Modal";
 import RequisitionView from "./requisitionView";
@@ -171,10 +171,6 @@ const TnDRequisitionLanding = () => {
     },
   ];
   const landingApiCall = (values: any) => {
-    const formatDate = (date: string) => {
-      return moment(date).format("YYYY-MM-DD");
-    };
-
     let fromDate = values?.fromDate;
     let toDate = values?.toDate;
 

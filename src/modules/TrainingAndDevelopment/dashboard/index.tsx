@@ -31,6 +31,7 @@ import {
 } from "@ant-design/icons";
 import { BarChartOutlined, PieChartOutlined } from "@mui/icons-material";
 import { PModal } from "Components/Modal";
+import { formatDate } from "../requisition/helper";
 
 const { Title } = Typography;
 
@@ -279,7 +280,9 @@ const TnDDashboard = () => {
     setNameOfTrainerOrg,
   ] = useAxiosGet();
   const landingApiCall = (values: any) => {
-    getSummaryCard("/Training/Dashboard/SummaryCard");
+    getSummaryCard(
+      `/Training/Dashboard/SummaryCard${formateFilterData(values)}`
+    );
     getTrininingModeSummary("/Training/Dashboard/TrainingMode");
   };
   useEffect(() => {
@@ -291,6 +294,23 @@ const TnDDashboard = () => {
     );
     landingApiCall({});
   }, []);
+
+  const formateFilterData = (data: any) => {
+    let str = "";
+    str += `?fromDate=${formatDate(data?.fromDate)}&toDate=${formatDate(
+      data?.toDate
+    )}&BusinessUnitIds=${data?.businessUnit?.value}&DepartmentIds=${
+      data?.department?.value
+    }&DesignationIds=${
+      data?.designation?.value
+    }&TrainingTypeIds=${data?.trainingType
+      ?.map((item: any) => item?.value)
+      .join(",")}&TrainerIds=${data?.nameofTrainerOrganization
+      ?.map((item: any) => item?.value)
+      .join(",")}`;
+
+    return str;
+  };
   const typeDataSetForTrainerOrg = (data: any) => {
     const list: any[] = [];
     data?.map((d: any) => {
