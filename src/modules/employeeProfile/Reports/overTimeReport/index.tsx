@@ -153,7 +153,7 @@ const EmOverTimeReport = () => {
         IsPaginated: true,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchText: searchText,
+        SearchText: searchText || "",
       },
     });
   };
@@ -433,6 +433,7 @@ const EmOverTimeReport = () => {
               });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}

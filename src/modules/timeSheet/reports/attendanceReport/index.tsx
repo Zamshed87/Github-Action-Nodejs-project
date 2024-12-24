@@ -134,7 +134,6 @@ const AttendanceReport = () => {
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
     filerList,
-
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
@@ -658,8 +657,8 @@ const AttendanceReport = () => {
 
               landingApiCall({
                 pagination,
-                searchText: values?.search,
                 filerList: filters,
+                searchText: values?.search,
               });
             }}
             scroll={{ x: 2000 }}

@@ -148,7 +148,7 @@ const JobConfirmationReport = () => {
         intStatusId: 2,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         WorkplaceId: values?.workplace?.value,
-        searchTxt: searchText,
+        searchTxt: searchText || "",
         // isXls: false,
         // isHeaderNeed: true,
         departments:
@@ -516,6 +516,7 @@ const JobConfirmationReport = () => {
               landingApiCall({
                 pagination,
                 filerList: filters,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 1500 }}
