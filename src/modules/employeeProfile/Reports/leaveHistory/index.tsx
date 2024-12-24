@@ -1,6 +1,4 @@
 import {
-  Avatar,
-  DataTable,
   PButton,
   PCard,
   PCardBody,
@@ -11,10 +9,8 @@ import {
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tooltip } from "antd";
-import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -22,14 +18,7 @@ import { debounce } from "lodash";
 import DownloadIcon from "@mui/icons-material/Download";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
-import { column, hasLeave } from "./helper";
 import { yearDDLAction } from "utility/yearDDL";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { getCurrentMonthName } from "utility/monthIdToMonthName";
-import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
-import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
-import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
 const EmLeaveHistory = () => {
