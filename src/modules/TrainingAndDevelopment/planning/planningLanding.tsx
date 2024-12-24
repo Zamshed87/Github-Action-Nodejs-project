@@ -172,6 +172,7 @@ const TnDPlanningLanding = () => {
           )}
           {status?.label === "Ongoing" && (
             <Tag
+              style={{ borderRadius: "50px" }}
               icon={<SyncOutlined style={{ paddingTop: "1px" }} spin />}
               color="processing"
             >
@@ -179,12 +180,20 @@ const TnDPlanningLanding = () => {
             </Tag>
           )}
           {status?.label === "Completed" && (
-            <Tag icon={<CheckCircleOutlined />} color="success">
+            <Tag
+              icon={<CheckCircleOutlined />}
+              color="success"
+              style={{ borderRadius: "50px" }}
+            >
               Completed
             </Tag>
           )}
           {status?.label === "Canceled" && (
-            <Tag icon={<CloseCircleOutlined />} color="magenta">
+            <Tag
+              icon={<CloseCircleOutlined />}
+              color="magenta"
+              style={{ borderRadius: "50px" }}
+            >
               Canceled
             </Tag>
           )}

@@ -103,23 +103,28 @@ const TnDInventory = () => {
       title: "Action",
       dataIndex: "status",
       render: (_: any, rec: any) => (
-        <Space size="middle">
-          <Tooltip placement="bottom" title="Training Details">
-            <Button
-              type="link"
-              onClick={() => {
-                history.push(
-                  `/trainingAndDevelopment/reports/trainingInventory/details`,
-                  {
-                    data: rec,
-                  }
-                );
-              }}
-            >
-              Details
-            </Button>
-          </Tooltip>
-        </Space>
+        <div>
+          <button
+            style={{
+              height: "24px",
+              fontSize: "12px",
+              padding: "0px 12px 0px 12px",
+            }}
+            className="btn btn-default"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              history.push(
+                `/trainingAndDevelopment/reports/trainingInventory/details`,
+                {
+                  data: rec,
+                }
+              );
+            }}
+          >
+            Details
+          </button>
+        </div>
       ),
       align: "center",
       width: 40,
