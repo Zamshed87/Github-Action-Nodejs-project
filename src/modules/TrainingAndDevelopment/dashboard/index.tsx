@@ -296,21 +296,32 @@ const TnDDashboard = () => {
   }, []);
 
   const formateFilterData = (data: any) => {
-    let str = "";
-    str += `?fromDate=${formatDate(data?.fromDate)}&toDate=${formatDate(
-      data?.toDate
-    )}&BusinessUnitIds=${data?.businessUnit?.value}&DepartmentIds=${
-      data?.department?.value
-    }&DesignationIds=${
-      data?.designation?.value
-    }&TrainingTypeIds=${data?.trainingType
-      ?.map((item: any) => item?.value)
-      .join(",")}&TrainerIds=${data?.nameofTrainerOrganization
-      ?.map((item: any) => item?.value)
-      .join(",")}`;
+    let str = "?";
+
+    // Add single value parameters
+    str += `fromDate=${formatDate(data?.fromDate)}`;
+    str += `&toDate=${formatDate(data?.toDate)}`;
+    str += `&BusinessUnitIds=${data?.businessUnit?.value}`;
+    str += `&DepartmentIds=${data?.department?.value}`;
+    str += `&DesignationIds=${data?.designation?.value}`;
+
+    // Add repeated parameters for training types
+    if (data?.trainingType?.length) {
+      data.trainingType.forEach((item: any) => {
+        str += `&TrainingTypeIds=${item?.value}`;
+      });
+    }
+
+    // Add repeated parameters for trainers
+    if (data?.nameofTrainerOrganization?.length) {
+      data.nameofTrainerOrganization.forEach((item: any) => {
+        str += `&TrainerIds=${item?.value}`;
+      });
+    }
 
     return str;
   };
+
   const typeDataSetForTrainerOrg = (data: any) => {
     const list: any[] = [];
     data?.map((d: any) => {

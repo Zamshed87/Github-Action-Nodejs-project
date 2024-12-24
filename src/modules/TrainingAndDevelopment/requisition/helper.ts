@@ -131,6 +131,31 @@ export const formatDate = (date: string) => {
   return moment(date).format("YYYY-MM-DD");
 };
 
+export function getAdjustedDates() {
+  const today = new Date();
+
+  // Set fromDate to one month back
+  const fromDate = new Date(today);
+  fromDate.setMonth(today.getMonth() - 1);
+
+  // Set toDate to one month forward
+  const toDate = new Date(today);
+  toDate.setMonth(today.getMonth() + 1);
+
+  // Format dates to YYYY-MM-DD
+  const formatDate = (date: any) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  return {
+    fromDate: formatDate(fromDate),
+    toDate: formatDate(toDate),
+  };
+}
+
 export const data: any[] = [
   {
     requestor: "John Doe",

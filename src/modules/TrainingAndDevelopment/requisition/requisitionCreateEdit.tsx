@@ -16,6 +16,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import {
   createTrainingRequisition,
+  getAdjustedDates,
   onUpdateTrainingRequisition,
   requisitionStatus,
 } from "./helper";
@@ -87,16 +88,9 @@ const TnDRequisitionCreateEdit = () => {
       });
       setTrainingType(list);
     });
+    const { fromDate, toDate } = getAdjustedDates();
     getUpcommingTrainingDDL(
-      "/Training/Training/GetAllTraining?fromDate=2020-10-19&toDate=2025-12-19",
-      (data: any) => {
-        const list: any = [];
-        data?.map((d: any) => {
-          if (d?.status?.value == 1 || d?.status?.value == 0)
-            list.push({ label: d?.trainingTitleName, value: d?.id });
-        });
-        setUpcommingTraining(list);
-      }
+      `/TrainingRequisition/Training/TrainingRequisition/UpComming?status=0,1&fromDate=${fromDate}&toDate=${toDate}`
     );
     getEnumData("RequisitionStatus", setReqStatus);
     if (type === "edit" && data?.status?.value == 2) {
