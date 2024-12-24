@@ -792,6 +792,7 @@ const MgmtDailyAttendance = () => {
               landingApiCall({
                 pagination,
                 filerList: filters,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}

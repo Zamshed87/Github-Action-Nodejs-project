@@ -152,7 +152,7 @@ const ActiveInactiveEmployeeReport = () => {
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         workplaceId: values?.workplace?.value,
-        searchTxt: searchText,
+        searchTxt: searchText || "",
         isHeaderNeed: true,
         departments:
           filerList?.strDepartment?.length > 0
@@ -532,6 +532,7 @@ const ActiveInactiveEmployeeReport = () => {
               landingApiCall({
                 pagination,
                 filerList: filters,
+                searchText: form.getFieldValue("search"),
               });
             }}
             // scroll={{ x: 2000 }}
