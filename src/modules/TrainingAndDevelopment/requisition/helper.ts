@@ -104,6 +104,7 @@ export const onUpdateTrainingRequisition = async (
       objectivesToAchieve: values?.objectivesToAchieve || "",
       remarks: values?.remarks || "",
       statusId: values?.requisitionStatus?.value || "",
+      isActive: true,
       upcommingTrainingId: values?.upcommingTraining?.value || 1, // need to check
       comments: values?.comments || "",
     };
