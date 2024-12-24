@@ -761,7 +761,9 @@ const SalaryPayslipReport = lazy(() =>
   import("../modules/CompensationBenefits/SalaryPayslipReport/index.jsx")
 );
 const MultiSalaryPayslipReport = lazy(() =>
-  import("../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx")
+  import(
+    "../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx"
+  )
 );
 const SalaryTaxCertificate = lazy(() =>
   import("../modules/CompensationBenefits/salaryTaxCertificate/index.jsx")
@@ -1545,6 +1547,8 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/AdvanceSalaryGenerateLanding";
+import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2695,6 +2699,18 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/payrollProcess/generateSalary",
     component: SalaryGenerateLanding,
+  },
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate",
+    component: AdvanceSalaryGenerateLanding,
+  },
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/create",
+    component: AdvanceSalaryGenerateCreate,
+  },
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/:id",
+    component: AdvanceSalaryGenerateLanding,
   },
   {
     path: "/compensationAndBenefits/payrollProcess/arearSalaryGenerate/view/:id",
