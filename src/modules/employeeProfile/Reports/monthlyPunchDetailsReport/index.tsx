@@ -202,7 +202,7 @@ const MonthlyPunchReportDetails = () => {
         isPaginated: true,
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        searchTxt: searchText,
+        searchTxt: searchText || "",
         departments: values?.department?.length > 0 ? deptList : "",
         designations: values?.designation?.length > 0 ? desigList : "",
       },
@@ -552,6 +552,7 @@ const MonthlyPunchReportDetails = () => {
               });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}

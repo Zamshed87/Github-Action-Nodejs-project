@@ -121,7 +121,6 @@ const MgmtInOutReport = () => {
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
     filerList,
-
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
@@ -141,7 +140,7 @@ const MgmtInOutReport = () => {
         isPaginated: true,
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        searchTxt: searchText,
+        searchTxt: searchText || "",
         departments:
           filerList?.department?.length > 0 ? `${filerList?.department}` : "",
         designations:
@@ -365,8 +364,8 @@ const MgmtInOutReport = () => {
               });
               landingApiCall({
                 pagination,
-                searchText: values?.search,
                 filerList: filters,
+                searchText: values?.search,
               });
             }}
           />
