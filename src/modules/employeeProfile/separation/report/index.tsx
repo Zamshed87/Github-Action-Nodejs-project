@@ -150,7 +150,7 @@ const SeparationReport = () => {
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        searchTxt: searchText,
+        searchTxt: searchText || "",
         IsForXl: false,
       },
     });
@@ -503,6 +503,7 @@ const SeparationReport = () => {
 
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}

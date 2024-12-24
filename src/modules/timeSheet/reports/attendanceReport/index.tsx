@@ -13,7 +13,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Typography } from "antd";
+import { Col, Form, message, Row, Typography } from "antd";
 import { getWorkplaceDetails } from "../../../../common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -35,6 +35,7 @@ import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { column } from "./helper";
 import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
+import axios from "axios";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const AttendanceReport = () => {
   const landingApi = useApiRequest({});
   //   const debounce = useDebounce();
 
-  const [, setFilterList] = useState({});
+  const [filterList, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [pages] = useState({
@@ -132,6 +133,7 @@ const AttendanceReport = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
+    filerList,
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
@@ -140,24 +142,52 @@ const AttendanceReport = () => {
       ?.map((item: any) => item?.intWorkplaceId)
       .join(",");
 
+    // landingApi.action({
+    //   urlKey: "GetEmpAttendanceReport",
+    //   method: "GET",
+    //   params: {
+    //     AccountId: orgId,
+    //     IntBusinessUnitId: buId,
+    //     IsXls: false,
+    //     IsPaginated: true,
+
+    //     IntWorkplaceGroupId: values?.workplaceGroup?.value,
+    //     // IntWorkplaceId: values?.workplace?.value,
+    //     WorkplaceList: workplaceList?.length > 0 ? `${workplaceList}` : "",
+    //     PageNo: pagination.current || 1,
+    //     PageSize: pagination.pageSize || 25,
+    //     FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+    //     ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+    //     SearchTxt: searchText,
+    //   },
+    // });
+    const payload = {
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+
+      workplaceList: workplaceList?.length > 0 ? `${workplaceList}` : wId,
+      pageNo: pagination?.current || 1,
+      pageSize: pagination?.pageSize || 25,
+      isPaginated: true,
+      isXls: false,
+      isHeaderNeed: true,
+      searchTxt: searchText || "",
+      fromDate: values?.fromDate
+        ? moment(values?.fromDate).format("YYYY-MM-DD")
+        : null,
+      toDate: values?.toDate
+        ? moment(values?.toDate).format("YYYY-MM-DD")
+        : null,
+
+      departments:
+        filerList?.department?.length > 0 ? `${filerList?.department}` : "",
+      designations:
+        filerList?.designation?.length > 0 ? `${filerList?.designation}` : "",
+    };
     landingApi.action({
       urlKey: "GetEmpAttendanceReport",
-      method: "GET",
-      params: {
-        AccountId: orgId,
-        IntBusinessUnitId: buId,
-        IsXls: false,
-        IsPaginated: true,
-
-        IntWorkplaceGroupId: values?.workplaceGroup?.value,
-        // IntWorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList?.length > 0 ? `${workplaceList}` : "",
-        PageNo: pagination.current || 1,
-        PageSize: pagination.pageSize || 25,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
-      },
+      method: "get",
+      params: payload,
     });
   };
 
@@ -214,15 +244,21 @@ const AttendanceReport = () => {
     {
       title: "Designation",
       dataIndex: "designation",
-
-      width: 100,
+      sorter: true,
+      filter: true,
+      filterKey: "strDesignationList",
+      filterSearch: true,
+      width: 120,
     },
 
     {
       title: "Department",
       dataIndex: "department",
-
-      width: 100,
+      sorter: true,
+      filter: true,
+      filterKey: "strDepartmentList",
+      filterSearch: true,
+      width: 120,
     },
     {
       title: "Section",
@@ -311,10 +347,16 @@ const AttendanceReport = () => {
       dataIndex: "holiday",
       width: 80,
     },
+    {
+      title: "Single Punch Count",
+      dataIndex: "totalSinglePunchDays",
+      width: 120,
+    },
   ];
   const searchFunc = debounce((value) => {
     landingApiCall({
       searchText: value,
+      filerList: filterList,
     });
   }, 500);
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -350,7 +392,7 @@ const AttendanceReport = () => {
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            exportIcon={true}
+            exportIcon={landingApi?.data?.totalCount > 0 ? true : false}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
@@ -363,50 +405,90 @@ const AttendanceReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+                  const workplaceList = values?.workplace
+                    ?.map((item: any) => item?.intWorkplaceId)
+                    .join(",");
 
-                  const newData = landingApi?.data?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    }
+                  const payload = {
+                    intBusinessUnitId: buId,
+                    intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
+
+                    workplaceList:
+                      workplaceList?.length > 0 ? `${workplaceList}` : 0,
+                    pageNo: 0,
+                    pageSize: 0,
+                    isPaginated: true,
+                    isXls: false,
+                    isHeaderNeed: true,
+                    searchTxt: values?.search || "",
+                    fromDate: values?.fromDate
+                      ? moment(values?.fromDate).format("YYYY-MM-DD")
+                      : null,
+                    toDate: values?.toDate
+                      ? moment(values?.toDate).format("YYYY-MM-DD")
+                      : null,
+
+                    departments:
+                      (filterList as any)?.department?.length > 0
+                        ? `${(filterList as any)?.department}`
+                        : [],
+                    designations:
+                      (filterList as any)?.designation?.length > 0
+                        ? `${(filterList as any)?.designation}`
+                        : [],
+                  };
+                  const res = await axios.get(
+                    `/TimeSheetReport/GetEmpAttendanceReport?intBusinessUnitId=${buId}&intWorkplaceGroupId=${payload.intWorkplaceGroupId}&workplaceList=${payload.workplaceList}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&isXls=true&pageNo=${payload.pageNo}&pageSize=${payload.pageSize}&searchTxt=${payload.searchTxt}&isHeaderNeed=true&departments=${payload.departments}&designations=${payload.designations}`
                   );
-                  createCommonExcelFile({
-                    titleWithDate: `Employees Attendance Report ${getCurrentMonthName()}-${currentYear()}`,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataInactiveEmployees(
-                        newData,
-                        Object.keys(column)
-                      ),
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      C: 30,
-                      D: 30,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 25,
-                      I: 25,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
+                  if (res?.data) {
+                    if (!res?.data?.data?.length) {
+                      setExcelLoading(false);
+                      return message.error("No Employee Data Found");
+                    }
+                    const newData = res?.data?.data?.map(
+                      (item: any, index: any) => {
+                        return {
+                          ...item,
+                          sl: index + 1,
+                        };
+                      }
+                    );
+                    createCommonExcelFile({
+                      titleWithDate: `Employees Attendance Report ${getCurrentMonthName()}-${currentYear()}`,
+                      fromDate: "",
+                      toDate: "",
+                      buAddress: (buDetails as any)?.strAddress,
+                      businessUnit: values?.workplaceGroup?.value
+                        ? (buDetails as any)?.strWorkplace
+                        : buName,
+                      tableHeader: column,
+                      getTableData: () =>
+                        getTableDataInactiveEmployees(
+                          newData,
+                          Object.keys(column)
+                        ),
+                      getSubTableData: () => {},
+                      subHeaderInfoArr: [],
+                      subHeaderColumn: [],
+                      tableFooter: [],
+                      extraInfo: {},
+                      tableHeadFontSize: 10,
+                      widthList: {
+                        C: 30,
+                        D: 30,
+                        E: 25,
+                        F: 20,
+                        G: 25,
+                        H: 25,
+                        I: 25,
+                        K: 20,
+                      },
+                      commonCellRange: "A1:J1",
+                      CellAlignment: "left",
+                    });
 
-                  setExcelLoading(false);
+                    setExcelLoading(false);
+                  }
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
@@ -463,7 +545,7 @@ const AttendanceReport = () => {
                   }}
                   rules={
                     [
-                      //   { required: true, message: "Workplace Group is required" },
+                      // { required: true, message: "Workplace Group is required" },
                     ]
                   }
                 />
@@ -566,6 +648,7 @@ const AttendanceReport = () => {
               pageSize: landingApi?.data?.pageSize,
               total: landingApi?.data?.totalCount,
             }}
+            filterData={landingApi?.data?.employeeHeader}
             onChange={(pagination, filters, sorter, extra) => {
               const values = form.getFieldsValue(true);
               // Return if sort function is called
@@ -574,7 +657,8 @@ const AttendanceReport = () => {
 
               landingApiCall({
                 pagination,
-                searchText: values?.search
+                filerList: filters,
+                searchText: values?.search,
               });
             }}
             scroll={{ x: 2000 }}

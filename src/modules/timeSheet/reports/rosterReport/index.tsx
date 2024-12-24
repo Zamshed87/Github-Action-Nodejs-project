@@ -153,7 +153,7 @@ const RosterReport = () => {
         IsPaginated: true,
         DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
+        SearchTxt: searchText || "",
       },
     });
   };
@@ -477,6 +477,7 @@ const RosterReport = () => {
               });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}
