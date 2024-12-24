@@ -282,5 +282,6 @@ export const apiList = {
   JobTerritory: "/JobTerritory",
   JobTerritories: "/PeopleDeskDdl/JobTerritories",
   JobLocations: "/PeopleDeskDdl/JobLocations",
+  GetBanglaPaysilp: "SalaryReport/GetBanglaPaysilp",
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
 };

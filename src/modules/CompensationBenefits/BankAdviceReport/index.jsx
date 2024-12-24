@@ -908,11 +908,6 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 2,
-                              });
-                            }
                             const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
@@ -936,11 +931,6 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 3,
-                              });
-                            }
                             if (orgId === 4) {
                               reactToPrintFn();
                             } else {
