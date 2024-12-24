@@ -245,47 +245,27 @@ const lineConfig = {
   color: "#ff4d4f",
 };
 
-const statisticsData = [
-  {
-    key: "1",
-    title: "Total Attendance Count",
-    value: "Info.",
-  },
-  {
-    key: "2",
-    title: "Total Training Cost",
-    value: "Info.",
-  },
-  {
-    key: "3",
-    title: "Cost Per Participant",
-    value: "Info.",
-  },
-  {
-    key: "4",
-    title: "Actual Cost Per Hour",
-    value: "Info.",
-  },
-];
-
-const statisticsColumns = [
-  {
-    title: "Statistic",
-    dataIndex: "title",
-    key: "title",
-  },
-  {
-    title: "Value",
-    dataIndex: "value",
-    key: "value",
-  },
-];
-
 const TnDDashboard = () => {
   const dispatch = useDispatch();
 
-  const [landingApi, getLandingApi, landingLoading, , landingError] =
+  const [summaryCard, getSummaryCard, summaryCardLoading, , summaryCardError] =
     useAxiosGet();
+  const [
+    trininingModeSummary,
+    getTrininingModeSummary,
+    trininingModeSummaryLoading,
+    ,
+    trininingModeSummaryError,
+  ] = useAxiosGet();
+
+  const [
+    upcommingTrainingSummary,
+    getUpcommingTrainingSummary,
+    upcommingTrainingSummaryLoading,
+    ,
+    upcommingTrainingSummaryError,
+  ] = useAxiosGet();
+
   const [
     trainingTypeDDL,
     getTrainingTypeDDL,
@@ -299,7 +279,8 @@ const TnDDashboard = () => {
     setNameOfTrainerOrg,
   ] = useAxiosGet();
   const landingApiCall = (values: any) => {
-    getLandingApi("/Training/Training/GetAllTraining");
+    getSummaryCard("/Training/Dashboard/SummaryCard");
+    getTrininingModeSummary("/Training/Dashboard/TrainingMode");
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
@@ -523,13 +504,16 @@ const TnDDashboard = () => {
               form={form}
               isDepartment={true}
               isDesignation={true}
-              col={12}
+              col={24}
+              // mode="multiple"
             />
-            <Col md={12} sm={12} xs={24}>
+            <Col md={24} sm={12} xs={24}>
               <PSelect
                 options={trainingTypeDDL || []}
                 name="trainingType"
                 label={"Training Type"}
+                mode="multiple"
+                showSearch
                 placeholder="Training Type"
                 onChange={(value, op) => {
                   form.setFieldsValue({
@@ -544,11 +528,13 @@ const TnDDashboard = () => {
                 // ]}
               />
             </Col>
-            <Col md={12} sm={12} xs={24}>
+            <Col md={24} sm={12} xs={24}>
               <PSelect
                 options={nameOfTrainerOrgDDL || []}
                 name="nameofTrainerOrganization"
                 label="Name of Trainer & Organization"
+                mode="multiple"
+                showSearch
                 placeholder="Name of Trainer & Organization"
                 onChange={(value, op) => {
                   console.log(op);
@@ -575,7 +561,8 @@ const TnDDashboard = () => {
                   form
                     .validateFields()
                     .then(() => {
-                      // landingApiCall(values);
+                      console.log(values);
+                      landingApiCall(values);
                     })
                     .catch(() => {});
                 }}
@@ -749,14 +736,14 @@ const TnDDashboard = () => {
       <Card title="Upcoming Training">
         <DataTable
           bordered
-          data={landingApi || []}
-          loading={landingLoading}
+          data={upcommingTrainingSummary || []}
+          loading={upcommingTrainingSummary}
           header={header}
           pagination={{
-            pageSize: landingApi?.data?.pageSize,
-            total: landingApi?.data?.totalCount,
+            pageSize: upcommingTrainingSummary?.data?.pageSize,
+            total: upcommingTrainingSummary?.data?.totalCount,
           }}
-          filterData={landingApi?.data?.filters}
+          filterData={upcommingTrainingSummary?.data?.filters}
           // onChange={(pagination, filters) => {
           //   landingApiCall({});
           // }}

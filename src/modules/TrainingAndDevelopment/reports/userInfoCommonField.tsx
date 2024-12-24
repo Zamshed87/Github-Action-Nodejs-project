@@ -9,11 +9,13 @@ const UserInfoCommonField = ({
   isDepartment,
   isDesignation,
   col,
+  mode = undefined,
 }: {
   form: any;
   isDepartment?: boolean;
   isDesignation?: boolean;
   col?: number;
+  mode?: string | undefined;
 }) => {
   const dispatch = useDispatch();
   const { permissionList, profileData } = useSelector(
@@ -140,6 +142,7 @@ const UserInfoCommonField = ({
           options={getBUnitDDL?.data?.length > 0 ? getBUnitDDL?.data : []}
           name="bUnit"
           label="Business Unit"
+          mode={mode as "multiple" | undefined | "tags"}
           showSearch
           filterOption={true}
           placeholder="Business Unit"
@@ -157,6 +160,8 @@ const UserInfoCommonField = ({
           name="workplaceGroup"
           label="Workplace Group"
           placeholder="Workplace Group"
+          mode={mode as "multiple" | undefined | "tags"}
+          showSearch
           onChange={(value, op) => {
             form.setFieldsValue({
               workplaceGroup: op,
@@ -173,7 +178,8 @@ const UserInfoCommonField = ({
           name="workplace"
           label="Workplace"
           placeholder="Workplace"
-          // disabled={+id ? true : false}
+          mode={mode as "multiple" | undefined | "tags"}
+          showSearch
           onChange={(value, op) => {
             form.setFieldsValue({
               workplace: op,
@@ -196,7 +202,8 @@ const UserInfoCommonField = ({
             options={empDepartmentDDL?.data || []}
             name="department"
             label="Department"
-            // disabled={!workplace}
+            mode={mode as "multiple" | undefined | "tags"}
+            showSearch
             placeholder="Department"
             onChange={(value, op) => {
               form.setFieldsValue({
@@ -218,6 +225,8 @@ const UserInfoCommonField = ({
             options={designationApi?.data || []}
             name="designation"
             label="Designation"
+            mode={mode as "multiple" | undefined | "tags"}
+            showSearch
             onChange={(value, op) => {
               form.setFieldsValue({
                 designation: op,
