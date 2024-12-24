@@ -163,7 +163,7 @@ const EmployeesShift = () => {
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(values?.todate).format("YYYY-MM-DD"),
         WorkplaceId: values?.workplace?.value,
-        searchTxt: searchText,
+        searchTxt: searchText || "",
       },
     });
   };
@@ -613,6 +613,7 @@ const EmployeesShift = () => {
 
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             // scroll={{ x: 2000 }}

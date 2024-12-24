@@ -176,7 +176,7 @@ const ContactClosingReport = () => {
         IsPaginated: true,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
-        searchTxt: searchText,
+        searchTxt: searchText || "",
       },
     });
   };
@@ -477,44 +477,7 @@ const ContactClosingReport = () => {
 
           <DataTable
             bordered
-            data={
-              landingApi?.data?.length > 0
-                ? landingApi?.data
-                : [
-                    // {
-                    //   AccountId: 1,
-                    //   BusinessUnitId: 1,
-                    //   ConfirmationDate: null,
-                    //   ConfirmationDateRaw: null,
-                    //   DateOfBirth: "1988-09-26T00:00:00",
-                    //   DepartmentId: 24,
-                    //   DepartmentName: "Treasury",
-                    //   DesignationId: 37,
-                    //   DesignationName: "Executive",
-                    //   EmployeeCode: "10252",
-                    //   EmployeeId: 5521,
-                    //   EmployeeName: "Mohammad Nur-UZ-Zaman",
-                    //   EmployeeStatus: "Active",
-                    //   EmploymentStatus: "NotConfirm",
-                    //   EmploymentStatusId: 1,
-                    //   JoiningDate: "2024-03-16T00:00:00",
-                    //   JoiningDateFormated: "16 Mar, 2024",
-                    //   PayrollGroupId: 18,
-                    //   PayrollGroupName: "H/O Payroll",
-                    //   PayscaleGradeId: null,
-                    //   PayscaleGradeName: null,
-                    //   ProfilePicUrl: null,
-                    //   ServiceLength: "1 Month 28 Days",
-                    //   SupervisorId: 386,
-                    //   SupervisorName: "Md. Ziaur Rahman",
-                    //   TerritoryName: null,
-                    //   dteContactFromDate: "2024-04-12T00:00:00",
-                    //   dteContactToDate: "2024-05-12T00:00:00",
-                    //   strEmploymentType: "Probationary",
-                    //   totalCount: 2,
-                    // },
-                  ]
-            }
+            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header}
             pagination={{
@@ -532,6 +495,7 @@ const ContactClosingReport = () => {
               });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
           />
