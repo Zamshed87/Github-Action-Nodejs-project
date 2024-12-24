@@ -80,7 +80,7 @@ const MonthlyAttendanceReport = () => {
       params: {
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace[0]?.value,
+        workplaceId: workplace?.value,
 
         accountId: orgId,
       },
@@ -103,7 +103,7 @@ const MonthlyAttendanceReport = () => {
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace[0]?.value,
+        workplaceId: workplace?.value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
