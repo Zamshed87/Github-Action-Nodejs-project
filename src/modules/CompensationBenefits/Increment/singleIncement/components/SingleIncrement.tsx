@@ -2245,51 +2245,52 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         </Row>
         <Row gutter={[10, 2]} className="mb-3">
           {(location?.state as any)?.singleData?.incrementList[0]?.strStatus ===
-            "Approved By Admin" && (
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                reactToPrintFn();
-              }}
-              style={{
-                height: "32px",
-                width: "199px",
-                boxSizing: "border-box",
-                border: " 1px solid #EAECF0",
-                borderRadius: "4px",
-              }}
-              className="d-flex justify-content-between align-items-center"
-            >
-              <div className="d-flex justify-content-center align-items-center">
+            "Approved By Admin" &&
+            orgId === 5 && (
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  reactToPrintFn();
+                }}
+                style={{
+                  height: "32px",
+                  width: "199px",
+                  boxSizing: "border-box",
+                  border: " 1px solid #EAECF0",
+                  borderRadius: "4px",
+                }}
+                className="d-flex justify-content-between align-items-center"
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  <div>
+                    <img
+                      className="pb-1"
+                      style={{ width: "23px", height: "23px" }}
+                      src={pdfIcon}
+                      alt=""
+                    />
+                  </div>
+                  <p
+                    style={{
+                      color: "#344054",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                    }}
+                    className="pl-2"
+                  >
+                    Increment Letter
+                  </p>
+                </div>
                 <div>
-                  <img
-                    className="pb-1"
-                    style={{ width: "23px", height: "23px" }}
-                    src={pdfIcon}
-                    alt=""
+                  <SaveAlt
+                    sx={{
+                      color: gray900,
+                      fontSize: "16px",
+                    }}
                   />
                 </div>
-                <p
-                  style={{
-                    color: "#344054",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  }}
-                  className="pl-2"
-                >
-                  Increment Letter
-                </p>
-              </div>
-              <div>
-                <SaveAlt
-                  sx={{
-                    color: gray900,
-                    fontSize: "16px",
-                  }}
-                />
-              </div>
-            </IconButton>
-          )}
+              </IconButton>
+            )}
         </Row>
 
         {/* calculation rows */}
@@ -2544,12 +2545,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           </h2>
           <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
             In recognition of your previous performance, we are glad to inform
-            you that the {buName} (
-            {
-              (empBasic as any)?.employeeProfileLandingView
-                ?.strWorkplaceGroupName
-            }
-            ) Management has decided to give you an increment of{" "}
+            you that the {buName} {orgId === 5 ? " (SFOC)" : ""} Management has
+            decided to give you an increment of{" "}
             <strong>
               {employeeIncrementByIdApi?.data?.incrementAmount} BDT
             </strong>{" "}
@@ -2628,11 +2625,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
             We deeply appreciate your contribution and excellent work over the
             last year. Thank you for your agility and focus on delivering
-            business results and taking{" "}
-            {
-              (empBasic as any)?.employeeProfileLandingView
-                ?.strWorkplaceGroupName
-            }{" "}
+            business results and taking{orgId === 5 ? " (SFOC)" : ""}
             forward.
           </p>
           <p style={{ fontSize: "16px", lineHeight: "1.5" }} className="my-2">
