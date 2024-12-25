@@ -51,7 +51,7 @@ const MarketVisitReport = () => {
   const [form] = Form.useForm();
 
   const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
     CommonEmployeeDDL?.action({
       urlKey: "CommonEmployeeDDL",
@@ -74,6 +74,7 @@ const MarketVisitReport = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     document.title = "Multiple Payslip";
+    getEmployee("");
   }, [dispatch]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,7 +130,6 @@ const MarketVisitReport = () => {
       searchText: value,
     });
   }, 500);
-
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -209,6 +209,7 @@ const MarketVisitReport = () => {
 
               <Col md={5} sm={12} xs={24}>
                 <PSelect
+                  mode="multiple"
                   name="employee"
                   label="Select a Employee"
                   placeholder="Search Min 2 char"
@@ -231,9 +232,9 @@ const MarketVisitReport = () => {
                       setPayrollPeiodDDL
                     );
                   }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
+                  // onSearch={(value) => {
+                  //   getEmployee(value);
+                  // }}
                   showSearch
                   filterOption={false}
                 />
