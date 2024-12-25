@@ -47,93 +47,6 @@ const { Title } = Typography;
 
 // need to refactor code
 
-const data = [
-  {
-    title: "Total Training Count",
-    count: 45,
-    icon: <TeamOutlined style={{ fontSize: "30px", color: "#4caf50" }} />,
-  },
-  {
-    title: "Total Training Hour",
-    count: 56,
-    icon: (
-      <ClockCircleOutlined style={{ fontSize: "30px", color: "#ff9800" }} />
-    ),
-  },
-  {
-    title: "Total Participant",
-    count: 177,
-    icon: <UserOutlined style={{ fontSize: "30px", color: "#3f51b5" }} />,
-  },
-  {
-    title: "Total Feedback Count",
-    count: 333,
-    icon: <MessageOutlined style={{ fontSize: "30px", color: "#e91e63" }} />,
-  },
-  {
-    title: "Total Assessment Count",
-    count: 62,
-    icon: <FileTextOutlined style={{ fontSize: "30px", color: "#607d8b" }} />,
-  },
-  {
-    title: "Total Attendance Count",
-    count: 22,
-    icon: <UserSwitchOutlined style={{ fontSize: "30px", color: "#673ab7" }} />,
-  },
-  {
-    title: "Total Training Cost",
-    count: 34,
-    icon: (
-      <DollarCircleOutlined style={{ fontSize: "30px", color: "#4caf50" }} />
-    ),
-  },
-  {
-    title: "Cost Per Participant",
-    count: 21,
-    icon: <CalculatorOutlined style={{ fontSize: "30px", color: "#ff5722" }} />,
-  },
-  {
-    title: "Actual Cost Per Participant",
-    count: 56,
-    icon: <BarChartOutlined style={{ fontSize: "30px", color: "#009688" }} />,
-  },
-  {
-    title: "Actual Cost Per Hour",
-    count: 33,
-    icon: <PieChartOutlined style={{ fontSize: "30px", color: "#2196f3" }} />,
-  },
-];
-
-const data2 = [
-  {
-    title: "Total Attendance Count",
-    count: 22,
-    icon: <UserSwitchOutlined style={{ fontSize: "30px", color: "#673ab7" }} />,
-  },
-  {
-    title: "Total Training Cost",
-    count: 34,
-    icon: (
-      <DollarCircleOutlined style={{ fontSize: "30px", color: "#4caf50" }} />
-    ),
-  },
-  {
-    title: "Cost Per Participant",
-    count: 21,
-    icon: <CalculatorOutlined style={{ fontSize: "30px", color: "#ff5722" }} />,
-  },
-  {
-    title: "Actual Cost Per Participant",
-    count: 56,
-    icon: <BarChartOutlined style={{ fontSize: "30px", color: "#009688" }} />,
-  },
-  {
-    title: "Actual Cost Per Hour",
-    count: 33,
-    icon: <PieChartOutlined style={{ fontSize: "30px", color: "#2196f3" }} />,
-  },
-];
-
 // Table Data
 const tableData = [
   { key: "1", name: "Classroom", noOfTraining: 30 },
@@ -483,6 +396,79 @@ const TnDDashboard = () => {
     return `linear-gradient(135deg, ${randomColor1}, ${randomColor2})`;
   };
 
+  const getSummaryCardCount = () => {
+    return [
+      {
+        title: "Total Training Count",
+        count: Math.trunc(summaryCard?.totalTrainingCount || 0),
+        icon: <TeamOutlined style={{ fontSize: "30px", color: "#4caf50" }} />,
+      },
+      {
+        title: "Total Training Hour",
+        count: Math.trunc(summaryCard?.totalTrainingHours || 0),
+        icon: (
+          <ClockCircleOutlined style={{ fontSize: "30px", color: "#ff9800" }} />
+        ),
+      },
+      {
+        title: "Total Participant",
+        count: Math.trunc(summaryCard?.totalParticipant || 0),
+        icon: <UserOutlined style={{ fontSize: "30px", color: "#3f51b5" }} />,
+      },
+      {
+        title: "Total Feedback Count",
+        count: Math.trunc(summaryCard?.totalFeedbackCount || 0),
+        icon: (
+          <MessageOutlined style={{ fontSize: "30px", color: "#e91e63" }} />
+        ),
+      },
+      {
+        title: "Total Assessment Count",
+        count: Math.trunc(summaryCard?.totalAssessmentCount || 0),
+        icon: (
+          <FileTextOutlined style={{ fontSize: "30px", color: "#607d8b" }} />
+        ),
+      },
+      {
+        title: "Total Attendance Count",
+        count: Math.trunc(summaryCard?.totalAttendanceCount || 0),
+        icon: (
+          <UserSwitchOutlined style={{ fontSize: "30px", color: "#673ab7" }} />
+        ),
+      },
+      {
+        title: "Total Training Cost",
+        count: Math.trunc(summaryCard?.totalTrainingCost || 0),
+        icon: (
+          <DollarCircleOutlined
+            style={{ fontSize: "30px", color: "#4caf50" }}
+          />
+        ),
+      },
+      {
+        title: "Cost Per Participant",
+        count: Math.trunc(summaryCard?.costPerParticipant || 0),
+        icon: (
+          <CalculatorOutlined style={{ fontSize: "30px", color: "#ff5722" }} />
+        ),
+      },
+      {
+        title: "Actual Cost Per Participant",
+        count: Math.trunc(summaryCard?.actualCostPerParticipant || 0),
+        icon: (
+          <BarChartOutlined style={{ fontSize: "30px", color: "#009688" }} />
+        ),
+      },
+      {
+        title: "Actual Cost Per Hour",
+        count: Math.trunc(summaryCard?.actualCostPerHour || 0),
+        icon: (
+          <PieChartOutlined style={{ fontSize: "30px", color: "#2196f3" }} />
+        ),
+      },
+    ];
+  };
+
   // Form Instance
   const [form] = Form.useForm();
   return (
@@ -658,7 +644,7 @@ const TnDDashboard = () => {
                 <Skeleton active />
               </div>
             ))
-          : data.map((item, index) => (
+          : getSummaryCardCount().map((item, index) => (
               <div
                 className="grid-item"
                 key={index}
