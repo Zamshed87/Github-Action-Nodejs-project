@@ -34,6 +34,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import useDebounce from "utility/customHooks/useDebounce";
 import MasterFilter from "common/MasterFilter";
 import DefaultInput from "common/DefaultInput";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initialValues = {
   salaryTpe: {
@@ -82,7 +83,7 @@ const AdvanceSalaryGenerateLanding = () => {
   const debounce = useDebounce();
   const [loading, setLoading] = useState(false);
   const [singleData] = useState(null);
-  const [rowDto, setRowDto] = useState([]);
+  // const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
 
   const [paginationSize] = useState(15);
@@ -90,6 +91,7 @@ const AdvanceSalaryGenerateLanding = () => {
   const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
     []
   );
+  const [rowDto, getLanding, , setRowDto] = useAxiosGet([]);
 
   // for create state
   const [pages, setPages] = useState({
@@ -109,28 +111,31 @@ const AdvanceSalaryGenerateLanding = () => {
 
   //get landing data
   const getLandingData = (values, pagination = pages) => {
-    getSalaryGenerateRequestLanding(
-      "SalaryGenerateRequestLanding",
-      orgId,
-      buId,
-      wgId,
-      wId,
-      "",
-      "",
-      values?.filterFromDate,
-      values?.filterToDate,
-      setRowDto,
-      setAllData,
-      setLoading,
-      pagination,
-      setPages,
-      undefined,
-      "",
-      "",
-      "",
-      "",
-      "",
-      values
+    // getSalaryGenerateRequestLanding(
+    //   "SalaryGenerateRequestLanding",
+    //   orgId,
+    //   buId,
+    //   wgId,
+    //   wId,
+    //   "",
+    //   "",
+    //   values?.filterFromDate,
+    //   values?.filterToDate,
+    //   setRowDto,
+    //   setAllData,
+    //   setLoading,
+    //   pagination,
+    //   setPages,
+    //   undefined,
+    //   "",
+    //   "",
+    //   "",
+    //   "",
+    //   "",
+    //   values
+    // );
+    getLanding(
+      `AdvanceSalary/AdvanceSalary?fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}`
     );
   };
 
@@ -247,13 +252,11 @@ const AdvanceSalaryGenerateLanding = () => {
       },
       {
         title: "Salary Code",
-        dataIndex: "strSalaryCode",
-        render: (text, item) => {
+        dataIndex: "advanceSalaryCode",
+        render: (text) => {
           return (
             <div className="d-flex align-items-center">
-              <p>
-                {text} ({item?.strSalaryTypeLabel})
-              </p>
+              <p>{text}</p>
             </div>
           );
         },
@@ -262,7 +265,7 @@ const AdvanceSalaryGenerateLanding = () => {
       },
       {
         title: "Workplace Group",
-        dataIndex: "strWorkplaceGroupName",
+        dataIndex: "workplaceGroupName",
         width: 120,
       },
       {
@@ -289,50 +292,50 @@ const AdvanceSalaryGenerateLanding = () => {
           ) : (
             "-"
           ),
-        dataIndex: "strWorkplaceList",
+        dataIndex: "workplaceName",
         width: 150,
       },
 
       {
         title: "Payroll Month",
-        dataIndex: "intMonth",
-        sorter: false,
-        filter: false,
-        render: (_, item) => (
-          <>{`${getMonthName(item?.intMonth)}, ${item?.intYear}`}</>
-        ),
+        dataIndex: "payrollMonth",
+        // sorter: false,
+        // filter: false,
+        // render: (_, item) => (
+        //   <>{`${getMonthName(item?.payrollMonth)}, ${item?.intYear}`}</>
+        // ),
         width: 100,
       },
-      {
-        title: "Payroll Period",
-        dataIndex: "strDepartment",
-        sorter: false,
-        filter: false,
-        render: (_, item) => {
-          return (
-            <>
-              {item?.dteSalaryGenerateFrom
-                ? dateFormatter(item?.dteSalaryGenerateFrom)
-                : "-"}{" "}
-              -{" "}
-              {item?.dteSalaryGenerateTo
-                ? dateFormatter(item?.dteSalaryGenerateTo)
-                : "-"}
-            </>
-          );
-        },
-        width: 200,
-      },
+      // {
+      //   title: "Payroll Period",
+      //   dataIndex: "strDepartment",
+      //   sorter: false,
+      //   filter: false,
+      //   render: (_, item) => {
+      //     return (
+      //       <>
+      //         {item?.dteSalaryGenerateFrom
+      //           ? dateFormatter(item?.dteSalaryGenerateFrom)
+      //           : "-"}{" "}
+      //         -{" "}
+      //         {item?.dteSalaryGenerateTo
+      //           ? dateFormatter(item?.dteSalaryGenerateTo)
+      //           : "-"}
+      //       </>
+      //     );
+      //   },
+      //   width: 200,
+      // },
       {
         title: "Net Amount",
-        dataIndex: "numNetPayableSalary",
-        render: (_, record) => (
-          <>
-            {record?.numNetPayableSalary
-              ? numberWithCommas(record?.numNetPayableSalary)
-              : "0"}
-          </>
-        ),
+        dataIndex: "netAmount",
+        // render: (_, record) => (
+        //   <>
+        //     {record?.numNetPayableSalary
+        //       ? numberWithCommas(record?.numNetPayableSalary)
+        //       : "0"}
+        //   </>
+        // ),
         width: 100,
         className: "text-right",
       },
@@ -647,7 +650,7 @@ const AdvanceSalaryGenerateLanding = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-4">
+                {/* <div className="col-md-4">
                   <div className="input-field-main">
                     <label>Salary Code</label>
                     <FormikSelect
@@ -664,7 +667,7 @@ const AdvanceSalaryGenerateLanding = () => {
                       isDisabled={singleData}
                     />
                   </div>
-                </div>
+                </div> */}
                 {/* removed for requiremnt change....... */}
                 {/* <div className="col-md-3 d-none">
                   <div className="input-field-main">
@@ -752,9 +755,9 @@ const AdvanceSalaryGenerateLanding = () => {
                   }}
                   onRow={(item) => ({
                     onClick: () => {
-                      if (item?.isGenerated === true) {
+                      if (true) {
                         history.push({
-                          pathname: `/compensationAndBenefits/payrollProcess/generateSalaryView/${item?.intSalaryGenerateRequestId}`,
+                          pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/${item?.advanceSalaryCode}`,
                           state: item,
                         });
                       } else {
