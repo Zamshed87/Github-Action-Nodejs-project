@@ -1,9 +1,18 @@
+import {
+  CalculatorOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined,
+  FileTextOutlined,
+  MessageOutlined,
+  TeamOutlined,
+  UserOutlined,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
 import { Line, Pie } from "@ant-design/plots";
-import "./style.css";
+import { BarChartOutlined, PieChartOutlined } from "@mui/icons-material";
 import {
   Card,
   Col,
-  Divider,
   Drawer,
   Form,
   Row,
@@ -16,7 +25,6 @@ import {
   DataTable,
   PButton,
   PCard,
-  PCardBody,
   PCardHeader,
   PForm,
   PInput,
@@ -25,82 +33,27 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { getSerial } from "Utils";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
 import {
-  TeamOutlined,
-  ClockCircleOutlined,
-  UserOutlined,
-  MessageOutlined,
-  FileTextOutlined,
-  UserSwitchOutlined,
-  DollarCircleOutlined,
-  CalculatorOutlined,
-} from "@ant-design/icons";
-import { BarChartOutlined, PieChartOutlined } from "@mui/icons-material";
-import { PModal } from "Components/Modal";
-import { formatDate } from "../requisition/helper";
+  formateFilterData,
+  getRandomGradient,
+  pieConfigCostPerParticipants,
+  pieConfigNoOfTraining,
+  pieConfigParticipants,
+  pieConfigTotalCost,
+  tableColumns,
+  tableColumns2,
+  tableColumns3,
+  tableColumns4,
+  upcommingTableheader,
+} from "./helper";
+import "./style.css";
 
 const { Title } = Typography;
 
 // need to refactor code
-
-// Table Data
-const tableData = [
-  { key: "1", name: "Classroom", noOfTraining: 30 },
-  { key: "2", name: "Online", noOfTraining: 20 },
-  { key: "3", name: "Offline", noOfTraining: 10 },
-  { key: "4", name: "Total", noOfTraining: 60 },
-  { key: "5", name: "Total A", noOfTraining: 60 },
-];
-
-const tableColumns = [
-  { title: "Training Mode", dataIndex: "name", key: "name", width: 40 },
-  {
-    title: "No. of Training",
-    dataIndex: "noOfTraining",
-    key: "noOfTraining",
-    width: 30,
-  },
-];
-
-const tableColumns2 = [
-  {
-    title: "Participant",
-    dataIndex: "noOfTraining",
-    key: "noOfTraining",
-    width: 10,
-  },
-];
-
-const tableColumns3 = [
-  {
-    title: "Total Cost (BDT)",
-    dataIndex: "noOfTraining",
-    key: "totalCost",
-    width: 10,
-  },
-];
-
-const tableColumns4 = [
-  {
-    title: "Cost Per Participant (BDT)",
-    dataIndex: "noOfTraining",
-    key: "costPerParticipant",
-    width: 10,
-  },
-];
-
-// Pie Chart Data
-const pieData = [
-  { type: "Training Mode 1", value: 37 },
-  { type: "Training Mode 2", value: 30 },
-  { type: "Training Mode 3", value: 15 },
-  { type: "Training Mode 4", value: 10 },
-  { type: "Training Mode 5", value: 8 },
-];
 
 // Bar Chart Data
 const barData = [
@@ -134,23 +87,6 @@ const lineData = [
   { month: "Jun-24", value: 0 },
 ];
 
-// Pie Chart Config
-const pieConfig = {
-  data: pieData,
-  angleField: "value",
-  colorField: "type",
-  label: {
-    type: "inner",
-    content: "{value}",
-  },
-  legend: false || undefined,
-  interactions: [
-    {
-      type: "element-active",
-    },
-  ],
-};
-
 // Column Chart Config
 const columnConfig = {
   data: barData,
@@ -178,7 +114,7 @@ const TnDDashboard = () => {
     trininingModeSummary,
     getTrininingModeSummary,
     trininingModeSummaryLoading,
-    ,
+    setTrininingModeSummary,
     trininingModeSummaryError,
   ] = useAxiosGet();
 
@@ -202,13 +138,30 @@ const TnDDashboard = () => {
     loadingTrainerOrg,
     setNameOfTrainerOrg,
   ] = useAxiosGet();
+
+  const getTrainingModeSummaryDataSetUp = (data: any) => {
+    const list: any[] = [];
+    data?.map((d: any) => {
+      list.push({
+        noOfTraining: Math.trunc(d?.numberOfTrainings || 0),
+        name: d?.trainingModeStatus?.label || "",
+        numberOfParticipants: Math.trunc(d?.numberOfParticipants || 0),
+        costPerParticipant: Math.trunc(d?.costPerParticipant || 0),
+        totalCost: Math.trunc(d?.totalCost || 0),
+      });
+    });
+    console.log(list);
+    setTrininingModeSummary(list);
+  };
+
   const landingApiCall = (values: any) => {
     getSummaryCard(
       `/Dashboard/Training/Dashboard/SummaryCard${formateFilterData(values)}`
     );
 
     getTrininingModeSummary(
-      `/Dashboard/Training/Dashboard/TrainingMode${formateFilterData(values)}`
+      `/Dashboard/Training/Dashboard/TrainingMode${formateFilterData(values)}`,
+      getTrainingModeSummaryDataSetUp
     );
 
     setOpenFilter(false);
@@ -221,37 +174,11 @@ const TnDDashboard = () => {
       typeDataSetForTrainerOrg
     );
     getSummaryCard(`/Dashboard/Training/Dashboard/SummaryCard`);
-    getTrininingModeSummary("/Dashboard/Training/Dashboard/TrainingMode");
+    getTrininingModeSummary(
+      "/Dashboard/Training/Dashboard/TrainingMode",
+      getTrainingModeSummaryDataSetUp
+    );
   }, []);
-
-  const formateFilterData = (data: any) => {
-    let str = "?";
-
-    // Add single value parameters
-    str += `fromDate=${formatDate(data?.fromDate)}`;
-    str += `&toDate=${formatDate(data?.toDate)}`;
-    str += `&businessUnitIds=${data?.bUnit?.value}`;
-    str += `&workplaceGroupIds=${data?.workplaceGroup?.value}`;
-    str += `&workplaceIds=${data?.workplace?.value}`;
-    str += `&departmentIds=${data?.department?.value}`;
-    str += `&designationIds=${data?.designation?.value}`;
-
-    // Add repeated parameters for training types
-    if (data?.trainingType?.length) {
-      data.trainingType.forEach((item: any) => {
-        str += `&TrainingTypeIds=${item?.value}`;
-      });
-    }
-
-    // Add repeated parameters for trainers
-    if (data?.nameofTrainerOrganization?.length) {
-      data.nameofTrainerOrganization.forEach((item: any) => {
-        str += `&TrainerIds=${item?.value}`;
-      });
-    }
-
-    return str;
-  };
 
   const typeDataSetForTrainerOrg = (data: any) => {
     const list: any[] = [];
@@ -277,124 +204,6 @@ const TnDDashboard = () => {
   };
 
   const [openFilter, setOpenFilter] = useState(false);
-
-  const header: any = [
-    {
-      title: "SL",
-      render: (_: any, rec: any, index: number) =>
-        getSerial({
-          // currentPage: landingApi?.data?.currentPage,
-          // pageSize: landingApi?.data?.pageSize,
-          currentPage: 1,
-          pageSize: 1000, // need to change
-          index,
-        }),
-      fixed: "left",
-      align: "center",
-      width: 40,
-    },
-    {
-      title: "Organization",
-      dataIndex: "organizationName",
-      filter: true,
-      filterKey: "organizationList",
-      filterSearch: true,
-      width: 150,
-      fixed: "left",
-    },
-    {
-      title: "Training Date",
-      dataIndex: "trainingDate",
-      filter: true,
-      filterKey: "trainingDateList",
-      filterSearch: true,
-      width: 150,
-      fixed: "left",
-    },
-    {
-      title: "Training Type",
-      dataIndex: "trainingTypeName",
-      filter: true,
-      filterKey: "trainingTypeList",
-      filterSearch: true,
-      width: 150,
-      fixed: "left",
-    },
-    {
-      title: "Training Title",
-      dataIndex: "trainingTitleName",
-      filter: true,
-      filterKey: "trainingTitleList",
-      filterSearch: true,
-      width: 150,
-      fixed: "left",
-    },
-    {
-      title: "Training Organizer",
-      dataIndex: "trainingOrganizerName",
-      filter: true,
-      filterKey: "trainingOrganizerList",
-      filterSearch: true,
-      width: 150,
-    },
-    {
-      title: "Training Venue",
-      dataIndex: "trainingVenue",
-      filter: true,
-      filterKey: "trainingVenueList",
-      filterSearch: true,
-      width: 150,
-    },
-    {
-      title: "Training Mode",
-      dataIndex: "trainingMode",
-      width: 100,
-      render: (_: any, rec: any) => rec?.trainingModeStatus?.label,
-    },
-    {
-      title: "Training Duration",
-      dataIndex: "trainingDuration",
-      filter: true,
-      filterKey: "trainingDurationList",
-      filterSearch: true,
-      width: 150,
-    },
-    {
-      title: "Total Participants",
-      dataIndex: "totalParticipants",
-      filter: true,
-      filterKey: "totalParticipantsList",
-      filterSearch: true,
-      width: 150,
-    },
-    {
-      title: "Trainer Details",
-      dataIndex: "trainerDetails",
-      filter: true,
-      filterKey: "trainerDetailsList",
-      filterSearch: true,
-      width: 150,
-    },
-  ];
-
-  const getRandomGradient = () => {
-    const colors = [
-      "#ff7e5f",
-      "#feb47b",
-      "#4facfe",
-      "#00f2fe",
-      "#a18cd1",
-      "#fbc2eb",
-      "#fad0c4",
-      "#ff9a9e",
-      "#ff6a88",
-      "#c471ed",
-    ];
-
-    const randomColor1 = colors[Math.floor(Math.random() * colors.length)];
-    const randomColor2 = colors[Math.floor(Math.random() * colors.length)];
-    return `linear-gradient(135deg, ${randomColor1}, ${randomColor2})`;
-  };
 
   const getSummaryCardCount = () => {
     return [
@@ -714,7 +523,7 @@ const TnDDashboard = () => {
           <>
             <Col span={4}>
               <Table
-                dataSource={tableData}
+                dataSource={trininingModeSummary || []}
                 columns={tableColumns}
                 pagination={false}
                 size="small"
@@ -731,11 +540,11 @@ const TnDDashboard = () => {
                 width: "200px",
               }}
             >
-              <Pie {...pieConfig} />
+              <Pie {...pieConfigNoOfTraining(trininingModeSummary)} />
             </Col>
             <Col span={3}>
               <Table
-                dataSource={tableData}
+                dataSource={trininingModeSummary || []}
                 columns={tableColumns2}
                 pagination={false}
                 bordered
@@ -753,12 +562,12 @@ const TnDDashboard = () => {
                 width: "200px",
               }}
             >
-              <Pie {...pieConfig} />
+              <Pie {...pieConfigParticipants(trininingModeSummary)} />
             </Col>
 
             <Col span={2}>
               <Table
-                dataSource={tableData}
+                dataSource={trininingModeSummary || []}
                 columns={tableColumns3}
                 pagination={false}
                 bordered
@@ -775,11 +584,11 @@ const TnDDashboard = () => {
                 width: "200px",
               }}
             >
-              <Pie {...pieConfig} />
+              <Pie {...pieConfigTotalCost(trininingModeSummary)} />
             </Col>
             <Col span={3}>
               <Table
-                dataSource={tableData}
+                dataSource={trininingModeSummary || []}
                 columns={tableColumns4} // f
                 pagination={false}
                 bordered
@@ -795,7 +604,7 @@ const TnDDashboard = () => {
                 width: "200px",
               }}
             >
-              <Pie {...pieConfig} />
+              <Pie {...pieConfigCostPerParticipants(trininingModeSummary)} />
             </Col>
           </>
         )}
@@ -832,7 +641,7 @@ const TnDDashboard = () => {
           bordered
           data={upcommingTrainingSummary || []}
           loading={upcommingTrainingSummary}
-          header={header}
+          header={upcommingTableheader}
           pagination={{
             pageSize: upcommingTrainingSummary?.data?.pageSize,
             total: upcommingTrainingSummary?.data?.totalCount,
