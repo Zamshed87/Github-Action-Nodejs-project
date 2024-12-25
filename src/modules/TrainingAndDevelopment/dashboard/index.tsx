@@ -1,6 +1,16 @@
 import { Line, Pie } from "@ant-design/plots";
 import "./style.css";
-import { Card, Col, Divider, Drawer, Form, Row, Table, Typography } from "antd";
+import {
+  Card,
+  Col,
+  Divider,
+  Drawer,
+  Form,
+  Row,
+  Skeleton,
+  Table,
+  Typography,
+} from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   DataTable,
@@ -280,10 +290,15 @@ const TnDDashboard = () => {
     setNameOfTrainerOrg,
   ] = useAxiosGet();
   const landingApiCall = (values: any) => {
-    getSummaryCard(`/Dashboard/Training/Dashboard/SummaryCard`);
+    getSummaryCard(
+      `/Dashboard/Training/Dashboard/SummaryCard${formateFilterData(values)}`
+    );
 
-    // ${formateFilterData(values)}
-    getTrininingModeSummary("/Dashboard/Training/Dashboard/TrainingMode");
+    getTrininingModeSummary(
+      `/Dashboard/Training/Dashboard/TrainingMode${formateFilterData(values)}`
+    );
+
+    setOpenFilter(false);
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
@@ -292,7 +307,8 @@ const TnDDashboard = () => {
       "/TrainerInformation/Training/TrainerInformation",
       typeDataSetForTrainerOrg
     );
-    landingApiCall({});
+    getSummaryCard(`/Dashboard/Training/Dashboard/SummaryCard`);
+    getTrininingModeSummary("/Dashboard/Training/Dashboard/TrainingMode");
   }, []);
 
   const formateFilterData = (data: any) => {
@@ -301,9 +317,11 @@ const TnDDashboard = () => {
     // Add single value parameters
     str += `fromDate=${formatDate(data?.fromDate)}`;
     str += `&toDate=${formatDate(data?.toDate)}`;
-    str += `&BusinessUnitIds=${data?.businessUnit?.value}`;
-    str += `&DepartmentIds=${data?.department?.value}`;
-    str += `&DesignationIds=${data?.designation?.value}`;
+    str += `&businessUnitIds=${data?.bUnit?.value}`;
+    str += `&workplaceGroupIds=${data?.workplaceGroup?.value}`;
+    str += `&workplaceIds=${data?.workplace?.value}`;
+    str += `&departmentIds=${data?.department?.value}`;
+    str += `&designationIds=${data?.designation?.value}`;
 
     // Add repeated parameters for training types
     if (data?.trainingType?.length) {
@@ -582,11 +600,11 @@ const TnDDashboard = () => {
               />
             </Col>
 
-            <Col md={12} sm={24}>
+            <Col md={6} sm={24}>
               <PButton
-                style={{ marginTop: "39px" }}
+                style={{ marginTop: "25px" }}
                 type="primary"
-                content="View"
+                content={"Filter"}
                 onClick={() => {
                   const values = form.getFieldsValue(true);
                   form
@@ -599,143 +617,202 @@ const TnDDashboard = () => {
                 }}
               />
             </Col>
+            <Col md={6} sm={24}>
+              <PButton
+                style={{ marginTop: "25px" }}
+                type="secondary"
+                content="Reset"
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      form.resetFields();
+                    })
+                    .catch(() => {});
+                }}
+              />
+            </Col>
           </Row>
         </PForm>
       </Drawer>
       <div className="grid-container">
-        {data.map((item, index) => (
-          <div
-            className="grid-item"
-            key={index}
-            style={{
-              height: "150px", // Fixed height for all cards
-              border: "1px solid #f0f0f0",
-              width: "242px",
-              borderRadius: "8px",
-              textAlign: "center",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              transition: "transform 0.3s, background 0.3s",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = getRandomGradient())
-            }
-            onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
-          >
-            <div style={{ marginBottom: "10px" }}>{item.icon}</div>
-            <h3
-              style={{
-                fontSize: "13px",
-                fontWeight: "bold",
-                margin: 0,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {item.title}
-            </h3>
-            <p
-              style={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                margin: 0,
-                marginTop: "10px",
-                color: "#333",
-              }}
-            >
-              {item.count}
-            </p>
-          </div>
-        ))}
+        {summaryCardLoading
+          ? Array.from({ length: 10 }).map((_, index) => (
+              <div
+                className="grid-item"
+                key={index}
+                style={{
+                  height: "150px", // Fixed height for all cards
+                  border: "1px solid #f0f0f0",
+                  width: "242px",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "transform 0.3s, background 0.3s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Skeleton active />
+              </div>
+            ))
+          : data.map((item, index) => (
+              <div
+                className="grid-item"
+                key={index}
+                style={{
+                  height: "150px", // Fixed height for all cards
+                  border: "1px solid #f0f0f0",
+                  width: "242px",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "transform 0.3s, background 0.3s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = getRandomGradient())
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "white")
+                }
+              >
+                <div style={{ marginBottom: "10px" }}>{item.icon}</div>
+                <h3
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: "bold",
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    margin: 0,
+                    marginTop: "10px",
+                    color: "#333",
+                  }}
+                >
+                  {item.count}
+                </p>
+              </div>
+            ))}
       </div>
 
       <Row gutter={32} style={{ marginTop: "30px" }}>
         {/* Left Metrics Table */}
-        <Col span={4}>
-          <Table
-            dataSource={tableData}
-            columns={tableColumns}
-            pagination={false}
-            size="small"
-          />
-        </Col>
 
-        {/* Middle Pie Chart */}
-        <Col
-          span={3}
-          style={{
-            margin: "0px",
-            padding: "0px",
-            height: "200px",
-            width: "200px",
-          }}
-        >
-          <Pie {...pieConfig} />
-        </Col>
-        <Col span={3}>
-          <Table
-            dataSource={tableData}
-            columns={tableColumns2}
-            pagination={false}
-            bordered
-            size="small"
-          />
-        </Col>
+        {trininingModeSummaryLoading ? (
+          Array.from({ length: 8 }).map((_, index) => (
+            <Col
+              key={index}
+              span={3}
+              style={{
+                margin: "0px",
+                padding: "0px",
+                height: "200px",
+                width: "200px",
+              }}
+            >
+              <Skeleton active />
+            </Col>
+          ))
+        ) : (
+          <>
+            <Col span={4}>
+              <Table
+                dataSource={tableData}
+                columns={tableColumns}
+                pagination={false}
+                size="small"
+              />
+            </Col>
 
-        {/* Right Pie Chart */}
-        <Col
-          span={3}
-          style={{
-            margin: "0px",
-            padding: "0px",
-            height: "200px",
-            width: "200px",
-          }}
-        >
-          <Pie {...pieConfig} />
-        </Col>
+            {/* Middle Pie Chart */}
+            <Col
+              span={3}
+              style={{
+                margin: "0px",
+                padding: "0px",
+                height: "200px",
+                width: "200px",
+              }}
+            >
+              <Pie {...pieConfig} />
+            </Col>
+            <Col span={3}>
+              <Table
+                dataSource={tableData}
+                columns={tableColumns2}
+                pagination={false}
+                bordered
+                size="small"
+              />
+            </Col>
 
-        <Col span={2}>
-          <Table
-            dataSource={tableData}
-            columns={tableColumns3}
-            pagination={false}
-            bordered
-            size="small"
-          />
-        </Col>
+            {/* Right Pie Chart */}
+            <Col
+              span={3}
+              style={{
+                margin: "0px",
+                padding: "0px",
+                height: "200px",
+                width: "200px",
+              }}
+            >
+              <Pie {...pieConfig} />
+            </Col>
 
-        <Col
-          span={3}
-          style={{
-            margin: "0px",
-            padding: "0px",
-            height: "200px",
-            width: "200px",
-          }}
-        >
-          <Pie {...pieConfig} />
-        </Col>
-        <Col span={3}>
-          <Table
-            dataSource={tableData}
-            columns={tableColumns4} // f
-            pagination={false}
-            bordered
-            size="small"
-          />
-        </Col>
-        <Col
-          span={3}
-          style={{
-            margin: "0px",
-            padding: "0px",
-            height: "200px",
-            width: "200px",
-          }}
-        >
-          <Pie {...pieConfig} />
-        </Col>
+            <Col span={2}>
+              <Table
+                dataSource={tableData}
+                columns={tableColumns3}
+                pagination={false}
+                bordered
+                size="small"
+              />
+            </Col>
+
+            <Col
+              span={3}
+              style={{
+                margin: "0px",
+                padding: "0px",
+                height: "200px",
+                width: "200px",
+              }}
+            >
+              <Pie {...pieConfig} />
+            </Col>
+            <Col span={3}>
+              <Table
+                dataSource={tableData}
+                columns={tableColumns4} // f
+                pagination={false}
+                bordered
+                size="small"
+              />
+            </Col>
+            <Col
+              span={3}
+              style={{
+                margin: "0px",
+                padding: "0px",
+                height: "200px",
+                width: "200px",
+              }}
+            >
+              <Pie {...pieConfig} />
+            </Col>
+          </>
+        )}
 
         {/* Summary Table */}
       </Row>
