@@ -33,15 +33,15 @@ const MarketVisitReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30510),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30518),
     []
   );
   // menu permission
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  const CommonEmployeeDDL = useApiRequest([]);
   const [payrollPeiodDDL, setPayrollPeiodDDL] = useState([]);
+  const [employeeDDL, setEmployeeDDL] = useState([]);
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [month, setMonth] = useState("");
@@ -49,27 +49,6 @@ const MarketVisitReport = () => {
 
   // Form Instance
   const [form] = Form.useForm();
-
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
-      params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        // workplaceId: wId,
-        searchText: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-        });
-      },
-    });
-  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
@@ -95,6 +74,8 @@ const MarketVisitReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    const employeeIdList = values?.employee?.map((item: any) => item?.value).join(",");
+
     landingApi.action({
       urlKey: "GetBanglaPaysilp",
       method: "GET",
@@ -102,7 +83,7 @@ const MarketVisitReport = () => {
         format: "HTML",
         intAccountId: orgId,
         intWorkplaceId: wId,
-        employeeId: values?.employee?.value || 0,
+        employeeId: employeeIdList || "",
         month: moment(values?.date).format("MM"),
         year: moment(values?.date).format("YYYY"),
         salaryGenerateRequestId: values?.salaryCode || 0,
@@ -120,16 +101,11 @@ const MarketVisitReport = () => {
     });
   };
 
-  // useEffect(() => {
-  //   landingApiCall();
-  // }, [wId]);
-
   const searchFunc = debounce((value: any) => {
     landingApiCall({
       searchText: value,
     });
   }, 500);
-
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -189,6 +165,8 @@ const MarketVisitReport = () => {
                     const values = form.getFieldsValue(true);
                     form.setFieldsValue({
                       date: value,
+                      salaryCode: undefined,
+                      employee: undefined
                     });
                     const month = moment(value).format("MM");
                     const year = moment(value).format("YYYY");
@@ -196,46 +174,14 @@ const MarketVisitReport = () => {
                     setYear(year);
 
                     getPeopleDeskAllDDL(
-                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
+                      `/PeopleDeskDdl/GetSalaryCodes?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
                         values?.employee?.value || 0
-                      }&IntMonth=${month || 0}&IntYear=${year || 0}`,
-                      "SalaryGenerateRequestId",
-                      "SalaryCode",
+                      }&month=${month || 0}&year=${year || 0}`,
+                      "value",
+                      "label",
                       setPayrollPeiodDDL
                     );
                   }}
-                />
-              </Col>
-
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  name="employee"
-                  label="Select a Employee"
-                  placeholder="Search Min 2 char"
-                  allowClear={true}
-                  options={CommonEmployeeDDL?.data || []}
-                  loading={CommonEmployeeDDL?.loading}
-                  onChange={(value, op) => {
-                    const values = form.getFieldsValue(true);
-                    const month = moment(values?.date).format("MM");
-                    const year = moment(values?.date).format("YYYY");
-                    form.setFieldsValue({
-                      employee: op,
-                    });
-                    getPeopleDeskAllDDL(
-                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
-                        value || 0
-                      }&IntMonth=${month || 0}&IntYear=${year || 0}`,
-                      "SalaryGenerateRequestId",
-                      "SalaryCode",
-                      setPayrollPeiodDDL
-                    );
-                  }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
-                  showSearch
-                  filterOption={false}
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
@@ -248,8 +194,36 @@ const MarketVisitReport = () => {
                   onChange={(value) => {
                     form.setFieldsValue({
                       salaryCode: value,
+                      employee: undefined
+                    });
+                    
+                    getPeopleDeskAllDDL(
+                      `/PeopleDeskDdl/GetEmployeesBySalaryCode?salaryId=${
+                        value || 0
+                      }&month=${month || 0}&year=${year || 0}`,
+                      "value",
+                      "label",
+                      setEmployeeDDL
+                    );
+                  }}
+                />
+              </Col>
+
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  mode="multiple"
+                  name="employee"
+                  label="Select a Employee"
+                  placeholder="Search Min 2 char"
+                  allowClear={true}
+                  options={employeeDDL || []}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      employee: op,
                     });
                   }}
+                  showSearch
+                  filterOption={false}
                 />
               </Col>
 

@@ -11,7 +11,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 
 function Designation() {
@@ -30,7 +29,6 @@ function Designation() {
 
   // state
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState(false);
   const [id, setId] = useState("");
 
   // Form Instance
@@ -156,7 +154,6 @@ function Designation() {
             submitText="Designation"
             submitIcon={<AddOutlined />}
             buttonList={[]}
-            onExport={() => {}}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
@@ -177,7 +174,6 @@ function Designation() {
             }}
             onRow={(record) => ({
               onClick: () => {
-                setView(true);
                 setId(record);
               },
               className: "pointer",
