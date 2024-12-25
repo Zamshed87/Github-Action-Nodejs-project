@@ -33,7 +33,7 @@ const MarketVisitReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30510),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30518),
     []
   );
   // menu permission
