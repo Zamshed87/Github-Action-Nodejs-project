@@ -2,9 +2,11 @@ import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
+import { orgIdsForBn } from "utility/orgForBanglaField";
+import { checkBng } from "utility/regxExp";
 import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
@@ -15,9 +17,6 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
-  // const debounce = useDebounce();
-
   const saveHRPostion = useApiRequest({});
   const getBUnitDDL = useApiRequest({});
 
@@ -25,8 +24,6 @@ export default function AddEditForm({
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const [loading, setLoading] = useState(false);
 
   // ddls
   useEffect(() => {
@@ -64,11 +61,12 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intDesignationId: singleData?.intDesignationId
         ? singleData?.intDesignationId
         : 0,
       strDesignation: values?.strDesignation,
+      strDesignationBn: values?.strDesignationBn || null,
       strDesignationCode: values?.strDesignationCode,
       intPositionId: 0,
       isActive: values?.isActive || true,
@@ -130,6 +128,22 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Designation is required" }]}
             />
           </Col>
+          {orgIdsForBn.includes(orgId) && (
+            <Col md={12} sm={24}>
+              <PInput
+                type="text"
+                name="strDesignationBn"
+                label="Designation (In Bangla)"
+                placeholder="Designation (In Bangla)"
+                rules={[
+                  {
+                    message: "This Field Must be in Bangla",
+                    pattern: new RegExp(checkBng()),
+                  },
+                ]}
+              />
+            </Col>
+          )}
           <Col md={12} sm={24}>
             <PInput
               type="text"
@@ -163,7 +177,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
-          loading={loading}
+          loading={saveHRPostion.loading}
         />
       </PForm>
     </>
