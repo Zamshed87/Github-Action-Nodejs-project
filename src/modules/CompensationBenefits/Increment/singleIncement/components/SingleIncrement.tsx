@@ -56,12 +56,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   // const regex = /^[0-9]*\.?[0-9]*$/;
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const reactToPrintFn = useReactToPrint({
-    contentRef,
-    pageStyle:
-      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: portrait ! important}}",
-    documentTitle: `Overtime Daily Report ${todayDate()}`,
-  });
   const location = useLocation();
   const { id }: any = useParams();
   const history = useHistory();
@@ -1277,7 +1271,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       getAssignedBreakdown();
     }
   }, [employeeInfo?.data[0]]);
-
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    pageStyle:
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: portrait ! important}}",
+    documentTitle: `Increment Letter- ${
+      (empBasic as any)?.employeeProfileLandingView?.strEmployeeName
+    } ${todayDate()}`,
+  });
   return employeeFeature?.isView ? (
     <PForm
       form={form}
@@ -2489,7 +2490,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         )}
       </PCard>
       <div className="d-none">
-        {console.log(employeeInfo?.data) as any}
+        {/* {console.log(empBasic) as any} */}
         {/* {
           console.log(
             (location?.state as any)?.singleData?.incrementList[0]
@@ -2500,9 +2501,44 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           style={{
             fontFamily: "Arial, sans-serif",
             padding: "20px",
-            margin: "150px 0",
+            margin: "80px 0",
           }}
         >
+          <p style={{ fontSize: "16px" }} className="mb-5">
+            Date: {todayDate()}
+          </p>
+          <p style={{ fontSize: "16px" }} className="my-2">
+            To
+          </p>
+          <p style={{ fontSize: "16px" }} className="my-2">
+            Name:{" "}
+            {(empBasic as any)?.employeeProfileLandingView?.strEmployeeName}
+          </p>
+          <p style={{ fontSize: "16px" }} className="my-2">
+            Designation:{" "}
+            {(empBasic as any)?.employeeProfileLandingView?.strDesignation}
+          </p>
+          <p style={{ fontSize: "16px" }} className="my-2">
+            Department:{" "}
+            {(empBasic as any)?.employeeProfileLandingView?.strDepartment}
+          </p>
+          <p style={{ fontSize: "16px" }} className="mt-2 mb-3">
+            Employee Id:
+            {(empBasic as any)?.employeeProfileLandingView?.strEmployeeCode}
+          </p>
+          <p
+            style={{
+              fontSize: "16px",
+              textAlign: "center",
+              textDecoration: "underline",
+            }}
+            className="my-3"
+          >
+            <strong>Subject: Salary Increment</strong>
+          </p>
+          <h2 style={{ fontSize: "16px" }} className="my-2">
+            {(empBasic as any)?.employeeProfileLandingView?.strEmployeeName}
+          </h2>
           <h2 style={{ fontSize: "16px" }} className="my-2">
             Congratulations!
           </h2>
@@ -2517,21 +2553,20 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             <strong>
               {employeeIncrementByIdApi?.data?.incrementAmount} BDT
             </strong>{" "}
-            and add the monthly cash allowance of <strong>{34} BDT</strong> to
-            your monthly salary. Both these changes will be effective from{" "}
+            which will be effective from{" "}
             <strong>
               {dateFormatterReport(
                 employeeIncrementByIdApi?.data?.effectiveDate
               )}
             </strong>
-            . Your revised monthly salary breakdown is as follows:
+            . Your revised salary breakdown is as follows:
           </p>
           {/* <h3>Your revised monthly salary breakdown is as follows:</h3> */}
           <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
-              margin: "50px auto 5px auto",
+              margin: "40px auto 5px auto",
             }}
           >
             <thead>
@@ -2586,13 +2621,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           <p className="mb-2" style={{ fontSize: "16px", lineHeight: "1.5" }}>
             In Words:{" "}
             <strong>
-              {convert_number_to_word(form.getFieldsValue(true).grossAmount)}
+              {convert_number_to_word(form.getFieldsValue(true).grossAmount)}{" "}
+              Taka Only
             </strong>
           </p>
           <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
-            We appreciate your contribution and excellent work over the last
-            year. Thank you for your agility and focus on delivering business
-            results and taking{" "}
+            We deeply appreciate your contribution and excellent work over the
+            last year. Thank you for your agility and focus on delivering
+            business results and taking{" "}
             {
               (empBasic as any)?.employeeProfileLandingView
                 ?.strWorkplaceGroupName
@@ -2610,10 +2646,12 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             }}
           ></p>
           <p style={{ fontSize: "16px", lineHeight: "1.5" }} className="mt-2">
-            {userName}
+            {orgId === 5 ? "Adiba S. Ajanee" : ""}
           </p>
 
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{userName}</p>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
+            {orgId === 5 ? "Deputy Managing Partner" : ""}
+          </p>
           <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{buName}</p>
         </div>
       </div>
