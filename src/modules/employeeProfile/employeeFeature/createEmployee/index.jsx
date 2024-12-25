@@ -209,7 +209,7 @@ const CreateAndEditEmploye = () => {
       onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label =
-            orgId === 7 && item?.strSectionNameBn
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
               ? `${item?.strSectionName} (${item?.strSectionNameBn})`
               : item?.strSectionName;
           res[i].value = item?.intSectionId;
@@ -410,8 +410,9 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label =
-            orgId === 7 ? item?.strDepartmentBn : item?.strDepartment;
+          res[i].label = orgIdsForBn.includes(orgId)
+            ? item?.strDepartmentBn
+            : item?.strDepartment;
           res[i].value = item?.intDepartmentId;
         });
       },
@@ -432,8 +433,9 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label =
-            orgId === 7 ? item?.designationBn : item?.designationName;
+          res[i].label = orgIdsForBn.includes(orgId)
+            ? item?.designationBn
+            : item?.designationName;
           res[i].value = item?.designationId;
         });
       },
