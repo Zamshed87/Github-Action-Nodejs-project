@@ -572,7 +572,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       businessUnitId: buId,
       isGradeBasedSalary: values?.salaryType?.value === "Grade" ? true : false,
       payScaleId: values?.payscale?.value || values?.payscale,
-      slabCount: values?.slabCount?.value || values?.slabCount || 0,
+      slabCount:
+        values?.slabCount?.value === 0
+          ? 0
+          : values?.slabCount?.value || values?.slabCount || 0,
       oldGrossAmount:
         Math.round(employeeIncrementByIdApi?.data?.oldGrossAmount) ||
         employeeInfo?.data[0]?.numNetGrossSalary ||
