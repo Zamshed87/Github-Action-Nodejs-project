@@ -435,6 +435,12 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
       return toast.warn("Basic Amount is required ");
     }
+    if (
+      employeeIncrementByIdApi?.data?.oldGrossAmount > +values?.grossAmount ||
+      employeeInfo?.data[0]?.numNetGrossSalary > +values?.grossAmount
+    ) {
+      return toast.warn("Amount should be greater than previous amount");
+    }
 
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
@@ -2351,16 +2357,16 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         if (isNaN(e?.target?.value)) {
                           return toast.warn("Only numeric value allowed");
                         } else {
-                          if (
-                            employeeIncrementByIdApi?.data?.oldGrossAmount >
-                              +e?.target?.value ||
-                            employeeInfo?.data[0]?.numNetGrossSalary >
-                              +e?.target?.value
-                          ) {
-                            return toast.warn(
-                              "Amount should be greater than previous amount"
-                            );
-                          }
+                          // if (
+                          //   employeeIncrementByIdApi?.data?.oldGrossAmount >
+                          //     +e?.target?.value ||
+                          //   employeeInfo?.data[0]?.numNetGrossSalary >
+                          //     +e?.target?.value
+                          // ) {
+                          //   return toast.warn(
+                          //     "Amount should be greater than previous amount"
+                          //   );
+                          // }
                           form.setFieldsValue({
                             grossAmount: +e?.target?.value,
                           });
