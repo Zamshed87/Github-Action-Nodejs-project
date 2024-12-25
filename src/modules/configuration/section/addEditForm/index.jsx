@@ -7,6 +7,7 @@ import { Switch } from "antd";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -138,7 +139,7 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Section Name is required" }]}
             />
           </Col>
-          {orgId === 7 && (
+          {orgIdsForBn.includes(orgId) && (
             <Col md={12} sm={24}>
               <PInput
                 type="text"

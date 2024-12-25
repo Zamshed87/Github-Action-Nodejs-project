@@ -5,6 +5,7 @@ import { Col, Form, Row } from "antd";
 import { useEffect } from "react";
 
 import { shallowEqual, useSelector } from "react-redux";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 import { checkBng } from "utility/regxExp";
 import { todayDate } from "utility/todayDate";
 
@@ -127,7 +128,7 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Designation is required" }]}
             />
           </Col>
-          {orgId === 7 && (
+          {orgIdsForBn.includes(orgId) && (
             <Col md={12} sm={24}>
               <PInput
                 type="text"

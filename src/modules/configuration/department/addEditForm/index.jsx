@@ -8,6 +8,7 @@ import { Switch } from "antd";
 import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -186,7 +187,7 @@ export default function AddEditForm({
               ]}
             />
           </Col>
-          {orgId === 7 && (
+          {orgIdsForBn.includes(orgId) && (
             <Col md={12} sm={24}>
               <PInput
                 type="text"
