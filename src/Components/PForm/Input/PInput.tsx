@@ -9,6 +9,8 @@ import {
 import { InputProperty, InputType } from "../TForm";
 import "../styles.scss";
 
+
+
 export const PInput = <T extends InputType>(property: InputProperty<T>) => {
   const renderInput = <T extends InputType>(property: InputProperty<T>) => {
     const {
@@ -56,6 +58,18 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           allowClear={allowClear}
           disabledDate={disabledDate}
           picker={picker as "date" | "week" | "month" | "year"}
+        />
+      ) : type === "month" ? (
+        <DatePicker
+          placeholder={placeholder || "Select Month"}
+          onChange={onChange as (date: any, dateString: string) => void}
+          disabled={disabled}
+          suffixIcon={suffix}
+          value={value}
+          style={{ width: "100%" }}
+          format={format || "YYYY-MM"}
+          allowClear={allowClear}
+          picker="month"
         />
       ) : type === "checkbox" ? (
         <Checkbox
