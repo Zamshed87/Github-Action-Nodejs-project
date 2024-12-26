@@ -37,6 +37,7 @@ import UserInfoCommonField from "../reports/userInfoCommonField";
 import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
 import {
+  createTrainingModes,
   formateFilterData,
   getRandomGradient,
   pieConfigCostPerParticipants,
@@ -50,6 +51,7 @@ import {
   upcommingTableheader,
 } from "./helper";
 import "./style.css";
+import { getEnumData } from "common/api/commonApi";
 
 const { Title } = Typography;
 
@@ -138,6 +140,7 @@ const TnDDashboard = () => {
     loadingTrainerOrg,
     setNameOfTrainerOrg,
   ] = useAxiosGet();
+  const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
 
   const getTrainingModeSummaryDataSetUp = (data: any) => {
     const list: any[] = [];
@@ -151,7 +154,11 @@ const TnDDashboard = () => {
       });
     });
     console.log(list);
-    setTrininingModeSummary(list);
+    setTrininingModeSummary(
+      list && list.length > 0
+        ? list
+        : createTrainingModes(trainingModeStatusDDL)
+    );
   };
 
   const landingApiCall = (values: any) => {
@@ -168,6 +175,8 @@ const TnDDashboard = () => {
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
+    getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
+
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
     getNameOfTrainerOrgDDL(
       "/TrainerInformation/Training/TrainerInformation",

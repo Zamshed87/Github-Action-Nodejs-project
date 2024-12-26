@@ -211,3 +211,13 @@ export const upcommingTableheader: any = [
     width: 40,
   },
 ];
+
+export const createTrainingModes = (options: any[]): any[] => {
+  return options.map((option) => ({
+    name: option.label,
+    noOfTraining: 0,
+    numberOfParticipants: 0,
+    costPerParticipant: 0,
+    totalCost: 0,
+  }));
+};
