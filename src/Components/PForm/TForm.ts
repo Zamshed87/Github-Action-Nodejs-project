@@ -141,6 +141,7 @@ type InputTypeMapping = {
   textarea: InputProps & BaseProps;
   search: InputProps & BaseProps;
   time: InputProps & BaseProps;
+  month: PickerProps<Moment> & BaseProps;
 };
 
 export type InputType = keyof InputTypeMapping;
