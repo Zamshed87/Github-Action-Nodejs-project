@@ -36,7 +36,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5 columns */
   gap: 16px; /* Space between items */
-  width: 80%;
+  width: 100%;
 }
 
 .grid-item {
@@ -46,4 +46,10 @@
   text-align: center;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 2000px) {
+  .grid-item {
+    width: 300px; /* Change the width of the grid items */
+  }
 }

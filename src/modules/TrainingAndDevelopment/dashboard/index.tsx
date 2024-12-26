@@ -37,6 +37,7 @@ import UserInfoCommonField from "../reports/userInfoCommonField";
 import DurationChart from "./chart/duration";
 import PerticipantsChart from "./chart/perticipants";
 import {
+  createLineConfig,
   createTrainingModes,
   formateFilterData,
   getRandomGradient,
@@ -103,7 +104,16 @@ const lineConfig = {
   data: lineData,
   xField: "month",
   yField: "value",
-  smooth: true,
+  smooth: false,
+  point: {
+    size: 5,
+    shape: "diamond",
+    style: {
+      fill: "white",
+      stroke: "#ff4d4f",
+      lineWidth: 2,
+    },
+  },
   color: "#ff4d4f",
 };
 
@@ -126,6 +136,22 @@ const TnDDashboard = () => {
     upcommingTrainingSummaryLoading,
     ,
     upcommingTrainingSummaryError,
+  ] = useAxiosGet();
+
+  const [
+    trainingSummaryByMonth,
+    getTrainingSummaryByMonth,
+    trainingSummaryByMonthLoading,
+    setTrainingSummaryByMonth,
+    trainingSummaryByMonthError,
+  ] = useAxiosGet();
+
+  const [
+    participantsByMonthSummary,
+    getParticipantsByMonthSummary,
+    participantsByMonthLoading,
+    setParticipantsByMonth,
+    participantsByMonthError,
   ] = useAxiosGet();
 
   const [
@@ -188,6 +214,12 @@ const TnDDashboard = () => {
       getTrainingModeSummaryDataSetUp
     );
     getUpcommingTrainingSummary("/Dashboard/Training/Dashboard/UpComming");
+    getParticipantsByMonthSummary(
+      "/Dashboard/Training/Dashboard/ParticipantsByMonth"
+    );
+    getTrainingSummaryByMonth(
+      "/Dashboard/Training/Dashboard/TrainingSummaryByMonth"
+    );
   }, []);
 
   const typeDataSetForTrainerOrg = (data: any) => {
@@ -470,7 +502,7 @@ const TnDDashboard = () => {
                 style={{
                   height: "150px", // Fixed height for all cards
                   border: "1px solid #f0f0f0",
-                  width: "242px",
+                  width: "242px", // need to change
                   borderRadius: "8px",
                   textAlign: "center",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -627,14 +659,26 @@ const TnDDashboard = () => {
         <Col span={12}>
           <Card title="Number of Participants">
             <div style={{ height: "200px", width: "600px" }}>
-              <PerticipantsChart />
+              {participantsByMonthLoading ? (
+                <Skeleton active />
+              ) : (
+                <PerticipantsChart
+                // data={participantsByMonthSummary}
+                />
+              )}
             </div>
           </Card>
         </Col>
         <Col span={12}>
           <Card title="Training Duration">
             <div style={{ height: "200px", width: "600px" }}>
-              <DurationChart />
+              {trainingSummaryByMonthLoading ? (
+                <Skeleton active />
+              ) : (
+                <DurationChart
+                // data={trainingSummaryByMonth?.trainingDurationByMonthDto}
+                />
+              )}
             </div>
           </Card>
         </Col>
@@ -643,7 +687,16 @@ const TnDDashboard = () => {
       {/* Line Chart */}
       <Card title="Month-Wise Training Summary">
         <div style={{ height: "250px" }}>
-          <Line {...lineConfig} />
+          {trainingSummaryByMonthLoading ? (
+            <Skeleton active />
+          ) : (
+            <Line
+              {...lineConfig}
+              // {...createLineConfig(
+              //   trainingSummaryByMonth?.trainingSummaryByMonthDto
+              // )}
+            />
+          )}{" "}
         </div>
       </Card>
       <Card title="Upcoming Training">

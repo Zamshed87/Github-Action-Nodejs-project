@@ -20,6 +20,16 @@ const createPieConfig = (data: any, angleField: string) => {
   };
 };
 
+export const createLineConfig = (data: any) => {
+  return {
+    data: data,
+    xField: "month",
+    yField: "numberOfTrainings",
+    smooth: true,
+    color: "#ff4d4f",
+  };
+};
+
 // Usage
 export const pieConfigNoOfTraining = (data: any) =>
   createPieConfig(data, "noOfTraining");
