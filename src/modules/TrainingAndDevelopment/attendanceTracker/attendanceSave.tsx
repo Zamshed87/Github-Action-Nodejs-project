@@ -54,7 +54,7 @@ const TnDAttendanceSave = () => {
   let permission: any = {};
 
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30356) {
+    if (item?.menuReferenceId === 199) {
       permission = item;
     }
   });

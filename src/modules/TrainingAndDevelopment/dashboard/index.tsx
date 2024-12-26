@@ -167,6 +167,7 @@ const TnDDashboard = () => {
     setNameOfTrainerOrg,
   ] = useAxiosGet();
   const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
+  const [chartShow, setChartShow] = useState(false);
 
   const getTrainingModeSummaryDataSetUp = (data: any) => {
     const list: any[] = [];
@@ -214,11 +215,17 @@ const TnDDashboard = () => {
       getTrainingModeSummaryDataSetUp
     );
     getUpcommingTrainingSummary("/Dashboard/Training/Dashboard/UpComming");
+    setChartShow(false);
     getParticipantsByMonthSummary(
-      "/Dashboard/Training/Dashboard/ParticipantsByMonth"
-    );
-    getTrainingSummaryByMonth(
-      "/Dashboard/Training/Dashboard/TrainingSummaryByMonth"
+      "/Dashboard/Training/Dashboard/ParticipantsByMonth",
+      () => {
+        getTrainingSummaryByMonth(
+          "/Dashboard/Training/Dashboard/TrainingSummaryByMonth",
+          () => {
+            setChartShow(true);
+          }
+        );
+      }
     );
   }, []);
 
@@ -659,12 +666,10 @@ const TnDDashboard = () => {
         <Col span={12}>
           <Card title="Number of Participants">
             <div style={{ height: "200px", width: "600px" }}>
-              {participantsByMonthLoading ? (
+              {!chartShow ? (
                 <Skeleton active />
               ) : (
-                <PerticipantsChart
-                // data={participantsByMonthSummary}
-                />
+                <PerticipantsChart data={participantsByMonthSummary} />
               )}
             </div>
           </Card>
@@ -672,11 +677,11 @@ const TnDDashboard = () => {
         <Col span={12}>
           <Card title="Training Duration">
             <div style={{ height: "200px", width: "600px" }}>
-              {trainingSummaryByMonthLoading ? (
+              {!chartShow ? (
                 <Skeleton active />
               ) : (
                 <DurationChart
-                // data={trainingSummaryByMonth?.trainingDurationByMonthDto}
+                  data={trainingSummaryByMonth?.trainingDurationByMonthDto}
                 />
               )}
             </div>
@@ -687,14 +692,13 @@ const TnDDashboard = () => {
       {/* Line Chart */}
       <Card title="Month-Wise Training Summary">
         <div style={{ height: "250px" }}>
-          {trainingSummaryByMonthLoading ? (
+          {!chartShow ? (
             <Skeleton active />
           ) : (
             <Line
-              {...lineConfig}
-              // {...createLineConfig(
-              //   trainingSummaryByMonth?.trainingSummaryByMonthDto
-              // )}
+              {...createLineConfig(
+                trainingSummaryByMonth?.trainingSummaryByMonthDto
+              )}
             />
           )}{" "}
         </div>
