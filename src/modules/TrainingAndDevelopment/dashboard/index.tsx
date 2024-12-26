@@ -2,6 +2,7 @@ import {
   CalculatorOutlined,
   ClockCircleOutlined,
   DollarCircleOutlined,
+  EyeOutlined,
   FileTextOutlined,
   MessageOutlined,
   TeamOutlined,
@@ -11,10 +12,12 @@ import {
 import { Line, Pie } from "@ant-design/plots";
 import { BarChartOutlined, PieChartOutlined } from "@mui/icons-material";
 import {
+  Button,
   Card,
   Col,
   Drawer,
   Form,
+  Popover,
   Row,
   Skeleton,
   Table,
@@ -49,10 +52,10 @@ import {
   tableColumns2,
   tableColumns3,
   tableColumns4,
-  upcommingTableheader,
 } from "./helper";
 import "./style.css";
 import { getEnumData } from "common/api/commonApi";
+import { getSerial } from "Utils";
 
 const { Title } = Typography;
 
@@ -228,6 +231,130 @@ const TnDDashboard = () => {
       }
     );
   }, []);
+
+  const upcommingTableheader: any = [
+    {
+      title: "SL",
+      render: (_: any, rec: any, index: number) =>
+        getSerial({
+          // currentPage: landingApi?.data?.currentPage,
+          // pageSize: landingApi?.data?.pageSize,
+          currentPage: 1,
+          pageSize: 1000, // need to change
+          index,
+        }),
+      fixed: "left",
+      align: "center",
+      width: 35,
+    },
+    {
+      title: "Organization",
+      dataIndex: "organization",
+      filter: true,
+      filterKey: "organizationList",
+      filterSearch: true,
+      width: 100,
+      fixed: "left",
+    },
+    {
+      title: "Training Date",
+      dataIndex: "trainingDate",
+      width: 50,
+      fixed: "left",
+    },
+    {
+      title: "Training Type",
+      dataIndex: "trainingType",
+      filter: true,
+      filterKey: "trainingTypeList",
+      filterSearch: true,
+      width: 80,
+      fixed: "left",
+    },
+    {
+      title: "Training Title",
+      dataIndex: "trainingTitle",
+      filter: true,
+      filterKey: "trainingTitleList",
+      filterSearch: true,
+      width: 80,
+      fixed: "left",
+    },
+    {
+      title: "Training Organizer",
+      dataIndex: "trainingOrganizer",
+      // filter: true,
+      // filterKey: "trainingOrganizerList",
+      // filterSearch: true,
+      width: 50,
+      render: (_: any, rec: any) => rec?.trainingOrganizer?.label,
+    },
+    {
+      title: "Training Venue",
+      dataIndex: "trainingVenue",
+      filter: true,
+      filterKey: "trainingVenueList",
+      filterSearch: true,
+      width: 50,
+    },
+    {
+      title: "Training Mode",
+      dataIndex: "trainingMode",
+      width: 50,
+      render: (_: any, rec: any) => rec?.trainingMode?.label,
+    },
+    {
+      title: "Duration",
+      dataIndex: "trainingDuration",
+      filter: true,
+      filterKey: "trainingDurationList",
+      filterSearch: true,
+      width: 35,
+    },
+    {
+      title: "Participants",
+      dataIndex: "totalParticipants",
+      width: 55,
+    },
+    {
+      title: "Trainer Details",
+      dataIndex: "trainerDetails",
+      width: 30,
+      render: (Id: number, rec: any) => {
+        // Process trainerDetails to create a unique, comma-separated list
+        const trainerList: any[] = Array.from(
+          new Set(
+            (rec?.trainerDetails || "")
+              .split(",")
+              .map((detail: string) => detail.trim())
+          )
+        ).filter((detail: any) => detail !== "");
+
+        return (
+          <Popover
+            content={
+              <div>
+                {trainerList.length > 0 ? (
+                  <ul>
+                    {trainerList.map((trainer: string, index: number) => (
+                      <li key={index}>{trainer}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span>No trainer details available</span>
+                )}
+              </div>
+            }
+            title="Trainer Details"
+          >
+            <EyeOutlined
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            />
+          </Popover>
+        );
+      },
+    },
+  ];
 
   const typeDataSetForTrainerOrg = (data: any) => {
     const list: any[] = [];
@@ -507,11 +634,12 @@ const TnDDashboard = () => {
                 className="grid-item"
                 key={index}
                 style={{
-                  height: "150px", // Fixed height for all cards
+                  height: "120px", // Fixed height for all cards
                   border: "1px solid #f0f0f0",
                   width: "242px", // need to change
                   borderRadius: "8px",
                   textAlign: "center",
+                  paddingBottom: "10px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   transition: "transform 0.3s, background 0.3s",
                 }}
@@ -550,7 +678,7 @@ const TnDDashboard = () => {
             ))}
       </div>
 
-      <Row gutter={32} style={{ marginTop: "30px" }}>
+      <Row gutter={32} style={{ marginTop: "20px" }}>
         {/* Left Metrics Table */}
 
         {trininingModeSummaryLoading ? (
@@ -691,7 +819,7 @@ const TnDDashboard = () => {
 
       {/* Line Chart */}
       <Card title="Month-Wise Training Summary">
-        <div style={{ height: "250px" }}>
+        <div style={{ height: "200px" }}>
           {!chartShow ? (
             <Skeleton active />
           ) : (
