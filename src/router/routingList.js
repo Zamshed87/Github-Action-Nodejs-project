@@ -2721,7 +2721,7 @@ export const routingList = [
   },
   {
     path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/:id",
-    component: AdvanceSalaryGenerateLanding,
+    component: AdvanceSalaryGenerateCreate,
   },
   {
     path: "/compensationAndBenefits/payrollProcess/arearSalaryGenerate/view/:id",

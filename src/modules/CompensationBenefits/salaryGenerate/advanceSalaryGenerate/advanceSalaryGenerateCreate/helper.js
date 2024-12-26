@@ -366,29 +366,29 @@ export const salaryGenerateCreateEditTableColumn = (
       />
     ),
   },
-  {
-    title: "Bank Pay",
-    dataIndex: "numBankPayInAmount",
-  },
-  {
-    title: "Cash Pay",
-    dataIndex: "numCashPayInAmount",
-  },
-  {
-    title: "Digital Amount",
-    dataIndex: "numDigitalPayInAmount",
-    render: (_, record) => (
-      <div className="align-items-left">
-        {record?.numDigitalPayInAmount === null
-          ? "0"
-          : record?.numDigitalPayInAmount}
-      </div>
-    ),
-  },
-  {
-    title: "Payroll Group",
-    dataIndex: "strPayrollGroup",
-  },
+  // {
+  //   title: "Bank Pay",
+  //   dataIndex: "numBankPayInAmount",
+  // },
+  // {
+  //   title: "Cash Pay",
+  //   dataIndex: "numCashPayInAmount",
+  // },
+  // {
+  //   title: "Digital Amount",
+  //   dataIndex: "numDigitalPayInAmount",
+  //   render: (_, record) => (
+  //     <div className="align-items-left">
+  //       {record?.numDigitalPayInAmount === null
+  //         ? "0"
+  //         : record?.numDigitalPayInAmount}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   title: "Payroll Group",
+  //   dataIndex: "strPayrollGroup",
+  // },
 ];
 
 export const filterData = (keywords, allData, setRowDto) => {

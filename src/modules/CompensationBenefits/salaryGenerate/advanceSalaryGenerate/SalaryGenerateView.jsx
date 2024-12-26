@@ -74,28 +74,10 @@ const AdvanceSalaryGenerateView = () => {
   // const [rowDto, setRowDto] = useState([]);
   const [rowDto, getDetails, load, setRowDto] = useAxiosGet();
   // eslint-disable-next-line no-unused-vars
-  const [, setAllData] = useState([]);
-  // const [totalSalary, setTotalSalary] = useState(0);
-  // const [totalAllowance, setTotalAllowance] = useState(0);
-  // const [totalDeduction, setTotalDeduction] = useState(0);
-  // const [totalNetPay, setTotalNetPay] = useState(0);
-  // const [totalBankPay, setTotalBankPay] = useState(0);
-  // const [totalDBPay, setTotalDBPay] = useState(0);
-  // const [totalCashPay, setTotalCashPay] = useState(0);
+
   const [buDetails, setBuDetails] = useState({});
   const [hrPositionDDL, getWorkplaceNhrPosition, , setHrPositionDDL] =
     useAxiosGet([]);
-  // const [tableAllowanceHead, setTableAllowanceHead] = useState([]);
-  // const [tableDeductionHead, setTableDeductionHead] = useState([]);
-  // const [tableColumn, setTableColumn] = useState([]);
-
-  // const [totalWorkingDays, setTotalWorkingDays] = useState(0);
-  // const [totalAttendence, setTotalAttendence] = useState(0);
-  // const [resDetailsReport, setDetailsReport] = useState([]);
-
-  // const month = getMonthName(state?.intMonth);
-  // const year = state?.intYear;
-  // const monthYear = `${month}, ${year}`;
 
   const { values, setFieldValue, handleSubmit, setValues } = useFormik({
     enableReinitialize: true,
@@ -105,78 +87,6 @@ const AdvanceSalaryGenerateView = () => {
       // saveHandler();
     },
   });
-
-  // useEffect(() => {
-  //   if (rowDto.length > 0) {
-  //     setTotalSalary(
-  //       Number(
-  //         rowDto
-  //           ?.reduce((acc, item) => acc + item?.GrossSalary || 0, 0)
-  //           .toFixed(2)
-  //       )
-  //     );
-  //     setTotalAllowance(
-  //       Number(
-  //         rowDto
-  //           ?.reduce((acc, item) => acc + item?.TotalAllowance || 0, 0)
-  //           .toFixed(2)
-  //       )
-  //     );
-  //     setTotalDeduction(
-  //       Number(
-  //         rowDto
-  //           ?.reduce((acc, item) => acc + item?.TotalDeduction || 0, 0)
-  //           .toFixed(2)
-  //       )
-  //     );
-  //     setTotalNetPay(
-  //       Number(
-  //         rowDto?.reduce((acc, item) => acc + item?.NetPay || 0, 0).toFixed(2)
-  //       )
-  //     );
-  //     setTotalBankPay(
-  //       Number(
-  //         rowDto?.reduce((acc, item) => acc + item?.BankPay || 0, 0).toFixed(2)
-  //       )
-  //     );
-  //     setTotalDBPay(
-  //       Number(
-  //         rowDto
-  //           ?.reduce((acc, item) => acc + item?.DegitalBankPay || 0, 0)
-  //           .toFixed(2)
-  //       )
-  //     );
-  //     setTotalCashPay(
-  //       Number(
-  //         rowDto?.reduce((acc, item) => acc + item?.CashPay || 0, 0).toFixed(2)
-  //       )
-  //     );
-  //     setTotalWorkingDays(
-  //       Number(
-  //         rowDto
-  //           ?.reduce((acc, item) => acc + item?.TotalWorkingDays || 0, 0)
-  //           .toFixed(2)
-  //       )
-  //     );
-  //     setTotalAttendence(
-  //       Number(
-  //         rowDto
-  //           ?.reduce((acc, item) => acc + item?.PayableDays || 0, 0)
-  //           .toFixed(2)
-  //       )
-  //     );
-  //   }
-  // }, [rowDto]);
-
-  // const {
-  //   intAccountId,
-  //   intBusinessUnitId,
-  //   intMonth,
-  //   intYear,
-  //   intSalaryGenerateRequestId,
-  // } = !state?.data ? state : state?.data;
-
-  // let saveHandler = () => {};
 
   const getData = () => {
     // getSalaryGenerateRequestById(
@@ -209,20 +119,6 @@ const AdvanceSalaryGenerateView = () => {
   }, []);
 
   // excel column set up
-  const excelColumnFunc = (processId) => {
-    switch (processId) {
-      default:
-        return allSalaryExcelColumn;
-    }
-  };
-
-  // excel data set up
-  const excelDataFunc = (processId) => {
-    switch (processId) {
-      default:
-        return allSalaryExcelData(rowDto);
-    }
-  };
 
   const getDetailsReport = (partName) => {
     getWorkplaceNhrPosition(
@@ -289,14 +185,6 @@ const AdvanceSalaryGenerateView = () => {
 
   const [detailsData, setDetailsData] = useState("");
   const [detailsReportLoading, setDetailsReportLoading] = useState(false);
-
-  const sharedOnCell = (record) => {
-    if (record?.DeptName) {
-      return { colSpan: 0 };
-    }
-
-    return {};
-  };
 
   const columns = [
     {

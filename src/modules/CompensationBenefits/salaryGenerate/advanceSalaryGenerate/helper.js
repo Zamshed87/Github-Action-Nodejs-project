@@ -37,11 +37,13 @@ export const createAdvSalaryGenerateRequest = async (
   try {
     const res = await axios.post(api, payload);
     cb && cb();
-    toast.success(res.data?.[0].returnMessage || "Successfully");
+    toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
   } catch (error) {
+    console.log({ error });
     toast.warn(
-      error?.response?.data?.[0].returnMessage || "Something went wrong!"
+      // error?.response?.data?.[0].returnMessage || "Something went wrong!"
+      error?.message || "Something went wrong!"
     );
     setLoading && setLoading(false);
   }

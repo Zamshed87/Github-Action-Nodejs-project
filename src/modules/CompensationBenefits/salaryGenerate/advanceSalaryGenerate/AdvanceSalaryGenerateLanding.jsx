@@ -326,133 +326,133 @@ const AdvanceSalaryGenerateLanding = () => {
       //   },
       //   width: 200,
       // },
-      {
-        title: "Net Amount",
-        dataIndex: "netAmount",
-        // render: (_, record) => (
-        //   <>
-        //     {record?.numNetPayableSalary
-        //       ? numberWithCommas(record?.numNetPayableSalary)
-        //       : "0"}
-        //   </>
-        // ),
-        width: 100,
-        className: "text-right",
-      },
-      {
-        title: "Processing Status",
-        dataIndex: "ProcessionStatus",
-        className: "text-center",
-        render: (_, item) => {
-          return (
-            <Flex align="center" gap="8px">
-              <Tooltip title="Download as Excel" arrow>
-                <button
-                  className="btn-save ml-2"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
+      // {
+      //   title: "Net Amount",
+      //   dataIndex: "netAmount",
+      //   // render: (_, record) => (
+      //   //   <>
+      //   //     {record?.numNetPayableSalary
+      //   //       ? numberWithCommas(record?.numNetPayableSalary)
+      //   //       : "0"}
+      //   //   </>
+      //   // ),
+      //   width: 100,
+      //   className: "text-right",
+      // },
+      // {
+      //   title: "Processing Status",
+      //   dataIndex: "ProcessionStatus",
+      //   className: "text-center",
+      //   render: (_, item) => {
+      //     return (
+      //       <Flex align="center" gap="8px">
+      //         <Tooltip title="Download as Excel" arrow>
+      //           <button
+      //             className="btn-save ml-2"
+      //             type="button"
+      //             onClick={(e) => {
+      //               e.stopPropagation();
+      //               const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
 
-                    downloadFile(
-                      url,
-                      "Salary Details Report",
-                      "xlsx",
-                      setLoading
-                    );
-                  }}
-                  style={{
-                    border: "transparent",
-                    width: "30px",
-                    height: "30px",
-                    background: "#f2f2f7",
-                    borderRadius: "100px",
-                  }}
-                >
-                  <DownloadOutlined />
-                </button>
-              </Tooltip>
-              <div>
-                {item?.ProcessionStatus === "Success" && (
-                  <Tag style={{ borderRadius: "50px" }} color="green">
-                    {item?.ProcessionStatus}
-                  </Tag>
-                )}
-                {item?.ProcessionStatus === "Processing" && (
-                  <Tag style={{ borderRadius: "50px" }} color="gold">
-                    {item?.ProcessionStatus}
-                  </Tag>
-                )}
-              </div>
-            </Flex>
-          );
-        },
-        width: 130,
-      },
-      {
-        title: "Approval Status",
-        dataIndex: "ApprovalStatus",
-        sorter: true,
-        filter: false,
-        width: 140,
-        render: (_, item) => {
-          return (
-            <>
-              {item?.ApprovalStatus === "Approved" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-              {item?.ApprovalStatus === "Send for Approval" && (
-                <button
-                  style={{
-                    height: "24px",
-                    fontSize: "10px",
-                    padding: "0px 12px 0px 12px",
-                    backgroundColor: "#0BA5EC",
-                  }}
-                  className="btn btn-default"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    sendForApprovalHandler(item);
-                  }}
-                >
-                  Send for Approval
-                </button>
-              )}
-              {item?.ApprovalStatus === "Waiting for Approval" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-              {item?.ApprovalStatus === "Rejected" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-            </>
-          );
-        },
-      },
+      //               downloadFile(
+      //                 url,
+      //                 "Salary Details Report",
+      //                 "xlsx",
+      //                 setLoading
+      //               );
+      //             }}
+      //             style={{
+      //               border: "transparent",
+      //               width: "30px",
+      //               height: "30px",
+      //               background: "#f2f2f7",
+      //               borderRadius: "100px",
+      //             }}
+      //           >
+      //             <DownloadOutlined />
+      //           </button>
+      //         </Tooltip>
+      //         <div>
+      //           {item?.ProcessionStatus === "Success" && (
+      //             <Tag style={{ borderRadius: "50px" }} color="green">
+      //               {item?.ProcessionStatus}
+      //             </Tag>
+      //           )}
+      //           {item?.ProcessionStatus === "Processing" && (
+      //             <Tag style={{ borderRadius: "50px" }} color="gold">
+      //               {item?.ProcessionStatus}
+      //             </Tag>
+      //           )}
+      //         </div>
+      //       </Flex>
+      //     );
+      //   },
+      //   width: 130,
+      // },
+      // {
+      //   title: "Approval Status",
+      //   dataIndex: "ApprovalStatus",
+      //   sorter: true,
+      //   filter: false,
+      //   width: 140,
+      //   render: (_, item) => {
+      //     return (
+      //       <>
+      //         {item?.ApprovalStatus === "Approved" && (
+      //           <p
+      //             style={{
+      //               fontSize: "12px",
+      //               color: gray500,
+      //               fontWeight: "400",
+      //             }}
+      //           >
+      //             {item?.ApprovalStatus}
+      //           </p>
+      //         )}
+      //         {item?.ApprovalStatus === "Send for Approval" && (
+      //           <button
+      //             style={{
+      //               height: "24px",
+      //               fontSize: "10px",
+      //               padding: "0px 12px 0px 12px",
+      //               backgroundColor: "#0BA5EC",
+      //             }}
+      //             className="btn btn-default"
+      //             type="button"
+      //             onClick={(e) => {
+      //               e.stopPropagation();
+      //               sendForApprovalHandler(item);
+      //             }}
+      //           >
+      //             Send for Approval
+      //           </button>
+      //         )}
+      //         {item?.ApprovalStatus === "Waiting for Approval" && (
+      //           <p
+      //             style={{
+      //               fontSize: "12px",
+      //               color: gray500,
+      //               fontWeight: "400",
+      //             }}
+      //           >
+      //             {item?.ApprovalStatus}
+      //           </p>
+      //         )}
+      //         {item?.ApprovalStatus === "Rejected" && (
+      //           <p
+      //             style={{
+      //               fontSize: "12px",
+      //               color: gray500,
+      //               fontWeight: "400",
+      //             }}
+      //           >
+      //             {item?.ApprovalStatus}
+      //           </p>
+      //         )}
+      //       </>
+      //     );
+      //   },
+      // },
       {
         title: "",
         dataIndex: "",
@@ -461,7 +461,8 @@ const AdvanceSalaryGenerateLanding = () => {
         width: 125,
         render: (data, item) => (
           <>
-            {!!item?.isReGenerate && (
+            {/* {!!item?.isReGenerate && ( */}
+            {!!true && (
               <div>
                 <button
                   style={{
@@ -474,7 +475,7 @@ const AdvanceSalaryGenerateLanding = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     history.push({
-                      pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/${item?.intSalaryGenerateRequestId}`,
+                      pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/${item?.advanceSalaryCode}`,
                       state: item,
                     });
                   }}
