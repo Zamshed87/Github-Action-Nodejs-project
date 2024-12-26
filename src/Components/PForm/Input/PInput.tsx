@@ -67,7 +67,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           suffixIcon={suffix}
           value={value}
           style={{ width: "100%" }}
-          format={format || "YYYY-MM"}
+          format={format || "MM-YYYY"}
           allowClear={allowClear}
           picker="month"
         />
