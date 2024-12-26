@@ -6,7 +6,7 @@ const DurationChart = ({ data }) => {
   const validData = Array.isArray(data) ? data : [];
 
   const config = {
-    data: validData,
+    data: validData, // Correctly pass the data key
     xField: "month",
     yField: "totalDurationInHours",
     color: "#eb2f96",
