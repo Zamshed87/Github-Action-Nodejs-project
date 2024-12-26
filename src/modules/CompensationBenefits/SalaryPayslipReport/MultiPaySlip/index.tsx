@@ -158,7 +158,7 @@ const MarketVisitReport = () => {
                 <PInput
                   type="month"
                   name="date"
-                  label="Date"
+                  label="Month"
                   picker="month"
                   placeholder="Date"
                   onChange={(value) => {
