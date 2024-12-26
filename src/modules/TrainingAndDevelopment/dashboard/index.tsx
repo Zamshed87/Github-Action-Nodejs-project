@@ -178,6 +178,7 @@ const TnDDashboard = () => {
       "/Dashboard/Training/Dashboard/TrainingMode",
       getTrainingModeSummaryDataSetUp
     );
+    getUpcommingTrainingSummary("/Dashboard/Training/Dashboard/UpComming");
   }, []);
 
   const typeDataSetForTrainerOrg = (data: any) => {
@@ -221,7 +222,7 @@ const TnDDashboard = () => {
       },
       {
         title: "Total Participant",
-        count: Math.trunc(summaryCard?.totalParticipant || 0),
+        count: Math.trunc(summaryCard?.totalParticipantCount || 0),
         icon: <UserOutlined style={{ fontSize: "30px", color: "#3f51b5" }} />,
       },
       {
@@ -640,12 +641,12 @@ const TnDDashboard = () => {
         <DataTable
           bordered
           data={upcommingTrainingSummary || []}
-          loading={upcommingTrainingSummary}
+          loading={upcommingTrainingSummaryLoading}
           header={upcommingTableheader}
-          pagination={{
-            pageSize: upcommingTrainingSummary?.data?.pageSize,
-            total: upcommingTrainingSummary?.data?.totalCount,
-          }}
+          // pagination={{
+          //   pageSize: upcommingTrainingSummary?.data?.pageSize,
+          //   total: upcommingTrainingSummary?.data?.totalCount,
+          // }}
           filterData={upcommingTrainingSummary?.data?.filters}
           // onChange={(pagination, filters) => {
           //   landingApiCall({});
