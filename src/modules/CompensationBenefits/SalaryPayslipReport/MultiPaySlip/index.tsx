@@ -156,7 +156,7 @@ const MarketVisitReport = () => {
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
-                  type="date"
+                  type="month"
                   name="date"
                   label="Date"
                   picker="month"
