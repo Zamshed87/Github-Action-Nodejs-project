@@ -15,12 +15,19 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import { createTrainingType, updateTrainingType } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30356) {
+      permission = item;
+    }
+  });
   const { buId, wgId, employeeId, orgId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -159,7 +166,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     landingApiCall();
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
       {(loading || landingLoading) && <Loading />}
       <PForm form={form} initialValues={{ editAction: false }}>
@@ -260,6 +267,8 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
         </div>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

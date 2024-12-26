@@ -18,6 +18,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { saveAssessment } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { toast } from "react-toastify";
 
 const TnDAssessment = () => {
   interface LocationState {
@@ -40,7 +42,7 @@ const TnDAssessment = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission = null;
+  let permission: any = {};
 
   permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 30356) {
@@ -178,7 +180,7 @@ const TnDAssessment = () => {
     );
   };
 
-  return (
+  return permission?.isView ? (
     <div>
       {loading && <Loading />}
       <PForm
@@ -203,6 +205,9 @@ const TnDAssessment = () => {
                 icon: <SaveOutlined />,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
+                  if (!permission?.isCreate) {
+                    toast.warn("You don't have permission to create");
+                  }
                   saveAssessment(form, data, rowData, setLoading, () => {
                     history.push("/trainingAndDevelopment/trainingPlan");
                   });
@@ -308,6 +313,8 @@ const TnDAssessment = () => {
         </PCard>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

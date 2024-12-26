@@ -19,6 +19,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TnDFeedback = () => {
   interface LocationState {
@@ -41,8 +42,7 @@ const TnDFeedback = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission = null;
-
+  let permission: any = {};
   permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 30356) {
       permission = item;
@@ -178,7 +178,7 @@ const TnDFeedback = () => {
       }
     );
   };
-  return (
+  return permission?.isView ? (
     <div>
       {loading && <Loading />}
       <PForm
@@ -203,6 +203,10 @@ const TnDFeedback = () => {
                 icon: <SaveOutlined />,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
+                  if (!permission?.isCreate) {
+                    toast.warn("You don't have permission to create");
+                    return;
+                  }
                   saveFeedback(form, data, rowData, setLoading, () => {
                     history.push("/trainingAndDevelopment/trainingPlan");
                   });
@@ -308,6 +312,8 @@ const TnDFeedback = () => {
         </PCard>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

@@ -24,6 +24,8 @@ import {
   ViewTrainingSchedule,
 } from "../planning/helper";
 import { saveAttendace } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { toast } from "react-toastify";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
@@ -49,7 +51,7 @@ const TnDAttendanceSave = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission = null;
+  let permission: any = {};
 
   permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 30356) {
@@ -164,7 +166,7 @@ const TnDAttendanceSave = () => {
     });
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
       {(loading || landingLoading) && <Loading />}
       <PForm
@@ -189,6 +191,10 @@ const TnDAttendanceSave = () => {
                 icon: <SaveOutlined />,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
+                  if (!permission?.isCreate) {
+                    toast.warn("You don't have permission to create");
+                    return;
+                  }
                   saveAttendace(form, data, rowData, setLoading, () => {
                     history.push("/trainingAndDevelopment/trainingPlan");
                   });
@@ -355,6 +361,8 @@ const TnDAttendanceSave = () => {
         </PCard>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

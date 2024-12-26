@@ -15,12 +15,20 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import { createTrainingCost, updateTrainingCost } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30356) {
+      permission = item;
+    }
+  });
   const { buId, wgId, employeeId, orgId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -142,7 +150,7 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   // Watch for editAction changes
   const editAction = Form.useWatch("editAction", form);
 
-  return (
+  return permission?.isView ? (
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
@@ -256,6 +264,8 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
         {/* </PCard> */}
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

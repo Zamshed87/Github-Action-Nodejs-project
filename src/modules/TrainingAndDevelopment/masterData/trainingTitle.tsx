@@ -15,6 +15,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import { createTrainingTitle, updateTrainingTitle } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // hooks
@@ -25,6 +26,13 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30356) {
+      permission = item;
+    }
+  });
 
   // state
   const [loading, setLoading] = useState(false);
@@ -142,7 +150,7 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // Watch for editAction changes
   const editAction = Form.useWatch("editAction", form);
 
-  return (
+  return permission?.isView ? (
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
@@ -254,6 +262,8 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
         {/* </PCard> */}
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 
