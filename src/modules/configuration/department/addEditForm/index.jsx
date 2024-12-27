@@ -65,31 +65,52 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
+    // const payload = {
+    //   actionTypeId: singleData?.intDepartmentId ? 2 : 1,
+    // intDepartmentId: singleData?.intDepartmentId
+    //   ? singleData?.intDepartmentId
+    //   : 0,
+    //   strDepartment: values?.strDepartment || "",
+    //   strDepartmentBn: values?.strDepartmentBn || null,
+    //   strDepartmentCode: values?.strDepartmentCode,
+    //   isActive: values?.isActive,
+    //   isDeleted: true,
+    //   strCostCenterDivision: values?.strCostCenterDivision?.value,
+    //   // intParentDepId: values?.sectionDepartment?.value,
+    //   // strParentDepName: values?.sectionDepartment?.label,
+    //   intBusinessUnitId: values?.bUnit?.value || buId,
+    //   intAccountId: orgId,
+    //   dteCreatedAt: todayDate(),
+    //   intCreatedBy: employeeId,
+    //   dteUpdatedAt: todayDate(),
+    //   intUpdatedBy: employeeId,
+    //   intWorkplaceId: values?.workplace?.value || wId,
+    //   intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+    // };
     const payload = {
-      actionTypeId: singleData?.intDepartmentId ? 2 : 1,
-      intDepartmentId: singleData?.intDepartmentId
+      departmentId: singleData?.intDepartmentId
         ? singleData?.intDepartmentId
         : 0,
-      strDepartment: values?.strDepartment || "",
-      strDepartmentBn: values?.strDepartmentBn || null,
-      strDepartmentCode: values?.strDepartmentCode,
-      isActive: values?.isActive,
-      isDeleted: true,
-      strCostCenterDivision: values?.strCostCenterDivision?.value,
-      // intParentDepId: values?.sectionDepartment?.value,
-      // strParentDepName: values?.sectionDepartment?.label,
-      intBusinessUnitId: values?.bUnit?.value || buId,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: employeeId,
-      intWorkplaceId: values?.workplace?.value || wId,
-      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+      departmentName: values?.strDepartment || "",
+      departmentBn: values?.strDepartmentBn || null,
+      departmentCode: values?.strDepartmentCode,
+      workplaceList:
+        values?.workplace?.length > 0
+          ? values?.workplace?.map((wp) => {
+              return wp.value;
+            })
+          : [wgId],
+      businessUnitId: values?.bUnit?.value || buId,
+      accountId: orgId,
+      costCenterDivisionId: values?.strCostCenterDivision?.value,
+      costCenterDivision: values?.strCostCenterDivision?.label,
+      // parentDepId: 0,
+      // parentDepName: "string",
+      actionBy: employeeId,
     };
 
     saveDepartment.action({
-      urlKey: "SaveEmpDepartment",
+      urlKey: "CreateEmpDepartment",
       method: "POST",
       payload: payload,
       onSuccess: () => {
@@ -105,10 +126,12 @@ export default function AddEditForm({
           value: singleData?.intBusinessUnitId,
           label: singleData?.strBusinessUnit,
         },
-        workplace: {
-          value: singleData?.intWorkplaceId,
-          label: singleData?.strWorkplace,
-        },
+        workplace: [
+          {
+            value: singleData?.intWorkplaceId,
+            label: singleData?.strWorkplace,
+          },
+        ],
         workplaceGroup: {
           value: singleData?.intWorkplaceGroupId,
           label: singleData?.strWorkplaceGroup,
@@ -259,6 +282,8 @@ export default function AddEditForm({
               name="workplace"
               label="Workplace/Concern"
               placeholder="Workplace/Concern"
+              mode="multiple"
+              maxTagCount={"responsive"}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplace: op,
