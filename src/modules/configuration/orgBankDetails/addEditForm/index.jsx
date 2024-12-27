@@ -113,11 +113,14 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
-      workplaceId: values?.workplace?.value,
+      workplaceId: 0,
       workplaceName: values?.workplace?.label,
       workplaceGroupId: values?.workplaceGroup?.value,
       workplaceGroupName: values?.workplaceGroup?.label,
       strBankAdvice: JSON.stringify(values?.bankAdvice || []),
+      workplaceList: values?.workplace?.map((wp) => {
+        return wp.value;
+      }),
     };
     saveOrgBank.action({
       urlKey: "AccountBankDetailsCRUD",
@@ -372,6 +375,7 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Workplace Group is required" },
               ]}
+              disabled={singleData?.intAccountBankDetailsId ? true : false}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -381,6 +385,8 @@ export default function AddEditForm({
               label="Workplace"
               showSearch
               filterOption={true}
+              mode="multiple"
+              maxTagCount={"responsive"}
               placeholder="Workplace"
               onChange={(value, op) => {
                 form.setFieldsValue({
@@ -388,6 +394,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+              disabled={singleData?.intAccountBankDetailsId ? true : false}
             />
           </Col>
           <Col md={12} sm={24}>
