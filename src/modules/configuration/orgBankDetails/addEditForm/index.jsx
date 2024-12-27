@@ -375,7 +375,6 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Workplace Group is required" },
               ]}
-              disabled={singleData?.intAccountBankDetailsId ? true : false}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -394,7 +393,6 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
-              disabled={singleData?.intAccountBankDetailsId ? true : false}
             />
           </Col>
           <Col md={12} sm={24}>
