@@ -5,6 +5,7 @@ import { Col, Form, Row, Switch } from "antd";
 import { useEffect } from "react";
 
 import { shallowEqual, useSelector } from "react-redux";
+import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -34,19 +35,20 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
+    const payloadFoEdit = {
+      intPositionId: singleData?.intPositionId || 0,
+      strPosition: values?.strPosition || "",
+      strPositionCode: values?.strPositionCode || "",
+      intBusinessUnitId: buId,
+      isActive: isEdit ? values?.isActive : true,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: singleData?.intPositionId ? 0 : employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
+      intWorkplaceId: wId,
+    };
     const payload = {
-      // intPositionId: singleData?.intPositionId || 0,
-      // strPosition: values?.strPosition || "",
-      // strPositionCode: values?.strPositionCode || "",
-      // intBusinessUnitId: buId,
-      // isActive: isEdit ? values?.isActive : true,
-      // intAccountId: orgId,
-      // dteCreatedAt: todayDate(),
-      // intCreatedBy: singleData?.intPositionId ? 0 : employeeId,
-      // dteUpdatedAt: todayDate(),
-      // intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
-      // intWorkplaceId: wId,
-
       position: values?.strPosition || "",
       workplaceIdList: values?.workplace?.map((wp) => {
         return wp.value;
@@ -58,9 +60,9 @@ export default function AddEditForm({
       actionBy: employeeId,
     };
     saveHRPostion.action({
-      urlKey: "CreateHrPosition",
+      urlKey: singleData?.intPositionId ? "SavePosition" : "CreateHrPosition",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intPositionId ? payloadFoEdit : payload,
       onSuccess: () => {
         cb();
       },
