@@ -73,26 +73,26 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    // const payload = {
-    //   intTaxChallanConfigId: singleData?.intTaxChallanConfigId || 0,
-    //   intYear: values?.intYear?.value,
-    //   dteFiscalFromDate: values?.dteFiscalFromDate,
-    //   dteFiscalToDate: values?.dteFiscalToDate,
-    //   strCircle: values?.strCircle,
-    //   strZone: values?.strZone,
-    //   strChallanNo: values?.strChallanNo,
-    //   strBankName: values?.bankName?.label,
-    //   intBankId: values?.bankName?.value,
-    //   intAccountId: orgId,
-    //   intWorkplaceGroupId: values?.workplaceGroup?.value,
-    //   intWorkplaceId: values?.workplace?.value,
-    //   intFiscalYearId: values?.fiscalYearRange?.value,
-    //   intActionBy: singleData?.intActionBy || employeeId,
-    //   intCreatedBy: singleData?.intCreatedBy || employeeId,
-    //   intUpdatedBy: singleData?.intTaxChallanConfigId ? employeeId : 0,
-    //   dteChallanDate: values?.dteChallanDate,
-    //   dteCreatedAt: singleData?.dteCreatedAt || todayDate(),
-    // };
+    const payloadFoEdit = {
+      intTaxChallanConfigId: singleData?.intTaxChallanConfigId || 0,
+      intYear: values?.intYear?.value,
+      dteFiscalFromDate: values?.dteFiscalFromDate,
+      dteFiscalToDate: values?.dteFiscalToDate,
+      strCircle: values?.strCircle,
+      strZone: values?.strZone,
+      strChallanNo: values?.strChallanNo,
+      strBankName: values?.bankName?.label,
+      intBankId: values?.bankName?.value,
+      intAccountId: orgId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value,
+      intWorkplaceId: values?.workplace?.value,
+      intFiscalYearId: values?.fiscalYearRange?.value,
+      intActionBy: singleData?.intActionBy || employeeId,
+      intCreatedBy: singleData?.intCreatedBy || employeeId,
+      intUpdatedBy: singleData?.intTaxChallanConfigId ? employeeId : 0,
+      dteChallanDate: values?.dteChallanDate,
+      dteCreatedAt: singleData?.dteCreatedAt || todayDate(),
+    };
 
     const payload = {
       year: values?.intYear?.value,
@@ -114,9 +114,11 @@ export default function AddEditForm({
     };
 
     saveTaxChallanConfig.action({
-      urlKey: "CreateTaxChallanConfig",
+      urlKey: singleData?.intTaxChallanConfigId
+        ? "SaveTaxChallanConfig"
+        : "CreateTaxChallanConfig",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intTaxChallanConfigId ? payloadFoEdit : payload,
       onSuccess: () => {
         cb();
       },
