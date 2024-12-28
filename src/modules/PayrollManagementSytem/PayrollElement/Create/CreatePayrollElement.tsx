@@ -5,6 +5,8 @@ import { Col, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { orgIdsForBn } from "utility/orgForBanglaField";
+import { checkBng } from "utility/regxExp";
 
 type CreatePayrollElementType = {
   rowData: any;
@@ -32,6 +34,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
     if (rowData) {
       form.setFieldsValue({
         elementName: rowData?.strPayrollElementName,
+        elementNameBn: rowData?.strPayrollElementNameBn || "",
         isBasic: rowData?.isBasicSalary,
         isSalaryElement: rowData?.isPrimarySalary,
         elementType: rowData?.isAddition ? "addition" : "deduction",
@@ -69,7 +72,8 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
       intAccountId: orgId,
       intWorkplaceGroupId: wgId,
       intWorkplaceId: wId,
-      strPayrollElementName: values?.elementName,
+      strPayrollElementName: values?.elementName || "",
+      strPayrollElementNameBn: values?.elementNameBn || "",
       strCode: " ",
       isBasicSalary: values?.isBasic || false,
       isPrimarySalary: values?.isSalaryElement || false,
@@ -88,7 +92,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
         return wp.value;
       }),
       payrollElementName: values?.elementName,
-      payrollElementNameBn: "",
+      payrollElementNameBn: values?.elementNameBn || "",
       code: "",
       isBasicSalary: values?.isBasic || false,
       isPrimarySalary: values?.isSalaryElement || false,
@@ -114,7 +118,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   return (
     <PForm form={form} onFinish={onFinish}>
       <Row gutter={[10, 2]}>
-        <Col md={24} sm={24}>
+        <Col md={12} sm={12}>
           <PInput
             name="elementName"
             type="text"
@@ -127,6 +131,23 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
             disabled={rowData}
           />
         </Col>
+        {orgIdsForBn.includes(orgId) && (
+          <Col md={12} sm={12}>
+            <PInput
+              name="elementNameBn"
+              type="text"
+              label="Element Name (Bangla)"
+              placeholder="Element Name (Bangla)"
+              disabled={rowData}
+              rules={[
+                {
+                  message: "This Field Must be in Bangla",
+                  pattern: new RegExp(checkBng()),
+                },
+              ]}
+            />
+          </Col>
+        )}
         <Col md={24} sm={24}>
           <PSelect
             options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
