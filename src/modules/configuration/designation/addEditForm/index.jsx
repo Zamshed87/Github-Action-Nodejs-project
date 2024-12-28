@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 import { checkBng } from "utility/regxExp";
-import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -20,7 +19,7 @@ export default function AddEditForm({
   const saveHRPostion = useApiRequest({});
   const getBUnitDDL = useApiRequest({});
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, strWorkplace } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -61,28 +60,42 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
+    // const payload = {
+    //   intDesignationId: singleData?.intDesignationId
+    //     ? singleData?.intDesignationId
+    //     : 0,
+    //   strDesignation: values?.strDesignation,
+    //   strDesignationBn: values?.strDesignationBn || null,
+    //   strDesignationCode: values?.strDesignationCode,
+    //   intPositionId: 0,
+    //   isActive: values?.isActive || true,
+    //   isDeleted: values?.isDeleted,
+    //   intBusinessUnitIdList: buId,
+    //   intUserRoleIdList: [],
+    //   intAccountId: orgId,
+    //   dteCreatedAt: todayDate(),
+    //   dteUpdatedAt: todayDate(),
+    //   intPayscaleGradeId: values?.payscaleGrade?.value,
+    //   intWorkplaceId: wId,
+    //   intRankingId: 0,
+    //   intBusinessUnitId: buId,
+    // };
     const payload = {
-      intDesignationId: singleData?.intDesignationId
-        ? singleData?.intDesignationId
-        : 0,
-      strDesignation: values?.strDesignation,
-      strDesignationBn: values?.strDesignationBn || null,
-      strDesignationCode: values?.strDesignationCode,
-      intPositionId: 0,
-      isActive: values?.isActive || true,
-      isDeleted: values?.isDeleted,
-      intBusinessUnitIdList: buId,
-      intUserRoleIdList: [],
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      dteUpdatedAt: todayDate(),
-      intPayscaleGradeId: values?.payscaleGrade?.value,
-      intWorkplaceId: wId,
-      intRankingId: 0,
-      intBusinessUnitId: buId,
+      designation: values?.strDesignation,
+      designationBn: values?.strDesignationBn || null,
+      designationCode: values?.strDesignationCode,
+      positionId: 0,
+      rankingId: 0,
+      payscaleGradeId: values?.payscaleGrade?.value,
+      workplaceIdList: values?.workplace?.map((wp) => {
+        return wp.value;
+      }),
+      businessUnitId: buId,
+      accountId: orgId,
+      actionBy: employeeId,
     };
     saveHRPostion.action({
-      urlKey: "SaveDesignation",
+      urlKey: "CreateDesignation",
       method: "POST",
       payload: payload,
       onSuccess: () => {
@@ -90,9 +103,26 @@ export default function AddEditForm({
       },
     });
   };
-
+  const getWDDL = useApiRequest({});
   useEffect(() => {
+    getWDDL.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+
     if (singleData?.intDesignationId) {
+      form.setFieldValue("workplace", [{ label: strWorkplace, value: wId }]);
       form.setFieldsValue({
         ...singleData,
         payscaleGrade: {
@@ -168,6 +198,24 @@ export default function AddEditForm({
                 });
               }}
               // rules={[{ required: true, message: "District is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+              name="workplace"
+              label="Workplace"
+              showSearch
+              filterOption={true}
+              mode="multiple"
+              maxTagCount={"responsive"}
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
         </Row>
