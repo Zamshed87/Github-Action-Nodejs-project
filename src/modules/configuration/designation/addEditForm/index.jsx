@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 import { checkBng } from "utility/regxExp";
+import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -60,26 +61,26 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    // const payload = {
-    //   intDesignationId: singleData?.intDesignationId
-    //     ? singleData?.intDesignationId
-    //     : 0,
-    //   strDesignation: values?.strDesignation,
-    //   strDesignationBn: values?.strDesignationBn || null,
-    //   strDesignationCode: values?.strDesignationCode,
-    //   intPositionId: 0,
-    //   isActive: values?.isActive || true,
-    //   isDeleted: values?.isDeleted,
-    //   intBusinessUnitIdList: buId,
-    //   intUserRoleIdList: [],
-    //   intAccountId: orgId,
-    //   dteCreatedAt: todayDate(),
-    //   dteUpdatedAt: todayDate(),
-    //   intPayscaleGradeId: values?.payscaleGrade?.value,
-    //   intWorkplaceId: wId,
-    //   intRankingId: 0,
-    //   intBusinessUnitId: buId,
-    // };
+    const editFopayload = {
+      intDesignationId: singleData?.intDesignationId
+        ? singleData?.intDesignationId
+        : 0,
+      strDesignation: values?.strDesignation,
+      strDesignationBn: values?.strDesignationBn || null,
+      strDesignationCode: values?.strDesignationCode,
+      intPositionId: 0,
+      isActive: values?.isActive || true,
+      isDeleted: values?.isDeleted,
+      intBusinessUnitIdList: buId,
+      intUserRoleIdList: [],
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      dteUpdatedAt: todayDate(),
+      intPayscaleGradeId: values?.payscaleGrade?.value,
+      intWorkplaceId: wId,
+      intRankingId: 0,
+      intBusinessUnitId: buId,
+    };
     const payload = {
       designation: values?.strDesignation,
       designationBn: values?.strDesignationBn || null,
@@ -95,9 +96,11 @@ export default function AddEditForm({
       actionBy: employeeId,
     };
     saveHRPostion.action({
-      urlKey: "CreateDesignation",
+      urlKey: singleData?.intDesignationId
+        ? "SaveDesignation"
+        : "CreateDesignation",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intDesignationId ? editFopayload : payload,
       onSuccess: () => {
         cb();
       },
