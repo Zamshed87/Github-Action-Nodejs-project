@@ -73,29 +73,48 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
+    // const payload = {
+    //   intTaxChallanConfigId: singleData?.intTaxChallanConfigId || 0,
+    //   intYear: values?.intYear?.value,
+    //   dteFiscalFromDate: values?.dteFiscalFromDate,
+    //   dteFiscalToDate: values?.dteFiscalToDate,
+    //   strCircle: values?.strCircle,
+    //   strZone: values?.strZone,
+    //   strChallanNo: values?.strChallanNo,
+    //   strBankName: values?.bankName?.label,
+    //   intBankId: values?.bankName?.value,
+    //   intAccountId: orgId,
+    //   intWorkplaceGroupId: values?.workplaceGroup?.value,
+    //   intWorkplaceId: values?.workplace?.value,
+    //   intFiscalYearId: values?.fiscalYearRange?.value,
+    //   intActionBy: singleData?.intActionBy || employeeId,
+    //   intCreatedBy: singleData?.intCreatedBy || employeeId,
+    //   intUpdatedBy: singleData?.intTaxChallanConfigId ? employeeId : 0,
+    //   dteChallanDate: values?.dteChallanDate,
+    //   dteCreatedAt: singleData?.dteCreatedAt || todayDate(),
+    // };
+
     const payload = {
-      intTaxChallanConfigId: singleData?.intTaxChallanConfigId || 0,
-      intYear: values?.intYear?.value,
-      dteFiscalFromDate: values?.dteFiscalFromDate,
-      dteFiscalToDate: values?.dteFiscalToDate,
-      strCircle: values?.strCircle,
-      strZone: values?.strZone,
-      strChallanNo: values?.strChallanNo,
-      strBankName: values?.bankName?.label,
-      intBankId: values?.bankName?.value,
-      intAccountId: orgId,
-      intWorkplaceGroupId: values?.workplaceGroup?.value,
-      intWorkplaceId: values?.workplace?.value,
-      intFiscalYearId: values?.fiscalYearRange?.value,
-      intActionBy: singleData?.intActionBy || employeeId,
-      intCreatedBy: singleData?.intCreatedBy || employeeId,
-      intUpdatedBy: singleData?.intTaxChallanConfigId ? employeeId : 0,
-      dteChallanDate: values?.dteChallanDate,
-      dteCreatedAt: singleData?.dteCreatedAt || todayDate(),
+      year: values?.intYear?.value,
+      fiscalFromDate: values?.dteFiscalFromDate,
+      fiscalToDate: values?.dteFiscalToDate,
+      circle: values?.strCircle,
+      zone: values?.strZone,
+      challanNo: values?.strChallanNo,
+      challanDate: values?.dteChallanDate,
+      bankName: values?.bankName?.label,
+      bankId: values?.bankName?.value,
+      accountId: orgId,
+      fiscalYearId: values?.fiscalYearRange?.value,
+      actionBy: singleData?.intActionBy || employeeId,
+      workplaceGroupId: values?.workplaceGroup?.value,
+      workplaceIdlist: values?.workplace?.map((wp) => {
+        return wp.value;
+      }),
     };
 
     saveTaxChallanConfig.action({
-      urlKey: "SaveTaxChallanConfig",
+      urlKey: "CreateTaxChallanConfig",
       method: "POST",
       payload: payload,
       onSuccess: () => {
@@ -121,17 +140,18 @@ export default function AddEditForm({
           label: singleData?.strWorkplaceGroupName,
           value: singleData?.intWorkplaceGroupId,
         },
-        workplace: {
-          label: singleData?.strWorkplaceName,
-          value: singleData?.intWorkplaceId,
-        },
+        workplace: [
+          {
+            label: singleData?.strWorkplaceName,
+            value: singleData?.intWorkplaceId,
+          },
+        ],
         dteChallanDate: moment(singleData?.dteChallanDate),
         dteFiscalFromDate: moment(singleData?.dteFiscalFromDate),
         dteFiscalToDate: moment(singleData?.dteFiscalToDate),
       });
     }
   }, [singleData]);
-  console.log({ singleData });
 
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -212,6 +232,8 @@ export default function AddEditForm({
               name="workplace"
               label="Workplace"
               placeholder="Workplace"
+              mode="multiple"
+              maxTagCount={"responsive"}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplace: op,

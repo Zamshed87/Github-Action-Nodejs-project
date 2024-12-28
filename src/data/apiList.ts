@@ -84,6 +84,7 @@ export const apiList = {
   AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
   GetAllBankWallet: "/MasterData/GetAllBankWallet",
   SaveTaxChallanConfig: "/SaasMasterData/SaveTaxChallanConfig",
+  CreateTaxChallanConfig: "/SaasMasterData/CreateTaxChallanConfig",
   CreateBankBranch: "/Employee/CreateBankBranch",
   UpdateEmpBasicInfoByEmployeeId: "/Employee/UpdateEmpBasicInfoByEmployeeId",
   GetEmpIdCardExternalInfo: "/SaasMasterData/GetEmpIdCardExternalInfo",
