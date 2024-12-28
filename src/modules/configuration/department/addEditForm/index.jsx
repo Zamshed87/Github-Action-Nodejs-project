@@ -102,8 +102,8 @@ export default function AddEditForm({
           : [wgId],
       businessUnitId: values?.bUnit?.value || buId,
       accountId: orgId,
-      costCenterDivisionId: values?.strCostCenterDivision?.value,
-      costCenterDivision: values?.strCostCenterDivision?.label,
+      costCenterDivisionId: 0,
+      costCenterDivision: values?.strCostCenterDivision?.value,
       // parentDepId: 0,
       // parentDepName: "string",
       actionBy: employeeId,
@@ -135,6 +135,10 @@ export default function AddEditForm({
         workplaceGroup: {
           value: singleData?.intWorkplaceGroupId,
           label: singleData?.strWorkplaceGroup,
+        },
+        strCostCenterDivision: {
+          value: singleData?.strCostCenterDivision,
+          label: singleData?.strCostCenterDivision,
         },
       });
     }
