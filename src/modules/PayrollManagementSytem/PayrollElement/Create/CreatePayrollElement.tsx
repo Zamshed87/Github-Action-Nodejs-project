@@ -1,4 +1,4 @@
-import { PForm, PInput, PRadio } from "Components";
+import { PForm, PInput, PRadio, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
@@ -17,7 +17,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   setOpen,
 }) => {
   // Data From Store
-  const { orgId, wgId, wId, employeeId } = useSelector(
+  const { orgId, wgId, wId, employeeId, buId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -27,7 +27,23 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   // Form Instance
   const [form] = Form.useForm();
 
+  const getWDDL = useApiRequest({});
   useEffect(() => {
+    getWDDL.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
     if (rowData) {
       form.setFieldsValue({
         elementName: rowData?.strPayrollElementName,
@@ -41,28 +57,42 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
 
   //   Functions
   const onFinish = () => {
-    
     const values = form.getFieldsValue(true);
+    // const payload = {
+    //   intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
+    //   intAccountId: orgId,
+    //   intWorkplaceGroupId: wgId,
+    //   intWorkplaceId: wId,
+    //   strPayrollElementName: values?.elementName,
+    //   strCode: " ",
+    //   isBasicSalary: values?.isBasic || false,
+    //   isPrimarySalary: values?.isSalaryElement || false,
+    //   isAddition: values?.elementType === "addition" ? true : false,
+    //   isDeduction: values?.elementType === "deduction" ? true : false,
+    //   isTaxable: values?.isTaxable || false,
+    //   isActive: true,
+    //   dteCreatedAt: moment().format("YYYY-MM-DD"),
+    //   dteUpdatedAt: moment().format("YYYY-MM-DD"),
+    //   intCreatedBy: employeeId,
+    //   intUpdatedBy: employeeId,
+    // };
     const payload = {
-      intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
-      intAccountId: orgId,
-      intWorkplaceGroupId: wgId,
-      intWorkplaceId: wId,
-      strPayrollElementName: values?.elementName,
-      strCode: " ",
+      accountId: orgId,
+      workplaceIdList: values?.workplace?.map((wp: any) => {
+        return wp.value;
+      }),
+      payrollElementName: values?.elementName,
+      payrollElementNameBn: "",
+      code: "",
       isBasicSalary: values?.isBasic || false,
       isPrimarySalary: values?.isSalaryElement || false,
       isAddition: values?.elementType === "addition" ? true : false,
       isDeduction: values?.elementType === "deduction" ? true : false,
       isTaxable: values?.isTaxable || false,
-      isActive: true,
-      dteCreatedAt: moment().format("YYYY-MM-DD"),
-      dteUpdatedAt: moment().format("YYYY-MM-DD"),
-      intCreatedBy: employeeId,
-      intUpdatedBy: employeeId,
+      actionBy: employeeId,
     };
     SavePayrollElementType?.action({
-      urlKey: "SavePayrollElementType",
+      urlKey: "CreatePayrollElementType",
       method: "post",
       payload,
       toast: true,
@@ -87,6 +117,24 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
               { min: 3, message: "Element Name must be at least 3 characters" },
             ]}
             disabled={rowData}
+          />
+        </Col>
+        <Col md={24} sm={24}>
+          <PSelect
+            options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+            name="workplace"
+            label="Workplace"
+            showSearch
+            filterOption={true}
+            mode="multiple"
+            maxTagCount={"responsive"}
+            placeholder="Workplace"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                workplace: op,
+              });
+            }}
+            rules={[{ required: true, message: "Workplace is required" }]}
           />
         </Col>
         <Form.Item noStyle shouldUpdate>
