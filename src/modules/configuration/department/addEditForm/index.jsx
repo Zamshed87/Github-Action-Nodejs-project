@@ -65,28 +65,28 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    // const payload = {
-    //   actionTypeId: singleData?.intDepartmentId ? 2 : 1,
-    // intDepartmentId: singleData?.intDepartmentId
-    //   ? singleData?.intDepartmentId
-    //   : 0,
-    //   strDepartment: values?.strDepartment || "",
-    //   strDepartmentBn: values?.strDepartmentBn || null,
-    //   strDepartmentCode: values?.strDepartmentCode,
-    //   isActive: values?.isActive,
-    //   isDeleted: true,
-    //   strCostCenterDivision: values?.strCostCenterDivision?.value,
-    //   // intParentDepId: values?.sectionDepartment?.value,
-    //   // strParentDepName: values?.sectionDepartment?.label,
-    //   intBusinessUnitId: values?.bUnit?.value || buId,
-    //   intAccountId: orgId,
-    //   dteCreatedAt: todayDate(),
-    //   intCreatedBy: employeeId,
-    //   dteUpdatedAt: todayDate(),
-    //   intUpdatedBy: employeeId,
-    //   intWorkplaceId: values?.workplace?.value || wId,
-    //   intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
-    // };
+    const payloadFoEdit = {
+      actionTypeId: singleData?.intDepartmentId ? 2 : 1,
+      intDepartmentId: singleData?.intDepartmentId
+        ? singleData?.intDepartmentId
+        : 0,
+      strDepartment: values?.strDepartment || "",
+      strDepartmentBn: values?.strDepartmentBn || null,
+      strDepartmentCode: values?.strDepartmentCode,
+      isActive: values?.isActive,
+      isDeleted: true,
+      strCostCenterDivision: values?.strCostCenterDivision?.value,
+      // intParentDepId: values?.sectionDepartment?.value,
+      // strParentDepName: values?.sectionDepartment?.label,
+      intBusinessUnitId: values?.bUnit?.value || buId,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+      intWorkplaceId: values?.workplace?.value || wId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+    };
     const payload = {
       departmentId: singleData?.intDepartmentId
         ? singleData?.intDepartmentId
@@ -110,9 +110,11 @@ export default function AddEditForm({
     };
 
     saveDepartment.action({
-      urlKey: "CreateEmpDepartment",
+      urlKey: singleData?.intDepartmentId
+        ? "SaveEmpDepartment"
+        : "CreateEmpDepartment",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intDepartmentId ? payloadFoEdit : payload,
       onSuccess: () => {
         cb();
       },
