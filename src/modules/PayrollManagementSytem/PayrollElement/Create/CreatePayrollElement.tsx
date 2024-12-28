@@ -17,7 +17,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   setOpen,
 }) => {
   // Data From Store
-  const { orgId, wgId, wId, employeeId, buId } = useSelector(
+  const { orgId, wgId, wId, employeeId, buId, strWorkplace } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -28,6 +28,21 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   const [form] = Form.useForm();
 
   const getWDDL = useApiRequest({});
+  useEffect(() => {
+    if (rowData) {
+      form.setFieldsValue({
+        elementName: rowData?.strPayrollElementName,
+        isBasic: rowData?.isBasicSalary,
+        isSalaryElement: rowData?.isPrimarySalary,
+        elementType: rowData?.isAddition ? "addition" : "deduction",
+        isTaxable: rowData?.isTaxable,
+        workplace: [
+          { label: rowData?.strWorkplaceName, value: rowData?.intWorkplaceId },
+        ],
+      });
+    }
+  }, [rowData]);
+
   useEffect(() => {
     getWDDL.action({
       urlKey: "WorkplaceIdAll",
@@ -44,38 +59,29 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
         });
       },
     });
-    if (rowData) {
-      form.setFieldsValue({
-        elementName: rowData?.strPayrollElementName,
-        isBasic: rowData?.isBasicSalary,
-        isSalaryElement: rowData?.isPrimarySalary,
-        elementType: rowData?.isAddition ? "addition" : "deduction",
-        isTaxable: rowData?.isTaxable,
-      });
-    }
-  }, [rowData]);
+  }, [wgId]);
 
   //   Functions
   const onFinish = () => {
     const values = form.getFieldsValue(true);
-    // const payload = {
-    //   intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
-    //   intAccountId: orgId,
-    //   intWorkplaceGroupId: wgId,
-    //   intWorkplaceId: wId,
-    //   strPayrollElementName: values?.elementName,
-    //   strCode: " ",
-    //   isBasicSalary: values?.isBasic || false,
-    //   isPrimarySalary: values?.isSalaryElement || false,
-    //   isAddition: values?.elementType === "addition" ? true : false,
-    //   isDeduction: values?.elementType === "deduction" ? true : false,
-    //   isTaxable: values?.isTaxable || false,
-    //   isActive: true,
-    //   dteCreatedAt: moment().format("YYYY-MM-DD"),
-    //   dteUpdatedAt: moment().format("YYYY-MM-DD"),
-    //   intCreatedBy: employeeId,
-    //   intUpdatedBy: employeeId,
-    // };
+    const payloadEdit = {
+      intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
+      intAccountId: orgId,
+      intWorkplaceGroupId: wgId,
+      intWorkplaceId: wId,
+      strPayrollElementName: values?.elementName,
+      strCode: " ",
+      isBasicSalary: values?.isBasic || false,
+      isPrimarySalary: values?.isSalaryElement || false,
+      isAddition: values?.elementType === "addition" ? true : false,
+      isDeduction: values?.elementType === "deduction" ? true : false,
+      isTaxable: values?.isTaxable || false,
+      isActive: true,
+      dteCreatedAt: moment().format("YYYY-MM-DD"),
+      dteUpdatedAt: moment().format("YYYY-MM-DD"),
+      intCreatedBy: employeeId,
+      intUpdatedBy: employeeId,
+    };
     const payload = {
       accountId: orgId,
       workplaceIdList: values?.workplace?.map((wp: any) => {
@@ -92,9 +98,11 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
       actionBy: employeeId,
     };
     SavePayrollElementType?.action({
-      urlKey: "CreatePayrollElementType",
+      urlKey: rowData?.intPayrollElementTypeId
+        ? "SavePayrollElementType"
+        : "CreatePayrollElementType",
       method: "post",
-      payload,
+      payload: rowData?.intPayrollElementTypeId ? payloadEdit : payload,
       toast: true,
       onSuccess: () => {
         landingApi();
