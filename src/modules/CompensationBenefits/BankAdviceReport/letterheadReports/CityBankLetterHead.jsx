@@ -5,7 +5,7 @@ export default function CityBankLetterHead({
 }) {
   return (
     <>
-      {letterHeadImage > 0 && (
+      {letterHeadImage && (
         <img
           src={letterHeadImage}
           style={{
@@ -184,7 +184,7 @@ export default function CityBankLetterHead({
                   </tbody>
                 </table>
               </div>
-              {signatureImage > 0 && (
+              {signatureImage && (
                 <img
                   src={signatureImage}
                   alt="signature"

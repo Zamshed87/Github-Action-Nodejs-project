@@ -7,7 +7,7 @@ export default function CityLiveLetterHead({
 }) {
   return (
     <>
-      {letterHeadImage > 0 && (
+      {letterHeadImage && (
         <img
           className="invoice-header"
           src={letterHeadImage}
@@ -309,7 +309,7 @@ export default function CityLiveLetterHead({
                   </tbody>
                 </table>
               </div>
-              {signatureImage > 0 && (
+              {signatureImage && (
                 <img
                   src={signatureImage}
                   alt="signature"
