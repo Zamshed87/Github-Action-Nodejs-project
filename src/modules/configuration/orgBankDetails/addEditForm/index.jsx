@@ -23,7 +23,7 @@ export default function AddEditForm({
   const getBanksDDL = useApiRequest({});
   const getBranchDDL = useApiRequest({});
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -113,8 +113,8 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
-      workplaceId: values?.workplace?.value,
-      workplaceName: values?.workplace?.label,
+      workplaceId: values?.workplace[0]?.value,
+      workplaceName: values?.workplace[0]?.label,
       workplaceGroupId: values?.workplaceGroup?.value,
       workplaceGroupName: values?.workplaceGroup?.label,
       strBankAdvice: JSON.stringify(values?.bankAdvice || []),
@@ -396,6 +396,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+              disabled={singleData?.intAccountBankDetailsId ? true : false}
             />
           </Col>
           <Col md={12} sm={24}>
