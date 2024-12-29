@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { labelChangeByOrgId } from "utility/strLabelChange";
-import { DataTable } from "Components";
 import { approverDDL, header, submitHandler } from "./helper";
 import DraggableTable from "./Draggabletable";
 
@@ -137,11 +136,11 @@ export default function AddEditForm({
         urlKey: "ApprovalPipelineHeaderDetailsById",
         method: "GET",
         params: {
-          // id: singleData?.intBusinessUnitId,
-          headerId: singleData?.intPipelineHeaderId,
-          intWorkplaceGroupId: wgId,
-          BusinessUnitId: buId,
-          intBusinessUnitId: buId,
+          configHeaderId: singleData?.id,
+          accountId: orgId,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
+          workplaceId: wId,
         },
         onSuccess: (data) => {
           form.setFieldsValue({

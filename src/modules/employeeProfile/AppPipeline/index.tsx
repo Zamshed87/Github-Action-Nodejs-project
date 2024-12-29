@@ -60,9 +60,9 @@ function CommonAppPipeline() {
       method: "GET",
       params: {
         accountId: orgId,
-        intWorkplaceId: wId,
-        intWorkplaceGroupId: wgId,
-        intBusinessUnitId: buId,
+        workplaceId: wId,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         searchText: searchText || "",
         PageSize: pagination?.pageSize || 25,
         PageNo: pagination?.current || 1,
@@ -109,8 +109,8 @@ function CommonAppPipeline() {
       align: "center",
     },
     {
-      title: "Pipeline Name",
-      dataIndex: "strPipelineName",
+      title: "Application Type",
+      dataIndex: "applicationType",
       sorter: true,
     },
     {
@@ -123,6 +123,7 @@ function CommonAppPipeline() {
       dataIndex: "dteCreatedAt",
       render: (_: any, rec: any) => dateFormatter(rec?.dteCreatedAt),
       sorter: true,
+      width: 100,
     },
     {
       title: "Workp. Group/Location",
@@ -133,6 +134,26 @@ function CommonAppPipeline() {
       title: "Workplace/Concern",
       dataIndex: "workplcae",
       sorter: true,
+    },
+    {
+      title: "Sequence",
+      dataIndex: "isInSequence",
+      sorter: true,
+      render: (_: any, rec: any) => (
+        <span
+          className={`${
+            rec?.isInSequence === true ? "text-success" : "text-danger"
+          }`}
+        >
+          {rec?.isInSequence ? "Sequential" : "Not Sequential"}
+        </span>
+      ),
+    },
+    {
+      title: "Random Approval Count",
+      dataIndex: "randomApproverCount",
+      sorter: true,
+
     },
     {
       width: 50,
