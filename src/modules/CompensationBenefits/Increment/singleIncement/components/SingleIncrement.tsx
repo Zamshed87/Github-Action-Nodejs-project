@@ -43,8 +43,6 @@ import HistoryTransferTable from "modules/employeeProfile/transferNPromotion/tra
 import Loading from "common/loading/Loading";
 import { Alert } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
-import { dateFormatterReport } from "utility/dateFormatter";
-import { convert_number_to_word } from "utility/numberToWord";
 import IncrementLetter from "./IncrementLetter";
 
 type TIncrement = unknown;
