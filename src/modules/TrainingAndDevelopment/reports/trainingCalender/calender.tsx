@@ -143,7 +143,7 @@ const TrainingCalender: React.FC = () => {
 
     return (
       <div style={{ padding: 8 }}>
-        <Row justify="end" gutter={8}>
+        <Row justify="start" gutter={8}>
           <Col>
             <Select
               value={year}
