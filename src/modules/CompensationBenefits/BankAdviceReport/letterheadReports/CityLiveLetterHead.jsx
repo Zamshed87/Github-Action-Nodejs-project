@@ -48,6 +48,7 @@ export default function CityLiveLetterHead({
               style={{
                 margin: "0px 96px",
                 fontSize: "14px",
+                minWidth: "930px",
               }}
             >
               <p
