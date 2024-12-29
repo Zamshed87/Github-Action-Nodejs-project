@@ -251,6 +251,7 @@ export const apiList = {
     "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
   Cafeteria: "/Cafeteria/GetCafeteriaSetupById",
   commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
+  commonLanding1: "/Employee/BankAdviceWithLetterHead",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
   IsPromotionEligibleThroughIncrement:
