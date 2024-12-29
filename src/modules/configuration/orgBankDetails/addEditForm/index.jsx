@@ -113,7 +113,7 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
-      workplaceId: 0,
+      workplaceId: values?.workplace?.value,
       workplaceName: values?.workplace?.label,
       workplaceGroupId: values?.workplaceGroup?.value,
       workplaceGroupName: values?.workplaceGroup?.label,
@@ -122,6 +122,7 @@ export default function AddEditForm({
         return wp.value;
       }),
     };
+
     saveOrgBank.action({
       urlKey: "AccountBankDetailsCRUD",
       method: "POST",
@@ -152,10 +153,12 @@ export default function AddEditForm({
           value: singleData?.workplaceGroupId,
           label: singleData?.workplaceGroupName,
         },
-        workplace: {
-          value: singleData?.workplaceId,
-          label: singleData?.workplaceName,
-        },
+        workplace: [
+          {
+            value: singleData?.workplaceId,
+            label: singleData?.workplaceName,
+          },
+        ],
         bankAdvice: JSON.parse(singleData?.strBankAdvice)?.map((itm) => {
           return {
             ...itm,
@@ -402,7 +405,7 @@ export default function AddEditForm({
               showSearch
               mode="multiple"
               filterOption={true}
-              placeholder="Bank Advic"
+              placeholder="Bank Advice"
               options={[
                 {
                   value: "IBBL",
