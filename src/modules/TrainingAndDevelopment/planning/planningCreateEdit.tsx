@@ -173,15 +173,15 @@ const TnDPlanningCreateEdit = () => {
 
   // workplace wise
   const getEmployeDepartment = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    const { workplaceGroupPer, workplacePer } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
       urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
         businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceGroupId: workplaceGroupPer?.value,
+        workplaceId: workplacePer?.value,
 
         accountId: orgId,
       },
@@ -195,42 +195,21 @@ const TnDPlanningCreateEdit = () => {
   };
 
   const getEmployeePosition = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
+    const { workplaceGroupPer, workplacePer } = form.getFieldsValue(true);
     positionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Position",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        WorkplaceGroupId: workplaceGroupPer?.value,
+        IntWorkplaceId: workplacePer?.value,
         intId: 0,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: number) => {
           res[i].label = item?.PositionName;
           res[i].value = item?.PositionId;
-        });
-      },
-    });
-  };
-
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        workplaceGroupId: profileData?.wgId,
-        searchText: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
         });
       },
     });
@@ -416,43 +395,68 @@ const TnDPlanningCreateEdit = () => {
     form.resetFields(["nameofTrainerOrganization"]);
   };
 
-  const addHanderForPerticipant = (values: any) => {
-    if (!values?.employee) {
-      toast.error("Employee is required");
-      return;
-    }
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+  const addHanderForPerticipant = (values: any, employees: any) => {
+    const { workplaceGroupPer, workplacePer } = form.getFieldsValue(true);
 
-    const isDuplicate = perticipantField.some(
-      (participant: any) =>
-        participant.perticipantId === values?.employee?.value
-    );
+    console.log(form.getFieldsValue(true), "values");
 
-    if (isDuplicate) {
-      toast.error("Participant already exists");
-      return;
+    const addParticipant = (employee: any) => {
+      const isDuplicate = perticipantField.some(
+        (participant: any) => participant.perticipantId === employee.employeeId
+      );
+      console.log("perticipantField777566", perticipantField);
+
+      if (isDuplicate) {
+        // toast.error("Participant already exists");
+        return;
+      }
+
+      const nextId =
+        perticipantField.length > 0
+          ? perticipantField[perticipantField.length - 1].id + 1
+          : 1;
+
+      setperticipantField((prev: any) => [
+        ...prev,
+        {
+          id: nextId,
+          perticipant: `${employee.employeeNameWithCode}`,
+          perticipantId: employee.employeeId,
+          department: employee.departmentId,
+          departmentId: employee.departmentId,
+          hrPosition: employee.designationName,
+          hrPositionId: employee.designation,
+          workplaceGroup: workplaceGroupPer?.label,
+          workplaceGroupId: workplaceGroupPer?.value,
+          workplace: workplacePer?.label,
+          workplaceId: workplacePer?.value,
+        },
+      ]);
+      console.log("perticipantField6666", perticipantField);
+    };
+    console.log("perticipantField22", perticipantField);
+
+    if (values?.employee) {
+      addParticipant({
+        employeeId: values.employee.value,
+        employeeNameWithCode: `${values.employee.label} - ${values.employee.value}`,
+        departmentId: values.department.value,
+        designationName: values.hrPosition.label || "",
+        designation: values.hrPosition.value || 0,
+      });
+    } else {
+      employees.forEach((employee: any) => {
+        addParticipant(employee);
+      });
     }
-    const nextId =
-      perticipantField.length > 0
-        ? perticipantField[perticipantField.length - 1].id + 1
-        : 1;
-    setperticipantField([
-      ...perticipantField,
-      {
-        id: nextId,
-        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
-        perticipantId: values?.employee?.value,
-        department: values?.department?.label,
-        departmentId: values?.department?.value,
-        hrPosition: values?.hrPosition?.label,
-        hrPositionId: values?.hrPosition?.value,
-        workplaceGroup: workplaceGroup?.label,
-        workplaceGroupId: workplaceGroup?.value,
-        workplace: workplace?.label,
-        workplaceId: workplace?.value,
-      },
+    console.log("perticipantField", perticipantField);
+    form.resetFields([
+      "employee",
+      "department",
+      "hrPosition",
+      "workplacePer",
+      "workplaceGroupPer",
     ]);
-    form.resetFields(["employee", "department", "hrPosition"]);
   };
 
   const calculatePerPersonCost = () => {
@@ -948,6 +952,11 @@ const TnDPlanningCreateEdit = () => {
                   calculatePerPersonCost={calculatePerPersonCost}
                   departmentDDL={empDepartmentDDL?.data || []}
                   positionDDL={positionDDL?.data || []}
+                  workplaceGroup={workplaceGroup}
+                  getWorkplace={getWorkplace}
+                  workplace={workplace}
+                  getEmployeDepartment={getEmployeDepartment}
+                  getEmployeePosition={getEmployeePosition}
                 />
               </PCardBody>
             </>

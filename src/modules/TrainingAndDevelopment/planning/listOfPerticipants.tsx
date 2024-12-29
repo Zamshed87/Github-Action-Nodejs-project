@@ -7,6 +7,7 @@ import { FormInstance } from "antd/lib/form";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { de } from "date-fns/locale";
 
 const ListOfPerticipants = ({
   form,
@@ -16,18 +17,14 @@ const ListOfPerticipants = ({
   calculatePerPersonCost,
   departmentDDL,
   positionDDL,
-}: {
-  form: FormInstance;
-  perticipantField: any[];
-  setperticipantField: (data: any[]) => void;
-  addHandler: (values: any) => void;
-  calculatePerPersonCost?: () => number;
-  departmentDDL: any[];
-  positionDDL: any[];
-}) => {
+  workplaceGroup,
+  getWorkplace,
+  workplace,
+  getEmployeDepartment,
+  getEmployeePosition,
+}: any) => {
   const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
   const CommonEmployeeDDL = useApiRequest([]);
-  const empDepartmentDDL = useApiRequest([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -35,16 +32,21 @@ const ListOfPerticipants = ({
   );
   const { buId, wgId, employeeId, orgId } = profileData;
 
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+  const getEmployee = () => {
+    console.log("value", form.getFieldsValue(true));
+    const { bUnit, workplaceGroupPer, workplacePer, department, hrPosition } =
+      form.getFieldsValue(true);
+    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
     CommonEmployeeDDL?.action({
       urlKey: "CommonEmployeeDDL",
       method: "GET",
       params: {
-        businessUnitId: profileData?.buId,
-        workplaceGroupId: profileData?.wgId,
-        searchText: value,
+        businessUnitId: bUnit?.value,
+        workplaceGroupId: workplaceGroupPer?.value,
+        workplaceId: workplacePer?.value,
+        departmentId: department?.value,
+        // searchText: value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: number) => {
@@ -102,7 +104,7 @@ const ListOfPerticipants = ({
               }}
               onClick={() => {
                 const updatedperticipantField = perticipantField.filter(
-                  (item) => item.perticipantId !== rec.perticipantId
+                  (item: any) => item.perticipantId !== rec.perticipantId
                 );
                 setperticipantField(updatedperticipantField);
               }}
@@ -115,10 +117,6 @@ const ListOfPerticipants = ({
     },
   ];
 
-  console.log(
-    perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
-  );
-
   // const workplace = Form.useWatch("workplace", form);
 
   const values = form.getFieldsValue(true);
@@ -129,6 +127,42 @@ const ListOfPerticipants = ({
     <div style={{ marginTop: "13px" }}>
       <h1>List of Perticipants</h1>
       <Row gutter={[10, 2]} style={{ marginTop: "10px" }}>
+        <Col md={6} sm={12} xs={24}>
+          <PSelect
+            options={workplaceGroup?.data || []}
+            name="workplaceGroupPer"
+            label="Workplace Group"
+            placeholder="Workplace Group"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                workplaceGroupPer: op,
+                workplacePer: undefined,
+              });
+              getWorkplace();
+              getEmployee();
+            }}
+            rules={[{ required: true, message: "Workplace Group is required" }]}
+          />
+        </Col>
+        <Col md={6} sm={12} xs={24}>
+          <PSelect
+            options={workplace?.data || []}
+            name="workplacePer"
+            label="Workplace"
+            placeholder="Workplace"
+            // disabled={+id ? true : false}
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                workplacePer: op,
+              });
+              getEmployeDepartment();
+              getEmployeePosition();
+              getEmployee();
+              //   getDesignation();
+            }}
+            rules={[{ required: true, message: "Workplace is required" }]}
+          />
+        </Col>
         <Col md={6} sm={24}>
           <PSelect
             options={departmentDDL} // need to change
@@ -140,6 +174,7 @@ const ListOfPerticipants = ({
               form.setFieldsValue({
                 department: op,
               });
+              getEmployee();
             }}
             rules={[
               {
@@ -161,38 +196,21 @@ const ListOfPerticipants = ({
                 hrPosition: op,
               });
             }}
-            rules={[
-              {
-                required: true,
-                message: "HR Position is required",
-              },
-            ]}
           />
         </Col>
         <Col md={6} sm={24}>
           <PSelect
+            options={CommonEmployeeDDL?.data || []} // need to change iffff..
             name="employee"
             label="Employee"
-            placeholder="Search Min 2 char"
-            options={CommonEmployeeDDL?.data || []}
-            loading={CommonEmployeeDDL?.loading}
+            allowClear
+            // disabled={!workplace}
+            placeholder="Employee"
             onChange={(value, op) => {
               form.setFieldsValue({
                 employee: op,
               });
             }}
-            onSearch={(value) => {
-              getEmployee(value);
-            }}
-            showSearch
-            filterOption={false}
-            allowClear={true}
-            rules={[
-              {
-                required: true,
-                message: "Employee is required",
-              },
-            ]}
           />
         </Col>
 
@@ -204,12 +222,16 @@ const ListOfPerticipants = ({
             onClick={() => {
               const values = form.getFieldsValue(true);
               form
-                .validateFields(["employee", "department", "hrPosition"])
+                .validateFields([
+                  "department",
+                  "workplacePer",
+                  "workplaceGroupPer",
+                ])
                 .then(() => {
-                  addHandler(values);
+                  addHandler(values, CommonEmployeeDDL?.data);
                 })
                 .catch(() => {});
-              addHandler(values);
+              // addHandler(values);
             }}
           />
         </Col>
