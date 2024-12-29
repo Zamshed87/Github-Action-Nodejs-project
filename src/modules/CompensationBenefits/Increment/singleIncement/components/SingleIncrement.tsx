@@ -435,7 +435,11 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     if (!values?.grossAmount) {
       return toast.warn("Gross Amount is required ");
     }
-    if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
+    if (
+      values?.salaryType?.value !== "Grade" &&
+      !values?.basicAmount &&
+      (values?.basedOn?.value === 2 || values?.basedOn === 2)
+    ) {
       return toast.warn("Basic Amount is required ");
     }
     if (
@@ -1068,7 +1072,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           );
           // console.log(employeeInfo?.data[0], "here");
           form.setFieldsValue({
-            grossAmount: newGross,
+            grossAmount: Math.round(newGross),
             basicAmount:
               (location?.state as any)?.singleData?.incrementList?.[0]
                 ?.strIncrementDependOn === "Basic" &&
@@ -2468,7 +2472,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               (acc, i) => acc + i?.numAmount,
               0
             );
-            console.log({ elementSum }, { grossAmount });
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
