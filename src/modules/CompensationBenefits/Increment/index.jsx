@@ -522,6 +522,7 @@ function IncrementLanding() {
                       history,
                       getTransferNpromotion
                     )}
+                    isScrollAble={true}
                     pages={pages}
                     rowDto={rowDto}
                     onRowClick={(item) => {

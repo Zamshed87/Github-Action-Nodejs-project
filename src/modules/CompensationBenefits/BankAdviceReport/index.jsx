@@ -1,12 +1,24 @@
+import { DownloadOutlined } from "@ant-design/icons";
+import BtnActionMenu from "common/BtnActionMenu";
 import { useFormik } from "formik";
+import { useApiRequest } from "Hooks";
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
+import { MdPrint } from "react-icons/md";
+import { SiMicrosoftexcel } from "react-icons/si";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { todayDate } from "utility/todayDate";
+import { APIUrl } from "../../../App";
 import { getPeopleDeskAllDDL } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import { paginationSize } from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
@@ -21,20 +33,10 @@ import {
   getBankAdviceBonusRequestLanding,
   getBankAdviceRequestLanding,
 } from "./helper";
-import { paginationSize } from "../../../common/peopleDeskTable";
-import useDebounce from "../../../utility/customHooks/useDebounce";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { todayDate } from "utility/todayDate";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { useApiRequest } from "Hooks";
-import BtnActionMenu from "common/BtnActionMenu";
-import { DownloadOutlined } from "@ant-design/icons";
-import { SiMicrosoftexcel } from "react-icons/si";
+import CityBankLetterHead from "./letterheadReports/CityBankLetterHead";
+import CityLiveLetterHead from "./letterheadReports/CityLiveLetterHead";
+import DigitalPaymentLetterHead from "./letterheadReports/DigitalPaymentLetterHead";
 import { TopSheetReport } from "./TopSheetReport";
-import { useReactToPrint } from "react-to-print";
-import moment from "moment";
-import { MdPrint } from "react-icons/md";
-import { APIUrl } from "../../../App";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -45,13 +47,18 @@ const BankAdviceReport = () => {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tenMsdata, setTenMsdata] = useState("");
   const [landingView, setLandingView] = useState("");
+  const [landingViewPdf, setLandingViewPdf] = useState("");
   const [pdfDto, setPdfDto] = useState([]);
   const [adviceType, setAdviceType] = useState([]);
+  const [letterHeadImage, setLetterHeadImage] = useState("");
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({
     contentRef,
+    onAfterPrint: () => {
+      setLandingView("");
+      setLandingViewPdf("");
+    },
   });
-
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
   );
@@ -66,8 +73,10 @@ const BankAdviceReport = () => {
     total: 0,
   });
 
-  const { orgId, buId, employeeId, strBusinessUnit, wgId, intLogoUrlId } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { orgId, buId, employeeId, strBusinessUnit, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
     useFormik({
@@ -85,8 +94,6 @@ const BankAdviceReport = () => {
     });
   const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-  const letterhead =
-    "https://i.ibb.co.com/nnTRpVV/10-Minute-School-Logo-svg.png";
 
   const topSheetRef = useRef();
 
@@ -131,6 +138,7 @@ const BankAdviceReport = () => {
   };
 
   const commonLanding = useApiRequest([]);
+  const commonLanding1 = useApiRequest([]);
   // Functions
   const commonLandingFor = (values) => {
     if (!values?.adviceName?.value) {
@@ -157,9 +165,59 @@ const BankAdviceReport = () => {
     });
   };
 
+  const commonLandingForPdf = (values) => {
+    if (!values?.adviceName?.value) {
+      return toast.warning("Please select Salary Code");
+    }
+    commonLanding1?.action({
+      method: "get",
+      urlKey: "commonLanding1",
+      params: {
+        IntAccountId: orgId,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: values?.workplaceGroup?.value,
+        IntWorkplaceId: values?.workplace?.value,
+        IntMonthId: values?.monthId,
+        IntYearId: values?.yearId,
+        IntBankId: values?.bank?.value,
+        IntSalaryGenerateRequestId: values?.adviceName?.value,
+        StrAdviceType: values?.adviceType?.value,
+        StrDownloadType: "TopSheet",
+      },
+      onSuccess: (res) => {
+        fetchLetterHeadImage();
+        setLandingViewPdf(res);
+      },
+    });
+  };
+
+  const landingApi = useApiRequest({});
+
+  const landingApiCall = ({
+    pagination = {},
+    filerList,
+    searchText = "",
+  } = {}) => {
+    landingApi.action({
+      urlKey: "GetAllWorkplace",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    landingApiCall();
+  }, []);
+
   // on form submit
   const saveHandler = (values) => {
     commonLandingFor(values);
+    commonLandingForPdf(values);
+
     if (values?.bankAdviceFor?.value === 2) {
       if (!values?.bonusCode?.length > 0)
         return toast.warning("Please select Bonus Code");
@@ -186,6 +244,26 @@ const BankAdviceReport = () => {
         setRowDto,
         setLoading
       );
+    }
+  };
+
+  const fetchLetterHeadImage = async () => {
+    if (orgId === 4 && landingApi?.data?.length > 0) {
+      setLoading(true);
+      try {
+        const letterHeadImageId = landingApi?.data.find(
+          (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+        ).intLetterHeadId;
+        const response = await fetch(
+          `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
+        );
+        const imageUrl = `url(${response.url})`;
+        setLetterHeadImage(imageUrl);
+      } catch (error) {
+        console.error("Error fetching letter head image:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -862,6 +940,7 @@ const BankAdviceReport = () => {
                   <li className="mt-1 mr-2">
                     <BtnActionMenu
                       className="btn btn-default flex-center btn-deafult-create-job"
+                      disabled={landingView === "" && landingViewPdf === ""}
                       icon={
                         <DownloadOutlined
                           style={{
@@ -908,11 +987,6 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 2,
-                              });
-                            }
                             const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
@@ -936,13 +1010,14 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 3,
-                              });
-                            }
                             if (orgId === 4) {
-                              reactToPrintFn();
+                              if (!commonLanding1?.loading && !loading) {
+                                setLoading(true);
+                                setTimeout(() => {
+                                  reactToPrintFn();
+                                  setLoading(false);
+                                }, 1000);
+                              }
                             } else {
                               const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
                               getPDFAction(
@@ -1108,84 +1183,27 @@ const BankAdviceReport = () => {
               <NoResult />
             )} */}
             <div style={{ overflow: "scroll" }} className="mt-3 w-100">
-              {orgId === 4 && (
+              {orgId === 4 && !commonLanding1?.loading && (
                 <div style={{ display: "none" }}>
                   <div ref={contentRef}>
-                    <div
-                      className="invoice-header"
-                      style={{
-                        backgroundImage: `url(${APIUrl}/Document/DownloadFile?id=${intLogoUrlId})`,
-                        backgroundRepeat: "no-repeat",
-                        height: "150px",
-                        backgroundSize: "contain",
-                        position: "fixed",
-                        width: "200px",
-                        top: "70px",
-                        right: "70px",
-                      }}
-                    ></div>
-                    <div
-                      className="invoice-footer"
-                      style={{
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center bottom",
-                        bottom: "40px",
-                        position: "fixed",
-                        textAlign: "center",
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "100%",
-                      }}
-                    >
-                      Flat C-1, Rosy Palace, House 358-360, Road-5, Avenue-4,
-                      Mirpur DOHS, Dhaka-1216 <br /> Mobile: 01892698507 |
-                      Website: 10minuteschool.com
-                    </div>
-                    <table>
-                      <thead>
-                        <tr>
-                          <td
-                            style={{
-                              border: "none",
-                            }}
-                          >
-                            {/* place holder for the fixed-position header */}
-                            <div
-                              style={{
-                                height: "150px",
-                              }}
-                            ></div>
-                          </td>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {/* CONTENT GOES HERE */}
-                        <div
-                          style={{ marginTop: "70px", marginLeft: "70px" }}
-                          dangerouslySetInnerHTML={{
-                            __html: landingView,
-                          }}
-                        />
-                      </tbody>
-
-                      <tfoot>
-                        <tr>
-                          <td
-                            style={{
-                              border: "none",
-                            }}
-                          >
-                            {/* place holder for the fixed-position footer */}
-                            <div
-                              style={{
-                                height: "100px",
-                              }}
-                            ></div>
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
+                    {values?.adviceType?.value === "CITY" && (
+                      <CityBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DigitalPayment" && (
+                      <DigitalPaymentLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                      />
+                    )}
+                    {values?.adviceType?.value === "BFTN" && (
+                      <CityLiveLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                      />
+                    )}
                   </div>
                 </div>
               )}

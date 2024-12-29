@@ -251,6 +251,7 @@ export const apiList = {
     "PeopleDeskDdl/WorkplaceGroupWithRoleExtension",
   Cafeteria: "/Cafeteria/GetCafeteriaSetupById",
   commonLanding: "/PdfAndExcelReport/BankWiseBankAdvice",
+  commonLanding1: "/Employee/BankAdviceWithLetterHead",
   GetLetterTemplateLanding: "/LetterBuilder/GetLetterTemplateLanding",
   GetGeneratedLetterLanding: "/LetterBuilder/GetGeneratedLetterLanding",
   IsPromotionEligibleThroughIncrement:
@@ -282,4 +283,6 @@ export const apiList = {
   JobTerritory: "/JobTerritory",
   JobTerritories: "/PeopleDeskDdl/JobTerritories",
   JobLocations: "/PeopleDeskDdl/JobLocations",
+  GetBanglaPaysilp: "SalaryReport/GetBanglaPaysilp",
+  EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
 };

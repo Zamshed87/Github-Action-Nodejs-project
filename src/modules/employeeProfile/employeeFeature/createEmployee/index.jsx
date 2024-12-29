@@ -32,6 +32,7 @@ import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { checkBng } from "utility/regxExp";
 import { commonDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const CreateAndEditEmploye = () => {
   // router hooks
@@ -207,7 +208,10 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strSectionName;
+          res[i].label =
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
           res[i].value = item?.intSectionId;
         });
       },
@@ -406,7 +410,9 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strDepartment;
+          res[i].label = orgIdsForBn.includes(orgId)
+            ? item?.strDepartmentBn
+            : item?.strDepartment;
           res[i].value = item?.intDepartmentId;
         });
       },
@@ -427,7 +433,9 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.designationName;
+          res[i].label = orgIdsForBn.includes(orgId)
+            ? item?.designationBn
+            : item?.designationName;
           res[i].value = item?.designationId;
         });
       },
@@ -809,7 +817,7 @@ const CreateAndEditEmploye = () => {
                     }
                   />
                 </Col>
-                {orgId === 7 && (
+                {orgIdsForBn.includes(orgId) && (
                   <Col md={6} sm={24}>
                     <PInput
                       type="text"
@@ -1681,7 +1689,7 @@ const CreateAndEditEmploye = () => {
                     placeholder="Present Address"
                   />
                 </Col>
-                {orgId === 7 && (
+                {orgIdsForBn.includes(orgId) && (
                   <>
                     <Col md={12} sm={24}>
                       <PInput

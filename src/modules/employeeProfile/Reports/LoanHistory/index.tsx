@@ -460,6 +460,7 @@ const EmLoanHistory = () => {
 
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}

@@ -12,7 +12,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, message, Row } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -33,6 +33,7 @@ import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { todayDate } from "utility/todayDate";
 import { column, getTableDataConfirmation } from "./helper";
+import axios from "axios";
 
 const JobConfirmationReport = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const JobConfirmationReport = () => {
   const landingApi = useApiRequest({});
   //   const debounce = useDebounce();
 
-  const [, setFilterList] = useState({});
+  const [filterList, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [pages, setPages] = useState({
@@ -129,24 +130,35 @@ const JobConfirmationReport = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
+    filerList,
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "PeopleDeskAllLanding",
+      urlKey: "EmployeeConfirmationReport",
       method: "GET",
       params: {
-        TableName: "EmployeeBasicForJobConfirmationReport",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        PageNo: pagination.current || pages?.current,
-        PageSize: pagination.pageSize || pages?.pageSize,
+        tableName: "EmployeeBasicForJobConfirmationReport",
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: values?.workplaceGroup?.value,
+        pageNo: pagination.current || pages?.current,
+        pageSize: pagination.pageSize || pages?.pageSize,
         intStatusId: 2,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         WorkplaceId: values?.workplace?.value,
-        SearchTxt: searchText,
+        searchTxt: searchText || "",
+        // isXls: false,
+        // isHeaderNeed: true,
+        departments:
+          filerList?.departmentName?.length > 0
+            ? `${filerList?.departmentName}`
+            : "",
+        designations:
+          filerList?.designationName?.length > 0
+            ? `${filerList?.designationName}`
+            : "",
       },
     });
   };
@@ -167,31 +179,31 @@ const JobConfirmationReport = () => {
 
     {
       title: "Work. Group/Location",
-      dataIndex: "WorkplaceGroupName",
+      dataIndex: "workplaceGroupName",
       width: 150,
       fixed: "left",
     },
     {
       title: "Workplace/Concern",
-      dataIndex: "WorkplaceName",
+      dataIndex: "workplaceName",
       width: 130,
       fixed: "left",
     },
     {
       title: "Employee Id",
-      dataIndex: "EmployeeCode",
+      dataIndex: "employeeCode",
       width: 100,
       fixed: "left",
     },
 
     {
       title: "Employee Name",
-      dataIndex: "EmployeeName",
+      dataIndex: "employeeName",
       render: (_: any, rec: any) => {
         return (
           <div className="d-flex align-items-center">
-            <Avatar title={rec?.EmployeeName} />
-            <span className="ml-2">{rec?.EmployeeName}</span>
+            <Avatar title={rec?.employeeName} />
+            <span className="ml-2">{rec?.employeeName}</span>
           </div>
         );
       },
@@ -201,19 +213,27 @@ const JobConfirmationReport = () => {
 
     {
       title: "Designation",
-      dataIndex: "DesignationName",
-
-      width: 100,
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "SupervisorName",
-
-      width: 100,
+      dataIndex: "designationName",
+      // dataIndex: "designation",
+      // sorter: true,
+      filter: true,
+      filterKey: "strDesignationList",
+      filterSearch: true,
+      width: 130,
     },
     {
       title: "Department",
-      dataIndex: "DepartmentName",
+      dataIndex: "departmentName",
+      // dataIndex: "department",
+      // sorter: true,
+      filter: true,
+      filterKey: "strDepartmentList",
+      filterSearch: true,
+      width: 130,
+    },
+    {
+      title: "Supervisor",
+      dataIndex: "supervisorName",
 
       width: 100,
     },
@@ -226,21 +246,21 @@ const JobConfirmationReport = () => {
     },
     {
       title: "Date of Joining",
-      dataIndex: "JoiningDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
+      dataIndex: "joiningDate",
+      render: (_: any, rec: any) => dateFormatter(rec?.joiningDate),
       width: 100,
     },
 
     {
       title: "Service Length",
-      dataIndex: "ServiceLength",
+      dataIndex: "serviceLength",
       width: 100,
     },
 
     {
       title: "Confirmation Date",
-      dataIndex: "ConfirmationDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.ConfirmationDate),
+      dataIndex: "confirmationDate",
+      render: (_: any, rec: any) => dateFormatter(rec?.confirmationDate),
       width: 120,
     },
     {
@@ -283,7 +303,9 @@ const JobConfirmationReport = () => {
           {excelLoading && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
+            title={`Total ${
+              landingApi?.data?.data?.[0]?.totalCount || 0
+            } employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
@@ -295,55 +317,82 @@ const JobConfirmationReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  if (landingApi?.data?.length <= 0) {
-                    return toast.warning("Data is empty !!!!", {
-                      toastId: 1,
-                    });
-                  }
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    }
+                  const payload = {
+                    tableName: "EmployeeBasicForJobConfirmationReport",
+                    accountId: orgId,
+                    businessUnitId: buId,
+                    workplaceGroupId: values?.workplaceGroup?.value,
+                    pageNo: pages?.current,
+                    pageSize: pages?.pageSize,
+                    intStatusId: 2,
+                    fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+                    WorkplaceId: values?.workplace?.value,
+                    searchTxt: values?.search || "",
+                    // isXls: false,
+                    // isHeaderNeed: true,
+                    departments:
+                      (filterList as any)?.departmentName?.length > 0
+                        ? `${(filterList as any)?.departmentName}`
+                        : [],
+                    designations:
+                      (filterList as any)?.designationName?.length > 0
+                        ? `${(filterList as any)?.designationName}`
+                        : [],
+                  };
+                  const res = await axios.get(
+                    `/Employee/EmployeeConfirmationReport?tableName=EmployeeBasicForJobConfirmationReport&accountId=${orgId}&businessUnitId=${buId}&intStatusId=2&fromDate=${payload.fromDate}&workplaceGroupId=${payload.workplaceGroupId}&pageNo=${payload.pageNo}&pageSize=${payload.pageSize}&departments=${payload.departments}&designations=${payload.designations}&searchTxt=${payload.searchTxt}&WorkplaceId=${payload.WorkplaceId}`
                   );
-                  createCommonExcelFile({
-                    titleWithDate: `Job Confirmation ${dateFormatter(
-                      todayDate()
-                    )} `,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataConfirmation(newData, Object.keys(column)),
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      B: 30,
-                      C: 30,
-                      D: 15,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
+                  if (res?.data) {
+                    if (!res?.data?.data?.length) {
+                      setExcelLoading(false);
+                      return message.error("No Employee Data Found");
+                    }
+                    const newData = res?.data?.data?.map(
+                      (item: any, index: any) => {
+                        return {
+                          ...item,
+                          sl: index + 1,
+                        };
+                      }
+                    );
+
+                    createCommonExcelFile({
+                      titleWithDate: `Job Confirmation ${dateFormatter(
+                        todayDate()
+                      )} `,
+                      fromDate: "",
+                      toDate: "",
+                      buAddress: (buDetails as any)?.strAddress,
+                      businessUnit: values?.workplaceGroup?.value
+                        ? (buDetails as any)?.strWorkplace
+                        : buName,
+                      tableHeader: column,
+                      getTableData: () =>
+                        getTableDataConfirmation(newData, Object.keys(column)),
+                      // eslint-disable-next-line @typescript-eslint/no-empty-function
+                      getSubTableData: () => {},
+                      subHeaderInfoArr: [],
+                      subHeaderColumn: [],
+                      tableFooter: [],
+                      extraInfo: {},
+                      tableHeadFontSize: 10,
+                      widthList: {
+                        B: 30,
+                        C: 30,
+                        D: 15,
+                        E: 25,
+                        F: 20,
+                        G: 25,
+                        H: 15,
+                        I: 15,
+                        J: 20,
+                        K: 20,
+                      },
+                      commonCellRange: "A1:J1",
+                      CellAlignment: "left",
+                    });
+                    setExcelLoading(false);
+                  }
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
@@ -445,12 +494,15 @@ const JobConfirmationReport = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
+            filterData={landingApi?.data?.employeeHeader}
             pagination={{
               pageSize: pages?.pageSize,
-              total: landingApi?.data[0]?.totalCount,
+              total: landingApi?.data?.data?.[0]?.totalCount,
             }}
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
@@ -463,6 +515,8 @@ const JobConfirmationReport = () => {
               });
               landingApiCall({
                 pagination,
+                filerList: filters,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 1500 }}
