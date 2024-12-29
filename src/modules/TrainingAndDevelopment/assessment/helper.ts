@@ -82,7 +82,7 @@ export const saveAssessment = async (
       payload
     );
     form.resetFields();
-    toast.success("Attendance Saved Successfully", { toastId: 1222 });
+    toast.success("Assessment Saved Successfully", { toastId: 1222 });
     cb && cb();
   } catch (error: any) {
     const errorMessage =

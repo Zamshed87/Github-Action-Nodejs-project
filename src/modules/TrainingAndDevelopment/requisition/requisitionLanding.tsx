@@ -61,23 +61,23 @@ const TnDRequisitionLanding = () => {
     {
       title: "Requestor",
       dataIndex: "employmentName",
-      filter: true,
-      filterKey: "requestorList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "requestorList",
+      // filterSearch: true,
     },
     {
       title: "Training Type",
       dataIndex: "trainingTypeName",
-      filter: true,
-      filterKey: "trainingTypeList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "trainingTypeList",
+      // filterSearch: true,
     },
     {
       title: "Created By",
       dataIndex: "createdByName",
-      filter: true,
-      filterKey: "createdByList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "createdByList",
+      // filterSearch: true,
     },
     {
       title: "Created Date",
@@ -88,9 +88,9 @@ const TnDRequisitionLanding = () => {
     {
       title: "Status",
       dataIndex: "status",
-      filter: true,
-      filterKey: "statusList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "statusList",
+      // filterSearch: true,
       render: (status: any) => {
         let statusClass = "secondary p-2 rounded-5"; // Default class
 

@@ -85,9 +85,9 @@ const TnDInventory = () => {
     {
       title: "No of Training",
       dataIndex: "numberOfTraining",
-      filter: true,
-      filterKey: "noOfTrainingList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "noOfTrainingList",
+      // filterSearch: true,
     },
     {
       title: "Training Hour",
@@ -96,9 +96,9 @@ const TnDInventory = () => {
     {
       title: "Total Training Cost",
       dataIndex: "totalTrainingCost",
-      filter: true,
-      filterKey: "totalTrainingCostList",
-      filterSearch: true,
+      // filter: true,
+      // filterKey: "totalTrainingCostList",
+      // filterSearch: true,
     },
     {
       title: "Action",
