@@ -1,21 +1,24 @@
 export default function DigitalPaymentLetterHead({
   letterHeadImage,
   landingViewPdf,
+  signatureImage,
 }) {
   return (
     <>
-      <div
-        className="invoice-header"
-        style={{
-          backgroundImage: letterHeadImage,
-          backgroundRepeat: "no-repeat",
-          height: "1400px",
-          width: "991px",
-          backgroundSize: "cover",
-          position: "fixed",
-          zIndex: -1,
-        }}
-      ></div>
+      {letterHeadImage && (
+        <img
+          src={letterHeadImage}
+          style={{
+            height: "1400px",
+            width: "991px",
+            objectFit: "cover",
+            position: "fixed",
+            zIndex: -1,
+          }}
+          alt="letterhead"
+        />
+      )}
+
       <table>
         <thead>
           <tr>
@@ -77,12 +80,7 @@ export default function DigitalPaymentLetterHead({
                 </thead>
                 <tbody>
                   {landingViewPdf?.map((item, index) => (
-                    <tr
-                      key={index}
-                      style={{
-                        pageBreakBefore: index % 25 === 0 ? "always" : "auto",
-                      }}
-                    >
+                    <tr key={index}>
                       <td
                         style={{
                           border: "1px solid #D3D3D3",
@@ -111,6 +109,18 @@ export default function DigitalPaymentLetterHead({
                   ))}
                 </tbody>
               </table>
+              {signatureImage && (
+                <img
+                  src={signatureImage}
+                  alt="signature"
+                  style={{
+                    marginTop: "50px",
+                    width: "300px",
+                    height: "150px",
+                    objectFit: "fill",
+                  }}
+                />
+              )}
             </div>
           )}
         </tbody>

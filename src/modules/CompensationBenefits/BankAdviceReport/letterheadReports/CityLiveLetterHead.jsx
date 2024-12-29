@@ -3,21 +3,27 @@ import React from "react";
 export default function CityLiveLetterHead({
   letterHeadImage,
   landingViewPdf,
+  signatureImage,
 }) {
   return (
     <>
-      <div
-        className="invoice-header"
-        style={{
-          backgroundImage: letterHeadImage,
-          backgroundRepeat: "no-repeat",
-          height: "1570px",
-          width: "1130px",
-          backgroundSize: "cover",
-          position: "fixed",
-          zIndex: -1,
-        }}
-      ></div>
+      {letterHeadImage && (
+        <img
+          className="invoice-header"
+          src={letterHeadImage}
+          onLoad={() => {
+            console.log("image loaded");
+          }}
+          style={{
+            height: "1570px",
+            width: "1130px",
+            objectFit: "cover",
+            position: "fixed",
+            zIndex: -1,
+          }}
+          alt="letterhead"
+        />
+      )}
       <table>
         <thead>
           <tr>
@@ -97,7 +103,7 @@ export default function CityLiveLetterHead({
                 </b>
                 To Disburse Salaries As Mentioned Below.
               </p>
-              <div style={{ pageBreakBefore: "always" }}>
+              <div style={{ marginTop: "50px" }}>
                 Employee Bank Account Information with Transfer Amount:
                 <table
                   style={{
@@ -210,12 +216,7 @@ export default function CityLiveLetterHead({
                   </thead>
                   <tbody>
                     {landingViewPdf?.map((item, index) => (
-                      <tr
-                        key={index}
-                        style={{
-                          pageBreakBefore: index % 15 === 0 ? "always" : "auto",
-                        }}
-                      >
+                      <tr key={index}>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
@@ -309,6 +310,18 @@ export default function CityLiveLetterHead({
                   </tbody>
                 </table>
               </div>
+              {signatureImage && (
+                <img
+                  src={signatureImage}
+                  alt="signature"
+                  style={{
+                    marginTop: "50px",
+                    width: "300px",
+                    height: "150px",
+                    objectFit: "fill",
+                  }}
+                />
+              )}
             </div>
           )}
         </tbody>

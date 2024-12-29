@@ -51,6 +51,7 @@ const BankAdviceReport = () => {
   const [pdfDto, setPdfDto] = useState([]);
   const [adviceType, setAdviceType] = useState([]);
   const [letterHeadImage, setLetterHeadImage] = useState("");
+  const [signatureImage, setSignatureImage] = useState("");
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -185,7 +186,7 @@ const BankAdviceReport = () => {
         StrDownloadType: "TopSheet",
       },
       onSuccess: (res) => {
-        fetchLetterHeadImage();
+        fetchLetterHeadAndSignatureImage();
         setLandingViewPdf(res);
       },
     });
@@ -247,23 +248,20 @@ const BankAdviceReport = () => {
     }
   };
 
-  const fetchLetterHeadImage = async () => {
+  const fetchLetterHeadAndSignatureImage = () => {
     if (orgId === 4 && landingApi?.data?.length > 0) {
-      setLoading(true);
-      try {
-        const letterHeadImageId = landingApi?.data.find(
-          (workplace) => workplace.intWorkplaceId === values?.workplace?.value
-        ).intLetterHeadId;
-        const response = await fetch(
-          `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
-        );
-        const imageUrl = `url(${response.url})`;
-        setLetterHeadImage(imageUrl);
-      } catch (error) {
-        console.error("Error fetching letter head image:", error);
-      } finally {
-        setLoading(false);
-      }
+      const letterHeadImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+      ).intLetterHeadId;
+      const signatureImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+      ).intSignatureId;
+      setSignatureImage(
+        `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
+      );
+      setLetterHeadImage(
+        `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
+      );
     }
   };
 
@@ -1190,18 +1188,21 @@ const BankAdviceReport = () => {
                       <CityBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
                       />
                     )}
                     {values?.adviceType?.value === "DigitalPayment" && (
                       <DigitalPaymentLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
                       />
                     )}
                     {values?.adviceType?.value === "BFTN" && (
                       <CityLiveLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
                       />
                     )}
                   </div>
