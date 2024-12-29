@@ -25,10 +25,11 @@ export default function AddEditForm({
   const getWgDDL = useApiRequest({});
   const createWg = useApiRequest({});
   const SaveWorkplace = useApiRequest({});
-  const [workplaceImage, setWorkplaceImage] = useState([]);
+  const [workplaceImage, setWorkplaceImage] = useState();
+  const [letterHeadImage, setLetterHeadImage] = useState();
+  const [signatureImage, setSignatureImage] = useState();
+  const [letterBuilderImage, setLetterBuilderImage] = useState();
   const dispatch = useDispatch();
-
-  console.log("workplaceImage", workplaceImage);
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -105,8 +106,19 @@ export default function AddEditForm({
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
       intImageId: workplaceImage?.[0]?.response?.[0]?.globalFileUrlId || 0,
+      intWorkplaceLogoId:
+        workplaceImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intWorkplaceLogoId,
+      intLetterHeadId:
+        letterHeadImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intLetterHeadId,
+      intSignatureId:
+        signatureImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intSignatureId,
+      intLetterBuilderId:
+        letterBuilderImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intLetterBuilderId,
     };
-
     SaveWorkplace.action({
       urlKey: "SaveWorkplace",
       method: "POST",
@@ -290,49 +302,203 @@ export default function AddEditForm({
               );
             }}
           </Form.Item>
-
-          <Col md={6} sm={24} style={{ marginTop: "21px" }}>
-            <div className="mt-3">
-              <FileUploadComponents
-                propsObj={{
-                  title: "Image Upload",
-                  attachmentList: workplaceImage,
-                  setAttachmentList: setWorkplaceImage,
-                  accountId: orgId,
-                  tableReferrence: "WORKPLACE",
-                  documentTypeId: 15,
-                  userId: employeeId,
-                  buId,
-                  maxCount: 1,
-                  accept: "image/png, image/jpeg, image/jpg",
-                }}
-              />
-            </div>
-            {(workplaceImage?.length > 0 || singleData?.intImageId) && (
-              <p
-                onClick={() => {
-                  dispatch(getDownlloadFileView_Action(singleData?.intImageId));
-                }}
-              >
-                <AttachmentOutlined
-                  sx={{
-                    marginRight: "5px",
-                    color: "#0072E5",
+          <div
+            style={{
+              display: "flex",
+              justifyContent:
+                window.innerWidth <= 768 ? "flex-start" : "space-between",
+              width: "100%",
+              flexDirection: window.innerWidth <= 768 ? "column" : "row",
+            }}
+          >
+            <Col md={6} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "WORKPLACE LOGO",
+                    attachmentList: workplaceImage,
+                    setAttachmentList: setWorkplaceImage,
+                    accountId: orgId,
+                    tableReferrence: "WORKPLACE",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
                   }}
                 />
-                <span
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    color: "#0072E5",
-                    cursor: "pointer",
+              </div>
+              {(workplaceImage?.length > 0 ||
+                singleData?.intWorkplaceLogoId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(
+                        singleData?.intWorkplaceLogoId
+                      )
+                    );
                   }}
                 >
-                  {"Attachment"}
-                </span>
-              </p>
-            )}
-          </Col>
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+
+            <Col md={5} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "LETTER HEAD",
+                    attachmentList: letterHeadImage,
+                    setAttachmentList: setLetterHeadImage,
+                    accountId: orgId,
+                    tableReferrence: "LETTERHEAD",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(letterHeadImage?.length > 0 ||
+                singleData?.intLetterHeadId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(singleData?.intLetterHeadId)
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+
+            <Col md={5} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "SIGNATURE",
+                    attachmentList: signatureImage,
+                    setAttachmentList: setSignatureImage,
+                    accountId: orgId,
+                    tableReferrence: "SIGNATURE",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(signatureImage?.length > 0 ||
+                singleData?.intSignatureId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(singleData?.intSignatureId)
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+
+            <Col md={5} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "LETTER BUILDER",
+                    attachmentList: letterBuilderImage,
+                    setAttachmentList: setLetterBuilderImage,
+                    accountId: orgId,
+                    tableReferrence: "LETTERBUILDER",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(letterBuilderImage?.length > 0 ||
+                singleData?.intLetterBuilderId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(
+                        singleData?.intLetterBuilderId
+                      )
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+          </div>
 
           {isEdit && (
             <Col
