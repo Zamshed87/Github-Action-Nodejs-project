@@ -309,20 +309,7 @@ const PlanningInfo = ({
             ]}
           />
         </Col> */}
-          <Col md={6} sm={24}>
-            <PInput
-              type="text"
-              placeholder="Objectives/ Key Learnings/ Outcomes"
-              label="Objectives/ Key Learnings/ Outcomes"
-              name="objectives"
-              rules={[
-                {
-                  required: true,
-                  message: "Objectives/ Key Learnings/ Outcomes is required",
-                },
-              ]}
-            />
-          </Col>
+
           <Col md={6} sm={24}>
             <PInput
               type="text"
@@ -333,6 +320,20 @@ const PlanningInfo = ({
                 {
                   required: true,
                   message: "Training Vanue is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={24} sm={24}>
+            <PInput
+              type="textarea"
+              placeholder="Objectives/ Key Learnings/ Outcomes"
+              label="Objectives/ Key Learnings/ Outcomes"
+              name="objectives"
+              rules={[
+                {
+                  required: true,
+                  message: "Objectives/ Key Learnings/ Outcomes is required",
                 },
               ]}
             />
