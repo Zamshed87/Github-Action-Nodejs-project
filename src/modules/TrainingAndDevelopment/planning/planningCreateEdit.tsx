@@ -326,6 +326,7 @@ const TnDPlanningCreateEdit = () => {
         costValue: values?.costValue,
       },
     ]);
+    form.resetFields(["costType", "costValue"]);
   };
 
   const addHandlerTriningTime = (values: any) => {
@@ -386,6 +387,12 @@ const TnDPlanningCreateEdit = () => {
     });
     changeTrainingStatus(form, newTrainingTime);
     setTrainingTime(newTrainingTime);
+    form.resetFields([
+      "trainingStartTime",
+      "trainingEndTime",
+      "trainingStartDate",
+      "trainingDuration",
+    ]);
   };
 
   const addHandlerTrinerOrg = (values: any) => {
@@ -406,6 +413,7 @@ const TnDPlanningCreateEdit = () => {
       ...trainerOrgField,
       { ...values?.nameofTrainerOrganization },
     ]);
+    form.resetFields(["nameofTrainerOrganization"]);
   };
 
   const addHanderForPerticipant = (values: any) => {
@@ -444,6 +452,7 @@ const TnDPlanningCreateEdit = () => {
         workplaceId: workplace?.value,
       },
     ]);
+    form.resetFields(["employee", "department", "hrPosition"]);
   };
 
   const calculatePerPersonCost = () => {

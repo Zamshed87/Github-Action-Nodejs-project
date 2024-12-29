@@ -25,7 +25,7 @@ export const createLineConfig = (data: any) => {
     data: data,
     xField: "month",
     yField: "numberOfTrainings",
-    smooth: true,
+    smooth: false,
     color: "#ff4d4f",
   };
 };
