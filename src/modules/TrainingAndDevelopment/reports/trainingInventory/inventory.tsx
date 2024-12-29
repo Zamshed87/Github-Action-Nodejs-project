@@ -50,10 +50,11 @@ const TnDInventory = () => {
   // Form Instance
   const [form] = Form.useForm();
   // table column
-  const header = [
+  const header: any = [
     {
       title: "SL",
       render: (_: any, __: any, index: number) => index + 1,
+      width: 30,
     },
     {
       title: "Workplace Group",

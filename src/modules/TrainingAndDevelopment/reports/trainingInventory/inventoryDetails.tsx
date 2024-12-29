@@ -39,10 +39,11 @@ const TnDInventoryDetails = () => {
   // Form Instance
   const [form] = Form.useForm();
   // table column
-  const header = [
+  const header: any = [
     {
       title: "SL",
       render: (_: any, __: any, index: number) => index + 1,
+      width: 40,
     },
     {
       title: "Training Type",
@@ -61,6 +62,8 @@ const TnDInventoryDetails = () => {
     {
       title: "Training Mode",
       dataIndex: "trainingMode",
+      width: 50,
+      render: (_: any, rec: any) => rec?.trainingMode?.label,
     },
     {
       title: "Objectives",
@@ -85,31 +88,7 @@ const TnDInventoryDetails = () => {
       title: "Cost per Person",
       dataIndex: "costPerPerson",
       width: 80,
-    },
-    {
-      title: "Action",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <Space size="middle">
-          <Tooltip placement="bottom" title="Training Details">
-            <Button
-              type="link"
-              onClick={() => {
-                // history.push(
-                //   `/trainingAndDevelopment/reports/trainingInventory/details`,
-                //   {
-                //     data: rec,
-                //   }
-                // );
-              }}
-            >
-              Something
-            </Button>
-          </Tooltip>
-        </Space>
-      ),
-      align: "center",
-      width: 80,
+      render: (data: any) => data?.toFixed(2),
     },
   ];
   const landingApiCall = (values: any) => {
