@@ -626,7 +626,7 @@ const AdvanceSalaryGenerateCreate = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Payment Method</label>
 
@@ -662,7 +662,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         // isDisabled={singleData}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   {/* <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Description</label>
@@ -744,7 +744,7 @@ const AdvanceSalaryGenerateCreate = () => {
                               "Salary generate must be same workplace group!"
                             );
                           }
-                          console.log({ values });
+                          // console.log({ values });
                           const valueArray =
                             values?.workplace?.map(
                               (obj) => obj?.intWorkplaceId
@@ -754,9 +754,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           const valueArrayHRPosition = values?.hrPosition?.map(
                             (obj) => obj.value
                           );
-                          const intBankOrWalletType = `&intBankOrWalletType=${
-                            values?.walletType?.value || 0
-                          }`;
+                          const intBankOrWalletType = `&intBankOrWalletType=${0}`;
 
                           getRegenerateAll(
                             `/Payroll/SalarySelectQueryAll?partName=EmployeeListForAdvanceSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${state?.monthId}&intYearId=${state?.yearId}&strWorkplaceIdList=${workplaceListFromValues}&strHrPositionIdList=${valueArrayHRPosition}&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${state?.fromDate}&generateToDate=${state?.todate}&intPageNo=${pages?.current}&intPageSize=${pages?.pageSize}`,

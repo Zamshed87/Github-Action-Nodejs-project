@@ -396,35 +396,22 @@ const AdvanceSalaryGenerateView = () => {
                       </button>
                     </Tooltip>
                   </li>
-                  {values?.summary === "2" && (
+                  {rowDto?.length > 0 && (
                     <Tooltip title="Print as PDF" arrow>
                       <button
                         className="btn-save"
                         type="button"
                         onClick={() => {
-                          if (detailsData?.length <= 0) {
+                          if (rowDto?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
-                            const valueArrayHRPosition = (
-                              values?.hrPosition || []
-                            )?.map((obj) => obj.value);
-                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data
-                                ? state?.intMonth
-                                : state?.data?.intMonth
-                            }&intYearId=${
-                              !state?.data
-                                ? state?.intYear
-                                : state?.data?.intYear
-                            }&strSalaryCode=${
-                              !state?.data
-                                ? state?.strSalaryCode
-                                : state?.data?.strSalaryCode
-                            }&strHrPositionList=${
-                              valueArrayHRPosition || 0
-                            }&intPaymentMethod=${
-                              values?.walletType?.value || 0
-                            }`;
+                            const url = `/PdfAndExcelReport/AdvanceSalaryReport?advanceSalaryCode=${
+                              state?.advanceSalaryCode
+                            }&fromDate=${moment(state?.fromDate).format(
+                              "YYYY-MM-DD"
+                            )}&toDate=${moment(state?.todate).format(
+                              "YYYY-MM-DD"
+                            )}`;
 
                             getPDFAction(url, setLoading);
                           }
