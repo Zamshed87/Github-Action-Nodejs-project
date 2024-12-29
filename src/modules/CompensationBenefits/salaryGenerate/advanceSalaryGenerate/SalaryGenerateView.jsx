@@ -232,8 +232,8 @@ const AdvanceSalaryGenerateView = () => {
       render: (text) => (text ? dateFormatter(text) : "-"), // Format date
     },
     {
-      title: "Net Amount",
-      dataIndex: "netAmount",
+      title: "Advance Amount",
+      dataIndex: "amount",
     },
   ];
   const excelCol = {
@@ -247,7 +247,7 @@ const AdvanceSalaryGenerateView = () => {
     hrPositionName: "HR Position",
     fromDate: "From Date",
     todate: "To Date",
-    netAmount: "Net Amount",
+    amount: "Advance Amount",
   };
   return (
     <form onSubmit={handleSubmit}>
