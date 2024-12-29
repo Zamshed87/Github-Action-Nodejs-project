@@ -5,7 +5,7 @@ export default function CityBankLetterHead({
 }) {
   return (
     <>
-      {letterHeadImage && (
+      {letterHeadImage > 0 && (
         <img
           src={letterHeadImage}
           style={{
@@ -63,22 +63,22 @@ export default function CityBankLetterHead({
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
                 <b style={{ color: "black", fontSize: "14px" }}>Subject:</b>
-                &nbsp; Salary Disbursement For The Month of&nbsp;
+                &nbsp;Salary Disbursement for the month of&nbsp;
                 {landingViewPdf?.[0]?.MonthName},&nbsp;
-                {landingViewPdf?.[0]?.YearId}&nbsp; of &nbsp;
+                {landingViewPdf?.[0]?.YearId}&nbsp;of&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
                   &quot;
                   {landingViewPdf?.[0]?.WorkplaceGroupName}
                   &quot;&nbsp;
                 </b>
-                Employees.
+                employees.
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>Dear Sir,</p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                With Due Respect, We Are Requesting You To Transfer The Salary
-                For The Month of&nbsp;
+                With due respect, we are requesting you to transfer the salary
+                for the month of&nbsp;
                 {landingViewPdf?.[0]?.MonthName},&nbsp;
                 {landingViewPdf?.[0]?.YearId} of
                 <b style={{ color: "black", fontSize: "14px" }}>
@@ -86,15 +86,15 @@ export default function CityBankLetterHead({
                   {landingViewPdf?.[0]?.WorkplaceGroupName}
                   &quot;&nbsp;
                 </b>
-                Employees. Please Debit BDT&nbsp;
+                employees. Please debit <b>BDT</b>&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
                   {landingViewPdf?.[0]?.TotalBankPay}&nbsp;
                 </b>
-                From Our Company Account no.&nbsp;
+                from our company account no.&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
                   {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;
                 </b>
-                To Disburse Salaries As Mentioned Below.
+                to disburse salaries as mentioned below.
               </p>
               <div style={{ marginTop: "50px" }}>
                 Employee Bank Account Information with Transfer Amount:
@@ -184,7 +184,7 @@ export default function CityBankLetterHead({
                   </tbody>
                 </table>
               </div>
-              {signatureImage && (
+              {signatureImage > 0 && (
                 <img
                   src={signatureImage}
                   alt="signature"
