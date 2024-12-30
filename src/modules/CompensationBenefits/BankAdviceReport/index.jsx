@@ -1,12 +1,24 @@
+import { DownloadOutlined } from "@ant-design/icons";
+import BtnActionMenu from "common/BtnActionMenu";
 import { useFormik } from "formik";
+import { useApiRequest } from "Hooks";
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
+import { MdPrint } from "react-icons/md";
+import { SiMicrosoftexcel } from "react-icons/si";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { todayDate } from "utility/todayDate";
+import { APIUrl } from "../../../App";
 import { getPeopleDeskAllDDL } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import { paginationSize } from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
@@ -21,19 +33,10 @@ import {
   getBankAdviceBonusRequestLanding,
   getBankAdviceRequestLanding,
 } from "./helper";
-import { paginationSize } from "../../../common/peopleDeskTable";
-import useDebounce from "../../../utility/customHooks/useDebounce";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { todayDate } from "utility/todayDate";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { useApiRequest } from "Hooks";
-import BtnActionMenu from "common/BtnActionMenu";
-import { DownloadOutlined } from "@ant-design/icons";
-import { SiMicrosoftexcel } from "react-icons/si";
+import CityBankLetterHead from "./letterheadReports/CityBankLetterHead";
+import CityLiveLetterHead from "./letterheadReports/CityLiveLetterHead";
+import DigitalPaymentLetterHead from "./letterheadReports/DigitalPaymentLetterHead";
 import { TopSheetReport } from "./TopSheetReport";
-import { useReactToPrint } from "react-to-print";
-import moment from "moment";
-import { MdPrint } from "react-icons/md";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -44,9 +47,19 @@ const BankAdviceReport = () => {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tenMsdata, setTenMsdata] = useState("");
   const [landingView, setLandingView] = useState("");
+  const [landingViewPdf, setLandingViewPdf] = useState("");
   const [pdfDto, setPdfDto] = useState([]);
   const [adviceType, setAdviceType] = useState([]);
-
+  const [letterHeadImage, setLetterHeadImage] = useState("");
+  const [signatureImage, setSignatureImage] = useState("");
+  const contentRef = useRef();
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    onAfterPrint: () => {
+      setLandingView("");
+      setLandingViewPdf("");
+    },
+  });
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
   );
@@ -126,6 +139,7 @@ const BankAdviceReport = () => {
   };
 
   const commonLanding = useApiRequest([]);
+  const commonLanding1 = useApiRequest([]);
   // Functions
   const commonLandingFor = (values) => {
     if (!values?.adviceName?.value) {
@@ -152,9 +166,59 @@ const BankAdviceReport = () => {
     });
   };
 
+  const commonLandingForPdf = (values) => {
+    if (!values?.adviceName?.value) {
+      return toast.warning("Please select Salary Code");
+    }
+    commonLanding1?.action({
+      method: "get",
+      urlKey: "commonLanding1",
+      params: {
+        IntAccountId: orgId,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: values?.workplaceGroup?.value,
+        IntWorkplaceId: values?.workplace?.value,
+        IntMonthId: values?.monthId,
+        IntYearId: values?.yearId,
+        IntBankId: values?.bank?.value,
+        IntSalaryGenerateRequestId: values?.adviceName?.value,
+        StrAdviceType: values?.adviceType?.value,
+        StrDownloadType: "TopSheet",
+      },
+      onSuccess: (res) => {
+        fetchLetterHeadAndSignatureImage();
+        setLandingViewPdf(res);
+      },
+    });
+  };
+
+  const landingApi = useApiRequest({});
+
+  const landingApiCall = ({
+    pagination = {},
+    filerList,
+    searchText = "",
+  } = {}) => {
+    landingApi.action({
+      urlKey: "GetAllWorkplace",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    landingApiCall();
+  }, []);
+
   // on form submit
   const saveHandler = (values) => {
     commonLandingFor(values);
+    commonLandingForPdf(values);
+
     if (values?.bankAdviceFor?.value === 2) {
       if (!values?.bonusCode?.length > 0)
         return toast.warning("Please select Bonus Code");
@@ -180,6 +244,23 @@ const BankAdviceReport = () => {
         setPages,
         setRowDto,
         setLoading
+      );
+    }
+  };
+
+  const fetchLetterHeadAndSignatureImage = () => {
+    if (orgId === 4 && landingApi?.data?.length > 0) {
+      const letterHeadImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+      ).intLetterHeadId;
+      const signatureImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+      ).intSignatureId;
+      setSignatureImage(
+        `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
+      );
+      setLetterHeadImage(
+        `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
       );
     }
   };
@@ -857,6 +938,7 @@ const BankAdviceReport = () => {
                   <li className="mt-1 mr-2">
                     <BtnActionMenu
                       className="btn btn-default flex-center btn-deafult-create-job"
+                      disabled={landingView === "" && landingViewPdf === ""}
                       icon={
                         <DownloadOutlined
                           style={{
@@ -903,11 +985,6 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 2,
-                              });
-                            }
                             const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
@@ -931,17 +1008,22 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (rowDto?.length <= 0) {
-                              return toast.warning("Data is empty !!!!", {
-                                toastId: 3,
-                              });
+                            if (orgId === 4) {
+                              if (!commonLanding1?.loading && !loading) {
+                                setLoading(true);
+                                setTimeout(() => {
+                                  reactToPrintFn();
+                                  setLoading(false);
+                                }, 1000);
+                              }
+                            } else {
+                              const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
+                              getPDFAction(
+                                url,
+                                setLoading,
+                                `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
+                              );
                             }
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
-                            getPDFAction(
-                              url,
-                              setLoading,
-                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
-                            );
                           },
                         },
                         {
@@ -1099,6 +1181,33 @@ const BankAdviceReport = () => {
               <NoResult />
             )} */}
             <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+              {orgId === 4 && !commonLanding1?.loading && (
+                <div style={{ display: "none" }}>
+                  <div ref={contentRef}>
+                    {values?.adviceType?.value === "CITY" && (
+                      <CityBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DigitalPayment" && (
+                      <DigitalPaymentLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "BFTN" && (
+                      <CityLiveLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
               <div
                 dangerouslySetInnerHTML={{
                   __html: landingView,

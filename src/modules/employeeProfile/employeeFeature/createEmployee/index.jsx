@@ -30,6 +30,9 @@ import {
 } from "../addEditFile/helper";
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+import { checkBng } from "utility/regxExp";
+import { commonDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const CreateAndEditEmploye = () => {
   // router hooks
@@ -98,6 +101,8 @@ const CreateAndEditEmploye = () => {
   const userTypeDDL = useApiRequest([]);
   const bloodGroupDDL = useApiRequest([]);
   const holidayDDL = useApiRequest([]);
+  const jobLocationDDL = useApiRequest([]);
+  const jobTerritoryDDL = useApiRequest([]);
 
   const getEmpData = () => {
     getEmployeeProfileViewData(
@@ -203,9 +208,39 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strSectionName;
+          res[i].label =
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
           res[i].value = item?.intSectionId;
         });
+      },
+    });
+  };
+
+  // jobTerritoryDDL
+  const getJobTerritory = () => {
+    const { workplace, workplaceGroup } = form.getFieldsValue(true);
+    jobTerritoryDDL?.action({
+      urlKey: "JobTerritories",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+      },
+    });
+  };
+
+  const getJobLocation = () => {
+    const { workplace, workplaceGroup } = form.getFieldsValue(true);
+    jobLocationDDL?.action({
+      urlKey: "JobLocations",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
       },
     });
   };
@@ -375,7 +410,9 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.strDepartment;
+          res[i].label = orgIdsForBn.includes(orgId)
+            ? item?.strDepartmentBn
+            : item?.strDepartment;
           res[i].value = item?.intDepartmentId;
         });
       },
@@ -396,7 +433,9 @@ const CreateAndEditEmploye = () => {
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.designationName;
+          res[i].label = orgIdsForBn.includes(orgId)
+            ? item?.designationBn
+            : item?.designationName;
           res[i].value = item?.designationId;
         });
       },
@@ -454,10 +493,6 @@ const CreateAndEditEmploye = () => {
       urlKey: "WorkplaceGroupIdAll",
       method: "GET",
       params: {
-        // DDLType: "WorkplaceGroup",
-        // BusinessUnitId: buId,
-        // WorkplaceGroupId: wgId, // This should be removed
-        // intId: employeeId,
         accountId: orgId,
         businessUnitId: buId,
       },
@@ -568,6 +603,8 @@ const CreateAndEditEmploye = () => {
       // getPayScaleGradeDDL();
       getEmployeeStatus();
       getEmployeePosition();
+      getJobLocation();
+      getJobTerritory();
       getEmployeeSection();
       // new requirment
       singleData.calenderType?.value === 1
@@ -780,7 +817,7 @@ const CreateAndEditEmploye = () => {
                     }
                   />
                 </Col>
-                {orgId === 7 && (
+                {orgIdsForBn.includes(orgId) && (
                   <Col md={6} sm={24}>
                     <PInput
                       type="text"
@@ -794,7 +831,7 @@ const CreateAndEditEmploye = () => {
                       rules={[
                         {
                           message: "This Field Must be in Bangla",
-                          pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                          pattern: new RegExp(checkBng()),
                         },
                       ]}
                     />
@@ -877,6 +914,8 @@ const CreateAndEditEmploye = () => {
                         getCalendarDDL();
                         getEmployeeSection();
                         getHolidayGroupDDL();
+                        getJobLocation();
+                        getJobTerritory();
                       }
                     }}
                     rules={[
@@ -1430,6 +1469,60 @@ const CreateAndEditEmploye = () => {
                     // rules={[{ required: true, message: "HR Position is required" }]}
                   />
                 </Col>
+                {orgId === 5 && (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={jobTerritoryDDL?.data || []}
+                      name="jobTerritory"
+                      showSearch
+                      filterOption={true}
+                      label="Job Territory"
+                      placeholder="Job Territory"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          jobTerritory: op,
+                        });
+                      }}
+                      // rules={[{ required: true, message: "HR Position is required" }]}
+                    />
+                  </Col>
+                )}
+                {orgId === 5 && (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={jobLocationDDL?.data || []}
+                      name="jobLocation"
+                      showSearch
+                      filterOption={true}
+                      label="Job Location"
+                      placeholder="Job Location"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          jobLocation: op,
+                        });
+                      }}
+                      // rules={[{ required: true, message: "HR Position is required" }]}
+                    />
+                  </Col>
+                )}
+                {orgId === 12 && (
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={commonDDL}
+                      name="isTakeHomePay"
+                      showSearch
+                      filterOption={true}
+                      label="Take Home Pay"
+                      placeholder="Take Home Pay"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          isTakeHomePay: op,
+                        });
+                      }}
+                      // rules={[{ required: true, message: "HR Position is required" }]}
+                    />
+                  </Col>
+                )}
 
                 {!empId && (
                   <Col className="mt-2" md={6} sm={24}>
@@ -1596,7 +1689,7 @@ const CreateAndEditEmploye = () => {
                     placeholder="Present Address"
                   />
                 </Col>
-                {orgId === 7 && (
+                {orgIdsForBn.includes(orgId) && (
                   <>
                     <Col md={12} sm={24}>
                       <PInput
@@ -1607,7 +1700,7 @@ const CreateAndEditEmploye = () => {
                         rules={[
                           {
                             message: "This Field Must be in Bangla",
-                            pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                            pattern: new RegExp(checkBng()),
                           },
                         ]}
                       />
@@ -1621,7 +1714,7 @@ const CreateAndEditEmploye = () => {
                         rules={[
                           {
                             message: "This Field Must be in Bangla",
-                            pattern: new RegExp(/^[\u0980-\u09FF\s]*$/),
+                            pattern: new RegExp(checkBng()),
                           },
                         ]}
                       />

@@ -43,7 +43,7 @@ export const getPeopleDeskAllLandingForCalender = async (
 ) => {
   setLoading && setLoading(true);
 
-  let Search = search ? `&searchTxt=${search}` : "";
+  const Search = search ? `&searchTxt=${search}` : "";
   try {
     const res = await axios.get(
       `/TimeSheet/GetCalenderLanding?IntBusinessUnitId=${busId}&PageNo=${pageNo}&PageSize=${pageSize}&IntWorkplaceId=${wId}${Search}`
@@ -61,7 +61,7 @@ export const getPeopleDeskAllLandingForCalender = async (
 // search
 export const filterData = (keywords, gridData, setRowDto) => {
   const regex = new RegExp(keywords?.toLowerCase());
-  let newData = gridData?.filter((item) =>
+  const newData = gridData?.filter((item) =>
     regex.test(item?.strEmployeeName?.toLowerCase())
   );
   setRowDto(newData);

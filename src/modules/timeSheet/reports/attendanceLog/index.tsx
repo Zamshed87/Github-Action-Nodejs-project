@@ -24,6 +24,7 @@ import {
 import { empBasicInfo } from "../helper";
 import NoResult from "common/NoResult";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
+import { todayDate } from "utility/todayDate";
 
 const AttendanceLog = () => {
   const dispatch = useDispatch();
@@ -140,7 +141,12 @@ const AttendanceLog = () => {
                 values?.employee?.value
               }&workplaceGroupId=${wgId}&businessUnitId=${buId}`;
               landingApi?.data?.length > 0 &&
-                downloadFile(url, "Salary Details Report", "xlsx", setLoading);
+                downloadFile(
+                  url,
+                  `Attendance Log Report-${todayDate()}`,
+                  "xlsx",
+                  setLoading
+                );
             }}
             printIcon={true}
             pdfExport={() => {

@@ -4,11 +4,13 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Switch } from "antd";
-import { IoMdAddCircleOutline } from "react-icons/io";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 import { toast } from "react-toastify";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import { AttachmentOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -23,6 +25,11 @@ export default function AddEditForm({
   const getWgDDL = useApiRequest({});
   const createWg = useApiRequest({});
   const SaveWorkplace = useApiRequest({});
+  const [workplaceImage, setWorkplaceImage] = useState();
+  const [letterHeadImage, setLetterHeadImage] = useState();
+  const [signatureImage, setSignatureImage] = useState();
+  const [letterBuilderImage, setLetterBuilderImage] = useState();
+  const dispatch = useDispatch();
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -98,12 +105,25 @@ export default function AddEditForm({
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
+      intImageId: workplaceImage?.[0]?.response?.[0]?.globalFileUrlId || 0,
+      intWorkplaceLogoId:
+        workplaceImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intWorkplaceLogoId,
+      intLetterHeadId:
+        letterHeadImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intLetterHeadId,
+      intSignatureId:
+        signatureImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intSignatureId,
+      intLetterBuilderId:
+        letterBuilderImage?.[0]?.response?.[0]?.globalFileUrlId ||
+        singleData?.intLetterBuilderId,
     };
-
     SaveWorkplace.action({
       urlKey: "SaveWorkplace",
       method: "POST",
       payload: payload,
+      toast: true,
       onSuccess: () => {
         cb();
       },
@@ -147,6 +167,7 @@ export default function AddEditForm({
               name="strWorkplace"
               label="Workplace"
               placeholder="Workplace"
+              disabled={isEdit}
               rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
@@ -156,6 +177,7 @@ export default function AddEditForm({
               name="strWorkplaceCode"
               label="Code"
               placeholder="Code"
+              disabled={isEdit}
               rules={[{ required: true, message: "Code is required" }]}
             />
           </Col>
@@ -168,6 +190,7 @@ export default function AddEditForm({
               showSearch
               filterOption={true}
               placeholder="Business Unit"
+              disabled={isEdit}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   bUnit: op,
@@ -184,6 +207,7 @@ export default function AddEditForm({
               showSearch
               filterOption={true}
               placeholder="Workplace Group"
+              disabled={isEdit}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   wgDDL: op,
@@ -209,6 +233,7 @@ export default function AddEditForm({
                       name="newWorkplaceGroup"
                       label="Add New Workplace Group"
                       placeholder="Add New Workplace Group"
+                      disabled={isEdit}
                       rules={
                         [
                           // {
@@ -221,6 +246,7 @@ export default function AddEditForm({
                   </Col>
                   <Col md={12} className="mt-1">
                     <button
+                      disabled={isEdit}
                       type="button"
                       className="mt-3  btn btn-green  "
                       style={{
@@ -277,12 +303,211 @@ export default function AddEditForm({
               );
             }}
           </Form.Item>
+          <div
+            style={{
+              display: "flex",
+              justifyContent:
+                window.innerWidth <= 768 ? "flex-start" : "space-between",
+              width: "100%",
+              flexDirection: window.innerWidth <= 768 ? "column" : "row",
+            }}
+          >
+            <Col md={6} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "WORKPLACE LOGO",
+                    attachmentList: workplaceImage,
+                    setAttachmentList: setWorkplaceImage,
+                    accountId: orgId,
+                    tableReferrence: "WORKPLACE",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(workplaceImage?.length > 0 ||
+                singleData?.intWorkplaceLogoId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(
+                        singleData?.intWorkplaceLogoId
+                      )
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+
+            <Col md={5} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "LETTER HEAD",
+                    attachmentList: letterHeadImage,
+                    setAttachmentList: setLetterHeadImage,
+                    accountId: orgId,
+                    tableReferrence: "LETTERHEAD",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(letterHeadImage?.length > 0 ||
+                singleData?.intLetterHeadId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(singleData?.intLetterHeadId)
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+
+            <Col md={5} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "SIGNATURE",
+                    attachmentList: signatureImage,
+                    setAttachmentList: setSignatureImage,
+                    accountId: orgId,
+                    tableReferrence: "SIGNATURE",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(signatureImage?.length > 0 ||
+                singleData?.intSignatureId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(singleData?.intSignatureId)
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+
+            <Col md={5} sm={24} style={{ marginTop: "21px" }}>
+              <div className="mt-3">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "LETTER BUILDER",
+                    attachmentList: letterBuilderImage,
+                    setAttachmentList: setLetterBuilderImage,
+                    accountId: orgId,
+                    tableReferrence: "LETTERBUILDER",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+              {(letterBuilderImage?.length > 0 ||
+                singleData?.intLetterBuilderId !== 0) && (
+                <p
+                  onClick={() => {
+                    dispatch(
+                      getDownlloadFileView_Action(
+                        singleData?.intLetterBuilderId
+                      )
+                    );
+                  }}
+                >
+                  <AttachmentOutlined
+                    sx={{
+                      marginRight: "5px",
+                      color: "#0072E5",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "#0072E5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Attachment"}
+                  </span>
+                </p>
+              )}
+            </Col>
+          </div>
+
           {isEdit && (
             <Col
               md={24}
               style={{
                 marginLeft: "-0.5rem",
               }}
+              disabled={isEdit}
             >
               <div
                 className=""
@@ -309,7 +534,9 @@ export default function AddEditForm({
                   }}
                 >
                   <Form.Item name="isActive" valuePropName="checked">
-                    <Switch />
+                    <Switch
+                    // disabled={!!isEdit}
+                    />
                   </Form.Item>
                 </div>
               </div>

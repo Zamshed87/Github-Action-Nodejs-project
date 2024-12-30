@@ -75,6 +75,10 @@ function AboutMeDetails() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Employee Details";
+    () => {
+      document.title = "PeopleDesk";
+    };
   }, []);
 
   return (
@@ -163,7 +167,12 @@ function AboutMeDetails() {
                   <p className="bankCard-title">Overview</p>
                 </div>
                 <div className="card-body p-0">
-                  <OverviewTab empId={empId} wgId={wgId} buId={buId} />
+                  <OverviewTab
+                    empId={empId}
+                    wgId={wgId}
+                    buId={buId}
+                    intAccountId={intAccountId}
+                  />
                 </div>
               </div>
             </>

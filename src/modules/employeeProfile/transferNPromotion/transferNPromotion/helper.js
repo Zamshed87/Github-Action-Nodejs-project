@@ -1,5 +1,8 @@
 import axios from "axios";
+import Remarks from "modules/employeeProfile/employeeOverview/components/others/Remarks";
 import { toast } from "react-toastify";
+import { dateFormatterForInput } from "utility/dateFormatter";
+import { todayDate } from "utility/todayDate";
 
 /* export const getAllTransferAndPromotionLanding = async (
   orgId,
@@ -107,5 +110,74 @@ export const releaseEmpTransferNPromotion = async (
   } catch (error) {
     setLoading(false);
     toast.warn(error?.response?.data?.message);
+  }
+};
+
+export const saveBulkUploadTnP = async (
+  setLoading,
+  setOpen,
+  setErrorData,
+  data,
+  callback
+) => {
+  setLoading(true);
+  try {
+    const res = await axios.post(
+      `/Employee/TransferNPromotionBulkUpload`,
+      data
+    );
+    callback(res?.data);
+    setLoading(false);
+    toast.success(res?.data?.message || "Successful");
+  } catch (error) {
+    setLoading(false);
+    toast.warn("Failed, try again");
+    // setErrorData(error?.response?.data?.listData);
+    // setOpen(true);
+    error?.response?.data?.listData?.length < 0 &&
+      toast.warn(error?.response?.data?.message || "Failed, try again");
+  }
+};
+
+export const processBulkUploadTnP = async (
+  data,
+  setter,
+  setLoading,
+  intUrlId,
+  orgId,
+  employeeId
+) => {
+  setLoading && setLoading(true);
+  try {
+    console.log(data);
+    const modifiedData = data.map((item, index) => ({
+      rowId: index,
+      intEmpBulkUploadId: 0,
+      accountId: orgId,
+      intUrlId: intUrlId,
+      employeeName: item["Employee Name *"] || "",
+      employeeCode: String(item["Employee Code *"] || ""),
+      transferNpromotionType: String(item["Type"] || ""),
+      effectiveDate: item["Effective Date * (YYYY-MM-DD)"] || "",
+      businessUnit: String(item["To BusinessUnit"] || ""),
+      workplaceGroup: String(item["To Workplace Group "] || ""), // hdhdh
+      workplace: String(item["To Workplace  "] || ""),
+      employmentType: String(item["To Employment Type"] || ""),
+      hrPosition: String(item["To HR Position"] || ""),
+      department: String(item["To Department"] || ""),
+      section: String(item["To Section"] || ""),
+      designation: String(item["To Designation"] + "" || ""),
+      supervisorCode: String(item["To Supervisor"] + "" || ""),
+      dottedSupervisorCode: String(item["To Dotted Supervisor"] + "" || ""),
+      lineManagerCode: String(item["To Line Manager"] + "" || ""),
+      remarks: String(item["Remarks"] + "" || ""),
+    }));
+
+    setter(modifiedData);
+    setLoading && setLoading(false);
+  } catch (error) {
+    setter([]);
+    setLoading && setLoading(false);
+    toast.warn("Failed to process!");
   }
 };

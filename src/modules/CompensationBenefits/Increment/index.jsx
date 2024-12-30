@@ -522,36 +522,38 @@ function IncrementLanding() {
                       history,
                       getTransferNpromotion
                     )}
+                    isScrollAble={true}
                     pages={pages}
                     rowDto={rowDto}
                     onRowClick={(item) => {
-                      if (item?.isGradeBasedSalary) {
-                        history.push({
-                          pathname: `/compensationAndBenefits/increment/singleIncrement/grade/view/${item?.intIncrementId}`,
-                          state: {
-                            singleData: {
-                              incrementList: [item],
-                              transferPromotionObj: {},
-                            },
-                            viewOnly: true,
-
-                            // isPromotion: false,
-                            // incrementList: modifiedData,
-                            // transferPromotionObj: null,
+                      // if (item?.isGradeBasedSalary) {
+                      history.push({
+                        pathname: `/compensationAndBenefits/increment/singleIncrement/grade/view/${item?.intIncrementId}`,
+                        state: {
+                          singleData: {
+                            incrementList: [item],
+                            transferPromotionObj: {},
                           },
-                        });
-                      } else {
-                        history.push(
-                          `/compensationAndBenefits/increment/singleIncrement/view/${item?.intIncrementId}`,
-                          {
-                            employeeId: item?.intEmployeeId,
-                            buId: item?.intBusinessUnitId,
-                            wgId: item?.intWorkplaceGroupId,
-                            showButton:
-                              item?.strStatus !== "Pending" ? false : true,
-                          }
-                        );
-                      }
+                          viewOnly: true,
+
+                          // isPromotion: false,
+                          // incrementList: modifiedData,
+                          // transferPromotionObj: null,
+                        },
+                      });
+                      // }
+                      //  else {
+                      //   history.push(
+                      //     `/compensationAndBenefits/increment/singleIncrement/view/${item?.intIncrementId}`,
+                      //     {
+                      //       employeeId: item?.intEmployeeId,
+                      //       buId: item?.intBusinessUnitId,
+                      //       wgId: item?.intWorkplaceGroupId,
+                      //       showButton:
+                      //         item?.strStatus !== "Pending" ? false : true,
+                      //     }
+                      //   );
+                      // }
                     }}
                     setRowDto={setRowDto}
                     handleChangePage={(e, newPage) =>

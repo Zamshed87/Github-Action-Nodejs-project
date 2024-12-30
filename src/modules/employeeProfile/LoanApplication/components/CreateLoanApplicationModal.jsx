@@ -467,7 +467,7 @@ const CreateLoanApplicationModal = ({
                         </span>
                       )}
                     </div>
-{console.log(values)}
+                    {console.log(values)}
                     <FormikInput
                       classes="input-sm"
                       value={values?.totalwithinterest}
@@ -951,16 +951,12 @@ const CreateLoanApplicationModal = ({
                                       touched={touched}
                                     />
                                   </td>
-                                  {/* <td>{item?.dteRepaymentDay}</td> */}
                                   <td>
                                     <FormikInput
                                       classes="input-sm"
                                       value={+item?.intInstallmentAmount}
                                       name="intInstallmentAmount"
                                       type="number"
-                                      // disabled={
-                                      //   item?.intInstallmentAmount === 0
-                                      // }
                                       onChange={(e) => {
                                         if (e.target.value < 0) {
                                           return toast.warn(
@@ -1038,34 +1034,36 @@ const CreateLoanApplicationModal = ({
                                             item?.isHold ? "gray" : "green"
                                           }`}
                                         >
-                                          {"Amendment!"}
+                                          Amendment!
                                         </Tag>
                                       </span>
-                                      <IconButton
-                                        disabled={item?.isHold}
-                                        type="button"
-                                        style={{
-                                          height: "25px",
-                                          width: "25px",
-                                        }}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeleteClick(
-                                            index,
-                                            tableData,
-                                            setTableData
-                                          );
-                                        }}
-                                      >
-                                        <Tooltip title="Delete">
-                                          <DeleteOutline
-                                            sx={{
-                                              height: "25px",
-                                              width: "25px",
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      </IconButton>
+                                      {index === tableData.length - 1 && (
+                                        <IconButton
+                                          disabled={item?.isHold}
+                                          type="button"
+                                          style={{
+                                            height: "25px",
+                                            width: "25px",
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteClick(
+                                              index,
+                                              tableData,
+                                              setTableData
+                                            );
+                                          }}
+                                        >
+                                          <Tooltip title="Delete">
+                                            <DeleteOutline
+                                              sx={{
+                                                height: "25px",
+                                                width: "25px",
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        </IconButton>
+                                      )}
                                     </div>
                                   </td>
                                 </tr>

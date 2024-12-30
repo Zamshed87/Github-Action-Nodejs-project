@@ -244,8 +244,8 @@ function CreateTransferPromotion() {
       value: state?.singleData?.intLineManagerId,
       label: state?.singleData?.lineManagerName,
     },
-    role: state?.singleData?.empTransferNpromotionUserRoleVMList
-      ? state?.singleData?.empTransferNpromotionUserRoleVMList.map((item) => {
+    role: state?.singleData?.empTransferNpromotionUserRoleVmList
+      ? state?.singleData?.empTransferNpromotionUserRoleVmList?.map((item) => {
           return {
             intTransferNpromotionUserRoleId:
               item?.intTransferNpromotionUserRoleId,
@@ -256,10 +256,18 @@ function CreateTransferPromotion() {
         })
       : [],
     remarks: state?.singleData?.strRemarks,
-    isRoleExtension: state?.singleData?.empTransferNpromotionRoleExtensionVMList
-      ?.length
-      ? true
-      : false,
+    isRoleExtension:
+      state?.singleData?.empTransferNpromotionRoleExtensionVmList?.length > 0
+        ? true
+        : false,
+    employmentType: {
+      value: state?.singleData?.employmentTypeId,
+      label: state?.singleData?.employmentTypeName,
+    },
+    hrPosition: {
+      value: state?.singleData?.hrPositionId,
+      label: state?.singleData?.hrPositionName,
+    },
   };
 
   const {
@@ -391,9 +399,25 @@ function CreateTransferPromotion() {
         "strWorkplace",
         setWorkplaceDDL
       );
+      getPeopleDeskAllDDL(
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${buId}&WorkplaceGroupId=${
+          state?.singleData?.intWorkplaceGroupId || wgId
+        }&intWorkplaceId=${state?.singleData?.intWorkplaceId || 0}&intId=0`,
+        "Id",
+        "EmploymentType",
+        setEmploymentTypeDDL
+      );
+      getPeopleDeskAllDDL(
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&WorkplaceGroupId=${
+          state?.singleData?.intWorkplaceGroupId || wgId
+        }&intWorkplaceId=${state?.singleData?.intWorkplaceId || 0}&intId=0`,
+        "PositionId",
+        "PositionName",
+        setHrPositionDDL
+      );
 
       state?.singleData &&
-        setRowDto(state?.singleData?.empTransferNpromotionRoleExtensionVMList);
+        setRowDto(state?.singleData?.empTransferNpromotionRoleExtensionVmList);
       setFileId(state?.singleData?.intAttachementId);
     }
   }, [id, state, employeeId, orgId, buId, wgId]);
@@ -512,6 +536,7 @@ function CreateTransferPromotion() {
 
     addEditTransferAndPromotion(payload, callBack, setLoading);
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-2">
@@ -1410,7 +1435,7 @@ function CreateTransferPromotion() {
               </div>
               {/* fourth row end  */}
               {/* fifth row start  */}
-              <div className="col-6 mt-3">
+              <div className="col-3 mt-3">
                 <div className="input-main position-group-select">
                   {fileId ? (
                     <>
@@ -1560,6 +1585,7 @@ function CreateTransferPromotion() {
                           }));
                           setOrganizationDDLFunc(
                             orgId,
+                            wgId,
                             buId,
                             employeeId,
                             valueOption,
@@ -1621,7 +1647,7 @@ function CreateTransferPromotion() {
                       Add
                     </button>
                   </div>
-                  {!!rowDto.length > 0 && (
+                  {!!rowDto?.length > 0 && (
                     <>
                       <div className="col-lg-12 mb-2 mt-3">
                         <h3

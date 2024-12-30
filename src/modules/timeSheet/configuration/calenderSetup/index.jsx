@@ -253,6 +253,7 @@ export default function CalendarSetup() {
                       <a
                         href="/administration/timeManagement/calendarAssign"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <span style={{ fontSize: "13px", color: "blue" }}>
                           here
@@ -379,10 +380,10 @@ export default function CalendarSetup() {
                     <div className="table-card-styled tableOne">
                       {rowDto?.length > 0 ? (
                         <AntTable
+                          rowClassName="pointer"
                           data={rowDto?.length > 0 && rowDto}
                           columnsData={columns()}
                           onRowClick={(dataRow) => {
-                            console.log("dataRow", dataRow);
                             if (!permission?.isEdit)
                               return toast.warn("You don't have permission");
 

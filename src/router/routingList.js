@@ -269,12 +269,16 @@ import QuestionCreationLanding from "modules/exit-interview/question-creation";
 import QuestionerConfigLanding from "modules/exit-interview/questioner-configure";
 import QuestionerAssignLanding from "modules/exit-interview/questioner-assign";
 import QuestionCreationAddEdit from "modules/exit-interview/question-creation/add-edit";
+import { IncrementProposal } from "modules/CompensationBenefits/incrementProposal";
+import IncrementProposalApproval from "modules/CompensationBenefits/incrementProposal/Incr_Proposal_Approval";
 import RewardPunishmentLanding from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter";
 import RewardPunishmentLetterGenAddEdit from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/letterGenAddEdit";
 import PunishmentAction from "modules/employeeProfile/reportBuilder/rewardPunishmentLetter/punishmentActions";
 import EssInterviewLanding from "modules/exit-interview/interview/EssInterviewLanding";
 import EmInterviewLanding from "modules/exit-interview/interview/EmInterviewLanding";
 import InterviewModal from "modules/exit-interview/interview/components/interview-modal";
+import JobLocation from "modules/configuration/JobLocation";
+import JobTerritory from "modules/configuration/JobTerritory";
 
 const HolidayOffdaySwapAssign = lazy(() =>
   import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
@@ -322,6 +326,30 @@ const ShiftManagementLog = lazy(() =>
 );
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
+);
+const ManagementViewTask = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
+);
+const ManagementCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/mgmApplication/createTask.js"
+  )
+);
+const ManagementTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/mgmApplication/index.js")
+);
+const SelfTaskManagement = lazy(() =>
+  import("../modules/employeeProfile/taskManagement/selfApplication/index.js")
+);
+const SelfViewTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/selfApplication/viewTask.js"
+  )
+);
+const SelfCreateTask = lazy(() =>
+  import(
+    "../modules/employeeProfile/taskManagement/selfApplication/createTask.js"
+  )
 );
 const ExternalTrainingCreate = lazy(() =>
   import("../modules/trainingDevelopment/externalTraining/addEditForm.jsx")
@@ -732,6 +760,9 @@ const SalaryGenerateView = lazy(() =>
 const SalaryPayslipReport = lazy(() =>
   import("../modules/CompensationBenefits/SalaryPayslipReport/index.jsx")
 );
+const MultiSalaryPayslipReport = lazy(() =>
+  import("../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx")
+);
 const SalaryTaxCertificate = lazy(() =>
   import("../modules/CompensationBenefits/salaryTaxCertificate/index.jsx")
 );
@@ -1092,6 +1123,12 @@ const CreateTransferPromotion = lazy(() =>
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/createTransferPromotion.jsx"
   )
 );
+const BulkUploadTransferNPromotion = lazy(() =>
+  import(
+    "../modules/employeeProfile/transferNPromotion/transferNPromotion/bulkUpload.jsx"
+  )
+);
+
 const ViewTransferNPromotion = lazy(() =>
   import(
     "../modules/employeeProfile/transferNPromotion/transferNPromotion/components/viewTransferNPromotion.jsx"
@@ -1497,6 +1534,18 @@ const MonthlyAttendanceReport = lazy(() =>
 const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
+// Training and Development
+import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
+import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
+import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/planningCreateEdit";
+import TnDPlanningLanding from "modules/TrainingAndDevelopment/planning/planningLanding";
+import TrainerInfo from "modules/TrainingAndDevelopment/masterData/trainerInfo";
+import TrainingType from "modules/TrainingAndDevelopment/masterData/trainingType";
+import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTitle";
+import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
+import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
+import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
 //     "../modules/trainingDevelopment/Application/components/TrainingApplicationCreate/index.jsx"
@@ -1743,6 +1792,10 @@ export const routingList = [
   {
     path: "/profile/reports/movementDetailsHistory",
     component: MovementHistoryDetails,
+  },
+  {
+    path: "/profile/reports/marketVisit",
+    component: MarketVisitReport,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
@@ -2066,6 +2119,10 @@ export const routingList = [
     component: UnderCreateRosterSetup,
   },
   {
+    path: "/administration/timeManagement/rosterSetup/create",
+    component: UnderCreateRosterSetup,
+  },
+  {
     path: "/administration/timeManagement/offdaySetup/:id/:rosterName",
     component: UnderCreateOffdaySetup,
   },
@@ -2124,6 +2181,11 @@ export const routingList = [
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
   { path: "/administration/configuration/section", component: Section },
+  { path: "/administration/configuration/jobLocation", component: JobLocation },
+  {
+    path: "/administration/configuration/jobTerritory",
+    component: JobTerritory,
+  },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",
@@ -2202,6 +2264,30 @@ export const routingList = [
   {
     path: "/administration/configuration/managementDashboardPermission/edit/:id",
     component: ManagementDashboardPermissionCreate,
+  },
+  {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
+  },
+  {
+    path: "/SelfService/taskManagement",
+    component: SelfTaskManagement,
+  },
+  {
+    path: "/SelfService/taskManagement/create",
+    component: SelfCreateTask,
+  },
+  {
+    path: "/SelfService/taskManagement/view/:id",
+    component: SelfViewTask,
   },
   {
     path: "/administration/configuration/managementDashboardPermission/view/:id",
@@ -2532,6 +2618,11 @@ export const routingList = [
   },
 
   // compensationAndBenefits
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/incrementProposal",
+    component: IncrementProposal,
+  },
   {
     path: "/compensationAndBenefits/configuration/payrollElementAndRule",
     component: PayrollElementsRules,
@@ -2808,6 +2899,10 @@ export const routingList = [
   {
     path: "/profile/transferandpromotion/transferandpromotion/create",
     component: CreateTransferPromotion,
+  },
+  {
+    path: "/profile/transferandpromotion/transferandpromotion/bulk-upload",
+    component: BulkUploadTransferNPromotion,
   },
   {
     path: "/profile/transferandpromotion/transferandpromotion/edit/:id",
@@ -3093,8 +3188,12 @@ export const routingList = [
   },
   // report for payslip
   {
-    path: "/compensationAndBenefits/salaryPaySlip",
+    path: "/compensationAndBenefits/salaryPaySlip/payslip",
     component: SalaryPayslipReport,
+  },
+  {
+    path: "/compensationAndBenefits/salaryPaySlip/multiplePaySlip",
+    component: MultiSalaryPayslipReport,
   },
   // report for salary advice/bank advice
   {
@@ -3257,6 +3356,10 @@ export const routingList = [
     path: "/approval/assetTransferApproval",
     component: AssetTransferApproval,
   },
+  {
+    path: "/approval/incrementproposalapproval",
+    component: IncrementProposalApproval,
+  },
   // Asset Management end
 
   //  Trainnning and development starts
@@ -3292,6 +3395,44 @@ export const routingList = [
     path: "/trainingAndDevelopment/training/attendance/view/:id",
     component: AttendanceView,
   },
+  // Training & Development New
+  {
+    path: "/trainingAndDevelopment/requisition",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/requisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/planning",
+    component: TnDPlanningLanding,
+  },
+  {
+    path: "/trainingAndDevelopment/planning/:type",
+    component: TnDPlanningCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTypes",
+    component: TrainingType,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingTitle",
+    component: TrainingTitle,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingCostType",
+    component: TrainingCost,
+  },
+  {
+    path: "/trainingAndDevelopment/trainerInformation",
+    component: TrainerInfo,
+  },
+  {
+    path: "/trainingAndDevelopment/dashboard",
+    component: TnDDashboard,
+  },
+  // Trainnning and development ends
 
   //external training start
   {
@@ -3365,7 +3506,6 @@ export const routingList = [
     path: "/profile/customReportsBuilder/punishmentAction/:recordId",
     component: PunishmentAction,
   },
-  // Trainnning and development ends
 
   // Exit Interview starts
 
@@ -3401,6 +3541,20 @@ export const routingList = [
   {
     path: "/interview",
     component: InterviewModal,
+  },
+
+  // task management
+  {
+    path: "/profile/taskManagement",
+    component: ManagementTaskManagement,
+  },
+  {
+    path: "/profile/taskManagement/create",
+    component: ManagementCreateTask,
+  },
+  {
+    path: "/profile/taskManagement/view/:id",
+    component: ManagementViewTask,
   },
   // pms-----------------------------------------------------------------------////////////////////////////////////////////
   {

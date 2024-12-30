@@ -26,7 +26,7 @@ import { AttachmentOutlined } from "@mui/icons-material";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 const ViewJoining = () => {
-  const { orgId, employeeId, buId } = useSelector(
+  const { orgId, employeeId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -843,6 +843,7 @@ const ViewJoining = () => {
                                       });
                                       setOrganizationDDLFunc(
                                         orgId,
+                                        wgId,
                                         buId,
                                         employeeId,
                                         op,

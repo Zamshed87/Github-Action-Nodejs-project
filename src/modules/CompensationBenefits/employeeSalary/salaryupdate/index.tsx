@@ -31,6 +31,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  function roundToDecimals(number = 0, decimals = 2) {
+    const multiplier = Math.pow(10, decimals);
+    return Math.round(number * multiplier) / multiplier;
+  }
   const location = useLocation();
   const history = useHistory();
   const { permissionList } = useSelector(
@@ -124,6 +128,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
             intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
             intPayrollElementTypeId: i?.intSalaryElementId,
+            basedOn: i?.strBasedOn,
           };
         });
         if (employeeInfo?.data[0]?.isGradeBasedSalary) {
@@ -220,6 +225,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         intId: 0,
       },
       onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].numAmount = roundToDecimals(item?.numAmount);
+        });
         setRowDto(res);
       },
     });
@@ -234,6 +242,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
   const submitHandler = async () => {
     const values = form.getFieldsValue(true);
+    if (!values?.grossAmount) {
+      return toast.warn("Gross Amount is required ");
+    }
+    if (
+      values?.salaryType?.value !== "Grade" &&
+      !values?.basicAmount &&
+      (values?.basedOn?.value === 2 || values?.basedOn === 2)
+    ) {
+      return toast.warn("Basic Amount is required ");
+    }
+
     const accountSum =
       accountsDto[1].numAmount +
       accountsDto[2].numAmount +
@@ -385,8 +404,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
   // accounts calculations
   const updateDtoHandler = (e: number, row: any, index: number): any => {
     const { grossAmount } = form.getFieldsValue(true);
+    const originalIndex =
+      row?.key === "Bank Pay" ? 0 : row?.key === "Digital/MFS Pay" ? 1 : 2;
     const temp = [...accountsDto];
-
     // Check for invalid input values
     if (e < 0) {
       return toast.warn(`${row?.key} can't be negative`);
@@ -396,18 +416,19 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
 
     // Update the selected index with the new amount
-    temp[index].numAmount = e;
-    temp[index].accounts = `${temp[index].key} (${(
+    temp[originalIndex].numAmount = e;
+    temp[originalIndex].accounts = `${temp[originalIndex].key} (${(
       (e * 100) /
       grossAmount
     ).toFixed(6)}%)`;
 
     // Calculate the remaining amount to be distributed between the other two indexes
     const remainingAmount = grossAmount - e;
-    const [index1, index2] = [0, 1, 2].filter((i) => i !== index); // get the other two indexes
-
+    const [index1, index2] = [0, 1, 2].filter((i) => i !== originalIndex); // get the other two indexes
+    // console.log({ index });
     // Distribute remaining amount between the other two indexes
-    // console.log({ index1 }, temp[index1].numAmount, remainingAmount);
+    // console.log({ temp }, { index }, temp[index].numAmount, remainingAmount);
+    // console.log({ temp }, { index1 }, temp[index1].numAmount, remainingAmount);
     // console.log({ index2 }, temp[index2].numAmount, remainingAmount);
     if (temp[index1].numAmount > remainingAmount) {
       temp[index1].numAmount = remainingAmount;
@@ -438,12 +459,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       (temp[index2].numAmount * 100) /
       grossAmount
     ).toFixed(6);
-    temp[index].accounts = `${temp[index].key} (${(
-      (temp[index].numAmount * 100) /
+    temp[originalIndex].accounts = `${temp[originalIndex].key} (${(
+      (temp[originalIndex].numAmount * 100) /
       grossAmount
     ).toFixed(6)}%)`;
-    temp[index].percentage = (
-      (temp[index].numAmount * 100) /
+    temp[originalIndex].percentage = (
+      (temp[originalIndex].numAmount * 100) /
       grossAmount
     ).toFixed(6);
 
@@ -473,10 +494,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         `${row?.strPayrollElementName} can't be greater than gross`
       );
     }
+
     // Update the selected index with the new amount
     // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
     if (temp[index]?.basedOn === "Amount") {
-      temp[index].numAmount = e;
+      temp[index].numAmount = roundToDecimals(e) || 0;
     } else {
       temp[index].numAmount = e + e * (slabCount || 0);
     }
@@ -551,7 +573,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       if (item.strBasedOn === "Percentage") {
         return {
           ...item,
-          numAmount: Math.round((grossAmount * item.numNumberOfPercent) / 100),
+          numAmount: roundToDecimals(
+            (grossAmount * item.numNumberOfPercent) / 100
+          ),
         };
       }
       return item; // Leave as-is if based on "Amount"
@@ -564,10 +588,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     const values = form.getFieldsValue(true);
     // const { basicAmount } = form.getFieldsValue(true);
     if (values?.salaryType?.value === "Grade") {
-      basicAmount = rowDto[0]?.numAmount;
+      basicAmount = rowDto[0]?.numAmount || 0;
       // basicAmount = rowDto[0]?.numAmount;
     } else {
-      basicAmount = values?.basicAmount;
+      basicAmount = values?.basicAmount || 0;
     }
     for (const item of rowDto) {
       let amount;
@@ -584,17 +608,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100); // Calculate based on percentage of basic salary
-        item.numAmount = Math.round(
-          (item.numNumberOfPercent * basicAmount) / 100
-        ); // Calculate based on percentage of basic salary
+        amount =
+          roundToDecimals((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+        item.numAmount =
+          roundToDecimals((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
       } else {
-        amount = item.numAmount; // Use the fixed amount if based on fixed amount
+        amount = item.numAmount || 0; // Use the fixed amount if based on fixed amount
       }
 
       modified_data.push({
         ...item,
-        amount: Math.ceil(amount), // Round to nearest integer
+        amount: roundToDecimals(amount) || 0, // Round to nearest integer
       });
     }
 
@@ -721,11 +745,14 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       render: (value: any, row: any, index: number) => (
         <>
           <PInput
-            type="number"
+            type="text"
             // name={`numAmount_${index}`}
             value={row?.numAmount}
             placeholder="Amount"
             onChange={(e: any) => {
+              if (isNaN(e?.target?.value)) {
+                return toast.warn("Only numeric value allowed");
+              }
               const values = form.getFieldsValue(true);
               if (
                 values?.salaryType?.value !== "Grade" &&
@@ -733,7 +760,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 index === 0
               ) {
                 form.setFieldsValue({
-                  basicAmount: e,
+                  basicAmount: +e?.target?.value,
                 });
               }
               // if (values?.salaryType?.value == "Grade") {
@@ -747,7 +774,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               //       getById?.data?.payScaleElements[0]?.netAmount;
               //   }
               // }
-              updateRowDtoHandler(e, row, index);
+              updateRowDtoHandler(+e?.target?.value, row, index);
             }}
             disabled={
               row?.strBasedOn !== "Amount" ||
@@ -871,7 +898,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               ? res?.empEmployeeBankDetail?.strAccountNo
               : "",
           bank: res?.empEmployeeBankDetail?.intBankWalletId
-            ? res?.empEmployeeBankDetail?.intBankWalletId
+            ? {
+                value: res?.empEmployeeBankDetail?.intBankWalletId,
+                label: res?.empEmployeeBankDetail?.strBankWalletName,
+              }
             : undefined,
           routing: res?.empEmployeeBankDetail?.strRoutingNo
             ? res?.empEmployeeBankDetail?.strRoutingNo
@@ -964,7 +994,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       onFinish={submitHandler}
     >
       <PCard>
-        <PCardHeader title="Salary Assign" submitText="Save"></PCardHeader>
+        <PCardHeader
+          backButton
+          title="Salary Assign"
+          submitText="Save"
+        ></PCardHeader>
         <EmployeeInfo
           employeeInfo={employeeInfo}
           getEmployeeInfo={getEmployeeInfo}
@@ -1041,11 +1075,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                                   strBasedOn: i?.basedOn,
                                   strDependOn: "Basic",
                                   baseAmount: i?.isBasic
-                                    ? Math.round(i?.netAmount)
+                                    ? roundToDecimals(i?.netAmount)
                                     : 0,
                                   isBasicSalary: i?.isBasic,
                                   numNumberOfPercent: i?.amountOrPercentage,
-                                  numAmount: Math.round(i?.netAmount),
+                                  numAmount: roundToDecimals(i?.netAmount),
                                   numberOfPercent: i?.amountOrPercentage,
                                 };
                               }
@@ -1231,16 +1265,31 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { basedOn, salaryType } = form.getFieldsValue(true);
+              const { basedOn, grossAmount, basicAmount, salaryType } =
+                form.getFieldsValue(true);
               if (salaryType?.value !== "Grade" && basedOn?.value === 2) {
                 return (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
-                      type="number"
-                      name="basicAmount"
-                      label="Basic"
+                      type="text"
+                      value={basicAmount}
+                      label={
+                        <span>
+                          <span className="text-danger ">* </span> Basic{" "}
+                        </span>
+                      }
                       placeholder="Basic"
-                      onChange={() => basic_or_grade_calculation()}
+                      onChange={(e: any) => {
+                        if (isNaN(e?.target?.value)) {
+                          toast.warn("Only numeric value allowed");
+                          return;
+                        } else {
+                          form.setFieldsValue({
+                            basicAmount: +e?.target?.value,
+                          });
+                          basic_or_grade_calculation();
+                        }
+                      }}
                       rules={[
                         {
                           required: basedOn?.value === 2 || basedOn === 2,
@@ -1254,33 +1303,45 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                 return salaryType?.value !== "Grade" ? (
                   <Col md={6} sm={12} xs={24}>
                     <PInput
-                      type="number"
-                      name="grossAmount"
-                      label="Gross"
+                      type="text"
+                      // name="grossAmount"
+                      value={grossAmount}
+                      label={
+                        <span>
+                          <span className="text-danger ">* </span> Gross{" "}
+                        </span>
+                      }
                       placeholder="Gross"
                       onChange={(e: any) => {
-                        // const temp = [...accountsDto];
-                        if (orgId === 12) {
-                          // const accounts = `Bank Pay (${100}%)`;
-                          // temp[0].accounts = accounts;
-                          // temp[0].numAmount = e;
-                          // temp[2].numAmount = 0;
-                          // temp[1].numAmount = 0;
-                          accountDetailsSetup("bank", e);
+                        if (isNaN(e?.target?.value)) {
+                          return toast.warn("Only numeric value allowed");
                         } else {
-                          accountDetailsSetup("cash", e);
+                          // const temp = [...accountsDto];
+                          if (orgId === 12) {
+                            // const accounts = `Bank Pay (${100}%)`;
+                            // temp[0].accounts = accounts;
+                            // temp[0].numAmount = e;
+                            // temp[2].numAmount = 0;
+                            // temp[1].numAmount = 0;
+                            accountDetailsSetup("bank", +e?.target?.value);
+                          } else {
+                            accountDetailsSetup("cash", +e?.target?.value);
 
-                          // const accounts = `Cash Pay (${100}%)`;
-                          // temp[2].accounts = accounts;
-                          // temp[2].numAmount = e;
-                          // temp[0].numAmount = 0;
-                          // temp[1].numAmount = 0;
-                          // (values?.bankPay * 100) /
-                          //               values?.totalGrossSalary
-                          //             )?.toFixed(6)
+                            // const accounts = `Cash Pay (${100}%)`;
+                            // temp[2].accounts = accounts;
+                            // temp[2].numAmount = e;
+                            // temp[0].numAmount = 0;
+                            // temp[1].numAmount = 0;
+                            // (values?.bankPay * 100) /
+                            //               values?.totalGrossSalary
+                            //             )?.toFixed(6)
+                          }
+                          form.setFieldsValue({
+                            grossAmount: +e?.target?.value,
+                          });
+                          new_gross_calculation();
+                          // setAccountsDto([...temp]);
                         }
-                        new_gross_calculation();
-                        // setAccountsDto([...temp]);
                       }}
                       rules={[
                         {
@@ -1362,11 +1423,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
               (acc, i) => acc + i?.numAmount,
               0
             );
-
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              elementSum !== grossAmount && (
+              Math.round(elementSum) !== grossAmount && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"
@@ -1384,7 +1444,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         Gross Amount and Breakdown Sum Amount Mismatch <br />
                         Adjust By
                         {elementSum > grossAmount ? " Reducing " : " Adding "}
-                        Amount {Math.abs(elementSum - grossAmount)}
+                        Amount {Math.round(Math.abs(elementSum - grossAmount))}
                       </h2>
                     </div>
                     {/* <Divider orientation="left">Small Size</Divider> */}

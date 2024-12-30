@@ -7,6 +7,8 @@ import { Switch } from "antd";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
+import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -16,11 +18,14 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
+  console.log("singleData", singleData);
   // const debounce = useDebounce();
   const getBUnitDDL = useApiRequest({});
   const saveDepartment = useApiRequest({});
+  const workplaceGroup = useApiRequest([]);
+  const workplaceDDL = useApiRequest([]);
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, strBusinessUnit } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -66,19 +71,21 @@ export default function AddEditForm({
         ? singleData?.intDepartmentId
         : 0,
       strDepartment: values?.strDepartment || "",
+      strDepartmentBn: values?.strDepartmentBn || null,
       strDepartmentCode: values?.strDepartmentCode,
       isActive: values?.isActive,
       isDeleted: true,
       strCostCenterDivision: values?.strCostCenterDivision?.value,
       // intParentDepId: values?.sectionDepartment?.value,
       // strParentDepName: values?.sectionDepartment?.label,
-      intBusinessUnitId: values?.bUnit?.value || 0,
+      intBusinessUnitId: values?.bUnit?.value || buId,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
-      intWorkplaceId: wId,
+      intWorkplaceId: values?.workplace?.value || wId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
     };
 
     saveDepartment.action({
@@ -98,9 +105,60 @@ export default function AddEditForm({
           value: singleData?.intBusinessUnitId,
           label: singleData?.strBusinessUnit,
         },
+        workplace: {
+          value: singleData?.intWorkplaceId,
+          label: singleData?.strWorkplace,
+        },
+        workplaceGroup: {
+          value: singleData?.intWorkplaceGroupId,
+          label: singleData?.strWorkplaceGroup,
+        },
       });
     }
   }, [singleData, getBUnitDDL?.data]);
+
+  const getWorkplace = () => {
+    const { bUnit, workplaceGroup } = form.getFieldsValue(true);
+    workplaceDDL?.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: bUnit?.value || buId,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
+  const getWorkplaceGroup = () => {
+    const { values } = form.getFieldsValue(true);
+    workplaceGroup?.action({
+      urlKey: "WorkplaceGroupIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId || values?.bUnit?.value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+  };
+  useEffect(() => {
+    getWorkplaceGroup();
+    if (singleData) {
+      getWorkplace();
+    }
+  }, [buId]);
+
   return (
     <>
       <PForm
@@ -115,7 +173,7 @@ export default function AddEditForm({
             isEdit,
           });
         }}
-        initialValues={{}}
+        initialValues={{ bUnit: { value: buId, label: strBusinessUnit } }}
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
@@ -129,6 +187,22 @@ export default function AddEditForm({
               ]}
             />
           </Col>
+          {orgIdsForBn.includes(orgId) && (
+            <Col md={12} sm={24}>
+              <PInput
+                type="text"
+                name="strDepartmentBn"
+                label="Department Name (In Bangla)"
+                placeholder="Department Name (In Bangla)"
+                rules={[
+                  {
+                    message: "This Field Must be in Bangla",
+                    pattern: new RegExp(checkBng()),
+                  },
+                ]}
+              />
+            </Col>
+          )}
           <Col md={12} sm={24}>
             <PInput
               type="text"
@@ -138,7 +212,6 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Code is required" }]}
             />
           </Col>
-
           <Col md={12} sm={24}>
             <PSelect
               options={getBUnitDDL?.data?.length > 0 ? getBUnitDDL?.data : []}
@@ -151,8 +224,47 @@ export default function AddEditForm({
                 form.setFieldsValue({
                   bUnit: op,
                 });
+                if (value) {
+                  getWorkplaceGroup();
+                }
               }}
-              // rules={[{ required: true, message: "District is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={workplaceGroup.data || []}
+              name="workplaceGroup"
+              label="Workplace Group"
+              placeholder="Workplace Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplaceGroup: op,
+                  workplace: undefined,
+                });
+                if (value) {
+                  getWorkplace();
+                }
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: "Workplace Group is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={workplaceDDL?.data || []}
+              name="workplace"
+              label="Workplace/Concern"
+              placeholder="Workplace/Concern"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -225,6 +337,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
+          loading={saveDepartment.loading}
         />
       </PForm>
     </>

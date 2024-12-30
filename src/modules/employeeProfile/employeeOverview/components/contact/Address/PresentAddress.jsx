@@ -24,6 +24,8 @@ import {
   success500,
 } from "./../../../../../../utility/customColor";
 import formatAddress from "common/formatAddress";
+import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   country: "",
@@ -63,10 +65,7 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
-  addressBn: Yup.string().matches(
-    /^[\u0980-\u09FF\s]*$/,
-    "This field should be in Bangla"
-  ),
+  addressBn: Yup.string().matches(checkBng(), "This field should be in Bangla"),
 });
 
 function PresentAddress({ getData, rowDto, empId }) {
@@ -677,7 +676,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        {orgId === 7 && (
+                        {orgIdsForBn.includes(orgId) && (
                           <FormikInput
                             name="addressBn"
                             value={values?.addressBn}
@@ -788,7 +787,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                                       rowDto?.presentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {orgId === 7 &&
+                                {orgIdsForBn.includes(orgId) &&
                                   rowDto?.presentAddress?.length > 0 &&
                                   rowDto?.presentAddress[0]
                                     ?.strAddressDetailsBn && (

@@ -420,17 +420,22 @@ const SelfSalaryPayslipReport = () => {
                       .filter((item) => item?.intPayrollElementTypeId === 0)
                       .map((item, index) => (
                         <tr key={index}>
-                          <td style={{ textAlign: "right" }}>
+                          <td style={{ textAlign: "left" }}>
                             <p>{item?.strPayrollElement}</p>
                           </td>
-                          <td style={{ textAlign: "right" }}>
+                          <td colSpan="3" style={{ textAlign: "right" }}>
                             <p>{numberWithCommas(item?.numAmount)}</p>
                           </td>
                         </tr>
                       ))}
                     <tr>
                       <td style={{ textAlign: "left" }}>
-                        <p>Tax</p>
+                        <p>
+                          Tax{" "}
+                          {salaryHeaderData[0]?.isTakeHomePay
+                            ? "(Company Pay)"
+                            : ""}
+                        </p>
                       </td>
                       <td style={{ textAlign: "right" }} colSpan="3">
                         <p>{salaryHeaderData[0]?.numTaxAmount || 0}</p>
@@ -456,6 +461,23 @@ const SelfSalaryPayslipReport = () => {
                         </>
                       ) : null}
                     </tr>
+                    <tr>
+                      {orgId === 4 ? (
+                        <>
+                          <td style={{ textAlign: "left" }}>
+                            <p>Late Joining Deduction</p>
+                          </td>
+                          <td style={{ textAlign: "right" }} colSpan="3">
+                            <p>
+                              {Math.round(
+                                salaryHeaderData[0]?.intLateJoining *
+                                  salaryHeaderData[0]?.numPerDaySalary
+                              ) || 0}
+                            </p>
+                          </td>
+                        </>
+                      ) : null}
+                    </tr>
                     {/* <tr>
                       <td style={{ textAlign: "left" }}>
                         <p>Provident Fund</p>
@@ -476,7 +498,11 @@ const SelfSalaryPayslipReport = () => {
                             numTotal(viewPaySlipData, "numAmount", 0) +
                               (salaryHeaderData[0]?.numTaxAmount || 0) +
                               (salaryHeaderData[0]?.numLoanAmount || 0) +
-                              (salaryHeaderData[0]?.numPFAmount || 0)
+                              (salaryHeaderData[0]?.numPFAmount || 0) +
+                              (Math.round(
+                                salaryHeaderData[0]?.intLateJoining *
+                                  salaryHeaderData[0]?.numPerDaySalary
+                              ) || 0)
                           )}
                         </p>
                       </th>
@@ -489,14 +515,19 @@ const SelfSalaryPayslipReport = () => {
                       </th>
                       <th colSpan="3" style={{ textAlign: "right" }}>
                         <p style={thStyles}>
-                          {numberWithCommas(
+                          {/* {numberWithCommas(
                             (numTotal(viewPaySlipData, "numTotal", 1) +
                               salaryHeaderData[0]?.numOverTimeAmount || 0) -
                               (numTotal(viewPaySlipData, "numAmount", 0) +
                                 (salaryHeaderData[0]?.numTaxAmount || 0) +
                                 (salaryHeaderData[0]?.numLoanAmount || 0) +
-                                (salaryHeaderData[0]?.numPFAmount || 0))
-                          )}
+                                (salaryHeaderData[0]?.numPFAmount || 0)) +
+                              (Math.round(
+                                salaryHeaderData[0]?.intLateJoining *
+                                  salaryHeaderData[0]?.numPerDaySalary
+                              ) || 0)
+                          )} */}
+                          {salaryHeaderData[0]?.numNetPayableSalary}
                         </p>
                       </th>
                     </tr>

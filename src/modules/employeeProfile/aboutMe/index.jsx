@@ -126,7 +126,12 @@ function AboutMe() {
               <p className="bankCard-title">Overview</p>
             </div>
             <div className="card-body p-0">
-              <OverviewTab empId={employeeId} wgId={wgId} buId={buId} />
+              <OverviewTab
+                empId={employeeId}
+                wgId={wgId}
+                buId={buId}
+                intAccountId={intAccountId}
+              />
             </div>
           </div>
           <BankDetails

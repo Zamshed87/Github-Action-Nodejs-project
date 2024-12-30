@@ -318,32 +318,32 @@ const CardTable = ({ propsObj }) => {
           data={allData?.listData}
           columnsData={columns(page, paginationSize)}
           onRowClick={(dataRow) => {
-            if (dataRow?.application?.isGradeBasedSalary) {
-              history.push({
-                pathname: `/compensationAndBenefits/increment/singleIncrement/grade/view/${dataRow?.application?.intIncrementId}`,
-                state: {
-                  singleData: {
-                    incrementList: [dataRow],
-                    transferPromotionObj: {},
-                  },
-                  viewOnly: true,
-
-                  // isPromotion: false,
-                  // incrementList: modifiedData,
-                  // transferPromotionObj: null,
+            // if (dataRow?.application?.isGradeBasedSalary) {
+            history.push({
+              pathname: `/compensationAndBenefits/increment/singleIncrement/grade/view/${dataRow?.application?.intIncrementId}`,
+              state: {
+                singleData: {
+                  incrementList: [dataRow],
+                  transferPromotionObj: {},
                 },
-              });
-            } else {
-              history.push(
-                `/compensationAndBenefits/increment/singleIncrement/view/${dataRow?.application?.intIncrementId}`,
-                {
-                  employeeId: dataRow?.intEmployeeId,
-                  buId: dataRow?.intBusinessUnitId,
-                  wgId: dataRow?.intWorkplaceGroupId,
-                  approval: true,
-                }
-              );
-            }
+                viewOnly: true,
+
+                // isPromotion: false,
+                // incrementList: modifiedData,
+                // transferPromotionObj: null,
+              },
+            });
+            // } else {
+            //   history.push(
+            //     `/compensationAndBenefits/increment/singleIncrement/view/${dataRow?.application?.intIncrementId}`,
+            //     {
+            //       employeeId: dataRow?.intEmployeeId,
+            //       buId: dataRow?.intBusinessUnitId,
+            //       wgId: dataRow?.intWorkplaceGroupId,
+            //       approval: true,
+            //     }
+            //   );
+            // }
 
             setSingleData(dataRow);
             // setViewModal(true);

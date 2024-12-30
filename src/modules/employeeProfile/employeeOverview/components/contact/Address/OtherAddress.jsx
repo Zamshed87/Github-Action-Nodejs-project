@@ -24,6 +24,8 @@ import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../../utility/todayDate";
 import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 import formatAddress from "common/formatAddress";
+import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   country: "",
@@ -63,10 +65,7 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
-  addressBn: Yup.string().matches(
-    /^[\u0980-\u09FF\s]*$/,
-    "This field should be in Bangla"
-  ),
+  addressBn: Yup.string().matches(checkBng(), "This field should be in Bangla"),
 });
 
 function OtherAddress({ getData, rowDto, empId }) {
@@ -135,7 +134,8 @@ function OtherAddress({ getData, rowDto, empId }) {
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
-        addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
+        addressDetails:
+          formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -204,7 +204,8 @@ function OtherAddress({ getData, rowDto, empId }) {
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
-        addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
+        addressDetails:
+          formatAddress(values?.address) || formatAddress(singleData?.address),
         addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
         companyName: "",
         jobTitle: "",
@@ -275,7 +276,8 @@ function OtherAddress({ getData, rowDto, empId }) {
       postOfficeId: values?.postOffice?.value || singleData?.postOffice?.value,
       postOfficeName:
         values?.postOffice?.label || singleData?.postOffice?.label,
-      addressDetails: formatAddress(values?.address) || formatAddress(singleData?.address),
+      addressDetails:
+        formatAddress(values?.address) || formatAddress(singleData?.address),
       addressDetailsBn: values?.addressBn || singleData?.strAddressDetailsBn,
       companyName: "",
       jobTitle: "",
@@ -658,18 +660,20 @@ function OtherAddress({ getData, rowDto, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        <FormikInput
-                          name="addressBn"
-                          value={values?.addressBn}
-                          onChange={(e) => {
-                            setFieldValue("addressBn", e.target.value);
-                          }}
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Address (In Bangla)"
-                          classes="input-sm"
-                          isDisabled={!values?.district}
-                        />
+                        {orgIdsForBn.includes(orgId) && (
+                          <FormikInput
+                            name="addressBn"
+                            value={values?.addressBn}
+                            onChange={(e) => {
+                              setFieldValue("addressBn", e.target.value);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                            placeholder="Address (In Bangla)"
+                            classes="input-sm"
+                            isDisabled={!values?.district}
+                          />
+                        )}
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
@@ -765,7 +769,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                                       rowDto?.otherAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {orgId === 7 &&
+                                {orgIdsForBn.includes(orgId) &&
                                   rowDto?.otherAddress?.length > 0 &&
                                   rowDto?.otherAddress[0]
                                     ?.strAddressDetailsBn && (

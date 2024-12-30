@@ -20,6 +20,8 @@ import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 import FormikSelect from "./../../../../../../common/FormikSelect";
 import { todayDate } from "./../../../../../../utility/todayDate";
 import formatAddress from "common/formatAddress";
+import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   country: "",
@@ -58,10 +60,7 @@ const validationSchema = Yup.object().shape({
   //    })
   //    .typeError("Post Office is required"),
   address: Yup.string().required("Address is required"),
-  addressBn: Yup.string().matches(
-    /^[\u0980-\u09FF\s]*$/,
-    "This field should be in Bangla"
-  ),
+  addressBn: Yup.string().matches(checkBng(), "This field should be in Bangla"),
 });
 
 function ParmanentAddress({ getData, empId }) {
@@ -640,7 +639,7 @@ function ParmanentAddress({ getData, empId }) {
                           classes="input-sm"
                           isDisabled={!values?.district}
                         />
-                        {orgId === 7 && (
+                        {orgIdsForBn.includes(orgId) && (
                           <FormikInput
                             name="addressBn"
                             value={values?.addressBn}
@@ -751,7 +750,7 @@ function ParmanentAddress({ getData, empId }) {
                                       rowDto?.permanentAddress[0]?.strCountry,
                                     ])}
                                 </h4>
-                                {orgId === 7 &&
+                                {orgIdsForBn.includes(orgId) &&
                                   rowDto?.permanentAddress?.length > 0 &&
                                   rowDto?.permanentAddress[0]
                                     ?.strAddressDetailsBn && (

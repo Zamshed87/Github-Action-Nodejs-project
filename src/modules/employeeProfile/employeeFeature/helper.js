@@ -9,6 +9,7 @@ import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import formatAddress from "common/formatAddress";
+import { commonDDL } from "modules/leaveMovement/configuration/YearlyLeavePolicy/helper";
 
 // const getYearMonth2 = (value) => {
 //   let splitMonth = value?.split("-");
@@ -33,6 +34,11 @@ export const createEditEmpAction = async (
 ) => {
   try {
     let payload = {
+      intJobTerritoryId: values?.jobTerritory?.value || 0,
+      strJobTerritory: values?.jobTerritory?.label || "",
+      intJobLocationId: values?.jobLocation?.value || 0,
+      strJobLocation: values?.jobLocation?.label || "",
+
       presentAddress: formatAddress(values?.presentAddress || ""),
       permanentAddress: formatAddress(values?.permanentAddress || ""),
       presentAddressBn: values?.presentAddressBn,
@@ -81,7 +87,7 @@ export const createEditEmpAction = async (
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
       isSalaryHold: values?.isSalaryHold,
-      isTakeHomePay: values?.isTakeHomePay,
+      isTakeHomePay: values?.isTakeHomePay?.value,
       isActive: true,
       isUserInactive: false,
       isRemoteAttendance: false,
@@ -431,6 +437,18 @@ export const getEmployeeProfileViewData = async (
                 label: empBasic?.employeeProfileLandingView?.strBloodGroup,
               }
             : undefined,
+          jobLocation: empBasic?.employeeProfileLandingView?.intJobLocationId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intJobLocationId,
+                label: empBasic?.employeeProfileLandingView?.strJobLocation,
+              }
+            : undefined,
+          jobTerritory: empBasic?.employeeProfileLandingView?.intJobTerritoryId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intJobTerritoryId,
+                label: empBasic?.employeeProfileLandingView?.strJobTerritory,
+              }
+            : undefined,
           gender: empBasic?.employeeProfileLandingView?.intGenderId
             ? {
                 value: empBasic?.employeeProfileLandingView?.intGenderId,
@@ -590,7 +608,9 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,
-          isTakeHomePay: empBasic?.employeeProfileLandingView?.isTakeHomePay,
+          isTakeHomePay: empBasic?.employeeProfileLandingView?.isTakeHomePay
+            ? commonDDL[1]
+            : commonDDL[0],
           contractualFromDate: empBasic?.employeeProfileLandingView
             ?.dteContractFromDate
             ? moment(empBasic?.employeeProfileLandingView?.dteContractFromDate)
@@ -1171,6 +1191,25 @@ export const columnForHeadOffice = {
   strDesignation: "Designation",
   strDepartment: "Department",
   sectionName: "Section",
+  strSupervisorName: "Supervisor",
+  strLinemanager: "Line Manager",
+  strEmploymentType: "Employment Type",
+  contactNo: "Contact No",
+  JoiningDate: "Joining Date",
+  strEmployeeStatus: "Status",
+};
+export const columnForFinish = {
+  sl: "SL",
+  strWorkplaceGroup: "Work. Group/Location",
+  strWorkplace: "Workplace/Concern",
+  strEmployeeName: "Employee Name",
+  strEmployeeCode: "Employee Id",
+  strReferenceId: "Reference Id",
+  strDesignation: "Designation",
+  strDepartment: "Department",
+  sectionName: "Section",
+  strJobTerritory: "Job Territory",
+  strJobLocation: "Job Location",
   strSupervisorName: "Supervisor",
   strLinemanager: "Line Manager",
   strEmploymentType: "Employment Type",

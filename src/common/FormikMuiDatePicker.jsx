@@ -31,7 +31,7 @@ const FormikMuiDatePicker = ({
           <DateTimePicker
             clearable={clearable}
             clearText="Clear"
-            className={className || "formik_mui_date_field"}
+            className={className || "formik_mui_date_field date-time-custom-css"}
             label={label}
             value={value}
             maxDate={maxDate}

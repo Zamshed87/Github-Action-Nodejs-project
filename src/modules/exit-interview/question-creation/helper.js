@@ -39,3 +39,12 @@ export const assignToEmployee = async (id, empId, setData, setLoading) => {
     setLoading && setLoading(false);
   }
 };
+
+export const getChipData = (label) => {
+  switch (label) {
+    case "Active":
+      return { label: "Active", class: "success" };
+    default:
+      return { label: "Inactive", class: "danger" };
+  }
+};

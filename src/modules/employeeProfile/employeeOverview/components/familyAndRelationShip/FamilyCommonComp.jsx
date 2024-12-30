@@ -30,6 +30,8 @@ import { todayDate } from "../../../../../utility/todayDate";
 import "../../employeeOverview.css";
 import { updateEmployeeProfile } from "../helper";
 import { getEmployeeProfileViewData } from "./../../../employeeFeature/helper";
+import { checkBng } from "utility/regxExp";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const initData = {
   name: "",
@@ -58,7 +60,7 @@ const validationSchema = Yup.object().shape({
     "Mobile Number is invalid"
   ),
   relativesNameBn: Yup.string().matches(
-    /^[\u0980-\u09FF\s]*$/,
+    checkBng(),
     "This field should be in Bangla"
   ),
 });
@@ -188,7 +190,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                         classes="input-sm"
                       />
                     </div>
-                    {orgId === 7 && (
+                    {orgIdsForBn.includes(orgId) && (
                       <div>
                         <FormikInput
                           value={values?.relativesNameBn}
@@ -420,7 +422,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                             }}
                                           />
                                         ),
-                                        onClick: (e) => {
+                                        onClick: () => {
                                           setValues({
                                             ...values,
                                             name:
@@ -496,7 +498,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                           }}
                                         />
                                       ),
-                                      onClick: (e) => {
+                                      onClick: () => {
                                         setValues({
                                           ...values,
                                           name:
@@ -576,7 +578,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                             <small>Name</small>
                           </div>
                         </div>
-                        {orgId === 7 && (
+                        {orgIdsForBn.includes(orgId) && (
                           <div className="row mb-3">
                             <div className="col-lg-1">
                               <Avatar className="overviewAvatar">
