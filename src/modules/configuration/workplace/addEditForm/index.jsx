@@ -123,6 +123,7 @@ export default function AddEditForm({
       urlKey: "SaveWorkplace",
       method: "POST",
       payload: payload,
+      toast: true,
       onSuccess: () => {
         cb();
       },
