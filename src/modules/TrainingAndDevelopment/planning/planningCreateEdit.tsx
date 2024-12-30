@@ -41,7 +41,6 @@ import ListOfPerticipants from "./listOfPerticipants";
 import PlanningInfo from "./planningInfo";
 import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import moment from "moment";
-import { id } from "date-fns/locale";
 
 const cardMargin = { marginBottom: "15px" };
 
@@ -401,6 +400,7 @@ const TnDPlanningCreateEdit = () => {
     console.log(form.getFieldsValue(true), "values");
 
     const addParticipant = (employee: any) => {
+      console.log("perticipantField", perticipantField, "employee", employee);
       const isDuplicate = perticipantField.some(
         (participant: any) => participant.perticipantId === employee.employeeId
       );
@@ -434,15 +434,16 @@ const TnDPlanningCreateEdit = () => {
       ]);
       console.log("perticipantField6666", perticipantField);
     };
-    console.log("perticipantField22", perticipantField);
+    console.log("perticipantField22", values);
 
     if (values?.employee) {
+      console.log("perticipantField99", values);
       addParticipant({
         employeeId: values.employee.value,
-        employeeNameWithCode: `${values.employee.label} - ${values.employee.value}`,
-        departmentId: values.department.value,
-        designationName: values.hrPosition.label || "",
-        designation: values.hrPosition.value || 0,
+        employeeNameWithCode: `${values.employee.employeeNameWithCode}`,
+        departmentId: values.employee.departmentId,
+        designationName: values.employee.designationName || "",
+        designation: values.employee.designation || 0,
       });
     } else {
       employees.forEach((employee: any) => {
