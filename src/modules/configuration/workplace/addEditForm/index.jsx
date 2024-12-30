@@ -533,7 +533,9 @@ export default function AddEditForm({
                   }}
                 >
                   <Form.Item name="isActive" valuePropName="checked">
-                    <Switch disabled={!!isEdit} />
+                    <Switch
+                    // disabled={!!isEdit}
+                    />
                   </Form.Item>
                 </div>
               </div>
