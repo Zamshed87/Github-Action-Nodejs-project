@@ -761,7 +761,9 @@ const SalaryPayslipReport = lazy(() =>
   import("../modules/CompensationBenefits/SalaryPayslipReport/index.jsx")
 );
 const MultiSalaryPayslipReport = lazy(() =>
-  import("../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx")
+  import(
+    "../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx"
+  )
 );
 const SalaryTaxCertificate = lazy(() =>
   import("../modules/CompensationBenefits/salaryTaxCertificate/index.jsx")
@@ -2076,6 +2078,10 @@ export const routingList = [
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
+    component: CreateEditLeavePolicy,
+  },
+  {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/extention",
     component: CreateEditLeavePolicy,
   },
   {

@@ -18,6 +18,7 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { yearDDLAction } from "../../../../utility/yearDDL";
 import "../style.css";
 import { getYearlyPolicyLanding } from "./helper";
+import { CopyOutlined } from "@ant-design/icons";
 
 const date = new Date();
 const currentYear = date.getFullYear();
@@ -300,10 +301,13 @@ const YearlyLeavePolicy = () => {
                                             ?.join(", ")}
                                         </td>
                                         {orgId !== 0 && (
-                                          <td>
+                                          <td
+                                            className=" d-flex "
+                                            style={{ height: "300px" }}
+                                          >
                                             <Tooltip title="Edit" arrow>
                                               <button
-                                                className="iconButton"
+                                                className="iconButton my-4 "
                                                 type="button"
                                               >
                                                 <ModeEditOutlineOutlined
@@ -311,6 +315,22 @@ const YearlyLeavePolicy = () => {
                                                     history.push(
                                                       `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}`
                                                     )
+                                                  }
+                                                  style={{ fontSize: "15px" }}
+                                                />
+                                              </button>
+                                            </Tooltip>
+                                            <Tooltip title="Extend" arrow>
+                                              <button
+                                                className="iconButton ml-2 my-4 "
+                                                type="button"
+                                              >
+                                                <CopyOutlined
+                                                  onClick={() =>
+                                                    history.push({
+                                                      pathname: `/administration/leaveandmovement/yearlyLeavePolicy/extention`,
+                                                      state: policy,
+                                                    })
                                                   }
                                                   style={{ fontSize: "15px" }}
                                                 />
