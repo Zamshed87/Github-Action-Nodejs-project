@@ -88,7 +88,12 @@ const TnDPlanningLanding = () => {
   };
   // Form Instance
   const [form] = Form.useForm();
-  // table column
+
+  const dateNewFormatter = (startDate: string, endDate: string) => {
+    const start = moment(startDate).format("YYYY-MM-DD hh:mm A");
+    const end = moment(endDate).format("YYYY-MM-DD hh:mm A");
+    return `${start} to ${end}`;
+  };
   // table column
   const header: any = [
     {
@@ -138,7 +143,7 @@ const TnDPlanningLanding = () => {
       filter: true,
       filterKey: "trainingTypeList",
       filterSearch: true,
-      width: 150,
+      width: 130,
       fixed: "left",
     },
     {
@@ -147,8 +152,7 @@ const TnDPlanningLanding = () => {
       filter: true,
       filterKey: "trainingTitleList",
       filterSearch: true,
-      width: 150,
-      fixed: "left",
+      width: 130,
     },
     {
       title: "Training Mode",
@@ -160,9 +164,11 @@ const TnDPlanningLanding = () => {
     {
       title: "Training Date & Time",
       dataIndex: "startDate",
-      render: (data: any) => dateFormatter(data),
+      render: (text: any, record: any) =>
+        dateNewFormatter(record.startDate, record.endDate),
       sorter: true,
-      align: "center",
+      align: "left",
+      width: 150,
     },
     // {
     //   title: "Name of Trainer",

@@ -30,23 +30,14 @@ const TrainerAndOrgInfo = ({
     {
       title: "Name of Trainer",
       dataIndex: "name",
-      filter: true,
-      filterKey: "nameofTrainerList",
-      filterSearch: true,
     },
     {
       title: "Name of Organization",
       dataIndex: "organization",
-      filter: true,
-      filterKey: "nameOfOrganizationList",
-      filterSearch: true,
     },
     {
       title: "Trainer Contact No",
       dataIndex: "contactNo",
-      filter: true,
-      filterKey: "nameOfOrganizationList",
-      filterSearch: true,
     },
     {
       title: "Trainer Email",

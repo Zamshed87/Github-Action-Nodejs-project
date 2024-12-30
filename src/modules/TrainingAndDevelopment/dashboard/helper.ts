@@ -109,7 +109,7 @@ export const tableColumns2 = [
 
 export const tableColumns3 = [
   {
-    title: "Total Cost (BDT)",
+    title: "Total Cost",
     dataIndex: "totalCost",
     key: "totalCost",
     width: 10,
@@ -118,7 +118,7 @@ export const tableColumns3 = [
 
 export const tableColumns4 = [
   {
-    title: "Cost Per Participant (BDT)",
+    title: "Cost Per Participant",
     dataIndex: "costPerParticipant",
     key: "costPerParticipant",
     width: 10,
