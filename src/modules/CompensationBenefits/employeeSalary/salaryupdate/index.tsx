@@ -31,6 +31,10 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  function roundToDecimals(number = 0, decimals = 2) {
+    const multiplier = Math.pow(10, decimals);
+    return Math.round(number * multiplier) / multiplier;
+  }
   const location = useLocation();
   const history = useHistory();
   const { permissionList } = useSelector(
@@ -222,7 +226,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
-          res[i].numAmount = Math.round(item?.numAmount);
+          res[i].numAmount = roundToDecimals(item?.numAmount);
         });
         setRowDto(res);
       },
@@ -241,7 +245,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     if (!values?.grossAmount) {
       return toast.warn("Gross Amount is required ");
     }
-    if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
+    if (
+      values?.salaryType?.value !== "Grade" &&
+      !values?.basicAmount &&
+      (values?.basedOn?.value === 2 || values?.basedOn === 2)
+    ) {
       return toast.warn("Basic Amount is required ");
     }
 
@@ -490,7 +498,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     // Update the selected index with the new amount
     // console.log({ temp }, { basedOn }, temp[index], temp[index].isBasicSalary);
     if (temp[index]?.basedOn === "Amount") {
-      temp[index].numAmount = Math.round(e) || 0;
+      temp[index].numAmount = roundToDecimals(e) || 0;
     } else {
       temp[index].numAmount = e + e * (slabCount || 0);
     }
@@ -565,7 +573,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       if (item.strBasedOn === "Percentage") {
         return {
           ...item,
-          numAmount: Math.round((grossAmount * item.numNumberOfPercent) / 100),
+          numAmount: roundToDecimals(
+            (grossAmount * item.numNumberOfPercent) / 100
+          ),
         };
       }
       return item; // Leave as-is if based on "Amount"
@@ -598,16 +608,17 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+        amount =
+          roundToDecimals((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
         item.numAmount =
-          Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+          roundToDecimals((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
       } else {
         amount = item.numAmount || 0; // Use the fixed amount if based on fixed amount
       }
 
       modified_data.push({
         ...item,
-        amount: Math.round(amount) || 0, // Round to nearest integer
+        amount: roundToDecimals(amount) || 0, // Round to nearest integer
       });
     }
 
@@ -1064,11 +1075,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                                   strBasedOn: i?.basedOn,
                                   strDependOn: "Basic",
                                   baseAmount: i?.isBasic
-                                    ? Math.round(i?.netAmount)
+                                    ? roundToDecimals(i?.netAmount)
                                     : 0,
                                   isBasicSalary: i?.isBasic,
                                   numNumberOfPercent: i?.amountOrPercentage,
-                                  numAmount: Math.round(i?.netAmount),
+                                  numAmount: roundToDecimals(i?.netAmount),
                                   numberOfPercent: i?.amountOrPercentage,
                                 };
                               }
@@ -1415,7 +1426,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              Math.round(elementSum) !== Math.round(grossAmount) && (
+              Math.round(elementSum) !== grossAmount && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"

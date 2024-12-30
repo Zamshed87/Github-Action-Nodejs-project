@@ -43,8 +43,7 @@ import HistoryTransferTable from "modules/employeeProfile/transferNPromotion/tra
 import Loading from "common/loading/Loading";
 import { Alert } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
-import { dateFormatterReport } from "utility/dateFormatter";
-import { convert_number_to_word } from "utility/numberToWord";
+import IncrementLetter from "./IncrementLetter";
 
 type TIncrement = unknown;
 const SingleIncrement: React.FC<TIncrement> = () => {
@@ -53,6 +52,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  function roundToDecimals(number = 0, decimals = 2) {
+    const multiplier = Math.pow(10, decimals);
+    return Math.round(number * multiplier) / multiplier;
+  }
   // const regex = /^[0-9]*\.?[0-9]*$/;
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -394,27 +397,27 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       },
     });
   };
-  const getBreakDownPolicyElements = () => {
-    const { payrollGroup } = form.getFieldsValue(true);
-    breakDownPolicyApi?.action({
-      urlKey: "BreakdownNPolicyForSalaryAssign",
-      method: "GET",
-      params: {
-        StrReportType: "BREAKDOWN ELEMENT BY ID",
+  // const getBreakDownPolicyElements = () => {
+  //   const { payrollGroup } = form.getFieldsValue(true);
+  //   breakDownPolicyApi?.action({
+  //     urlKey: "BreakdownNPolicyForSalaryAssign",
+  //     method: "GET",
+  //     params: {
+  //       StrReportType: "BREAKDOWN ELEMENT BY ID",
 
-        IntAccountId: orgId,
-        IntSalaryBreakdownHeaderId: payrollGroup?.value,
-        IntWorkplaceId: 0,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].numAmount = Math.round(item?.numAmount);
-        });
-        setRowDto(res);
-      },
-    });
-  };
+  //       IntAccountId: orgId,
+  //       IntSalaryBreakdownHeaderId: payrollGroup?.value,
+  //       IntWorkplaceId: 0,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].numAmount = roundToDecimals(item?.numAmount || 0);
+  //       });
+  //       setRowDto(res);
+  //     },
+  //   });
+  // };
 
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
@@ -432,7 +435,11 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     if (!values?.grossAmount) {
       return toast.warn("Gross Amount is required ");
     }
-    if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
+    if (
+      values?.salaryType?.value !== "Grade" &&
+      !values?.basicAmount &&
+      (values?.basedOn?.value === 2 || values?.basedOn === 2)
+    ) {
       return toast.warn("Basic Amount is required ");
     }
     if (
@@ -444,7 +451,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
-    if (Math.round(elementSum) !== Math.round(values?.grossAmount)) {
+    if (Math.round(elementSum) !== values?.grossAmount) {
       return toast.warn(
         "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
       );
@@ -465,7 +472,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       return {
         dependsOn: i?.strBasedOn,
         payrollElementId: i?.intPayrollElementTypeId,
-        amount: Math.round(i?.numAmount),
+        amount: roundToDecimals(i?.numAmount || 0),
         numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
       };
     });
@@ -709,7 +716,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       temp[index]?.basedOn === "Amount" ||
       temp[index]?.strBasedOn === "Amount"
     ) {
-      temp[index].numAmount = Math.round(e);
+      temp[index].numAmount = roundToDecimals(e || 0);
     } else {
       temp[index].numAmount = e + e * (slabCount || 0);
     }
@@ -755,16 +762,17 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         item.strBasedOn === "Percentage" ||
         item.strBasedOn === "Percent"
       ) {
-        amount = Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+        amount =
+          roundToDecimals((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
         item.numAmount =
-          Math.round((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
+          roundToDecimals((item.numNumberOfPercent * basicAmount) / 100) || 0; // Calculate based on percentage of basic salary
       } else {
-        amount = Math.round(item.numAmount) || 0; // Use the fixed amount if based on fixed amount
+        amount = roundToDecimals(item.numAmount) || 0; // Use the fixed amount if based on fixed amount
       }
 
       modified_data.push({
         ...item,
-        amount: Math.round(amount) || 0, // Round to nearest integer
+        amount: roundToDecimals(amount) || 0, // Round to nearest integer
       });
     }
 
@@ -783,7 +791,9 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       if (item.strBasedOn === "Percentage") {
         return {
           ...item,
-          numAmount: Math.round((grossAmount * item.numNumberOfPercent) / 100),
+          numAmount: roundToDecimals(
+            (grossAmount * item.numNumberOfPercent) / 100
+          ),
         };
       }
       return item; // Leave as-is if based on "Amount"
@@ -1044,7 +1054,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             return {
               ...i,
               // strBasedOn: i?.isBasicSalary ? "Amount" : "Percentage",
-              numAmount: Math.round(i?.amount),
+              numAmount: roundToDecimals(i?.amount || 0),
               numNumberOfPercent: i?.numberOfPercent,
               strBasedOn: i?.dependsOn,
               strDependOn: i?.dependsOn,
@@ -1062,14 +1072,17 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           );
           // console.log(employeeInfo?.data[0], "here");
           form.setFieldsValue({
-            grossAmount: newGross,
+            grossAmount: Math.round(newGross),
             basicAmount:
               (location?.state as any)?.singleData?.incrementList?.[0]
                 ?.strIncrementDependOn === "Basic" &&
               res?.incrementDependOnValue,
             payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
               ? undefined
-              : res?.salaryBreakDownHeaderId,
+              : {
+                  value: res?.salaryBreakDownHeaderId,
+                  label: res?.salaryBreakDownHeaderTitle,
+                },
             // basedOn: 1,
 
             dteEffectiveDate: moment(res?.effectiveDate),
@@ -1263,7 +1276,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           basicAmount: employeeInfo?.data[0]?.numBasicORGross,
           payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
             ? undefined
-            : employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+            : {
+                value: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+                label: employeeInfo?.data[0]?.strSalaryBreakdownTitle,
+              },
           basedOn:
             employeeInfo?.data[0]?.strDependOn.toLowerCase() === "basic"
               ? { value: 2, label: "Basic" }
@@ -1482,11 +1498,11 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                                   strBasedOn: i?.basedOn,
                                   strDependOn: "Basic",
                                   baseAmount: i?.isBasic
-                                    ? Math.round(i?.netAmount)
+                                    ? roundToDecimals(i?.netAmount)
                                     : 0,
                                   isBasicSalary: i?.isBasic,
                                   numNumberOfPercent: i?.amountOrPercentage,
-                                  numAmount: Math.round(i?.netAmount),
+                                  numAmount: roundToDecimals(i?.netAmount),
                                   numberOfPercent: i?.amountOrPercentage,
                                 };
                               }
@@ -1616,7 +1632,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                               ? { value: 2, label: "Basic" }
                               : { value: 1, label: "Gross" },
                         });
-                        getBreakDownPolicyElements();
+                        // getBreakDownPolicyElements();
                       }}
                       rules={[
                         {
@@ -2465,7 +2481,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              Math.round(elementSum) !== Math.round(grossAmount) && (
+              Math.round(elementSum) !== grossAmount && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"
@@ -2483,7 +2499,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         Gross Amount and Breakdown Sum Amount Mismatch <br />
                         Adjust By
                         {elementSum > grossAmount ? " Reducing " : " Adding "}
-                        Amount {Math.round(Math.abs(elementSum - grossAmount))}
+                        Amount{" "}
+                        {roundToDecimals(Math.abs(elementSum - grossAmount))}
                       </h2>
                     </div>
                     {/* <Divider orientation="left">Small Size</Divider> */}
@@ -2514,147 +2531,14 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             margin: "80px 0",
           }}
         >
-          <p style={{ fontSize: "16px" }} className="mb-5">
-            Date: {todayDate()}
-          </p>
-          <p style={{ fontSize: "16px" }} className="my-2">
-            To
-          </p>
-          <p style={{ fontSize: "16px" }} className="my-2">
-            Name:{" "}
-            {(empBasic as any)?.employeeProfileLandingView?.strEmployeeName}
-          </p>
-          <p style={{ fontSize: "16px" }} className="my-2">
-            Designation:{" "}
-            {(empBasic as any)?.employeeProfileLandingView?.strDesignation}
-          </p>
-          <p style={{ fontSize: "16px" }} className="my-2">
-            Department:{" "}
-            {(empBasic as any)?.employeeProfileLandingView?.strDepartment}
-          </p>
-          <p style={{ fontSize: "16px" }} className="mt-2 mb-3">
-            Employee Id:
-            {(empBasic as any)?.employeeProfileLandingView?.strEmployeeCode}
-          </p>
-          <p
-            style={{
-              fontSize: "16px",
-              textAlign: "center",
-              textDecoration: "underline",
-            }}
-            className="my-3"
-          >
-            <strong>Subject: Salary Increment</strong>
-          </p>
-          <h2 style={{ fontSize: "16px" }} className="my-2">
-            {(empBasic as any)?.employeeProfileLandingView?.strEmployeeName}
-          </h2>
-          <h2 style={{ fontSize: "16px" }} className="my-2">
-            Congratulations!
-          </h2>
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
-            In recognition of your previous performance, we are glad to inform
-            you that the {buName} {orgId === 5 ? " (SFOC)" : ""} Management has
-            decided to give you an increment of{" "}
-            <strong>
-              {employeeIncrementByIdApi?.data?.incrementAmount} BDT
-            </strong>{" "}
-            which will be effective from{" "}
-            <strong>
-              {dateFormatterReport(
-                employeeIncrementByIdApi?.data?.effectiveDate
-              )}
-            </strong>
-            . Your revised salary breakdown is as follows:
-          </p>
-          {/* <h3>Your revised monthly salary breakdown is as follows:</h3> */}
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              margin: "40px auto 5px auto",
-            }}
-          >
-            <thead>
-              <tr>
-                <th style={{ border: "1px solid black", padding: "5px" }}>
-                  Salary Components
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "5px",
-                    textAlign: "right",
-                  }}
-                >
-                  Amount (BDT)
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rowDto.map((item, index) => (
-                <tr key={index}>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    {item.strPayrollElementName}
-                  </td>
-                  <td
-                    style={{
-                      border: "1px solid black",
-                      padding: "5px",
-                      textAlign: "right",
-                    }}
-                  >
-                    {item.amount}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td style={{ border: "1px solid black", padding: "5px" }}>
-                  <strong>Total Gross Salary</strong>
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "5px",
-                    textAlign: "right",
-                  }}
-                >
-                  <strong>{form.getFieldsValue(true).grossAmount}</strong>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <p className="mb-2" style={{ fontSize: "16px", lineHeight: "1.5" }}>
-            In Words:{" "}
-            <strong>
-              {convert_number_to_word(form.getFieldsValue(true).grossAmount)}{" "}
-              Taka Only
-            </strong>
-          </p>
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
-            We deeply appreciate your contribution and excellent work over the
-            last year. Thank you for your agility and focus on delivering
-            business results and taking{orgId === 5 ? " (SFOC)" : ""}
-            forward.
-          </p>
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }} className="my-2">
-            With best wishes,
-          </p>
-          <p
-            className="mt-5"
-            style={{
-              width: "20%",
-              borderBottom: "1px solid #000",
-            }}
-          ></p>
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }} className="mt-2">
-            {orgId === 5 ? "Adiba S. Ajanee" : ""}
-          </p>
-
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
-            {orgId === 5 ? "Deputy Managing Partner" : ""}
-          </p>
-          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{buName}</p>
+          <IncrementLetter
+            orgId={orgId}
+            empBasic={empBasic}
+            buName={buName}
+            employeeIncrementByIdApi={employeeIncrementByIdApi}
+            form={form}
+            rowDto={rowDto}
+          />
         </div>
       </div>
     </PForm>
