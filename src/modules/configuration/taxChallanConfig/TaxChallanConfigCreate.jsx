@@ -108,9 +108,11 @@ export default function AddEditForm({
       fiscalYearId: values?.fiscalYearRange?.value,
       actionBy: singleData?.intActionBy || employeeId,
       workplaceGroupId: values?.workplaceGroup?.value,
-      workplaceIdlist: values?.workplace?.map((wp) => {
-        return wp.value;
-      }),
+      workplaceIdlist:
+        values?.workplace?.length > 0 &&
+        values?.workplace?.map((wp) => {
+          return wp.value;
+        }),
     };
 
     saveTaxChallanConfig.action({
@@ -122,6 +124,7 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
   useEffect(() => {
@@ -142,12 +145,11 @@ export default function AddEditForm({
           label: singleData?.strWorkplaceGroupName,
           value: singleData?.intWorkplaceGroupId,
         },
-        workplace: [
-          {
-            label: singleData?.strWorkplaceName,
-            value: singleData?.intWorkplaceId,
-          },
-        ],
+        workplace: {
+          label: singleData?.strWorkplaceName,
+          value: singleData?.intWorkplaceId,
+        },
+
         dteChallanDate: moment(singleData?.dteChallanDate),
         dteFiscalFromDate: moment(singleData?.dteFiscalFromDate),
         dteFiscalToDate: moment(singleData?.dteFiscalToDate),
@@ -192,6 +194,7 @@ export default function AddEditForm({
   };
   useEffect(() => {
     getWorkplaceGroup();
+    getWorkplace();
   }, [wgId]);
   return (
     <>
@@ -234,8 +237,8 @@ export default function AddEditForm({
               name="workplace"
               label="Workplace"
               placeholder="Workplace"
-              mode="multiple"
-              maxTagCount={"responsive"}
+              mode={!singleData?.intTaxChallanConfigId && "multiple"}
+              maxTagCount={!singleData?.intTaxChallanConfigId && "responsive"}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplace: op,
