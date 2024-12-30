@@ -13,6 +13,7 @@ import {
   PCardHeader,
   PForm,
   PInput,
+  PSelect,
 } from "Components";
 import { getSerial } from "Utils";
 import { Col, Form, Row, Tooltip } from "antd";
@@ -27,6 +28,9 @@ import RequisitionView from "./requisitionView";
 import Chips from "common/Chips";
 import moment from "moment";
 import { dateFormatter } from "utility/dateFormatter";
+import Filter from "../filter";
+import UserInfoCommonField from "../reports/userInfoCommonField";
+import { getEnumData } from "common/api/commonApi";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
@@ -35,12 +39,18 @@ const TnDRequisitionLanding = () => {
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
+  const [reqStatusDDL, setReqStatus] = useState([]);
 
   // state
   const [loading, setLoading] = useState(false);
   const [viewModal, setViewModalModal] = useState(false);
   const [viewData, setViewData] = useState<any>(null);
-
+  const [
+    trainingTypeDDL,
+    getTrainingTypeDDL,
+    loadingTrainingType,
+    setTrainingType,
+  ] = useAxiosGet();
   // Form Instance
   const [form] = Form.useForm();
   // table column
@@ -186,12 +196,21 @@ const TnDRequisitionLanding = () => {
     getLandingApi(apiUrl);
   };
   useEffect(() => {
+    getTrainingTypeDDL("/TrainingType/Training/Type", (data: any) => {
+      const list: any = [];
+      data?.map((d: any) => {
+        if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
+      });
+      setTrainingType(list);
+    });
+    getEnumData("RequisitionStatus", setReqStatus);
     landingApiCall({});
   }, []);
 
   return (
     <div>
       {loading || (landingLoading && <Loading />)}
+
       <PForm
         form={form}
         initialValues={{
@@ -215,7 +234,7 @@ const TnDRequisitionLanding = () => {
               },
             ]}
           />
-          <PCardBody>
+          {/* <PCardBody>
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PInput
@@ -272,9 +291,119 @@ const TnDRequisitionLanding = () => {
                 />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <div className="mb-3">
+            <Filter form={form}>
+              <Row gutter={[10, 2]}>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="fromDate"
+                    label="From Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        fromDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "From Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="toDate"
+                    label="To Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        toDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "To Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PSelect
+                    options={trainingTypeDDL || []}
+                    name="trainingType"
+                    label="Training Type"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingType: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Type is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PSelect
+                    options={reqStatusDDL || []}
+                    name="requisitionStatus"
+                    disabled={false}
+                    label="Requisition Status"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        requisitionStatus: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Requisition Status is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "20px" }}
+                    type="primary"
+                    content={"View"}
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      form
+                        .validateFields()
+                        .then(() => {
+                          console.log(values);
+                          //   landingApiCall(values);
+                        })
+                        .catch(() => {});
+                    }}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "20px" }}
+                    type="secondary"
+                    content="Reset"
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      form.resetFields([
+                        "fromDate",
+                        "toDate",
+                        "trainingType",
+                        "requisitionStatus",
+                      ]);
+                    }}
+                  />
+                </Col>
+              </Row>
+            </Filter>
             <DataTable
               bordered
               data={landingApi || []}
