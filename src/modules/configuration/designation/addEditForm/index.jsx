@@ -104,6 +104,7 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
   const getWDDL = useApiRequest({});
@@ -203,24 +204,26 @@ export default function AddEditForm({
               // rules={[{ required: true, message: "District is required" }]}
             />
           </Col>
-          <Col md={12} sm={24}>
-            <PSelect
-              options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
-              name="workplace"
-              label="Workplace"
-              showSearch
-              filterOption={true}
-              mode="multiple"
-              maxTagCount={"responsive"}
-              placeholder="Workplace"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplace: op,
-                });
-              }}
-              rules={[{ required: true, message: "Workplace is required" }]}
-            />
-          </Col>
+          {!singleData?.intDesignationId && (
+            <Col md={12} sm={24}>
+              <PSelect
+                options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+                name="workplace"
+                label="Workplace"
+                showSearch
+                filterOption={true}
+                mode={!singleData?.intDesignationId && "multiple"}
+                maxTagCount={!singleData?.intDesignationId && "responsive"}
+                placeholder="Workplace"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                }}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+          )}
         </Row>
         <ModalFooter
           onCancel={() => {
