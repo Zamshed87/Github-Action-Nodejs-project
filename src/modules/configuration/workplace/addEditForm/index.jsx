@@ -123,6 +123,7 @@ export default function AddEditForm({
       urlKey: "SaveWorkplace",
       method: "POST",
       payload: payload,
+      toast: true,
       onSuccess: () => {
         cb();
       },
@@ -533,7 +534,9 @@ export default function AddEditForm({
                   }}
                 >
                   <Form.Item name="isActive" valuePropName="checked">
-                    <Switch disabled={!!isEdit} />
+                    <Switch
+                    // disabled={!!isEdit}
+                    />
                   </Form.Item>
                 </div>
               </div>
