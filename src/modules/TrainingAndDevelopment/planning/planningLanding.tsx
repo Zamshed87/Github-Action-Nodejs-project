@@ -439,7 +439,7 @@ const TnDPlanningLanding = () => {
       fromDate = moment().subtract(2, "months").toISOString();
     }
 
-    const apiUrl = `/Training/Training/GetAllTraining?status=0,1,2,3,4,5,6&fromDate=${formatDate(
+    const apiUrl = `/Training/GetAllTraining?status=0,1,2,3,4,5,6&fromDate=${formatDate(
       fromDate
     )}&toDate=${formatDate(toDate)}`;
 

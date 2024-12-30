@@ -191,7 +191,7 @@ const TrainingCalender: React.FC = () => {
       workplace?.intWorkplaceId !== 0
     ) {
       getCalenderData(
-        `/Training/Training/Calander?businessUnitId=${
+        `/Training/Calander?businessUnitId=${
           values?.bUnit?.value || 0
         }&workplaceGroupId=${values?.workplaceGroup?.value || 0}&workplaceId=${
           values?.workplace?.value || 0
@@ -203,7 +203,7 @@ const TrainingCalender: React.FC = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
     getCalenderData(
-      `/Training/Training/Calander?businessUnitId=${0}&workplaceGroupId=${0}&workplaceId=${0}&month=${month}&year=${year}`
+      `/Training/Calander?businessUnitId=${0}&workplaceGroupId=${0}&workplaceId=${0}&month=${month}&year=${year}`
     );
   }, []);
 

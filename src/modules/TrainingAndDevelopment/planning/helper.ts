@@ -163,7 +163,7 @@ export const createTrainingPlan = async (
       startTime: moment(values?.trainingStartTime).format("HH:mm:ss"),
       endTime: moment(values?.trainingEndTime).format("HH:mm:ss"),
     };
-    const res = await axios.post(`/Training/Training/Training`, payload);
+    const res = await axios.post(`/Training/Training`, payload);
     // form.resetFields();
     // toast.success("Created Successfully", { toastId: 1222 });
     cb && cb(res?.data);
@@ -203,7 +203,7 @@ export const editTrainingPlan = async (
       endTime: moment(values?.trainingEndTime).format("HH:mm:ss"),
     };
     const res = await axios.put(
-      `/Training/Training/EditTraining/${values?.idx}`,
+      `/Training/EditTraining/${values?.idx}`,
       payload
     );
     // form.resetFields();
@@ -252,10 +252,7 @@ export const createTrainingPlanDetails = async (
       trainingSchedulePayload: [], // need to check
     };
 
-    const res = await axios.put(
-      `/Training/Training/TrainingDetails/${planId}`,
-      payload
-    );
+    const res = await axios.put(`/Training/TrainingDetails/${planId}`, payload);
     // toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
     setLoading(false);
@@ -300,7 +297,7 @@ export const editTrainingPlanDetails = async (
     };
 
     const res = await axios.put(
-      `/Training/Training/EditTrainingDetails/${planId}`,
+      `/Training/EditTrainingDetails/${planId}`,
       payload
     );
     // toast.success("Edited Successfully", { toastId: 1222 });
@@ -349,7 +346,7 @@ export const createTrainingSchedule = async (
     }
 
     const res = await axios.put(
-      `/Training/Training/TrainingScheduleDetails/${planId}`,
+      `/Training/TrainingScheduleDetails/${planId}`,
       payload
     );
     // toast.success("Created Successfully", { toastId: 1222 });
@@ -399,7 +396,7 @@ export const editTrainingSchedule = async (
     }
 
     const res = await axios.put(
-      `/Training/Training/EditTrainingScheduleDetails/${planId}`,
+      `/Training/EditTrainingScheduleDetails/${planId}`,
       payload
     );
     // toast.success("Created Successfully", { toastId: 1222 });
@@ -424,7 +421,7 @@ export const ViewTrainingPlan = async (
   try {
     setLoading(true);
 
-    const res = await axios.get(`/Training/Training/Training/${recordId}`);
+    const res = await axios.get(`/Training/Training/${recordId}`);
     if (res?.data) {
       cb && cb(res?.data);
       setLoading(false);
@@ -447,9 +444,7 @@ export const ViewTrainingPlanDetails = async (
   try {
     setLoading(true);
 
-    const res = await axios.get(
-      `/Training/Training/TrainingDetails/${recordId}`
-    );
+    const res = await axios.get(`/Training/TrainingDetails/${recordId}`);
     if (res?.data) {
       cb && cb(res?.data);
       setLoading(false);
@@ -473,7 +468,7 @@ export const ViewTrainingSchedule = async (
     setLoading(true);
 
     const res = await axios.get(
-      `/Training/Training/TrainingScheduleDetails/${recordId}`
+      `/Training/TrainingScheduleDetails/${recordId}`
     );
     if (res?.data) {
       cb && cb(res?.data);
@@ -624,9 +619,7 @@ export const cancelTrainingPlan = async (
   try {
     setLoading(true);
 
-    const res = await axios.put(
-      `/Training/Training/TrainingStatus?id=${recordId}`
-    );
+    const res = await axios.put(`/Training/TrainingStatus?id=${recordId}`);
     if (res?.data) {
       cb && cb(res?.data);
       setLoading(false);
