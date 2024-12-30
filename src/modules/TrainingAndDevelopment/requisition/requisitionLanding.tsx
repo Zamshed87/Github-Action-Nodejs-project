@@ -337,9 +337,10 @@ const TnDRequisitionLanding = () => {
                     options={trainingTypeDDL || []}
                     name="trainingType"
                     label="Training Type"
+                    mode="multiple"
                     onChange={(value, op) => {
                       form.setFieldsValue({
-                        trainingType: op,
+                        trainingType: value,
                       });
                     }}
                     rules={[
@@ -354,11 +355,12 @@ const TnDRequisitionLanding = () => {
                   <PSelect
                     options={reqStatusDDL || []}
                     name="requisitionStatus"
+                    mode="multiple"
                     disabled={false}
                     label="Requisition Status"
                     onChange={(value, op) => {
                       form.setFieldsValue({
-                        requisitionStatus: op,
+                        requisitionStatus: value,
                       });
                     }}
                     rules={[
@@ -377,7 +379,7 @@ const TnDRequisitionLanding = () => {
                     onClick={() => {
                       const values = form.getFieldsValue(true);
                       form
-                        .validateFields()
+                        .validateFields(["fromDate", "toDate"])
                         .then(() => {
                           console.log(values);
                           //   landingApiCall(values);
