@@ -98,18 +98,19 @@ const UserInfoCommonField = ({
     const { businessUnit, workplaceGroup, workplace } =
       form.getFieldsValue(true);
     designationApi?.action({
-      urlKey: "DesignationIdAll",
+      urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
-        accountId: orgId,
-        businessUnitId: businessUnit?.value || buId,
-        workplaceGroupId: workplaceGroup?.value || wgId,
-        workplaceId: workplace?.value || wId,
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
       },
       onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.designationName;
-          res[i].value = item?.designationId;
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
         });
         res.unshift({ label: "All", value: 0 });
       },
@@ -223,13 +224,13 @@ const UserInfoCommonField = ({
         <Col md={col || 6} sm={12} xs={24}>
           <PSelect
             options={designationApi?.data || []}
-            name="designation"
-            label="Designation"
+            name="hrPosition"
+            label="HR Position"
             mode={mode as "multiple" | undefined | "tags"}
             showSearch
             onChange={(value, op) => {
               form.setFieldsValue({
-                designation: op,
+                hrPosition: op,
               });
             }}
           />

@@ -332,6 +332,12 @@ const TnDRequisitionLanding = () => {
                     ]}
                   />
                 </Col>
+                <UserInfoCommonField
+                  form={form}
+                  col={12}
+                  isDepartment={true}
+                  isDesignation={true}
+                />
                 <Col md={12} sm={24}>
                   <PSelect
                     options={trainingTypeDDL || []}
