@@ -18,7 +18,6 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  console.log("singleData", singleData);
   // const debounce = useDebounce();
   const getBUnitDDL = useApiRequest({});
   const saveDepartment = useApiRequest({});
@@ -54,9 +53,6 @@ export default function AddEditForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
   // Pages Start From Here code from above will be removed soon
-
-  // Form Instance
-  const [form] = Form.useForm();
 
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
@@ -118,8 +114,11 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
+  // Form Instance
+  const [form] = Form.useForm();
   useEffect(() => {
     if (singleData?.intDepartmentId) {
       form.setFieldsValue({
@@ -128,12 +127,11 @@ export default function AddEditForm({
           value: singleData?.intBusinessUnitId,
           label: singleData?.strBusinessUnit,
         },
-        workplace: [
-          {
-            value: singleData?.intWorkplaceId,
-            label: singleData?.strWorkplace,
-          },
-        ],
+        workplace: {
+          value: singleData?.intWorkplaceId,
+          label: singleData?.strWorkplace,
+        },
+
         workplaceGroup: {
           value: singleData?.intWorkplaceGroupId,
           label: singleData?.strWorkplaceGroup,
@@ -283,20 +281,22 @@ export default function AddEditForm({
             />
           </Col>
           <Col md={12} sm={24}>
-            <PSelect
-              options={workplaceDDL?.data || []}
-              name="workplace"
-              label="Workplace/Concern"
-              placeholder="Workplace/Concern"
-              mode="multiple"
-              maxTagCount={"responsive"}
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplace: op,
-                });
-              }}
-              rules={[{ required: true, message: "Workplace is required" }]}
-            />
+            {
+              <PSelect
+                options={workplaceDDL?.data || []}
+                name="workplace"
+                label="Workplace/Concern"
+                placeholder="Workplace/Concern"
+                mode={!singleData?.intDepartmentId && "multiple"}
+                maxTagCount={!singleData?.intDepartmentId && "responsive"}
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                }}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            }
           </Col>
           <Col md={12} sm={24}>
             <PSelect
