@@ -246,6 +246,7 @@ const TnDPlanningCreateEdit = () => {
       getWorkplace();
       getEmployeDepartment();
       getEmployeePosition();
+      setPlanId(data?.id);
     }
     if (onlyPerticipant) {
       setPlanStep("STEP_TWO");

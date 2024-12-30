@@ -1,6 +1,11 @@
 import { Steps } from "antd";
 import React from "react";
 import "./style.css";
+import {
+  FieldTimeOutlined,
+  SolutionOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 
 const PlanningStepper = ({ planStep, onChangeStepper }: any) => {
   return (
@@ -11,12 +16,15 @@ const PlanningStepper = ({ planStep, onChangeStepper }: any) => {
         items={[
           {
             title: "Training Basic Info.",
+            icon: planStep !== "STEP_ONE" && <UserOutlined />,
           },
           {
             title: "Training Cost/Trainer/Participant",
+            icon: planStep !== "STEP_TWO" && <SolutionOutlined />,
           },
           {
             title: "Training Scheduling Info.",
+            icon: planStep !== "STEP_THREE" && <FieldTimeOutlined />,
           },
         ]}
       />
