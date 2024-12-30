@@ -397,27 +397,27 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       },
     });
   };
-  const getBreakDownPolicyElements = () => {
-    const { payrollGroup } = form.getFieldsValue(true);
-    breakDownPolicyApi?.action({
-      urlKey: "BreakdownNPolicyForSalaryAssign",
-      method: "GET",
-      params: {
-        StrReportType: "BREAKDOWN ELEMENT BY ID",
+  // const getBreakDownPolicyElements = () => {
+  //   const { payrollGroup } = form.getFieldsValue(true);
+  //   breakDownPolicyApi?.action({
+  //     urlKey: "BreakdownNPolicyForSalaryAssign",
+  //     method: "GET",
+  //     params: {
+  //       StrReportType: "BREAKDOWN ELEMENT BY ID",
 
-        IntAccountId: orgId,
-        IntSalaryBreakdownHeaderId: payrollGroup?.value,
-        IntWorkplaceId: 0,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].numAmount = roundToDecimals(item?.numAmount || 0);
-        });
-        setRowDto(res);
-      },
-    });
-  };
+  //       IntAccountId: orgId,
+  //       IntSalaryBreakdownHeaderId: payrollGroup?.value,
+  //       IntWorkplaceId: 0,
+  //       intId: 0,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].numAmount = roundToDecimals(item?.numAmount || 0);
+  //       });
+  //       setRowDto(res);
+  //     },
+  //   });
+  // };
 
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
@@ -1079,7 +1079,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               res?.incrementDependOnValue,
             payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
               ? undefined
-              : res?.salaryBreakDownHeaderId,
+              : {
+                  value: res?.salaryBreakDownHeaderId,
+                  label: res?.salaryBreakDownHeaderTitle,
+                },
             // basedOn: 1,
 
             dteEffectiveDate: moment(res?.effectiveDate),
@@ -1273,7 +1276,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           basicAmount: employeeInfo?.data[0]?.numBasicORGross,
           payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
             ? undefined
-            : employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+            : {
+                value: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+                label: employeeInfo?.data[0]?.strSalaryBreakdownTitle,
+              },
           basedOn:
             employeeInfo?.data[0]?.strDependOn.toLowerCase() === "basic"
               ? { value: 2, label: "Basic" }
@@ -1626,7 +1632,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                               ? { value: 2, label: "Basic" }
                               : { value: 1, label: "Gross" },
                         });
-                        getBreakDownPolicyElements();
+                        // getBreakDownPolicyElements();
                       }}
                       rules={[
                         {
