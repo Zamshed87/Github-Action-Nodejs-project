@@ -1,3 +1,4 @@
+import { FilterOutlined } from "@mui/icons-material";
 import { Drawer } from "antd";
 import { PButton, PForm } from "Components";
 import React from "react";
@@ -8,6 +9,7 @@ const Filter = ({ form, children }: any) => {
     <div>
       <PButton
         style={{ marginBottom: "15px" }}
+        size="small"
         type="primary"
         content={"Filter"}
         onClick={() => {
