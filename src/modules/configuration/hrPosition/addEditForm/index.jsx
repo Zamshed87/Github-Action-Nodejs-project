@@ -129,24 +129,26 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Code is required" }]}
             />
           </Col>
-          <Col md={12} sm={24}>
-            <PSelect
-              options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
-              name="workplace"
-              label="Workplace"
-              showSearch
-              filterOption={true}
-              mode="multiple"
-              maxTagCount={"responsive"}
-              placeholder="Workplace"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplace: op,
-                });
-              }}
-              rules={[{ required: true, message: "Workplace is required" }]}
-            />
-          </Col>
+          {!singleData?.intPositionId && (
+            <Col md={12} sm={24}>
+              <PSelect
+                options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+                name="workplace"
+                label="Workplace"
+                showSearch
+                filterOption={true}
+                mode={!singleData?.intPositionId && "multiple"}
+                maxTagCount={!singleData?.intPositionId && "responsive"}
+                placeholder="Workplace"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                }}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+          )}
 
           {isEdit && (
             <Col
