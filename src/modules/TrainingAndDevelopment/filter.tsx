@@ -1,7 +1,6 @@
-import { Col, Drawer, Row } from "antd";
-import { PButton, PCard, PCardHeader, PForm, PInput } from "Components";
+import { Drawer } from "antd";
+import { PButton, PForm } from "Components";
 import React from "react";
-import UserInfoCommonField from "./reports/userInfoCommonField";
 
 const Filter = ({ form, children }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
@@ -12,7 +11,6 @@ const Filter = ({ form, children }: any) => {
         type="primary"
         content={"Filter"}
         onClick={() => {
-          const values = form.getFieldsValue(true);
           setOpenFilter(true);
         }}
       />
