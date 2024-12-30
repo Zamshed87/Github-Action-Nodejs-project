@@ -245,7 +245,11 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     if (!values?.grossAmount) {
       return toast.warn("Gross Amount is required ");
     }
-    if (values?.salaryType?.value !== "Grade" && !values?.basicAmount) {
+    if (
+      values?.salaryType?.value !== "Grade" &&
+      !values?.basicAmount &&
+      (values?.basedOn?.value === 2 || values?.basedOn === 2)
+    ) {
       return toast.warn("Basic Amount is required ");
     }
 
