@@ -13,6 +13,7 @@ import {
   PCardHeader,
   PForm,
   PInput,
+  PSelect,
 } from "Components";
 import { getSerial } from "Utils";
 import { Col, Dropdown, Form, MenuProps, Row, Tag } from "antd";
@@ -34,6 +35,9 @@ import {
   ViewTrainingSchedule,
 } from "./helper";
 import PlanningView from "./planningView";
+import Filter from "../filter";
+import UserInfoCommonField from "../reports/userInfoCommonField";
+import { getEnumData } from "common/api/commonApi";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
@@ -45,6 +49,21 @@ const TnDPlanningLanding = () => {
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
 
+  const [
+    trainingTypeDDL,
+    getTrainingTypeDDL,
+    loadingTrainingType,
+    setTrainingType,
+  ] = useAxiosGet();
+
+  const [
+    trainingTitleDDL,
+    getTrainingTitleDDL,
+    loadingTrainingTitle,
+    setTrainingTitle,
+  ] = useAxiosGet();
+  const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
+
   // state
   const [loading, setLoading] = useState(false);
   const [viewModal, setViewModalModal] = useState(false);
@@ -52,6 +71,21 @@ const TnDPlanningLanding = () => {
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
   const [scheduleDetails, setScheduleDetails] = useState<any>(null);
 
+  const typeDataSetForType = (data: any) => {
+    const list: any[] = [];
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
+    });
+    setTrainingType(list);
+  };
+
+  const typeDataSetForTitle = (data: any) => {
+    const list: any[] = [];
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
+    });
+    setTrainingTitle(list);
+  };
   // Form Instance
   const [form] = Form.useForm();
   // table column
@@ -407,7 +441,9 @@ const TnDPlanningLanding = () => {
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-
+    getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
+    getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
+    getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
     landingApiCall({});
   }, []);
 
@@ -437,7 +473,7 @@ const TnDPlanningLanding = () => {
               },
             ]}
           />
-          <PCardBody>
+          {/* <PCardBody>
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PInput
@@ -494,9 +530,139 @@ const TnDPlanningLanding = () => {
                 />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <div className="mb-3">
+            <Filter form={form}>
+              <Row gutter={[10, 2]}>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="fromDate"
+                    label="From Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        fromDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "From Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="toDate"
+                    label="To Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        toDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "To Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <UserInfoCommonField
+                  form={form}
+                  col={12}
+                  // mode="multiple"
+                />
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingTypeDDL || []}
+                    name="trainingType"
+                    label={"Training Type"}
+                    placeholder="Training Type"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingType: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Type is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingTitleDDL || []}
+                    name="trainingTitle"
+                    label={"Training Title"}
+                    placeholder="Training Title"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingTitle: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Title is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingModeStatusDDL || []}
+                    name="trainingMode"
+                    label="Training Mode"
+                    placeholder="Training Mode"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingMode: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Mode is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "20px" }}
+                    type="primary"
+                    content={"View"}
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      form
+                        .validateFields()
+                        .then(() => {
+                          console.log(values);
+                          //   landingApiCall(values);
+                        })
+                        .catch(() => {});
+                    }}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "20px" }}
+                    type="secondary"
+                    content="Reset"
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      form.resetFields(["fromDate", "toDate"]);
+                    }}
+                  />
+                </Col>
+              </Row>
+            </Filter>
             <DataTable
               bordered
               data={landingApi || []}
