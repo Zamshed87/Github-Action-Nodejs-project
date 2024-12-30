@@ -4,7 +4,7 @@ import {
   StepBackwardOutlined,
   StepForwardOutlined,
 } from "@ant-design/icons";
-import { Form } from "antd";
+import { Form, Steps } from "antd";
 import Loading from "common/loading/Loading";
 import { PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { useApiRequest } from "Hooks";
@@ -41,6 +41,7 @@ import ListOfPerticipants from "./listOfPerticipants";
 import PlanningInfo from "./planningInfo";
 import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import moment from "moment";
+import PlanningStepper from "./stepper/planningStepper";
 
 const cardMargin = { marginBottom: "15px" };
 
@@ -502,6 +503,15 @@ const TnDPlanningCreateEdit = () => {
   console.log(dataDetails, "dataDetails");
   const values = form.getFieldsValue(true);
   console.log(values);
+  const onChangeStepper = (current: number) => {
+    if (!planId && type !== "edit") {
+      toast.warning("Please create Training Basic Info. first!");
+      return;
+    }
+    setPlanStep(
+      current === 0 ? "STEP_ONE" : current === 1 ? "STEP_TWO" : "STEP_THREE"
+    );
+  };
 
   return (
     <div>
@@ -598,25 +608,25 @@ const TnDPlanningCreateEdit = () => {
                 : planStep === "STEP_TWO"
                 ? [
                     // previous step
-                    {
-                      type: "secondary",
-                      content: "Previous Step",
-                      icon: <StepBackwardOutlined />,
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
+                    // {
+                    //   type: "secondary",
+                    //   content: "Previous Step",
+                    //   icon: <StepBackwardOutlined />,
+                    //   onClick: () => {
+                    //     const values = form.getFieldsValue(true);
 
-                        form
-                          .validateFields([])
-                          .then(() => {
-                            if (!planId) {
-                              toast.error("Plan Creation is required");
-                              return;
-                            }
-                            setPlanStep("STEP_ONE");
-                          })
-                          .catch(() => {});
-                      },
-                    },
+                    //     form
+                    //       .validateFields([])
+                    //       .then(() => {
+                    //         if (!planId) {
+                    //           toast.error("Plan Creation is required");
+                    //           return;
+                    //         }
+                    //         setPlanStep("STEP_ONE");
+                    //       })
+                    //       .catch(() => {});
+                    //   },
+                    // },
                     // previous step
                     // save and close
                     {
@@ -719,25 +729,25 @@ const TnDPlanningCreateEdit = () => {
                 : planStep === "STEP_THREE"
                 ? [
                     // previous step
-                    {
-                      type: "secondary",
-                      content: "Previous Step",
-                      icon: <StepBackwardOutlined />,
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
+                    // {
+                    //   type: "secondary",
+                    //   content: "Previous Step",
+                    //   icon: <StepBackwardOutlined />,
+                    //   onClick: () => {
+                    //     const values = form.getFieldsValue(true);
 
-                        form
-                          .validateFields([])
-                          .then(() => {
-                            if (!planId) {
-                              toast.error("Plan Creation is required");
-                              return;
-                            }
-                            setPlanStep("STEP_TWO");
-                          })
-                          .catch(() => {});
-                      },
-                    },
+                    //     form
+                    //       .validateFields([])
+                    //       .then(() => {
+                    //         if (!planId) {
+                    //           toast.error("Plan Creation is required");
+                    //           return;
+                    //         }
+                    //         setPlanStep("STEP_TWO");
+                    //       })
+                    //       .catch(() => {});
+                    //   },
+                    // },
                     // previous step
                     {
                       type: "primary",
@@ -890,6 +900,10 @@ const TnDPlanningCreateEdit = () => {
                     },
                   ]
             }
+          />
+          <PlanningStepper
+            planStep={planStep}
+            onChangeStepper={onChangeStepper}
           />
           {(planStep === "STEP_ONE" || planStep === "STEP_THREE") && (
             <>
