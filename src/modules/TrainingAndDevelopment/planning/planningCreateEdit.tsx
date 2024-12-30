@@ -402,7 +402,8 @@ const TnDPlanningCreateEdit = () => {
     const addParticipant = (employee: any) => {
       console.log("perticipantField", perticipantField, "employee", employee);
       const isDuplicate = perticipantField.some(
-        (participant: any) => participant.perticipantId === employee.employeeId
+        (participant: any) =>
+          participant.perticipantId === employee.intEmployeeBasicInfoId
       );
       console.log("perticipantField777566", perticipantField);
 
@@ -420,12 +421,12 @@ const TnDPlanningCreateEdit = () => {
         ...prev,
         {
           id: nextId,
-          perticipant: `${employee.employeeNameWithCode}`,
-          perticipantId: employee.employeeId,
-          department: employee.departmentId,
-          departmentId: employee.departmentId,
-          hrPosition: employee.designationName,
-          hrPositionId: employee.designation,
+          perticipant: `${employee.employeeName} (${employee.employeeCode})`,
+          perticipantId: employee.intEmployeeBasicInfoId,
+          department: employee.strDepartment,
+          departmentId: employee.intDepartmentId,
+          hrPosition: employee.strHrPosition,
+          hrPositionId: employee.intHrPositionId,
           workplaceGroup: workplaceGroupPer?.label,
           workplaceGroupId: workplaceGroupPer?.value,
           workplace: workplacePer?.label,
@@ -438,13 +439,7 @@ const TnDPlanningCreateEdit = () => {
 
     if (values?.employee) {
       console.log("perticipantField99", values);
-      addParticipant({
-        employeeId: values.employee.value,
-        employeeNameWithCode: `${values.employee.employeeNameWithCode}`,
-        departmentId: values.employee.departmentId,
-        designationName: values.employee.designationName || "",
-        designation: values.employee.designation || 0,
-      });
+      addParticipant(values.employee);
     } else {
       employees.forEach((employee: any) => {
         addParticipant(employee);
