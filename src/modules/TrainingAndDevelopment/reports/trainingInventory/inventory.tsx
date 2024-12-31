@@ -17,6 +17,7 @@ import { getEnumData } from "common/api/commonApi";
 import { shallowEqual, useSelector } from "react-redux";
 import UserInfoCommonField from "../userInfoCommonField";
 import Filter from "modules/TrainingAndDevelopment/filter";
+import { setCustomFieldsValue } from "modules/TrainingAndDevelopment/requisition/helper";
 const TnDInventory = () => {
   // router states
   const history = useHistory();
@@ -175,11 +176,10 @@ const TnDInventory = () => {
                     options={trainingTypeDDL || []}
                     name="trainingType"
                     label={"Training Type"}
+                    mode="multiple"
                     placeholder="Training Type"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingType: op,
-                      });
+                      setCustomFieldsValue(form, "trainingType", value);
                     }}
                     rules={[
                       {
@@ -194,11 +194,10 @@ const TnDInventory = () => {
                     options={trainingTitleDDL || []}
                     name="trainingTitle"
                     label={"Training Title"}
+                    mode="multiple"
                     placeholder="Training Title"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingTitle: op,
-                      });
+                      setCustomFieldsValue(form, "trainingTitle", value);
                     }}
                     rules={[
                       {
@@ -213,11 +212,10 @@ const TnDInventory = () => {
                     options={trainingModeStatusDDL || []}
                     name="trainingMode"
                     label="Training Mode"
+                    mode="multiple"
                     placeholder="Training Mode"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingMode: op,
-                      });
+                      setCustomFieldsValue(form, "trainingMode", value);
                     }}
                     rules={[
                       {
