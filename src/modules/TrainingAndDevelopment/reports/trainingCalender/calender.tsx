@@ -10,6 +10,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import UserInfoCommonField from "../userInfoCommonField";
 import "./calender.css";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const getMonthData = (value: moment.Moment) => {
   if (value.month() === 8) {
@@ -23,6 +24,13 @@ const TrainingCalender: React.FC = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 199) {
+      permission = item;
+    }
+  });
   const { buId, wgId, employeeId, orgId } = profileData;
   const [form] = Form.useForm();
   const [calenderData, getCalenderData, loadingCalender, setCalenderData] =
@@ -207,7 +215,7 @@ const TrainingCalender: React.FC = () => {
     );
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
       {loadingCalender && <Loading />}
       <PForm
@@ -309,6 +317,8 @@ const TrainingCalender: React.FC = () => {
         }
       />
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

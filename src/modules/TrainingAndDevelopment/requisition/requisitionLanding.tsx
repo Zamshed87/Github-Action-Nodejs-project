@@ -35,9 +35,22 @@ import { dateFormatter } from "utility/dateFormatter";
 import Filter from "../filter";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
+import { shallowEqual, useSelector } from "react-redux";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
+
+  const { permissionList, profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 199) {
+      permission = item;
+    }
+  });
   // router states
   const history = useHistory();
   // hooks
@@ -227,7 +240,7 @@ const TnDRequisitionLanding = () => {
     landingApiCall();
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
       {loading || (landingLoading && <Loading />)}
 
@@ -428,7 +441,7 @@ const TnDRequisitionLanding = () => {
             </Filter>
             <DataTable
               bordered
-              data={landingApi?.trainingRequisitionDto || []}
+              data={landingApi?.data || []}
               loading={landingLoading}
               header={header}
               pagination={{
@@ -466,6 +479,8 @@ const TnDRequisitionLanding = () => {
         }
       />
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

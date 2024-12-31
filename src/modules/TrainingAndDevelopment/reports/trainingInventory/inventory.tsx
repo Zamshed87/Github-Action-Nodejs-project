@@ -18,6 +18,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import UserInfoCommonField from "../userInfoCommonField";
 import Filter from "modules/TrainingAndDevelopment/filter";
 import { setCustomFieldsValue } from "modules/TrainingAndDevelopment/requisition/helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 const TnDInventory = () => {
   // router states
   const history = useHistory();
@@ -26,6 +27,13 @@ const TnDInventory = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 199) {
+      permission = item;
+    }
+  });
   const { intAccountId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -158,7 +166,7 @@ const TnDInventory = () => {
     getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
@@ -300,6 +308,8 @@ const TnDInventory = () => {
       </PForm>
       {/* Training Title Modal */}
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

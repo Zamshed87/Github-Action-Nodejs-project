@@ -20,7 +20,7 @@ import { Col, Dropdown, Form, MenuProps, Row, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
@@ -39,6 +39,7 @@ import Filter from "../filter";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
 import { setCustomFieldsValue } from "../requisition/helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
@@ -71,6 +72,17 @@ const TnDPlanningLanding = () => {
   const [viewData, setViewData] = useState<any>(null);
   const [viewDataDetails, setViewDataDetails] = useState<any>(null);
   const [scheduleDetails, setScheduleDetails] = useState<any>(null);
+
+  const { permissionList, profileData } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 199) {
+      permission = item;
+    }
+  });
 
   const typeDataSetForType = (data: any) => {
     const list: any[] = [];
@@ -461,7 +473,7 @@ const TnDPlanningLanding = () => {
     landingApiCall({});
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
       {(loading || landingLoading) && <Loading />}
       <PForm
@@ -716,6 +728,8 @@ const TnDPlanningLanding = () => {
         }
       />
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 
