@@ -201,9 +201,10 @@ const TnDRequisitionLanding = () => {
       data?.map((d: any) => {
         if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
       });
+      list.unshift({ label: "All", value: 0 });
       setTrainingType(list);
     });
-    getEnumData("RequisitionStatus", setReqStatus);
+    getEnumData("RequisitionStatus", setReqStatus, setLoading, true);
     landingApiCall({});
   }, []);
 
@@ -365,9 +366,15 @@ const TnDRequisitionLanding = () => {
                     disabled={false}
                     label="Requisition Status"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        requisitionStatus: value,
-                      });
+                      if (value.includes(0)) {
+                        form.setFieldsValue({
+                          requisitionStatus: [0],
+                        });
+                      } else {
+                        form.setFieldsValue({
+                          requisitionStatus: value,
+                        });
+                      }
                     }}
                     rules={[
                       {
@@ -388,7 +395,7 @@ const TnDRequisitionLanding = () => {
                         .validateFields(["fromDate", "toDate"])
                         .then(() => {
                           console.log(values);
-                          //   landingApiCall(values);
+                          landingApiCall(values);
                         })
                         .catch(() => {});
                     }}
