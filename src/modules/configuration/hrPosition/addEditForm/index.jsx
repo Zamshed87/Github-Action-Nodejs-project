@@ -1,5 +1,5 @@
 import { ModalFooter } from "Components/Modal";
-import { PForm, PInput } from "Components/PForm";
+import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Switch } from "antd";
 import { useEffect } from "react";
@@ -17,7 +17,7 @@ export default function AddEditForm({
 }) {
   const saveHRPostion = useApiRequest({});
 
-  const { orgId, buId, employeeId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, strWorkplace, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -35,7 +35,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    const payload = {
+    const payloadFoEdit = {
       intPositionId: singleData?.intPositionId || 0,
       strPosition: values?.strPosition || "",
       strPositionCode: values?.strPositionCode || "",
@@ -48,10 +48,21 @@ export default function AddEditForm({
       intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
       intWorkplaceId: wId,
     };
+    const payload = {
+      position: values?.strPosition || "",
+      workplaceIdList: values?.workplace?.map((wp) => {
+        return wp.value;
+      }),
+
+      businessUnitId: buId,
+      accountId: orgId,
+      positionCode: values?.strPositionCode || "",
+      actionBy: employeeId,
+    };
     saveHRPostion.action({
-      urlKey: "SavePosition",
+      urlKey: singleData?.intPositionId ? "SavePosition" : "CreateHrPosition",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intPositionId ? payloadFoEdit : payload,
       onSuccess: () => {
         cb();
       },
@@ -59,8 +70,25 @@ export default function AddEditForm({
       toast: true,
     });
   };
+  const getWDDL = useApiRequest({});
   useEffect(() => {
+    getWDDL.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
     if (singleData?.intPositionId) {
+      form.setFieldValue("workplace", [{ label: strWorkplace, value: wId }]);
       form.setFieldsValue({
         ...singleData,
       });
@@ -101,6 +129,26 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Code is required" }]}
             />
           </Col>
+          {!singleData?.intPositionId && (
+            <Col md={12} sm={24}>
+              <PSelect
+                options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+                name="workplace"
+                label="Workplace"
+                showSearch
+                filterOption={true}
+                mode={!singleData?.intPositionId && "multiple"}
+                maxTagCount={!singleData?.intPositionId && "responsive"}
+                placeholder="Workplace"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                }}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+          )}
 
           {isEdit && (
             <Col
