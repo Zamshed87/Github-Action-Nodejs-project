@@ -208,6 +208,19 @@ export const Confirmation = () => {
       },
     },
     {
+      title: "Probation Close Date",
+      dataIndex: "dteProbationaryCloseDate",
+      render: (_: any, rec: any) => {
+        return (
+          <p>
+            {rec?.dteProbationaryCloseDate
+              ? rec?.dteProbationaryCloseDate
+              : "-"}
+          </p>
+        );
+      },
+    },
+    {
       title: "Status",
       dataIndex: "confirmationStatus",
       render: (_: any, rec: any, index: any) => {
@@ -504,7 +517,6 @@ export const Confirmation = () => {
               total: landingApi?.data?.totalCount,
             }}
             filterData={landingApi?.data?.employeeHeader}
-           
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
@@ -516,7 +528,7 @@ export const Confirmation = () => {
                 searchText: search,
               });
             }}
-             // 🔥🔥feature existence not sure
+            // 🔥🔥feature existence not sure
             // onRow={(record) => ({
             //   onClick: () => {
             //     console.log(record);
