@@ -20,7 +20,7 @@ export default function AddEditForm({
   const saveHRPostion = useApiRequest({});
   const getBUnitDDL = useApiRequest({});
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, strWorkplace } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -61,7 +61,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    const payload = {
+    const editFopayload = {
       intDesignationId: singleData?.intDesignationId
         ? singleData?.intDesignationId
         : 0,
@@ -81,18 +81,52 @@ export default function AddEditForm({
       intRankingId: 0,
       intBusinessUnitId: buId,
     };
+    const payload = {
+      designation: values?.strDesignation,
+      designationBn: values?.strDesignationBn || null,
+      designationCode: values?.strDesignationCode,
+      positionId: 0,
+      rankingId: 0,
+      payscaleGradeId: values?.payscaleGrade?.value,
+      workplaceIdList: values?.workplace?.map((wp) => {
+        return wp.value;
+      }),
+      businessUnitId: buId,
+      accountId: orgId,
+      actionBy: employeeId,
+    };
     saveHRPostion.action({
-      urlKey: "SaveDesignation",
+      urlKey: singleData?.intDesignationId
+        ? "SaveDesignation"
+        : "CreateDesignation",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intDesignationId ? editFopayload : payload,
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
-
+  const getWDDL = useApiRequest({});
   useEffect(() => {
+    getWDDL.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+
     if (singleData?.intDesignationId) {
+      form.setFieldValue("workplace", [{ label: strWorkplace, value: wId }]);
       form.setFieldsValue({
         ...singleData,
         payscaleGrade: {
@@ -170,6 +204,26 @@ export default function AddEditForm({
               // rules={[{ required: true, message: "District is required" }]}
             />
           </Col>
+          {!singleData?.intDesignationId && (
+            <Col md={12} sm={24}>
+              <PSelect
+                options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+                name="workplace"
+                label="Workplace"
+                showSearch
+                filterOption={true}
+                mode={!singleData?.intDesignationId && "multiple"}
+                maxTagCount={!singleData?.intDesignationId && "responsive"}
+                placeholder="Workplace"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                }}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+          )}
         </Row>
         <ModalFooter
           onCancel={() => {
