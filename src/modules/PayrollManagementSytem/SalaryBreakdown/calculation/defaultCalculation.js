@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { salaryBreakdownCreateNApply } from "../helper";
+import { salaryBreakdownCreate, salaryBreakdownCreateNApply } from "../helper";
 import { todayDate } from "./../../../../utility/todayDate";
 import { isUniq } from "./../../../../utility/uniqChecker";
 
@@ -55,7 +55,7 @@ export const defaultCalculation = (
   const modifyPayrollElementList = dynamicForm
     ?.filter((itm) => itm?.strBasedOn === "Percentage")
     ?.map((itm) => {
-      let name = itm?.levelVariable;
+      const name = itm?.levelVariable;
       return {
         intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId || 0,
         intSalaryBreakdownHeaderId: itm?.intSalaryBreakdownHeaderId || 0,
@@ -82,7 +82,7 @@ export const defaultCalculation = (
   const modifyAmountPayrollElementList = dynamicForm
     ?.filter((itm) => itm?.strBasedOn === "Amount")
     ?.map((itm) => {
-      let name = itm?.levelVariable;
+      const name = itm?.levelVariable;
       return {
         intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId || 0,
         intSalaryBreakdownHeaderId: itm?.intSalaryBreakdownHeaderId || 0,
@@ -102,7 +102,7 @@ export const defaultCalculation = (
     });
 
   // zero value check
-  let isZeroCheckLength = modifyPayrollElementList?.filter(
+  const isZeroCheckLength = modifyPayrollElementList?.filter(
     (itm) => +itm?.numNumberOfPercent < 0 && itm?.strBasedOn === "Percentage"
   );
 
@@ -111,7 +111,7 @@ export const defaultCalculation = (
   }
 
   // negative value check
-  let isNegativeBasicArr = modifyPayrollElementList?.filter(
+  const isNegativeBasicArr = modifyPayrollElementList?.filter(
     (itm) => +itm?.numNumberOfPercent < 0
   );
 
@@ -120,7 +120,7 @@ export const defaultCalculation = (
   }
 
   // for amount
-  let isNegativeArr = modifyPayrollElementList?.filter(
+  const isNegativeArr = modifyPayrollElementList?.filter(
     (itm) => +itm?.numNumberOfPercent < 0 && itm?.strBasedOn === "Amount"
   );
 
@@ -182,6 +182,13 @@ export const defaultCalculation = (
       ...modifyAmountPayrollElementList,
     ],
   };
-
-  salaryBreakdownCreateNApply(payload, setLoading, callback);
+  if (
+    singleData?.intSalaryBreakdownHeaderId ||
+    state?.intSalaryBreakdownHeaderId
+  ) {
+    salaryBreakdownCreateNApply(payload, setLoading, callback);
+  } else {
+    salaryBreakdownCreate(payload, setLoading, callback);
+  }
+  // salaryBreakdownCreateNApply(payload, setLoading, callback);
 };
