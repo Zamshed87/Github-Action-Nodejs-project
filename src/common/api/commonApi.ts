@@ -50,7 +50,7 @@ export const getEnumData = async (
     const res = await axios.get(`/Enum/GetEnums?types=${enumType}`);
     const data = res?.data[enumType];
     if (isUnshiftAll) {
-      data.unshift({ label: "All", value: 0 });
+      data.unshift({ label: "All", value: "" });
     }
     setData(data);
   } catch (error) {

@@ -63,10 +63,8 @@ const TnDRequisitionLanding = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          // currentPage: landingApi?.data?.currentPage,
-          // pageSize: landingApi?.data?.pageSize,
-          currentPage: 1,
-          pageSize: 2000,
+          currentPage: landingApi?.currentPage,
+          pageSize: landingApi?.pageSize,
           index,
         }),
       fixed: "left",
@@ -184,7 +182,15 @@ const TnDRequisitionLanding = () => {
       align: "center",
     },
   ];
-  const landingApiCall = (values: any) => {
+  const landingApiCall = (
+    pagination: { current: number; pageSize: number } = {
+      current: 1,
+      pageSize: 50,
+    }
+  ) => {
+    console.log(pagination);
+    const values = form.getFieldsValue(true);
+
     let fromDate = values?.fromDate;
     let toDate = values?.toDate;
 
@@ -195,7 +201,17 @@ const TnDRequisitionLanding = () => {
 
     const apiUrl = `/TrainingRequisition/Training/TrainingRequisition?fromDate=${formatDate(
       fromDate
-    )}&toDate=${formatDate(toDate)}`;
+    )}&toDate=${formatDate(toDate)}&trainingTypeIds=${
+      values?.trainingType ? values?.trainingType?.join(",") : 0
+    }&departmentIds=${
+      values?.department ? values?.department?.join(",") : 0
+    }&designationIds=${
+      values?.hrPosition ? values?.hrPosition?.join(",") : 0
+    }&statusIds=${
+      values?.requisitionStatus ? values?.requisitionStatus?.join(",") : ""
+    }&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`;
+
+    // https://localhost:7020/api/TrainingRequisition/Training/TrainingRequisition?fromDate=2024-12-20&toDate=2024-12-30&trainingTypeIds=4&departmentIds=70%2C200%2C191&designationIds=82%2C12&statusIds=1&pageNumber=1&pageSize=100
 
     getLandingApi(apiUrl);
   };
@@ -209,7 +225,7 @@ const TnDRequisitionLanding = () => {
       setTrainingType(list);
     });
     getEnumData("RequisitionStatus", setReqStatus, setLoading, true);
-    landingApiCall({});
+    landingApiCall();
   }, []);
 
   return (
@@ -225,9 +241,7 @@ const TnDRequisitionLanding = () => {
       >
         <PCard>
           <PCardHeader
-            title={`Total ${
-              landingApi?.data?.totalCount || 0
-            } Training Requisition`}
+            title={`Total ${landingApi?.totalCount || 0} Training Requisition`}
             buttonList={[
               {
                 type: "primary",
@@ -389,7 +403,7 @@ const TnDRequisitionLanding = () => {
                         .validateFields(["fromDate", "toDate"])
                         .then(() => {
                           console.log(values);
-                          landingApiCall(values);
+                          landingApiCall();
                         })
                         .catch(() => {});
                     }}
@@ -415,16 +429,16 @@ const TnDRequisitionLanding = () => {
             </Filter>
             <DataTable
               bordered
-              data={landingApi || []}
+              data={landingApi?.trainingRequisitionDto || []}
               loading={landingLoading}
               header={header}
               pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
+                pageSize: landingApi?.pageSize,
+                total: landingApi?.totalCount,
               }}
               filterData={landingApi?.data?.filters}
               onChange={(pagination, filters) => {
-                landingApiCall({});
+                landingApiCall(pagination);
               }}
             />
           </div>
