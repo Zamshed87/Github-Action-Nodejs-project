@@ -66,7 +66,7 @@ export const getAllAppliedSalaryBreakdownElement = async (
   } catch (error) {}
 };
 
-// create/edit
+// edit
 export const salaryBreakdownCreateNApply = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
@@ -74,6 +74,19 @@ export const salaryBreakdownCreateNApply = async (payload, setLoading, cb) => {
       `/Payroll/SalaryBreakdownCreateNApply`,
       payload
     );
+    cb && cb();
+    toast.success(res?.data?.message || "Submitted Successfully");
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading && setLoading(false);
+  }
+};
+// create
+export const salaryBreakdownCreate = async (payload, setLoading, cb) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.post(`/Payroll/SalaryBreakdownCreate`, payload);
     cb && cb();
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading && setLoading(false);

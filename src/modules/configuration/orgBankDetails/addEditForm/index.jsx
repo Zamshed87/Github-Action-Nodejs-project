@@ -23,7 +23,7 @@ export default function AddEditForm({
   const getBanksDDL = useApiRequest({});
   const getBranchDDL = useApiRequest({});
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -113,12 +113,16 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
-      workplaceId: values?.workplace?.value,
-      workplaceName: values?.workplace?.label,
+      workplaceId: values?.workplace[0]?.value,
+      workplaceName: values?.workplace[0]?.label,
       workplaceGroupId: values?.workplaceGroup?.value,
       workplaceGroupName: values?.workplaceGroup?.label,
       strBankAdvice: JSON.stringify(values?.bankAdvice || []),
+      workplaceList: values?.workplace?.map((wp) => {
+        return wp.value;
+      }),
     };
+
     saveOrgBank.action({
       urlKey: "AccountBankDetailsCRUD",
       method: "POST",
@@ -149,10 +153,12 @@ export default function AddEditForm({
           value: singleData?.workplaceGroupId,
           label: singleData?.workplaceGroupName,
         },
-        workplace: {
-          value: singleData?.workplaceId,
-          label: singleData?.workplaceName,
-        },
+        workplace: [
+          {
+            value: singleData?.workplaceId,
+            label: singleData?.workplaceName,
+          },
+        ],
         bankAdvice: JSON.parse(singleData?.strBankAdvice)?.map((itm) => {
           return {
             ...itm,
@@ -381,6 +387,8 @@ export default function AddEditForm({
               label="Workplace"
               showSearch
               filterOption={true}
+              mode="multiple"
+              maxTagCount={"responsive"}
               placeholder="Workplace"
               onChange={(value, op) => {
                 form.setFieldsValue({
@@ -388,6 +396,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+              disabled={singleData?.intAccountBankDetailsId ? true : false}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -397,7 +406,7 @@ export default function AddEditForm({
               showSearch
               mode="multiple"
               filterOption={true}
-              placeholder="Bank Advic"
+              placeholder="Bank Advice"
               options={[
                 {
                   value: "IBBL",

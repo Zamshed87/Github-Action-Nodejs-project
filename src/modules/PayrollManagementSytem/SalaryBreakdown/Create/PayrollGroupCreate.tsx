@@ -9,7 +9,7 @@ import {
 } from "Components";
 import { Col, Divider, Form, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -17,6 +17,7 @@ import {
   getAllSalaryPolicyDDL,
   getPayrollElementDDL,
   getWorkplaceDDL,
+  salaryBreakdownCreate,
   salaryBreakdownCreateNApply,
 } from "../helper";
 import { getPeopleDeskWithoutAllDDL } from "common/api";
@@ -30,6 +31,7 @@ import {
   payrollGroupElementList,
 } from "../calculation";
 import Loading from "common/loading/Loading";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TOvertimePolicy = unknown;
 const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
@@ -39,6 +41,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
     shallowEqual
   );
   const history = useHistory();
+  const dispatch = useDispatch();
   const { state }: any = useLocation();
 
   // States
@@ -115,10 +118,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
           value: state?.intWorkplaceGroupId || 0,
           label: state?.workplaceGroup || "",
         },
-        workplace: {
-          value: state?.intWorkplaceId || 0,
-          label: state?.workplace || "",
-        },
+        workplace: [state?.intWorkplaceId || null],
         department: {
           value: state?.intDepartmentId,
           label: state?.strDepartment,
@@ -171,17 +171,19 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       intSalaryPolicyId: values?.payrollPolicy?.value,
       intHrPositonId: 0,
       intWorkplaceGroupId: values?.payScale?.value,
-      intWorkplaceId: values?.workplace?.value,
+      intWorkplaceId: values?.workplace[0],
       isPerday: values?.isPerdaySalary || false,
       isDefault: values?.isDefaultBreakdown || false,
       isActive: true,
       strDependOn: values?.dependsOn?.label,
-
+      workplaceIdList: values?.workplace,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
     };
+
+    console.log(values);
 
     if (values?.isPerdaySalary) {
       payload = {
@@ -193,7 +195,14 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         strDependOn: "",
         pyrSalaryBreakdowRowList: [],
       };
-      salaryBreakdownCreateNApply(payload, setLoading, callback);
+      if (
+        singleData?.intSalaryBreakdownHeaderId ||
+        state?.intSalaryBreakdownHeaderId
+      ) {
+        salaryBreakdownCreateNApply(payload, setLoading, callback);
+      } else {
+        salaryBreakdownCreate(payload, setLoading, callback);
+      }
     } else {
       if (dynamicForm?.length <= 0) {
         return toast.warn("Payroll Element List is empty!!!");
@@ -280,6 +289,11 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         return defaultSetter(values, dynamicForm, payload, setDynamicForm);
     }
   };
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <PForm
@@ -374,10 +388,12 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                   name="workplace"
                   placeholder="Workplace Name"
                   options={workplace || []}
+                  mode="multiple"
+                  maxTagCount={"responsive"}
                   onSelect={(value, option) => {
-                    form.setFieldsValue({
-                      workplace: option,
-                    });
+                    // form.setFieldsValue({
+                    //   workplace: option,
+                    // });
                     const { payScale } = form.getFieldsValue(true);
                     getPayrollElementDDL(
                       orgId,
