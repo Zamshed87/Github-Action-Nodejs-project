@@ -270,7 +270,14 @@ const FormCard = ({ propsObj }) => {
                 </button> */}
               <PrimaryButton
                 onClick={() => {
-                  console.log("first");
+                  getPendingAndConsumeMealReport(
+                    2,
+                    values?.employee?.value,
+                    setConsumeMeal,
+                    setLoading,
+                    "",
+                    values?.date
+                  );
                 }}
                 type="button"
                 className="btn mt-3 w-75 btn-default flex-center"
