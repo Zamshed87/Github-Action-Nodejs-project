@@ -130,17 +130,16 @@ const TnDInventoryDetails = () => {
           rel="noopener noreferrer"
           onClick={() => {
             ViewTrainingPlan(
-              93,
+              rec?.trainingId,
               setLoading,
               () => {
-                // NEED TO CHANGE
                 ViewTrainingPlanDetails(
-                  93, // NEED TO CHANGE
+                  rec?.trainingId,
                   setLoading,
                   setViewDataDetails,
                   () => {
                     ViewTrainingSchedule(
-                      93, // NEED TO CHANGE
+                      rec?.trainingId,
                       setLoading,
                       setScheduleDetails,
                       () => {
@@ -189,10 +188,9 @@ const TnDInventoryDetails = () => {
         <h1
           onClick={() => {
             ViewTrainingPlan(
-              93,
+              rec?.trainingId,
               setLoading,
               (d: any) => {
-                // NEED TO CHANGE
                 history.push("/trainingAndDevelopment/training/feedback", {
                   data: d,
                   service: "inventory",
@@ -213,10 +211,9 @@ const TnDInventoryDetails = () => {
         <h1
           onClick={() => {
             ViewTrainingPlan(
-              93,
+              rec?.trainingId,
               setLoading,
               (d: any) => {
-                // NEED TO CHANGE
                 history.push("/trainingAndDevelopment/training/assessment", {
                   data: d,
                   service: "inventory",
