@@ -341,6 +341,7 @@ export const Confirmation = () => {
           </div>
         );
       },
+      width: 40,
     },
     {
       title: "Action",
