@@ -402,12 +402,10 @@ const TnDPlanningCreateEdit = () => {
     console.log(form.getFieldsValue(true), "values");
 
     const addParticipant = (employee: any) => {
-      console.log("perticipantField", perticipantField, "employee", employee);
       const isDuplicate = perticipantField.some(
         (participant: any) =>
           participant.perticipantId === employee.intEmployeeBasicInfoId
       );
-      console.log("perticipantField777566", perticipantField);
 
       if (isDuplicate) {
         // toast.error("Participant already exists");
@@ -435,26 +433,22 @@ const TnDPlanningCreateEdit = () => {
           workplaceId: workplacePer?.value,
         },
       ]);
-      console.log("perticipantField6666", perticipantField);
     };
-    console.log("perticipantField22", values);
 
     if (values?.employee) {
-      console.log("perticipantField99", values);
       addParticipant(values.employee);
     } else {
       employees.forEach((employee: any) => {
         addParticipant(employee);
       });
     }
-    console.log("perticipantField", perticipantField);
-    form.resetFields([
-      "employee",
-      "department",
-      "hrPosition",
-      "workplacePer",
-      "workplaceGroupPer",
-    ]);
+    // form.resetFields([
+    //   "employee",
+    //   "department",
+    //   "hrPosition",
+    //   "workplacePer",
+    //   "workplaceGroupPer",
+    // ]);
   };
 
   const calculatePerPersonCost = () => {
