@@ -117,7 +117,7 @@ const TnDRequisitionCreateEdit = () => {
                   label: null,
                   value:
                     firstSegment === "SelfService"
-                      ? profileData?.intAccountId
+                      ? profileData?.intEmployeeId
                       : null,
                 },
               }
