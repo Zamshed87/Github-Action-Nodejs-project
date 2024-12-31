@@ -51,6 +51,7 @@ export const apiList = {
   IsSalaryElementById: "/Payroll/IsSalaryElementById",
   DeletePayrollElementTypeById: "/Payroll/DeletePayrollElementTypeById",
   SavePayrollElementType: "/Payroll/SavePayrollElementType",
+  CreatePayrollElementType: "/Payroll/CreatePayrollElementType",
   GetBusinessUnitById: "/SaasMasterData/GetBusinessUnitById",
   SaveBusinessUnit: "/SaasMasterData/SaveBusinessUnit",
   GetAllEmpDepartment: "/Employee/GetAllEmpDepartment",

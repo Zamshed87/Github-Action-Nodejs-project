@@ -1,10 +1,12 @@
-import { PForm, PInput, PRadio } from "Components";
+import { Flex, PForm, PInput, PRadio, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { orgIdsForBn } from "utility/orgForBanglaField";
+import { checkBng } from "utility/regxExp";
 
 type CreatePayrollElementType = {
   rowData: any;
@@ -17,7 +19,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   setOpen,
 }) => {
   // Data From Store
-  const { orgId, wgId, wId, employeeId } = useSelector(
+  const { orgId, wgId, wId, employeeId, buId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -27,28 +29,52 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   // Form Instance
   const [form] = Form.useForm();
 
+  const getWDDL = useApiRequest({});
   useEffect(() => {
     if (rowData) {
       form.setFieldsValue({
         elementName: rowData?.strPayrollElementName,
+        elementNameBn: rowData?.strPayrollElementNameBn || "",
         isBasic: rowData?.isBasicSalary,
         isSalaryElement: rowData?.isPrimarySalary,
         elementType: rowData?.isAddition ? "addition" : "deduction",
         isTaxable: rowData?.isTaxable,
+        workplace: {
+          label: rowData?.strWorkplaceName,
+          value: rowData?.intWorkplaceId,
+        },
       });
     }
   }, [rowData]);
 
+  useEffect(() => {
+    getWDDL.action({
+      urlKey: "WorkplaceIdAll",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  }, [wgId]);
+
   //   Functions
   const onFinish = () => {
-    
     const values = form.getFieldsValue(true);
-    const payload = {
+    const payloadEdit = {
       intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
       intAccountId: orgId,
       intWorkplaceGroupId: wgId,
       intWorkplaceId: wId,
-      strPayrollElementName: values?.elementName,
+      strPayrollElementName: values?.elementName || "",
+      strPayrollElementNameBn: values?.elementNameBn || "",
       strCode: " ",
       isBasicSalary: values?.isBasic || false,
       isPrimarySalary: values?.isSalaryElement || false,
@@ -61,10 +87,27 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
     };
+    const payload = {
+      accountId: orgId,
+      workplaceIdList: values?.workplace?.map((wp: any) => {
+        return wp.value;
+      }),
+      payrollElementName: values?.elementName,
+      payrollElementNameBn: values?.elementNameBn || "",
+      code: "",
+      isBasicSalary: values?.isBasic || false,
+      isPrimarySalary: values?.isSalaryElement || false,
+      isAddition: values?.elementType === "addition" ? true : false,
+      isDeduction: values?.elementType === "deduction" ? true : false,
+      isTaxable: values?.isTaxable || false,
+      actionBy: employeeId,
+    };
     SavePayrollElementType?.action({
-      urlKey: "SavePayrollElementType",
+      urlKey: rowData?.intPayrollElementTypeId
+        ? "SavePayrollElementType"
+        : "CreatePayrollElementType",
       method: "post",
-      payload,
+      payload: rowData?.intPayrollElementTypeId ? payloadEdit : payload,
       toast: true,
       onSuccess: () => {
         landingApi();
@@ -76,7 +119,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   return (
     <PForm form={form} onFinish={onFinish}>
       <Row gutter={[10, 2]}>
-        <Col md={24} sm={24}>
+        <Col sm={12}>
           <PInput
             name="elementName"
             type="text"
@@ -89,60 +132,101 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
             disabled={rowData}
           />
         </Col>
+        {orgIdsForBn.includes(orgId) && (
+          <Col md={12} sm={12}>
+            <PInput
+              name="elementNameBn"
+              type="text"
+              label="Element Name (Bangla)"
+              placeholder="Element Name (Bangla)"
+              disabled={rowData}
+              rules={[
+                {
+                  message: "This Field Must be in Bangla",
+                  pattern: new RegExp(checkBng()),
+                },
+              ]}
+            />
+          </Col>
+        )}
+        {!rowData?.intPayrollElementTypeId && (
+          <Col sm={12}>
+            <PSelect
+              options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+              name="workplace"
+              label="Workplace"
+              showSearch
+              filterOption={true}
+              mode={!rowData?.intPayrollElementTypeId ? "multiple" : undefined}
+              maxTagCount={!rowData?.intPayrollElementTypeId ? "responsive" : 1}
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
+        )}
+
         <Form.Item noStyle shouldUpdate>
           {() => {
             const { isBasic, elementType } = form.getFieldsValue();
             return (
               <>
-                <Col>
-                  <PInput
-                    name="isBasic"
-                    type="checkbox"
-                    label="Is Basic"
-                    layout="horizontal"
-                    onChange={(e: any) => {
-                      const checked = e.target.checked;
+                <Col sm={24}>
+                  <Flex>
+                    <PInput
+                      name="isBasic"
+                      type="checkbox"
+                      label="Is Basic"
+                      layout="horizontal"
+                      onChange={(e: any) => {
+                        const checked = e.target.checked;
 
-                      if (checked) {
-                        form.setFieldsValue({
-                          isSalaryElement: true,
-                          elementType: "addition",
-                          isTaxable: true,
-                        });
-                      } else {
-                        form.setFieldsValue({
-                          isSalaryElement: false,
-                          elementType: "",
-                          isTaxable: false,
-                        });
-                      }
-                    }}
-                  />
-                </Col>
-                <Col>
-                  <PInput
-                    name="isSalaryElement"
-                    type="checkbox"
-                    label="Is Salary Element"
-                    layout="horizontal"
-                    disabled={isBasic || elementType === "deduction"}
-                    onChange={(e: any) => {
-                      const checked = e.target.checked;
+                        if (checked) {
+                          form.setFieldsValue({
+                            isSalaryElement: true,
+                            elementType: "addition",
+                            isTaxable: true,
+                          });
+                        } else {
+                          form.setFieldsValue({
+                            isSalaryElement: false,
+                            elementType: "",
+                            isTaxable: false,
+                          });
+                        }
+                      }}
+                    />
+                    <div className="ml-2">
+                      <PInput
+                        name="isSalaryElement"
+                        type="checkbox"
+                        label="Is Salary Element"
+                        layout="horizontal"
+                        disabled={isBasic || elementType === "deduction"}
+                        onChange={(e: any) => {
+                          const checked = e.target.checked;
 
-                      if (checked) {
-                        form.setFieldsValue({
-                          elementType: "addition",
-                          isTaxable: true,
-                        });
-                      } else {
-                        form.setFieldsValue({
-                          elementType: "",
-                          isTaxable: false,
-                        });
-                      }
-                    }}
-                  />
+                          if (checked) {
+                            form.setFieldsValue({
+                              elementType: "addition",
+                              isTaxable: true,
+                            });
+                          } else {
+                            form.setFieldsValue({
+                              elementType: "",
+                              isTaxable: false,
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  </Flex>
                 </Col>
+
                 <Col span={24}>
                   <PRadio
                     name="elementType"
