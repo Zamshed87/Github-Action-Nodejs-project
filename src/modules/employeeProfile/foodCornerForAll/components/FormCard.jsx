@@ -68,22 +68,22 @@ const FormCard = ({ propsObj }) => {
                     null,
                     wgId
                   );
-                  getPendingAndConsumeMealReport(
-                    1,
-                    valueOption?.value,
-                    setScheduleMeal,
-                    setLoading,
-                    "",
-                    values?.viewDate
-                  );
-                  getPendingAndConsumeMealReport(
-                    2,
-                    valueOption?.value,
-                    setConsumeMeal,
-                    setLoading,
-                    "",
-                    values?.viewDate
-                  );
+                  // getPendingAndConsumeMealReport(
+                  //   1,
+                  //   valueOption?.value,
+                  //   setScheduleMeal,
+                  //   setLoading,
+                  //   "",
+                  //   values?.viewDate
+                  // );
+                  // getPendingAndConsumeMealReport(
+                  //   2,
+                  //   valueOption?.value,
+                  //   setConsumeMeal,
+                  //   setLoading,
+                  //   "",
+                  //   values?.viewDate
+                  // );
                 }
               }}
               placeholder="Search (min 3 letter)"
@@ -270,6 +270,14 @@ const FormCard = ({ propsObj }) => {
                 </button> */}
               <PrimaryButton
                 onClick={() => {
+                  getPendingAndConsumeMealReport(
+                    1,
+                    values?.employee?.value,
+                    setScheduleMeal,
+                    setLoading,
+                    "",
+                    values?.viewDate
+                  );
                   getPendingAndConsumeMealReport(
                     2,
                     values?.employee?.value,

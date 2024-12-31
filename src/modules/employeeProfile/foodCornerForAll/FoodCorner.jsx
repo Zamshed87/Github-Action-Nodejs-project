@@ -117,14 +117,14 @@ export default function FoodCornerForAll() {
       "",
       values?.viewDate
     );
-    // getPendingAndConsumeMealReport(
-    //   2,
-    //   values?.employee?.value,
-    //   setConsumeMeal,
-    //   setLoading,
-    //   "",
-    //   values?.viewDate
-    // );
+    getPendingAndConsumeMealReport(
+      2,
+      values?.employee?.value,
+      setConsumeMeal,
+      setLoading,
+      "",
+      values?.viewDate
+    );
   };
   useEffect(() => {
     PeopleDeskSaasDDL(
