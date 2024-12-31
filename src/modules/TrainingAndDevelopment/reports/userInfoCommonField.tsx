@@ -150,6 +150,7 @@ const UserInfoCommonField = ({
           onChange={(value, op) => {
             form.setFieldsValue({
               bUnit: op,
+              bUnitId: value,
             });
           }}
           rules={[{ required: true, message: "Business Unit is required" }]}
@@ -166,6 +167,7 @@ const UserInfoCommonField = ({
           onChange={(value, op) => {
             form.setFieldsValue({
               workplaceGroup: op,
+              workplaceGroupId: value,
               workplace: undefined,
             });
             getWorkplace();
@@ -184,6 +186,7 @@ const UserInfoCommonField = ({
           onChange={(value, op) => {
             form.setFieldsValue({
               workplace: op,
+              workplaceId: value,
             });
             if (isDepartment) {
               getEmployeDepartment();
@@ -209,6 +212,7 @@ const UserInfoCommonField = ({
             onChange={(value, op) => {
               form.setFieldsValue({
                 department: op,
+                departmentId: value,
               });
             }}
             rules={[
@@ -231,6 +235,7 @@ const UserInfoCommonField = ({
             onChange={(value, op) => {
               form.setFieldsValue({
                 hrPosition: op,
+                hrPositionId: value,
               });
             }}
           />

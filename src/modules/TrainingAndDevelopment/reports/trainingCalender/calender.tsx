@@ -27,7 +27,7 @@ const TrainingCalender: React.FC = () => {
 
   let permission: any = {};
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 199) {
+    if (item?.menuReferenceId === 30515) {
       permission = item;
     }
   });

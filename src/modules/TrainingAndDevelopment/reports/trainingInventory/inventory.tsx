@@ -30,7 +30,7 @@ const TnDInventory = () => {
 
   let permission: any = {};
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 199) {
+    if (item?.menuReferenceId === 30516) {
       permission = item;
     }
   });

@@ -25,7 +25,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
 
   let permission: any = {};
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 199) {
+    if (item?.menuReferenceId === 30501) {
       permission = item;
     }
   });

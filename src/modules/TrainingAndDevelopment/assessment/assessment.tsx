@@ -46,7 +46,7 @@ const TnDAssessment = () => {
   let permission: any = {};
 
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 199) {
+    if (item?.menuReferenceId === 30513) {
       permission = item;
     }
   });

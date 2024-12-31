@@ -38,7 +38,7 @@ import PlanningView from "./planningView";
 import Filter from "../filter";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
-import { setCustomFieldsValue } from "../requisition/helper";
+import { formatDate, setCustomFieldsValue } from "../requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
@@ -79,7 +79,7 @@ const TnDPlanningLanding = () => {
   );
   let permission: any = {};
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 199) {
+    if (item?.menuReferenceId === 30513) {
       permission = item;
     }
   });
@@ -115,10 +115,8 @@ const TnDPlanningLanding = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          // currentPage: landingApi?.data?.currentPage,
-          // pageSize: landingApi?.data?.pageSize,
-          currentPage: 1,
-          pageSize: 1000, // need to change
+          currentPage: landingApi?.currentPage,
+          pageSize: landingApi?.pageSize,
           index,
         }),
       fixed: "left",
@@ -425,7 +423,7 @@ const TnDPlanningLanding = () => {
   const doCancelConfirmation = (rec: any) => {
     let payload = {};
     const callback = () => {
-      landingApiCall({});
+      landingApiCall();
     };
 
     payload = {};
@@ -441,23 +439,33 @@ const TnDPlanningLanding = () => {
     IConfirmModal(confirmObject);
   };
 
-  const landingApiCall = (values: any) => {
-    const formatDate = (date: string) => {
-      return moment(date).format("YYYY-MM-DD");
-    };
-
-    let fromDate = values?.fromDate;
-    let toDate = values?.toDate;
-
-    if (!fromDate || !toDate) {
-      toDate = moment().toISOString();
-      fromDate = moment().subtract(2, "months").toISOString();
+  const landingApiCall = (
+    pagination: { current: number; pageSize: number } = {
+      current: 1,
+      pageSize: 25,
     }
-
+  ) => {
+    const values = form.getFieldsValue(true);
+    console.log(values);
+    const fromDate = values?.fromDate;
+    const toDate = values?.toDate;
+    console.log(values);
     const apiUrl = `/Training/GetAllTraining?status=0,1,2,3,4,5,6&fromDate=${formatDate(
       fromDate
-    )}&toDate=${formatDate(toDate)}`;
-
+    )}&toDate=${formatDate(toDate)}&businessUnitIds=${
+      values?.bUnitId ? values?.bUnitId?.join(",") : 0
+    }&workplaceGroupIds=${
+      values?.workplaceGroupId ? values?.workplaceGroupId?.join(",") : 0
+    }&workplaceIds=${
+      values?.workplaceId ? values?.workplaceId?.join(",") : 0
+    }&trainingModeIds=${
+      values?.trainingMode ? values?.trainingMode?.join(",") : ""
+    }&trainingTitleIds=${
+      values?.trainingTitle ? values?.trainingTitle?.join(",") : 0
+    }&trainingTypeIds=${
+      values?.trainingType ? values?.trainingType?.join(",") : 0
+    }&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`;
+    console.log(apiUrl); // why its not calling
     getLandingApi(apiUrl);
   };
   useEffect(() => {
@@ -470,7 +478,7 @@ const TnDPlanningLanding = () => {
     );
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
     getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
-    landingApiCall({});
+    landingApiCall();
   }, []);
 
   return permission?.isView ? (
@@ -485,9 +493,7 @@ const TnDPlanningLanding = () => {
       >
         <PCard>
           <PCardHeader
-            title={`Total ${
-              landingApi?.data?.totalCount || 0
-            } Training Planning`}
+            title={`Total ${landingApi?.totalCount || 0} Training Planning`}
             buttonList={[
               {
                 type: "primary",
@@ -499,64 +505,6 @@ const TnDPlanningLanding = () => {
               },
             ]}
           />
-          {/* <PCardBody>
-            <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "From Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "To Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        landingApiCall(values);
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col>
-            </Row>
-          </PCardBody> */}
 
           <div className="mb-3">
             <Filter form={form}>
@@ -667,7 +615,7 @@ const TnDPlanningLanding = () => {
                         .validateFields()
                         .then(() => {
                           console.log(values);
-                          //   landingApiCall(values);
+                          landingApiCall();
                         })
                         .catch(() => {});
                     }}
@@ -688,17 +636,17 @@ const TnDPlanningLanding = () => {
             </Filter>
             <DataTable
               bordered
-              data={landingApi || []}
+              data={landingApi?.data || []}
               loading={landingLoading}
               header={header}
-              // pagination={{
-              //   pageSize: landingApi?.data?.pageSize,
-              //   total: landingApi?.data?.totalCount,
-              // }}
+              pagination={{
+                pageSize: landingApi?.pageSize,
+                total: landingApi?.totalCount,
+              }}
               filterData={landingApi?.data?.filters}
-              // onChange={(pagination, filters) => {
-              //   landingApiCall({});
-              // }}
+              onChange={(pagination, filters) => {
+                landingApiCall(pagination);
+              }}
             />
           </div>
         </PCard>
