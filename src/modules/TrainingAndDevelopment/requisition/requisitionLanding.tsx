@@ -214,15 +214,19 @@ const TnDRequisitionLanding = () => {
     //   toDate = moment().toISOString();
     //   fromDate = moment().subtract(2, "months").toISOString();
     // }
+    console.log(values?.trainingType?.join(","));
+    console.log(values?.departmentId?.join(","));
+    console.log(values?.hrPositionId?.join(","));
+    console.log(values?.requisitionStatus?.join(","));
 
     const apiUrl = `/TrainingRequisition/Training/TrainingRequisition?fromDate=${formatDate(
       fromDate
     )}&toDate=${formatDate(toDate)}&trainingTypeIds=${
       values?.trainingType ? values?.trainingType?.join(",") : 0
     }&departmentIds=${
-      values?.department ? values?.department?.join(",") : 0
+      values?.department ? values?.departmentId?.join(",") : 0
     }&designationIds=${
-      values?.hrPosition ? values?.hrPosition?.join(",") : 0
+      values?.hrPosition ? values?.hrPositionId?.join(",") : 0
     }&statusIds=${
       values?.requisitionStatus ? values?.requisitionStatus?.join(",") : ""
     }&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`;
