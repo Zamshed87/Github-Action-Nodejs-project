@@ -19,7 +19,7 @@ import { getSerial } from "Utils";
 import { Col, Form, Row, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import {
   formatDate,
@@ -35,12 +35,13 @@ import { dateFormatter } from "utility/dateFormatter";
 import Filter from "../filter";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
-
+  const dispatch = useDispatch();
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
@@ -53,6 +54,9 @@ const TnDRequisitionLanding = () => {
   });
   // router states
   const history = useHistory();
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[1];
+
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -228,6 +232,14 @@ const TnDRequisitionLanding = () => {
     getLandingApi(apiUrl);
   };
   useEffect(() => {
+    dispatch(
+      setFirstLevelNameAction(
+        firstSegment === "SelfService"
+          ? "Employee Self Service"
+          : "Training & Development"
+      )
+    );
+
     getTrainingTypeDDL("/TrainingType/Training/Type", (data: any) => {
       const list: any = [];
       data?.map((d: any) => {

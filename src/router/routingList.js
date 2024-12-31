@@ -761,7 +761,9 @@ const SalaryPayslipReport = lazy(() =>
   import("../modules/CompensationBenefits/SalaryPayslipReport/index.jsx")
 );
 const MultiSalaryPayslipReport = lazy(() =>
-  import("../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx")
+  import(
+    "../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx"
+  )
 );
 const SalaryTaxCertificate = lazy(() =>
   import("../modules/CompensationBenefits/salaryTaxCertificate/index.jsx")
@@ -3407,6 +3409,10 @@ export const routingList = [
     component: TnDRequisitionLanding,
   },
   {
+    path: "/SelfService/traininganddevelopment/trainingRequisition",
+    component: TnDRequisitionLanding,
+  },
+  {
     path: "/trainingAndDevelopment/requisition/:type",
     component: TnDRequisitionCreateEdit,
   },
@@ -3440,6 +3446,10 @@ export const routingList = [
   },
   {
     path: "/trainingAndDevelopment/reports/trainingCalendar",
+    component: TrainingCalender,
+  },
+  {
+    path: "/SelfService/traininganddevelopment/trainingCalander",
     component: TrainingCalender,
   },
   {

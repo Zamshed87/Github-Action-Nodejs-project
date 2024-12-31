@@ -11,6 +11,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import UserInfoCommonField from "../userInfoCommonField";
 import "./calender.css";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { useLocation } from "react-router-dom";
 
 const getMonthData = (value: moment.Moment) => {
   if (value.month() === 8) {
@@ -24,13 +25,21 @@ const TrainingCalender: React.FC = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[1];
   let permission: any = {};
   permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 30515) {
       permission = item;
     }
   });
+  dispatch(
+    setFirstLevelNameAction(
+      firstSegment === "SelfService"
+        ? "Employee Self Service"
+        : "Training & Development"
+    )
+  );
   const { buId, wgId, employeeId, orgId } = profileData;
   const [form] = Form.useForm();
   const [calenderData, getCalenderData, loadingCalender, setCalenderData] =
