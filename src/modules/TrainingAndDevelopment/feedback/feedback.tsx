@@ -25,6 +25,7 @@ const TnDFeedback = () => {
   interface LocationState {
     data?: any;
     dataDetails?: any;
+    service?: any;
   }
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -34,7 +35,7 @@ const TnDFeedback = () => {
   const location = useLocation<LocationState>();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const { data = {}, dataDetails = {} } = location?.state || {};
+  const { data = {}, dataDetails = {}, service = null } = location?.state || {};
 
   const [rowData, setRowData] = useState<any>(null);
 
@@ -112,48 +113,60 @@ const TnDFeedback = () => {
       dataIndex: "privouslyFeedbackSubmittedCount",
       width: 50,
     },
-    {
-      title: (
-        <>
-          Feedback Done
-          <br />
-          <Checkbox
-            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rowData?.every(
-              (item: any) => item.isFeedbackDone === true
-            )}
-            onChange={(e) => {
-              setRowData(
-                rowData.map((item: any) => ({
-                  ...item,
-                  isFeedbackDone: e.target.checked,
-                }))
-              );
-            }}
-          />
-        </>
-      ),
-      dataIndex: "isFeedbackDone",
-      render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Checkbox
-            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-            checked={rec.isFeedbackDone === true}
-            onChange={(e) => {
-              setRowData(
-                rowData.map((item: any) =>
-                  item.uId === rec.uId
-                    ? { ...item, isFeedbackDone: e.target.checked }
-                    : item
-                )
-              );
-            }}
-          />
-        </Flex>
-      ),
-      align: "center",
-      width: 40,
-    },
+    ...(service !== "inventory"
+      ? [
+          {
+            title: (
+              <>
+                Feedback Done
+                <br />
+                <Checkbox
+                  style={{
+                    color: "green",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                  }}
+                  checked={rowData?.every(
+                    (item: any) => item.isFeedbackDone === true
+                  )}
+                  onChange={(e) => {
+                    setRowData(
+                      rowData.map((item: any) => ({
+                        ...item,
+                        isFeedbackDone: e.target.checked,
+                      }))
+                    );
+                  }}
+                />
+              </>
+            ),
+            dataIndex: "isFeedbackDone",
+            render: (_: any, rec: any) => (
+              <Flex justify="center">
+                <Checkbox
+                  style={{
+                    color: "green",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                  }}
+                  checked={rec.isFeedbackDone === true}
+                  onChange={(e) => {
+                    setRowData(
+                      rowData.map((item: any) =>
+                        item.uId === rec.uId
+                          ? { ...item, isFeedbackDone: e.target.checked }
+                          : item
+                      )
+                    );
+                  }}
+                />
+              </Flex>
+            ),
+            align: "center",
+            width: 40,
+          },
+        ]
+      : []),
   ];
 
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -196,27 +209,31 @@ const TnDFeedback = () => {
           <PCardHeader
             backButton
             title={`Training Feedback`}
-            buttonList={[
-              {
-                type: "primary",
-                content: "Save",
-                icon: <SaveOutlined />,
-                onClick: () => {
-                  const values = form.getFieldsValue(true);
-                  if (!permission?.isCreate) {
-                    toast.warn("You don't have permission to create");
-                    return;
-                  }
-                  saveFeedback(form, data, rowData, setLoading, () => {
-                    history.push("/trainingAndDevelopment/trainingPlan");
-                  });
-                  form
-                    .validateFields()
-                    .then(() => {})
-                    .catch(() => {});
-                },
-              },
-            ]}
+            buttonList={
+              service !== "inventory"
+                ? [
+                    {
+                      type: "primary",
+                      content: "Save",
+                      icon: <SaveOutlined />,
+                      onClick: () => {
+                        const values = form.getFieldsValue(true);
+                        if (!permission?.isCreate) {
+                          toast.warn("You don't have permission to create");
+                          return;
+                        }
+                        saveFeedback(form, data, rowData, setLoading, () => {
+                          history.push("/trainingAndDevelopment/trainingPlan");
+                        });
+                        form
+                          .validateFields()
+                          .then(() => {})
+                          .catch(() => {});
+                      },
+                    },
+                  ]
+                : []
+            }
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
@@ -282,26 +299,28 @@ const TnDFeedback = () => {
                   name="trainingDuration"
                 />
               </Col> */}
-              <Col md={6} sm={24}>
-                <PSelect
-                  name="feedbackform"
-                  options={
-                    ddlApi?.data?.data?.map((item: any) => ({
-                      label: item?.title,
-                      value: item?.id,
-                    })) || []
-                  }
-                  label="Feedback Form"
-                  onChange={(op) => {
-                    form.setFieldsValue({
-                      feedbackform: op,
-                    });
-                  }}
-                  rules={[
-                    { required: true, message: "Feedback Form is required" },
-                  ]}
-                />
-              </Col>
+              {service !== "inventory" && (
+                <Col md={6} sm={24}>
+                  <PSelect
+                    name="feedbackform"
+                    options={
+                      ddlApi?.data?.data?.map((item: any) => ({
+                        label: item?.title,
+                        value: item?.id,
+                      })) || []
+                    }
+                    label="Feedback Form"
+                    onChange={(op) => {
+                      form.setFieldsValue({
+                        feedbackform: op,
+                      });
+                    }}
+                    rules={[
+                      { required: true, message: "Feedback Form is required" },
+                    ]}
+                  />
+                </Col>
+              )}
             </Row>
           </PCardBody>
           {!landingLoading && rowData && (
