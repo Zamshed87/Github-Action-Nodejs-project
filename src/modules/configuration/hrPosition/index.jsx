@@ -335,6 +335,7 @@ function HRPosition() {
                               {rowDto?.map((item, index) => {
                                 return (
                                   <TableItem
+                                    key={index}
                                     item={item}
                                     index={index}
                                     setIsFormModal={setIsFormModal}
