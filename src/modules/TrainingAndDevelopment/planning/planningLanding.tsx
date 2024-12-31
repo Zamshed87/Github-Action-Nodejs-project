@@ -38,6 +38,7 @@ import PlanningView from "./planningView";
 import Filter from "../filter";
 import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
+import { setCustomFieldsValue } from "../requisition/helper";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
@@ -76,6 +77,7 @@ const TnDPlanningLanding = () => {
     data?.map((d: any) => {
       if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
+    list.unshift({ label: "All", value: 0 });
     setTrainingType(list);
   };
 
@@ -84,6 +86,7 @@ const TnDPlanningLanding = () => {
     data?.map((d: any) => {
       if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
+    list.unshift({ label: "All", value: 0 });
     setTrainingTitle(list);
   };
   // Form Instance
@@ -447,7 +450,12 @@ const TnDPlanningLanding = () => {
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
+    getEnumData(
+      "TrainingModeStatus",
+      setTrainingModeStatusDDL,
+      setLoading,
+      true
+    );
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
     getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
     landingApiCall({});
@@ -586,12 +594,11 @@ const TnDPlanningLanding = () => {
                   <PSelect
                     options={trainingTypeDDL || []}
                     name="trainingType"
+                    mode="multiple"
                     label={"Training Type"}
                     placeholder="Training Type"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingType: op,
-                      });
+                      setCustomFieldsValue(form, "trainingType", value);
                     }}
                     rules={[
                       {
@@ -606,11 +613,10 @@ const TnDPlanningLanding = () => {
                     options={trainingTitleDDL || []}
                     name="trainingTitle"
                     label={"Training Title"}
+                    mode="multiple"
                     placeholder="Training Title"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingTitle: op,
-                      });
+                      setCustomFieldsValue(form, "trainingTitle", value);
                     }}
                     rules={[
                       {
@@ -625,11 +631,10 @@ const TnDPlanningLanding = () => {
                     options={trainingModeStatusDDL || []}
                     name="trainingMode"
                     label="Training Mode"
+                    mode="multiple"
                     placeholder="Training Mode"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingMode: op,
-                      });
+                      setCustomFieldsValue(form, "trainingMode", value);
                     }}
                     rules={[
                       {

@@ -18,7 +18,6 @@ import {
   createTrainingRequisition,
   getAdjustedDates,
   onUpdateTrainingRequisition,
-  requisitionStatus,
 } from "./helper";
 import { getEnumData } from "common/api/commonApi";
 

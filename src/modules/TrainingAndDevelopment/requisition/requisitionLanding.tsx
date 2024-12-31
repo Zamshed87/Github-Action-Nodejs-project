@@ -21,7 +21,11 @@ import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { data, formatDate, ViewTrainingRequistion } from "./helper";
+import {
+  formatDate,
+  setCustomFieldsValue,
+  ViewTrainingRequistion,
+} from "./helper";
 
 import { PModal } from "Components/Modal";
 import RequisitionView from "./requisitionView";
@@ -346,9 +350,7 @@ const TnDRequisitionLanding = () => {
                     label="Training Type"
                     mode="multiple"
                     onChange={(value, op) => {
-                      form.setFieldsValue({
-                        trainingType: value,
-                      });
+                      setCustomFieldsValue(form, "trainingType", value);
                     }}
                     rules={[
                       {
@@ -366,15 +368,7 @@ const TnDRequisitionLanding = () => {
                     disabled={false}
                     label="Requisition Status"
                     onChange={(value, op) => {
-                      if (value.includes(0)) {
-                        form.setFieldsValue({
-                          requisitionStatus: [0],
-                        });
-                      } else {
-                        form.setFieldsValue({
-                          requisitionStatus: value,
-                        });
-                      }
+                      setCustomFieldsValue(form, "requisitionStatus", value);
                     }}
                     rules={[
                       {
