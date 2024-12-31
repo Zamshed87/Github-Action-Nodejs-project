@@ -16,6 +16,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getEnumData } from "common/api/commonApi";
 import { shallowEqual, useSelector } from "react-redux";
 import UserInfoCommonField from "../userInfoCommonField";
+import Filter from "modules/TrainingAndDevelopment/filter";
 const TnDInventory = () => {
   // router states
   const history = useHistory();
@@ -161,139 +162,127 @@ const TnDInventory = () => {
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
         <PCard>
-          {/* <PCardHeader
-            title={`Total ${
-              landingApi?.data?.totalCount || 0
-            } Training Requisition`}
-            buttonList={[
-              {
-                type: "primary",
-                content: "Create New",
-                icon: "plus",
-                onClick: () => {
-                  history.push("/trainingAndDevelopment/requisition/create");
-                },
-              },
-            ]}
-          /> */}
-          <PCardBody>
-            <Row gutter={[10, 2]}>
-              <UserInfoCommonField form={form} />
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={trainingTypeDDL || []}
-                  name="trainingType"
-                  label={"Training Type"}
-                  placeholder="Training Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingType: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Type is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={trainingTitleDDL || []}
-                  name="trainingTitle"
-                  label={"Training Title"}
-                  placeholder="Training Title"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingTitle: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Title is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={trainingModeStatusDDL || []}
-                  name="trainingMode"
-                  label="Training Mode"
-                  placeholder="Training Mode"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingMode: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Mode is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "From Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "To Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        console.log(values);
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col>
-            </Row>
-          </PCardBody>
+          {/* <PCardBody>
+            
+          </PCardBody> */}
 
           <div className="mb-3">
+            <Filter form={form}>
+              <Row gutter={[10, 2]}>
+                <UserInfoCommonField form={form} col={12} />
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingTypeDDL || []}
+                    name="trainingType"
+                    label={"Training Type"}
+                    placeholder="Training Type"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingType: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Type is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingTitleDDL || []}
+                    name="trainingTitle"
+                    label={"Training Title"}
+                    placeholder="Training Title"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingTitle: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Title is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingModeStatusDDL || []}
+                    name="trainingMode"
+                    label="Training Mode"
+                    placeholder="Training Mode"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        trainingMode: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Mode is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="fromDate"
+                    label="From Date"
+                    placeholder="From Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        fromDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "From Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="toDate"
+                    label="To Date"
+                    placeholder="To Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        toDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "To Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "22px" }}
+                    type="primary"
+                    content="View"
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      form
+                        .validateFields()
+                        .then(() => {
+                          console.log(values);
+                        })
+                        .catch(() => {});
+                    }}
+                  />
+                </Col>
+              </Row>
+            </Filter>
             <DataTable
               bordered
               data={landingApi || []}
