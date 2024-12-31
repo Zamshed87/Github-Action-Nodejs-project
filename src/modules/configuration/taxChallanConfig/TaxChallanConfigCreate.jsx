@@ -73,7 +73,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    const payload = {
+    const payloadFoEdit = {
       intTaxChallanConfigId: singleData?.intTaxChallanConfigId || 0,
       intYear: values?.intYear?.value,
       dteFiscalFromDate: values?.dteFiscalFromDate,
@@ -94,13 +94,37 @@ export default function AddEditForm({
       dteCreatedAt: singleData?.dteCreatedAt || todayDate(),
     };
 
+    const payload = {
+      year: values?.intYear?.value,
+      fiscalFromDate: values?.dteFiscalFromDate,
+      fiscalToDate: values?.dteFiscalToDate,
+      circle: values?.strCircle,
+      zone: values?.strZone,
+      challanNo: values?.strChallanNo,
+      challanDate: values?.dteChallanDate,
+      bankName: values?.bankName?.label,
+      bankId: values?.bankName?.value,
+      accountId: orgId,
+      fiscalYearId: values?.fiscalYearRange?.value,
+      actionBy: singleData?.intActionBy || employeeId,
+      workplaceGroupId: values?.workplaceGroup?.value,
+      workplaceIdlist:
+        values?.workplace?.length > 0 &&
+        values?.workplace?.map((wp) => {
+          return wp.value;
+        }),
+    };
+
     saveTaxChallanConfig.action({
-      urlKey: "SaveTaxChallanConfig",
+      urlKey: singleData?.intTaxChallanConfigId
+        ? "SaveTaxChallanConfig"
+        : "CreateTaxChallanConfig",
       method: "POST",
-      payload: payload,
+      payload: singleData?.intTaxChallanConfigId ? payloadFoEdit : payload,
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
   useEffect(() => {
@@ -125,13 +149,13 @@ export default function AddEditForm({
           label: singleData?.strWorkplaceName,
           value: singleData?.intWorkplaceId,
         },
+
         dteChallanDate: moment(singleData?.dteChallanDate),
         dteFiscalFromDate: moment(singleData?.dteFiscalFromDate),
         dteFiscalToDate: moment(singleData?.dteFiscalToDate),
       });
     }
   }, [singleData]);
-  console.log({ singleData });
 
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -170,6 +194,7 @@ export default function AddEditForm({
   };
   useEffect(() => {
     getWorkplaceGroup();
+    getWorkplace();
   }, [wgId]);
   return (
     <>
@@ -212,6 +237,8 @@ export default function AddEditForm({
               name="workplace"
               label="Workplace"
               placeholder="Workplace"
+              mode={!singleData?.intTaxChallanConfigId && "multiple"}
+              maxTagCount={!singleData?.intTaxChallanConfigId && "responsive"}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplace: op,
