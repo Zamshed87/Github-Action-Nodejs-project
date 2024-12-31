@@ -11,7 +11,7 @@ import {
 } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import {
@@ -20,16 +20,17 @@ import {
   onUpdateTrainingRequisition,
 } from "./helper";
 import { getEnumData } from "common/api/commonApi";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
     data?: any;
   }
-
+  const dispatch = useDispatch();
   const location = useLocation<LocationState>();
   const history = useHistory();
   const data = location?.state?.data;
-
+  const firstSegment = location.pathname.split("/")[1];
   const [loading, setLoading] = useState(false);
   const [reqStatusDDL, setReqStatus] = useState([]);
 
@@ -80,6 +81,13 @@ const TnDRequisitionCreateEdit = () => {
   };
 
   useEffect(() => {
+    dispatch(
+      setFirstLevelNameAction(
+        firstSegment === "SelfService"
+          ? "Employee Self Service"
+          : "Training & Development"
+      )
+    );
     getTrainingTypeDDL("/TrainingType/Training/Type", (data: any) => {
       const list: any = [];
       data?.map((d: any) => {
@@ -104,7 +112,15 @@ const TnDRequisitionCreateEdit = () => {
         form={form}
         initialValues={
           type === "create"
-            ? {}
+            ? {
+                employee: {
+                  label: null,
+                  value:
+                    firstSegment === "SelfService"
+                      ? profileData?.intAccountId
+                      : null,
+                },
+              }
             : {
                 reqId: data?.id,
                 reasonForRequisition: data?.reasonForRequisition,
@@ -178,32 +194,35 @@ const TnDRequisitionCreateEdit = () => {
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PSelect
-                  name="employee"
-                  label="Employee"
-                  placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
-                  loading={CommonEmployeeDDL?.loading}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      employee: op,
-                    });
-                  }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
-                  showSearch
-                  filterOption={false}
-                  allowClear={true}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Employee is required",
-                    },
-                  ]}
-                />
-              </Col>
+              {firstSegment !== "SelfService" && (
+                <Col md={6} sm={24}>
+                  <PSelect
+                    name="employee"
+                    label="Employee"
+                    placeholder="Search Min 2 char"
+                    options={CommonEmployeeDDL?.data || []}
+                    loading={CommonEmployeeDDL?.loading}
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        employee: op,
+                      });
+                    }}
+                    onSearch={(value) => {
+                      getEmployee(value);
+                    }}
+                    showSearch
+                    filterOption={false}
+                    allowClear={true}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Employee is required",
+                      },
+                    ]}
+                  />
+                </Col>
+              )}
+
               <Col md={6} sm={24}>
                 <PSelect
                   options={trainingTypeDDL || []}

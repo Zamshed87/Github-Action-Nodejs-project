@@ -3417,6 +3417,10 @@ export const routingList = [
     component: TnDRequisitionCreateEdit,
   },
   {
+    path: "/SelfService/traininganddevelopment/trainingRequisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
+  {
     path: "/trainingAndDevelopment/trainingPlan",
     component: TnDPlanningLanding,
   },

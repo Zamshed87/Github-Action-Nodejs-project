@@ -272,7 +272,13 @@ const TnDRequisitionLanding = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/trainingAndDevelopment/requisition/create");
+                  if (firstSegment === "SelfService") {
+                    history.push(
+                      "/SelfService/traininganddevelopment/trainingRequisition/create"
+                    );
+                  } else {
+                    history.push("/trainingAndDevelopment/requisition/create");
+                  }
                 },
               },
             ]}
