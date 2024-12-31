@@ -185,19 +185,18 @@ const TnDRequisitionLanding = () => {
   const landingApiCall = (
     pagination: { current: number; pageSize: number } = {
       current: 1,
-      pageSize: 50,
+      pageSize: 25,
     }
   ) => {
-    console.log(pagination);
     const values = form.getFieldsValue(true);
+    console.log(values);
+    const fromDate = values?.fromDate;
+    const toDate = values?.toDate;
 
-    let fromDate = values?.fromDate;
-    let toDate = values?.toDate;
-
-    if (!fromDate || !toDate) {
-      toDate = moment().toISOString();
-      fromDate = moment().subtract(2, "months").toISOString();
-    }
+    // if (!fromDate || !toDate) {
+    //   toDate = moment().toISOString();
+    //   fromDate = moment().subtract(2, "months").toISOString();
+    // }
 
     const apiUrl = `/TrainingRequisition/Training/TrainingRequisition?fromDate=${formatDate(
       fromDate

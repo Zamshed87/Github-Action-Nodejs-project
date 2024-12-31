@@ -12,7 +12,7 @@ const PlanningStepper = ({ planStep, onChangeStepper }: any) => {
     <div className="custom-stepper" id="planning-stepper">
       <Steps
         current={planStep === "STEP_ONE" ? 0 : planStep === "STEP_TWO" ? 1 : 2}
-        onChange={onChangeStepper}
+        // onChange={onChangeStepper}
         items={[
           {
             title: "Training Basic Info.",
