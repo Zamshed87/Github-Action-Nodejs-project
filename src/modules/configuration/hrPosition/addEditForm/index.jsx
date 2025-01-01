@@ -5,6 +5,7 @@ import { Col, Form, Row, Switch } from "antd";
 import { useEffect } from "react";
 
 import { shallowEqual, useSelector } from "react-redux";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
@@ -16,11 +17,10 @@ export default function AddEditForm({
   setId,
 }) {
   const saveHRPostion = useApiRequest({});
+  const [allMasterPositionDDL, getAllMasterPositionDDL] = useAxiosGet([]);
 
-  const { orgId, buId, employeeId, wgId, strWorkplace, wId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, wgId, strWorkplace, wId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   // states
 
@@ -47,13 +47,14 @@ export default function AddEditForm({
       dteUpdatedAt: todayDate(),
       intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
       intWorkplaceId: wId,
+      positionGroupId: values?.positionGrp?.value,
     };
     const payload = {
       position: values?.strPosition || "",
       workplaceIdList: values?.workplace?.map((wp) => {
         return wp.value;
       }),
-
+      positionGroupId: values?.positionGrp?.value,
       businessUnitId: buId,
       accountId: orgId,
       positionCode: values?.strPositionCode || "",
@@ -92,7 +93,22 @@ export default function AddEditForm({
       form.setFieldsValue({
         ...singleData,
       });
+      form.setFieldValue("positionGrp", [
+        {
+          label: singleData?.strPositionGroupName,
+          value: singleData?.intPositionGroupId,
+        },
+      ]);
     }
+    getAllMasterPositionDDL(
+      `/SaasMasterData/GetAllMasterPosition?accountId=${intAccountId}`,
+      (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strPositionGroupName;
+          res[i].value = item?.intPositionGroupId;
+        });
+      }
+    );
   }, [singleData]);
   return (
     <>
@@ -149,6 +165,26 @@ export default function AddEditForm({
               />
             </Col>
           )}
+          <Col md={12} sm={24}>
+            <PSelect
+              options={
+                allMasterPositionDDL?.length > 0 ? allMasterPositionDDL : []
+              }
+              name="positionGrp"
+              label="Level of Leadership"
+              showSearch
+              filterOption={true}
+              placeholder="Level of Leadership"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  positionGrp: op,
+                });
+              }}
+              rules={[
+                { required: true, message: "Level of Leadership is required" },
+              ]}
+            />
+          </Col>
 
           {isEdit && (
             <Col

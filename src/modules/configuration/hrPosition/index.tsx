@@ -84,6 +84,13 @@ function HRPosition() {
       width: 5,
     },
     {
+      title: "Level of Leadership",
+      dataIndex: "strPositionGroupName",
+      sorter: true,
+      width: 20,
+      //   fixed: "left",
+    },
+    {
       title: "HR Position",
       dataIndex: "strPosition",
       sorter: true,
