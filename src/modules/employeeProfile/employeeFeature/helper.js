@@ -63,8 +63,12 @@ export const createEditEmpAction = async (
       IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
-      dteDateOfBirth: moment(values?.dateofBirth).format("YYYY-MM-DD"),
-      dteJoiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+      dteDateOfBirth: values?.dateofBirth
+        ? moment(values?.dateofBirth).format("YYYY-MM-DD")
+        : null,
+      dteJoiningDate: values?.joiningDate
+        ? moment(values?.joiningDate).format("YYYY-MM-DD")
+        : null,
       dteInternCloseDate:
         values?.dteInternCloseDate & values?.lastDaysInternCloseDate
           ? moment(values?.dteInternCloseDate).format("YYYY-MM-DD") +

@@ -9,10 +9,21 @@ import PrimaryButton from "../../../../common/PrimaryButton";
 import { greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
+import { getPendingAndConsumeMealReport } from "../helper";
+import { todayDate } from "utility/todayDate";
 
 const FormCard = ({ propsObj }) => {
-  const { values, setFieldValue, errors, touched, loading, placeDDL } =
-    propsObj;
+  const {
+    values,
+    setFieldValue,
+    errors,
+    touched,
+    loading,
+    employeeId,
+    setLoading,
+    setConsumeMeal,
+    setScheduleMeal,
+  } = propsObj;
   const { strDesignation, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -188,14 +199,49 @@ const FormCard = ({ propsObj }) => {
                 />
               </div>
             </div>
+            {/* <div className="col-lg-6 align-content-end">
+              <div className="d-flex justify-content-between">
+                {/* <button className="btn button w-100 mt-3" type="submit">
+                  Save
+                </button> */}
+            {/* <PrimaryButton
+                  type="submit"
+                  className="btn mt-3 w-100 btn-default flex-center"
+                  label={"Save"}
+                /> */}
+            {/* </div> */}
+            {/* </div> */}
             <div className="col-lg-6 align-content-end">
               <div className="d-flex justify-content-between">
                 {/* <button className="btn button w-100 mt-3" type="submit">
                   Save
                 </button> */}
                 <PrimaryButton
+                  onClick={() => {
+                    getPendingAndConsumeMealReport(
+                      1,
+                      employeeId,
+                      setScheduleMeal,
+                      setLoading,
+                      "",
+                      values?.date || todayDate()
+                    );
+                    getPendingAndConsumeMealReport(
+                      2,
+                      employeeId,
+                      setConsumeMeal,
+                      setLoading,
+                      "",
+                      values?.date || todayDate()
+                    );
+                  }}
+                  type="button"
+                  className="btn mt-3 w-75 btn-default flex-center"
+                  label={"View"}
+                />
+                <PrimaryButton
                   type="submit"
-                  className="btn mt-3 w-100 btn-default flex-center"
+                  className="btn mt-3 w-75 ml-3 btn-default flex-center"
                   label={"Save"}
                 />
               </div>

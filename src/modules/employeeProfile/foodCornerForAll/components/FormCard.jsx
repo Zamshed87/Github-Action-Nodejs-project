@@ -68,22 +68,22 @@ const FormCard = ({ propsObj }) => {
                     null,
                     wgId
                   );
-                  getPendingAndConsumeMealReport(
-                    1,
-                    valueOption?.value,
-                    setScheduleMeal,
-                    setLoading,
-                    "",
-                    values?.viewDate
-                  );
-                  getPendingAndConsumeMealReport(
-                    2,
-                    valueOption?.value,
-                    setConsumeMeal,
-                    setLoading,
-                    "",
-                    values?.viewDate
-                  );
+                  // getPendingAndConsumeMealReport(
+                  //   1,
+                  //   valueOption?.value,
+                  //   setScheduleMeal,
+                  //   setLoading,
+                  //   "",
+                  //   values?.viewDate
+                  // );
+                  // getPendingAndConsumeMealReport(
+                  //   2,
+                  //   valueOption?.value,
+                  //   setConsumeMeal,
+                  //   setLoading,
+                  //   "",
+                  //   values?.viewDate
+                  // );
                 }
               }}
               placeholder="Search (min 3 letter)"
@@ -219,7 +219,7 @@ const FormCard = ({ propsObj }) => {
             </div>
           </div>
 
-          <div className="col-lg-6">
+          <div className="col-lg-6 d-flex">
             <div className="input-feild-maint mt-3">
               <label htmlFor="" className="pr-2">
                 Meal Status
@@ -245,6 +245,23 @@ const FormCard = ({ propsObj }) => {
                 checked={values?.mealStatus === "guest"}
               />
             </div>
+            {/* <div className="">
+              <PrimaryButton
+                type="button"
+                onClick={() => {
+                  console.log("first");
+                }}
+                className="btn mt-3 w-100 btn-default flex-center"
+                label={"View"}
+              />
+            </div>
+            <div className="ml-2">
+              <PrimaryButton
+                type="submit"
+                className="btn mt-3 w-100 btn-default flex-center"
+                label={"Save"}
+              />
+            </div> */}
           </div>
           <div className="col-lg-6 align-content-end">
             <div className="d-flex justify-content-between">
@@ -252,8 +269,31 @@ const FormCard = ({ propsObj }) => {
                   Save
                 </button> */}
               <PrimaryButton
+                onClick={() => {
+                  getPendingAndConsumeMealReport(
+                    1,
+                    values?.employee?.value,
+                    setScheduleMeal,
+                    setLoading,
+                    "",
+                    values?.viewDate
+                  );
+                  getPendingAndConsumeMealReport(
+                    2,
+                    values?.employee?.value,
+                    setConsumeMeal,
+                    setLoading,
+                    "",
+                    values?.date
+                  );
+                }}
+                type="button"
+                className="btn mt-3 w-75 btn-default flex-center"
+                label={"View"}
+              />
+              <PrimaryButton
                 type="submit"
-                className="btn mt-3 w-100 btn-default flex-center"
+                className="btn mt-3 w-75 ml-3 btn-default flex-center"
                 label={"Save"}
               />
             </div>
