@@ -457,15 +457,17 @@ const TnDPlanningLanding = () => {
       values?.bUnitId
     )}&workplaceGroupIds=${formatFilterValue(
       values?.workplaceGroupId
-    )}&workplaceIds=${formatFilterValue(
-      values?.workplaceId
-    )}&trainingModeIds=${formatFilterValue(
-      values?.trainingMode
-    )}&trainingTitleIds=${formatFilterValue(
+    )}&workplaceIds=${formatFilterValue(values?.workplaceId)}&trainingModeIds=${
+      formatFilterValue(values?.trainingMode)
+        ? formatFilterValue(values?.trainingMode)
+        : ""
+    }&trainingTitleIds=${formatFilterValue(
       values?.trainingTitle
     )}&trainingTypeIds=${formatFilterValue(values?.trainingType)}&pageNumber=${
       pagination?.current
     }&pageSize=${pagination?.pageSize}`;
+
+    //GetAllTraining?fromDate=2024-11-01&toDate=2025-01-03&businessUnitIds=0&workplaceGroupIds=0&workplaceIds=0&trainingTypeIds=0&trainingTitleIds=7&pageNumber=1&pageSize=50
 
     console.log(apiUrl); // Check the constructed URL
     getLandingApi(apiUrl);
