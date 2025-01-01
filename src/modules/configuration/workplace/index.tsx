@@ -177,7 +177,7 @@ function Workplace() {
         <PCard>
           <PCardHeader
             title="Workplace"
-            submitText={orgId == 13 ? "Workplace" : undefined}
+            submitText={"Workplace"}
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
