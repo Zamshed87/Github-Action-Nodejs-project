@@ -90,8 +90,6 @@ function HRPosition() {
             dataIndex: "strPositionGroupName",
             sorter: true,
             width: 20,
-            render: (_: any, rec: any) =>
-              rec?.strPositionGroupName?.strPositionGroupName,
             //   fixed: "left",
           },
         ]
