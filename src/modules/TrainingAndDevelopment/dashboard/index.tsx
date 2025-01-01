@@ -56,6 +56,7 @@ import {
 import "./style.css";
 import { getEnumData } from "common/api/commonApi";
 import { getSerial } from "Utils";
+import { typeDataSetForTrainerOrg } from "../helpers";
 
 const { Title } = Typography;
 
@@ -209,8 +210,10 @@ const TnDDashboard = () => {
 
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
     getNameOfTrainerOrgDDL(
-      "/TrainerInformation/Training/TrainerInformation",
-      typeDataSetForTrainerOrg
+      "/TrainerInformation/Training/TrainerInformation?pageNumber=1&pageSize=200",
+      (data: any) => {
+        typeDataSetForTrainerOrg(data, setNameOfTrainerOrg, true);
+      }
     );
     getSummaryCard(`/Dashboard/Training/Dashboard/SummaryCard`);
     getTrininingModeSummary(
@@ -355,20 +358,6 @@ const TnDDashboard = () => {
       },
     },
   ];
-
-  const typeDataSetForTrainerOrg = (data: any) => {
-    const list: any[] = [];
-    data?.map((d: any) => {
-      if (d?.isActive === true)
-        list.push({
-          label: `${d?.name} - ${d?.organization}`,
-          value: d?.id,
-          ...d,
-        });
-    });
-    list.unshift({ label: "All", value: 0 });
-    setNameOfTrainerOrg(list);
-  };
 
   const typeDataSetForType = (data: any) => {
     const list: any[] = [];

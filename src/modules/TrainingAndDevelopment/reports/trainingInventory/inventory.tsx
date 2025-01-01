@@ -19,6 +19,7 @@ import UserInfoCommonField from "../userInfoCommonField";
 import Filter from "modules/TrainingAndDevelopment/filter";
 import { setCustomFieldsValue } from "modules/TrainingAndDevelopment/requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { typeDataSetForTitle } from "modules/TrainingAndDevelopment/helpers";
 const TnDInventory = () => {
   // router states
   const history = useHistory();
@@ -149,20 +150,18 @@ const TnDInventory = () => {
     setTrainingType(list);
   };
 
-  const typeDataSetForTitle = (data: any) => {
-    const list: any[] = [];
-    data?.map((d: any) => {
-      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
-    });
-    setTrainingTitle(list);
-  };
   const landingApiCall = (values: any) => {
     getLandingApi(`/TrainingReport/TrainingInventoryReport/${intAccountId}`);
   };
   useEffect(() => {
     landingApiCall({});
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
-    getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
+    getTrainingTitleDDL(
+      "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
+      (data: any) => {
+        typeDataSetForTitle(data, setTrainingTitle, true);
+      }
+    );
     getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
   }, []);
 

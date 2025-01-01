@@ -40,7 +40,7 @@ import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
 import { formatDate, setCustomFieldsValue } from "../requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { formatFilterValue } from "../helpers";
+import { formatFilterValue, typeDataSetForTitle } from "../helpers";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(3, "months");
@@ -94,14 +94,6 @@ const TnDPlanningLanding = () => {
     setTrainingType(list);
   };
 
-  const typeDataSetForTitle = (data: any) => {
-    const list: any[] = [];
-    data?.map((d: any) => {
-      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
-    });
-    list.unshift({ label: "All", value: 0 });
-    setTrainingTitle(list);
-  };
   // Form Instance
   const [form] = Form.useForm();
 
@@ -481,7 +473,12 @@ const TnDPlanningLanding = () => {
       true
     );
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
-    getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
+    getTrainingTitleDDL(
+      "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
+      (data: any) => {
+        typeDataSetForTitle(data, setTrainingTitle, true);
+      }
+    );
     landingApiCall();
   }, []);
 

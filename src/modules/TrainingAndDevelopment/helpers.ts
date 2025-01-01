@@ -15,3 +15,38 @@ export const formatFilterValue = (
     return 0;
   }
 };
+
+export const typeDataSetForTitle = (
+  data: any,
+  setState: any,
+  isAll?: boolean
+) => {
+  const list: any[] = [];
+  data?.data?.map((d: any) => {
+    if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
+  });
+  if (isAll) {
+    list.unshift({ label: "All", value: 0 });
+  }
+  setState(list);
+};
+
+export const typeDataSetForTrainerOrg = (
+  data: any,
+  setState: any,
+  isAll?: boolean
+) => {
+  const list: any[] = [];
+  data?.data?.map((d: any) => {
+    if (d?.isActive === true)
+      list.push({
+        label: `${d?.name} - ${d?.organization}`,
+        value: d?.id,
+        ...d,
+      });
+  });
+  if (isAll) {
+    list.unshift({ label: "All", value: 0 });
+  }
+  setState(list);
+};

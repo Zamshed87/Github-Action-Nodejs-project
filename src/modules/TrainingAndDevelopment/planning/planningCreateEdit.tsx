@@ -42,6 +42,7 @@ import PlanningInfo from "./planningInfo";
 import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import moment from "moment";
 import PlanningStepper from "./stepper/planningStepper";
+import { typeDataSetForTitle, typeDataSetForTrainerOrg } from "../helpers";
 
 const cardMargin = { marginBottom: "15px" };
 
@@ -236,10 +237,17 @@ const TnDPlanningCreateEdit = () => {
     });
     getWorkplaceGroup();
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
-    getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
+    getTrainingTitleDDL(
+      "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
+      (data: any) => {
+        typeDataSetForTitle(data, setTrainingTitle);
+      }
+    );
     getNameOfTrainerOrgDDL(
-      "/TrainerInformation/Training/TrainerInformation",
-      typeDataSetForTrainerOrg
+      "/TrainerInformation/Training/TrainerInformation?pageNumber=1&pageSize=200",
+      (data: any) => {
+        typeDataSetForTrainerOrg(data, setNameOfTrainerOrg);
+      }
     );
     if (type === "edit") {
       setTrainingDuration(form);
@@ -253,33 +261,12 @@ const TnDPlanningCreateEdit = () => {
     }
   }, [profileData?.buId, profileData?.wgId]);
 
-  const typeDataSetForTrainerOrg = (data: any) => {
-    const list: any[] = [];
-    data?.map((d: any) => {
-      if (d?.isActive === true)
-        list.push({
-          label: `${d?.name} - ${d?.organization}`,
-          value: d?.id,
-          ...d,
-        });
-    });
-    setNameOfTrainerOrg(list);
-  };
-
   const typeDataSetForType = (data: any) => {
     const list: any[] = [];
     data?.map((d: any) => {
       if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
     setTrainingType(list);
-  };
-
-  const typeDataSetForTitle = (data: any) => {
-    const list: any[] = [];
-    data?.map((d: any) => {
-      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
-    });
-    setTrainingTitle(list);
   };
 
   const addHandler = (values: any) => {
@@ -1008,8 +995,10 @@ const TnDPlanningCreateEdit = () => {
         onCancel={() => {
           setOpenTrainingTitleModal(false);
           getTrainingTitleDDL(
-            "/TrainingTitle/Training/Title",
-            typeDataSetForTitle
+            "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
+            (data: any) => {
+              typeDataSetForTitle(data, setTrainingTitle);
+            }
           );
         }}
         maskClosable={false}
