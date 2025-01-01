@@ -7,6 +7,7 @@ export const column = {
   StrEmployeeCode: "Employee Id",
   StrEmployeeName: "Employee Name",
   StrDesignation: "Designation",
+  StrSupersvisorName: "Supersvisor",
   StrLeaveTypeName: "Leave Type",
   StrAddressDuetoLeave: "Location",
   StartDate: "From Date",
