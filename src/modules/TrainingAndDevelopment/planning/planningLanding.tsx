@@ -40,9 +40,10 @@ import UserInfoCommonField from "../reports/userInfoCommonField";
 import { getEnumData } from "common/api/commonApi";
 import { formatDate, setCustomFieldsValue } from "../requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { formatFilterValue } from "../helpers";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
-  const defaultFromDate = moment().subtract(2, "months");
+  const defaultFromDate = moment().subtract(3, "months");
   // router states
   const history = useHistory();
   const dispatch = useDispatch();
@@ -449,23 +450,24 @@ const TnDPlanningLanding = () => {
     console.log(values);
     const fromDate = values?.fromDate;
     const toDate = values?.toDate;
-    console.log(values);
-    const apiUrl = `/Training/GetAllTraining?status=0,1,2,3,4,5,6&fromDate=${formatDate(
+
+    const apiUrl = `/Training/GetAllTraining?status=&fromDate=${formatDate(
       fromDate
-    )}&toDate=${formatDate(toDate)}&businessUnitIds=${
-      values?.bUnitId ? values?.bUnitId?.join(",") : 0
-    }&workplaceGroupIds=${
-      values?.workplaceGroupId ? values?.workplaceGroupId?.join(",") : 0
-    }&workplaceIds=${
-      values?.workplaceId ? values?.workplaceId?.join(",") : 0
-    }&trainingModeIds=${
-      values?.trainingMode ? values?.trainingMode?.join(",") : ""
-    }&trainingTitleIds=${
-      values?.trainingTitle ? values?.trainingTitle?.join(",") : 0
-    }&trainingTypeIds=${
-      values?.trainingType ? values?.trainingType?.join(",") : 0
-    }&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`;
-    console.log(apiUrl); // why its not calling
+    )}&toDate=${formatDate(toDate)}&businessUnitIds=${formatFilterValue(
+      values?.bUnitId
+    )}&workplaceGroupIds=${formatFilterValue(
+      values?.workplaceGroupId
+    )}&workplaceIds=${formatFilterValue(
+      values?.workplaceId
+    )}&trainingModeIds=${formatFilterValue(
+      values?.trainingMode
+    )}&trainingTitleIds=${formatFilterValue(
+      values?.trainingTitle
+    )}&trainingTypeIds=${formatFilterValue(values?.trainingType)}&pageNumber=${
+      pagination?.current
+    }&pageSize=${pagination?.pageSize}`;
+
+    console.log(apiUrl); // Check the constructed URL
     getLandingApi(apiUrl);
   };
   useEffect(() => {
@@ -489,6 +491,14 @@ const TnDPlanningLanding = () => {
         initialValues={{
           fromDate: defaultFromDate,
           toDate: defaultToDate,
+          bUnit: { label: "All", value: 0 },
+          workplaceGroup: { label: "All", value: 0 },
+          workplace: { label: "All", value: 0 },
+          department: { label: "All", value: 0 },
+          hrPosition: { label: "All", value: 0 },
+          trainingType: { label: "All", value: 0 },
+          trainingTitle: { label: "All", value: 0 },
+          trainingMode: { label: "All", value: 0 },
         }}
       >
         <PCard>

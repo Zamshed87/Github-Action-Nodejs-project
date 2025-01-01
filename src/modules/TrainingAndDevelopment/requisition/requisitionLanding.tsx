@@ -41,7 +41,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { formatFilterValue } from "../helpers";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
-  const defaultFromDate = moment().subtract(2, "months");
+  const defaultFromDate = moment().subtract(3, "months");
   const dispatch = useDispatch();
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
