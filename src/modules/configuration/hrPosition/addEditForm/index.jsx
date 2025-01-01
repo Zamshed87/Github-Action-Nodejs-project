@@ -47,14 +47,14 @@ export default function AddEditForm({
       dteUpdatedAt: todayDate(),
       intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
       intWorkplaceId: wId,
-      positionGroupId: values?.positionGrp?.value,
+      positionGroupId: values?.positionGrp?.value || null,
     };
     const payload = {
       position: values?.strPosition || "",
       workplaceIdList: values?.workplace?.map((wp) => {
         return wp.value;
       }),
-      positionGroupId: values?.positionGrp?.value,
+      positionGroupId: values?.positionGrp?.value || null,
       businessUnitId: buId,
       accountId: orgId,
       positionCode: values?.strPositionCode || "",
@@ -165,26 +165,31 @@ export default function AddEditForm({
               />
             </Col>
           )}
-          <Col md={12} sm={24}>
-            <PSelect
-              options={
-                allMasterPositionDDL?.length > 0 ? allMasterPositionDDL : []
-              }
-              name="positionGrp"
-              label="Level of Leadership"
-              showSearch
-              filterOption={true}
-              placeholder="Level of Leadership"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  positionGrp: op,
-                });
-              }}
-              rules={[
-                { required: true, message: "Level of Leadership is required" },
-              ]}
-            />
-          </Col>
+          {intAccountId === 12 && (
+            <Col md={12} sm={24}>
+              <PSelect
+                options={
+                  allMasterPositionDDL?.length > 0 ? allMasterPositionDDL : []
+                }
+                name="positionGrp"
+                label="Level of Leadership"
+                showSearch
+                filterOption={true}
+                placeholder="Level of Leadership"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    positionGrp: op,
+                  });
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Level of Leadership is required",
+                  },
+                ]}
+              />
+            </Col>
+          )}
 
           {isEdit && (
             <Col

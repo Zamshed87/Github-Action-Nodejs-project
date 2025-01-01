@@ -19,7 +19,7 @@ function HRPosition() {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId, orgId, intAccountId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,13 +83,19 @@ function HRPosition() {
       //   fixed: "left",
       width: 5,
     },
-    {
-      title: "Level of Leadership",
-      dataIndex: "strPositionGroupName",
-      sorter: true,
-      width: 20,
-      //   fixed: "left",
-    },
+    ...(intAccountId === 12
+      ? [
+          {
+            title: "Level of Leadership",
+            dataIndex: "strPositionGroupName",
+            sorter: true,
+            width: 20,
+            render: (_: any, rec: any) =>
+              rec?.strPositionGroupName?.strPositionGroupName,
+            //   fixed: "left",
+          },
+        ]
+      : []),
     {
       title: "HR Position",
       dataIndex: "strPosition",
@@ -104,13 +110,11 @@ function HRPosition() {
       width: 20,
       //   fixed: "left",
     },
-
     {
       title: "Status",
       dataIndex: "isActive",
       sorter: true,
       width: 10,
-
       render: (_: any, rec: any) => (
         <>
           <Tag color={`${rec?.isActive ? "green" : "red"}`}>
@@ -119,7 +123,6 @@ function HRPosition() {
         </>
       ),
     },
-
     {
       width: 20,
       align: "center",
