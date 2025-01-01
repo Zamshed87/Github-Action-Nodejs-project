@@ -38,6 +38,7 @@ import { getEnumData } from "common/api/commonApi";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { formatFilterValue } from "../helpers";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(2, "months");
@@ -210,29 +211,19 @@ const TnDRequisitionLanding = () => {
     const fromDate = values?.fromDate;
     const toDate = values?.toDate;
 
-    // if (!fromDate || !toDate) {
-    //   toDate = moment().toISOString();
-    //   fromDate = moment().subtract(2, "months").toISOString();
-    // }
-    console.log(values?.trainingType?.join(","));
-    console.log(values?.departmentId?.join(","));
-    console.log(values?.hrPositionId?.join(","));
-    console.log(values?.requisitionStatus?.join(","));
-
     const apiUrl = `/TrainingRequisition/Training/TrainingRequisition?fromDate=${formatDate(
       fromDate
-    )}&toDate=${formatDate(toDate)}&trainingTypeIds=${
-      values?.trainingType ? values?.trainingType?.join(",") : 0
-    }&departmentIds=${
-      values?.department ? values?.departmentId?.join(",") : 0
-    }&designationIds=${
-      values?.hrPosition ? values?.hrPositionId?.join(",") : 0
-    }&statusIds=${
-      values?.requisitionStatus ? values?.requisitionStatus?.join(",") : ""
+    )}&toDate=${formatDate(toDate)}&trainingTypeIds=${formatFilterValue(
+      values?.trainingType
+    )}&departmentIds=${formatFilterValue(
+      values?.departmentId
+    )}&designationIds=${formatFilterValue(values?.hrPositionId)}&statusIds=${
+      formatFilterValue(values?.requisitionStatus)
+        ? formatFilterValue(values?.requisitionStatus)
+        : ""
     }&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`;
 
-    // https://localhost:7020/api/TrainingRequisition/Training/TrainingRequisition?fromDate=2024-12-20&toDate=2024-12-30&trainingTypeIds=4&departmentIds=70%2C200%2C191&designationIds=82%2C12&statusIds=1&pageNumber=1&pageSize=100
-
+    console.log(apiUrl); // Check the constructed URL
     getLandingApi(apiUrl);
   };
   useEffect(() => {
@@ -265,6 +256,13 @@ const TnDRequisitionLanding = () => {
         initialValues={{
           fromDate: defaultFromDate,
           toDate: defaultToDate,
+          bUnit: { label: "All", value: 0 },
+          workplaceGroup: { label: "All", value: 0 },
+          workplace: { label: "All", value: 0 },
+          department: { label: "All", value: 0 },
+          hrPosition: { label: "All", value: 0 },
+          trainingType: { label: "All", value: 0 },
+          requisitionStatus: { label: "All", value: "" },
         }}
       >
         <PCard>
@@ -287,64 +285,6 @@ const TnDRequisitionLanding = () => {
               },
             ]}
           />
-          {/* <PCardBody>
-            <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "From Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "To Date is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    const values = form.getFieldsValue(true);
-                    form
-                      .validateFields()
-                      .then(() => {
-                        landingApiCall(values);
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col>
-            </Row>
-          </PCardBody> */}
 
           <div className="mb-3">
             <Filter form={form}>

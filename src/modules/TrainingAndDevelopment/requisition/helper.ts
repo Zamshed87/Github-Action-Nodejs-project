@@ -142,6 +142,12 @@ export const setCustomFieldsValue = (
   field: any,
   value: any
 ) => {
+  if (value.includes("")) {
+    form.setFieldsValue({
+      [field]: [""],
+    });
+    return;
+  }
   if (value.includes(0)) {
     form.setFieldsValue({
       [field]: [0],
