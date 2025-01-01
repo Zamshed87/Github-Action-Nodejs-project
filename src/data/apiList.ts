@@ -97,8 +97,10 @@ export const apiList = {
     "SaasMasterData/CreateOrUpdateEmpIdCardExternalInfo",
   GetAllTaxchallanConfig: "/SaasMasterData/GetAllTaxchallanConfig",
   BankBranchLanding: "/SaasMasterData/BankBranchLanding",
-  ApprovalPipelineCreateNUpdate:
-    "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
+  CreateApprovalConfiguration:
+    "/ApprovalPipeline/CreateApprovalConfiguration",
+    UpdateApprovalConfiguration:
+    "/ApprovalPipeline/UpdateApprovalConfiguration",
   // ApprovalPipelineHeaderDetailsById:
   //   "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   ApprovalPipelineHeaderDetailsById:

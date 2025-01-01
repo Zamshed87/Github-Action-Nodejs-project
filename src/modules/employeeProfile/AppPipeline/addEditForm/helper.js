@@ -129,7 +129,6 @@ export const submitHandler = ({
   random,
   savePipeline,
 }) => {
-  console.log("submit")
   const cb = () => {
     resetForm();
     setIsAddEditForm(false);
@@ -188,14 +187,28 @@ export const submitHandler = ({
       userGroupOrEmployeeId: item?.userGroup || 0,
     })),
   };
+
+  if(!singleData){
+    savePipeline.action({
+      urlKey: "CreateApprovalConfiguration",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+      toast: true,
+    });
+  }else{
+    savePipeline.action({
+      urlKey: "UpdateApprovalConfiguration",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+      toast: true,
+    });
+  }
   
-  savePipeline.action({
-    urlKey: "ApprovalPipelineCreateNUpdate",
-    method: "POST",
-    payload: payload,
-    onSuccess: () => {
-      cb();
-    },
-    toast: true,
-  });
+ 
 };
