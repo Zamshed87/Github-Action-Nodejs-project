@@ -33,6 +33,9 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import axios from "axios";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
 import { column } from "./helper";
+import { InfoOutlined } from "@mui/icons-material";
+import { Popover } from "@mui/material";
+import PopoverHistory from "./PopoverHistory";
 
 const NightShiftReport = () => {
   const dispatch = useDispatch();
@@ -48,12 +51,19 @@ const NightShiftReport = () => {
   // menu permission
   const employeeFeature: any = permission;
   const supervisorDDL = useApiRequest([]);
+  const detailsInfo = useApiRequest([]);
+  const [anchorElHistory, setAnchorElHistory] = useState(null);
 
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   //   const debounce = useDebounce();
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
+  const [selectedSingleEmployee, setSelectedSingleEmployee] = useState<any>([]);
+  const openHistory = !detailsInfo?.loading && Boolean(anchorElHistory);
+
+  const idHistory = openHistory ? "simple-popover" : undefined;
+
   const [excelLoading, setExcelLoading] = useState(false);
   const [pages] = useState({
     current: 1,
@@ -93,6 +103,28 @@ const NightShiftReport = () => {
           res[i].value = item?.intWorkplaceGroupId;
         });
       },
+    });
+  };
+  const getDetails = (empId: number) => {
+    const values = form.getFieldsValue(true);
+
+    detailsInfo?.action({
+      urlKey: "GetEmployeeNightShiftReport",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        employeeId: empId,
+        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+      },
+      // onSuccess: (res) => {
+      //   res.forEach((item: any, i: any) => {
+      //     res[i].label = item?.strWorkplaceGroup;
+      //     res[i].value = item?.intWorkplaceGroupId;
+      //   });
+      // },
     });
   };
 
@@ -182,9 +214,10 @@ const NightShiftReport = () => {
     const values = form.getFieldsValue(true);
     const dept = values?.department?.map((item: any) => item?.value);
     landingApi.action({
-      urlKey: "MonthlyleaveReport",
+      urlKey: "EmployeeNightShiftReport",
       method: "POST",
       payload: {
+        // -------------------
         accountId: orgId,
         businessUnitId: buId,
         workPlaceGroupId: values?.workplaceGroup?.value,
@@ -234,14 +267,14 @@ const NightShiftReport = () => {
       {
         title: "Department",
         dataIndex: "StrDepartmentName",
-        fixed: "left",
+        // fixed: "left",
 
         width: 70,
       },
       {
         title: "Section",
         dataIndex: "StrSectionName",
-        fixed: "left",
+        // fixed: "left",
 
         width: 70,
       },
@@ -250,7 +283,7 @@ const NightShiftReport = () => {
         title: "Employee Id",
         dataIndex: "StrEmployeeCode",
         width: 80,
-        fixed: "left",
+        // fixed: "left",
       },
 
       {
@@ -261,10 +294,21 @@ const NightShiftReport = () => {
             <div className="d-flex align-items-center">
               <Avatar title={rec?.StrEmployeeName} />
               <span className="ml-2">{rec?.StrEmployeeName}</span>
+
+              <InfoOutlined
+                className="ml-2"
+                sx={{ cursor: "pointer", fontSize: 15 }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  getDetails(rec?.IntEmployeeId);
+                  !detailsInfo?.loading && setAnchorElHistory(e.currentTarget);
+                  setSelectedSingleEmployee([rec]);
+                }}
+              />
             </div>
           );
         },
-        fixed: "left",
+        // fixed: "left",
         width: 120,
       },
 
@@ -280,9 +324,15 @@ const NightShiftReport = () => {
 
         width: 100,
       },
+      // {
+      //   title: "Calendar",
+      //   dataIndex: "StrCalendarName",
+
+      //   width: 100,
+      // },
       {
         title: "Total Night Shift",
-        dataIndex: "StrLeaveTypeName",
+        dataIndex: "TotalNightShiftCount",
 
         width: 100,
       },
@@ -384,7 +434,7 @@ const NightShiftReport = () => {
                   );
 
                   const res = await axios.post(
-                    "/LeaveMovement/MonthlyleaveReport",
+                    "/LeaveMovement/EmployeeNightShiftReport",
                     {
                       accountId: orgId,
                       businessUnitId: buId,
@@ -403,7 +453,7 @@ const NightShiftReport = () => {
                   if (res?.data?.Data) {
                     setExcelLoading(true);
                     if (res?.data?.Data?.length < 1) {
-                      return toast.error("No Attendance Data Found");
+                      return toast.error("No  Data Found");
                     }
                     const newData = res?.data?.Data?.map(
                       (item: any, index: any) => {
@@ -417,7 +467,7 @@ const NightShiftReport = () => {
                       }
                     );
                     createCommonExcelFile({
-                      titleWithDate: `Monthly Leave Report - ${dateFormatter(
+                      titleWithDate: `Night Shift Report - ${dateFormatter(
                         moment(values?.fromDate).format("YYYY-MM-DD")
                       )} to ${dateFormatter(
                         moment(values?.toDate).format("YYYY-MM-DD")
@@ -632,6 +682,33 @@ const NightShiftReport = () => {
             scroll={{ x: 2000 }}
           />
         </PCard>
+        <Popover
+          sx={{
+            "& .MuiPaper-root": {
+              width: "600px",
+              minHeight: "200px",
+              borderRadius: "4px",
+            },
+          }}
+          id={idHistory}
+          open={openHistory}
+          anchorEl={anchorElHistory}
+          onClose={() => {
+            setAnchorElHistory(null);
+          }}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+        >
+          <PopoverHistory
+            propsObj={{
+              selectedSingleEmployee,
+              offDayHistory: detailsInfo?.data || [],
+              // setOffDayHistory,
+            }}
+          />
+        </Popover>
       </PForm>
     </>
   ) : (
