@@ -622,6 +622,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         value={values?.fromDate}
                         name="fromDate"
                         type="date"
+                        disabled={singleData}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
@@ -641,6 +642,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         placeholder=" "
                         value={values?.toDate}
                         name="toDate"
+                        disabled={singleData}
                         type="date"
                         onChange={(e) => {
                           setValues((prev) => ({
@@ -682,6 +684,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           ] || []
                         }
                         value={values?.walletType}
+                        isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -704,6 +707,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         classes="input-sm"
                         value={values?.minimumPresentDays}
                         // placeholder="Month"
+                        disabled={singleData}
                         name="minimumPresentDays"
                         min={0}
                         step={1}
@@ -741,6 +745,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           ] || []
                         }
                         value={values?.advanceBasedOn}
+                        isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -765,6 +770,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         // placeholder="Month"
                         name="advanceBasedOnPercentage"
                         min={0}
+                        disabled={singleData}
                         step={"any"}
                         type="number"
                         className="form-control"
@@ -829,6 +835,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         name="workplace"
                         options={workplaceDDL || []}
                         value={values?.workplace}
+                        isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
