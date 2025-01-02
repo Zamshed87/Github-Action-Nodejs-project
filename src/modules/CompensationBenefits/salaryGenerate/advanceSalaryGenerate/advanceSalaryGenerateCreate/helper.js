@@ -6,6 +6,18 @@ import { gray900, greenColor } from "utility/customColor";
 
 export const salaryGenerateValidationSchema = Yup.object().shape({
   monthYear: Yup.date().required("Payroll month is required"),
+  // advanceBasedOnPercentage: Yup.number()
+  //   .required("Percentage/Amount is required")
+  //   .typeError("Percentage/Amount is required"),
+  minimumPresentDays: Yup.number()
+    .required("Minimum PresentDays is required")
+    .typeError("Minimum PresentDays is required"),
+  advanceBasedOn: Yup.object()
+    .shape({
+      label: Yup.string().required("Based On is required"),
+      value: Yup.number().required("Based On is required"),
+    })
+    .typeError("Based On is required"),
 });
 
 export const salaryGenerateInitialValues = {
@@ -20,6 +32,10 @@ export const salaryGenerateInitialValues = {
   yearId: new Date().getFullYear(),
   fromDate: "",
   toDate: "",
+  advanceBasedOnPercentage: "",
+  advanceBasedOn: "",
+  minimumPresentDays: "",
+
   search: "",
   allSelected: false,
   workplace: [],

@@ -101,7 +101,7 @@ const AdvanceSalaryGenerateView = () => {
     //   wgId
     // );
     getDetails(
-      `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}`
+      `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`
     );
   };
 
