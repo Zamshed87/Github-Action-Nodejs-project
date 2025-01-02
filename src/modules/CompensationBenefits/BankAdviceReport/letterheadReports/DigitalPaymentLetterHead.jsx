@@ -7,7 +7,7 @@ export default function DigitalPaymentLetterHead({
     <>
       {letterHeadImage && (
         <img
-          src={letterHeadImage}
+          src={letterHeadImage.src}
           style={{
             height: "1400px",
             width: "991px",
@@ -111,13 +111,13 @@ export default function DigitalPaymentLetterHead({
               </table>
               {signatureImage && (
                 <img
-                  src={signatureImage}
+                  src={signatureImage.src}
                   alt="signature"
                   style={{
                     marginTop: "50px",
                     width: "300px",
                     height: "150px",
-                    objectFit: "fill",
+                    objectFit: "contain",
                   }}
                 />
               )}
