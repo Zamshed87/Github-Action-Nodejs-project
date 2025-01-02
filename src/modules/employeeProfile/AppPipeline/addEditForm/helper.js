@@ -1,4 +1,3 @@
-import { TableButton } from "Components";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
@@ -173,18 +172,19 @@ export const submitHandler = ({
       createdBy: employeeId,
       createdAt: todayDate(),
     },
+    
     row: tableData.map((item) => ({
       id: item?.intPipelineRowId || 0,
       configHeaderId: singleData?.intPipelineHeaderId || 0,
       approverTypeId: item?.approver?.value || 0,
       approverType: item?.approver || "",
-      beforeApproveStatus: item?.strStatusTitle || "",
-      afterApproveStatus: item?.strStatusTitlePending || "",
+      beforeApproveStatus: item?.strStatusTitlePending || "",
+      afterApproveStatus: item?.strStatusTitle || "", 
       sequenceId: random ? 0 : item?.intShortOrder || 0,
       isActive: true,
       createdBy: employeeId,
       createdAt: todayDate(),
-      userGroupOrEmployeeId: item?.userGroup || 0,
+      userGroupOrEmployeeId: item?.intUserGroupHeaderId || 0,
     })),
   };
 

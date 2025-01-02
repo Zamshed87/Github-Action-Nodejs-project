@@ -20,7 +20,7 @@ import SeparationIcon from "../../assets/images/ApprovalIcons/separationIcon.svg
 import Chips from "../../common/Chips";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import Loading from "../../common/loading/Loading";
-import { getApprovalDashboardLanding } from "./helper";
+import { getApprovalDashboardLanding, getApprovalDashboardLandingOld } from "./helper";
 import "./index.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
 import { isDevServer } from "App";
@@ -49,7 +49,7 @@ export default function ApprovalList() {
 
   useEffect(() => {
     if (wgId && wId) {
-      getApprovalDashboardLanding(
+      getApprovalDashboardLandingOld(
         orgId,
         employeeId,
         isOfficeAdmin,

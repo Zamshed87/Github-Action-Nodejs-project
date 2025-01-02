@@ -120,7 +120,7 @@ export default function AddEditForm({
       onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.strDisplayName;
-          res[i].value = item?.strApplicationType;
+          res[i].value = item?.intId;
         });
       },
     });
@@ -142,6 +142,7 @@ export default function AddEditForm({
           workplaceId: wId,
         },
         onSuccess: (data) => {
+          console.log("data",data)
           form.setFieldsValue({
             ...singleData,
             orgName: {
@@ -485,6 +486,7 @@ export default function AddEditForm({
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
               form.getFieldsValue();
+              console.log("userGroup", userGroup);
             return (
               <>
                 <Col span={2} className="mt-1">

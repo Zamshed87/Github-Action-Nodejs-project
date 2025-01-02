@@ -98,13 +98,8 @@ function CommonAppPipeline() {
   const header = [
     {
       title: "SL",
-      render: (_: any, rec: any, index: number) =>
-        getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
-          index,
-        }),
-      fixed: "left",
+      render: (_: any, rec: any, index: number) => index + 1,
+      //   fixed: "left",
       width: 25,
       align: "center",
     },
@@ -120,19 +115,19 @@ function CommonAppPipeline() {
     },
     {
       title: "Date",
-      dataIndex: "dteCreatedAt",
-      render: (_: any, rec: any) => dateFormatter(rec?.dteCreatedAt),
+      dataIndex: "createdAt",
+      render: (_: any, rec: any) => dateFormatter(rec?.createdAt),
       sorter: true,
       width: 100,
     },
     {
       title: "Workp. Group/Location",
-      dataIndex: "workplcaeGroup",
+      dataIndex: "workplaceGroupName",
       sorter: true,
     },
     {
       title: "Workplace/Concern",
-      dataIndex: "workplcae",
+      dataIndex: "workplaceName",
       sorter: true,
     },
     {
@@ -204,7 +199,7 @@ function CommonAppPipeline() {
           <DataTable
             bordered
             data={
-              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+              landingApi?.data?.length > 0 ? landingApi?.data : []
             }
             loading={landingApi?.loading}
             header={header}
