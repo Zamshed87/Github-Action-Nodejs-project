@@ -51,6 +51,7 @@ const BankAdviceReport = () => {
   const [pdfDto, setPdfDto] = useState([]);
   const [adviceType, setAdviceType] = useState([]);
   const [letterHeadImage, setLetterHeadImage] = useState("");
+  const [signatureImage, setSignatureImage] = useState("");
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -158,6 +159,7 @@ const BankAdviceReport = () => {
         IntBankId: values?.bank?.value,
         IntSalaryGenerateRequestId: values?.adviceName?.value,
         strAdviceType: values?.adviceType?.value,
+        bankAdviceFor: values?.bankAdviceFor?.value,
       },
       onSuccess: (res) => {
         setLandingView(res);
@@ -185,7 +187,7 @@ const BankAdviceReport = () => {
         StrDownloadType: "TopSheet",
       },
       onSuccess: (res) => {
-        fetchLetterHeadImage();
+        fetchLetterHeadAndSignatureImage();
         setLandingViewPdf(res);
       },
     });
@@ -247,22 +249,42 @@ const BankAdviceReport = () => {
     }
   };
 
-  const fetchLetterHeadImage = async () => {
+  const loadImage = async (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve(img);
+      img.onerror = (error) => reject(error);
+    });
+  };
+
+  const fetchLetterHeadAndSignatureImage = async () => {
     if (orgId === 4 && landingApi?.data?.length > 0) {
-      setLoading(true);
+      const letterHeadImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+      ).intLetterHeadId;
+      const signatureImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === values?.workplace?.value
+      ).intSignatureId;
       try {
-        const letterHeadImageId = landingApi?.data.find(
-          (workplace) => workplace.intWorkplaceId === values?.workplace?.value
-        ).intLetterHeadId;
-        const response = await fetch(
+        const letterImg = await loadImage(
           `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
         );
-        const imageUrl = `url(${response.url})`;
-        setLetterHeadImage(imageUrl);
+        const signatureImg = await loadImage(
+          `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
+        );
+        if (letterHeadImageId === 0) {
+          setLetterHeadImage(null);
+        } else {
+          setLetterHeadImage(letterImg);
+        }
+        if (signatureImageId === 0) {
+          setSignatureImage(null);
+        } else {
+          setSignatureImage(signatureImg);
+        }
       } catch (error) {
-        console.error("Error fetching letter head image:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error loading images:", error);
       }
     }
   };
@@ -468,7 +490,6 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <form onSubmit={handleSubmit}>
       {(loading || tenMsBankAdvice?.loading) && <Loading />}
@@ -1190,18 +1211,21 @@ const BankAdviceReport = () => {
                       <CityBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
                       />
                     )}
                     {values?.adviceType?.value === "DigitalPayment" && (
                       <DigitalPaymentLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
                       />
                     )}
                     {values?.adviceType?.value === "BFTN" && (
                       <CityLiveLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
                       />
                     )}
                   </div>

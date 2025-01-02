@@ -3,21 +3,24 @@ import React from "react";
 export default function CityLiveLetterHead({
   letterHeadImage,
   landingViewPdf,
+  signatureImage,
 }) {
   return (
     <>
-      <div
-        className="invoice-header"
-        style={{
-          backgroundImage: letterHeadImage,
-          backgroundRepeat: "no-repeat",
-          height: "1570px",
-          width: "1130px",
-          backgroundSize: "cover",
-          position: "fixed",
-          zIndex: -1,
-        }}
-      ></div>
+      {letterHeadImage && (
+        <img
+          className="invoice-header"
+          src={letterHeadImage.src}
+          style={{
+            height: "1570px",
+            width: "1130px",
+            objectFit: "cover",
+            position: "fixed",
+            zIndex: -1,
+          }}
+          alt="letterhead"
+        />
+      )}
       <table>
         <thead>
           <tr>
@@ -42,11 +45,10 @@ export default function CityLiveLetterHead({
               style={{
                 margin: "0px 96px",
                 fontSize: "14px",
+                minWidth: "930px",
               }}
             >
-              <p
-                style={{ color: "black", fontSize: "14px", marginTop: "100px" }}
-              >
+              <p style={{ color: "black", fontSize: "14px" }}>
                 <b style={{ color: "black", fontSize: "14px" }}>
                   Date: {landingViewPdf?.[0]?.Today}
                 </b>
@@ -64,7 +66,7 @@ export default function CityLiveLetterHead({
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
                 <b style={{ color: "black", fontSize: "14px" }}>Subject:</b>
-                &nbsp;Salary Disbursement For The Month of&nbsp;
+                &nbsp;Salary Disbursement for the month of&nbsp;
                 {landingViewPdf?.[0]?.MonthName},&nbsp;
                 {landingViewPdf?.[0]?.YearId}&nbsp;of&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
@@ -72,14 +74,14 @@ export default function CityLiveLetterHead({
                   {landingViewPdf?.[0]?.WorkplaceGroupName}
                   &quot;&nbsp;
                 </b>
-                Employees.
+                employees.
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>Dear Sir,</p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                With Due Respect, We Are Requesting You To Transfer The Salary
-                For The Month of&nbsp;
+                With due respect, we are requesting you to transfer the salary
+                for the month of&nbsp;
                 {landingViewPdf?.[0]?.MonthName},&nbsp;
                 {landingViewPdf?.[0]?.YearId} of
                 <b style={{ color: "black", fontSize: "14px" }}>
@@ -87,17 +89,17 @@ export default function CityLiveLetterHead({
                   {landingViewPdf?.[0]?.WorkplaceGroupName}
                   &quot;&nbsp;
                 </b>
-                Employees. Please Debit BDT&nbsp;
+                employees. Please debit <b>BDT</b>&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.TotalBankPay}&nbsp;
+                  {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;
                 </b>
-                From Our Company Account no.&nbsp;
+                from our company account no.&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
                   {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;
                 </b>
-                To Disburse Salaries As Mentioned Below.
+                to disburse salaries as mentioned below.
               </p>
-              <div style={{ pageBreakBefore: "always" }}>
+              <div style={{ marginTop: "50px" }}>
                 Employee Bank Account Information with Transfer Amount:
                 <table
                   style={{
@@ -210,12 +212,7 @@ export default function CityLiveLetterHead({
                   </thead>
                   <tbody>
                     {landingViewPdf?.map((item, index) => (
-                      <tr
-                        key={index}
-                        style={{
-                          pageBreakBefore: index % 15 === 0 ? "always" : "auto",
-                        }}
-                      >
+                      <tr key={index}>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
@@ -309,6 +306,18 @@ export default function CityLiveLetterHead({
                   </tbody>
                 </table>
               </div>
+              {signatureImage && (
+                <img
+                  src={signatureImage.src}
+                  alt="signature"
+                  style={{
+                    marginTop: "50px",
+                    width: "300px",
+                    height: "150px",
+                    objectFit: "contain",
+                  }}
+                />
+              )}
             </div>
           )}
         </tbody>
