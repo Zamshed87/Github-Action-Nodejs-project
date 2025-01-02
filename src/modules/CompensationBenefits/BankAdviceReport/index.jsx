@@ -159,6 +159,7 @@ const BankAdviceReport = () => {
         IntBankId: values?.bank?.value,
         IntSalaryGenerateRequestId: values?.adviceName?.value,
         strAdviceType: values?.adviceType?.value,
+        bankAdviceFor: values?.bankAdviceFor?.value,
       },
       onSuccess: (res) => {
         setLandingView(res);
@@ -248,7 +249,16 @@ const BankAdviceReport = () => {
     }
   };
 
-  const fetchLetterHeadAndSignatureImage = () => {
+  const loadImage = async (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve(img);
+      img.onerror = (error) => reject(error);
+    });
+  };
+
+  const fetchLetterHeadAndSignatureImage = async () => {
     if (orgId === 4 && landingApi?.data?.length > 0) {
       const letterHeadImageId = landingApi?.data.find(
         (workplace) => workplace.intWorkplaceId === values?.workplace?.value
@@ -256,12 +266,26 @@ const BankAdviceReport = () => {
       const signatureImageId = landingApi?.data.find(
         (workplace) => workplace.intWorkplaceId === values?.workplace?.value
       ).intSignatureId;
-      setSignatureImage(
-        `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
-      );
-      setLetterHeadImage(
-        `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
-      );
+      try {
+        const letterImg = await loadImage(
+          `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
+        );
+        const signatureImg = await loadImage(
+          `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
+        );
+        if (letterHeadImageId === 0) {
+          setLetterHeadImage(null);
+        } else {
+          setLetterHeadImage(letterImg);
+        }
+        if (signatureImageId === 0) {
+          setSignatureImage(null);
+        } else {
+          setSignatureImage(signatureImg);
+        }
+      } catch (error) {
+        console.error("Error loading images:", error);
+      }
     }
   };
 
@@ -466,7 +490,6 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <form onSubmit={handleSubmit}>
       {(loading || tenMsBankAdvice?.loading) && <Loading />}

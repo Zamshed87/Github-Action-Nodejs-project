@@ -7,7 +7,7 @@ export default function CityBankLetterHead({
     <>
       {letterHeadImage && (
         <img
-          src={letterHeadImage}
+          src={letterHeadImage.src}
           style={{
             height: "1400px",
             width: "991px",
@@ -88,7 +88,7 @@ export default function CityBankLetterHead({
                 </b>
                 employees. Please debit <b>BDT</b>&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.TotalBankPay}&nbsp;
+                  {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;
                 </b>
                 from our company account no.&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
@@ -186,13 +186,13 @@ export default function CityBankLetterHead({
               </div>
               {signatureImage && (
                 <img
-                  src={signatureImage}
+                  src={signatureImage.src}
                   alt="signature"
                   style={{
                     marginTop: "50px",
                     width: "300px",
                     height: "150px",
-                    objectFit: "fill",
+                    objectFit: "contain",
                   }}
                 />
               )}
