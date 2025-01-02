@@ -544,7 +544,7 @@ const AnnouncementViewPage = lazy(() =>
 const AnnouncementCreateLanding = lazy(() =>
   import("../modules/announcement/index.jsx")
 );
-const ApprovalList = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApprovalList = lazy(() => import("../modules/approvalList/indexOld.jsx"));
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
