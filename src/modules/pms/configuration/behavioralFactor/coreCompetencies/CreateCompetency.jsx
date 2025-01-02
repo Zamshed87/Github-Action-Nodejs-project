@@ -159,26 +159,25 @@ const CreateCompetency = ({
               touched={touched}
             />
           </div> */}
-          {intAccountId === 12 && (
-            <div className="col-md-4">
-              <FormikSelect
-                // isDisabled={competencyId ? true : false}
-                label="Level of Leadership"
-                classes="input-sm form-control"
-                name="employeeLabel"
-                options={
-                  allMasterPositionDDL?.length > 0 ? allMasterPositionDDL : []
-                }
-                value={values?.employeeLabel}
-                onChange={(valueOption) => {
-                  setFieldValue("employeeLabel", valueOption);
-                }}
-                styles={customStyles}
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          )}
+
+          <div className="col-md-4">
+            <FormikSelect
+              // isDisabled={competencyId ? true : false}
+              label="Level of Leadership"
+              classes="input-sm form-control"
+              name="employeeLabel"
+              options={
+                allMasterPositionDDL?.length > 0 ? allMasterPositionDDL : []
+              }
+              value={values?.employeeLabel}
+              onChange={(valueOption) => {
+                setFieldValue("employeeLabel", valueOption);
+              }}
+              styles={customStyles}
+              errors={errors}
+              touched={touched}
+            />
+          </div>
           <div className="col-md-4">
             <label>Desired Value</label>
             <DefaultInput
