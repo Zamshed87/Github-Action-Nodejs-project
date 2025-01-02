@@ -47,7 +47,7 @@ export default function AddEditForm({
       dteUpdatedAt: todayDate(),
       intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
       intWorkplaceId: wId,
-      positionGroupId: values?.positionGrp?.value || null,
+      intPositionGroupId: values?.positionGrp?.value || null,
     };
     const payload = {
       position: values?.strPosition || "",
@@ -93,12 +93,6 @@ export default function AddEditForm({
       form.setFieldsValue({
         ...singleData,
       });
-      form.setFieldValue("positionGrp", [
-        {
-          label: singleData?.strPositionGroupName,
-          value: singleData?.intPositionGroupId,
-        },
-      ]);
     }
     getAllMasterPositionDDL(
       `/SaasMasterData/GetAllMasterPosition?accountId=${intAccountId}`,
@@ -124,7 +118,12 @@ export default function AddEditForm({
             isEdit,
           });
         }}
-        initialValues={{}}
+        initialValues={{
+          positionGrp: {
+            label: singleData?.strPositionGroupName,
+            value: singleData?.intPositionGroupId,
+          },
+        }}
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
