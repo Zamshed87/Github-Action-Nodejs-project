@@ -1,29 +1,51 @@
-.movement-wrapper .actionIcon .muiIconHover {
-  display        : flex;
-  align-items    : center;
+/* CSS for CommonApprovalComponent */
+
+.approval-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.approval-container h2 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-buttons .ant-btn {
+  min-width: 100px;
+}
+
+.action-buttons .ant-btn-primary {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.action-buttons .ant-btn-danger {
+  background-color: #f44336;
+  border-color: #f44336;
+}
+
+.ant-table {
+  background: white;
+  border-radius: 8px;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.ant-spin {
+  display: flex;
   justify-content: center;
-  height         : 25px;
-  width          : 25px;
-  border-radius  : 100px;
-  background     : transparent;
-  cursor         : pointer;
-}
-
-
-.movement-wrapper .actionIcon .muiIconHover.success:hover {
-  background: #E7FEDE;
-}
-
-.movement-wrapper .actionIcon .muiIconHover.danger:hover {
-  background: #FFE3E3;
-}
-
-.movement-wrapper .filter-title {
-  background   : rgba(33, 33, 33, 0.08);
-  border-radius: 16px;
-  padding      : 4px;
-  color        : rgba(0, 0, 0, 0.7);
-  font-weight  : normal;
-  font-size    : 14px;
-  line-height  : 20px;
+  align-items: center;
+  height: 300px;
 }

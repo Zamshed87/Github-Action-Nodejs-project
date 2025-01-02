@@ -29,42 +29,13 @@ export default function ApprovalList() {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const demoData = [
-    {
-      applicationTypeId: 1,
-      applicationType: "Leave Application",
-      pendingApprovalCount: 5,
-    },
-    {
-      applicationTypeId: 2,
-      applicationType: "Expense Approval",
-      pendingApprovalCount: 8,
-    },
-    {
-      applicationTypeId: 3,
-      applicationType: "Project Submission",
-      pendingApprovalCount: 3,
-    },
-    {
-      applicationTypeId: 4,
-      applicationType: "Asset Request",
-      pendingApprovalCount: 2,
-    },
-    {
-      applicationTypeId: 5,
-      applicationType: "Travel Approval",
-      pendingApprovalCount: 7,
-    },
-  ];
-// useEffect(() =>{
-//   setApprovalData(demoData);
-// },[])
+
   useEffect(() => {
     if (wgId && wId) {
       getApprovalDashboardLanding(
         orgId,
         employeeId,
-        false, // Assuming `isOfficeAdmin` is not relevant here
+        false,
         setApprovalData,
         setLoading,
         wId,

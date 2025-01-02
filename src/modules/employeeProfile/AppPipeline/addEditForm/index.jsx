@@ -142,7 +142,6 @@ export default function AddEditForm({
           workplaceId: wId,
         },
         onSuccess: (data) => {
-          console.log("data",data)
           form.setFieldsValue({
             ...singleData,
             orgName: {
@@ -302,6 +301,8 @@ export default function AddEditForm({
                 approver: op,
                 strTitle: `${op?.label}`,
                 strTitlePending: `${op?.label}`,
+                approverValue: op?.value,
+                approverLabel: op?.label,
                 userGroup: undefined,
               });
               setIsStrStatus(true);
@@ -486,7 +487,6 @@ export default function AddEditForm({
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
               form.getFieldsValue();
-              console.log("userGroup", userGroup);
             return (
               <>
                 <Col span={2} className="mt-1">
@@ -528,7 +528,8 @@ export default function AddEditForm({
 
                       const data = [...tableData];
                       const obj = {
-                        approver: approver?.label,
+                        approverLabel: approver?.label,
+                        approverValue: approver?.value,
                         userGroup:
                           userGroup?.label ||
                           employee?.employeeNameWithCode ||

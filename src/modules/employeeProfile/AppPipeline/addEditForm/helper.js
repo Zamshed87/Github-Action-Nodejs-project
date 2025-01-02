@@ -176,8 +176,8 @@ export const submitHandler = ({
     row: tableData.map((item) => ({
       id: item?.intPipelineRowId || 0,
       configHeaderId: singleData?.intPipelineHeaderId || 0,
-      approverTypeId: item?.approver?.value || 0,
-      approverType: item?.approver || "",
+      approverTypeId: item?.approverValue || 0,
+      approverType: item?.approverLabel || "",
       beforeApproveStatus: item?.strStatusTitlePending || "",
       afterApproveStatus: item?.strStatusTitle || "", 
       sequenceId: random ? 0 : item?.intShortOrder || 0,

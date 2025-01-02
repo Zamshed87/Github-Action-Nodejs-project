@@ -546,6 +546,7 @@ const AnnouncementCreateLanding = lazy(() =>
 );
 const ApprovalList = lazy(() => import("../modules/approvalList/indexOld.jsx"));
 const ApprovalListNew = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApproverCommonLanding = lazy(() => import("../modules/approvalList/commonApproval/index.jsx"));
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
@@ -2456,7 +2457,7 @@ export const routingList = [
   },
   {
     path: "/approvalNew/:id",
-    component: ApprovalListNew,
+    component: ApproverCommonLanding,
   },
   // {
   //   path: "/approval",
