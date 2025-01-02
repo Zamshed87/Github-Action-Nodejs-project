@@ -390,9 +390,9 @@ const AdvanceSalaryGenerateCreate = () => {
       monthId: values?.monthId,
 
       paymentMethod: values?.walletType?.value || 0,
-      minimumPresentDays: values?.minimumPresentDays,
+      minimumPresentDays: +values?.minimumPresentDays,
       advanceBasedOn: values?.advanceBasedOn?.value,
-      advanceBasedOnPercentage: values?.advanceBasedOnPercentage,
+      advanceBasedOnPercentage: +values?.advanceBasedOnPercentage,
       description: values?.description,
     };
     const callback = () => {
