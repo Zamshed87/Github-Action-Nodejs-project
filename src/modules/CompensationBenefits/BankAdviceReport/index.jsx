@@ -598,6 +598,10 @@ const BankAdviceReport = () => {
                           value: 2,
                           label: "Bonus",
                         },
+                        {
+                          value: 3,
+                          label: "Advance Salary",
+                        },
                       ]}
                       value={values?.bankAdviceFor}
                       onChange={(valueOption) => {
@@ -626,6 +630,16 @@ const BankAdviceReport = () => {
                             "label",
                             setPayrollPeriodDDL
                           );
+                        } else if (
+                          values?.workplaceGroup?.value &&
+                          valueOption?.value === 3
+                        ) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=advanceSalarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+                            "value",
+                            "label",
+                            setPayrollPeriodDDL
+                          );
                         }
                       }}
                       placeholder=""
@@ -635,7 +649,8 @@ const BankAdviceReport = () => {
                     />
                   </div>
                 </div>
-                {values?.bankAdviceFor?.value === 1 ? (
+                {values?.bankAdviceFor?.value === 1 ||
+                values?.bankAdviceFor?.value === 3 ? (
                   <div className="col-lg-3">
                     <div className="input-field-main">
                       <label>Salary Code</label>
@@ -645,12 +660,21 @@ const BankAdviceReport = () => {
                         value={values?.adviceName}
                         onChange={(valueOption) => {
                           if (valueOption?.value) {
-                            getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
-                              "value",
-                              "label",
-                              setWorkplaceDDL
-                            );
+                            if (values?.bankAdviceFor?.value !== 3) {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                                "value",
+                                "label",
+                                setWorkplaceDDL
+                              );
+                            } else {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebyAdvanceSalaryId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                                "value",
+                                "label",
+                                setWorkplaceDDL
+                              );
+                            }
                           }
                           setValues((prev) => ({
                             ...prev,
