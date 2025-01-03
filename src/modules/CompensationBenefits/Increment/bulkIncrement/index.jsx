@@ -17,6 +17,11 @@ import {
 } from "./helper";
 import { isDevServer } from "App";
 import BackButton from "common/BackButton";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import { useApiRequest } from "Hooks";
+import { DataTable } from "Components";
+import { ModalFooter, PModal } from "Components/Modal";
 
 const initData = {
   files: "",
@@ -29,14 +34,38 @@ export default function BulkIncrementEntry() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [data, setData] = useState([]);
+  const [errorData, setErrorData] = useState([]);
+  const [open, setOpen] = useState(false);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
+  const payrollGroupDDL = useApiRequest([]);
 
-  const { buId, orgId, employeeId, wgId } = useSelector(
+  const { buId, orgId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  const getPayrollGroupDDL = () => {
+    payrollGroupDDL?.action({
+      urlKey: "BreakdownNPolicyForSalaryAssign",
+      method: "GET",
+      params: {
+        StrReportType: "BREAKDOWN DDL",
+        IntEmployeeId: employeeId,
+        IntAccountId: orgId,
+        IntSalaryBreakdownHeaderId: 0,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strSalaryBreakdownTitle;
+          res[i].value = item?.intSalaryBreakdownHeaderId;
+        });
+      },
+    });
+  };
   const saveHandler = () => {
     const callBack = () => {
       history.push("/compensationAndBenefits/increment");
@@ -63,10 +92,7 @@ export default function BulkIncrementEntry() {
 
   const processData = async (file) => {
     try {
-      const processData = await excelFileToArray(
-        file,
-        "Employee Bulk Increment Upload"
-      );
+      const processData = await excelFileToArray(file, "EmployeesIncrement", 2);
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,
@@ -74,12 +100,63 @@ export default function BulkIncrementEntry() {
         setIsLoading,
         buId,
         orgId,
-        employeeId
+        employeeId,
+        setErrorData,
+        setOpen
       );
     } catch (error) {
       toast.warn("Failed to process!");
     }
   };
+  useEffect(() => {
+    getPayrollGroupDDL();
+  }, [wgId, wId]);
+  // Generate dynamic columns for elements
+  const dynamicColumns = [];
+  if (data.length > 0) {
+    const elementKeys = data[0].elements.map((element) => element.name);
+    elementKeys.forEach((key) => {
+      dynamicColumns.push({
+        title: key,
+        dataIndex: "elements",
+        key,
+        render: (elements) => {
+          const element = elements.find((el) => el.name === key);
+          return element ? element.numAmount : null;
+        },
+      });
+    });
+  }
+
+  // Fixed columns for Employee Name and Code
+  const fixedColumns = [
+    {
+      title: "Employee Name",
+      dataIndex: "empName",
+      // key: "empName",
+    },
+    {
+      title: "Employee Code",
+      dataIndex: "empCode",
+      // key: "empCode",
+      width: 40,
+    },
+    {
+      title: "Gross Salary",
+      dataIndex: "gross",
+      // key: "empCode",
+      width: 50,
+    },
+    {
+      title: "Mismatch Amount",
+      dataIndex: "misMatch",
+      // key: "empCode",
+      width: 40,
+    },
+  ];
+
+  // Combine fixed and dynamic columns
+  const columns = [...fixedColumns, ...dynamicColumns];
 
   return (
     <>
@@ -92,7 +169,7 @@ export default function BulkIncrementEntry() {
           });
         }}
       >
-        {({ handleSubmit }) => (
+        {({ handleSubmit, setValues, setFieldValue, values }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {isLoading && <Loading />}
@@ -110,18 +187,31 @@ export default function BulkIncrementEntry() {
                       </div>
                     </div>
                     <div className="row mt-1">
+                      <div className="col-md-3" style={{ marginTop: "-12px" }}>
+                        <div className="input-field-main">
+                          <label>Payroll Group</label>
+
+                          <FormikSelect
+                            name="pg"
+                            classes="input-sm"
+                            styles={customStyles}
+                            options={payrollGroupDDL?.data || []}
+                            value={values?.asset}
+                            onChange={(valueOption) => {
+                              setFieldValue("pg", valueOption);
+                            }}
+                          />
+                        </div>
+                      </div>
+
                       <div className="col-md-6 d-flex align-items-center">
                         <PrimaryButton
                           className="btn btn-default mr-1"
                           label="Download Demo"
                           onClick={() => {
                             downloadFile(
-                              `${
-                                isDevServer
-                                  ? "/document/downloadfile?id=1680"
-                                  : "/document/downloadfile?id=2652"
-                              }`,
-                              "Increment Bulk Upload",
+                              `/PdfAndExcelReport/DownloadExcelforSalaryIncrement?parrollGroupId=${values?.pg?.value}&numberOfRow=100`,
+                              "EmployeesIncrement",
                               "xlsx",
                               setIsLoading
                             );
@@ -142,109 +232,135 @@ export default function BulkIncrementEntry() {
                     </div>
 
                     {data.length > 0 && (
-                      <div className="table-card-body mt-3">
-                        <div className="table-card-styled tableOne">
-                          <table className="table">
-                            <thead>
-                              <tr>
-                                <th>
-                                  <div>SL</div>
-                                </th>
-                                <th>
-                                  <div>Employee Id</div>
-                                </th>
-                                <th>
-                                  <div>Name</div>
-                                </th>
-                                <th>
-                                  <div>Designation</div>
-                                </th>
-                                {/* <th>
-                                  <div>Depend On</div>
-                                </th>
-                                <th>
-                                  <div>Increment Percentage/Amount</div>
-                                </th> */}
-                                <th>
-                                  <div>Fixed Amount</div>
-                                </th>
-                                <th>
-                                  <div>Percentage Based On Basic</div>
-                                </th>
-                                <th>
-                                  <div>Percentage Based On Gross</div>
-                                </th>
-                                <th>
-                                  <div>Effective Date</div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {data.map((item, index) => (
-                                <tr key={item?.intEmployeeId}>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {index + 1}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.intEmployeeId}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.strEmployeeName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.strDesignation}
-                                    </div>
-                                  </td>
-                                  {/* <td>
-                                    <div className="content tableBody-title">
-                                      {item?.strIncrementDependOn}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.numIncrementPercentageOrAmount}
-                                    </div>
-                                  </td> */}
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.numIncrementAmountBasedOnAmount}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.numIncrementPercentageBasedOnBasic}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.numIncrementPercentBasedOnGross}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {/* {item?.dteEffectiveDate} */}
-                                      {dateFormatter(item?.dteEffectiveDate)}
-                                    </div>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
+                      // <div className="table-card-body mt-3">
+                      //   <div className="table-card-styled tableOne">
+                      //     <table className="table">
+                      //       <thead>
+                      //         <tr>
+                      //           <th>
+                      //             <div>SL</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Employee Id</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Name</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Designation</div>
+                      //           </th>
+                      //           {/* <th>
+                      //             <div>Depend On</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Increment Percentage/Amount</div>
+                      //           </th> */}
+                      //           <th>
+                      //             <div>Fixed Amount</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Percentage Based On Basic</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Percentage Based On Gross</div>
+                      //           </th>
+                      //           <th>
+                      //             <div>Effective Date</div>
+                      //           </th>
+                      //         </tr>
+                      //       </thead>
+                      //       <tbody>
+                      //         {data.map((item, index) => (
+                      //           <tr key={item?.intEmployeeId}>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {index + 1}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.intEmployeeId}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.strEmployeeName}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.strDesignation}
+                      //               </div>
+                      //             </td>
+                      //             {/* <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.strIncrementDependOn}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.numIncrementPercentageOrAmount}
+                      //               </div>
+                      //             </td> */}
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.numIncrementAmountBasedOnAmount}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.numIncrementPercentageBasedOnBasic}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {item?.numIncrementPercentBasedOnGross}
+                      //               </div>
+                      //             </td>
+                      //             <td>
+                      //               <div className="content tableBody-title">
+                      //                 {/* {item?.dteEffectiveDate} */}
+                      //                 {dateFormatter(item?.dteEffectiveDate)}
+                      //               </div>
+                      //             </td>
+                      //           </tr>
+                      //         ))}
+                      //       </tbody>
+                      //     </table>
+                      //   </div>
+                      // </div>
+                      <DataTable data={data} header={columns} bordered />
                     )}
                   </div>
                 ) : (
                   <NotPermittedPage />
                 )}
               </div>
+
+              <PModal
+                width={900}
+                open={open}
+                onCancel={() => setOpen(false)}
+                title={`Warning Mismatch Calculation`}
+                components={
+                  <>
+                    <DataTable
+                      header={columns}
+                      bordered
+                      data={errorData || []}
+                    />
+                    <ModalFooter
+                      submitText={`Skip (${errorData?.length}) and Proceed`}
+                      submitAction="button"
+                      cancelText={false}
+                      onSubmit={() => {
+                        setOpen(false);
+                        setErrorData([]);
+                      }}
+                    />
+                  </>
+                }
+              />
             </Form>
           </>
         )}

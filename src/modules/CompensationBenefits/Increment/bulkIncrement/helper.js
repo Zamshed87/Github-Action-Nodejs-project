@@ -8,28 +8,81 @@ export const processBulkUploadIncrementAction = async (
   setLoading,
   buId,
   orgId,
-  employeeId
+  employeeId,
+  setErrorData,
+  setOpen
 ) => {
   try {
     setLoading(true);
-    const modifiedData = data.map((item) => ({
-      intIncrementId: 0,
-      intEmployeeId: item["Employee Id"],
-      strEmployeeName: item["Employee Name"],
-      strDesignation: item["Designation"],
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      strIncrementDependOn: item["Depend On"] || "",
-      numIncrementAmountBasedOnAmount: +item["Fixed Amount"] || 0,
-      numIncrementPercentageBasedOnBasic:
-        +item["Percentage Based On Basic"] || 0,
-      numIncrementPercentBasedOnGross: +item["Percentage Based On Gross"] || 0,
-      numIncrementPercentageOrAmount: +item["Increment percentage/Amount"] || 0, // item["Increment percentage"],
-      dteEffectiveDate: item["Effective Date"],
-      isActive: true,
-      intCreatedBy: employeeId,
-    }));
-    setter(modifiedData);
+    const modifiedData = data.slice(1).map((item) => {
+      const {
+        "Employee Name": empName,
+        "Employee Code": empCode,
+        "Gross Salary": gross,
+        "Mismatch Amount": misMatch,
+        ...fields
+      } = item;
+
+      const elements = Object.keys(fields)
+        .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
+        .map((key) => {
+          if (fields[key]?.result !== undefined) {
+            return {
+              name: key,
+              numAmount: fields[key].result,
+            };
+          }
+          return null; // To filter out undefined cases.
+        })
+        .filter(Boolean); // Remove null values.
+
+      return {
+        empName: empName || "N/A",
+        empCode: empCode || "N/A",
+        gross: gross,
+        misMatch: misMatch?.result || 0,
+        elements,
+      };
+    });
+    const errorData = [
+      {
+        empName: "B",
+        empCode: "A",
+        gross: 2000,
+        misMatch: 212,
+        elements: [
+          {
+            name: "Basic",
+            numAmount: 1000,
+          },
+          {
+            name: "House",
+            numAmount: 600,
+          },
+          {
+            name: "Medical",
+            numAmount: 200,
+          },
+          {
+            name: "Conveyance",
+            numAmount: 200,
+          },
+        ],
+      },
+    ];
+    const cleanData = [];
+
+    modifiedData.forEach((item) => {
+      if (Boolean(item.misMatch)) {
+        errorData.push(item);
+      } else {
+        cleanData.push(item);
+      }
+    });
+
+    setter(cleanData);
+    setErrorData(errorData);
+    errorData?.length > 0 && setOpen(true);
     setLoading(false);
   } catch (error) {
     setter([]);
