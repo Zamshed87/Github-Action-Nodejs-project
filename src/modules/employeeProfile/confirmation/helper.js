@@ -308,5 +308,6 @@ export const columns = {
   joiningDate: "Joining Date",
   supervisorName: "Supervisor",
   confirmationDate: "Confirmation Date",
+  dteProbationaryCloseDate: "Probation Close Date",
   confirmationStatus: "Status",
 };

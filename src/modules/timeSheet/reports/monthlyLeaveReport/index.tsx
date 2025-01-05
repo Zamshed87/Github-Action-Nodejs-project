@@ -38,7 +38,7 @@ const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId, buName, isOfficeAdmin },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -47,6 +47,7 @@ const MonthlyLeaveReport = () => {
   );
   // menu permission
   const employeeFeature: any = permission;
+  const supervisorDDL = useApiRequest([]);
 
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
@@ -138,6 +139,29 @@ const MonthlyLeaveReport = () => {
       },
     });
   };
+  const getSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return supervisorDDL?.reset();
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    supervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: workplaceGroup?.value,
+        strWorkplaceIdList: workplace?.value.toString(),
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
 
   // data call
   type TLandingApi = {
@@ -174,6 +198,7 @@ const MonthlyLeaveReport = () => {
         isPaginated: true,
         SearchText: searchText,
         departmentIdList: dept?.length > 0 ? dept : null,
+        supervisorId: values?.supervisor?.value || 0,
       },
     });
   };
@@ -246,6 +271,12 @@ const MonthlyLeaveReport = () => {
       {
         title: "Designation",
         dataIndex: "StrDesignation",
+
+        width: 100,
+      },
+      {
+        title: "Supersvisor",
+        dataIndex: "StrSupersvisorName",
 
         width: 100,
       },
@@ -366,6 +397,7 @@ const MonthlyLeaveReport = () => {
                       pageSize: 500,
                       isPaginated: false,
                       departmentIdList: dept?.length > 0 ? dept : null,
+                      supervisorId: values?.supervisor?.value || 0,
                     }
                   );
                   if (res?.data?.Data) {
@@ -525,6 +557,48 @@ const MonthlyLeaveReport = () => {
                 />
               </Col>
 
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { workplaceGroup } = form.getFieldsValue(true);
+                  return (
+                    <>
+                      {isOfficeAdmin && (
+                        <Col md={6} sm={24}>
+                          <PSelect
+                            options={supervisorDDL?.data || []}
+                            name="supervisor"
+                            label="Supervisor"
+                            placeholder={`${
+                              workplaceGroup?.value
+                                ? "Search minimum 2 character"
+                                : "Select Workplace Group first"
+                            }`}
+                            disabled={!workplaceGroup?.value}
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                supervisor: op,
+                              });
+                            }}
+                            showSearch
+                            filterOption={false}
+                            // notFoundContent={null}
+                            loading={supervisorDDL?.loading}
+                            onSearch={(value) => {
+                              getSuperVisorDDL(value);
+                            }}
+                            // rules={[
+                            //   {
+                            //     required: true,
+                            //     message: "Supervisor is required",
+                            //   },
+                            // ]}
+                          />
+                        </Col>
+                      )}
+                    </>
+                  );
+                }}
+              </Form.Item>
               <Col
                 style={{
                   marginTop: "23px",

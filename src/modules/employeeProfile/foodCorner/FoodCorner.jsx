@@ -184,6 +184,10 @@ export default function FoodCorner() {
                             initData,
                             loading,
                             placeDDL,
+                            setLoading,
+                            setConsumeMeal,
+                            employeeId,
+                            setScheduleMeal,
                           }}
                         ></FormCard>
                       </div>
