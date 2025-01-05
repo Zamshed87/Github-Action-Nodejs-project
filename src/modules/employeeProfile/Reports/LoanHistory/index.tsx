@@ -29,6 +29,8 @@ import { debounce } from "lodash";
 import { LightTooltip } from "common/LightTooltip";
 import { InfoOutlined } from "@mui/icons-material";
 import { getPDFAction } from "utility/downloadFile";
+import { formatFilterValue } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const EmLoanHistory = () => {
   const dispatch = useDispatch();
@@ -146,6 +148,8 @@ const EmLoanHistory = () => {
         installmentStatus: "",
         pageSize: pagination?.pageSize || 500,
         pageNo: pagination?.current || 1,
+        departments: formatFilterValue(values?.departmentId),
+        designations: formatFilterValue(values?.designationId),
         ispaginated: true,
         searchText: searchText || "",
         workplaceGroupId: values?.workplaceGroup?.value,
@@ -356,7 +360,8 @@ const EmLoanHistory = () => {
               );
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -430,7 +435,7 @@ const EmLoanHistory = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered

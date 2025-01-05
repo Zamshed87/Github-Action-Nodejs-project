@@ -37,6 +37,8 @@ import axios from "axios";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
+import { formatFilterValue } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const RosterReport = () => {
   const dispatch = useDispatch();
@@ -147,6 +149,8 @@ const RosterReport = () => {
         WorkplaceGroupId: values?.workplaceGroup?.value,
         WorkplaceId: values?.workplace?.value,
         PageNo: pagination.current || pages?.current,
+        departments: formatFilterValue(values?.departmentId),
+        designations: formatFilterValue(values?.designationId),
         PageSize:
           pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         EmployeeId: 0,
@@ -379,7 +383,8 @@ const RosterReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -455,7 +460,7 @@ const RosterReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
