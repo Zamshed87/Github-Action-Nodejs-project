@@ -537,7 +537,7 @@ const TnDDashboard = () => {
           </Row>
         </PForm>
       </Drawer>
-      <div className="grid-container">
+      <div className="grid-container" style={{ marginBottom: "20px" }}>
         {summaryCardLoading
           ? Array.from({ length: 10 }).map((_, index) => (
               <div
@@ -607,117 +607,118 @@ const TnDDashboard = () => {
               </div>
             ))}
       </div>
+      {trininingModeSummary && trininingModeSummary.length > 0 && (
+        <Row gutter={32}>
+          {/* Left Metrics Table */}
 
-      <Row gutter={32} style={{ marginTop: "20px" }}>
-        {/* Left Metrics Table */}
+          {trininingModeSummaryLoading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <Col
+                key={index}
+                span={3}
+                style={{
+                  margin: "0px",
+                  padding: "0px",
+                  height: "200px",
+                  width: "200px",
+                }}
+              >
+                <Skeleton active />
+              </Col>
+            ))
+          ) : (
+            <>
+              <Col span={4}>
+                <Table
+                  dataSource={trininingModeSummary || []}
+                  columns={tableColumns}
+                  pagination={false}
+                  size="small"
+                />
+              </Col>
 
-        {trininingModeSummaryLoading ? (
-          Array.from({ length: 8 }).map((_, index) => (
-            <Col
-              key={index}
-              span={3}
-              style={{
-                margin: "0px",
-                padding: "0px",
-                height: "200px",
-                width: "200px",
-              }}
-            >
-              <Skeleton active />
-            </Col>
-          ))
-        ) : (
-          <>
-            <Col span={4}>
-              <Table
-                dataSource={trininingModeSummary || []}
-                columns={tableColumns}
-                pagination={false}
-                size="small"
-              />
-            </Col>
+              {/* Middle Pie Chart */}
+              <Col
+                span={3}
+                style={{
+                  margin: "0px",
+                  padding: "0px",
+                  height: "200px",
+                  width: "200px",
+                }}
+              >
+                <Pie {...pieConfigNoOfTraining(trininingModeSummary)} />
+              </Col>
+              <Col span={3}>
+                <Table
+                  dataSource={trininingModeSummary || []}
+                  columns={tableColumns2}
+                  pagination={false}
+                  bordered
+                  size="small"
+                />
+              </Col>
 
-            {/* Middle Pie Chart */}
-            <Col
-              span={3}
-              style={{
-                margin: "0px",
-                padding: "0px",
-                height: "200px",
-                width: "200px",
-              }}
-            >
-              <Pie {...pieConfigNoOfTraining(trininingModeSummary)} />
-            </Col>
-            <Col span={3}>
-              <Table
-                dataSource={trininingModeSummary || []}
-                columns={tableColumns2}
-                pagination={false}
-                bordered
-                size="small"
-              />
-            </Col>
+              {/* Right Pie Chart */}
+              <Col
+                span={3}
+                style={{
+                  margin: "0px",
+                  padding: "0px",
+                  height: "200px",
+                  width: "200px",
+                }}
+              >
+                <Pie {...pieConfigParticipants(trininingModeSummary)} />
+              </Col>
 
-            {/* Right Pie Chart */}
-            <Col
-              span={3}
-              style={{
-                margin: "0px",
-                padding: "0px",
-                height: "200px",
-                width: "200px",
-              }}
-            >
-              <Pie {...pieConfigParticipants(trininingModeSummary)} />
-            </Col>
+              <Col span={2}>
+                <Table
+                  dataSource={trininingModeSummary || []}
+                  columns={tableColumns3}
+                  pagination={false}
+                  bordered
+                  size="small"
+                />
+              </Col>
 
-            <Col span={2}>
-              <Table
-                dataSource={trininingModeSummary || []}
-                columns={tableColumns3}
-                pagination={false}
-                bordered
-                size="small"
-              />
-            </Col>
+              <Col
+                span={3}
+                style={{
+                  margin: "0px",
+                  padding: "0px",
+                  height: "200px",
+                  width: "200px",
+                }}
+              >
+                <Pie {...pieConfigTotalCost(trininingModeSummary)} />
+              </Col>
+              <Col span={3}>
+                <Table
+                  dataSource={trininingModeSummary || []}
+                  columns={tableColumns4} // f
+                  pagination={false}
+                  bordered
+                  size="small"
+                />
+              </Col>
+              <Col
+                span={3}
+                style={{
+                  margin: "0px",
+                  padding: "0px",
+                  height: "200px",
+                  width: "200px",
+                }}
+              >
+                <Pie {...pieConfigCostPerParticipants(trininingModeSummary)} />
+              </Col>
+            </>
+          )}
 
-            <Col
-              span={3}
-              style={{
-                margin: "0px",
-                padding: "0px",
-                height: "200px",
-                width: "200px",
-              }}
-            >
-              <Pie {...pieConfigTotalCost(trininingModeSummary)} />
-            </Col>
-            <Col span={3}>
-              <Table
-                dataSource={trininingModeSummary || []}
-                columns={tableColumns4} // f
-                pagination={false}
-                bordered
-                size="small"
-              />
-            </Col>
-            <Col
-              span={3}
-              style={{
-                margin: "0px",
-                padding: "0px",
-                height: "200px",
-                width: "200px",
-              }}
-            >
-              <Pie {...pieConfigCostPerParticipants(trininingModeSummary)} />
-            </Col>
-          </>
-        )}
-
-        {/* Summary Table */}
-      </Row>
+          {/* Summary Table */}
+        </Row>
+      )}
 
       {/* Bar Charts */}
       <Row gutter={16}>
