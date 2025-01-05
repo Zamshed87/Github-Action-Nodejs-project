@@ -100,18 +100,25 @@ export default function BulkIncrementEntry() {
 
   const processData = async (file, values) => {
     try {
-      const processData = await excelFileToArray(file, "EmployeesIncrement", 2);
+      const processData = await excelFileToArray(file, "EmployeesIncrement", 3);
       const payrollInfo = await excelFileToSpecificIndexInfo(
         file,
         "EmployeesIncrement",
         1
       );
+      const elementInfo = await excelFileToSpecificIndexInfo(
+        file,
+        "EmployeesIncrement",
+        2
+      );
+      console.log({ payrollInfo });
+      console.log({ elementInfo });
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,
         setData,
         setIsLoading,
-        buId,
+        elementInfo,
         payrollInfo,
         values,
         setErrorData,
@@ -126,23 +133,26 @@ export default function BulkIncrementEntry() {
     getPayrollGroupDDL();
   }, [wgId, wId]);
   // Generate dynamic columns for elements
-  const dynamicColumns = [];
-  if (data.length > 0) {
-    const elementKeys = data[0].payrollElements.map(
-      (element) => element.elementName
-    );
-    elementKeys.forEach((key) => {
-      dynamicColumns.push({
-        title: key,
-        dataIndex: "payrollElements",
-        key,
-        render: (elements) => {
-          const element = elements.find((el) => el.elementName === key);
-          return element ? element.amount : null;
-        },
+  const dynamicColumns = (source) => {
+    const columns = [];
+    if (source.length > 0) {
+      const elementKeys = source[0].payrollElements.map(
+        (element) => element.elementName
+      );
+      elementKeys.forEach((key) => {
+        columns.push({
+          title: key,
+          dataIndex: "payrollElements",
+          key,
+          render: (elements) => {
+            const element = elements.find((el) => el.elementName === key);
+            return element ? element.amount : null;
+          },
+        });
       });
-    });
-  }
+    }
+    return columns;
+  };
 
   // Fixed columns for Employee Name and Code
   const fixedColumns = [
@@ -177,8 +187,8 @@ export default function BulkIncrementEntry() {
   ];
 
   // Combine fixed and dynamic columns
-  const columns = [...fixedColumns, ...dynamicColumns];
-
+  // const columns=(source)=> = {retrun[...fixedColumns, ...dynamicColumns(source)]};
+  const columns = (source) => [...fixedColumns, ...dynamicColumns(source)];
   return (
     <>
       <Formik
@@ -350,7 +360,7 @@ export default function BulkIncrementEntry() {
                       //     </table>
                       //   </div>
                       // </div>
-                      <DataTable data={data} header={columns} bordered />
+                      <DataTable data={data} header={columns(data)} bordered />
                     )}
                   </div>
                 ) : (
@@ -366,7 +376,7 @@ export default function BulkIncrementEntry() {
                 components={
                   <>
                     <DataTable
-                      header={columns}
+                      header={columns(errorData)}
                       bordered
                       data={errorData || []}
                     />

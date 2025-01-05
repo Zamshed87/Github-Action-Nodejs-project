@@ -7,7 +7,7 @@ export const processBulkUploadIncrementAction = async (
   data,
   setter,
   setLoading,
-  buId,
+  elementInfo,
   payrollInfo,
   values,
   setErrorData,
@@ -15,22 +15,34 @@ export const processBulkUploadIncrementAction = async (
 ) => {
   try {
     setLoading(true);
+    console.log({ data });
+    const keyValuePairs = {};
 
-    const modifiedData = data.slice(1).map((item, index) => {
+    for (const item of elementInfo) {
+      if (typeof item === "string" && item.includes(" : ")) {
+        const [key, value] = item.split(" : ").map((str) => str.trim());
+        keyValuePairs[key] = value; // Add to the object
+      }
+    }
+    console.log({ keyValuePairs });
+    const modifiedData = data.slice(2).map((item, index) => {
       const {
         "Employee Name": empName,
         "Employee Code": employeeCode,
         "Gross Salary": gross,
         "Mismatch Amount": misMatch,
+        "Effective Date": effectiveDate,
         ...fields
       } = item;
       const payrollElements = Object.keys(fields)
-        .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
+        // .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
         .map((key) => {
-          if (fields[key]?.result !== undefined) {
+          if (fields[key]?.result !== undefined || fields[key] !== undefined) {
+            console.log(keyValuePairs);
             return {
               elementName: key,
-              amount: fields[key].result,
+              amount: fields[key].result || fields[key],
+              elementId: keyValuePairs[key],
             };
           }
           return null; // To filter out undefined cases.
@@ -42,7 +54,7 @@ export const processBulkUploadIncrementAction = async (
         empName: empName || "N/A",
         employeeCode: employeeCode || "N/A",
         gross: gross,
-        effectiveDate: todayDate(),
+        effectiveDate: effectiveDate || todayDate(),
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
         payrollElements,
@@ -50,7 +62,7 @@ export const processBulkUploadIncrementAction = async (
     });
     const errorData = [];
     const cleanData = [];
-
+    console.log({ modifiedData });
     modifiedData.forEach((item) => {
       if (Boolean(item.misMatch)) {
         errorData.push(item);
@@ -58,7 +70,7 @@ export const processBulkUploadIncrementAction = async (
         cleanData.push(item);
       }
     });
-
+    console.log({ errorData });
     setter(cleanData);
     setErrorData(errorData);
     errorData?.length > 0 && setOpen(true);
