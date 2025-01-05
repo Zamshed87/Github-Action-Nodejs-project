@@ -37,6 +37,9 @@ import CityBankLetterHead from "./letterheadReports/CityBankLetterHead";
 import CityLiveLetterHead from "./letterheadReports/CityLiveLetterHead";
 import DigitalPaymentLetterHead from "./letterheadReports/DigitalPaymentLetterHead";
 import { TopSheetReport } from "./TopSheetReport";
+import IbblBankLetterHead from "./letterheadReports/IbblBankLetterHead";
+import DblBankLetterHead from "./letterheadReports/DblBankLetterHead";
+import SCBBankLetterHead from "./letterheadReports/SCBBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -267,12 +270,14 @@ const BankAdviceReport = () => {
         (workplace) => workplace.intWorkplaceId === values?.workplace?.value
       ).intSignatureId;
       try {
+        setLoading(true);
         const letterImg = await loadImage(
           `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
         );
         const signatureImg = await loadImage(
           `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
         );
+        setLoading(false);
         if (letterHeadImageId === 0) {
           setLetterHeadImage(null);
         } else {
@@ -1231,6 +1236,27 @@ const BankAdviceReport = () => {
               {orgId === 4 && !commonLanding1?.loading && (
                 <div style={{ display: "none" }}>
                   <div ref={contentRef}>
+                    {values?.adviceType?.value === "IBBL" && (
+                      <IbblBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DBL" && (
+                      <DblBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "SCB" && (
+                      <SCBBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
                     {values?.adviceType?.value === "CITY" && (
                       <CityBankLetterHead
                         letterHeadImage={letterHeadImage}
