@@ -6,12 +6,13 @@ const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
 
   return (
-    <div>
+    <div style={{ float: "left" }}>
       <PButton
         style={{ marginBottom: "15px" }}
         size="small"
         type="primary"
         content={"Filter"}
+        icon={<i className="fas fa-filter mr-1"></i>}
         onClick={() => {
           setOpenFilter(true);
         }}
