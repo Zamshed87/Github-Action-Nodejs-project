@@ -62,65 +62,6 @@ const { Title } = Typography;
 
 // need to refactor code
 
-// Bar Chart Data
-const barData = [
-  { month: "Jul", participants: 24, duration: 106 },
-  { month: "Aug", participants: 34, duration: 200 },
-  { month: "Sep", participants: 20, duration: 164 },
-  { month: "Oct", participants: 30, duration: 130 },
-  { month: "Nov", participants: 22, duration: 135 },
-  { month: "Dec", participants: 29, duration: 146 },
-  { month: "Jan", participants: 26, duration: 122 },
-  { month: "Feb", participants: 27, duration: 110 },
-  { month: "Mar", participants: 16, duration: 125 },
-  { month: "Apr", participants: 21, duration: 189 },
-  { month: "May", participants: 14, duration: 157 },
-  { month: "Jun", participants: 32, duration: 189 },
-];
-
-// Line Chart Data
-const lineData = [
-  { month: "Jul-23", value: 2 },
-  { month: "Aug-23", value: 1 },
-  { month: "Sep-23", value: 4 },
-  { month: "Oct-23", value: 0 },
-  { month: "Nov-23", value: 1 },
-  { month: "Dec-23", value: 0 },
-  { month: "Jan-24", value: 0 },
-  { month: "Feb-24", value: 0 },
-  { month: "Mar-24", value: 0 },
-  { month: "Apr-24", value: 0 },
-  { month: "May-24", value: 0 },
-  { month: "Jun-24", value: 0 },
-];
-
-// Column Chart Config
-const columnConfig = {
-  data: barData,
-  xField: "month",
-  yField: "participants",
-  label: { position: "middle", style: { fill: "#FFFFFF", opacity: 0.6 } },
-  color: "#1890ff",
-};
-
-// Line Chart Config
-const lineConfig = {
-  data: lineData,
-  xField: "month",
-  yField: "value",
-  smooth: false,
-  point: {
-    size: 5,
-    shape: "diamond",
-    style: {
-      fill: "white",
-      stroke: "#ff4d4f",
-      lineWidth: 2,
-    },
-  },
-  color: "#ff4d4f",
-};
-
 const TnDDashboard = () => {
   const dispatch = useDispatch();
 
@@ -177,11 +118,11 @@ const TnDDashboard = () => {
     const list: any[] = [];
     data?.map((d: any) => {
       list.push({
-        noOfTraining: Math.trunc(d?.numberOfTrainings || 0),
+        noOfTraining: d?.numberOfTrainings || 0,
         name: d?.trainingModeStatus?.label || "",
-        numberOfParticipants: Math.trunc(d?.numberOfParticipants || 0),
-        costPerParticipant: Math.trunc(d?.costPerParticipant || 0),
-        totalCost: Math.trunc(d?.totalCost || 0),
+        numberOfParticipants: d?.numberOfParticipants || 0,
+        costPerParticipant: d?.costPerParticipant || 0,
+        totalCost: d?.totalCost || 0,
       });
     });
     console.log(list);
@@ -374,45 +315,45 @@ const TnDDashboard = () => {
     return [
       {
         title: "Total Training Count",
-        count: Math.trunc(summaryCard?.totalTrainingCount || 0),
+        count: summaryCard?.totalTrainingCount || 0,
         icon: <TeamOutlined style={{ fontSize: "30px", color: "#4caf50" }} />,
       },
       {
         title: "Total Training Hour",
-        count: Math.trunc(summaryCard?.totalTrainingHours || 0),
+        count: summaryCard?.totalTrainingHours || 0,
         icon: (
           <ClockCircleOutlined style={{ fontSize: "30px", color: "#ff9800" }} />
         ),
       },
       {
         title: "Total Participant",
-        count: Math.trunc(summaryCard?.totalParticipantCount || 0),
+        count: summaryCard?.totalParticipantCount || 0,
         icon: <UserOutlined style={{ fontSize: "30px", color: "#3f51b5" }} />,
       },
       {
         title: "Total Feedback Count",
-        count: Math.trunc(summaryCard?.totalFeedbackCount || 0),
+        count: summaryCard?.totalFeedbackCount || 0,
         icon: (
           <MessageOutlined style={{ fontSize: "30px", color: "#e91e63" }} />
         ),
       },
       {
         title: "Total Assessment Count",
-        count: Math.trunc(summaryCard?.totalAssessmentCount || 0),
+        count: summaryCard?.totalAssessmentCount || 0,
         icon: (
           <FileTextOutlined style={{ fontSize: "30px", color: "#607d8b" }} />
         ),
       },
       {
         title: "Total Attendance Count",
-        count: Math.trunc(summaryCard?.totalAttendanceCount || 0),
+        count: summaryCard?.totalAttendanceCount || 0,
         icon: (
           <UserSwitchOutlined style={{ fontSize: "30px", color: "#673ab7" }} />
         ),
       },
       {
         title: "Total Training Cost",
-        count: Math.trunc(summaryCard?.totalTrainingCost || 0),
+        count: summaryCard?.totalTrainingCost || 0,
         icon: (
           <DollarCircleOutlined
             style={{ fontSize: "30px", color: "#4caf50" }}
@@ -421,21 +362,21 @@ const TnDDashboard = () => {
       },
       {
         title: "Cost Per Participant",
-        count: Math.trunc(summaryCard?.costPerParticipant || 0),
+        count: summaryCard?.costPerParticipant || 0,
         icon: (
           <CalculatorOutlined style={{ fontSize: "30px", color: "#ff5722" }} />
         ),
       },
       {
         title: "Actual Cost Per Participant",
-        count: Math.trunc(summaryCard?.actualCostPerParticipant || 0),
+        count: summaryCard?.actualCostPerParticipant || 0,
         icon: (
           <BarChartOutlined style={{ fontSize: "30px", color: "#009688" }} />
         ),
       },
       {
         title: "Actual Cost Per Hour",
-        count: Math.trunc(summaryCard?.actualCostPerHour || 0),
+        count: summaryCard?.actualCostPerHour || 0,
         icon: (
           <PieChartOutlined style={{ fontSize: "30px", color: "#2196f3" }} />
         ),
