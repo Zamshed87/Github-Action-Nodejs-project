@@ -128,9 +128,10 @@ export default function AddEditForm({
 
   // Form Instance
   const [form] = Form.useForm();
+  console.log("singleData", singleData);
 
   useEffect(() => {
-    if (singleData?.intPipelineHeaderId) {
+    if (singleData?.id) {
       getPipelineDetails.action({
         urlKey: "ApprovalPipelineHeaderDetailsById",
         method: "GET",
@@ -166,7 +167,7 @@ export default function AddEditForm({
               : "User Group",
             userGroup: item?.userGroupHeader?.strUserGroup || "",
             intPipelineRowId: item?.globalPipelineRow?.intPipelineRowId,
-            intPipelineHeaderId: item?.globalPipelineRow?.intPipelineHeaderId,
+            id: item?.globalPipelineRow?.id,
             isSupervisor: item?.globalPipelineRow?.isSupervisor,
             isLineManager: item?.globalPipelineRow?.isLineManager,
             intUserGroupHeaderId: item?.globalPipelineRow?.intUserGroupHeaderId,
@@ -535,7 +536,7 @@ export default function AddEditForm({
                           employee?.employeeNameWithCode ||
                           "",
                         intPipelineRowId: 0,
-                        intPipelineHeaderId: 0,
+                        id: 0,
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
                         intUserGroupHeaderId: userGroup?.value || 0,
