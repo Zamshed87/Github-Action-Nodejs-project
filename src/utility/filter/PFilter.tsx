@@ -2,7 +2,7 @@ import { Col, Drawer, Row } from "antd";
 import { PButton, PForm, PInput } from "Components";
 import React from "react";
 import CommonFilterField from "./commonFIlterField";
-const PFilter = ({ form, landingApiCall, children }: any) => {
+const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
 
   return (
@@ -32,42 +32,46 @@ const PFilter = ({ form, landingApiCall, children }: any) => {
           }}
         >
           <Row gutter={[10, 2]}>
-            <Col md={12} sm={24}>
-              <PInput
-                type="date"
-                name="fromDate"
-                label="From Date"
-                onChange={(value) => {
-                  form.setFieldsValue({
-                    fromDate: value,
-                  });
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message: "From Date is required",
-                  },
-                ]}
-              />
-            </Col>
-            <Col md={12} sm={24}>
-              <PInput
-                type="date"
-                name="toDate"
-                label="To Date"
-                onChange={(value) => {
-                  form.setFieldsValue({
-                    toDate: value,
-                  });
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message: "To Date is required",
-                  },
-                ]}
-              />
-            </Col>
+            {!ishideDate && (
+              <>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="fromDate"
+                    label="From Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        fromDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "From Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="toDate"
+                    label="To Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        toDate: value,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "To Date is required",
+                      },
+                    ]}
+                  />
+                </Col>
+              </>
+            )}
 
             <CommonFilterField
               form={form}
