@@ -163,7 +163,7 @@ const SeparationReport = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
+    // getWorkplaceGroup();
     landingApiCall();
   }, []);
 
