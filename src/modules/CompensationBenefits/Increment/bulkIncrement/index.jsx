@@ -9,7 +9,10 @@ import PrimaryButton from "../../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { downloadFile } from "../../../../utility/downloadFile";
-import { excelFileToArray } from "../../../../utility/excelFileToJSON";
+import {
+  excelFileToArray,
+  excelFileToSpecificIndexInfo,
+} from "../../../../utility/excelFileToJSON";
 import {
   processBulkUploadIncrementAction,
   saveBulkUploadIncrementAction,
@@ -39,6 +42,7 @@ export default function BulkIncrementEntry() {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const payrollGroupDDL = useApiRequest([]);
+  const bulkUploadApi = useApiRequest([]);
 
   const { buId, orgId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -72,11 +76,15 @@ export default function BulkIncrementEntry() {
       setData([]);
     };
     data?.length > 0
-      ? saveBulkUploadIncrementActionUpdate({
-          setLoading: setIsLoading,
-          data,
-          wgId,
-          callback: callBack,
+      ? bulkUploadApi?.action({
+          urlKey: "IncrementBulkUpload",
+          method: "post",
+          payload: data,
+          toast: true,
+          onSuccess: (res) => {
+            callBack();
+            // toast.success(res?.data?.message || "Successful");
+          },
         })
       : toast.warn("Please Upload Excel File");
   };
@@ -90,21 +98,27 @@ export default function BulkIncrementEntry() {
     }
   });
 
-  const processData = async (file) => {
+  const processData = async (file, values) => {
     try {
       const processData = await excelFileToArray(file, "EmployeesIncrement", 2);
+      const payrollInfo = await excelFileToSpecificIndexInfo(
+        file,
+        "EmployeesIncrement",
+        1
+      );
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,
         setData,
         setIsLoading,
         buId,
-        orgId,
-        employeeId,
+        payrollInfo,
+        values,
         setErrorData,
         setOpen
       );
     } catch (error) {
+      isDevServer && console.log({ error });
       toast.warn("Failed to process!");
     }
   };
@@ -114,15 +128,17 @@ export default function BulkIncrementEntry() {
   // Generate dynamic columns for elements
   const dynamicColumns = [];
   if (data.length > 0) {
-    const elementKeys = data[0].elements.map((element) => element.name);
+    const elementKeys = data[0].payrollElements.map(
+      (element) => element.elementName
+    );
     elementKeys.forEach((key) => {
       dynamicColumns.push({
         title: key,
-        dataIndex: "elements",
+        dataIndex: "payrollElements",
         key,
         render: (elements) => {
-          const element = elements.find((el) => el.name === key);
-          return element ? element.numAmount : null;
+          const element = elements.find((el) => el.elementName === key);
+          return element ? element.amount : null;
         },
       });
     });
@@ -131,13 +147,18 @@ export default function BulkIncrementEntry() {
   // Fixed columns for Employee Name and Code
   const fixedColumns = [
     {
+      title: "SL",
+      dataIndex: "slNo",
+      // key: "empName",
+    },
+    {
       title: "Employee Name",
       dataIndex: "empName",
       // key: "empName",
     },
     {
       title: "Employee Code",
-      dataIndex: "empCode",
+      dataIndex: "employeeCode",
       // key: "empCode",
       width: 40,
     },
@@ -196,7 +217,7 @@ export default function BulkIncrementEntry() {
                             classes="input-sm"
                             styles={customStyles}
                             options={payrollGroupDDL?.data || []}
-                            value={values?.asset}
+                            value={values?.pg}
                             onChange={(valueOption) => {
                               setFieldValue("pg", valueOption);
                             }}
@@ -222,7 +243,7 @@ export default function BulkIncrementEntry() {
                           type="file"
                           accept=".xlsx"
                           onChange={(e) => {
-                            processData(e.target.files?.[0]);
+                            processData(e.target.files?.[0], values);
                           }}
                           onClick={(e) => {
                             e.target.value = null;

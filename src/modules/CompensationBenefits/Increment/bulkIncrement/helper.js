@@ -1,35 +1,36 @@
 import { isDevServer } from "App";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 export const processBulkUploadIncrementAction = async (
   data,
   setter,
   setLoading,
   buId,
-  orgId,
-  employeeId,
+  payrollInfo,
+  values,
   setErrorData,
   setOpen
 ) => {
   try {
     setLoading(true);
-    const modifiedData = data.slice(1).map((item) => {
+
+    const modifiedData = data.slice(1).map((item, index) => {
       const {
         "Employee Name": empName,
-        "Employee Code": empCode,
+        "Employee Code": employeeCode,
         "Gross Salary": gross,
         "Mismatch Amount": misMatch,
         ...fields
       } = item;
-
-      const elements = Object.keys(fields)
+      const payrollElements = Object.keys(fields)
         .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
         .map((key) => {
           if (fields[key]?.result !== undefined) {
             return {
-              name: key,
-              numAmount: fields[key].result,
+              elementName: key,
+              amount: fields[key].result,
             };
           }
           return null; // To filter out undefined cases.
@@ -37,39 +38,17 @@ export const processBulkUploadIncrementAction = async (
         .filter(Boolean); // Remove null values.
 
       return {
+        slNo: index + 1,
         empName: empName || "N/A",
-        empCode: empCode || "N/A",
+        employeeCode: employeeCode || "N/A",
         gross: gross,
+        effectiveDate: todayDate(),
+        payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
-        elements,
+        payrollElements,
       };
     });
-    const errorData = [
-      {
-        empName: "B",
-        empCode: "A",
-        gross: 2000,
-        misMatch: 212,
-        elements: [
-          {
-            name: "Basic",
-            numAmount: 1000,
-          },
-          {
-            name: "House",
-            numAmount: 600,
-          },
-          {
-            name: "Medical",
-            numAmount: 200,
-          },
-          {
-            name: "Conveyance",
-            numAmount: 200,
-          },
-        ],
-      },
-    ];
+    const errorData = [];
     const cleanData = [];
 
     modifiedData.forEach((item) => {
