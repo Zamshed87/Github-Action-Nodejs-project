@@ -40,6 +40,7 @@ import { TopSheetReport } from "./TopSheetReport";
 import IbblBankLetterHead from "./letterheadReports/IbblBankLetterHead";
 import DblBankLetterHead from "./letterheadReports/DblBankLetterHead";
 import SCBBankLetterHead from "./letterheadReports/SCBBankLetterHead";
+import DBBLBankLetterHead from "./letterheadReports/DBBLBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -1259,6 +1260,13 @@ const BankAdviceReport = () => {
                     )}
                     {values?.adviceType?.value === "CITY" && (
                       <CityBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DBBL" && (
+                      <DBBLBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}
