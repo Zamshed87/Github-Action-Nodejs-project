@@ -188,11 +188,11 @@ const AdvanceSalaryGenerateLanding = () => {
     validationSchema,
     initialValues: {
       ...initialValues,
-      // filterFromDate:
-      //   compensationBenefits?.salaryGenerate?.fromDate ||
-      //   getDateOfYear("first"),
-      // filterToDate:
-      //   compensationBenefits?.salaryGenerate?.toDate || getDateOfYear("last"),
+      filterFromDate:
+        compensationBenefits?.salaryGenerate?.fromDate ||
+        getDateOfYear("first"),
+      filterToDate:
+        compensationBenefits?.salaryGenerate?.toDate || getDateOfYear("last"),
     },
     onSubmit: () => {
       return;
@@ -489,19 +489,19 @@ const AdvanceSalaryGenerateLanding = () => {
       },
     ];
   };
-  const getSalaryCodeByFromDateAndWId = (fromDate, toDate) => {
-    getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
-      fromDate: fromDate,
-      toDate: toDate,
-      workPlaceId: (workplaceDDL || []).map((w) => w?.intWorkplaceId),
-    });
-  };
+  // const getSalaryCodeByFromDateAndWId = (fromDate, toDate) => {
+  //   getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //     workPlaceId: (workplaceDDL || []).map((w) => w?.intWorkplaceId),
+  //   });
+  // };
   useEffect(() => {
     if (workplaceDDL?.length > 0) {
-      getSalaryCodeByFromDateAndWId(
-        values?.filterFromDate,
-        values?.filterToDate
-      );
+      // getSalaryCodeByFromDateAndWId(
+      //   values?.filterFromDate,
+      //   values?.filterToDate
+      // );
     }
   }, [workplaceDDL]);
 
@@ -596,11 +596,11 @@ const AdvanceSalaryGenerateLanding = () => {
                         setFieldValue("filterFromDate", e.target.value);
                         setSalaryCodeDDL([]);
                         if (e.target.value && values?.filterToDate && wId) {
-                          getSalaryCodeByFromDateAndWId(
-                            e.target.value,
-                            values?.filterToDate,
-                            wId
-                          );
+                          // getSalaryCodeByFromDateAndWId(
+                          //   e.target.value,
+                          //   values?.filterToDate,
+                          //   wId
+                          // );
                         }
                         // for saving date to local storage
                         dispatch(
@@ -630,13 +630,13 @@ const AdvanceSalaryGenerateLanding = () => {
                       onChange={(e) => {
                         setFieldValue("filterToDate", e.target.value);
                         setSalaryCodeDDL([]);
-                        if (e.target.value && values?.filterToDate && wId) {
-                          getSalaryCodeByFromDateAndWId(
-                            values?.filterFromDate,
-                            e.target.value,
-                            wId
-                          );
-                        }
+                        // if (e.target.value && values?.filterToDate && wId) {
+                        //   getSalaryCodeByFromDateAndWId(
+                        //     values?.filterFromDate,
+                        //     e.target.value,
+                        //     wId
+                        //   );
+                        // }
                         // for saving date to local storage
                         dispatch(
                           compensationBenefitsLSAction({

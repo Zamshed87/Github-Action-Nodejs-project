@@ -21,7 +21,6 @@ import { customStyles } from "utility/selectCustomStyle";
 // import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
   createAdvSalaryGenerateRequest,
-  getSalaryGenerateRequestHeaderId,
   getSalaryGenerateRequestLanding,
   getSalaryGenerateRequestLandingById,
   getSalaryGenerateRequestRowId,
@@ -214,6 +213,10 @@ const AdvanceSalaryGenerateCreate = () => {
               isSalaryGenerate: true,
             };
           });
+          const allIdsMatch = data.every(
+            (row) => row.hrPositionId === data[0]?.hrPositionId
+          );
+
           setAllEmployeeString(modify?.map((i) => i?.intEmployeeId).join(","));
           setRowDto(modify);
           setAllData(modify);
@@ -232,6 +235,12 @@ const AdvanceSalaryGenerateCreate = () => {
               label: state?.workplaceName,
               value: data[0]?.workPlaceId,
             },
+            hrPosition: allIdsMatch
+              ? {
+                  label: data[0]?.hrPositionName,
+                  value: data[0]?.hrPositionId,
+                }
+              : "",
           });
           // getWorkplaceNhrPosition(
           //   `/Payroll/SalarySelectQueryAll?partName=HrPositionListByAdvanceSalaryCode&intAccountId=${orgId}&strSalaryCode=${state?.advanceSalaryCode}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${data[0]?.workPlaceGroupId}`,
@@ -268,22 +277,6 @@ const AdvanceSalaryGenerateCreate = () => {
     }
   }, [params, wgId, buId]);
 
-  useEffect(() => {
-    if (+params?.id) {
-      getSalaryGenerateRequestRowId(
-        "SalaryGenerateRequestRowByRequestId",
-        +params?.id,
-        setRowDto,
-        setAllData,
-        setLoading,
-        wgId,
-        buId,
-        values?.searchTxt
-      );
-    }
-    setFieldValue("workplace", []);
-    setFieldValue("hrPosition", []);
-  }, [params, orgId, wgId, buId]);
   const saveHandler = async (values) => {
     const { payload, callback } = salaryGeneratepayloadHandler(
       values,
@@ -398,35 +391,71 @@ const AdvanceSalaryGenerateCreate = () => {
     const callback = () => {
       setAllEmployeeString("");
       setFieldValue("workplace", []);
-      setFieldValue("hrPosition", []);
+      setFieldValue("hrPosition", "");
       setAllAssign(false);
+      setRowDto([]);
+      setAllData([]);
+
       if (state?.advanceSalaryCode) {
-        getSalaryGenerateRequestLandingById(
-          "SalaryGenerateRequestRowByRequestId",
-          values,
-          buId,
-          wgId,
-          +params?.id,
-          false,
-          values?.intMonth,
-          values?.intYear,
-          values?.fromDate,
-          values?.toDate,
-          setRowDto,
-          setAllData,
-          setLoading,
-          wId,
-          {
-            current: pages?.current,
-            pageSize: 5000,
-          },
-          setPages,
-          setAllEmployeeString,
-          values?.wing?.value,
-          values?.soleDepo?.value,
-          values?.region?.value,
-          values?.area?.value,
-          values?.territory
+        getDetails(
+          `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
+          (data) => {
+            const modify = data?.map((itm) => {
+              return {
+                intSalaryGenerateRequestId: 0,
+                intSalaryGenerateRequestRowId: 0,
+                intEmployeeId: itm?.employeeId,
+                strEmployeeName: itm?.employeeName,
+                strEmployeeCode: itm?.employeeCode,
+                strEmploymentType: itm?.employeeTypeName,
+                intBusinessUnitId: itm?.businessUnitId,
+                strDesignation: itm?.designationName,
+                intDesignationId: itm?.designationId,
+                strDepartment: itm?.departmentName,
+                intDepartmentId: itm?.departmentId,
+                intWorkplaceGroupId: itm?.workPlaceGroupId,
+                strWorkplace: itm?.workplaceName,
+                intWorkplaceId: itm?.workPlaceId,
+                intHRPositionId: itm?.hrPositionId,
+                strHRPostionName: itm?.hrPositionName,
+                numGrossSalary: itm?.grossSalary,
+                numBasicORGross: itm?.basicSalary,
+                AdvanceAmount: itm?.amount, // Map from `amount`
+                isSalaryGenerate: true,
+              };
+            });
+            const allIdsMatch = data.every(
+              (row) => row.hrPositionId === data[0]?.hrPositionId
+            );
+
+            setAllEmployeeString(
+              modify?.map((i) => i?.intEmployeeId).join(",")
+            );
+            setRowDto(modify);
+            setAllData(modify);
+            setSingleData({
+              monthYear: moment(state?.payrollMonth).format("YYYY-MM"),
+              monthId: state?.monthId,
+              yearId: state?.yearId,
+              fromDate: dateFormatterForInput(state?.fromDate),
+              toDate: dateFormatterForInput(state?.todate),
+              walletType: state?.paymentMethod,
+              minimumPresentDays: state?.minimumPresentDays,
+              advanceBasedOnPercentage: state?.advanceBasedOnPercentage,
+              advanceBasedOn: state?.advanceBasedOn,
+              description: state?.description,
+              workplace: {
+                label: state?.workplaceName,
+                value: data[0]?.workPlaceId,
+              },
+              hrPosition: allIdsMatch
+                ? {
+                    label: data[0]?.hrPositionName,
+                    value: data[0]?.hrPositionId,
+                  }
+                : "",
+            });
+          }
         );
         resetForm(salaryGenerateInitialValues);
         setIsEdit(true);
@@ -530,7 +559,6 @@ const AdvanceSalaryGenerateCreate = () => {
       : salaryGenerateInitialValues,
     onSubmit: (values) => saveHandler(values),
   });
-  console.log({ values });
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -627,6 +655,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           setValues((prev) => ({
                             ...prev,
                             fromDate: e.target.value,
+                            toDate: e.target.value,
                           }));
                         }}
                         errors={errors}
@@ -707,7 +736,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         classes="input-sm"
                         value={values?.minimumPresentDays}
                         // placeholder="Month"
-                        disabled={singleData}
+                        // disabled={singleData}
                         name="minimumPresentDays"
                         min={0}
                         step={1}
@@ -750,6 +779,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           setValues((prev) => ({
                             ...prev,
                             advanceBasedOn: valueOption,
+                            advanceBasedOnPercentage: "",
                           }));
                         }}
                         placeholder=""
@@ -841,6 +871,12 @@ const AdvanceSalaryGenerateCreate = () => {
                             ...prev,
                             workplace: valueOption,
                           }));
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valueOption?.value}&BusinessUnitId=${buId}&intId=0`,
+                            "PositionId",
+                            "PositionName",
+                            setHrPositionDDL
+                          );
                         }}
                         placeholder=""
                         styles={customStyles}
@@ -869,7 +905,29 @@ const AdvanceSalaryGenerateCreate = () => {
                       />
                     </div>
                   </div> */}
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>HR Position</label>
 
+                      <FormikSelect
+                        name="hrPosition"
+                        options={hrPositionDDL || []}
+                        value={values?.hrPosition}
+                        // isDisabled={singleData}
+                        onChange={(valueOption) => {
+                          setValues((prev) => ({
+                            ...prev,
+                            hrPosition: valueOption,
+                          }));
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        // isDisabled={singleData}
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-5 d-flex mt-4">
                     <button
                       style={{
@@ -903,11 +961,24 @@ const AdvanceSalaryGenerateCreate = () => {
                               state?.monthId
                             }&intYearId=${state?.yearId}&strWorkplaceIdList=${
                               values?.workplace?.value
-                            }&strHrPositionIdList=${0}&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
+                            }&strHrPositionIdList=${
+                              values?.hrPosition?.value || 0
+                            }&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
                               state?.fromDate
                             }&generateToDate=${state?.todate}&intPageNo=${
                               pages?.current
-                            }&intPageSize=${pages?.pageSize}`,
+                            }&intPageSize=${
+                              pages?.pageSize
+                            }&intSalaryGenerateRequestId=${
+                              // state?.advanceSalaryId
+                              0
+                            }&numMinimumPresentDays=${
+                              values?.minimumPresentDays
+                            }&numAdvanceBasedOn=${
+                              values?.advanceBasedOn?.value
+                            }&numAdvanceBasedOnPercentage=${
+                              values?.advanceBasedOnPercentage
+                            }`,
                             (data) => {
                               const uniq = [];
                               data?.forEach((itm) => {
@@ -965,11 +1036,21 @@ const AdvanceSalaryGenerateCreate = () => {
                               values?.monthId
                             }&intYearId=${values?.yearId}&strWorkplaceIdList=${
                               values?.workplace?.value
-                            }&strHrPositionIdList=${0}&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
+                            }&strHrPositionIdList=${
+                              values?.hrPosition?.value || 0
+                            }&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
                               values?.fromDate
                             }&generateToDate=${values?.toDate}&intPageNo=${
                               pages?.current
-                            }&intPageSize=${pages?.pageSize}`,
+                            }&intPageSize=${
+                              pages?.pageSize
+                            }&intSalaryGenerateRequestId=${0}&numMinimumPresentDays=${
+                              values?.minimumPresentDays
+                            }&numAdvanceBasedOn=${
+                              values?.advanceBasedOn?.value
+                            }&numAdvanceBasedOnPercentage=${
+                              values?.advanceBasedOnPercentage
+                            }`,
                             (data) => {
                               setRowDto((prev) => [...data]);
                               setAllData((prev) => [...data]);
@@ -990,7 +1071,9 @@ const AdvanceSalaryGenerateCreate = () => {
                         !values?.toDate ||
                         !values?.workplace?.value ||
                         !values?.walletType?.value ||
-                        !values?.advanceBasedOn?.value
+                        !values?.advanceBasedOn?.value ||
+                        !values?.advanceBasedOnPercentage ||
+                        !values?.minimumPresentDays
                       }
                     >
                       View
@@ -1034,7 +1117,7 @@ const AdvanceSalaryGenerateCreate = () => {
                       >
                         {state?.advanceSalaryCode
                           ? "Re-Generate All " + rowDto?.length || 0
-                          : "Generate All " + pages?.total || 0}
+                          : "Generate All " + rowDto[0]?.totalCount || 0}
                       </button>
                     )}
                   </div>

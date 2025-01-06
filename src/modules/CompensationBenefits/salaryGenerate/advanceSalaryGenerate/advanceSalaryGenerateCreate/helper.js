@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import AvatarComponent from "common/AvatarComponent";
 import FormikCheckBox from "common/FormikCheckbox";
 import { gray900, greenColor } from "utility/customColor";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 export const salaryGenerateValidationSchema = Yup.object().shape({
   monthYear: Yup.date().required("Payroll month is required"),
@@ -30,13 +31,14 @@ export const salaryGenerateInitialValues = {
   monthYear: moment().format("YYYY-MM"),
   monthId: new Date().getMonth() + 1,
   yearId: new Date().getFullYear(),
-  fromDate: "",
-  toDate: "",
+  fromDate: monthFirstDate(),
+  toDate: monthLastDate(),
   advanceBasedOnPercentage: "",
   advanceBasedOn: "",
   minimumPresentDays: "",
 
   search: "",
+  hrPosition: "",
   allSelected: false,
   workplace: [],
   // marketing
