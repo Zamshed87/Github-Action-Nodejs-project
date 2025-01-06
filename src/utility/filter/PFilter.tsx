@@ -111,11 +111,17 @@ const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
                   form.setFieldsValue({
                     ...values,
                     bUnit: { label: "All", value: 0 },
+                    bUnitId: [0],
                     workplaceGroup: { label: "All", value: 0 },
+                    workplaceGroupId: [0],
                     workplace: { label: "All", value: 0 },
+                    workplaceId: [0],
                     department: { label: "All", value: 0 },
+                    departmentId: [0],
                     designation: { label: "All", value: 0 },
+                    designationId: [0],
                   });
+                  landingApiCall();
                 }}
               />
             </Col>

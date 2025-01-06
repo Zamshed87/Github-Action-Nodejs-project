@@ -438,7 +438,10 @@ const EmLeaveHistory = () => {
           <PFilter
             form={form}
             ishideDate={true}
-            landingApiCall={landingApiCall}
+            landingApiCall={() => {
+              // you can add required logic if need any
+              landingApiCall();
+            }}
           >
             <Col md={12} sm={12} xs={24}>
               <PSelect
