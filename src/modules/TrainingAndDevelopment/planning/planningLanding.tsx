@@ -636,7 +636,20 @@ const TnDPlanningLanding = () => {
                     content="Reset"
                     onClick={() => {
                       const values = form.getFieldsValue(true);
-                      form.resetFields(["fromDate", "toDate"]);
+                      form.resetFields();
+                      form.setFieldsValue({
+                        fromDate: defaultFromDate,
+                        toDate: defaultToDate,
+                        bUnit: { label: "All", value: 0 },
+                        workplaceGroup: { label: "All", value: 0 },
+                        workplace: { label: "All", value: 0 },
+                        department: { label: "All", value: 0 },
+                        hrPosition: { label: "All", value: 0 },
+                        trainingType: { label: "All", value: 0 },
+                        trainingTitle: { label: "All", value: 0 },
+                        trainingMode: [""],
+                      });
+                      landingApiCall();
                     }}
                   />
                 </Col>

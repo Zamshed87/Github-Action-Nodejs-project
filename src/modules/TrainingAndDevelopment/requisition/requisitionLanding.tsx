@@ -390,12 +390,19 @@ const TnDRequisitionLanding = () => {
                     content="Reset"
                     onClick={() => {
                       const values = form.getFieldsValue(true);
-                      form.resetFields([
-                        "fromDate",
-                        "toDate",
-                        "trainingType",
-                        "requisitionStatus",
-                      ]);
+                      form.resetFields([]);
+                      form.setFieldsValue({
+                        fromDate: defaultFromDate,
+                        toDate: defaultToDate,
+                        bUnit: { label: "All", value: 0 },
+                        workplaceGroup: { label: "All", value: 0 },
+                        workplace: { label: "All", value: 0 },
+                        department: { label: "All", value: 0 },
+                        hrPosition: { label: "All", value: 0 },
+                        requisitionStatus: [""],
+                        trainingType: [0],
+                      });
+                      landingApiCall();
                     }}
                   />
                 </Col>
