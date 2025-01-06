@@ -11,7 +11,6 @@ import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
   setIsAddEditForm,
-  getLandingData,
   getData,
   isEdit,
   singleData,
@@ -129,7 +128,7 @@ export default function AddEditForm({
 
   // Form Instance
   const [form] = Form.useForm();
-
+console.log("singleData",singleData)
   useEffect(() => {
     if (singleData?.id) {
       getPipelineDetails.action({
@@ -146,38 +145,40 @@ export default function AddEditForm({
           form.setFieldsValue({
             ...singleData,
             orgName: {
-              value: getLandingData?.[0]?.intWorkplaceGroupId,
-              label: data?.globalPipelineHeader?.strWorkPlaceGroupName,
+              value: data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
+              label: data?.header?.workplaceGroupName || singleData?.workplaceGroupName,
             },
             workplace: {
-              value: data?.globalPipelineHeader?.intWorkplaceId,
-              label: data?.globalPipelineHeader?.strWorkPlaceName,
+              value: data?.header?.workplaceId || singleData?.workplaceId,
+              label: data?.header?.workplaceName || singleData?.workplaceName,
             },
             pipelineName: {
-              value: singleData?.strApplicationType,
-              label: singleData?.strPipelineName,
+              value: data?.header?.applicationTypeId || singleData?.applicationTypeId,
+              label: data?.header?.applicationType || singleData?.applicationType,
             },
-            remarks: data?.globalPipelineHeader?.strRemarks,
+            remarks: data?.header?.strRemarks || "",
+            randomCountValue: data?.header?.randomApproverCount || 0,
+            isSequence: data?.header?.isInSequence || false,
+            id: data?.header?.id || 0,
           });
-          const rowData = data?.map((item) => ({
-            approver: item?.globalPipelineRow?.isSupervisor
-              ? supervisor || labelChangeByOrgId(orgId, "Supervisor")
-              : item?.globalPipelineRow?.isLineManager
-              ? labelChangeByOrgId(orgId, "Line Manager")
-              : "User Group",
-            userGroup: item?.userGroupHeader?.strUserGroup || "",
-            intPipelineRowId: item?.globalPipelineRow?.intPipelineRowId,
-            id: item?.globalPipelineRow?.id,
-            isSupervisor: item?.globalPipelineRow?.isSupervisor,
-            isLineManager: item?.globalPipelineRow?.isLineManager,
-            intUserGroupHeaderId: item?.globalPipelineRow?.intUserGroupHeaderId,
-            intShortOrder: item?.globalPipelineRow?.intShortOrder,
+          const rowData = data?.row?.map((item) => ({
+            approver: item?.approverType || "User Group",
+            userGroup: item?.userGroupOrEmployeeId || "", 
+            intPipelineRowId: item?.id || null,
+            configHeaderId: data?.header?.id || 0,
+            id: item?.id,
+            isSupervisor: item?.approverType === "Supervisor",
+            isLineManager: item?.approverType === "Line Manager",
+            intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
+            intShortOrder: item?.sequenceId || 0,
             isCreate: false,
-            isDelete: false,
-            strStatusTitle: item?.globalPipelineRow?.strStatusTitle,
-            randomCount: item?.globalPipelineRow?.randomCount || false,
+            isDelete: false, 
+            strStatusTitle: item?.afterApproveStatus || "",
+            strStatusTitlePending: item?.beforeApproveStatus || "",
+            randomCount: false, 
           }));
-          setTableData([]);
+          
+          setTableData(rowData);
         },
       });
     }
@@ -304,8 +305,6 @@ export default function AddEditForm({
                 approver: op,
                 strTitle: `${op?.label}`,
                 strTitlePending: `${op?.label}`,
-                approverValue: op?.value,
-                approverLabel: op?.label,
                 userGroup: undefined,
               });
               setIsStrStatus(true);
@@ -530,6 +529,7 @@ export default function AddEditForm({
                       const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
+                      console.log("approver", approver);
                       const obj = {
                         approverLabel: approver?.label,
                         approverValue: approver?.value,
@@ -567,6 +567,7 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
+        {console.log("tableData", tableData)}
         <Col md={24} sm={24}>
           {tableData.length > 0 && (
             <DraggableTable

@@ -36,7 +36,7 @@ export const header = (
     },
     {
       title: "Approver",
-      dataIndex: "approver",
+      dataIndex: "approverLabel",
       sorter: true,
     },
     {
@@ -148,7 +148,7 @@ export const submitHandler = ({
   const payloadList = workplaces.map((workplace) => ({
     header: {
       sl: 0,
-      id: singleData?.intPipelineHeaderId || 0,
+      id: values?.id || 0, // header id
       applicationTypeId: values?.pipelineName?.value || 0,
       applicationType: values?.pipelineName?.label || "",
       accountId: orgId,
@@ -164,10 +164,10 @@ export const submitHandler = ({
       createdAt: todayDate(),
     },
     row: tableData.map((item) => ({
-      id: item?.intPipelineRowId || 0,
-      configHeaderId: singleData?.intPipelineHeaderId || 0,
-      approverTypeId: item?.approverValue || 0,
-      approverType: item?.approverLabel || "",
+      id: item?.id || 0, // rowId
+      configHeaderId: item?.configHeaderId || 0, // header Id
+      approverTypeId: item?.pipelineName?.value || item?.approverValue || 0,
+      approverType: item?.pipelineName?.label || item?.approverLabel  || "",
       beforeApproveStatus: item?.strStatusTitlePending || "",
       afterApproveStatus: item?.strStatusTitle || "",
       sequenceId: random ? 0 : item?.intShortOrder || 0,
@@ -179,8 +179,6 @@ export const submitHandler = ({
   }));
 
   const finalPayload = payloadList;
-
-  console.log("finalPayload", finalPayload);
 
   const urlKey = !singleData
     ? "CreateApprovalConfiguration"
