@@ -133,28 +133,19 @@ export const submitHandler = ({
     setIsAddEditForm(false);
     getData();
   };
+
   if (!tableData?.length)
     return toast.warn(
       `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
     );
-  // const payload = {
-  //   isActive: true,
-  //   dteCreatedAt: todayDate(),
-  //   intCreatedBy: employeeId,
-  //   dteUpdatedAt: todayDate(),
-  //   intUpdatedBy: employeeId,
-  //   intPipelineHeaderId: singleData?.intPipelineHeaderId || 0,
-  //   strPipelineName: values?.pipelineName?.label,
-  //   strApplicationType: values?.pipelineName?.value,
-  //   strRemarks: values?.remarks || "",
-  //   intAccountId: orgId,
-  //   intBusinessUnitId: buId,
-  //   intWorkplaceGroupId: values?.orgName?.value || wgId,
-  //   intWorkplaceId: values?.workplace?.value ? values?.workplace?.value : 0, //  || wId,
-  //   isValidate: true,
-  //   approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
-  // };
-  const payload = {
+
+  // Ensure workplaces is an array
+  const workplaces = Array.isArray(values?.workplace)
+    ? values.workplace
+    : [values?.workplace];
+
+  // Collect payloads into an array
+  const payloadList = workplaces.map((workplace) => ({
     header: {
       sl: 0,
       id: singleData?.intPipelineHeaderId || 0,
@@ -164,51 +155,46 @@ export const submitHandler = ({
       businessUnitId: buId,
       workplaceGroupId: values?.orgName?.value || wgId,
       workplaceGroupName: values?.orgName?.label || "",
-      workplaceId: values?.workplace?.value || 0,
-      workplaceName: values?.workplace?.label || "",
+      workplaceId: workplace?.value || 0,
+      workplaceName: workplace?.label || "",
       isInSequence: isSequence,
       randomApproverCount: random ? tableData?.length || 0 : 0,
       isActive: true,
       createdBy: employeeId,
       createdAt: todayDate(),
     },
-    
     row: tableData.map((item) => ({
       id: item?.intPipelineRowId || 0,
       configHeaderId: singleData?.intPipelineHeaderId || 0,
       approverTypeId: item?.approverValue || 0,
       approverType: item?.approverLabel || "",
       beforeApproveStatus: item?.strStatusTitlePending || "",
-      afterApproveStatus: item?.strStatusTitle || "", 
+      afterApproveStatus: item?.strStatusTitle || "",
       sequenceId: random ? 0 : item?.intShortOrder || 0,
       isActive: true,
       createdBy: employeeId,
       createdAt: todayDate(),
       userGroupOrEmployeeId: item?.intUserGroupHeaderId || 0,
     })),
-  };
+  }));
 
-  if(!singleData){
-    savePipeline.action({
-      urlKey: "CreateApprovalConfiguration",
-      method: "POST",
-      payload: payload,
-      onSuccess: () => {
-        cb();
-      },
-      toast: true,
-    });
-  }else{
-    savePipeline.action({
-      urlKey: "UpdateApprovalConfiguration",
-      method: "POST",
-      payload: payload,
-      onSuccess: () => {
-        cb();
-      },
-      toast: true,
-    });
-  }
-  
- 
+  const finalPayload = payloadList;
+
+  console.log("finalPayload", finalPayload);
+
+  const urlKey = !singleData
+    ? "CreateApprovalConfiguration"
+    : "UpdateApprovalConfiguration";
+
+  // // Make a single API call with the array of payloads
+  savePipeline.action({
+    urlKey: urlKey,
+    method: "POST",
+    payload: finalPayload,
+    onSuccess: () => {
+      cb();
+    },
+    toast: true,
+  });
 };
+

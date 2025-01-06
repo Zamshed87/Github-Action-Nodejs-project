@@ -20,7 +20,10 @@ import SeparationIcon from "../../assets/images/ApprovalIcons/separationIcon.svg
 import Chips from "../../common/Chips";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import Loading from "../../common/loading/Loading";
-import { getApprovalDashboardLanding, getApprovalDashboardLandingOld } from "./helper";
+import {
+  getApprovalDashboardLanding,
+  getApprovalDashboardLandingOld,
+} from "./helper";
 import "./index.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
 import { isDevServer } from "App";
@@ -328,48 +331,55 @@ export default function ApprovalList() {
                               )
                               ?.sort((a, b) =>
                                 a?.menuName?.localeCompare(b?.menuName)
-                              ) // ascenidng order ---
-                              ?.map((data, index) => (
-                                <tr
-                                  className="hasEvent"
-                                  onClick={() => {
-                                    dispatch(
-                                      handleMostClickedMenuListAction({
-                                        id: data?.id,
-                                        label: data?.menuName,
-                                        to: data?.routeUrl,
-                                      })
-                                    );
+                              ) // ascending order ---
+                              ?.map((data, index) => {
+                                const adjustedRouteUrl =
+                                  data?.menuId === 8
+                                    ? `/approvalNew/${data.menuId}`
+                                    : data?.routeUrl;
 
-                                    history.push(`${data?.routeUrl}`);
-                                  }}
-                                  key={index}
-                                >
-                                  <td>
-                                    <div className="employeeInfo d-flex align-items-center approval-avatar">
-                                      <Avatar
-                                        alt="Remy Sharp"
-                                        src={data?.icon}
-                                      />
-                                      <div className="table-title pl-3">
-                                        <p>{data?.menuName}</p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="action-td">
-                                    <div className="d-flex align-items-center justify-content-between">
-                                      <Tooltip title={"Pending"}>
-                                        <div>
-                                          <Chips
-                                            label={data?.totalCount}
-                                            classess="success p-2 rounded-5"
-                                          />
+                                return (
+                                  <tr
+                                    className="hasEvent"
+                                    onClick={() => {
+                                      dispatch(
+                                        handleMostClickedMenuListAction({
+                                          id: data?.id,
+                                          label: data?.menuName,
+                                          to: adjustedRouteUrl,
+                                        })
+                                      );
+
+                                      history.push(adjustedRouteUrl);
+                                    }}
+                                    key={index}
+                                  >
+                                    <td>
+                                      <div className="employeeInfo d-flex align-items-center approval-avatar">
+                                        <Avatar
+                                          alt="Remy Sharp"
+                                          src={data?.icon}
+                                        />
+                                        <div className="table-title pl-3">
+                                          <p>{data?.menuName}</p>
                                         </div>
-                                      </Tooltip>
-                                    </div>
-                                  </td>
-                                </tr>
-                              ))}
+                                      </div>
+                                    </td>
+                                    <td className="action-td">
+                                      <div className="d-flex align-items-center justify-content-between">
+                                        <Tooltip title={"Pending"}>
+                                          <div>
+                                            <Chips
+                                              label={data?.totalCount}
+                                              classess="success p-2 rounded-5"
+                                            />
+                                          </div>
+                                        </Tooltip>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                           </tbody>
                         </table>
                       </div>

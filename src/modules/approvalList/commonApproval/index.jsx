@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button, Tooltip, Spin, Table, Modal } from "antd";
+import { Button, Spin, Table, Modal } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+
 import "./index.css";
 import { shallowEqual, useSelector } from "react-redux";
 
@@ -61,7 +63,9 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
 
     try {
       await axios.post(`/Approval/ApproveApplications`, payload);
-      toast.success(`Applications ${isApprove ? "approved" : "rejected"} successfully.`);
+      toast.success(
+        `Applications ${isApprove ? "approved" : "rejected"} successfully.`
+      );
       fetchPendingApprovals(applicationTypeId);
       setSelectedRowKeys([]);
     } catch (error) {
@@ -131,27 +135,31 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
   };
 
   return (
-    <div className="approval-container mt-5">
-      <div className="action-buttons" style={{ marginBottom: "16px" }}>
-        <Tooltip title="Approve Selected">
-          <Button
-            type="primary"
-            onClick={() => showConfirmationModal("approve")}
-            disabled={selectedRowKeys.length === 0}
-          >
-            Approve
-          </Button>
-        </Tooltip>
-        <Tooltip title="Reject Selected">
-          <Button
-            type="danger"
-            onClick={() => showConfirmationModal("reject")}
-            disabled={selectedRowKeys.length === 0}
-          >
-            Reject
-          </Button>
-        </Tooltip>
+    <div className="approval-container mt-4">
+      <div
+        className="action-buttons"
+        style={{ marginBottom: "16px", display: "flex", gap: "8px" }}
+      >
+        <Button
+          size="small"
+          style={{ backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}
+          onClick={() => showConfirmationModal("approve")}
+          disabled={selectedRowKeys.length === 0}
+          icon={<CheckOutlined />}
+        >
+          Approve
+        </Button>
+        <Button
+          size="small"
+          style={{ backgroundColor: "#F44336", color: "white", border: "none", borderRadius: "4px" }}
+          onClick={() => showConfirmationModal("reject")}
+          disabled={selectedRowKeys.length === 0}
+          icon={<CloseOutlined />}
+        >
+          Reject
+        </Button>
       </div>
+
       {loading ? (
         <Spin size="large" />
       ) : (
