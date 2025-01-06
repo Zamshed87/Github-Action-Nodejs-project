@@ -320,7 +320,7 @@ const TnDDashboard = () => {
       },
       {
         title: "Total Training Hour",
-        count: summaryCard?.totalTrainingHours || 0,
+        count: summaryCard?.totalTrainingHours?.toFixed(2) || 0,
         icon: (
           <ClockCircleOutlined style={{ fontSize: "30px", color: "#ff9800" }} />
         ),
@@ -518,7 +518,7 @@ const TnDDashboard = () => {
                 }}
               />
             </Col>
-            <Col md={6} sm={24}>
+            {/* <Col md={6} sm={24}>
               <PButton
                 style={{ marginTop: "25px" }}
                 type="secondary"
@@ -533,7 +533,7 @@ const TnDDashboard = () => {
                     .catch(() => {});
                 }}
               />
-            </Col>
+            </Col> */}
           </Row>
         </PForm>
       </Drawer>
