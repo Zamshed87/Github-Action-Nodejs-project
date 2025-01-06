@@ -290,4 +290,6 @@ export const apiList = {
   JobLocations: "/PeopleDeskDdl/JobLocations",
   GetBanglaPaysilp: "SalaryReport/GetBanglaPaysilp",
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
+  EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
+  GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
 };

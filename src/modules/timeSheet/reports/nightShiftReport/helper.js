@@ -1,0 +1,13 @@
+export const column = {
+  sl: "SL",
+  StrWorkPlaceGroupName: "Workplace Group",
+  StrWorkPlaceName: "Workplace",
+  StrDepartmentName: "Department",
+  StrSectionName: "Section",
+  StrEmployeeCode: "Employee Id",
+  StrEmployeeName: "Employee Name",
+  StrDesignation: "Designation",
+  StrSupersvisorName: "Supersvisor",
+  // StrCalendarName: "Calendar",
+  TotalNightShiftCount: "Total Night Shift",
+};
