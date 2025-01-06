@@ -27,7 +27,10 @@ import {
   typeDataSetForTitle,
 } from "modules/TrainingAndDevelopment/helpers";
 import { getSerial } from "Utils";
+import moment from "moment";
 const TnDInventory = () => {
+  const defaultToDate = moment();
+  const defaultFromDate = moment().subtract(3, "months");
   // router states
   const history = useHistory();
 
@@ -84,16 +87,10 @@ const TnDInventory = () => {
     {
       title: "Workplace Group",
       dataIndex: "workplaceGroupName",
-      filter: true,
-      filterKey: "workplaceGroupList",
-      filterSearch: true,
     },
     {
       title: "Workplace",
       dataIndex: "workplaceName",
-      filter: true,
-      filterKey: "workplaceList",
-      filterSearch: true,
     },
     {
       title: "Employee Name",
@@ -161,6 +158,7 @@ const TnDInventory = () => {
     data?.map((d: any) => {
       if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
+    list.unshift({ label: "All", value: 0 });
     setTrainingType(list);
   };
 
@@ -193,6 +191,8 @@ const TnDInventory = () => {
         values?.trainingType
       )}&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`
     );
+
+    // i/TrainingReport/TrainingInventoryReport/3?fromDate=2025-01-05&toDate=2025-01-05&businessUnitIds=3&workplaceGroupIds=7&workplaceIds=27&trainingTypeIds=1&trainingModeIds=0&trainingTitleIds=2&pageNumber=1&pageSize=4
   };
   useEffect(() => {
     landingApiCall();
@@ -203,13 +203,32 @@ const TnDInventory = () => {
         typeDataSetForTitle(data, setTrainingTitle, true);
       }
     );
-    getEnumData("TrainingModeStatus", setTrainingModeStatusDDL);
+    getEnumData(
+      "TrainingModeStatus",
+      setTrainingModeStatusDDL,
+      setLoading,
+      true
+    );
   }, []);
 
   return permission?.isView ? (
     <div>
       {loading || (landingLoading && <Loading />)}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          fromDate: defaultFromDate,
+          toDate: defaultToDate,
+          bUnit: { label: "All", value: 0 },
+          workplaceGroup: { label: "All", value: 0 },
+          workplace: { label: "All", value: 0 },
+          // department: { label: "All", value: 0 },
+          // hrPosition: { label: "All", value: 0 },
+          trainingType: { label: "All", value: 0 },
+          trainingTitle: { label: "All", value: 0 },
+          trainingMode: { label: "All", value: 0 },
+        }}
+      >
         <PCard>
           {/* <PCardBody>
             
@@ -322,8 +341,33 @@ const TnDInventory = () => {
                         .validateFields()
                         .then(() => {
                           console.log(values);
+                          landingApiCall();
                         })
                         .catch(() => {});
+                    }}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "20px" }}
+                    type="secondary"
+                    content="Reset"
+                    onClick={() => {
+                      const values = form.getFieldsValue(true);
+                      form.resetFields();
+                      form.setFieldsValue({
+                        fromDate: defaultFromDate,
+                        toDate: defaultToDate,
+                        bUnit: { label: "All", value: 0 },
+                        workplaceGroup: { label: "All", value: 0 },
+                        workplace: { label: "All", value: 0 },
+                        department: { label: "All", value: 0 },
+                        hrPosition: { label: "All", value: 0 },
+                        trainingType: { label: "All", value: 0 },
+                        trainingTitle: { label: "All", value: 0 },
+                        trainingMode: [""],
+                      });
+                      landingApiCall();
                     }}
                   />
                 </Col>
