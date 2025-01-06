@@ -26,6 +26,7 @@ import {
   createTrainingPlan,
   createTrainingPlanDetails,
   createTrainingSchedule,
+  doCheckDuplicateTrainingTime,
   editTrainingPlan,
   editTrainingPlanDetails,
   editTrainingSchedule,
@@ -305,8 +306,23 @@ const TnDPlanningCreateEdit = () => {
       toast.error("Training date and Time is required");
       return;
     }
-    console.log(values, "values");
-    console.log(trainingTime, "trainingTime");
+    const startTime = new Date(values.trainingStartTime);
+    const endTime = new Date(values.trainingEndTime);
+    const trainingDate = new Date(values.trainingStartDate)
+      .toISOString()
+      .split("T")[0]; // Ensure date format consistency
+
+    if (startTime >= endTime) {
+      toast.error("End time must be after start time");
+      return;
+    }
+    if (trainingTime && trainingTime?.length > 0) {
+      const duplicate = doCheckDuplicateTrainingTime(values, trainingTime);
+      if (duplicate?.overlap) {
+        return;
+      }
+    }
+
     const nextId =
       trainingTime.length > 0
         ? trainingTime[trainingTime.length - 1].id + 1
@@ -354,12 +370,12 @@ const TnDPlanningCreateEdit = () => {
     });
     changeTrainingStatus(form, newTrainingTime);
     setTrainingTime(newTrainingTime);
-    form.resetFields([
-      "trainingStartTime",
-      "trainingEndTime",
-      "trainingStartDate",
-      "trainingDuration",
-    ]);
+    // form.resetFields([
+    //   "trainingStartTime",
+    //   "trainingEndTime",
+    //   "trainingStartDate",
+    //   "trainingDuration",
+    // ]);
   };
 
   const addHandlerTrinerOrg = (values: any) => {

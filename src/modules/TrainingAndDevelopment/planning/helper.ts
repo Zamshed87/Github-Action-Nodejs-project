@@ -4,6 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { SetStateAction } from "react";
 import { toast } from "react-toastify";
+import { start } from "repl";
 
 // export const trainingModeFixDDL: any[] = [
 //   {
@@ -657,4 +658,99 @@ export const calculateTotalDuration = (trainingTime: any) => {
   const remainingMinutes = totalMinutes % 60;
 
   return `${totalHours} hours ${remainingMinutes} minutes`;
+};
+
+export const doCheckDuplicateTrainingTime = (
+  values: any,
+  trainingTime: any[]
+) => {
+  // Store the original values before formatting them for comparison
+  const originalStartTime = values.trainingStartTime;
+  const originalEndTime = values.trainingEndTime;
+  const originalStartDate = values.trainingStartDate;
+
+  // Format the times for comparison (using 24-hour format for comparison)
+  const startTime = moment(values.trainingStartTime, "hh:mm:ss A").format(
+    "HH:mm:ss"
+  );
+  const endTime = moment(values.trainingEndTime, "hh:mm:ss A").format(
+    "HH:mm:ss"
+  );
+  const trainingDate = moment(values.trainingStartDate).format("YYYY-MM-DD"); // Extract date part for comparison
+
+  // Iterate over the trainingTime list and compare with each schedule
+  for (const schedule of trainingTime) {
+    const scheduleDate = moment(schedule.trainingStartDate).format(
+      "YYYY-MM-DD"
+    );
+
+    // Compare only if the dates are the same
+    if (trainingDate === scheduleDate) {
+      // Format the schedule start and end times for comparison (using 24-hour format for comparison)
+      const scheduleStartTime = moment(
+        `${schedule.trainingStartDate} ${schedule.trainingStartTime}`,
+        "YYYY-MM-DD hh:mm:ss A"
+      ).format("HH:mm:ss");
+      const scheduleEndTime = moment(
+        `${schedule.trainingStartDate} ${schedule.trainingEndTime}`,
+        "YYYY-MM-DD hh:mm:ss A"
+      ).format("HH:mm:ss");
+
+      // If either start or end time falls within the schedule's start and end times, or completely spans it, return overlap
+      if (
+        moment(startTime, "HH:mm:ss").isBetween(
+          moment(scheduleStartTime, "HH:mm:ss"),
+          moment(scheduleEndTime, "HH:mm:ss"),
+          null,
+          "[)"
+        ) || // start overlaps
+        moment(endTime, "HH:mm:ss").isBetween(
+          moment(scheduleStartTime, "HH:mm:ss"),
+          moment(scheduleEndTime, "HH:mm:ss"),
+          null,
+          "(]"
+        ) || // end overlaps
+        (moment(startTime, "HH:mm:ss").isSameOrBefore(
+          moment(scheduleStartTime, "HH:mm:ss")
+        ) &&
+          moment(endTime, "HH:mm:ss").isSameOrAfter(
+            moment(scheduleEndTime, "HH:mm:ss")
+          )) // fully spans
+      ) {
+        toast.error(
+          `Training time overlaps with existing schedule on ${schedule.trainingStartDate} from ${schedule.trainingStartTime} to ${schedule.trainingEndTime}`,
+          {
+            autoClose: false,
+            closeButton: true, // Show close button
+          }
+        );
+        return {
+          overlap: true,
+          conflictingSchedule: {
+            ...schedule,
+          },
+        };
+      }
+    }
+  }
+
+  // No overlap found, return false with the original format
+  return { overlap: false };
+};
+// Helper function to convert 12-hour format to 24-hour format
+const convertTo24Hour = (timeStr: any) => {
+  if (typeof timeStr !== "string") {
+    throw new Error(`Invalid time format: ${timeStr}`);
+  }
+
+  const [time, modifier] = timeStr.split(" ");
+  let [hours, minutes, seconds] = time.split(":").map(Number);
+
+  if (modifier === "PM" && hours !== 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}:${String(seconds).padStart(2, "0")}`;
 };
