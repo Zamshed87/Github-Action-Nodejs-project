@@ -265,6 +265,8 @@ export const salaryGenerateCreateEditTableColumn = (
         <div>Employee Name</div>
       </div>
     ),
+    filter: true,
+    filterSearch: true,
     dataIndex: "strEmployeeName",
     render: (strEmployeeName, record, index) => (
       <div className="d-flex align-items-center">
@@ -329,10 +331,14 @@ export const salaryGenerateCreateEditTableColumn = (
   {
     title: "Designation",
     dataIndex: "strDesignation",
+    filter: true,
+    filterSearch: true,
   },
   {
     title: "HR Position",
     dataIndex: "strHRPostionName",
+    filter: true,
+    filterSearch: true,
   },
   {
     title: "Department",
@@ -345,6 +351,10 @@ export const salaryGenerateCreateEditTableColumn = (
   {
     title: "Workplace",
     dataIndex: "strWorkplace",
+  },
+  {
+    title: "Total Present Days",
+    dataIndex: "TotalPresentDays",
   },
   {
     title: "Basic",

@@ -267,6 +267,8 @@ const AdvanceSalaryGenerateLanding = () => {
         title: "Workplace Group",
         dataIndex: "workplaceGroupName",
         width: 120,
+        filter: true,
+        filterSearch: true,
       },
       {
         title: "Workplaces",
@@ -294,6 +296,8 @@ const AdvanceSalaryGenerateLanding = () => {
           ),
         dataIndex: "workplaceName",
         width: 150,
+        filter: true,
+        filterSearch: true,
       },
 
       {
@@ -304,6 +308,26 @@ const AdvanceSalaryGenerateLanding = () => {
         // render: (_, item) => (
         //   <>{`${getMonthName(item?.payrollMonth)}, ${item?.intYear}`}</>
         // ),
+        width: 100,
+      },
+      {
+        title: "Advance Period",
+        dataIndex: "",
+
+        render: (_, item) => {
+          return (
+            <>
+              {item?.fromDate ? dateFormatter(item?.fromDate) : "-"} -{" "}
+              {item?.todate ? dateFormatter(item?.todate) : "-"}
+            </>
+          );
+        },
+        width: 100,
+      },
+      {
+        title: "Net Amount",
+        dataIndex: "netAmount",
+
         width: 100,
       },
       // {

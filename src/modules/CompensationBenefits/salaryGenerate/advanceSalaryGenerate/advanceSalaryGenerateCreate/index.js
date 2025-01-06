@@ -242,6 +242,12 @@ const AdvanceSalaryGenerateCreate = () => {
                 }
               : "",
           });
+          getPeopleDeskAllDDL(
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${data[0]?.workPlaceId}&BusinessUnitId=${buId}&intId=0`,
+            "PositionId",
+            "PositionName",
+            setHrPositionDDL
+          );
           // getWorkplaceNhrPosition(
           //   `/Payroll/SalarySelectQueryAll?partName=HrPositionListByAdvanceSalaryCode&intAccountId=${orgId}&strSalaryCode=${state?.advanceSalaryCode}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${data[0]?.workPlaceGroupId}`,
           //   (WorkplaceNhrPosition) => {
