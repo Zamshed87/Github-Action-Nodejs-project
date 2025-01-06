@@ -439,7 +439,6 @@ const TnDPlanningLanding = () => {
     }
   ) => {
     const values = form.getFieldsValue(true);
-    console.log(values);
     const fromDate = values?.fromDate;
     const toDate = values?.toDate;
 

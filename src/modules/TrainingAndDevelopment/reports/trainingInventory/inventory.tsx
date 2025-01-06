@@ -17,9 +17,16 @@ import { getEnumData } from "common/api/commonApi";
 import { shallowEqual, useSelector } from "react-redux";
 import UserInfoCommonField from "../userInfoCommonField";
 import Filter from "modules/TrainingAndDevelopment/filter";
-import { setCustomFieldsValue } from "modules/TrainingAndDevelopment/requisition/helper";
+import {
+  formatDate,
+  setCustomFieldsValue,
+} from "modules/TrainingAndDevelopment/requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { typeDataSetForTitle } from "modules/TrainingAndDevelopment/helpers";
+import {
+  formatFilterValue,
+  typeDataSetForTitle,
+} from "modules/TrainingAndDevelopment/helpers";
+import { getSerial } from "Utils";
 const TnDInventory = () => {
   // router states
   const history = useHistory();
@@ -64,8 +71,15 @@ const TnDInventory = () => {
   const header: any = [
     {
       title: "SL",
-      render: (_: any, __: any, index: number) => index + 1,
-      width: 30,
+      render: (_: any, rec: any, index: number) =>
+        getSerial({
+          currentPage: landingApi?.currentPage,
+          pageSize: landingApi?.pageSize,
+          index,
+        }),
+      fixed: "left",
+      align: "center",
+      width: 40,
     },
     {
       title: "Workplace Group",
@@ -150,14 +164,41 @@ const TnDInventory = () => {
     setTrainingType(list);
   };
 
-  const landingApiCall = (values: any) => {
-    getLandingApi(`/TrainingReport/TrainingInventoryReport/${intAccountId}`);
+  const landingApiCall = (
+    pagination: { current: number; pageSize: number } = {
+      current: 1,
+      pageSize: 25,
+    }
+  ) => {
+    const values = form.getFieldsValue(true);
+    console.log(values);
+    const fromDate = values?.fromDate;
+    const toDate = values?.toDate;
+    getLandingApi(
+      `/TrainingReport/TrainingInventoryReport/${intAccountId}?fromDate=${formatDate(
+        fromDate
+      )}&toDate=${formatDate(toDate)}&businessUnitIds=${formatFilterValue(
+        values?.bUnitId
+      )}&workplaceGroupIds=${formatFilterValue(
+        values?.workplaceGroupId
+      )}&workplaceIds=${formatFilterValue(
+        values?.workplaceId
+      )}&trainingModeIds=${
+        formatFilterValue(values?.trainingMode)
+          ? formatFilterValue(values?.trainingMode)
+          : ""
+      }&trainingTitleIds=${formatFilterValue(
+        values?.trainingTitle
+      )}&trainingTypeIds=${formatFilterValue(
+        values?.trainingType
+      )}&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`
+    );
   };
   useEffect(() => {
-    landingApiCall({});
+    landingApiCall();
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
     getTrainingTitleDDL(
-      "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
+      "/TrainingTitle/Training/Title?pageNumber=1&pageSize=1000",
       (data: any) => {
         typeDataSetForTitle(data, setTrainingTitle, true);
       }
@@ -290,16 +331,16 @@ const TnDInventory = () => {
             </Filter>
             <DataTable
               bordered
-              data={landingApi || []}
+              data={landingApi?.data || []}
               loading={landingLoading}
               header={header}
               pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
+                pageSize: landingApi?.pageSize,
+                total: landingApi?.totalCount,
               }}
               filterData={landingApi?.data?.filters}
               onChange={(pagination, filters) => {
-                landingApiCall({});
+                landingApiCall(pagination);
               }}
             />
           </div>
