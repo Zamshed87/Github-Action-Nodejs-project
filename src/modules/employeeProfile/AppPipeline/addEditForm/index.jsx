@@ -11,6 +11,7 @@ import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
   setIsAddEditForm,
+  getLandingData,
   getData,
   isEdit,
   singleData,
@@ -128,7 +129,6 @@ export default function AddEditForm({
 
   // Form Instance
   const [form] = Form.useForm();
-  console.log("singleData", singleData);
 
   useEffect(() => {
     if (singleData?.id) {
@@ -146,7 +146,7 @@ export default function AddEditForm({
           form.setFieldsValue({
             ...singleData,
             orgName: {
-              value: data?.globalPipelineHeader?.intWorkplaceGroupId,
+              value: getLandingData?.[0]?.intWorkplaceGroupId,
               label: data?.globalPipelineHeader?.strWorkPlaceGroupName,
             },
             workplace: {
@@ -159,7 +159,7 @@ export default function AddEditForm({
             },
             remarks: data?.globalPipelineHeader?.strRemarks,
           });
-          const rowData = data?.globalPipelineRowList?.map((item) => ({
+          const rowData = data?.map((item) => ({
             approver: item?.globalPipelineRow?.isSupervisor
               ? supervisor || labelChangeByOrgId(orgId, "Supervisor")
               : item?.globalPipelineRow?.isLineManager
@@ -177,7 +177,7 @@ export default function AddEditForm({
             strStatusTitle: item?.globalPipelineRow?.strStatusTitle,
             randomCount: item?.globalPipelineRow?.randomCount || false,
           }));
-          setTableData(rowData);
+          setTableData([]);
         },
       });
     }

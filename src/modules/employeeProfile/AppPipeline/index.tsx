@@ -237,6 +237,7 @@ function CommonAppPipeline() {
           <>
             <AddEditForm
               getData={landingApiCall}
+              getLandingData={landingApi?.data}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
               singleData={id}

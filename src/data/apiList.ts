@@ -105,7 +105,7 @@ export const apiList = {
   // ApprovalPipelineHeaderDetailsById:
   //   "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   ApprovalPipelineHeaderDetailsById:
-  "/ApprovalConfiguration/GetApprovalConfiDetails",
+  "/ApprovalConfiguration/GetApprovalConfigDetails",
   GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
   GetAllTaxBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLandingForTax",
   PFLanding: "/Employee/PfLanding",
