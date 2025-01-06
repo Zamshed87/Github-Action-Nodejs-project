@@ -122,8 +122,7 @@ export default function BulkIncrementEntry() {
         "EmployeesIncrement",
         2
       );
-      console.log({ payrollInfo });
-      console.log({ elementInfo });
+
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,

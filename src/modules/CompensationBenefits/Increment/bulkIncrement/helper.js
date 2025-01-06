@@ -16,7 +16,6 @@ export const processBulkUploadIncrementAction = async (
 ) => {
   try {
     setLoading(true);
-    console.log({ data });
     const keyValuePairs = {};
 
     for (const item of elementInfo) {
@@ -25,7 +24,6 @@ export const processBulkUploadIncrementAction = async (
         keyValuePairs[key] = value; // Add to the object
       }
     }
-    console.log({ keyValuePairs });
     const modifiedData = data.slice(2).map((item, index) => {
       const {
         "Employee Name": empName,
@@ -68,7 +66,6 @@ export const processBulkUploadIncrementAction = async (
     });
     const errorData = [];
     const cleanData = [];
-    console.log({ modifiedData });
     modifiedData.forEach((item) => {
       if (
         Boolean(item.misMatch) ||
@@ -80,7 +77,6 @@ export const processBulkUploadIncrementAction = async (
         cleanData.push(item);
       }
     });
-    console.log({ errorData });
     setter(cleanData);
     setErrorData(errorData);
     errorData?.length > 0 && setOpen(true);
