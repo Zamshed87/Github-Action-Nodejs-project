@@ -22,7 +22,7 @@ import { Col, Form, List, Row, Divider } from "antd";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "../../../../Hooks";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import {
   PCard,
   PCardBody,
@@ -53,7 +53,7 @@ const CreateEditLeavePolicy = () => {
   const [singleData, setSingleData] = useState<any>({});
   const [existingPolicies, setExistingPolicies] = useState<any>([]);
   const history = useHistory();
-
+  const { state }: any = useLocation();
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState<any>([]);
   const { orgId, employeeId, buId, wgId } = useSelector(
@@ -137,12 +137,36 @@ const CreateEditLeavePolicy = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id, workplaceDDL, allPolicies]);
+  useEffect(() => {
+    if (state?.policyId) {
+      getYearlyPolicyById(
+        state?.policyId,
+        setSingleData,
+        workplaceDDL,
+        setTableData,
+        allPolicies,
+        setExistingPolicies,
+        setLoading
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, allPolicies]);
 
   useEffect(() => {
     if (singleData?.policyId) {
       form.setFieldsValue(singleData);
       getEmploymentType();
       getHRPosition();
+
+      state?.policyId &&
+        form.setFieldsValue({
+          hrPositionListDTO: undefined,
+          intEmploymentTypeList: undefined,
+          intWorkplaceList: undefined,
+          wg: undefined,
+          bu: undefined,
+        });
     }
   }, [singleData]);
 
@@ -154,9 +178,9 @@ const CreateEditLeavePolicy = () => {
   };
 
   const getEmploymentType = () => {
-    const { intWorkplaceList } = form.getFieldsValue();
+    const { intWorkplaceList } = form.getFieldsValue(true);
     const strWorkplaceIdList = intWorkplaceList
-      .map((item: any) => item.value)
+      ?.map((item: any) => item.value)
       .join(",");
 
     EmploymentTypeDDL?.action({
@@ -177,9 +201,9 @@ const CreateEditLeavePolicy = () => {
     });
   };
   const getHRPosition = () => {
-    const { intWorkplaceList } = form.getFieldsValue();
+    const { intWorkplaceList } = form.getFieldsValue(true);
     const strWorkplaceIdList = intWorkplaceList
-      .map((item: any) => item.value)
+      ?.map((item: any) => item.value)
       .join(",");
 
     HRPositionDDL?.action({
