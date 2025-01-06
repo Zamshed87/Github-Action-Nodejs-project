@@ -1550,6 +1550,7 @@ import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/AdvanceSalaryGenerateLanding";
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
+import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3274,6 +3275,10 @@ export const routingList = [
   {
     path: "/profile/reports/monthlyLeaveReport",
     component: MonthlyLeaveReport,
+  },
+  {
+    path: "/profile/reports/nightShiftReport",
+    component: NightShiftReport,
   },
   {
     path: "/assetManagement/assetControlPanel/itemProfile/edit/:id",
