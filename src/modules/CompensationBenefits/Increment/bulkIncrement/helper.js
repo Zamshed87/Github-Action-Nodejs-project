@@ -11,7 +11,8 @@ export const processBulkUploadIncrementAction = async (
   payrollInfo,
   values,
   setErrorData,
-  setOpen
+  setOpen,
+  employeeId
 ) => {
   try {
     setLoading(true);
@@ -37,15 +38,19 @@ export const processBulkUploadIncrementAction = async (
       const payrollElements = Object.keys(fields)
         // .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
         .map((key) => {
-          if (fields[key]?.result !== undefined || fields[key] !== undefined) {
-            console.log(keyValuePairs);
+          if (fields[key]?.result !== undefined || !isNaN(fields[key])) {
+            // console.log(keyValuePairs);
             return {
               elementName: key,
               amount: fields[key].result || fields[key],
               elementId: keyValuePairs[key],
             };
           }
-          return null; // To filter out undefined cases.
+          return {
+            elementName: key,
+            amount: 0,
+            elementId: keyValuePairs[key],
+          };
         })
         .filter(Boolean); // Remove null values.
 
@@ -57,6 +62,7 @@ export const processBulkUploadIncrementAction = async (
         effectiveDate: effectiveDate || todayDate(),
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
+        actionBy: employeeId,
         payrollElements,
       };
     });
@@ -64,7 +70,11 @@ export const processBulkUploadIncrementAction = async (
     const cleanData = [];
     console.log({ modifiedData });
     modifiedData.forEach((item) => {
-      if (Boolean(item.misMatch)) {
+      if (
+        Boolean(item.misMatch) ||
+        item.empName === "N/A" ||
+        item.employeeCode === "N/A"
+      ) {
         errorData.push(item);
       } else {
         cleanData.push(item);

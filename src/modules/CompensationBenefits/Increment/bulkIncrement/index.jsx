@@ -25,6 +25,7 @@ import { customStyles } from "utility/selectCustomStyle";
 import { useApiRequest } from "Hooks";
 import { DataTable } from "Components";
 import { ModalFooter, PModal } from "Components/Modal";
+import { Tag } from "antd";
 
 const initData = {
   files: "",
@@ -72,7 +73,7 @@ export default function BulkIncrementEntry() {
   };
   const saveHandler = () => {
     const callBack = () => {
-      history.push("/compensationAndBenefits/increment");
+      // history.push("/compensationAndBenefits/increment");
       setData([]);
     };
     data?.length > 0
@@ -82,8 +83,18 @@ export default function BulkIncrementEntry() {
           payload: data,
           toast: true,
           onSuccess: (res) => {
-            callBack();
+            // callBack();
             // toast.success(res?.data?.message || "Successful");
+
+            const modifiedResponse = data.map((item) => {
+              const responseItem = res.find((r) => r.slNo === item.slNo);
+              return {
+                ...item,
+                status: responseItem.isInserted ? "Success" : "Failed",
+                message: responseItem.message,
+              };
+            });
+            setData(modifiedResponse);
           },
         })
       : toast.warn("Please Upload Excel File");
@@ -122,7 +133,8 @@ export default function BulkIncrementEntry() {
         payrollInfo,
         values,
         setErrorData,
-        setOpen
+        setOpen,
+        employeeId
       );
     } catch (error) {
       isDevServer && console.log({ error });
@@ -185,10 +197,42 @@ export default function BulkIncrementEntry() {
       width: 40,
     },
   ];
+  const responseColumns = (source) => {
+    return [
+      {
+        title: "Status",
+        dataIndex: "status",
+        // key: "empName",
+        render: (_, rec) => {
+          return (
+            <div>
+              {rec?.status === "Success" ? (
+                <Tag color="green">{rec?.status}</Tag>
+              ) : (
+                <Tag color="red">{rec?.status}</Tag>
+              )}
+            </div>
+          );
+        },
+        hidden: source[0]?.status ? false : true,
+      },
+      {
+        title: "Message",
+        dataIndex: "message",
+        // key: "empCode",
+        width: 40,
+        hidden: source[0]?.status ? false : true,
+      },
+    ].filter((i) => !i.hidden);
+  };
 
   // Combine fixed and dynamic columns
   // const columns=(source)=> = {retrun[...fixedColumns, ...dynamicColumns(source)]};
-  const columns = (source) => [...fixedColumns, ...dynamicColumns(source)];
+  const columns = (source) => [
+    ...fixedColumns,
+    ...dynamicColumns(source),
+    ...responseColumns(source),
+  ];
   return (
     <>
       <Formik
