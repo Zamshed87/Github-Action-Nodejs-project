@@ -217,6 +217,8 @@ export default function AddEditForm({
       <Row gutter={[10, 2]}>
         <Col md={12} sm={24}>
           <PSelect
+            maxTagCount="responsive"
+            mode="multiple"
             options={getWgDDL?.data?.length > 0 ? getWgDDL?.data : []}
             name="orgName"
             label="Workplace Group"
