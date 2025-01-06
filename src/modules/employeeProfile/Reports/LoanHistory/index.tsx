@@ -137,8 +137,8 @@ const EmLoanHistory = () => {
       payload: {
         businessUnitId: buId,
         loanTypeId: 0,
-        departmentId: 0,
-        designationId: 0,
+        departmentIdList: values?.departmentId || [0],
+        designationIdList: values?.designationId || [0],
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.todate).format("YYYY-MM-DD"),
@@ -148,12 +148,10 @@ const EmLoanHistory = () => {
         installmentStatus: "",
         pageSize: pagination?.pageSize || 500,
         pageNo: pagination?.current || 1,
-        departments: formatFilterValue(values?.departmentId),
-        designations: formatFilterValue(values?.designationId),
         ispaginated: true,
         searchText: searchText || "",
-        workplaceGroupId: values?.workplaceGroup?.value,
-        workplaceId: values?.workplace?.value,
+        workplaceGroupId: values?.workplaceGroup?.value || 0,
+        workplaceId: values?.workplace?.value || 0,
       },
     });
   };
