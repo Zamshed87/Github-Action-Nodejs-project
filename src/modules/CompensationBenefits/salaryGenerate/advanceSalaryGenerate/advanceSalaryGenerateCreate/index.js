@@ -69,8 +69,8 @@ const AdvanceSalaryGenerateCreate = () => {
   const [, setIsEdit] = useState(false);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [hrPositionDDL, setHrPositionDDL] = useState([]);
-  const [, getDetails, ,] = useAxiosGet();
-  const [, getRegenerateAll, ,] = useAxiosGet();
+  const [, getDetails, detailsLoad] = useAxiosGet();
+  const [, getRegenerateAll, loadGenerate] = useAxiosGet();
 
   const [pages, setPages] = useState({
     current: 1,
@@ -336,6 +336,7 @@ const AdvanceSalaryGenerateCreate = () => {
           departmentId: itm?.intDepartmentId,
           designationId: itm?.intDesignationId,
           hrPositionId: itm?.intHRPositionId,
+          totalPresentDays: itm?.TotalPresentDays,
           // yearId: values?.yearId,
           // monthId: values?.monthId,
           basicSalary: itm?.numBasicORGross,
@@ -356,6 +357,8 @@ const AdvanceSalaryGenerateCreate = () => {
             departmentId: itm?.intDepartmentId,
             designationId: itm?.intDesignationId,
             hrPositionId: itm?.intHRPositionId,
+            totalPresentDays: itm?.TotalPresentDays,
+
             // yearId: values?.yearId,
             // monthId: values?.monthId,
             basicSalary: itm?.numBasicORGross,
@@ -426,6 +429,8 @@ const AdvanceSalaryGenerateCreate = () => {
                 strHRPostionName: itm?.hrPositionName,
                 numGrossSalary: itm?.grossSalary,
                 numBasicORGross: itm?.basicSalary,
+                TotalPresentDays: itm?.totalPresentDays,
+
                 AdvanceAmount: itm?.amount, // Map from `amount`
                 isSalaryGenerate: true,
               };
@@ -568,7 +573,7 @@ const AdvanceSalaryGenerateCreate = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {loading && <Loading />}
+        {(loading || detailsLoad || loadGenerate) && <Loading />}
         {permission?.isView ? (
           <div className="table-card">
             <div className="table-card-heading">
@@ -624,7 +629,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         classes="input-sm"
                         placeholder=" "
                         value={values?.monthYear}
-                        disabled={singleData}
+                        // disabled={singleData}
                         name="monthYear"
                         type="month"
                         onChange={(e) => {
@@ -656,7 +661,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         value={values?.fromDate}
                         name="fromDate"
                         type="date"
-                        disabled={singleData}
+                        // disabled={singleData}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
@@ -677,7 +682,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         placeholder=" "
                         value={values?.toDate}
                         name="toDate"
-                        disabled={singleData}
+                        // disabled={singleData}
                         type="date"
                         onChange={(e) => {
                           setValues((prev) => ({
@@ -719,7 +724,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           ] || []
                         }
                         value={values?.walletType}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -780,7 +785,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           ] || []
                         }
                         value={values?.advanceBasedOn}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -806,7 +811,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         // placeholder="Month"
                         name="advanceBasedOnPercentage"
                         min={0}
-                        disabled={singleData}
+                        // disabled={singleData}
                         step={"any"}
                         type="number"
                         className="form-control"
@@ -871,7 +876,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         name="workplace"
                         options={workplaceDDL || []}
                         value={values?.workplace}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -963,7 +968,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           }`;
 
                           getRegenerateAll(
-                            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForAdvanceSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${
+                            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForAdvanceSalaryReGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${
                               state?.monthId
                             }&intYearId=${state?.yearId}&strWorkplaceIdList=${
                               values?.workplace?.value
@@ -986,26 +991,39 @@ const AdvanceSalaryGenerateCreate = () => {
                               values?.advanceBasedOnPercentage
                             }`,
                             (data) => {
-                              const uniq = [];
-                              data?.forEach((itm) => {
-                                if (
-                                  !rowDto.some(
-                                    (item) =>
-                                      item?.intEmployeeId === itm?.intEmployeeId
-                                  )
-                                ) {
-                                  uniq.push(itm);
+                              // const uniq = [];
+                              // data?.forEach((itm) => {
+                              //   if (
+                              //     !rowDto.some(
+                              //       (item) =>
+                              //         item?.intEmployeeId === itm?.intEmployeeId
+                              //     )
+                              //   ) {
+                              //     uniq.push(itm);
+                              //   }
+                              // });
+
+                              const d = [];
+                              data?.forEach((i) => {
+                                const oldRow = rowDto.find(
+                                  (j) => j.intEmployeeId === i.intEmployeeId
+                                );
+                                if (oldRow?.intEmployeeId) {
+                                  d.push({
+                                    ...oldRow,
+                                    AdvanceAmount: i?.AdvanceAmount,
+                                  });
+                                } else {
+                                  d.push(i);
                                 }
                               });
-                              setRowDto((prev) => [...prev, ...uniq]);
-                              setAllData((prev) => [...prev, ...uniq]);
+
+                              setRowDto(d);
+                              setAllData(d);
                               setAllEmployeeString((prev) => {
-                                return (
-                                  prev +
-                                  uniq
-                                    .map((item) => item?.intEmployeeId)
-                                    .join(",")
-                                );
+                                return d
+                                  .map((item) => item?.intEmployeeId)
+                                  .join(",");
                               });
                             }
                           );
