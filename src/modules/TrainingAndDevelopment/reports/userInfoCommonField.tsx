@@ -3,6 +3,7 @@ import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { setCustomFieldsValue } from "../requisition/helper";
 
 const UserInfoCommonField = ({
   form,
@@ -206,14 +207,11 @@ const UserInfoCommonField = ({
             options={empDepartmentDDL?.data || []}
             name="department"
             label="Department"
-            mode={mode as "multiple" | undefined | "tags"}
+            mode={"multiple"}
             showSearch
             placeholder="Department"
             onChange={(value, op) => {
-              form.setFieldsValue({
-                department: op,
-                departmentId: value,
-              });
+              setCustomFieldsValue(form, "department", value);
             }}
             rules={[
               {
@@ -230,13 +228,10 @@ const UserInfoCommonField = ({
             options={designationApi?.data || []}
             name="hrPosition"
             label="HR Position"
-            mode={mode as "multiple" | undefined | "tags"}
+            mode={"multiple"}
             showSearch
             onChange={(value, op) => {
-              form.setFieldsValue({
-                hrPosition: op,
-                hrPositionId: value,
-              });
+              setCustomFieldsValue(form, "hrPosition", value);
             }}
           />
         </Col>

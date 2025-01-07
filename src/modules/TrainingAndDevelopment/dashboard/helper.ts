@@ -49,20 +49,30 @@ export const formateFilterData = (data: any) => {
   str += `&businessUnitIds=${data?.bUnit?.value}`;
   str += `&workplaceGroupIds=${data?.workplaceGroup?.value}`;
   str += `&workplaceIds=${data?.workplace?.value}`;
-  str += `&departmentIds=${data?.department?.value}`;
-  str += `&designationIds=${data?.designation?.value || 0}`;
+
+  if (data?.department?.length) {
+    data?.department.forEach((item: any) => {
+      str += `&departmentIds=${item}`;
+    });
+  }
+
+  if (data?.hrPosition?.length) {
+    data?.hrPosition.forEach((item: any) => {
+      str += `&designationIds=${item}`;
+    });
+  }
 
   // Add repeated parameters for training types
   if (data?.trainingType?.length) {
     data.trainingType.forEach((item: any) => {
-      str += `&TrainingTypeIds=${item?.value}`;
+      str += `&TrainingTypeIds=${item}`;
     });
   }
 
   // Add repeated parameters for trainers
   if (data?.nameofTrainerOrganization?.length) {
     data.nameofTrainerOrganization.forEach((item: any) => {
-      str += `&TrainerIds=${item?.value}`;
+      str += `&TrainerIds=${item}`;
     });
   }
 
