@@ -57,12 +57,16 @@ import "./style.css";
 import { getEnumData } from "common/api/commonApi";
 import { getSerial } from "Utils";
 import { typeDataSetForTrainerOrg } from "../helpers";
+import moment from "moment";
+import { formatDate, setCustomFieldsValue } from "../requisition/helper";
 
 const { Title } = Typography;
 
 // need to refactor code
 
 const TnDDashboard = () => {
+  const defaultToDate = moment();
+  const defaultFromDate = moment().startOf("year");
   const dispatch = useDispatch();
 
   const [summaryCard, getSummaryCard, summaryCardLoading, , summaryCardError] =
@@ -156,9 +160,15 @@ const TnDDashboard = () => {
         typeDataSetForTrainerOrg(data, setNameOfTrainerOrg, true);
       }
     );
-    getSummaryCard(`/Dashboard/Training/Dashboard/SummaryCard`);
+    getSummaryCard(
+      `/Dashboard/Training/Dashboard/SummaryCard?fromDate=${defaultFromDate.format(
+        "YYYY-MM-DD"
+      )}&toDate=${defaultToDate.format("YYYY-MM-DD")}`
+    );
     getTrininingModeSummary(
-      "/Dashboard/Training/Dashboard/TrainingMode",
+      `/Dashboard/Training/Dashboard/TrainingMode?fromDate=${defaultFromDate.format(
+        "YYYY-MM-DD"
+      )}&toDate=${defaultToDate.format("YYYY-MM-DD")}`,
       getTrainingModeSummaryDataSetUp
     );
     getUpcommingTrainingSummary("/Dashboard/Training/Dashboard/UpComming");
@@ -388,7 +398,21 @@ const TnDDashboard = () => {
   const [form] = Form.useForm();
   return (
     <div style={{ padding: "10px" }}>
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          fromDate: defaultFromDate,
+          toDate: defaultToDate,
+          bUnit: { label: "All", value: 0 },
+          workplaceGroup: { label: "All", value: 0 },
+          workplace: { label: "All", value: 0 },
+          department: { label: "All", value: 0 },
+          hrPosition: { label: "All", value: 0 },
+          trainingType: { label: "All", value: 0 },
+          requisitionStatus: { label: "All", value: "" },
+          nameofTrainerOrganization: { label: "All", value: 0 },
+        }}
+      >
         <PCard>
           <PCardHeader
             title={``}
@@ -466,16 +490,8 @@ const TnDDashboard = () => {
                 showSearch
                 placeholder="Training Type"
                 onChange={(value, op) => {
-                  form.setFieldsValue({
-                    trainingType: op,
-                  });
+                  setCustomFieldsValue(form, "trainingType", value);
                 }}
-                // rules={[
-                //   {
-                //     required: true,
-                //     message: "Training Type is required",
-                //   },
-                // ]}
               />
             </Col>
             <Col md={24} sm={12} xs={24}>
@@ -488,9 +504,11 @@ const TnDDashboard = () => {
                 placeholder="Name of Trainer & Organization"
                 onChange={(value, op) => {
                   console.log(op);
-                  form.setFieldsValue({
-                    nameofTrainerOrganization: op,
-                  });
+                  setCustomFieldsValue(
+                    form,
+                    "nameofTrainerOrganization",
+                    value
+                  );
                 }}
                 // rules={[
                 //   {
@@ -518,22 +536,36 @@ const TnDDashboard = () => {
                 }}
               />
             </Col>
-            {/* <Col md={6} sm={24}>
+            <Col md={6} sm={24}>
               <PButton
-                style={{ marginTop: "25px" }}
+                style={{ marginTop: "20px" }}
                 type="secondary"
                 content="Reset"
                 onClick={() => {
                   const values = form.getFieldsValue(true);
-                  form
-                    .validateFields()
-                    .then(() => {
-                      form.resetFields();
-                    })
-                    .catch(() => {});
+                  form.resetFields();
+                  form.setFieldsValue({
+                    fromDate: defaultFromDate,
+                    toDate: defaultToDate,
+                    bUnit: { label: "All", value: 0 },
+                    bUnitId: [0],
+                    workplaceGroup: { label: "All", value: 0 },
+                    workplaceGroupId: [0],
+                    workplace: { label: "All", value: 0 },
+                    workplaceId: [0],
+                    department: { label: "All", value: 0 },
+                    departmentId: [0],
+                    hrPosition: { label: "All", value: 0 },
+                    hrPositionId: [0],
+                    trainingType: { label: "All", value: 0 },
+                    trainingTitle: { label: "All", value: 0 },
+                    trainingMode: [""],
+                    nameofTrainerOrganization: { label: "All", value: 0 },
+                  });
+                  landingApiCall(values);
                 }}
               />
-            </Col> */}
+            </Col>
           </Row>
         </PForm>
       </Drawer>
