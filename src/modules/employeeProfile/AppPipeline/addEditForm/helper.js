@@ -36,7 +36,7 @@ export const header = (
     },
     {
       title: "Approver",
-      dataIndex: "approverLabel",
+      dataIndex: "approver",
       sorter: true,
     },
     {
@@ -166,8 +166,8 @@ export const submitHandler = ({
     row: tableData.map((item) => ({
       id: item?.id || 0, // rowId
       configHeaderId: item?.configHeaderId || 0, // header Id
-      approverTypeId: item?.pipelineName?.value || item?.approverValue || 0,
-      approverType: item?.pipelineName?.label || item?.approverLabel  || "",
+      approverTypeId: item?.approverId || 0,
+      approverType: item?.approver || "",
       beforeApproveStatus: item?.strStatusTitlePending || "",
       afterApproveStatus: item?.strStatusTitle || "",
       sequenceId: random ? 0 : item?.intShortOrder || 0,

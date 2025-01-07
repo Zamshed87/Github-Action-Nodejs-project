@@ -163,6 +163,7 @@ console.log("singleData",singleData)
           });
           const rowData = data?.row?.map((item) => ({
             approver: item?.approverType || "User Group",
+            approverId: item?.approverTypeId || 0,
             userGroup: item?.userGroupOrEmployeeId || "", 
             intPipelineRowId: item?.id || null,
             configHeaderId: data?.header?.id || 0,
@@ -484,7 +485,7 @@ console.log("singleData",singleData)
             }
           />
         </Form.Item>
-
+{console.log("tableData",tableData)}
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
@@ -529,10 +530,10 @@ console.log("singleData",singleData)
                       const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
-                      console.log("approver", approver);
                       const obj = {
-                        approverLabel: approver?.label,
-                        approverValue: approver?.value,
+
+                        approver: approver?.label || "",
+                        approverId: approver?.value || 0,
                         userGroup:
                           userGroup?.label ||
                           employee?.employeeNameWithCode ||
@@ -567,7 +568,6 @@ console.log("singleData",singleData)
             );
           }}
         </Form.Item>
-        {console.log("tableData", tableData)}
         <Col md={24} sm={24}>
           {tableData.length > 0 && (
             <DraggableTable
