@@ -3,6 +3,7 @@ import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { setCustomFieldsValue } from "./helper";
 
 const CommonFilterField = ({
   form,
@@ -112,30 +113,6 @@ const CommonFilterField = ({
         res.unshift({ label: "All", value: 0 });
       },
     });
-  };
-  const setCustomFieldsValue = (
-    form: FormInstance<any>,
-    field: any,
-    value: any
-  ) => {
-    if (value.includes("")) {
-      form.setFieldsValue({
-        [field]: [""],
-        [`${field}Id`]: [0],
-      });
-      return;
-    }
-    if (value.includes(0)) {
-      form.setFieldsValue({
-        [field]: [0],
-        [`${field}Id`]: [0],
-      });
-    } else {
-      form.setFieldsValue({
-        [field]: value,
-        [`${field}Id`]: value,
-      });
-    }
   };
 
   useEffect(() => {
