@@ -1272,6 +1272,13 @@ const BankAdviceReport = () => {
                         signatureImage={signatureImage}
                       />
                     )}
+                    {values?.adviceType?.value === "DBBLAB" && (
+                      <DBBLBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
                     {values?.adviceType?.value === "DigitalPayment" && (
                       <DigitalPaymentLetterHead
                         letterHeadImage={letterHeadImage}
