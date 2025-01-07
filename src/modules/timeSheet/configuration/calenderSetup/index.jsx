@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import AntTable from "../../../../common/AntTable";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import ViewModal from "../../../../common/ViewModal";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
@@ -24,6 +23,8 @@ import ViewCalendarSetup from "./ViewDetails";
 import "./calendarSetup.css";
 import { LightTooltip } from "common/LightTooltip";
 import MasterFilter from "common/MasterFilter";
+import { DataTable } from "Components";
+import { getSerial } from "Utils";
 
 const initData = {
   search: "",
@@ -50,11 +51,9 @@ export default function CalendarSetup() {
     document.title = "Calendar Setup";
   }, []);
 
-  const [pages] = useState({
+  const [pagination, setPagination] = useState({
     current: 1,
-    // pageSize: paginationSize,
-    pageSize: 50,
-    total: 0,
+    pageSize: 25,
   });
 
   // for create Modal
@@ -99,40 +98,16 @@ export default function CalendarSetup() {
       setRowDto,
       setAllData,
       setLoading,
-      pages?.current,
-      pages?.pageSize,
+      pagination?.current,
+      pagination?.pageSize,
       ""
     );
   };
 
   useEffect(() => {
-    // getPeopleDeskAllLanding(
-    //   "Calender",
-    //   orgId,
-    //   buId,
-    //   "",
-    //   setRowDto,
-    //   setAllData,
-    //   setLoading,
-    //   null,
-    //   null,
-    //   wgId
-    // );
     getLanding();
   }, [wId, buId]);
 
-  // search
-  const filterData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      const newDta = allData?.filter((item) =>
-        regex.test(item?.strCalenderName?.toLowerCase())
-      );
-      setRowDto(newDta);
-    } catch (e) {
-      setRowDto([]);
-    }
-  };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -143,136 +118,141 @@ export default function CalendarSetup() {
     }
   });
 
-  const columns = () => {
-    return [
-      {
-        title: () => <span style={{ color: gray600 }}>SL</span>,
-        render: (_, __, index) => index + 1,
-        className: "text-center",
-      },
-      {
-        title: "Calender Name",
-        dataIndex: "strCalenderName",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Min. Work Hour",
-        dataIndex: "numMinWorkHour",
-        render: (_, data) => <>{data?.numMinWorkHour || "-"}</>,
-        sorter: true,
-        filter: true,
-        isNumber: true,
-        className: "text-center",
-      },
-      {
-        title: () => (
-          <span style={{ color: gray600 }}>Office Opening Time</span>
-        ),
-        dataIndex: "dteOfficeStartTime",
-        render: (_, record) => (
-          <span>
-            {record?.dteOfficeStartTime
-              ? timeFormatter(record?.dteOfficeStartTime)
+  const columns = [
+    {
+      title: () => <span style={{ color: gray600 }}>SL</span>,
+      render: (_, rec, index) =>
+        getSerial({
+          currentPage: rowDto?.currentPage,
+          pageSize: rowDto?.pageSize,
+          index,
+        }),
+      width: 15,
+      className: "text-center",
+    },
+    {
+      title: "Calender Name",
+      dataIndex: "strCalenderName",
+      width: 45,
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Min. Work Hour",
+      dataIndex: "numMinWorkHour",
+      render: (_, data) => <>{data?.numMinWorkHour || "-"}</>,
+      width: 40,
+      sorter: true,
+      filter: true,
+      className: "text-center",
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Office Opening Time</span>,
+      dataIndex: "dteOfficeStartTime",
+      width: 40,
+      render: (_, record) => (
+        <span>
+          {record?.dteOfficeStartTime
+            ? timeFormatter(record?.dteOfficeStartTime)
+            : "-"}
+        </span>
+      ),
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Start Time</span>,
+      width: 25,
+      render: (_, record) => (
+        <span>
+          {record?.dteStartTime ? timeFormatter(record?.dteStartTime) : "-"}
+        </span>
+      ),
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Extended Start Time</span>,
+      dataIndex: "dteExtendedStartTime",
+      width: 40,
+      render: (_, record) => (
+        <span>
+          {record?.dteExtendedStartTime
+            ? timeFormatter(record?.dteExtendedStartTime)
+            : "-"}
+        </span>
+      ),
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Last Start Time</span>,
+      dataIndex: "dteLastStartTime",
+      width: 35,
+      render: (_, record) => (
+        <span>
+          {record?.dteLastStartTime
+            ? timeFormatter(record?.dteLastStartTime)
+            : "-"}
+        </span>
+      ),
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>End Time</span>,
+      width: 25,
+      render: (_, record) => (
+        <span>
+          {record?.dteEndTime ? timeFormatter(record?.dteEndTime) : "-"}
+        </span>
+      ),
+    },
+    {
+      title: () => (
+        <span style={{ color: gray600 }}>
+          Lunch break is calculated as working hour
+        </span>
+      ),
+      width: 80,
+      render: (_, record) => (
+        <span>
+          {record?.isLunchBreakCalculateAsWorkingHour ? "Yes" : "No" || "N/A"}
+        </span>
+      ),
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Office Closing Time</span>,
+      dataIndex: "dteOfficeCloseTime",
+      width: 40,
+      render: (_, record) => (
+        <>
+          <span style={{ marginRight: "20px" }}>
+            {record?.dteOfficeCloseTime
+              ? timeFormatter(record?.dteOfficeCloseTime)
               : "-"}
           </span>
-        ),
-      },
-      {
-        title: () => <span style={{ color: gray600 }}>Start Time</span>,
-
-        render: (_, record) => (
           <span>
-            {record?.dteStartTime ? timeFormatter(record?.dteStartTime) : "-"}
+            <LightTooltip
+              title={
+                <div className="holiday-exception-tooltip tableOne">
+                  <table className="table table-borderless mb-0">
+                    With each calendar setup modification, you must Re-assign
+                    the calendar{" "}
+                    <a
+                      href="/administration/timeManagement/calendarAssign"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span style={{ fontSize: "13px", color: "blue" }}>
+                        here
+                      </span>
+                    </a>
+                    .
+                  </table>
+                </div>
+              }
+              arrow
+            >
+              <InfoOutlined style={{ color: "red" }} />
+            </LightTooltip>
           </span>
-        ),
-      },
-      {
-        title: () => (
-          <span style={{ color: gray600 }}>Extended Start Time</span>
-        ),
-        dataIndex: "dteExtendedStartTime",
-        render: (_, record) => (
-          <span>
-            {record?.dteExtendedStartTime
-              ? timeFormatter(record?.dteExtendedStartTime)
-              : "-"}
-          </span>
-        ),
-      },
-      {
-        title: () => <span style={{ color: gray600 }}>Last Start Time</span>,
-        dataIndex: "dteLastStartTime",
-        render: (_, record) => (
-          <span>
-            {record?.dteLastStartTime
-              ? timeFormatter(record?.dteLastStartTime)
-              : "-"}
-          </span>
-        ),
-      },
-      {
-        title: () => <span style={{ color: gray600 }}>End Time</span>,
-        render: (_, record) => (
-          <span>
-            {record?.dteEndTime ? timeFormatter(record?.dteEndTime) : "-"}
-          </span>
-        ),
-      },
-      {
-        title: () => (
-          <span style={{ color: gray600 }}>
-            Lunch break is calculated as working hour
-          </span>
-        ),
-        render: (_, record) => (
-          <span>
-            {record?.isLunchBreakCalculateAsWorkingHour ? "Yes" : "No" || "N/A"}
-          </span>
-        ),
-      },
-      {
-        title: () => (
-          <span style={{ color: gray600 }}>Office Closing Time</span>
-        ),
-        dataIndex: "dteOfficeCloseTime",
-        render: (_, record) => (
-          <>
-            <span style={{ marginRight: "20px" }}>
-              {record?.dteOfficeCloseTime
-                ? timeFormatter(record?.dteOfficeCloseTime)
-                : "-"}
-            </span>
-            <span>
-              <LightTooltip
-                title={
-                  <div className="holiday-exception-tooltip tableOne">
-                    <table className="table table-borderless mb-0">
-                      With each calendar setup modification, you must Re-assign
-                      the calendar{" "}
-                      <a
-                        href="/administration/timeManagement/calendarAssign"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span style={{ fontSize: "13px", color: "blue" }}>
-                          here
-                        </span>
-                      </a>
-                      .
-                    </table>
-                  </div>
-                }
-                arrow
-              >
-                <InfoOutlined style={{ color: "red" }} />
-              </LightTooltip>
-            </span>
-          </>
-        ),
-      },
-    ];
-  };
+        </>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -289,7 +269,7 @@ export default function CalendarSetup() {
                 <div className="table-card calendarSetup-main">
                   <div className="table-card-heading">
                     <div className="total-result">
-                      {rowDto?.length > 0 ? (
+                      {rowDto?.data?.length > 0 ? (
                         <>
                           <h6
                             style={{
@@ -297,7 +277,7 @@ export default function CalendarSetup() {
                               color: "rgba(0, 0, 0, 0.6)",
                             }}
                           >
-                            Total {rowDto?.length} items
+                            Total {rowDto?.totalCount} items
                           </h6>
                         </>
                       ) : (
@@ -335,14 +315,14 @@ export default function CalendarSetup() {
                                 setRowDto,
                                 setAllData,
                                 setLoading,
-                                pages?.current,
-                                pages?.pageSize,
+                                pagination?.current,
+                                pagination?.pageSize,
                                 value || ""
                               );
                             } else {
                               getLanding();
                             }
-                            filterData(value, allData, setRowDto);
+                            // filterData(value, allData, setRowDto);
                             setFieldValue("search", value);
                           }}
                           cancelHandler={() => {
@@ -376,30 +356,45 @@ export default function CalendarSetup() {
                     </ul>
                   </div>
 
-                  <div className="table-card-body">
-                    <div className="table-card-styled tableOne">
-                      {rowDto?.length > 0 ? (
-                        <AntTable
-                          rowClassName="pointer"
-                          data={rowDto?.length > 0 && rowDto}
-                          columnsData={columns()}
-                          onRowClick={(dataRow) => {
-                            if (!permission?.isEdit)
-                              return toast.warn("You don't have permission");
-
-                            setId(dataRow?.calenderId);
-                            setViewModal(true);
-                          }}
-                        />
-                      ) : (
-                        <>
-                          {!loading && (
-                            <NoResult title="No Result Found" para="" />
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  {rowDto?.data?.length > 0 ? (
+                    <DataTable
+                      bordered
+                      data={rowDto?.data || []}
+                      loading={loading}
+                      header={columns}
+                      pagination={{
+                        pageSize: rowDto?.pageSize,
+                        total: rowDto?.totalCount,
+                      }}
+                      onChange={(pagination, filters, sorter, extra) => {
+                        if(extra?.action == "paginate"){
+                          getPeopleDeskAllLandingForCalender(
+                            wId,
+                            buId,
+                            setRowDto,
+                            setAllData,
+                            setLoading,
+                            pagination?.current,
+                            pagination?.pageSize,
+                            values?.search || ""
+                          );
+                        }
+                      }}
+                      onRow={(dataRow) => ({
+                        onClick: () => {
+                          if (!permission?.isEdit)
+                            return toast.warn("You don't have permission");
+                          setId(dataRow?.calenderId);
+                          setViewModal(true);
+                        },
+                      })}
+                      // scroll={{ x: 2000 }}
+                    />
+                  ) : (
+                    <>
+                      {!loading && <NoResult title="No Result Found" para="" />}
+                    </>
+                  )}
                 </div>
               ) : (
                 <NotPermittedPage />
