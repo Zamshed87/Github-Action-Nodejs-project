@@ -761,7 +761,9 @@ const SalaryPayslipReport = lazy(() =>
   import("../modules/CompensationBenefits/SalaryPayslipReport/index.jsx")
 );
 const MultiSalaryPayslipReport = lazy(() =>
-  import("../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx")
+  import(
+    "../modules/CompensationBenefits/SalaryPayslipReport/MultiPaySlip/index.tsx"
+  )
 );
 const SalaryTaxCertificate = lazy(() =>
   import("../modules/CompensationBenefits/salaryTaxCertificate/index.jsx")
@@ -1545,6 +1547,7 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2076,6 +2079,10 @@ export const routingList = [
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
+    component: CreateEditLeavePolicy,
+  },
+  {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/extention",
     component: CreateEditLeavePolicy,
   },
   {
@@ -3247,6 +3254,10 @@ export const routingList = [
   {
     path: "/profile/reports/monthlyLeaveReport",
     component: MonthlyLeaveReport,
+  },
+  {
+    path: "/profile/reports/nightShiftReport",
+    component: NightShiftReport,
   },
   {
     path: "/assetManagement/assetControlPanel/itemProfile/edit/:id",
