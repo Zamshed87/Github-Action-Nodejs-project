@@ -1,4 +1,4 @@
-export default function UCBBankLetterHead({
+export default function EFTNBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,
@@ -9,8 +9,8 @@ export default function UCBBankLetterHead({
         <img
           src={letterHeadImage.src}
           style={{
-            height: "1400px",
-            width: "991px",
+            height: "1570px",
+            width: "1130px",
             objectFit: "cover",
             position: "fixed",
             zIndex: -1,
@@ -43,6 +43,7 @@ export default function UCBBankLetterHead({
                 margin: "0px 96px",
                 fontSize: "14px",
                 marginTop: "50px",
+                minWidth: "930px",
               }}
             >
               <p style={{ color: "black", fontSize: "14px" }}>
@@ -50,9 +51,10 @@ export default function UCBBankLetterHead({
                   Date: {landingViewPdf?.[0]?.Today}
                 </b>
               </p>
+              <br />
               <p style={{ color: "black", fontSize: "14px" }}>
                 To <br />
-                The Manager,
+                Branch Manager,
               </p>
               <p style={{ color: "black", fontSize: "14px" }}>
                 {landingViewPdf?.[0]?.CompBankName}
@@ -60,20 +62,15 @@ export default function UCBBankLetterHead({
               <p style={{ color: "black", fontSize: "14px" }}>
                 {landingViewPdf?.[0]?.CompBranchName}
               </p>
-              <p style={{ color: "black", fontSize: "14px" }}>
-                {landingViewPdf?.[0]?.CompBankAddress}
-              </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
                 Dear Recipients,
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                <b>
-                  REQUEST TO DISBURSE EMPLOYEE SALARY&nbsp;
-                  {landingViewPdf?.[0]?.MonthName.toUpperCase()},&nbsp;
-                  {landingViewPdf?.[0]?.YearId}.
-                </b>
+                REQUEST TO DISBURSE EMPLOYEE SALARY&nbsp;
+                {landingViewPdf?.[0]?.MonthName.toUpperCase()},&nbsp;
+                {landingViewPdf?.[0]?.YearId}.
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
@@ -121,7 +118,7 @@ export default function UCBBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Account Name
+                        Reason
                       </th>
                       <th
                         style={{
@@ -130,7 +127,7 @@ export default function UCBBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Designation
+                        Sender A/C No
                       </th>
                       <th
                         style={{
@@ -139,7 +136,7 @@ export default function UCBBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Branch Name
+                        Receiving Bank Routing
                       </th>
                       <th
                         style={{
@@ -148,7 +145,7 @@ export default function UCBBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Account Number
+                        Bank A/C No
                       </th>
                       <th
                         style={{
@@ -157,7 +154,43 @@ export default function UCBBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Net Payment
+                        Amount
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Receiver Name
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Receiver Bank
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Receiver Branch
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Mode
                       </th>
                     </tr>
                   </thead>
@@ -178,7 +211,7 @@ export default function UCBBankLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.EmpAccountName}
+                          {item?.Narration}
                         </td>
                         <td
                           style={{
@@ -186,7 +219,7 @@ export default function UCBBankLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.EmployeeDesignation}
+                          {item?.CompAccountNumber}
                         </td>
                         <td
                           style={{
@@ -194,7 +227,7 @@ export default function UCBBankLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.EmpBranchName}
+                          {item?.EmpRoutingNo}
                         </td>
                         <td
                           style={{
@@ -212,31 +245,40 @@ export default function UCBBankLetterHead({
                         >
                           {item?.NeyPayableSalary.toFixed(2)}
                         </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.EmpAccountName}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.EmpBankName}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.EmpBranchName}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {"EFTN"}
+                        </td>
                       </tr>
                     ))}
-                    {landingViewPdf.length > 0 && (
-                      <tr>
-                        <th
-                          colSpan="5"
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "8px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Total
-                        </th>
-                        <th
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "8px",
-                            textAlign: "center",
-                          }}
-                        >
-                          {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}
-                        </th>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>

@@ -41,6 +41,8 @@ import IbblBankLetterHead from "./letterheadReports/IbblBankLetterHead";
 import DblBankLetterHead from "./letterheadReports/DblBankLetterHead";
 import SCBBankLetterHead from "./letterheadReports/SCBBankLetterHead";
 import DBBLBankLetterHead from "./letterheadReports/DBBLBankLetterHead";
+import UCBBankLetterHead from "./letterheadReports/UCBBankLetterHead";
+import EFTNBankLetterHead from "./letterheadReports/EFTNBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -1279,8 +1281,8 @@ const BankAdviceReport = () => {
                         signatureImage={signatureImage}
                       />
                     )}
-                    {values?.adviceType?.value === "DigitalPayment" && (
-                      <DigitalPaymentLetterHead
+                    {values?.adviceType?.value === "UCBL" && (
+                      <UCBBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}
@@ -1288,6 +1290,20 @@ const BankAdviceReport = () => {
                     )}
                     {values?.adviceType?.value === "BFTN" && (
                       <CityLiveLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "EFTN" && (
+                      <EFTNBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DigitalPayment" && (
+                      <DigitalPaymentLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}
