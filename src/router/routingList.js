@@ -1541,6 +1541,9 @@ const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
 // Training and Development
+import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
+import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
+import TnDInventory from "modules/TrainingAndDevelopment/reports/trainingInventory/inventory";
 import TnDInventoryDetails from "modules/TrainingAndDevelopment/reports/trainingInventory/inventoryDetails";
 import TnDAssessment from "modules/TrainingAndDevelopment/assessment/assessment";
 import TnDFeedback from "modules/TrainingAndDevelopment/feedback/feedback";
@@ -1554,9 +1557,6 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
-import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
-import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
-import TnDInventory from "modules/TrainingAndDevelopment/reports/trainingInventory/inventory";
 import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/AdvanceSalaryGenerateLanding";
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
