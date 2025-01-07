@@ -46,8 +46,8 @@ export const generateFilterBySrc = (
 
 // Dynamically generate onFilter function based on 'dataIndex'
 export const generateOnFilter =
-  (dataIndex: string) => (value: string, record: any) =>
-    record[dataIndex].toString().toLowerCase().indexOf(value.toLowerCase()) ===
+  (dataIndex: string) => (value: string | number, record: any) =>
+    record[dataIndex].toString().toLowerCase().indexOf(value?.toString()?.toLowerCase()) ===
     0;
 // Dynamically generate width based on Title
 export const generateColumnWidth = (
