@@ -388,7 +388,7 @@ export default function CalendarSetup() {
                           setViewModal(true);
                         },
                       })}
-                      // scroll={{ x: 2000 }}
+                      scroll={{ y: "72vh" }}
                     />
                   ) : (
                     <>
