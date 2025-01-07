@@ -134,10 +134,11 @@ export const submitHandler = ({
     getData();
   };
 
-  if (!tableData?.length)
+  if (!tableData?.length) {
     return toast.warn(
       `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
     );
+  }
 
   // Ensure workplaces is an array
   const workplaces = Array.isArray(values?.workplace)
@@ -147,7 +148,6 @@ export const submitHandler = ({
   // Collect payloads into an array
   const payloadList = workplaces.map((workplace) => ({
     header: {
-      sl: 0,
       id: values?.id || 0, // header id
       applicationTypeId: values?.pipelineName?.value || 0,
       applicationType: values?.pipelineName?.label || "",
@@ -178,13 +178,14 @@ export const submitHandler = ({
     })),
   }));
 
-  const finalPayload = payloadList;
+  // Prepare final payload based on singleData
+  const finalPayload = singleData ? payloadList[0] : payloadList;
 
-  const urlKey = !singleData
-    ? "CreateApprovalConfiguration"
-    : "UpdateApprovalConfiguration";
+  const urlKey = singleData
+    ? "UpdateApprovalConfiguration"
+    : "CreateApprovalConfiguration";
 
-  // // Make a single API call with the array of payloads
+  // Make a single API call with the final payload
   savePipeline.action({
     urlKey: urlKey,
     method: "POST",
@@ -195,4 +196,5 @@ export const submitHandler = ({
     toast: true,
   });
 };
+
 
