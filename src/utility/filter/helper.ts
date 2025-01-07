@@ -28,6 +28,7 @@ export const setCustomFieldsValue = (
     // If the last value is 0, set the field to only 0
     form.setFieldsValue({
       [field]: [""],
+      [`${field}Id`]: [""],
     });
     return;
   } else if (value.includes("")) {
@@ -35,6 +36,7 @@ export const setCustomFieldsValue = (
     const filteredValues = value.filter((v: any) => v !== "");
     form.setFieldsValue({
       [field]: filteredValues,
+      [`${field}Id`]: filteredValues,
     });
     return;
   }
@@ -43,17 +45,20 @@ export const setCustomFieldsValue = (
     // If the last value is 0, set the field to only 0
     form.setFieldsValue({
       [field]: [0],
+      [`${field}Id`]: [0],
     });
   } else if (value.includes(0)) {
     // If 0 is present but it's not the last value, remove it
     const filteredValues = value.filter((v: any) => v !== 0);
     form.setFieldsValue({
       [field]: filteredValues,
+      [`${field}Id`]: filteredValues,
     });
   } else {
     // Otherwise, set the field to the given value
     form.setFieldsValue({
       [field]: value,
+      [`${field}Id`]: value,
     });
   }
 };
