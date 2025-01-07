@@ -292,4 +292,6 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
+  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
+  CreateNUpdateShiftChangeRequest:"/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
 };

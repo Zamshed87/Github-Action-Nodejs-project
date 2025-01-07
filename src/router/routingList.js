@@ -1656,6 +1656,11 @@ const Test = lazy(() =>
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
 
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
+);
+
+
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -2362,6 +2367,10 @@ export const routingList = [
   {
     path: "/SelfService/timeManagement/attendenceAdjustRequest",
     component: SelfAttendenceAdjust,
+  },
+  {
+    path: "/SelfService/timeManagement/shiftChangeRequest",
+    component: AttendanceShiftChange,
   },
   {
     path: "/SelfService/timeManagement/overTimeRequisition",
