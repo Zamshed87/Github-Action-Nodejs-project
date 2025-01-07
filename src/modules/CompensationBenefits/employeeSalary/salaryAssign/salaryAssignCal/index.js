@@ -443,14 +443,17 @@ const adjustOverFollowAmount = (
     array[indexOfLowestAmount].numAmount = roundToDecimals(
       array[indexOfLowestAmount]?.numAmount - overFollowAmount
     );
-    array[indexOfLowestAmount][payrollElementName] -= overFollowAmount;
+    array[indexOfLowestAmount][payrollElementName] -=
+      roundToDecimals(overFollowAmount);
   } else {
     // console.log({ isNotOverFollow: overFollowAmount });
 
     array[indexOfLowestAmount].numAmount = roundToDecimals(
       array[indexOfLowestAmount]?.numAmount + overFollowAmount * -1
     );
-    array[indexOfLowestAmount][payrollElementName] += overFollowAmount * -1;
+    array[indexOfLowestAmount][payrollElementName] += roundToDecimals(
+      overFollowAmount * -1
+    );
   }
   setterFunc(array);
 };
