@@ -307,7 +307,7 @@ const EmOverTimeReport = () => {
             onExport={() => {
               const values = form.getFieldsValue(true);
               const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=excelView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
-                values?.workplaceGroup?.value
+                values?.workplaceGroup?.value || 0
               }&dteFromDate=${moment(values?.fromDate).format(
                 "YYYY-MM-DD"
               )}&dteToDate=${moment(values?.toDate).format(
@@ -324,8 +324,12 @@ const EmOverTimeReport = () => {
             pdfExport={() => {
               const values = form.getFieldsValue(true);
               const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=pdfView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
-                values?.workplaceGroup?.value
-              }&dteFromDate=${moment(values?.fromDate).format(
+                values?.workplaceGroup?.value || 0
+              }&departments=${formatFilterValue(
+                values?.department
+              )}&designations=${formatFilterValue(
+                values?.designation
+              )}&dteFromDate=${moment(values?.fromDate).format(
                 "YYYY-MM-DD"
               )}&dteToDate=${moment(values?.toDate).format(
                 "YYYY-MM-DD"
