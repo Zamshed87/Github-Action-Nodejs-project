@@ -37,6 +37,8 @@ import axios from "axios";
 import { fromToDateList } from "modules/timeSheet/reports/helper";
 import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
+import { formatFilterValue } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const MonthlyPunchReportDetails = () => {
   const dispatch = useDispatch();
@@ -183,10 +185,10 @@ const MonthlyPunchReportDetails = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    const deptList = `${values?.department
-      ?.map((item: any) => item?.value)
-      .join(",")}`;
-    const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
+    // const deptList = `${values?.department
+    //   ?.map((item: any) => item?.value)
+    //   .join(",")}`;
+    // const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
@@ -198,13 +200,15 @@ const MonthlyPunchReportDetails = () => {
         WorkplaceList: values?.workplace?.value || wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
+        departments: formatFilterValue(values?.departmentId),
+        designations: formatFilterValue(values?.designationId),
         employeeId: employeeId,
         isPaginated: true,
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         searchTxt: searchText || "",
-        departments: values?.department?.length > 0 ? deptList : "",
-        designations: values?.designation?.length > 0 ? desigList : "",
+        //departments: values?.department?.length > 0 ? deptList : "",
+        //designations: values?.designation?.length > 0 ? desigList : "",
       },
     });
   };
@@ -406,7 +410,8 @@ const MonthlyPunchReportDetails = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -530,7 +535,7 @@ const MonthlyPunchReportDetails = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
