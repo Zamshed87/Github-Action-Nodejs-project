@@ -1,41 +1,36 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getAssetListDataForApproval = async (
-  payload,
-  setter,
-  setAllData,
+export const fetchPendingApprovals = async ({
+  id,
   setLoading,
-  cb
-) => {
-  setLoading && setLoading(true);
+  orgId,
+  buId,
+  wgId,
+  wId,
+  employeeId,
+  setData,
+}) => {
+  setLoading(true);
   try {
-    const res = await axios.post(
-      `/ApprovalPipeline/AssetRequisitionLandingEngine`,
-      payload
+    const response = await axios.get(
+      `/Approval/GetAllPendingApplicationsForApproval`,
+      {
+        params: {
+          accountId: orgId,
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
+          workplaceId: wId,
+          applicationTypeId: id,
+          employeeId: employeeId,
+        },
+      }
     );
-    if (res?.data) {
-      setAllData && setAllData(res?.data);
-      setter(res?.data);
-    }
-    cb && cb();
-    setLoading && setLoading(false);
+    setData(Array.isArray(response.data) ? response.data : []);
   } catch (error) {
-    setter([]);
-    setLoading && setLoading(false);
+    toast.error("Failed to fetch approvals.");
+    setData([]);
+  } finally {
+    setLoading(false);
   }
 };
-
-export const AssetApproveReject = async (payload, cb) => {
-  try {
-    const res = await axios.post(
-      `/ApprovalPipeline/AssetRequisitionApprovalEngine`,
-      payload
-    );
-    cb && cb();
-    toast.success(res?.data || "Submitted Successfully");
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-  }
-};
-

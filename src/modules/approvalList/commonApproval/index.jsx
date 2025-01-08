@@ -2,12 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Button, Spin, Table, Modal } from "antd";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-
+import {
+  CheckOutlined,
+  CloseOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
 import "./index.css";
 import { shallowEqual, useSelector } from "react-redux";
+import { columnsLeave } from "./utils";
+import { fetchPendingApprovals } from "./helper";
+import { useParams } from "react-router-dom";
 
-const CommonApprovalComponent = ({ applicationTypeId }) => {
+const CommonApprovalComponent = () => {
+  const {id} = useParams();
+  console.log("id", id);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -20,33 +28,17 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
   );
 
   useEffect(() => {
-    fetchPendingApprovals(applicationTypeId);
-  }, [applicationTypeId]);
-
-  const fetchPendingApprovals = async (applicationTypeId) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `/Approval/GetAllPendingApplicationsForApproval`,
-        {
-          params: {
-            accountId: orgId,
-            businessUnitId: buId,
-            workplaceGroupId: wgId,
-            workplaceId: wId,
-            applicationTypeId: 8,
-            employeeId: employeeId,
-          },
-        }
-      );
-      setData(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      toast.error("Failed to fetch approvals.");
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId,
+      wId,
+      employeeId,
+      setData,
+    });
+  }, [id]);
 
   const handleApproveReject = async (isApprove) => {
     const payload = selectedRowKeys.map((key) => {
@@ -57,7 +49,7 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
         applicationId: row.applicationId,
         isApprove,
         isReject: !isApprove,
-        actionBy: employeeId, // Replace with actual user ID
+        actionBy: employeeId,
       };
     });
 
@@ -66,7 +58,16 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
       toast.success(
         `Applications ${isApprove ? "approved" : "rejected"} successfully.`
       );
-      fetchPendingApprovals(applicationTypeId);
+      fetchPendingApprovals({
+        id,
+        setLoading,
+        orgId,
+        buId,
+        wgId,
+        wId,
+        employeeId,
+        setData,
+      });
       setSelectedRowKeys([]);
     } catch (error) {
       toast.error("Failed to process approvals.");
@@ -88,47 +89,6 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
     setModalAction(null);
   };
 
-  const columns = [
-    {
-      title: "Employee Name",
-      dataIndex: ["applicationInformation", "employeeName"],
-      key: "employeeName",
-    },
-    {
-      title: "Designation",
-      dataIndex: ["applicationInformation", "designation"],
-      key: "designation",
-    },
-    {
-      title: "Department",
-      dataIndex: ["applicationInformation", "department"],
-      key: "department",
-    },
-    {
-      title: "Application Date",
-      dataIndex: ["applicationInformation", "applicationDate"],
-      key: "applicationDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "From Date",
-      dataIndex: ["applicationInformation", "fromDate"],
-      key: "fromDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "To Date",
-      dataIndex: ["applicationInformation", "toDate"],
-      key: "toDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Status",
-      dataIndex: ["applicationInformation", "status"],
-      key: "status",
-    },
-  ];
-
   const rowSelection = {
     selectedRowKeys,
     onChange: (keys) => setSelectedRowKeys(keys),
@@ -142,7 +102,25 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
       >
         <Button
           size="small"
-          style={{ backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}
+          style={{
+            backgroundColor: "#2196F3",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
+          onClick={() => window.history.back()}
+          icon={<ArrowLeftOutlined />}
+        >
+          Back
+        </Button>
+        <Button
+          size="small"
+          style={{
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
           onClick={() => showConfirmationModal("approve")}
           disabled={selectedRowKeys.length === 0}
           icon={<CheckOutlined />}
@@ -151,7 +129,12 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
         </Button>
         <Button
           size="small"
-          style={{ backgroundColor: "#F44336", color: "white", border: "none", borderRadius: "4px" }}
+          style={{
+            backgroundColor: "#F44336",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
           onClick={() => showConfirmationModal("reject")}
           disabled={selectedRowKeys.length === 0}
           icon={<CloseOutlined />}
@@ -166,9 +149,10 @@ const CommonApprovalComponent = ({ applicationTypeId }) => {
         <Table
           rowKey="id"
           rowSelection={rowSelection}
-          columns={columns}
+          columns={columnsLeave}
           dataSource={data}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content" }}
         />
       )}
       <Modal
