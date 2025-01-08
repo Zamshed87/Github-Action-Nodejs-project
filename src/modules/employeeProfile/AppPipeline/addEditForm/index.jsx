@@ -128,7 +128,7 @@ export default function AddEditForm({
 
   // Form Instance
   const [form] = Form.useForm();
-console.log("singleData",singleData)
+  console.log("singleData", singleData);
   useEffect(() => {
     if (singleData?.id) {
       getPipelineDetails.action({
@@ -145,16 +145,22 @@ console.log("singleData",singleData)
           form.setFieldsValue({
             ...singleData,
             orgName: {
-              value: data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
-              label: data?.header?.workplaceGroupName || singleData?.workplaceGroupName,
+              value:
+                data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
+              label:
+                data?.header?.workplaceGroupName ||
+                singleData?.workplaceGroupName,
             },
             workplace: {
               value: data?.header?.workplaceId || singleData?.workplaceId,
               label: data?.header?.workplaceName || singleData?.workplaceName,
             },
             pipelineName: {
-              value: data?.header?.applicationTypeId || singleData?.applicationTypeId,
-              label: data?.header?.applicationType || singleData?.applicationType,
+              value:
+                data?.header?.applicationTypeId ||
+                singleData?.applicationTypeId,
+              label:
+                data?.header?.applicationType || singleData?.applicationType,
             },
             remarks: data?.header?.strRemarks || "",
             randomCountValue: data?.header?.randomApproverCount || 0,
@@ -164,7 +170,7 @@ console.log("singleData",singleData)
           const rowData = data?.row?.map((item) => ({
             approver: item?.approverType || "User Group",
             approverId: item?.approverTypeId || 0,
-            userGroup: item?.userGroupOrEmployeeId || "", 
+            userGroup: item?.userGroupOrEmployeeId || "",
             intPipelineRowId: item?.id || null,
             configHeaderId: data?.header?.id || 0,
             id: item?.id,
@@ -173,12 +179,12 @@ console.log("singleData",singleData)
             intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
             intShortOrder: item?.sequenceId || 0,
             isCreate: false,
-            isDelete: false, 
+            isDelete: false,
             strStatusTitle: item?.afterApproveStatus || "",
             strStatusTitlePending: item?.beforeApproveStatus || "",
-            randomCount: false, 
+            randomCount: false,
           }));
-          
+
           setTableData(rowData);
         },
       });
@@ -414,10 +420,15 @@ console.log("singleData",singleData)
                   setRandomCount(false);
                   setRandom(false);
                 } else {
-                  form.setFieldsValue({
-                    isSequence: false,
-                  });
-                  setIsSequence(false);
+                  const randomCount = form.getFieldValue("randomCount");
+                  if (!randomCount) {
+                    form.setFieldsValue({ isSequence: true });
+                    setIsSequence(true);
+                    toast.warn("At least one option must be selected!", {toastId: "isSequence"});
+                  } else {
+                    form.setFieldsValue({ isSequence: false });
+                    setIsSequence(false);
+                  }
                 }
               }}
             >
@@ -444,10 +455,15 @@ console.log("singleData",singleData)
                   setIsSequence(false);
                   setRandom(true);
                 } else {
-                  form.setFieldsValue({
-                    randomCount: false,
-                  });
-                  setRandomCount(false);
+                  const isSequence = form.getFieldValue("isSequence");
+                  if (!isSequence) {
+                    form.setFieldsValue({ randomCount: true });
+                    setRandomCount(true);
+                    toast.warn("At least one option must be selected!",{toastId: "randomCount"});
+                  } else {
+                    form.setFieldsValue({ randomCount: false });
+                    setRandomCount(false);
+                  }
                 }
               }}
             >
@@ -485,7 +501,7 @@ console.log("singleData",singleData)
             }
           />
         </Form.Item>
-{console.log("tableData",tableData)}
+        {console.log("tableData", tableData)}
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
@@ -531,7 +547,6 @@ console.log("singleData",singleData)
 
                       const data = [...tableData];
                       const obj = {
-
                         approver: approver?.label || "",
                         approverId: approver?.value || 0,
                         userGroup:
