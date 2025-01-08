@@ -29,7 +29,10 @@ import { debounce } from "lodash";
 import { LightTooltip } from "common/LightTooltip";
 import { InfoOutlined } from "@mui/icons-material";
 import { getPDFAction } from "utility/downloadFile";
-import { formatFilterValue } from "utility/filter/helper";
+import {
+  formatFilterValue,
+  formatFilterValueList,
+} from "utility/filter/helper";
 import PFilter from "utility/filter/PFilter";
 
 const EmLoanHistory = () => {
@@ -137,8 +140,8 @@ const EmLoanHistory = () => {
       payload: {
         businessUnitId: buId,
         loanTypeId: 0,
-        departmentIdList: values?.departmentId || [0],
-        designationIdList: values?.designationId || [0],
+        departmentIdList: formatFilterValueList(values?.department) || [0],
+        designationIdList: formatFilterValueList(values?.designation) || [0],
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.todate).format("YYYY-MM-DD"),

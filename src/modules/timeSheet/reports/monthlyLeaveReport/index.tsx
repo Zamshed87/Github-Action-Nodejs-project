@@ -34,6 +34,7 @@ import axios from "axios";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
 import { column } from "./helper";
 import PFilter from "utility/filter/PFilter";
+import { formatFilterValueList } from "utility/filter/helper";
 
 const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
@@ -187,7 +188,7 @@ const MonthlyLeaveReport = () => {
       payload: {
         accountId: orgId,
         businessUnitId: buId,
-        workPlaceGroupId: values?.workplaceGroup?.value,
+        workPlaceGroupId: values?.workplaceGroup?.value || 0,
         workPlaceId: values?.workplace?.value || 0,
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -197,8 +198,8 @@ const MonthlyLeaveReport = () => {
         pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
         isPaginated: true,
         SearchText: searchText,
-        departmentIdList: values?.departmentId || [0],
-        designationIdList: values?.designationId || [0],
+        departmentIdList: formatFilterValueList(values?.department) || [0],
+        designationIdList: formatFilterValueList(values?.designation) || [0],
         supervisorId: values?.supervisor?.value || 0,
       },
     });
@@ -389,16 +390,21 @@ const MonthlyLeaveReport = () => {
                     {
                       accountId: orgId,
                       businessUnitId: buId,
-                      workPlaceGroupId: values?.workplaceGroup?.value,
-                      workPlaceId: values?.workplace?.value,
+                      workPlaceGroupId: values?.workplaceGroup?.value || 0,
+                      workPlaceId: values?.workplace?.value || 0,
                       employeeId: 0,
                       fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
                       toDate: moment(values?.toDate).format("YYYY-MM-DD"),
                       pageNo: 1,
                       pageSize: 500,
                       isPaginated: false,
-                      departmentIdList: dept?.length > 0 ? dept : null,
                       supervisorId: values?.supervisor?.value || 0,
+                      departmentIdList: formatFilterValueList(
+                        values?.department
+                      ) || [0],
+                      designationIdList: formatFilterValueList(
+                        values?.designation
+                      ) || [0],
                     }
                   );
                   if (res?.data?.Data) {
@@ -486,7 +492,7 @@ const MonthlyLeaveReport = () => {
                               ? "Search minimum 2 character"
                               : "Select Workplace Group first"
                           }`}
-                          disabled={!workplaceGroup?.value}
+                          //disabled={!workplaceGroup?.value}
                           onChange={(value, op) => {
                             form.setFieldsValue({
                               supervisor: op,

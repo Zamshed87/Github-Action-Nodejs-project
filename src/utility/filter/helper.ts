@@ -56,3 +56,16 @@ export const setCustomFieldsValue = (
     });
   }
 };
+
+export const formatFilterValueList = (
+  value: { value: number | string }[] | null | undefined
+): any[] => {
+  if (!value || value.length === 0) {
+    return [0]; // Return 0 if value is null, undefined, or an empty array
+  } else if (Array.isArray(value)) {
+    // Extract the 'value' property and join as a comma-separated string
+    return value.map((item) => item.value);
+  } else {
+    return [0]; // Fallback for unsupported input types
+  }
+};

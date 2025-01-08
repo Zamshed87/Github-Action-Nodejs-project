@@ -149,8 +149,8 @@ const RosterReport = () => {
         WorkplaceGroupId: values?.workplaceGroup?.value || 0,
         WorkplaceId: values?.workplace?.value || 0,
         PageNo: pagination.current || pages?.current,
-        departments: formatFilterValue(values?.departmentId),
-        designations: formatFilterValue(values?.designationId),
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageSize:
           pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         EmployeeId: 0,
@@ -297,9 +297,8 @@ const RosterReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
                       values?.fromDate
                     ).format("YYYY-MM-DD")}&DteToDate=${moment(
                       values?.toDate
@@ -307,13 +306,18 @@ const RosterReport = () => {
                       values?.workplaceGroup?.value || 0
                     }&WorkplaceId=${
                       values?.workplace?.value || 0
-                    }&PageNo=1&SearchTxt=${
+                    }&PageNo=1&departments=${
+                      formatFilterValue(values?.department) || 0
+                    }&designations=${formatFilterValue(
+                      values?.designation || 0
+                    )}&SearchTxt=${
                       values?.search || ""
                     }&PageSize=1000&IsPaginated=false`
                   );
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
+                      setExcelLoading(false);
                       return toast.error("No Attendance Data Found");
                     }
 

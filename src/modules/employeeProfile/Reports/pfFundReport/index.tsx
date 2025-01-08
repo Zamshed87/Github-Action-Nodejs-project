@@ -18,6 +18,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { formatMoney } from "utility/formatMoney";
 import PFilter from "utility/filter/PFilter";
+import { formatFilterValueList } from "utility/filter/helper";
 
 type TPFFundReport = {};
 const PFFundReport: React.FC<TPFFundReport> = () => {
@@ -78,8 +79,10 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
             status: values?.status?.value,
             pageNo: pagination?.current || 1,
             pageSize: pagination?.pageSize || 25,
-            departmentIdList: values?.departmentId || [0],
-            designationIdList: values?.designationId || [0],
+            departmentIdList: formatFilterValueList(values?.department) || [0],
+            designationIdList: formatFilterValueList(values?.designation) || [
+              0,
+            ],
           },
         });
       })
