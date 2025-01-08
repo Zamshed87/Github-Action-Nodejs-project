@@ -32,7 +32,8 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column, getTableDataDailyAttendance } from "./helper";
 import { timeFormatter } from "utility/timeFormatter";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { getPDFAction } from "utility/downloadFile";
+import { downloadFile, getPDFAction } from "utility/downloadFile";
+import { todayDate } from "utility/todayDate";
 
 const LateReport = () => {
   const dispatch = useDispatch();
@@ -285,62 +286,82 @@ const LateReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  getExcelData(
-                    `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-                      values?.workplaceGroup?.value
-                    }&IntWorkplaceId=${values?.workplace?.value}&Date=${moment(
+                  const workplaceList = `${values?.workplace
+                    ?.map((item: any) => item?.intWorkplaceId)
+                    .join(",")}`;
+                  const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                    values?.workplaceGroup?.value
+                  }&WorkplaceList=${
+                    workplaceList
+                  }&AttendanceDate=${moment(values?.fromDate).format(
+                    "YYYY-MM-DD"
+                  )}&PageNo=1&PageSize=10000&ReportType=excel`;
+                  downloadFile(
+                    url,
+                    `Attendance Report (${
                       values?.fromDate
-                    ).format("YYYY-MM-DD")}&IsXls=true&PageNo=1&PageSize=10000`,
-
-                    (res: any) => {
-                      const newData = res?.data?.map(
-                        (item: any, index: any) => {
-                          return {
-                            ...item,
-                            sl: index + 1,
-                            intime: timeFormatter(item?.intime) || "N/A",
-                          };
-                        }
-                      );
-                      createCommonExcelFile({
-                        titleWithDate: `Late Report for ${moment(
-                          values?.fromDate
-                        ).format("YYYY-MM-DD")} }`,
-                        fromDate: "",
-                        toDate: "",
-                        buAddress: (buDetails as any)?.strAddress,
-                        businessUnit: values?.workplaceGroup?.value
-                          ? (buDetails as any)?.strWorkplace
-                          : buName,
-                        tableHeader: column,
-                        getTableData: () =>
-                          getTableDataDailyAttendance(
-                            newData,
-                            Object.keys(column)
-                          ),
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        getSubTableData: () => {},
-                        subHeaderInfoArr: [],
-                        subHeaderColumn: [],
-                        tableFooter: [],
-                        extraInfo: {},
-                        tableHeadFontSize: 10,
-                        widthList: {
-                          C: 30,
-                          D: 30,
-                          E: 25,
-                          F: 20,
-                          G: 25,
-                          H: 25,
-                          I: 25,
-                          K: 20,
-                        },
-                        commonCellRange: "A1:J1",
-                        CellAlignment: "left",
-                      });
-                    }
+                        ? moment(values.fromDate).format("YYYY-MM-DD")
+                        : todayDate()
+                    })`,
+                    "xlsx",
+                    setExcelLoading
                   );
-                  setExcelLoading(false);
+                  // getExcelData(
+                  //   `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                  //     values?.workplaceGroup?.value
+                  //   }&IntWorkplaceId=${values?.workplace?.value}&Date=${moment(
+                  //     values?.fromDate
+                  //   ).format("YYYY-MM-DD")}&IsXls=true&PageNo=1&PageSize=10000`,
+
+                  //   (res: any) => {
+                  //     const newData = res?.data?.map(
+                  //       (item: any, index: any) => {
+                  //         return {
+                  //           ...item,
+                  //           sl: index + 1,
+                  //           intime: timeFormatter(item?.intime) || "N/A",
+                  //         };
+                  //       }
+                  //     );
+                  //     createCommonExcelFile({
+                  //       titleWithDate: `Late Report for ${moment(
+                  //         values?.fromDate
+                  //       ).format("YYYY-MM-DD")} }`,
+                  //       fromDate: "",
+                  //       toDate: "",
+                  //       buAddress: (buDetails as any)?.strAddress,
+                  //       businessUnit: values?.workplaceGroup?.value
+                  //         ? (buDetails as any)?.strWorkplace
+                  //         : buName,
+                  //       tableHeader: column,
+                  //       getTableData: () =>
+                  //         getTableDataDailyAttendance(
+                  //           newData,
+                  //           Object.keys(column)
+                  //         ),
+                  //       // eslint-disable-next-line @typescript-eslint/no-empty-function
+                  //       getSubTableData: () => {},
+                  //       subHeaderInfoArr: [],
+                  //       subHeaderColumn: [],
+                  //       tableFooter: [],
+                  //       extraInfo: {},
+                  //       tableHeadFontSize: 10,
+                  //       widthList: {
+                  //         C: 30,
+                  //         D: 30,
+                  //         E: 25,
+                  //         F: 20,
+                  //         G: 25,
+                  //         H: 25,
+                  //         I: 25,
+                  //         K: 20,
+                  //       },
+                  //       commonCellRange: "A1:J1",
+                  //       CellAlignment: "left",
+                  //     });
+                  //   }
+                  // );
+                  // setExcelLoading(false);
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
@@ -355,8 +376,11 @@ const LateReport = () => {
               const list = landingApi?.data?.data?.map(
                 (item: any) => item?.employeeId
               );
+              const workplaceList = `${values?.workplace
+                ?.map((item: any) => item?.intWorkplaceId)
+                .join(",")}`;
               getPDFAction(
-                `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${moment(
+                `/PdfAndExcelReport/DailyAttendanceReportPDF?ReportType=pdf&IntAccountId=${orgId}&AttendanceDate=${moment(
                   values?.fromDate
                 )?.format("YYYY-MM-DD")}${
                   buId ? `&IntBusinessUnitId=${buId}` : ""
@@ -370,8 +394,8 @@ const LateReport = () => {
                     ? `&EmployeeIdList=${list}`
                     : ""
                 }${
-                  values?.workplace?.value
-                    ? `&IntWorkplaceId=${values?.workplace?.value}`
+                  values?.workplace
+                    ? `&WorkplaceList=${workplaceList}`
                     : ""
                 }`,
                 setLoading
