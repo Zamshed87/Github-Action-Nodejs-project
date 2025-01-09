@@ -1,5 +1,7 @@
+import { isDevServer } from "App";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 export const createMovementApplication = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
@@ -136,6 +138,104 @@ export const processBulkUploadSalaryAction = async (
   }
 };
 
+export const processNewBulkUploadSalaryAction = async (
+  data,
+  setter,
+  setLoading,
+  elementInfo,
+  payrollInfo,
+  values,
+  setErrorData,
+  setOpen,
+  employeeId
+) => {
+  try {
+    setLoading(true);
+    const keyValuePairs = {};
+
+    for (const item of elementInfo) {
+      if (typeof item === "string" && item.includes(" : ")) {
+        const [key, value] = item.split(" : ").map((str) => str.trim());
+        keyValuePairs[key] = value; // Add to the object
+      }
+    }
+    console.log({ data });
+    const modifiedData = data.slice(2).map((item, index) => {
+      const {
+        "Employee Name": empName,
+        "Employee Code": employeeCode,
+        "Gross Salary": gross,
+        "Mismatch Amount": misMatch,
+        "Effective Date": effectiveDate,
+        "Payment Method": pm,
+        "Payment Method Match": pmm,
+        Bank: bank,
+        Cash: cash,
+        Digital: digital,
+        ...fields
+      } = item;
+      const payrollElements = Object.keys(fields)
+        // .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
+        .map((key) => {
+          if (fields[key]?.result !== undefined || !isNaN(fields[key])) {
+            // console.log(keyValuePairs);
+            return {
+              elementName: key,
+              amount: fields[key].result || fields[key],
+              elementId: keyValuePairs[key],
+            };
+          }
+          return {
+            elementName: key,
+            amount: 0,
+            elementId: keyValuePairs[key],
+          };
+        })
+        .filter(Boolean); // Remove null values.
+
+      return {
+        slNo: index + 1,
+        empName: empName || "N/A",
+        employeeCode: `${employeeCode}` || "N/A",
+        gross: gross?.result || gross || 0,
+        effectiveDate: effectiveDate || todayDate(),
+        payrollGroupId: values?.pg?.value || payrollInfo[7],
+        misMatch: misMatch?.result || 0,
+        actionBy: employeeId,
+        payrollElements,
+        pm: pm || "N/A",
+        bank: bank || 0,
+        cash: cash || 0,
+        digital: digital || 0,
+        pmm: pmm?.result || false,
+      };
+    });
+    const errorData = [];
+    const cleanData = [];
+    console.log({ modifiedData });
+    modifiedData.forEach((item) => {
+      if (
+        Boolean(item.misMatch) ||
+        item.empName === "N/A" ||
+        item.employeeCode === "N/A" ||
+        item?.pmm !== "TRUE"
+      ) {
+        errorData.push(item);
+      } else {
+        cleanData.push(item);
+      }
+    });
+    setter(cleanData);
+    setErrorData(errorData);
+    errorData?.length > 0 && setOpen(true);
+    setLoading(false);
+  } catch (error) {
+    setter([]);
+    setLoading(false);
+    isDevServer && console.log({ error });
+    toast.error(error?.response?.data?.message || "Something went wrong");
+  }
+};
 export const saveBulkUploadSalaryAction = async (
   setLoading,
   data,
