@@ -287,7 +287,7 @@ const AttendanceReport = () => {
                     .join(",")}`;
                   const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
                     values?.workplaceGroup?.value
-                  }&WorkplaceList=${workplaceList}&AttendanceDate=${moment(
+                  }&workplaceList=${workplaceList}&AttendanceDate=${moment(
                     values?.fromDate
                   ).format(
                     "YYYY-MM-DD"
@@ -338,7 +338,7 @@ const AttendanceReport = () => {
                   landingApi?.data?.totalCount
                     ? `&EmployeeIdList=${list}`
                     : ""
-                }${values?.workplace ? `&WorkplaceList=${workplaceList}` : ""}`,
+                }${values?.workplace ? `&workplaceList=${workplaceList}` : ""}`,
                 setLoading,
                 pdfName
               );

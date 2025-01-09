@@ -291,7 +291,7 @@ const LateReport = () => {
                     .join(",")}`;
                   const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
                     values?.workplaceGroup?.value
-                  }&WorkplaceList=${
+                  }&workplaceList=${
                     workplaceList
                   }&AttendanceDate=${moment(values?.fromDate).format(
                     "YYYY-MM-DD"
@@ -395,7 +395,7 @@ const LateReport = () => {
                     : ""
                 }${
                   values?.workplace
-                    ? `&WorkplaceList=${workplaceList}`
+                    ? `&workplaceList=${workplaceList}`
                     : ""
                 }`,
                 setLoading
