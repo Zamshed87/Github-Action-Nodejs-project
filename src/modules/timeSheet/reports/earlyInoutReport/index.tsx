@@ -313,9 +313,9 @@ const AttendanceReport = () => {
             printIcon={true}
             pdfExport={() => {
               const values = form.getFieldsValue(true);
-              const list = landingApi?.data?.data?.map(
-                (item: any) => item?.employeeId
-              );
+              // const list = landingApi?.data?.data?.map(
+              //   (item: any) => item?.employeeId
+              // );
               const pdfName = `Attendance Report (${
                 values?.fromDate
                   ? moment(values.fromDate).format("YYYY-MM-DD")
@@ -332,11 +332,6 @@ const AttendanceReport = () => {
                 }${
                   values?.workplaceGroup?.value
                     ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                    : ""
-                }${
-                  landingApi?.data?.data?.length !==
-                  landingApi?.data?.totalCount
-                    ? `&EmployeeIdList=${list}`
                     : ""
                 }${values?.workplace ? `&workplaceList=${workplaceList}` : ""}`,
                 setLoading,

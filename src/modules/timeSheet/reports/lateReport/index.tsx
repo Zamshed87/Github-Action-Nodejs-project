@@ -373,9 +373,9 @@ const LateReport = () => {
             printIcon={true}
             pdfExport={() => {
               const values = form.getFieldsValue(true);
-              const list = landingApi?.data?.data?.map(
-                (item: any) => item?.employeeId
-              );
+              // const list = landingApi?.data?.data?.map(
+              //   (item: any) => item?.employeeId
+              // );
               const workplaceList = `${values?.workplace
                 ?.map((item: any) => item?.intWorkplaceId)
                 .join(",")}`;
@@ -387,11 +387,6 @@ const LateReport = () => {
                 }${
                   values?.workplaceGroup?.value
                     ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                    : ""
-                }${
-                  landingApi?.data?.data?.length !==
-                  landingApi?.data?.totalCount
-                    ? `&EmployeeIdList=${list}`
                     : ""
                 }${
                   values?.workplace
