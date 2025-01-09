@@ -58,7 +58,7 @@ export const header = (
     },
     {
       title: "User Group/Employee",
-      dataIndex: "userGroup",
+      dataIndex: "userGroupOrEmployeeName",
       sorter: true,
     },
     {

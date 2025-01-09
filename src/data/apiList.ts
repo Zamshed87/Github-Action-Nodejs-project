@@ -298,4 +298,5 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
+  FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
 };

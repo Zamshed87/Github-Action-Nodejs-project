@@ -5,7 +5,6 @@ import { Checkbox, Col, Form, InputNumber, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { labelChangeByOrgId } from "utility/strLabelChange";
 import { approverDDL, header, submitHandler } from "./helper";
 import DraggableTable from "./Draggabletable";
 
@@ -177,6 +176,7 @@ export default function AddEditForm({
             isSupervisor: item?.approverType === "Supervisor",
             isLineManager: item?.approverType === "Line Manager",
             intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
+            userGroupOrEmployeeName: item?.userGroupOrEmployeeName || "",
             intShortOrder: item?.sequenceId || 0,
             isCreate: false,
             isDelete: false,
@@ -501,7 +501,6 @@ export default function AddEditForm({
             }
           />
         </Form.Item>
-        {console.log("tableData", tableData)}
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
@@ -549,7 +548,7 @@ export default function AddEditForm({
                       const obj = {
                         approver: approver?.label || "",
                         approverId: approver?.value || 0,
-                        userGroup:
+                        userGroupOrEmployeeName:
                           userGroup?.label ||
                           employee?.employeeNameWithCode ||
                           "",
@@ -557,7 +556,7 @@ export default function AddEditForm({
                         id: 0,
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
-                        intUserGroupHeaderId: userGroup?.value || 0,
+                        intUserGroupHeaderId: userGroup?.value || employee?.value ||0,
                         intShortOrder: newSequence,
                         isCreate: true,
                         isDelete: false,
