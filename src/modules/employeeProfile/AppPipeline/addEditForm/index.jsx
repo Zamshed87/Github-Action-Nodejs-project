@@ -118,7 +118,7 @@ export default function AddEditForm({
 
   useEffect(() => {
     fetchPipelineData(setPipelineDDL);
-    fetchApproverData(setApproverDDL)
+    fetchApproverData(setApproverDDL);
   }, [orgId, buId]);
 
   // Form Instance
@@ -160,8 +160,14 @@ export default function AddEditForm({
             remarks: data?.header?.strRemarks || "",
             randomCountValue: data?.header?.randomApproverCount || 0,
             isSequence: data?.header?.isInSequence || false,
+            randomCount: !data?.header?.isInSequence,
             id: data?.header?.id || 0,
           });
+
+          setIsSequence(data?.header?.isInSequence);
+          setRandomCount(!data?.header?.isInSequence);
+          setRandom(!data?.header?.isInSequence);
+
           const rowData = data?.row?.map((item) => ({
             approver: item?.approverType || "User Group",
             approverId: item?.approverTypeId || 0,
@@ -302,7 +308,6 @@ export default function AddEditForm({
             filterOption={true}
             placeholder="Approver"
             onChange={(value, op) => {
-              console.log("op",op)
               form.setFieldsValue({
                 approver: op,
                 strTitle: `${op?.label}`,

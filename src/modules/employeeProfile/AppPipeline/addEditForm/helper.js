@@ -26,7 +26,8 @@ export const header = (
   setDeletedRow,
   remover,
   random,
-  isSequence
+  isSequence,
+  randomApproverCount
 ) =>
   [
     {
@@ -44,7 +45,7 @@ export const header = (
       title: "Sequence Order",
       dataIndex: "intShortOrder",
       sorter: true,
-      isHidden: random || !isSequence,
+      isHidden: random || !isSequence || randomApproverCount > 0,
       width: 150,
     },
     {
