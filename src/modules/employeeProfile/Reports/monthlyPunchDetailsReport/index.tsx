@@ -280,7 +280,7 @@ const MonthlyPunchReportDetails = () => {
           );
         },
         fixed: "left",
-        width: 120,
+        width: 200,
       },
 
       {
