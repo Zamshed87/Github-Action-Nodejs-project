@@ -456,6 +456,10 @@ export default function AddEditForm({
                   value: "EFTN",
                   label: "EFTN",
                 },
+                {
+                  value: "SJIBL",
+                  label: "SJIBL",
+                },
               ]}
               onChange={(value, op) => {
                 form.setFieldsValue({
