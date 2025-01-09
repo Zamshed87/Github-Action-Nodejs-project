@@ -359,6 +359,7 @@ export default function AddEditForm({
                 form.setFieldsValue({
                   workplaceGroup: op,
                 });
+                form.resetFields(["workplace"])
                 getWDDL.action({
                   urlKey: "WorkplaceIdAll",
                   method: "GET",
