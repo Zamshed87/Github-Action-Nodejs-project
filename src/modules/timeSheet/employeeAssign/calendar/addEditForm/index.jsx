@@ -431,18 +431,18 @@ Are you sure ? You want to assign Calendar again?
                                       values?.calender?.label || "",
                                   };
 
-                                  if (intAccountId === 6) {
+                                  // if (intAccountId === 6) {
+                                  //   setter(obj);
+                                  // } else {
+                                  const existingItems = tableData;
+                                  if (existingItems.length === 0) {
                                     setter(obj);
                                   } else {
-                                    const existingItems = tableData;
-                                    if (existingItems.length === 0) {
-                                      setter(obj);
-                                    } else {
-                                      toast.warn(
-                                        "You are allowed to add only one calendar name."
-                                      );
-                                    }
+                                    toast.warn(
+                                      "You are allowed to add only one calendar name."
+                                    );
                                   }
+                                  // }
 
                                   setFieldValue("calender", "");
                                 }}
