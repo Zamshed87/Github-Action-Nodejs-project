@@ -1,3 +1,4 @@
+import axios from "axios";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
@@ -149,7 +150,7 @@ export const submitHandler = ({
   const payloadList = workplaces.map((workplace) => ({
     header: {
       id: values?.id || 0, // header id
-      applicationTypeId: values?.pipelineName?.value || 0,
+      applicationTypeId: +values?.pipelineName?.value || 0,
       applicationType: values?.pipelineName?.label || "",
       accountId: orgId,
       businessUnitId: buId,
@@ -198,3 +199,20 @@ export const submitHandler = ({
 };
 
 
+export const fetchPipelineData = async (setPipelineDDL) => {
+  try {
+    const res = await axios.get(`/Enum/GetEnums?types=ApplicationType`);
+    setPipelineDDL(res?.data?.ApplicationType);
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const fetchApproverData = async (setApproverDDL) =>{
+  try {
+    const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
+    setApproverDDL(res?.data?.ApproverType);
+  } catch (error) {
+    console.log("error", error);
+  }
+}

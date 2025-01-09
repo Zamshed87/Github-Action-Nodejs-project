@@ -5,7 +5,12 @@ import { Checkbox, Col, Form, InputNumber, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { approverDDL, header, submitHandler } from "./helper";
+import {
+  fetchApproverData,
+  fetchPipelineData,
+  header,
+  submitHandler,
+} from "./helper";
 import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
@@ -21,13 +26,14 @@ export default function AddEditForm({
   const [randomCount, setRandomCount] = useState(false);
   const [random, setRandom] = useState(false);
   const [isSequence, setIsSequence] = useState(true);
+  const [pipelineDDL, setPipelineDDL] = useState([]);
+  const [approverDDL, setApproverDDL] = useState([]);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
   const CommonEmployeeDDL = useApiRequest([]);
   const getWgDDL = useApiRequest({});
   const getWDDL = useApiRequest({});
-  const getPipelineDDL = useApiRequest({});
   const getUserGroupDDL = useApiRequest({});
   const { supervisor } = useSelector(
     (state) => state?.auth?.keywords,
@@ -109,20 +115,10 @@ export default function AddEditForm({
       },
     });
   }, [orgId, buId, wgId]);
+
   useEffect(() => {
-    getPipelineDDL.action({
-      urlKey: "ApprovalPipelineDDL",
-      method: "GET",
-      params: {
-        employeeId: employeeId || 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strDisplayName;
-          res[i].value = item?.intId;
-        });
-      },
-    });
+    fetchPipelineData(setPipelineDDL);
+    fetchApproverData(setApproverDDL)
   }, [orgId, buId]);
 
   // Form Instance
@@ -275,9 +271,7 @@ export default function AddEditForm({
         </Col>
         <Col md={12} sm={24}>
           <PSelect
-            options={
-              getPipelineDDL?.data?.length > 0 ? getPipelineDDL?.data : []
-            }
+            options={pipelineDDL || []}
             name="pipelineName"
             label="Pipeline Name"
             showSearch
@@ -301,13 +295,14 @@ export default function AddEditForm({
         </Col> */}
         <Col md={12} sm={24}>
           <PSelect
-            options={approverDDL(orgId, supervisor)}
+            options={approverDDL || []}
             name="approver"
             label="Approver"
             showSearch
             filterOption={true}
             placeholder="Approver"
             onChange={(value, op) => {
+              console.log("op",op)
               form.setFieldsValue({
                 approver: op,
                 strTitle: `${op?.label}`,
@@ -424,7 +419,9 @@ export default function AddEditForm({
                   if (!randomCount) {
                     form.setFieldsValue({ isSequence: true });
                     setIsSequence(true);
-                    toast.warn("At least one option must be selected!", {toastId: "isSequence"});
+                    toast.warn("At least one option must be selected!", {
+                      toastId: "isSequence",
+                    });
                   } else {
                     form.setFieldsValue({ isSequence: false });
                     setIsSequence(false);
@@ -459,7 +456,9 @@ export default function AddEditForm({
                   if (!isSequence) {
                     form.setFieldsValue({ randomCount: true });
                     setRandomCount(true);
-                    toast.warn("At least one option must be selected!",{toastId: "randomCount"});
+                    toast.warn("At least one option must be selected!", {
+                      toastId: "randomCount",
+                    });
                   } else {
                     form.setFieldsValue({ randomCount: false });
                     setRandomCount(false);
@@ -556,7 +555,8 @@ export default function AddEditForm({
                         id: 0,
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
-                        intUserGroupHeaderId: userGroup?.value || employee?.value ||0,
+                        intUserGroupHeaderId:
+                          userGroup?.value || employee?.value || 0,
                         intShortOrder: newSequence,
                         isCreate: true,
                         isDelete: false,
