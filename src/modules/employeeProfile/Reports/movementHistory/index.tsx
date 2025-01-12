@@ -341,10 +341,14 @@ const EmMovementHistory = () => {
               const values = form.getFieldsValue(true);
               getPDFAction(
                 `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
-                  values?.workplace?.value
+                  values?.workplace?.value || 0
                 }&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value
-                }&FromDate=${moment(values?.fromDate).format(
+                  values?.workplaceGroup?.value || 0
+                }&departments=${formatFilterValue(
+                  values?.department
+                )}&designations=${formatFilterValue(
+                  values?.designation
+                )}&FromDate=${moment(values?.fromDate).format(
                   "YYYY-MM-DD"
                 )}&ToDate=${moment(values?.todate).format("YYYY-MM-DD")}`,
                 setLoading

@@ -469,17 +469,21 @@ const EmLeaveHistory = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const workplaceList = values?.workplace?.map(
-                          (i: any) => i?.value
-                        );
+                        // const workplaceList = values?.workplace?.map(
+                        //   (i: any) => i?.value
+                        // );
 
                         const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=excelView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
                         }&strWorkplaceGroupList=${
                           values?.workplaceGroup?.value
-                        }&strWorkplaceList=${workplaceList}&strSearchTxt=${
-                          values?.search || ""
-                        }`;
+                        }&strWorkplaceList=${
+                          values?.workplace?.value
+                        }&departments=${formatFilterValue(
+                          values?.department
+                        )}&designations=${formatFilterValue(
+                          values?.designation
+                        )}&strSearchTxt=${values?.search || ""}`;
 
                         downloadFile(
                           url,
@@ -513,16 +517,20 @@ const EmLeaveHistory = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const workplaceList = values?.workplace?.map(
-                          (i: any) => i?.value
-                        );
+                        // const workplaceList = values?.workplace?.map(
+                        //   (i: any) => i?.value
+                        // );
                         const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=pdfView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
                         }&strWorkplaceGroupList=${
                           values?.workplaceGroup?.value
-                        }&strWorkplaceList=${workplaceList}&strSearchTxt=${
-                          values?.search || ""
-                        }`;
+                        }&strWorkplaceList=${
+                          values?.workplace?.value
+                        }&departments=${formatFilterValue(
+                          values?.department
+                        )}&designations=${formatFilterValue(
+                          values?.designation
+                        )}&strSearchTxt=${values?.search || ""}`;
 
                         getPDFAction(url, setLoading);
                       }}
