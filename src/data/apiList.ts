@@ -100,12 +100,12 @@ export const apiList = {
   BankBranchLanding: "/SaasMasterData/BankBranchLanding",
   CreateApprovalConfiguration:
     "/ApprovalConfiguration/CreateApprovalConfiguration",
-    UpdateApprovalConfiguration:
+  UpdateApprovalConfiguration:
     "/ApprovalConfiguration/UpdateApprovalConfiguration",
   // ApprovalPipelineHeaderDetailsById:
   //   "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   ApprovalPipelineHeaderDetailsById:
-  "/ApprovalConfiguration/GetApprovalConfigDetails",
+    "/ApprovalConfiguration/GetApprovalConfigDetails",
   GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
   GetAllTaxBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLandingForTax",
   PFLanding: "/Employee/PfLanding",
@@ -299,4 +299,5 @@ export const apiList = {
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
 };
