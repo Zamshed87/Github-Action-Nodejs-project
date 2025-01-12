@@ -2,7 +2,13 @@ import { Col, Drawer, Row } from "antd";
 import { PButton, PForm, PInput } from "Components";
 import React from "react";
 import CommonFilterField from "./commonFIlterField";
-const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
+const PFilter = ({
+  form,
+  landingApiCall,
+  resetApiCall,
+  ishideDate,
+  children,
+}: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
 
   return (
@@ -121,7 +127,7 @@ const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
                     designation: { label: "All", value: 0 },
                     designationId: [0],
                   });
-                  landingApiCall();
+                  resetApiCall && resetApiCall();
                 }}
               />
             </Col>

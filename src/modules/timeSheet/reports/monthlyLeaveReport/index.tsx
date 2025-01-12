@@ -475,7 +475,13 @@ const MonthlyLeaveReport = () => {
               excelLanding();
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall}>
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            resetApiCall={() => {
+              form.setFieldValue("supervisor", null);
+            }}
+          >
             <Form.Item shouldUpdate noStyle>
               {() => {
                 const { workplaceGroup } = form.getFieldsValue(true);
