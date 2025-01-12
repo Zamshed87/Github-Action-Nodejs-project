@@ -167,6 +167,7 @@ export const pmsObjectiveTableColumn = ({
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
       sorter: true,
+      filter: true,
       width: 150,
     },
     fromLanding

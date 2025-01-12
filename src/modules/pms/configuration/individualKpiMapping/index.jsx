@@ -112,7 +112,7 @@ const IndividualKpiMapping = () => {
         </div>
         <div className="card-style pb-0 mb-2">
           <div className="row">
-            <div className="col-lg-3">
+            {/* <div className="col-lg-3">
               <div className="input-field-main">
                 <label>Business Unit</label>
                 <FormikSelect
@@ -140,7 +140,7 @@ const IndividualKpiMapping = () => {
                   styles={customStyles}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="col-md-3">
               <div className="input-field-main">
