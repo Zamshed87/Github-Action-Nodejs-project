@@ -782,7 +782,7 @@ const AdvanceSalaryGenerateLanding = () => {
                     onClick: () => {
                       if (true) {
                         history.push({
-                          pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/${item?.advanceSalaryCode}`,
+                          pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/${item?.advanceSalaryId}`,
                           state: item,
                         });
                       } else {

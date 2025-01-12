@@ -1,3 +1,4 @@
+import axios from "axios";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
@@ -25,7 +26,8 @@ export const header = (
   setDeletedRow,
   remover,
   random,
-  isSequence
+  isSequence,
+  randomApproverCount
 ) =>
   [
     {
@@ -36,14 +38,14 @@ export const header = (
     },
     {
       title: "Approver",
-      dataIndex: "approverLabel",
+      dataIndex: "approver",
       sorter: true,
     },
     {
       title: "Sequence Order",
       dataIndex: "intShortOrder",
       sorter: true,
-      isHidden: random || !isSequence,
+      isHidden: random || !isSequence || randomApproverCount > 0,
       width: 150,
     },
     {
@@ -58,7 +60,7 @@ export const header = (
     },
     {
       title: "User Group/Employee",
-      dataIndex: "userGroup",
+      dataIndex: "userGroupOrEmployeeName",
       sorter: true,
     },
     {
@@ -134,10 +136,11 @@ export const submitHandler = ({
     getData();
   };
 
-  if (!tableData?.length)
+  if (!tableData?.length) {
     return toast.warn(
       `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
     );
+  }
 
   // Ensure workplaces is an array
   const workplaces = Array.isArray(values?.workplace)
@@ -147,9 +150,8 @@ export const submitHandler = ({
   // Collect payloads into an array
   const payloadList = workplaces.map((workplace) => ({
     header: {
-      sl: 0,
       id: values?.id || 0, // header id
-      applicationTypeId: values?.pipelineName?.value || 0,
+      applicationTypeId: +values?.pipelineName?.value || 0,
       applicationType: values?.pipelineName?.label || "",
       accountId: orgId,
       businessUnitId: buId,
@@ -166,8 +168,8 @@ export const submitHandler = ({
     row: tableData.map((item) => ({
       id: item?.id || 0, // rowId
       configHeaderId: item?.configHeaderId || 0, // header Id
-      approverTypeId: item?.pipelineName?.value || item?.approverValue || 0,
-      approverType: item?.pipelineName?.label || item?.approverLabel  || "",
+      approverTypeId: item?.approverId || 0,
+      approverType: item?.approver || "",
       beforeApproveStatus: item?.strStatusTitlePending || "",
       afterApproveStatus: item?.strStatusTitle || "",
       sequenceId: random ? 0 : item?.intShortOrder || 0,
@@ -178,13 +180,14 @@ export const submitHandler = ({
     })),
   }));
 
-  const finalPayload = payloadList;
+  // Prepare final payload based on singleData
+  const finalPayload = singleData ? payloadList[0] : payloadList;
 
-  const urlKey = !singleData
-    ? "CreateApprovalConfiguration"
-    : "UpdateApprovalConfiguration";
+  const urlKey = singleData
+    ? "UpdateApprovalConfiguration"
+    : "CreateApprovalConfiguration";
 
-  // // Make a single API call with the array of payloads
+  // Make a single API call with the final payload
   savePipeline.action({
     urlKey: urlKey,
     method: "POST",
@@ -196,3 +199,21 @@ export const submitHandler = ({
   });
 };
 
+
+export const fetchPipelineData = async (setPipelineDDL) => {
+  try {
+    const res = await axios.get(`/Enum/GetEnums?types=ApplicationType`);
+    setPipelineDDL(res?.data?.ApplicationType);
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const fetchApproverData = async (setApproverDDL) =>{
+  try {
+    const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
+    setApproverDDL(res?.data?.ApproverType);
+  } catch (error) {
+    console.log("error", error);
+  }
+}

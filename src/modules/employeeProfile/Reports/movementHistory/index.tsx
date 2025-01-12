@@ -145,8 +145,8 @@ const EmMovementHistory = () => {
         IsXls: false,
         WorkplaceGroupId: values?.workplaceGroup?.value,
         WorkplaceId: values?.workplace?.value,
-        departments: formatFilterValue(values?.departmentId),
-        designations: formatFilterValue(values?.designationId),
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageNo: pagination.current || 1,
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -341,10 +341,14 @@ const EmMovementHistory = () => {
               const values = form.getFieldsValue(true);
               getPDFAction(
                 `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
-                  values?.workplace?.value
+                  values?.workplace?.value || 0
                 }&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value
-                }&FromDate=${moment(values?.fromDate).format(
+                  values?.workplaceGroup?.value || 0
+                }&departments=${formatFilterValue(
+                  values?.department
+                )}&designations=${formatFilterValue(
+                  values?.designation
+                )}&FromDate=${moment(values?.fromDate).format(
                   "YYYY-MM-DD"
                 )}&ToDate=${moment(values?.todate).format("YYYY-MM-DD")}`,
                 setLoading

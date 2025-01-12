@@ -34,12 +34,14 @@ const initialValues = {
 const CreateCompetency = ({
   orgId,
   buId,
+  intAccountId,
   employeeId,
   onHide,
   clusterList,
   setClusterList,
   permission,
   competencyId,
+  allMasterPositionDDL,
 }) => {
   const [demonstratedBehaviourList, setDemonstratedBehaviourList] = useState(
     []
@@ -141,13 +143,32 @@ const CreateCompetency = ({
               touched={touched}
             />
           </div>
-          <div className="col-md-4">
+          {/* <div className="col-md-4">
             <FormikSelect
               isDisabled={competencyId ? true : false}
               label="Employee Label"
               classes="input-sm form-control"
               name="employeeLabel"
               options={clusterList || []}
+              value={values?.employeeLabel}
+              onChange={(valueOption) => {
+                setFieldValue("employeeLabel", valueOption);
+              }}
+              styles={customStyles}
+              errors={errors}
+              touched={touched}
+            />
+          </div> */}
+
+          <div className="col-md-4">
+            <FormikSelect
+              // isDisabled={competencyId ? true : false}
+              label="Level of Leadership"
+              classes="input-sm form-control"
+              name="employeeLabel"
+              options={
+                allMasterPositionDDL?.length > 0 ? allMasterPositionDDL : []
+              }
               value={values?.employeeLabel}
               onChange={(valueOption) => {
                 setFieldValue("employeeLabel", valueOption);
@@ -242,6 +263,7 @@ const CreateCompetency = ({
                   setDemonstratedBehaviourList((prev) => [
                     ...prev,
                     {
+                      employeeLabel: values?.employeeLabel?.label,
                       demonstratedBehaviour: values?.demonstratedBehaviour,
                       competencyId: competencyId || 0,
                       isPositive: values?.isPositive,

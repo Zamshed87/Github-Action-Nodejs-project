@@ -30,7 +30,7 @@ const initialValues = {
 };
 const JohariWindow = () => {
   const {
-    profileData: { employeeId, strDisplayName, orgId, buId },
+    profileData: { employeeId, strDisplayName, orgId, buId, wgId, wId },
     permissionList,
   } = useSelector((store) => store?.auth);
 
@@ -97,7 +97,7 @@ const JohariWindow = () => {
 
     getJohariWindowsChips(`/PMS/GetJohariWindoWChips`);
     getDepartmentDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       (data) => {
         const modifiedDDL = data?.map((item) => ({
           ...item,
@@ -228,7 +228,7 @@ const JohariWindow = () => {
                       onChange={(valueOption) => {
                         if (valueOption) {
                           getSectionDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=masterSectionDDL&AccountId=${orgId}&BusinessUnitId=${buId}&IntDepartmentId=${valueOption?.value}`
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=masterSectionDDL&AccountId=${orgId}&BusinessUnitId=${buId}&IntDepartmentId=${valueOption?.value}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`
                           );
                           setValues((prev) => ({
                             ...prev,
@@ -263,7 +263,7 @@ const JohariWindow = () => {
                           }));
                           getEmployeeDDL(
                             // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${valueOption?.value}&intAutoId=${values?.department?.value}`,
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&AccountId=${orgId}&BusinessUnitId=${buId}&intAutoId=${valueOption?.value}&IntDepartmentId=${values?.department?.value}`,
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&AccountId=${orgId}&BusinessUnitId=${buId}&intAutoId=${valueOption?.value}&IntDepartmentId=${values?.department?.value}&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
                             (data) => {
                               const modifiedDDL = data?.map((item) => ({
                                 ...item,
