@@ -202,7 +202,9 @@ const AdvanceSalaryGenerateLanding = () => {
     // createSalaryGenerateRequest(payload, setLoading, callback);
     sendApprovalRequest(
       `/AdvanceSalary/AdvanceSalaryApproval?advanceSalaryId=${data?.advanceSalaryId}`,
-      {},
+      {
+        advanceSalaryId: data?.advanceSalaryId,
+      },
       () => {
         callback();
       },
