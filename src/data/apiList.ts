@@ -100,12 +100,12 @@ export const apiList = {
   BankBranchLanding: "/SaasMasterData/BankBranchLanding",
   CreateApprovalConfiguration:
     "/ApprovalConfiguration/CreateApprovalConfiguration",
-    UpdateApprovalConfiguration:
+  UpdateApprovalConfiguration:
     "/ApprovalConfiguration/UpdateApprovalConfiguration",
   // ApprovalPipelineHeaderDetailsById:
   //   "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   ApprovalPipelineHeaderDetailsById:
-  "/ApprovalConfiguration/GetApprovalConfigDetails",
+    "/ApprovalConfiguration/GetApprovalConfigDetails",
   GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
   GetAllTaxBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLandingForTax",
   PFLanding: "/Employee/PfLanding",
@@ -298,8 +298,9 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
-  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
-  CreateNUpdateShiftChangeRequest:"/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
-  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
+  CreateNUpdateShiftChangeRequest:
+    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
 };

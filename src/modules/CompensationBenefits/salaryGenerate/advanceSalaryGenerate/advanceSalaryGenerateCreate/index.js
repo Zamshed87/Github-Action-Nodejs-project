@@ -408,7 +408,7 @@ const AdvanceSalaryGenerateCreate = () => {
 
       if (state?.advanceSalaryCode) {
         getDetails(
-          `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
+          `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryId}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
           (data) => {
             const modify = data?.map((itm) => {
               return {
