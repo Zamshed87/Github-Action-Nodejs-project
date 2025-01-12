@@ -312,6 +312,7 @@ const HolidayOffdaySwapAssign = () => {
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       departments: op,
+                      section: undefined,
                     });
                     value && getEmployeeSection(value);
                   }}
