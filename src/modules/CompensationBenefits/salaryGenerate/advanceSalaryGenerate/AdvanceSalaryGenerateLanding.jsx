@@ -92,6 +92,7 @@ const AdvanceSalaryGenerateLanding = () => {
     []
   );
   const [rowDto, getLanding, , setRowDto] = useAxiosGet([]);
+  const [, sendApprovalRequest, loadingRequest] = useAxiosPost();
 
   // for create state
   const [pages, setPages] = useState({
@@ -111,31 +112,10 @@ const AdvanceSalaryGenerateLanding = () => {
 
   //get landing data
   const getLandingData = (values, pagination = pages) => {
-    // getSalaryGenerateRequestLanding(
-    //   "SalaryGenerateRequestLanding",
-    //   orgId,
-    //   buId,
-    //   wgId,
-    //   wId,
-    //   "",
-    //   "",
-    //   values?.filterFromDate,
-    //   values?.filterToDate,
-    //   setRowDto,
-    //   setAllData,
-    //   setLoading,
-    //   pagination,
-    //   setPages,
-    //   undefined,
-    //   "",
-    //   "",
-    //   "",
-    //   "",
-    //   "",
-    //   values
-    // );
     getLanding(
-      `AdvanceSalary/AdvanceSalary?fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}`
+      `AdvanceSalary/AdvanceSalary?fromDate=${values?.filterFromDate}&toDate=${
+        values?.filterToDate
+      }&workPlaceId=${values?.workplace?.value || wId}`
     );
   };
 
@@ -203,23 +183,31 @@ const AdvanceSalaryGenerateLanding = () => {
 
   // send for approval
   const sendForApprovalHandler = (data) => {
-    const payload = {
-      strPartName: "GeneratedSalarySendForApproval",
-      intSalaryGenerateRequestId: data?.intSalaryGenerateRequestId,
-      strSalaryCode: data?.strSalaryCode,
-      intAccountId: data?.intAccountId,
-      intBusinessUnitId: data?.intBusinessUnitId,
-      strBusinessUnit: data?.strBusinessUnit,
-      intWorkplaceGroupId: wgId,
-      intMonthId: data?.intMonth,
-      intYearId: data?.intYear,
-      strDescription: data?.strDescription,
-      intCreatedBy: employeeId,
-    };
+    // const payload = {
+    //   strPartName: "GeneratedSalarySendForApproval",
+    //   intSalaryGenerateRequestId: data?.intSalaryGenerateRequestId,
+    //   strSalaryCode: data?.strSalaryCode,
+    //   intAccountId: data?.intAccountId,
+    //   intBusinessUnitId: data?.intBusinessUnitId,
+    //   strBusinessUnit: data?.strBusinessUnit,
+    //   intWorkplaceGroupId: wgId,
+    //   intMonthId: data?.intMonth,
+    //   intYearId: data?.intYear,
+    //   strDescription: data?.strDescription,
+    //   intCreatedBy: employeeId,
+    // };
     const callback = () => {
       getLandingData(values);
     };
-    createSalaryGenerateRequest(payload, setLoading, callback);
+    // createSalaryGenerateRequest(payload, setLoading, callback);
+    sendApprovalRequest(
+      `/AdvanceSalary/AdvanceSalaryApproval?advanceSalaryId=${data?.advanceSalaryId}`,
+      {},
+      () => {
+        callback();
+      },
+      true
+    );
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -413,70 +401,88 @@ const AdvanceSalaryGenerateLanding = () => {
       //   },
       //   width: 130,
       // },
-      // {
-      //   title: "Approval Status",
-      //   dataIndex: "ApprovalStatus",
-      //   sorter: true,
-      //   filter: false,
-      //   width: 140,
-      //   render: (_, item) => {
-      //     return (
-      //       <>
-      //         {item?.ApprovalStatus === "Approved" && (
-      //           <p
-      //             style={{
-      //               fontSize: "12px",
-      //               color: gray500,
-      //               fontWeight: "400",
-      //             }}
-      //           >
-      //             {item?.ApprovalStatus}
-      //           </p>
-      //         )}
-      //         {item?.ApprovalStatus === "Send for Approval" && (
-      //           <button
-      //             style={{
-      //               height: "24px",
-      //               fontSize: "10px",
-      //               padding: "0px 12px 0px 12px",
-      //               backgroundColor: "#0BA5EC",
-      //             }}
-      //             className="btn btn-default"
-      //             type="button"
-      //             onClick={(e) => {
-      //               e.stopPropagation();
-      //               sendForApprovalHandler(item);
-      //             }}
-      //           >
-      //             Send for Approval
-      //           </button>
-      //         )}
-      //         {item?.ApprovalStatus === "Waiting for Approval" && (
-      //           <p
-      //             style={{
-      //               fontSize: "12px",
-      //               color: gray500,
-      //               fontWeight: "400",
-      //             }}
-      //           >
-      //             {item?.ApprovalStatus}
-      //           </p>
-      //         )}
-      //         {item?.ApprovalStatus === "Rejected" && (
-      //           <p
-      //             style={{
-      //               fontSize: "12px",
-      //               color: gray500,
-      //               fontWeight: "400",
-      //             }}
-      //           >
-      //             {item?.ApprovalStatus}
-      //           </p>
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
+      {
+        title: "Approval Status",
+        dataIndex: "ApprovalStatus",
+        sorter: true,
+        filter: false,
+        width: 140,
+        render: (_, item) => {
+          return (
+            <>
+              {item?.ApprovalStatus === "Approved" && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.ApprovalStatus}
+                </p>
+              )}
+              {item?.ApprovalStatus === "Send for Approval" && (
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "10px",
+                    padding: "0px 12px 0px 12px",
+                    backgroundColor: "#0BA5EC",
+                  }}
+                  className="btn btn-default"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    sendForApprovalHandler(item);
+                  }}
+                >
+                  Send for Approval
+                </button>
+              )}
+              {item?.ApprovalStatus === "Waiting for Approval" && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.ApprovalStatus}
+                </p>
+              )}
+              {item?.ApprovalStatus === "Rejected" && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.ApprovalStatus}
+                </p>
+              )}
+              {item?.ApprovalStatus === undefined && (
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "10px",
+                    padding: "0px 12px 0px 12px",
+                    backgroundColor: "#0BA5EC",
+                  }}
+                  className="btn btn-default"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    sendForApprovalHandler(item);
+                  }}
+                >
+                  Send for Approval
+                </button>
+              )}
+            </>
+          );
+        },
+      },
       {
         title: "",
         dataIndex: "",
@@ -486,7 +492,8 @@ const AdvanceSalaryGenerateLanding = () => {
         render: (data, item) => (
           <>
             {/* {!!item?.isReGenerate && ( */}
-            {!!true && (
+            {(!!item?.ApprovalStatus ||
+              item?.ApprovalStatus !== "Approved") && (
               <div>
                 <button
                   style={{
@@ -532,7 +539,7 @@ const AdvanceSalaryGenerateLanding = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {loading && <Loading />}
+        {(loading || loadingRequest) && <Loading />}
         {permission?.isView ? (
           <div className="table-card">
             <div className="table-card-heading justify-content-between align-items-center">
@@ -672,6 +679,26 @@ const AdvanceSalaryGenerateLanding = () => {
                           })
                         );
                       }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+
+                    <FormikSelect
+                      name="workplace"
+                      options={workplaceDDL || []}
+                      value={values?.workplace}
+                      // isDisabled={singleData}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      // isDisabled={singleData}
                     />
                   </div>
                 </div>
