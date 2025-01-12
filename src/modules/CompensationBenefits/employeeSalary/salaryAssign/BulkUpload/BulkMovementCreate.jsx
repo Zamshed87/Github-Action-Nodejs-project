@@ -34,6 +34,7 @@ const BulkMovementCreate = () => {
     shallowEqual
   );
   const payrollGroupDDL = useApiRequest([]);
+  const postBulk = useApiRequest([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -98,17 +99,26 @@ const BulkMovementCreate = () => {
     //   setData([]);
     // };
     data?.length > 0
-      ? saveBulkUploadSalaryAction(
-          setIsLoading,
-          data,
-          "",
-          orgId,
-          buId,
-          employeeId,
-          setErrorData,
-          wgId,
-          setData
-        )
+      ? postBulk.action({
+          urlKey: "SalaryBulkUpload",
+          method: "post",
+          payload: data,
+          toast: true,
+          onSuccess: (res) => {
+            // callBack();
+            // toast.success(res?.data?.message || "Successful");
+
+            const modifiedResponse = data.map((item) => {
+              const responseItem = res.find((r) => r.slNo === item.slNo);
+              return {
+                ...item,
+                status: responseItem.isInserted ? "Success" : "Failed",
+                message: responseItem.message,
+              };
+            });
+            setData(modifiedResponse);
+          },
+        })
       : toast.warn("Please Upload Excel File");
   };
 
@@ -148,13 +158,13 @@ const BulkMovementCreate = () => {
   const dynamicColumns = (source) => {
     const columns = [];
     if (source.length > 0) {
-      const elementKeys = source[0].payrollElements.map(
+      const elementKeys = source[0].salaryElements.map(
         (element) => element.elementName
       );
       elementKeys.forEach((key) => {
         columns.push({
           title: key,
-          dataIndex: "payrollElements",
+          dataIndex: "salaryElements",
           key,
           width: 70,
           render: (elements) => {

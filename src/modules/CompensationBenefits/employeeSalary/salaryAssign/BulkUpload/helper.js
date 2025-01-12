@@ -174,7 +174,7 @@ export const processNewBulkUploadSalaryAction = async (
         Digital: digital,
         ...fields
       } = item;
-      const payrollElements = Object.keys(fields)
+      const salaryElements = Object.keys(fields)
         // .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
         .map((key) => {
           if (fields[key]?.result !== undefined || !isNaN(fields[key])) {
@@ -202,7 +202,7 @@ export const processNewBulkUploadSalaryAction = async (
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
         actionBy: employeeId,
-        payrollElements,
+        salaryElements,
         pm: pm || "N/A",
         bank: bank || 0,
         cash: cash || 0,
