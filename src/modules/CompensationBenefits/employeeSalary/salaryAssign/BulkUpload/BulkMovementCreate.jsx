@@ -285,7 +285,7 @@ const BulkMovementCreate = () => {
           </div>
 
           <div className="card-style pb-0 mb-2">
-            <div className="row">
+            <div className="row py-2">
               <div className="col-md-3" style={{ marginTop: "-12px" }}>
                 <div className="input-field-main">
                   <label>Payroll Group</label>
