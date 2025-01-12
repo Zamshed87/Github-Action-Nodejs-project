@@ -27,7 +27,6 @@ export const header = (
   remover,
   random,
   isSequence,
-  randomApproverCount
 ) =>
   [
     {
@@ -45,7 +44,7 @@ export const header = (
       title: "Sequence Order",
       dataIndex: "intShortOrder",
       sorter: true,
-      isHidden: random || !isSequence || randomApproverCount > 0,
+      isHidden: random || !isSequence,
       width: 150,
     },
     {
