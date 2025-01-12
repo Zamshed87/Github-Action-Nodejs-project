@@ -1,9 +1,7 @@
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import {
-  DataTable,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
@@ -12,22 +10,29 @@ import {
   PSelect,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { requisitionStatus } from "./helper";
+import {
+  createTrainingRequisition,
+  getAdjustedDates,
+  onUpdateTrainingRequisition,
+} from "./helper";
+import { getEnumData } from "common/api/commonApi";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
     data?: any;
   }
-
+  const dispatch = useDispatch();
   const location = useLocation<LocationState>();
   const history = useHistory();
   const data = location?.state?.data;
-
+  const firstSegment = location.pathname.split("/")[1];
   const [loading, setLoading] = useState(false);
+  const [reqStatusDDL, setReqStatus] = useState([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -44,6 +49,13 @@ const TnDRequisitionCreateEdit = () => {
     getTrainingTypeDDL,
     loadingTrainingType,
     setTrainingType,
+  ] = useAxiosGet();
+
+  const [
+    upcommingTrainingDDL,
+    getUpcommingTrainingDDL,
+    loadingUpcommingTraining,
+    setUpcommingTraining,
   ] = useAxiosGet();
 
   const [upcommi, setUpcommi] = useState(false);
@@ -69,14 +81,28 @@ const TnDRequisitionCreateEdit = () => {
   };
 
   useEffect(() => {
+    dispatch(
+      setFirstLevelNameAction(
+        firstSegment === "SelfService"
+          ? "Employee Self Service"
+          : "Training & Development"
+      )
+    );
     getTrainingTypeDDL("/TrainingType/Training/Type", (data: any) => {
       const list: any = [];
       data?.map((d: any) => {
-        if (d?.isActive === true)
-          list.push({ label: d?.strName, value: d?.intId });
+        if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
       });
       setTrainingType(list);
     });
+    const { fromDate, toDate } = getAdjustedDates();
+    getUpcommingTrainingDDL(
+      `/TrainingRequisition/Training/TrainingRequisition/UpComming?status=0,1&fromDate=${fromDate}&toDate=${toDate}`
+    );
+    getEnumData("RequisitionStatus", setReqStatus);
+    if (type === "edit" && data?.status?.value == 2) {
+      setUpcommi(true);
+    }
   }, [profileData?.buId, profileData?.wgId]);
 
   return (
@@ -84,32 +110,83 @@ const TnDRequisitionCreateEdit = () => {
       {(loading || loadingTrainingType) && <Loading />}
       <PForm
         form={form}
-        initialValues={{ reasonForRequisition: data?.requestor }}
+        initialValues={
+          type === "create"
+            ? {
+                employee: {
+                  label: null,
+                  value:
+                    firstSegment === "SelfService"
+                      ? profileData?.intEmployeeId
+                      : null,
+                },
+              }
+            : {
+                reqId: data?.id,
+                reasonForRequisition: data?.reasonForRequisition,
+                employee: {
+                  label: data?.employmentName,
+                  value: data?.employmentTypeId,
+                },
+                trainingType: {
+                  label: data?.trainingTypeName,
+                  value: data?.trainingTypeId,
+                },
+                objectivesToAchieve: data?.objectivesToAchieve,
+                remarks: data?.remarks,
+                requisitionStatus: {
+                  label: data?.status?.label,
+                  value: data?.status?.value,
+                },
+                upcommingTraining: {
+                  label: data?.upcommingTraining?.label,
+                  value: data?.upcommingTraining?.value,
+                },
+                comments: data?.comments,
+              }
+        }
       >
         <PCard>
           <PCardHeader
             backButton
-            title={`Requisition ${type === "create" ? "Create" : "Edit"}`}
+            title={`Requisition ${type}`}
             buttonList={
               type === "view"
                 ? [] // No buttons for "status" type
                 : [
                     {
                       type: "primary",
-                      content: `${type === "create" ? "Save" : "Edit"}`,
+                      content: type,
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
-                        const values = form.getFieldsValue(true);
+                        // const values = form.getFieldsValue(true);
 
                         form
                           .validateFields()
                           .then(() => {
-                            console.log(values);
+                            type === "create"
+                              ? createTrainingRequisition(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  () => {
+                                    form.resetFields();
+                                  }
+                                  // setOpenTraingTypeModal
+                                )
+                              : onUpdateTrainingRequisition(
+                                  form,
+                                  profileData,
+                                  setLoading,
+                                  () => {
+                                    form.resetFields();
+                                    history.goBack();
+                                  }
+                                  // setOpenTraingTypeModal
+                                );
                           })
-                          .catch(() => {
-                            console.log("error");
-                          });
+                          .catch(() => {});
                       },
                     },
                   ]
@@ -117,36 +194,37 @@ const TnDRequisitionCreateEdit = () => {
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
+              {firstSegment !== "SelfService" && (
+                <Col md={6} sm={24}>
+                  <PSelect
+                    name="employee"
+                    label="Employee"
+                    placeholder="Search Min 2 char"
+                    options={CommonEmployeeDDL?.data || []}
+                    loading={CommonEmployeeDDL?.loading}
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        employee: op,
+                      });
+                    }}
+                    onSearch={(value) => {
+                      getEmployee(value);
+                    }}
+                    showSearch
+                    filterOption={false}
+                    allowClear={true}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Employee is required",
+                      },
+                    ]}
+                  />
+                </Col>
+              )}
+
               <Col md={6} sm={24}>
                 <PSelect
-                  disabled={type === "view" || type === "status"}
-                  name="employee"
-                  label="Employee"
-                  placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
-                  loading={CommonEmployeeDDL?.loading}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      employee: op,
-                    });
-                  }}
-                  onSearch={(value) => {
-                    getEmployee(value);
-                  }}
-                  showSearch
-                  filterOption={false}
-                  allowClear={true}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Employee is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PSelect
-                  disabled={type === "view" || type === "status"}
                   options={trainingTypeDDL || []}
                   name="trainingType"
                   label="Training Type"
@@ -166,7 +244,6 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Reason For Requisition"
                   label="Reason For Requisition"
@@ -181,7 +258,6 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Objectives to Achieve"
                   label="Objectives to Achieve"
@@ -196,19 +272,18 @@ const TnDRequisitionCreateEdit = () => {
               </Col>
               <Col md={6} sm={24}>
                 <PInput
-                  disabled={type === "view" || type === "status"}
                   type="text"
                   placeholder="Remarks"
                   label="Remarks"
                   name="remarks"
                 />
               </Col>
-              {(type === "view" || type === "status") && (
+              {type === "edit" && (
                 <Col md={6} sm={24}>
                   <PSelect
-                    options={requisitionStatus}
+                    options={reqStatusDDL || []}
                     name="requisitionStatus"
-                    disabled={type === "view"}
+                    disabled={false}
                     label="Requisition Status"
                     placeholder="Requisition Status"
                     onChange={(value, op) => {
@@ -230,13 +305,12 @@ const TnDRequisitionCreateEdit = () => {
                   />
                 </Col>
               )}
-              {(type === "view" || type === "status") && upcommi && (
+              {type === "edit" && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
-                    options={[]}
+                    options={upcommingTrainingDDL || []}
                     name="upcommingTraining"
-                    disabled={type === "view"}
-                    label="upcomming Training"
+                    label="Upcomming Training"
                     placeholder="upcomming Training"
                     onChange={(value, op) => {
                       form.setFieldsValue({
@@ -252,7 +326,7 @@ const TnDRequisitionCreateEdit = () => {
                   />
                 </Col>
               )}
-              {(type === "view" || type === "status") && (
+              {type === "edit" && (
                 <Col md={6} sm={24}>
                   <PInput
                     type="text"
