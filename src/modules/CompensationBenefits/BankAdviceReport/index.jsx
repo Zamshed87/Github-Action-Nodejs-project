@@ -44,7 +44,7 @@ import UCBBankLetterHead from "./letterheadReports/UCBBankLetterHead";
 import BFTNBankLetterHead from "./letterheadReports/BFTNBankLetterHead";
 import EFTNBankLetterHead from "./letterheadReports/EFTNBankLetterHead";
 import UpayBankLetterHead from "./letterheadReports/UpayBankLetterHead";
-import SJIBLBankLetterHead from "./letterheadReports/SJIBLBankLetterHead";
+import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -1078,7 +1078,7 @@ const BankAdviceReport = () => {
                               "EFTN",
                               "DigitalPayment",
                               "Upay",
-                              "SJIBL",
+                              "SOIBL",
                             ];
                             if (
                               advicenames.includes(values?.adviceType?.value)
@@ -1331,8 +1331,8 @@ const BankAdviceReport = () => {
                         signatureImage={signatureImage}
                       />
                     )}
-                    {values?.adviceType?.value === "SJIBL" && (
-                      <SJIBLBankLetterHead
+                    {values?.adviceType?.value === "SOIBL" && (
+                      <SOIBLBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}
