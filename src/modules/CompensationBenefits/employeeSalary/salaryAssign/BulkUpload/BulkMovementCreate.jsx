@@ -239,6 +239,7 @@ const BulkMovementCreate = () => {
         title: "Status",
         dataIndex: "status",
         // key: "empName",
+        width: 70,
         render: (_, rec) => {
           return (
             <div>
