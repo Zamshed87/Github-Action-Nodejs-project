@@ -1,12 +1,11 @@
 import { Col, Row, Tooltip } from "antd";
 import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FormInstance } from "antd/lib/form";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { tr } from "date-fns/locale";
+import { FormInstance } from "antd/lib/form";
 import { PModal } from "Components/Modal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import TrainingCost from "../masterData/trainingCost";
 
 const ListOfCost = ({
@@ -26,11 +25,8 @@ const ListOfCost = ({
 
   const typeDataSetForCost = (data: any) => {
     let list: any[] = [];
-    data?.map((item: any) => {
-      list.push({
-        label: item?.strName,
-        value: item?.intId,
-      });
+    data?.map((d: any) => {
+      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
     });
     setCostType(list);
   };
@@ -66,7 +62,7 @@ const ListOfCost = ({
               }}
               onClick={() => {
                 const updatedCostField = costField.filter(
-                  (item) => item.id !== rec.id
+                  (item) => item.costTypeId !== rec.costTypeId
                 );
                 setCostField(updatedCostField);
               }}
@@ -80,6 +76,8 @@ const ListOfCost = ({
   ];
 
   console.log(costField.reduce((acc, item) => acc + Number(item.costValue), 0));
+  const values = form.getFieldsValue(true);
+  console.log(values);
 
   return (
     <div style={{ marginTop: "13px" }}>
@@ -111,12 +109,12 @@ const ListOfCost = ({
                 costType: op,
               });
             }}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "Cost Type is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: true,
+                message: "Cost Type is required",
+              },
+            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -125,12 +123,12 @@ const ListOfCost = ({
             placeholder="Cost Value"
             label="Cost Value"
             name="costValue"
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "Cost Value is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: true,
+                message: "Cost Value is required",
+              },
+            ]}
           />
         </Col>
 
@@ -141,7 +139,12 @@ const ListOfCost = ({
             content="Add"
             onClick={() => {
               const values = form.getFieldsValue(true);
-
+              form
+                .validateFields(["costValue", "costType"])
+                .then(() => {
+                  addHandler(values);
+                })
+                .catch(() => {});
               addHandler(values);
             }}
           />

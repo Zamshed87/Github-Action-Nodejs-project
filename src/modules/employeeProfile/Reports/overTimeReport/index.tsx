@@ -29,6 +29,8 @@ import { debounce } from "lodash";
 import { numberWithCommas } from "utility/numberWithCommas";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import { todayDate } from "utility/todayDate";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const EmOverTimeReport = () => {
   const dispatch = useDispatch();
@@ -131,13 +133,6 @@ const EmOverTimeReport = () => {
 
     console.log(pagination, pages);
 
-    const workplaceList =
-      values?.workplace?.length > 0
-        ? `${values?.workplace
-            ?.map((item: any) => item?.intWorkplaceId)
-            .join(",")}`
-        : "";
-
     landingApi.action({
       urlKey: "OvertimeReport",
       method: "GET",
@@ -147,7 +142,9 @@ const EmOverTimeReport = () => {
         BusinessUnitId: buId,
         WorkplaceGroupId: values?.workplaceGroup?.value,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceList: values?.workplace?.value,
+        departments: formatFilterValue(values?.departmentId),
+        designations: formatFilterValue(values?.designationId),
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         IsPaginated: true,
@@ -336,7 +333,8 @@ const EmOverTimeReport = () => {
               getPDFAction(url, setExcelLoading);
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -411,7 +409,7 @@ const EmOverTimeReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered

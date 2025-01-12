@@ -1,6 +1,7 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, FormInstance, Row, Tooltip, Checkbox } from "antd";
+import { SaveOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
   DataTable,
   Flex,
@@ -12,66 +13,53 @@ import {
   PInput,
   PSelect,
 } from "Components";
-
-import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import {
+  ViewTrainingPlan,
+  ViewTrainingPlanDetails,
+  ViewTrainingSchedule,
+} from "../planning/helper";
+import { saveAttendace } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { toast } from "react-toastify";
 
 const TnDAttendanceSave = () => {
   interface LocationState {
     data?: any;
+    dataDetails?: any;
   }
+  const [form] = Form.useForm();
+  const params = useParams<{ type: string }>();
+  const { type } = params;
 
+  const dispatch = useDispatch();
   const location = useLocation<LocationState>();
   const history = useHistory();
-  const data = location?.state?.data;
-
   const [loading, setLoading] = useState(false);
+  const { data = {}, dataDetails = {} } = location?.state || {};
+
+  const [viewData, setViewData] = useState<any>(null);
+  const [viewDataDetails, setViewDataDetails] = useState<any>(null);
+  const [rowData, setRowData] = useState<any>(null);
+  const [attendanceDDL, setAttendanceDDL] = useState(null);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
+  let permission: any = {};
 
-  const [form] = Form.useForm();
-  const params = useParams<{ type: string }>();
-  const { type } = params;
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30513) {
+      permission = item;
+    }
+  });
+
   //   api calls
-  const CommonEmployeeDDL = useApiRequest([]);
-  const [trainingTypeDDL, getTrainingTypeDDL, loadingTrainingType] =
-    useAxiosGet();
-  const [trainingTitleDDL, getTrainingTitleDDL, loadingTrainingTitle] =
-    useAxiosGet();
-  const [landingApi, getLandingApi, landingLoading, , landingError] =
-    useAxiosGet();
-
-  const [upcommi, setUpcommi] = useState(false);
-
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        workplaceGroupId: profileData?.wgId,
-        searchText: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-        });
-      },
-    });
-  };
-
-  useEffect(() => {
-    getTrainingTypeDDL("/trainingType");
-  }, [profileData?.buId, profileData?.wgId]);
 
   // table column
   const header: any = [
@@ -81,61 +69,116 @@ const TnDAttendanceSave = () => {
     },
     {
       title: "Participants List",
-      dataIndex: "perticipant",
+      dataIndex: "participantName",
       width: 120,
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
     },
     {
       title: "HR Position",
-      dataIndex: "hrPosition",
+      dataIndex: "hrPositionName",
       width: 50,
     },
     {
-      title: "workplaceGroup",
-      dataIndex: "workplaceGroup",
+      title: "Department",
+      dataIndex: "departmentName",
       width: 50,
     },
     {
-      title: "workplace",
-      dataIndex: "workplace",
+      title: "Workplace",
+      dataIndex: "workplaceName",
+      width: 50,
     },
     {
-      title: "Attendance",
-      dataIndex: "action",
+      title: "Workplace Group",
+      dataIndex: "workplaceGroupName",
+      width: 60,
+    },
+    {
+      title: (
+        <>
+          Attendance
+          <br />
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rowData?.every(
+              (item: any) => item.attendanceStatus?.value == 0
+            )}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) => ({
+                  ...item,
+                  attendanceStatus: {
+                    ...item.attendanceStatus,
+                    value: e.target.checked ? 0 : 1,
+                  },
+                }))
+              );
+            }}
+          />
+        </>
+      ),
+      dataIndex: "attendanceStatus",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="View">
-            <Checkbox
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onChange={() => {
-                console.log("checked");
-              }}
-            ></Checkbox>
-          </Tooltip>
+          <Checkbox
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+            checked={rec.attendanceStatus?.value == 0}
+            onChange={(e) => {
+              setRowData(
+                rowData.map((item: any) =>
+                  item.uId === rec.uId
+                    ? {
+                        ...item,
+                        attendanceStatus: {
+                          ...item.attendanceStatus,
+                          value: e.target.checked ? 0 : 1,
+                        },
+                      }
+                    : item
+                )
+              );
+            }}
+          />
         </Flex>
       ),
       align: "center",
-      width: 120,
+      width: 40,
     },
   ];
 
-  const landingApiCall = (values: any) => {
-    console.log(values);
-    getLandingApi("/trainingType");
-  };
+  const [landingApi, getLandingApi, landingLoading, , landingError] =
+    useAxiosGet();
+
   useEffect(() => {
-    landingApiCall({});
+    dispatch(setFirstLevelNameAction("Training & Development"));
+
+    ViewTrainingSchedule(data?.id, setLoading, (responseData: any) => {
+      const formattedData = responseData.map((item: any) => ({
+        ...item,
+        value: item.id,
+        label: `${moment(item?.trainingDate).format("DD-MM-YYYY")}[${moment(
+          item.startTime,
+          "HH:mm"
+        ).format("hh:mm A")}-${moment(item?.endTime, "HH:mm").format(
+          "hh:mm A"
+        )}]`,
+      }));
+      setAttendanceDDL(formattedData);
+    });
   }, []);
 
-  return (
+  return permission?.isView ? (
     <div>
-      {loading || (loadingTrainingType && <Loading />)}
+      {(loading || landingLoading) && <Loading />}
       <PForm
         form={form}
-        initialValues={{ reasonForRequisition: data?.requestor }}
+        initialValues={{
+          trainingTypeName: data?.trainingTypeName,
+          trainingTitle: data?.trainingTitleName,
+          trainingMode: data?.trainingModeStatus?.label,
+          trainingOrganizer: data?.trainingOrganizerType?.label,
+          trainingVenue: data?.venueAddress,
+          trainingStatus: data?.status?.label,
+        }}
       >
         <PCard>
           <PCardHeader
@@ -148,188 +191,178 @@ const TnDAttendanceSave = () => {
                 icon: <SaveOutlined />,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
-
+                  if (!permission?.isCreate) {
+                    toast.warn("You don't have permission to create");
+                    return;
+                  }
+                  saveAttendace(form, data, rowData, setLoading, () => {
+                    history.push("/trainingAndDevelopment/trainingPlan");
+                  });
                   form
                     .validateFields()
-                    .then(() => {
-                      console.log(values);
-                    })
-                    .catch(() => {
-                      console.log("error");
-                    });
+                    .then(() => {})
+                    .catch(() => {});
                 },
               },
             ]}
           />
           <PCardBody>
             <Row gutter={[10, 2]}>
-              <Col md={6} sm={24}>
-                <PSelect
-                  disabled={type === "view" || type === "status"}
-                  options={trainingTypeDDL || []}
-                  name="trainingType"
-                  label="Training Type"
-                  placeholder="Training Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingType: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Type is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={trainingTitleDDL || []}
-                  name="trainingTitle"
-                  label="Training Title"
-                  placeholder="Training Title"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingTitle: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Title is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={[]}
-                  name="trainingMode"
-                  label="Training Mode"
-                  placeholder="Training Mode"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingMode: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Mode is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={[]} // need to change
-                  name="trainingOrganizer"
-                  label="Training Organizer"
-                  placeholder="Training Organizer"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingOrganizer: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Organizer is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  options={[]}
-                  name="trainingStatus"
-                  label="Training Status"
-                  placeholder="Training Status"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      trainingStatus: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Status is required",
-                    },
-                  ]}
-                />
-              </Col>
-
-              <Col md={6} sm={24}>
+              <Col md={4} sm={24}>
                 <PInput
                   type="text"
-                  placeholder="Training Vanue"
-                  label="Training Vanue"
-                  name="trainingVanue"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Vanue is required",
-                    },
-                  ]}
+                  placeholder="Training Type"
+                  label="Training Type"
+                  name="trainingTypeName"
+                  disabled={true}
                 />
               </Col>
-              <Col md={6} sm={24}>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Title"
+                  label="Training Title"
+                  name="trainingTitle"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Mode"
+                  label="Training Mode"
+                  name="trainingMode"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Organizer"
+                  label="Training Organizer"
+                  name="trainingOrganizer"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Venue"
+                  label="Training Venue"
+                  name="trainingVenue"
+                  disabled={true}
+                />
+              </Col>
+              <Col md={4} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Status"
+                  label="Training Status"
+                  name="trainingStatus"
+                  disabled={true}
+                />
+              </Col>
+              {/* <Col md={4} sm={24}>
                 <PInput
                   type="text"
                   placeholder="Training Duration"
                   label="Training Duration"
                   name="trainingDuration"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Training Duration is required",
-                    },
-                  ]}
                 />
-              </Col>
-
+              </Col> */}
               <Col md={6} sm={24}>
-                <PInput
-                  type="date"
+                <PSelect
                   name="attendanceDate"
-                  label="Attendance Date"
-                  placeholder="Training Start Date"
-                  onChange={(value) => {
+                  label="Attendance Date & Time"
+                  onChange={(value, op) => {
                     form.setFieldsValue({
-                      attendanceDate: value,
+                      attendanceDate: op,
                     });
                   }}
                   rules={[
-                    {
-                      required: true,
-                      message: "Attendance Date is required",
-                    },
+                    { required: true, message: "Attendance Date is required" },
                   ]}
+                  options={attendanceDDL || []}
+                />
+              </Col>
+              <Col md={2} sm={24} style={{ marginTop: "22px" }}>
+                <PButton
+                  type="primary"
+                  content="View"
+                  onClick={() => {
+                    const values = form.getFieldsValue(true);
+                    form
+                      .validateFields()
+                      .then(() => {
+                        getLandingApi(
+                          `/TrainingAttendance/Participant/${data?.id}?attendanceDate=${values?.attendanceDate?.trainingDate}`,
+                          (data: any) => {
+                            setRowData(
+                              data.map((item: any, index: number) => ({
+                                ...item,
+                                uId: index,
+                              }))
+                            );
+                          }
+                        );
+                      })
+                      .catch(() => {});
+                  }}
+                />
+              </Col>
+              <Col md={6} sm={24} style={{ marginTop: "22px" }}>
+                <PButton
+                  type="primary"
+                  content="Add Participants"
+                  onClick={() =>
+                    ViewTrainingPlan(
+                      data?.id,
+                      setLoading,
+                      setViewData,
+                      (d: any) => {
+                        ViewTrainingPlanDetails(
+                          data?.id,
+                          setLoading,
+                          setViewDataDetails,
+                          (details: any) => {
+                            history.push(
+                              "/trainingAndDevelopment/planning/edit",
+                              {
+                                data: d,
+                                dataDetails: details,
+                                onlyPerticipant: true,
+                              }
+                            );
+                          }
+                        );
+                      }
+                    )
+                  }
                 />
               </Col>
             </Row>
           </PCardBody>
-          <div className="mb-3">
-            <DataTable
-              bordered
-              // data={landingApi?.data?.data || []}
-              data={data}
-              loading={landingApi?.loading}
-              header={header}
-              pagination={{
-                pageSize: landingApi?.data?.pageSize,
-                total: landingApi?.data?.totalCount,
-              }}
-              filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
-                landingApiCall({});
-              }}
-            />
-          </div>
+          {!landingLoading && rowData && (
+            <PCardBody>
+              <DataTable bordered data={rowData || []} header={header} />
+            </PCardBody>
+          )}
+          {/* <PCardBody>
+            <ListOfPerticipants
+              form={form}
+              perticipantField={perticipantField}
+              setperticipantField={setperticipantField}
+              addHandler={addHanderForPerticipant}
+              // calculatePerPersonCost={calculatePerPersonCost}
+              departmentDDL={empDepartmentDDL?.data || []}
+              positionDDL={positionDDL?.data || []}
+            />{" "}
+          </PCardBody> */}
         </PCard>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 
