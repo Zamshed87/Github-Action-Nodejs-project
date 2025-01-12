@@ -166,12 +166,12 @@ export const processNewBulkUploadSalaryAction = async (
         "Employee Code": employeeCode,
         "Gross Salary": gross,
         "Mismatch Amount": misMatch,
-        "Effective Date": effectiveDate,
+        // "Effective Date": effectiveDate,
         "Payment Method": pm,
-        "Payment Method Match": pmm,
-        Bank: bank,
-        Cash: cash,
-        Digital: digital,
+        "Payment Mismatch": pmm,
+        "Bank Pay": bank,
+        "Cash Pay": cash,
+        "Digital Pay": digital,
         ...fields
       } = item;
       const salaryElements = Object.keys(fields)
@@ -198,7 +198,7 @@ export const processNewBulkUploadSalaryAction = async (
         empName: empName || "N/A",
         employeeCode: `${employeeCode}` || "N/A",
         gross: gross?.result || gross || 0,
-        effectiveDate: effectiveDate || todayDate(),
+        // effectiveDate: effectiveDate || todayDate(),
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
         actionBy: employeeId,
@@ -207,7 +207,7 @@ export const processNewBulkUploadSalaryAction = async (
         bank: bank || 0,
         cash: cash || 0,
         digital: digital || 0,
-        pmm: pmm?.result || false,
+        pmm: pmm?.result || 0,
       };
     });
     const errorData = [];
@@ -218,7 +218,7 @@ export const processNewBulkUploadSalaryAction = async (
         Boolean(item.misMatch) ||
         item.empName === "N/A" ||
         item.employeeCode === "N/A" ||
-        item?.pmm !== "TRUE"
+        Boolean(item?.pmm)
       ) {
         errorData.push(item);
       } else {

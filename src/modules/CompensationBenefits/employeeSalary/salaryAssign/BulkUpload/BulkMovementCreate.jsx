@@ -227,7 +227,7 @@ const BulkMovementCreate = () => {
       width: 70,
     },
     {
-      title: "Payment Method Match",
+      title: "Payment Mismatch",
       dataIndex: "pmm",
       // key: "empCode",
       width: 70,
@@ -317,7 +317,7 @@ const BulkMovementCreate = () => {
                   label="Download Demo"
                   onClick={() => {
                     downloadFile(
-                      `/PdfAndExcelReport/downloadexcelemployeeList?workPlaceGroupId=${wgId}&numberOfRow=${numberOfRow}`,
+                      `/PdfAndExcelReport/DownloadExcelforSalaryBulk?parrollGroupId=${values?.pg?.value}&numberOfRow=100`,
                       "Employees Salary",
                       "xlsx",
                       setIsLoading
