@@ -12,6 +12,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import {
   columnIncrement,
   columnOvertime,
+  columnsAdvancedSalary,
   columnsDefault,
   columnsLeave,
   columnsManual,
@@ -167,10 +168,12 @@ const CommonApprovalComponent = () => {
               ? columnIncrement
               : id == 11
               ? columnsManual
-              :id == 14
+              : id == 14
               ? columnsMovement
               : id == 21
               ? columnsSeparation
+              : id == 26
+              ? columnsAdvancedSalary
               : columnsDefault
           }
           bordered

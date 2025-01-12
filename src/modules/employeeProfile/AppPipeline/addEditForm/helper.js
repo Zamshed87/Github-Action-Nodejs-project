@@ -156,7 +156,7 @@ export const submitHandler = ({
       businessUnitId: buId,
       workplaceGroupId: values?.orgName?.value || wgId,
       workplaceGroupName: values?.orgName?.label || "",
-      workplaceId: workplace?.value || 0,
+      workplaceId: workplace?.value || -1,
       workplaceName: workplace?.label || "",
       isInSequence: isSequence,
       randomApproverCount: random ? tableData?.length || 0 : 0,

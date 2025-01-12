@@ -380,6 +380,8 @@ export const columnsSeparation = [
   {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
+    filter: false,
+    sorter: true,
   },
   {
     title: "Employee Code",
@@ -439,4 +441,91 @@ export const columnsSeparation = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
+];
+
+export const columnsAdvancedSalary = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+  },
+  {
+    title: "Workplace",
+    width: "100px",
+    dataIndex: ["applicationInformation", "workplaceName"],
+  },
+  {
+    title: "Application Type",
+    dataIndex: ["applicationType"],
+  },
+  {
+    title: "Advance Salary Code",
+    dataIndex: ["applicationInformation", "advanceSalaryCode"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    width: "50px",
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "totalAmount"],
+    render: (amount) => <div>{amount ? `$${amount.toFixed(2)}` : "N/A"}</div>,
+  },
+  {
+    title: "Payment Method",
+    dataIndex: ["applicationInformation", "paymentMethod", "label"],
+  },
+  {
+    title: "Advance Based On",
+    dataIndex: ["applicationInformation", "advanceBasedOn", "label"],
+  },
+  {
+    title: "Advance Percentage",
+    dataIndex: ["applicationInformation", "advanceBasedOnPercentage"],
+    render: (percentage) => (
+      <div>{percentage ? `${percentage}%` : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Minimum Present Days",
+    dataIndex: ["applicationInformation", "minimumPresentDays"],
+    render: (days) => <div>{days || "N/A"}</div>,
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
 ];
