@@ -202,6 +202,7 @@ const AdvanceSalaryGenerateCreate = () => {
               intDesignationId: itm?.designationId,
               strDepartment: itm?.departmentName,
               intDepartmentId: itm?.departmentId,
+              TotalPresentDays: itm?.totalPresentDays,
               intWorkplaceGroupId: itm?.workPlaceGroupId,
               strWorkplace: itm?.workplaceName,
               intWorkplaceId: itm?.workPlaceId,
@@ -391,9 +392,9 @@ const AdvanceSalaryGenerateCreate = () => {
       yearId: values?.yearId,
       monthId: values?.monthId,
 
-      paymentMethod: values?.walletType?.value || 0,
+      paymentMethod: +values?.walletType?.value || 0,
       minimumPresentDays: +values?.minimumPresentDays,
-      advanceBasedOn: values?.advanceBasedOn?.value,
+      advanceBasedOn: +values?.advanceBasedOn?.value,
       advanceBasedOnPercentage: +values?.advanceBasedOnPercentage,
       description: values?.description,
     };
