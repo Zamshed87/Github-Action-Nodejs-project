@@ -34,7 +34,6 @@ type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   // Data From Store
   const { orgId, buId, wgId, employeeId, wId, wName } = useSelector(
-  const { orgId, buId, wgId, employeeId, wId, wName } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -233,7 +232,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           benefitHours: 1,
           count: 1,
           showInDepend: { value: 1, label: "Fixed" },
-          workplace: { value: wId, label: wName },
           workplace: { value: wId, label: wName },
         }}
         onFinish={onFinish}
