@@ -55,7 +55,7 @@ export const processBulkUploadIncrementAction = async (
       return {
         slNo: index + 1,
         empName: empName || "N/A",
-        employeeCode: employeeCode || "N/A",
+        employeeCode: `${employeeCode}` || "N/A",
         gross: gross,
         effectiveDate: effectiveDate || todayDate(),
         payrollGroupId: values?.pg?.value || payrollInfo[7],

@@ -212,7 +212,7 @@ const CommonFilterField = ({
             allowClear
             placeholder="Department"
             onChange={(value, op) => {
-              setCustomFieldsValue(form, "department", value);
+              setCustomFieldsValue(form, "department", op);
             }}
             // rules={[
             //   {
@@ -234,7 +234,7 @@ const CommonFilterField = ({
             placeholder="Designation"
             showSearch
             onChange={(value, op) => {
-              setCustomFieldsValue(form, "designation", value);
+              setCustomFieldsValue(form, "designation", op);
             }}
           />
         </Col>
