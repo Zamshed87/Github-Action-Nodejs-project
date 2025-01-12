@@ -381,10 +381,6 @@ const MonthlyLeaveReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  const dept = values?.department?.map(
-                    (item: any) => item?.value
-                  );
-
                   const res = await axios.post(
                     "/LeaveMovement/MonthlyleaveReport",
                     {
@@ -398,13 +394,14 @@ const MonthlyLeaveReport = () => {
                       pageNo: 1,
                       pageSize: 500,
                       isPaginated: false,
-                      supervisorId: values?.supervisor?.value || 0,
+                      SearchText: "",
                       departmentIdList: formatFilterValueList(
                         values?.department
                       ) || [0],
                       designationIdList: formatFilterValueList(
                         values?.designation
                       ) || [0],
+                      supervisorId: values?.supervisor?.value || 0,
                     }
                   );
                   if (res?.data?.Data) {

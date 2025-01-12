@@ -348,59 +348,84 @@ const MonthlyPunchReportDetails = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+                  const res = await axios.get(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_in_out_attendance_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
+                      values?.fromDate
+                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
+                      values?.toDate
+                    ).format(
+                      "YYYY-MM-DD"
+                    )}&EmployeeId=${employeeId}&WorkplaceGroupId=${
+                      values?.workplaceGroup?.value || wgId
+                    }&WorkplaceList=${
+                      values?.workplace?.value || wId
+                    }&PageNo=1&departments=${
+                      formatFilterValue(values?.department) || 0
+                    }&designations=${formatFilterValue(
+                      values?.designation || 0
+                    )}&SearchTxt=${
+                      values?.search || ""
+                    }&PageSize=1000&IsPaginated=false`
+                  );
+                  if (res?.data) {
+                    setExcelLoading(true);
+                    if (res?.data < 1) {
+                      setExcelLoading(false);
+                      return toast.error("No Attendance Data Found");
+                    }
 
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
+                    const newData = res?.data?.map((item: any, index: any) => {
                       return {
                         ...item,
                         sl: index + 1,
                       };
-                    }
-                  );
-                  createCommonExcelFile({
-                    titleWithDate: `Monthly Punch Details Report - ${dateFormatter(
-                      moment(values?.fromDate).format("YYYY-MM-DD")
-                    )} to ${dateFormatter(
-                      moment(values?.toDate).format("YYYY-MM-DD")
-                    )}`,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column(
-                      moment(values?.fromDate).format("YYYY-MM-DD"),
-                      moment(values?.toDate).format("YYYY-MM-DD")
-                    ),
-                    getTableData: () =>
-                      getTableDataMonthlyAttendance(
-                        newData,
-                        Object.keys(
-                          column(
-                            moment(values?.fromDate).format("YYYY-MM-DD"),
-                            moment(values?.toDate).format("YYYY-MM-DD")
-                          )
-                        )
-                      ),
+                    });
 
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      C: 30,
-                      B: 15,
-                      D: 30,
-                      E: 25,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
+                    createCommonExcelFile({
+                      titleWithDate: `Monthly Punch Details Report - ${dateFormatter(
+                        moment(values?.fromDate).format("YYYY-MM-DD")
+                      )} to ${dateFormatter(
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      )}`,
+                      fromDate: "",
+                      toDate: "",
+                      buAddress: (buDetails as any)?.strAddress,
+                      businessUnit: values?.workplaceGroup?.value
+                        ? (buDetails as any)?.strWorkplace
+                        : buName,
+                      tableHeader: column(
+                        moment(values?.fromDate).format("YYYY-MM-DD"),
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      ),
+                      getTableData: () =>
+                        getTableDataMonthlyAttendance(
+                          newData,
+                          Object.keys(
+                            column(
+                              moment(values?.fromDate).format("YYYY-MM-DD"),
+                              moment(values?.toDate).format("YYYY-MM-DD")
+                            )
+                          )
+                        ),
+
+                      // eslint-disable-next-line @typescript-eslint/no-empty-function
+                      getSubTableData: () => {},
+                      subHeaderInfoArr: [],
+                      subHeaderColumn: [],
+                      tableFooter: [],
+                      extraInfo: {},
+                      tableHeadFontSize: 10,
+                      widthList: {
+                        C: 30,
+                        B: 15,
+                        D: 30,
+                        E: 25,
+                      },
+                      commonCellRange: "A1:J1",
+                      CellAlignment: "left",
+                    });
+                    setExcelLoading(false);
+                  }
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
