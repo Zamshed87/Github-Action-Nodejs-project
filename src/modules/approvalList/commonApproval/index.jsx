@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button, Spin, Table, Modal } from "antd";
+import { Button, Spin, Modal } from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -9,18 +9,26 @@ import {
 } from "@ant-design/icons";
 import "./index.css";
 import { shallowEqual, useSelector } from "react-redux";
-import { columnsLeave } from "./utils";
+import {
+  columnIncrement,
+  columnOvertime,
+  columnsDefault,
+  columnsLeave,
+  columnsManual,
+  columnsMovement,
+  columnsSeparation,
+} from "./utils";
 import { fetchPendingApprovals } from "./helper";
 import { useParams } from "react-router-dom";
+import { DataTable } from "Components";
 
 const CommonApprovalComponent = () => {
-  const {id} = useParams();
-  console.log("id", id);
+  const { id } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalAction, setModalAction] = useState(null);
+  const [selectedRow, setSelectedRow] = useState([]);
 
   const { orgId, employeeId, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -41,8 +49,8 @@ const CommonApprovalComponent = () => {
   }, [id]);
 
   const handleApproveReject = async (isApprove) => {
-    const payload = selectedRowKeys.map((key) => {
-      const row = data.find((item) => item.id === key);
+    const payload = selectedRow.map((key) => {
+      const row = data.find((item) => item.id === key?.key);
       return {
         configHeaderId: row.configHeaderId,
         approvalTransactionId: row.id,
@@ -68,7 +76,7 @@ const CommonApprovalComponent = () => {
         employeeId,
         setData,
       });
-      setSelectedRowKeys([]);
+      setSelectedRow([]);
     } catch (error) {
       toast.error("Failed to process approvals.");
     }
@@ -87,11 +95,6 @@ const CommonApprovalComponent = () => {
   const handleModalCancel = () => {
     setIsModalVisible(false);
     setModalAction(null);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (keys) => setSelectedRowKeys(keys),
   };
 
   return (
@@ -122,7 +125,7 @@ const CommonApprovalComponent = () => {
             borderRadius: "4px",
           }}
           onClick={() => showConfirmationModal("approve")}
-          disabled={selectedRowKeys.length === 0}
+          disabled={selectedRow.length === 0}
           icon={<CheckOutlined />}
         >
           Approve
@@ -136,23 +139,42 @@ const CommonApprovalComponent = () => {
             borderRadius: "4px",
           }}
           onClick={() => showConfirmationModal("reject")}
-          disabled={selectedRowKeys.length === 0}
+          disabled={selectedRow.length === 0}
           icon={<CloseOutlined />}
         >
           Reject
         </Button>
       </div>
-
       {loading ? (
         <Spin size="large" />
       ) : (
-        <Table
-          rowKey="id"
-          rowSelection={rowSelection}
-          columns={columnsLeave}
-          dataSource={data}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: "max-content" }}
+        <DataTable
+          scroll={{ x: 1500 }}
+          rowSelection={{
+            type: "checkbox",
+            selectedRowKeys: selectedRow.map((item) => item.key),
+            preserveSelectedRowKeys: true,
+            onChange: (selectedRowKeys, selectedRows) => {
+              setSelectedRow(selectedRows);
+            },
+          }}
+          header={
+            id == 8
+              ? columnsLeave
+              : id == 15
+              ? columnOvertime
+              : id == 4
+              ? columnIncrement
+              : id == 11
+              ? columnsManual
+              :id == 14
+              ? columnsMovement
+              : id == 21
+              ? columnsSeparation
+              : columnsDefault
+          }
+          bordered
+          data={data.map((item) => ({ ...item, key: item.id }))}
         />
       )}
       <Modal

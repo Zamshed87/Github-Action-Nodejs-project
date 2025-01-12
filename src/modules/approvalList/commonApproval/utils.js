@@ -1,40 +1,442 @@
+export const columnsDefault = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
 export const columnsLeave = [
-    {
-      title: "Employee Name",
-      dataIndex: ["applicationInformation", "employeeName"],
-      key: "employeeName",
-    },
-    {
-      title: "Designation",
-      dataIndex: ["applicationInformation", "designation"],
-      key: "designation",
-    },
-    {
-      title: "Department",
-      dataIndex: ["applicationInformation", "department"],
-      key: "department",
-    },
-    {
-      title: "Application Date",
-      dataIndex: ["applicationInformation", "applicationDate"],
-      key: "applicationDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "From Date",
-      dataIndex: ["applicationInformation", "fromDate"],
-      key: "fromDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "To Date",
-      dataIndex: ["applicationInformation", "toDate"],
-      key: "toDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Status",
-      dataIndex: ["applicationInformation", "status"],
-      key: "status",
-    },
-  ];
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnOvertime = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+  },
+  {
+    title: "Workplace",
+    dataIndex: ["applicationInformation", "workplaceName"],
+  },
+  {
+    title: "Employee ID",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Date",
+    dataIndex: ["applicationInformation", "overTimeDate"],
+    width: "50px",
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+  },
+  {
+    title: "End Time",
+    dataIndex: ["applicationInformation", "endTime"],
+  },
+  {
+    title: "Hours",
+    dataIndex: ["applicationInformation", "overTimeHour"],
+  },
+  {
+    title: "OT Amount",
+    dataIndex: ["applicationInformation", "overTimeAmount"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnIncrement = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee ID",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Effective Date",
+    dataIndex: ["applicationInformation", "dteEffectiveDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : ""}</div>
+    ),
+  },
+  {
+    title: "Salary Type",
+    dataIndex: ["applicationInformation", "salaryType"],
+  },
+  {
+    title: "Slab Count",
+    dataIndex: ["applicationInformation", "slabCount"],
+  },
+  {
+    title: "Depend On",
+    dataIndex: ["applicationInformation", "strDependOn"],
+  },
+  {
+    title: "Amount",
+    dataIndex: ["applicationInformation", "totalAmount"],
+    render: (amount) => <div>{amount ? `${amount} (0%)` : "0 (0%)"}</div>,
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsManual = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+  },
+  {
+    title: "Workplace Name",
+    dataIndex: ["applicationInformation", "workplaceName"],
+  },
+  {
+    title: "Attendance Status",
+    dataIndex: ["applicationInformation", "strAttendanceStatus"],
+    render: (status) => (
+      <div
+        style={{
+          color: status === "Late" ? "red" : "green",
+          fontWeight: "bold",
+        }}
+      >
+        {status}
+      </div>
+    ),
+  },
+  {
+    title: "Request Status",
+    dataIndex: ["applicationInformation", "strRequestStatus"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
+    ),
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
+    ),
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
+    ),
+  },
+  {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+  },
+  {
+    title: "End Time",
+    dataIndex: ["applicationInformation", "endTime"],
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsMovement = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Leave Type",
+    dataIndex: ["applicationInformation", "leaveType"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    width: "50px",
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Total Days",
+    dataIndex: ["applicationInformation", "totalDays"],
+  },
+  {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+  },
+  {
+    title: "End Time",
+    dataIndex: ["applicationInformation", "endTime"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsSeparation = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Type",
+    dataIndex: ["applicationType"],
+  },
+
+  {
+    title: "Separation Type",
+    dataIndex: ["applicationInformation", "separationTypeName"],
+  },
+  {
+    title: "Separation Date",
+    dataIndex: ["applicationInformation", "separationDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Last Working Date",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Effective Date",
+    dataIndex: ["applicationInformation", "dteEffectiveDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
