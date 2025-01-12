@@ -1,31 +1,31 @@
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Checkbox, Col, Form, InputNumber, Row } from "antd";
 import { useEffect, useState } from "react";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
 import { labelChangeByOrgId } from "utility/strLabelChange";
-import { DataTable, TableButton } from "Components";
+import { approverDDL, header, submitHandler } from "./helper";
+import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
   setIsAddEditForm,
   getData,
-  // empBasic,
   isEdit,
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
-  // const debounce = useDebounce();
   const [tableData, setTableData] = useState([]);
   const [deletedRow, setDeletedRow] = useState([]);
   const [isStrStatus, setIsStrStatus] = useState(false);
+  const [randomCount, setRandomCount] = useState(false);
+  const [random, setRandom] = useState(false);
+  const [isSequence, setIsSequence] = useState(true);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
+  const CommonEmployeeDDL = useApiRequest([]);
   const getWgDDL = useApiRequest({});
   const getWDDL = useApiRequest({});
   const getPipelineDDL = useApiRequest({});
@@ -34,22 +34,7 @@ export default function AddEditForm({
     (state) => state?.auth?.keywords,
     shallowEqual
   );
-  const approverDDL = (orgId) => {
-    switch (orgId) {
-      case 10015:
-        return [
-          { value: 1, label: supervisor || "Reporting Line" },
-          { value: 2, label: "Team Leader" },
-          { value: 3, label: "User Group" },
-        ];
-      default:
-        return [
-          { value: 1, label: supervisor || "Supervisor" },
-          { value: 2, label: "Line Manager" },
-          { value: 3, label: "User Group" },
-        ];
-    }
-  };
+
   const { orgId, buId, employeeId, wgId, wId, wName, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -57,7 +42,27 @@ export default function AddEditForm({
 
   const [loading, setLoading] = useState(false);
 
-  // ddls
+  const getEmployee = (value) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        // workplaceId: wId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     getWgDDL.action({
       urlKey: "WorkplaceGroupIdAll",
@@ -92,12 +97,10 @@ export default function AddEditForm({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
-        // id: singleData?.intBusinessUnitId,
         DDLType: "usergroup",
         WorkplaceGroupId: wgId,
         BusinessUnitId: buId,
         intId: employeeId || 0,
-        // intWorkplaceId: wId,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -106,8 +109,6 @@ export default function AddEditForm({
         });
       },
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
   useEffect(() => {
     getPipelineDDL.action({
@@ -119,104 +120,64 @@ export default function AddEditForm({
       onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.strDisplayName;
-          res[i].value = item?.strApplicationType;
+          res[i].value = item?.intId;
         });
       },
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
-  // states
-
-  // Pages Start From Here code from above will be removed soon
 
   // Form Instance
   const [form] = Form.useForm();
-  // submit
-  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
-    const cb = () => {
-      resetForm();
-      setIsAddEditForm(false);
-      getData();
-    };
-    if (!tableData?.length)
-      return toast.warn(
-        `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
-      );
-    const payload = {
-      isActive: true,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: employeeId,
-      intPipelineHeaderId: singleData?.intPipelineHeaderId || 0,
-      strPipelineName: values?.pipelineName?.label,
-      strApplicationType: values?.pipelineName?.value,
-      strRemarks: values?.remarks || "",
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intWorkplaceGroupId: values?.orgName?.value || wgId,
-      intWorkplaceId: values?.workplace?.value ? values?.workplace?.value : 0, //  || wId,
-      isValidate: true,
-      approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
-    };
-    savePipeline.action({
-      urlKey: "ApprovalPipelineCreateNUpdate",
-      method: "POST",
-      payload: payload,
-      onSuccess: () => {
-        cb();
-      },
-      toast: true,
-    });
-  };
-
+console.log("singleData",singleData)
   useEffect(() => {
-    if (singleData?.intPipelineHeaderId) {
+    if (singleData?.id) {
       getPipelineDetails.action({
         urlKey: "ApprovalPipelineHeaderDetailsById",
         method: "GET",
         params: {
-          // id: singleData?.intBusinessUnitId,
-          headerId: singleData?.intPipelineHeaderId,
-          intWorkplaceGroupId: wgId,
-          BusinessUnitId: buId,
-          intBusinessUnitId: buId,
+          configHeaderId: singleData?.id,
+          accountId: orgId,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
+          workplaceId: wId,
         },
         onSuccess: (data) => {
           form.setFieldsValue({
             ...singleData,
             orgName: {
-              value: data?.globalPipelineHeader?.intWorkplaceGroupId,
-              label: data?.globalPipelineHeader?.strWorkPlaceGroupName,
+              value: data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
+              label: data?.header?.workplaceGroupName || singleData?.workplaceGroupName,
             },
             workplace: {
-              value: data?.globalPipelineHeader?.intWorkplaceId,
-              label: data?.globalPipelineHeader?.strWorkPlaceName,
+              value: data?.header?.workplaceId || singleData?.workplaceId,
+              label: data?.header?.workplaceName || singleData?.workplaceName,
             },
             pipelineName: {
-              value: singleData?.strApplicationType,
-              label: singleData?.strPipelineName,
+              value: data?.header?.applicationTypeId || singleData?.applicationTypeId,
+              label: data?.header?.applicationType || singleData?.applicationType,
             },
-            remarks: data?.globalPipelineHeader?.strRemarks,
+            remarks: data?.header?.strRemarks || "",
+            randomCountValue: data?.header?.randomApproverCount || 0,
+            isSequence: data?.header?.isInSequence || false,
+            id: data?.header?.id || 0,
           });
-          const rowData = data?.globalPipelineRowList?.map((item) => ({
-            approver: item?.globalPipelineRow?.isSupervisor
-              ? supervisor || labelChangeByOrgId(orgId, "Supervisor")
-              : item?.globalPipelineRow?.isLineManager
-              ? labelChangeByOrgId(orgId, "Line Manager")
-              : "User Group",
-            userGroup: item?.userGroupHeader?.strUserGroup || "",
-            intPipelineRowId: item?.globalPipelineRow?.intPipelineRowId,
-            intPipelineHeaderId: item?.globalPipelineRow?.intPipelineHeaderId,
-            isSupervisor: item?.globalPipelineRow?.isSupervisor,
-            isLineManager: item?.globalPipelineRow?.isLineManager,
-            intUserGroupHeaderId: item?.globalPipelineRow?.intUserGroupHeaderId,
-            intShortOrder: item?.globalPipelineRow?.intShortOrder,
+          const rowData = data?.row?.map((item) => ({
+            approver: item?.approverType || "User Group",
+            userGroup: item?.userGroupOrEmployeeId || "", 
+            intPipelineRowId: item?.id || null,
+            configHeaderId: data?.header?.id || 0,
+            id: item?.id,
+            isSupervisor: item?.approverType === "Supervisor",
+            isLineManager: item?.approverType === "Line Manager",
+            intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
+            intShortOrder: item?.sequenceId || 0,
             isCreate: false,
-            isDelete: false,
-            strStatusTitle: item?.globalPipelineRow?.strStatusTitle,
+            isDelete: false, 
+            strStatusTitle: item?.afterApproveStatus || "",
+            strStatusTitlePending: item?.beforeApproveStatus || "",
+            randomCount: false, 
           }));
+          
           setTableData(rowData);
         },
       });
@@ -226,63 +187,7 @@ export default function AddEditForm({
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
-  // Header
-  const header = [
-    {
-      title: "SL",
-      render: (_, rec, index) => index + 1,
-      align: "center",
-      width: 50,
-    },
-    {
-      title: "Approver",
-      dataIndex: "approver",
-      sorter: true,
-    },
-    {
-      title: "Sequence Order",
-      dataIndex: "intShortOrder",
-      sorter: true,
-    },
-    {
-      title: "Status Title",
-      dataIndex: "strStatusTitle",
-      sorter: true,
-    },
-    {
-      title: "User Group",
-      dataIndex: "userGroup",
-      sorter: true,
-    },
 
-    {
-      width: 50,
-      align: "center",
-      render: (_, rec, index) => (
-        <>
-          <TableButton
-            buttonsList={[
-              {
-                type: "delete",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  // store deleted data,we have to send it to back end for edit
-                  const data = [...deletedRow];
-                  data.push({
-                    ...rec,
-                    isCreate: false,
-                    isDelete: true,
-                  });
-                  setDeletedRow(data);
-                  remover(index);
-                },
-              },
-            ]}
-          />
-        </>
-      ),
-    },
-  ];
   return (
     <PForm
       form={form}
@@ -294,11 +199,20 @@ export default function AddEditForm({
           resetForm: form.resetFields,
           setIsAddEditForm,
           isEdit,
+          tableData,
+          employeeId,
+          singleData,
+          orgId,
+          buId,
+          wgId,
+          deletedRow,
+          savePipeline,
+          isSequence,
+          random,
         });
       }}
       initialValues={{
         orgName: { value: wgId, label: wgName },
-        // workplace: { value: wId, label: wName },
       }}
     >
       <Row gutter={[10, 2]}>
@@ -337,6 +251,8 @@ export default function AddEditForm({
         <Col md={12} sm={24}>
           <PSelect
             allowClear
+            maxTagCount="responsive"
+            mode="multiple"
             options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
             name="workplace"
             label="Workplace"
@@ -348,7 +264,6 @@ export default function AddEditForm({
                 workplace: op,
               });
             }}
-            // rules={[{ required: true, message: "Workplace is required" }]}
           />
         </Col>
         <Col md={12} sm={24}>
@@ -369,18 +284,17 @@ export default function AddEditForm({
             rules={[{ required: true, message: "Pipeline Name is required" }]}
           />
         </Col>
-        <Col md={12} sm={24}>
+        {/* <Col md={12} sm={24}>
           <PInput
             type="text"
             name="remarks"
             label="Remarks"
             placeholder="Remarks"
-            // rules={[{ required: true, message: "remarks is required" }]}
           />
-        </Col>
+        </Col> */}
         <Col md={12} sm={24}>
           <PSelect
-            options={approverDDL(orgId)}
+            options={approverDDL(orgId, supervisor)}
             name="approver"
             label="Approver"
             showSearch
@@ -390,30 +304,66 @@ export default function AddEditForm({
               form.setFieldsValue({
                 approver: op,
                 strTitle: `${op?.label}`,
+                strTitlePending: `${op?.label}`,
                 userGroup: undefined,
               });
               setIsStrStatus(true);
             }}
-            // rules={[{ required: true, message: "Approver is required" }]}
+          />
+        </Col>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { approver } = form.getFieldsValue();
+            return (
+              approver?.label === "Individual Employee" && (
+                <Col md={12} sm={24} xs={24}>
+                  <PSelect
+                    name="employee"
+                    label="Select a Employee"
+                    placeholder="Search Min 2 char"
+                    allowClear={true}
+                    options={CommonEmployeeDDL?.data || []}
+                    loading={CommonEmployeeDDL?.loading}
+                    onChange={(value, op) => {
+                      console.log("op", op);
+                      form.setFieldsValue({
+                        employee: op,
+                      });
+                    }}
+                    onSearch={(value) => {
+                      getEmployee(value);
+                    }}
+                    showSearch
+                    filterOption={false}
+                  />
+                </Col>
+              )
+            );
+          }}
+        </Form.Item>
+        <Col md={12} sm={24}>
+          <PInput
+            type="text"
+            addOnBefore={isStrStatus && "Pending For"}
+            name="strTitle"
+            label="Before Approval Status"
+            placeholder="Pending For"
+            // disabled={!form.getFieldValue("approver")}
           />
         </Col>
         <Col md={12} sm={24}>
           <PInput
             type="text"
             addOnBefore={isStrStatus && "Approved By"}
-            name="strTitle"
-            label="Approve Status"
-            placeholder="Approve Status"
-            disabled={!form.getFieldValue("approver")}
-            // rules={[{ required: true, message: "remarks is required" }]}
+            name="strTitlePending"
+            label="After Approval Status"
+            placeholder="Approved By"
+            // disabled={!form.getFieldValue("approver")}
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver } = form.getFieldsValue();
-
-            // const empType = employeeType?.label;
-
             return (
               <>
                 {approver?.value === 3 ? (
@@ -444,85 +394,125 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
-        <Col md={12} sm={24}>
-          <PSelect
-            options={[
-              { value: 1, label: "1" },
-              { value: 2, label: "2" },
-              { value: 3, label: "3" },
-              { value: 4, label: "4" },
-              { value: 5, label: "5" },
-              { value: 6, label: "6" },
-              { value: 7, label: "7" },
-              { value: 8, label: "8" },
-              { value: 9, label: "9" },
-              { value: 10, label: "10" },
-              { value: 11, label: "11" },
-              { value: 12, label: "12" },
-              { value: 13, label: "13" },
-              { value: 14, label: "14" },
-              { value: 15, label: "15" },
-              { value: 16, label: "16" },
-              { value: 17, label: "17" },
-              { value: 18, label: "18" },
-              { value: 19, label: "19" },
-              { value: 20, label: "20" },
-            ]}
-            name="sequence"
-            label="Sequence Order"
-            showSearch
-            filterOption={true}
-            placeholder="Sequence Order"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                sequence: op,
-              });
-            }}
-            rules={
-              [
-                // { required: true, message: "Sequence Order is required" },
-              ]
+
+        <Col md={4} sm={24} className="mt-4">
+          <Form.Item
+            name="isSequence"
+            valuePropName="checked"
+            initialValue={true}
+          >
+            <Checkbox
+              onChange={(e) => {
+                const checked = e.target.checked;
+                if (checked) {
+                  form.setFieldsValue({
+                    isSequence: true,
+                    randomCount: false,
+                  });
+                  setIsSequence(true);
+                  setRandomCount(false);
+                  setRandom(false);
+                } else {
+                  form.setFieldsValue({
+                    isSequence: false,
+                  });
+                  setIsSequence(false);
+                }
+              }}
+            >
+              Sequence
+            </Checkbox>
+          </Form.Item>
+        </Col>
+
+        <Col md={4} sm={24} className="mt-4">
+          <Form.Item
+            name="randomCount"
+            valuePropName="checked"
+            initialValue={false}
+          >
+            <Checkbox
+              onChange={(e) => {
+                const checked = e.target.checked;
+                if (checked) {
+                  form.setFieldsValue({
+                    randomCount: true,
+                    isSequence: false,
+                  });
+                  setRandomCount(true);
+                  setIsSequence(false);
+                  setRandom(true);
+                } else {
+                  form.setFieldsValue({
+                    randomCount: false,
+                  });
+                  setRandomCount(false);
+                }
+              }}
+            >
+              Random Count
+            </Checkbox>
+          </Form.Item>
+        </Col>
+
+        <Form.Item
+          name="randomCountValue"
+          className="mt-4"
+          style={{
+            display: randomCount ? "block" : "none",
+            marginRight: "10px",
+          }}
+          rules={[
+            {
+              validator: (_, value) => {
+                if (value > tableData.length) {
+                  return Promise.reject(
+                    "Count cannot be greater than table length"
+                  );
+                }
+                return Promise.resolve();
+              },
+            },
+          ]}
+        >
+          <InputNumber
+            min={1}
+            max={tableData.length}
+            placeholder="Enter Count"
+            onChange={(value) =>
+              form.setFieldsValue({ randomCountValue: value })
             }
           />
-        </Col>
+        </Form.Item>
+
         <Form.Item shouldUpdate noStyle>
           {() => {
-            const { userGroup, strTitle, sequence, approver } =
+            const { approver, userGroup, strTitle, strTitlePending, employee } =
               form.getFieldsValue();
-
-            // const empType = employeeType?.label;
-
             return (
               <>
                 <Col span={2} className="mt-1">
                   <button
                     type="button"
-                    className="mt-3  btn btn-green  "
+                    className="mt-3 btn btn-green"
                     style={{
                       width: "auto",
                       height: "auto",
-                      // margin: "0.4em 0 0 0.7em",
-                      // padding: " 0 2rem",
                     }}
                     onClick={() => {
-                      if (sequence === undefined || approver === undefined) {
-                        return toast.warn(
-                          "Please fill up the sequence and approver field"
-                        );
+                      if (approver === undefined) {
+                        return toast.warn("Please fill up the approver field");
                       }
                       if (approver?.value === 3 && userGroup === undefined) {
                         return toast.warn(
                           "Please fill up the User Group field"
                         );
                       }
+
                       const exists = tableData.filter(
                         (item) =>
                           item?.approver === approver?.label &&
                           approver?.label !== "User Group"
-                      );
-
-                      const sequenceExists = tableData.filter(
-                        (item) => item?.intShortOrder === sequence?.value
                       );
 
                       const userGroupExists = tableData.filter(
@@ -532,35 +522,42 @@ export default function AddEditForm({
 
                       if (exists?.length > 0)
                         return toast.warn("Already exists approver");
-                      if (sequenceExists?.length > 0)
-                        return toast.warn("Already exists sequence");
                       if (userGroupExists?.length > 0)
                         return toast.warn("Already exists user group");
 
+                      // Dynamic Sequence (based on tableData length)
+                      const newSequence = tableData.length + 1;
+
                       const data = [...tableData];
+                      console.log("approver", approver);
                       const obj = {
-                        approver: approver?.label,
-                        userGroup: userGroup?.label || "",
+                        approverLabel: approver?.label,
+                        approverValue: approver?.value,
+                        userGroup:
+                          userGroup?.label ||
+                          employee?.employeeNameWithCode ||
+                          "",
                         intPipelineRowId: 0,
-                        intPipelineHeaderId: 0,
+                        id: 0,
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
                         intUserGroupHeaderId: userGroup?.value || 0,
-                        intShortOrder: sequence?.value,
+                        intShortOrder: newSequence,
                         isCreate: true,
                         isDelete: false,
                         strStatusTitle: `Approved By ${strTitle}`,
+                        strStatusTitlePending: `Pending For ${strTitlePending}`,
                       };
                       data.push(obj);
 
                       setTableData(data);
                       form.setFieldsValue({
-                        sequence: undefined,
                         approver: undefined,
                         strTitle: undefined,
+                        strTitlePending: undefined,
                         userGroup: undefined,
+                        employee: undefined,
                       });
-                      setIsStrStatus(false);
                     }}
                   >
                     Add
@@ -570,13 +567,19 @@ export default function AddEditForm({
             );
           }}
         </Form.Item>
-        <Col md={24} sm={24} style={{ marginTop: "1rem" }}>
-          {tableData?.length > 0 && (
-            <DataTable
-              bordered
-              data={tableData?.length > 0 ? tableData : []}
-              // loading={landingApi?.loading}
-              header={header}
+        {console.log("tableData", tableData)}
+        <Col md={24} sm={24}>
+          {tableData.length > 0 && (
+            <DraggableTable
+              tableData={tableData}
+              setTableData={setTableData}
+              header={header(
+                deletedRow,
+                setDeletedRow,
+                remover,
+                random,
+                isSequence
+              )}
             />
           )}
         </Col>
