@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AddEditForm from "./addEditForm";
-import { getSerial } from "Utils";
 import { dateFormatter } from "utility/dateFormatter";
 
 function CommonAppPipeline() {
@@ -60,9 +59,9 @@ function CommonAppPipeline() {
       method: "GET",
       params: {
         accountId: orgId,
-        intWorkplaceId: wId,
-        intWorkplaceGroupId: wgId,
-        intBusinessUnitId: buId,
+        workplaceId: wId,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         searchText: searchText || "",
         PageSize: pagination?.pageSize || 25,
         PageNo: pagination?.current || 1,
@@ -98,19 +97,14 @@ function CommonAppPipeline() {
   const header = [
     {
       title: "SL",
-      render: (_: any, rec: any, index: number) =>
-        getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
-          index,
-        }),
-      fixed: "left",
+      render: (_: any, rec: any, index: number) => index + 1,
+      //   fixed: "left",
       width: 25,
       align: "center",
     },
     {
-      title: "Pipeline Name",
-      dataIndex: "strPipelineName",
+      title: "Application Type",
+      dataIndex: "applicationType",
       sorter: true,
     },
     {
@@ -120,19 +114,40 @@ function CommonAppPipeline() {
     },
     {
       title: "Date",
-      dataIndex: "dteCreatedAt",
-      render: (_: any, rec: any) => dateFormatter(rec?.dteCreatedAt),
+      dataIndex: "createdAt",
+      render: (_: any, rec: any) => dateFormatter(rec?.createdAt),
       sorter: true,
+      width: 100,
     },
     {
       title: "Workp. Group/Location",
-      dataIndex: "workplcaeGroup",
+      dataIndex: "workplaceGroupName",
       sorter: true,
     },
     {
       title: "Workplace/Concern",
-      dataIndex: "workplcae",
+      dataIndex: "workplaceName",
       sorter: true,
+    },
+    {
+      title: "Sequence",
+      dataIndex: "isInSequence",
+      sorter: true,
+      render: (_: any, rec: any) => (
+        <span
+          className={`${
+            rec?.isInSequence === true ? "text-success" : "text-danger"
+          }`}
+        >
+          {rec?.isInSequence ? "Sequential" : "Not Sequential"}
+        </span>
+      ),
+    },
+    {
+      title: "Random Approval Count",
+      dataIndex: "randomApproverCount",
+      sorter: true,
+
     },
     {
       width: 50,
@@ -183,7 +198,7 @@ function CommonAppPipeline() {
           <DataTable
             bordered
             data={
-              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+              landingApi?.data?.length > 0 ? landingApi?.data : []
             }
             loading={landingApi?.loading}
             header={header}
@@ -212,7 +227,7 @@ function CommonAppPipeline() {
       <PModal
         open={open}
         title={id ? "Edit Approval Pipeline" : "Create Approval Pipeline"}
-        width=""
+        width={1000}
         onCancel={() => {
           setId("");
           setOpen(false);
