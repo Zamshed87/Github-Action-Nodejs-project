@@ -9,8 +9,8 @@ export default function UCBBankLetterHead({
         <img
           src={letterHeadImage.src}
           style={{
-            height: "1400px",
-            width: "991px",
+            height: "1570px",
+            width: "1130px",
             objectFit: "cover",
             position: "fixed",
             zIndex: -1,
@@ -43,6 +43,7 @@ export default function UCBBankLetterHead({
                 margin: "0px 96px",
                 fontSize: "14px",
                 marginTop: "50px",
+                minWidth: "930px",
               }}
             >
               <p style={{ color: "black", fontSize: "14px" }}>
