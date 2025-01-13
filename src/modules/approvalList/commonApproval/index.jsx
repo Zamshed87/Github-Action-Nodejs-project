@@ -17,6 +17,7 @@ import {
   columnsDefault,
   columnsExpense,
   columnsIOU,
+  columnsIOUAdjustment,
   columnsLeave,
   columnsLoan,
   columnsLocationDevice,
@@ -204,6 +205,8 @@ const CommonApprovalComponent = () => {
               ? columnsSalaryCertificate
               : id == 2
               ? columnsBonusGenerate
+              : id == 7
+              ? columnsIOUAdjustment
               : columnsDefault
           }
           bordered
