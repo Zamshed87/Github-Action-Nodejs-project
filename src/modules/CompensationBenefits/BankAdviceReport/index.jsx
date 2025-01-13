@@ -63,10 +63,6 @@ const BankAdviceReport = () => {
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({
     contentRef,
-    onAfterPrint: () => {
-      setLandingView("");
-      setLandingViewPdf("");
-    },
   });
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
@@ -1020,8 +1016,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
-
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
                             downloadFile(
                               url,
                               `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetExcel_${values?.monthId}-${values?.yearId}`,
@@ -1043,7 +1038,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=Advice`;
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
                               url,
@@ -1109,7 +1104,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}`;
+                            const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}`;
 
                             downloadFile(
                               url,
