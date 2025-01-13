@@ -18,8 +18,13 @@ import {
   columnsIOU,
   columnsLeave,
   columnsLoan,
+  columnsLocationDevice,
   columnsManual,
+  columnsMarketVisit,
+  columnsMasterLocation,
   columnsMovement,
+  columnsRemoteAttendance,
+  columnsSalaryIncrement,
   columnsSeparation,
 } from "./utils";
 import { fetchPendingApprovals } from "./helper";
@@ -183,6 +188,16 @@ const CommonApprovalComponent = () => {
               ? columnsIOU
               : id == 9
               ? columnsLoan
+              : id == 12
+              ? columnsMarketVisit
+              : id == 13
+              ? columnsMasterLocation
+              : id == 17
+              ? columnsRemoteAttendance
+              : id == 10
+              ? columnsLocationDevice
+              : id == 5
+              ? columnsSalaryIncrement
               : columnsDefault
           }
           bordered

@@ -179,14 +179,12 @@ export const submitHandler = ({
     })),
   }));
 
-  // Prepare final payload based on singleData
   const finalPayload = singleData ? payloadList[0] : payloadList;
 
   const urlKey = singleData
     ? "UpdateApprovalConfiguration"
     : "CreateApprovalConfiguration";
 
-  // Make a single API call with the final payload
   savePipeline.action({
     urlKey: urlKey,
     method: "POST",

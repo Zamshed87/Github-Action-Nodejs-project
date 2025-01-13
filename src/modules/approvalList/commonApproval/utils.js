@@ -749,3 +749,260 @@ export const columnsLoan = [
   },
 ];
 
+export const columnsMarketVisit = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Attendance Date",
+    dataIndex: ["applicationInformation", "dteAttendanceDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+  },
+  {
+    title: "Place Name",
+    dataIndex: ["applicationInformation", "placeName"],
+  },
+  {
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsMasterLocation = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Longitude",
+    dataIndex: ["applicationInformation", "longitude"],
+  },
+  {
+    title: "Latitude",
+    dataIndex: ["applicationInformation", "latitude"],
+  },
+  {
+    title: "Place Name",
+    dataIndex: ["applicationInformation", "placeName"],
+  },
+  {
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsRemoteAttendance = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Attendance Date",
+    dataIndex: ["applicationInformation", "dteAttendanceDate"],
+  },
+  {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+  },
+  {
+    title: "Place Name",
+    dataIndex: ["applicationInformation", "placeName"],
+  },
+  {
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsLocationDevice = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Longitude",
+    dataIndex: ["applicationInformation", "strLongitude"],
+  },
+  {
+    title: "Latitude",
+    dataIndex: ["applicationInformation", "strLatitude"],
+  },
+  {
+    title: "Place Name",
+    dataIndex: ["applicationInformation", "strPlaceName"],
+  },
+  {
+    title: "Address",
+    dataIndex: ["applicationInformation", "strAddress"],
+  },
+  {
+    title: "Created At",
+    dataIndex: ["applicationInformation", "dteCreatedAt"],
+  },
+  {
+    title: "Created By",
+    dataIndex: ["applicationInformation", "intCreatedBy"],
+  },
+  {
+    title: "Device ID",
+    dataIndex: ["applicationInformation", "strDeviceId"],
+  },
+  {
+    title: "Device Name",
+    dataIndex: ["applicationInformation", "strDeviceName"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsSalaryIncrement = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Last Increment Date",
+    dataIndex: ["applicationInformation", "lastIncrementDate"],
+  },
+  {
+    title: "Last Increment Amount",
+    dataIndex: ["applicationInformation", "lastIncrementAmount"],
+  },
+  {
+    title: "Recent Gross Salary",
+    dataIndex: ["applicationInformation", "recentGrossSalary"],
+  },
+  {
+    title: "Increment Proposal Percentage",
+    dataIndex: ["applicationInformation", "incrementProposalPercentage"],
+  },
+  {
+    title: "Increment Proposal Amount",
+    dataIndex: ["applicationInformation", "incrementProposalAmount"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
+];
+
+
+
