@@ -3,9 +3,13 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { excelFileToArray } from "utility/excelFileToJSON";
+import {
+  excelFileToArray,
+  excelFileToSpecificIndexInfo,
+} from "utility/excelFileToJSON";
 import {
   processBulkUploadSalaryAction,
+  processNewBulkUploadSalaryAction,
   saveBulkUploadSalaryAction,
 } from "./helper";
 import Loading from "common/loading/Loading";
@@ -13,16 +17,24 @@ import BackButton from "common/BackButton";
 import PrimaryButton from "common/PrimaryButton";
 import { downloadFile } from "utility/downloadFile";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import { useApiRequest } from "Hooks";
+import { Tag } from "antd";
+import { DataTable } from "Components";
+import { ModalFooter, PModal } from "Components/Modal";
 
 const initialValues = {
   file: "",
 };
 
 const BulkMovementCreate = () => {
-  const { buId, employeeId, orgId, wgId } = useSelector(
+  const { buId, employeeId, orgId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const payrollGroupDDL = useApiRequest([]);
+  const postBulk = useApiRequest([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -43,6 +55,7 @@ const BulkMovementCreate = () => {
 
   // const [open, setOpen] = useState(false);
   const [errorData, setErrorData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   // const handleClose = () => {
   //   setOpen(false);
@@ -51,9 +64,31 @@ const BulkMovementCreate = () => {
 
   const processData = async (file) => {
     try {
-      const processData = await excelFileToArray(file, "Employees", 2);
+      const processData = await excelFileToArray(file, "EmployeesIncrement", 3);
+      const payrollInfo = await excelFileToSpecificIndexInfo(
+        file,
+        "EmployeesIncrement",
+        1
+      );
+      const elementInfo = await excelFileToSpecificIndexInfo(
+        file,
+        "EmployeesIncrement",
+        2
+      );
       if (processData.length < 1) return toast.warn("No data found!");
-      processBulkUploadSalaryAction(processData, setData, setIsLoading);
+      // processBulkUploadSalaryAction(processData, setData, setIsLoading);
+
+      processNewBulkUploadSalaryAction(
+        processData,
+        setData,
+        setIsLoading,
+        elementInfo,
+        payrollInfo,
+        values,
+        setErrorData,
+        setOpen,
+        employeeId
+      );
     } catch (error) {
       toast.warn("Failed to process!");
     }
@@ -64,27 +99,177 @@ const BulkMovementCreate = () => {
     //   setData([]);
     // };
     data?.length > 0
-      ? saveBulkUploadSalaryAction(
-          setIsLoading,
-          data,
-          "",
-          orgId,
-          buId,
-          employeeId,
-          setErrorData,
-          wgId,
-          setData
-        )
+      ? postBulk.action({
+          urlKey: "SalaryBulkUpload",
+          method: "post",
+          payload: data,
+          toast: true,
+          onSuccess: (res) => {
+            // callBack();
+            // toast.success(res?.data?.message || "Successful");
+
+            const modifiedResponse = data.map((item) => {
+              const responseItem = res.find((r) => r.slNo === item.slNo);
+              return {
+                ...item,
+                status: responseItem.isInserted ? "Success" : "Failed",
+                message: responseItem.message,
+              };
+            });
+            setData(modifiedResponse);
+          },
+        })
       : toast.warn("Please Upload Excel File");
   };
 
-  const { handleSubmit, resetForm } = useFormik({
+  const { handleSubmit, resetForm, setFieldValue, values } = useFormik({
     initialValues,
     onSubmit: () => {
       saveHandler();
     },
   });
+  const getPayrollGroupDDL = () => {
+    payrollGroupDDL?.action({
+      urlKey: "BreakdownNPolicyForSalaryAssign",
+      method: "GET",
+      params: {
+        StrReportType: "BREAKDOWN DDL",
+        IntEmployeeId: employeeId,
+        IntAccountId: orgId,
+        IntSalaryBreakdownHeaderId: 0,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strSalaryBreakdownTitle;
+          res[i].value = item?.intSalaryBreakdownHeaderId;
+        });
+      },
+    });
+  };
+  useEffect(() => {
+    getPayrollGroupDDL();
+  }, [wgId, wId]);
 
+  // Generate dynamic columns for elements
+  const dynamicColumns = (source) => {
+    const columns = [];
+    if (source.length > 0) {
+      const elementKeys = source[0].salaryElements.map(
+        (element) => element.elementName
+      );
+      elementKeys.forEach((key) => {
+        columns.push({
+          title: key,
+          dataIndex: "salaryElements",
+          key,
+          width: 70,
+          render: (elements) => {
+            const element = elements.find((el) => el.elementName === key);
+            return element ? element.amount : null;
+          },
+        });
+      });
+    }
+    return columns;
+  };
+
+  // Fixed columns for Employee Name and Code
+  const fixedColumns = [
+    {
+      title: "SL",
+      dataIndex: "slNo",
+      // key: "empName",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "empName",
+      // key: "empName",
+      width: 120,
+    },
+    {
+      title: "Employee Code",
+      dataIndex: "employeeCode",
+      // key: "empCode",
+      width: 70,
+    },
+    {
+      title: "Gross Salary",
+      dataIndex: "gross",
+      // key: "empCode",
+      width: 70,
+    },
+    {
+      title: "Bank",
+      dataIndex: "bank",
+      // key: "empCode",
+      width: 50,
+    },
+    {
+      title: "Cash",
+      dataIndex: "cash",
+      // key: "empCode",
+      width: 50,
+    },
+    {
+      title: "Digital",
+      dataIndex: "digital",
+      // key: "empCode",
+      width: 60,
+    },
+    {
+      title: "Mismatch Amount",
+      dataIndex: "misMatch",
+      // key: "empCode",
+      width: 70,
+    },
+    {
+      title: "Payment Mismatch",
+      dataIndex: "pmm",
+      // key: "empCode",
+      width: 70,
+    },
+  ];
+  const responseColumns = (source) => {
+    return [
+      {
+        title: "Status",
+        dataIndex: "status",
+        // key: "empName",
+        width: 70,
+        render: (_, rec) => {
+          return (
+            <div>
+              {rec?.status === "Success" ? (
+                <Tag color="green">{rec?.status}</Tag>
+              ) : (
+                <Tag color="red">{rec?.status}</Tag>
+              )}
+            </div>
+          );
+        },
+        hidden: source[0]?.status ? false : true,
+      },
+      {
+        title: "Message",
+        dataIndex: "message",
+        // key: "empCode",
+        width: 40,
+        hidden: source[0]?.status ? false : true,
+      },
+    ].filter((i) => !i.hidden);
+  };
+
+  // Combine fixed and dynamic columns
+  // const columns=(source)=> = {retrun[...fixedColumns, ...dynamicColumns(source)]};
+  const columns = (source) => [
+    ...fixedColumns,
+    ...dynamicColumns(source),
+    ...responseColumns(source),
+  ];
   return (
     <>
       {isLoading && <Loading />}
@@ -100,23 +285,40 @@ const BulkMovementCreate = () => {
           </div>
 
           <div className="card-style pb-0 mb-2">
-            <div className="row">
+            <div className="row py-2">
+              <div className="col-md-3" style={{ marginTop: "-12px" }}>
+                <div className="input-field-main">
+                  <label>Payroll Group</label>
+
+                  <FormikSelect
+                    name="pg"
+                    classes="input-sm"
+                    styles={customStyles}
+                    options={payrollGroupDDL?.data || []}
+                    value={values?.pg}
+                    onChange={(valueOption) => {
+                      setFieldValue("pg", valueOption);
+                    }}
+                  />
+                </div>
+              </div>
+
               <div className="col-8 d-flex align-items-center my-2">
-                <input
+                {/* <input
                   type="number"
                   value={numberOfRow}
                   onChange={(e) => setNumberOfRow(e.target.value)}
                   placeholder="Number of Rows"
                   className="form-control mr-2"
                   style={{ width: "100px", marginRight: "8px" }}
-                />
+                /> */}
                 <PrimaryButton
                   disabled={!numberOfRow}
                   className="btn btn-default mr-1"
                   label="Download Demo"
                   onClick={() => {
                     downloadFile(
-                      `/PdfAndExcelReport/downloadexcelemployeeList?workPlaceGroupId=${wgId}&numberOfRow=${numberOfRow}`,
+                      `/PdfAndExcelReport/DownloadExcelforSalaryBulk?parrollGroupId=${values?.pg?.value}&numberOfRow=100`,
                       "Employees Salary",
                       "xlsx",
                       setIsLoading
@@ -140,150 +342,180 @@ const BulkMovementCreate = () => {
           </div>
 
           {data.length > 0 && (
-            <div className="table-card-body mt-3">
-              <div className="table-card-styled tableOne">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>
-                        <div>SL</div>
-                      </th>
-                      <th>
-                        <div>Employee Code</div>
-                      </th>
-                      <th>
-                        <div>Employee Name</div>
-                      </th>
-                      <th>
-                        <div>Payroll Group</div>
-                      </th>
-                      <th>
-                        <div>Gross Salary</div>
-                      </th>
-                      <th>
-                        <div>Bank</div>
-                      </th>
-                      <th>
-                        <div>Cash</div>
-                      </th>
-                      <th>
-                        <div>Digital</div>
-                      </th>
-                      <th>
-                        <div>Routing No</div>
-                      </th>
-                      <th>
-                        <div>Swift Code</div>
-                      </th>
-                      <th>
-                        <div>Account No</div>
-                      </th>
-                      <th>
-                        <div>Account Name</div>
-                      </th>
-                      <th>
-                        <div>Message</div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((item, index) => (
-                      <tr key={index}>
-                        <td>
-                          <div className="content tableBody-title">
-                            {index + 1}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.employeeCode || item?.EmployeeCode}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.employeeName}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.payrollGroup}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.grossSalary}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.bankPay}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.cashPay}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.digitalPay}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.routingNo}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.swiftCode}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.accountNo}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            {item?.accountName}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="content tableBody-title">
-                            <span
-                              style={{
-                                color:
-                                  item?.isBankDetailsInserted &&
-                                  item?.isSalaryInserted
-                                    ? "green"
-                                    : item?.isBankDetailsInserted ||
-                                      item?.isSalaryInserted
-                                    ? "orange"
-                                    : "red",
-                              }}
-                            >
-                              {item?.exMessage || item?.ExMessage}
-                            </span>
-                          </div>
-                        </td>
+            // <div className="table-card-body mt-3">
+            //   <div className="table-card-styled tableOne">
+            //     <table className="table">
+            //       <thead>
+            //         <tr>
+            //           <th>
+            //             <div>SL</div>
+            //           </th>
+            //           <th>
+            //             <div>Employee Code</div>
+            //           </th>
+            //           <th>
+            //             <div>Employee Name</div>
+            //           </th>
+            //           <th>
+            //             <div>Payroll Group</div>
+            //           </th>
+            //           <th>
+            //             <div>Gross Salary</div>
+            //           </th>
+            //           <th>
+            //             <div>Bank</div>
+            //           </th>
+            //           <th>
+            //             <div>Cash</div>
+            //           </th>
+            //           <th>
+            //             <div>Digital</div>
+            //           </th>
+            //           <th>
+            //             <div>Routing No</div>
+            //           </th>
+            //           <th>
+            //             <div>Swift Code</div>
+            //           </th>
+            //           <th>
+            //             <div>Account No</div>
+            //           </th>
+            //           <th>
+            //             <div>Account Name</div>
+            //           </th>
+            //           <th>
+            //             <div>Message</div>
+            //           </th>
+            //         </tr>
+            //       </thead>
+            //       <tbody>
+            //         {data.map((item, index) => (
+            //           <tr key={index}>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {index + 1}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.employeeCode || item?.EmployeeCode}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.employeeName}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.payrollGroup}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.grossSalary}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.bankPay}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.cashPay}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.digitalPay}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.routingNo}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.swiftCode}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.accountNo}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 {item?.accountName}
+            //               </div>
+            //             </td>
+            //             <td>
+            //               <div className="content tableBody-title">
+            //                 <span
+            //                   style={{
+            //                     color:
+            //                       item?.isBankDetailsInserted &&
+            //                       item?.isSalaryInserted
+            //                         ? "green"
+            //                         : item?.isBankDetailsInserted ||
+            //                           item?.isSalaryInserted
+            //                         ? "orange"
+            //                         : "red",
+            //                   }}
+            //                 >
+            //                   {item?.exMessage || item?.ExMessage}
+            //                 </span>
+            //               </div>
+            //             </td>
 
-                        {/* <td>
-                          <div className="content tableBody-title">
-                            {moment(item?.dteToTime, "HH:mm:ss").format("h:mm")}
-                          </div>
-                        </td> */}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            //             {/* <td>
+            //               <div className="content tableBody-title">
+            //                 {moment(item?.dteToTime, "HH:mm:ss").format("h:mm")}
+            //               </div>
+            //             </td> */}
+            //           </tr>
+            //         ))}
+            //       </tbody>
+            //     </table>
+            //   </div>
+            // </div>
+            <DataTable
+              data={data}
+              header={columns(data)}
+              bordered
+              scroll={{ x: 2000 }}
+            />
           )}
         </form>
       ) : (
         <NotPermittedPage />
       )}
+      <PModal
+        width={1500}
+        open={open}
+        onCancel={() => setOpen(false)}
+        title={`Warning Mismatch Calculation`}
+        components={
+          <>
+            <DataTable
+              header={columns(errorData)}
+              bordered
+              data={errorData || []}
+            />
+            <ModalFooter
+              submitText={`Skip (${errorData?.length}) and Proceed`}
+              submitAction="button"
+              cancelText={false}
+              onSubmit={() => {
+                setOpen(false);
+                setErrorData([]);
+              }}
+            />
+          </>
+        }
+      />
       {/* <BulkMovementCreateStatusModal
         show={open}
         title={"Response Data List"}

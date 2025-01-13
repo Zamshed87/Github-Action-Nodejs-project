@@ -34,7 +34,7 @@ const PerformanceMarking = () => {
   const {
     // permissionList,
     businessUnitDDL: permittedBusinessUnitDDL,
-    profileData: { orgId, buId, employeeId },
+    profileData: { orgId, buId, employeeId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
@@ -54,7 +54,7 @@ const PerformanceMarking = () => {
     setBusinessUnitDDL(modifiedBusinessUnitDDL);
 
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "DepartmentId",
       "DepartmentName",
       (departmentData) => {

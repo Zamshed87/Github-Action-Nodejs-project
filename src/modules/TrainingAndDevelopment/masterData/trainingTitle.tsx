@@ -15,6 +15,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import { createTrainingTitle, updateTrainingTitle } from "./helper";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // hooks
@@ -25,6 +26,13 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30499) {
+      permission = item;
+    }
+  });
 
   // state
   const [loading, setLoading] = useState(false);
@@ -37,8 +45,8 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: 1,
-          pageSize: 1000,
+          currentPage: landingApi?.currentPage,
+          pageSize: landingApi?.pageSize,
           index,
         }),
       fixed: "left",
@@ -54,9 +62,6 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
     {
       title: "Training Description",
       dataIndex: "description",
-      filter: true,
-      filterKey: "trainingDescriptionList",
-      filterSearch: true,
     },
     {
       title: "Status",
@@ -135,8 +140,15 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
       width: 30,
     },
   ];
-  const landingApiCall = () => {
-    getLandingApi("/TrainingTitle/Training/Title");
+  const landingApiCall = (
+    pagination: { current: number; pageSize: number } = {
+      current: 1,
+      pageSize: 25,
+    }
+  ) => {
+    getLandingApi(
+      `/TrainingTitle/Training/Title?pageNumber=${pagination.current}&pageSize=${pagination.pageSize}`
+    );
   };
   useEffect(() => {
     landingApiCall();
@@ -145,13 +157,13 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
   // Watch for editAction changes
   const editAction = Form.useWatch("editAction", form);
 
-  return (
+  return permission?.isView ? (
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
         {/* <PCard> */}
         <PCardHeader
-          title={`Total ${landingApi?.data?.totalCount || 0} Training Title`}
+          title={`Total ${landingApi?.totalCount || 0} Training Title`}
         />
         <PCardBody>
           <Row gutter={[10, 2]}>
@@ -217,9 +229,7 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
                             // setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {
-                      console.log("error");
-                    });
+                    .catch(() => {});
                 }}
               />
               {editAction && (
@@ -243,22 +253,24 @@ const TrainingTitle = ({ setOpenTrainingTitleModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={landingApi || []}
+            data={landingApi?.data || []}
             loading={landingLoading}
             header={header}
-            // pagination={{
-            //   pageSize: landingApi?.data?.pageSize,
-            //   total: landingApi?.data?.totalCount,
-            // }}
+            pagination={{
+              pageSize: landingApi?.pageSize,
+              total: landingApi?.totalCount,
+            }}
             filterData={landingApi?.data?.filters}
-            // onChange={(pagination, filters) => {
-            //   landingApiCall();
-            // }}
+            onChange={(pagination, filters) => {
+              landingApiCall(pagination);
+            }}
           />
         </div>
         {/* </PCard> */}
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 
