@@ -529,3 +529,223 @@ export const columnsAdvancedSalary = [
   },
 
 ];
+
+export const columnsExpense = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Total Days",
+    dataIndex: ["applicationInformation", "totalDays"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Expense Type",
+    dataIndex: ["applicationInformation", "strExpenseType"],
+  },
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsIOU = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Name",
+    width: "100px",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Type",
+    dataIndex: "applicationType",
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Total Days",
+    dataIndex: ["applicationInformation", "totalDays"],
+  },
+  {
+    title: "IOU Amount",
+    dataIndex: ["applicationInformation", "numIouamount"],
+  },
+  {
+    title: "Adjusted Amount",
+    dataIndex: ["applicationInformation", "numAdjustedAmount"],
+  },
+  {
+    title: "Payable Amount",
+    dataIndex: ["applicationInformation", "numPayableAmount"],
+  },
+  {
+    title: "Receivable Amount",
+    dataIndex: ["applicationInformation", "numReceivableAmount"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+export const columnsLoan = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Type",
+    dataIndex: "applicationType",
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Loan Type",
+    dataIndex: ["applicationInformation", "strLoanType"],
+  },
+  {
+    title: "Loan Amount",
+    dataIndex: ["applicationInformation", "intLoanAmount"],
+  },
+  {
+    title: "Installment Amount",
+    dataIndex: ["applicationInformation", "intNumberOfInstallmentAmount"],
+  },
+  {
+    title: "Effective Date",
+    dataIndex: ["applicationInformation", "dteEffectiveDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+

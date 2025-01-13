@@ -14,7 +14,10 @@ import {
   columnOvertime,
   columnsAdvancedSalary,
   columnsDefault,
+  columnsExpense,
+  columnsIOU,
   columnsLeave,
+  columnsLoan,
   columnsManual,
   columnsMovement,
   columnsSeparation,
@@ -174,6 +177,12 @@ const CommonApprovalComponent = () => {
               ? columnsSeparation
               : id == 26
               ? columnsAdvancedSalary
+              : id == 3
+              ? columnsExpense
+              : id == 6
+              ? columnsIOU
+              : id == 9
+              ? columnsLoan
               : columnsDefault
           }
           bordered
