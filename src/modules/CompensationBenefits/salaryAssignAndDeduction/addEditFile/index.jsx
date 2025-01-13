@@ -740,31 +740,9 @@ function AddEditForm() {
                               touched={touched}
                             />
                           </div>
-                          {values?.intAllowanceDuration?.value === 1 ? (
+                          {values?.intAllowanceDuration?.value === 1 ||
+                          values?.intAllowanceDuration?.value === 2 ? (
                             <>
-                              <div className="col-lg-3">
-                                <label>
-                                  Max Amount{" "}
-                                  <small>
-                                    [ for a month ]{" "}
-                                    <span className="text-danger fs-3">*</span>
-                                  </small>
-                                </label>
-                                <FormikInput
-                                  classes="input-sm"
-                                  value={values?.maxAmount}
-                                  placeholder={" "}
-                                  name="maxAmount"
-                                  type="number"
-                                  min={0}
-                                  className="form-control"
-                                  onChange={(e) =>
-                                    setFieldValue("maxAmount", e.target.value)
-                                  }
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
                               <div className="col-lg-3">
                                 <label>
                                   Allowanc Attendence Status{" "}
@@ -787,11 +765,11 @@ function AddEditForm() {
                                       },
                                       {
                                         value: 3,
-                                        label: "Based On Attendence",
+                                        label: "Based On Attendance",
                                       },
                                       {
                                         value: 4,
-                                        label: "Based on Night Stay",
+                                        label: "Not Depend On Attendance",
                                       },
                                     ] || []
                                     /* 
@@ -818,6 +796,33 @@ function AddEditForm() {
                                   touched={touched}
                                 />
                               </div>
+                              {values?.intAllowanceDuration?.value === 1 && (
+                                <div className="col-lg-3">
+                                  <label>
+                                    Max Amount{" "}
+                                    <small>
+                                      [ for a month ]{" "}
+                                      <span className="text-danger fs-3">
+                                        *
+                                      </span>
+                                    </small>
+                                  </label>
+                                  <FormikInput
+                                    classes="input-sm"
+                                    value={values?.maxAmount}
+                                    placeholder={" "}
+                                    name="maxAmount"
+                                    type="number"
+                                    min={0}
+                                    className="form-control"
+                                    onChange={(e) =>
+                                      setFieldValue("maxAmount", e.target.value)
+                                    }
+                                    errors={errors}
+                                    touched={touched}
+                                  />
+                                </div>
+                              )}
                             </>
                           ) : (
                             <></>
@@ -1099,12 +1104,12 @@ function AddEditForm() {
                                                       {
                                                         value: 3,
                                                         label:
-                                                          "Based On Attendence",
+                                                          "Based On Attendance",
                                                       },
                                                       {
                                                         value: 4,
                                                         label:
-                                                          "Based on Night Stay",
+                                                          "Not Depend On Attendance",
                                                       },
                                                     ].find(
                                                       (el) =>
