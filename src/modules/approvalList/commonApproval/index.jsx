@@ -13,6 +13,7 @@ import {
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
+  columnsBonusGenerate,
   columnsDefault,
   columnsExpense,
   columnsIOU,
@@ -24,6 +25,7 @@ import {
   columnsMasterLocation,
   columnsMovement,
   columnsRemoteAttendance,
+  columnsSalaryCertificate,
   columnsSalaryIncrement,
   columnsSeparation,
 } from "./utils";
@@ -198,6 +200,10 @@ const CommonApprovalComponent = () => {
               ? columnsLocationDevice
               : id == 5
               ? columnsSalaryIncrement
+              : id == 19
+              ? columnsSalaryCertificate
+              : id == 2
+              ? columnsBonusGenerate
               : columnsDefault
           }
           bordered
