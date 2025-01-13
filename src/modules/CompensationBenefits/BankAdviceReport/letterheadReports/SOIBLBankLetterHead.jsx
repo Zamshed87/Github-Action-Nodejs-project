@@ -1,4 +1,4 @@
-export default function SJIBLBankLetterHead({
+export default function SOIBLBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,

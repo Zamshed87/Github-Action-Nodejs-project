@@ -458,8 +458,8 @@ export default function AddEditForm({
                   label: "EFTN",
                 },
                 {
-                  value: "SJIBL",
-                  label: "SJIBL",
+                  value: "SOIBL",
+                  label: "SOIBL",
                 },
               ]}
               onChange={(value, op) => {
