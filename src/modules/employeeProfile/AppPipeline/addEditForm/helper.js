@@ -189,10 +189,20 @@ export const submitHandler = ({
     urlKey: urlKey,
     method: "POST",
     payload: finalPayload,
-    onSuccess: () => {
-      cb();
+    onSuccess: (res) => {
+      console.log("res", res);
+      if (res?.statusCode === 200) {
+        toast.success(res?.message || "Submitted successfully");
+        cb();
+      }
+      if(res?.statusCode === 500){
+        toast.warn(res?.message)
+      }
+      if(res?.statusCode === 400){
+        toast.warn(res?.message)
+      }
     },
-    toast: true,
+    // toast: true,
   });
 };
 
