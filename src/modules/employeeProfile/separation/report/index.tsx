@@ -36,8 +36,6 @@ import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/h
 import { LightTooltip } from "common/LightTooltip";
 import { column } from "./helper";
 import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
-import PFilter from "utility/filter/PFilter";
-import { formatFilterValue } from "utility/filter/helper";
 
 const SeparationReport = () => {
   const dispatch = useDispatch();
@@ -137,7 +135,6 @@ const SeparationReport = () => {
     pagination = { current: 1, pageSize: paginationSize },
     searchText = "",
   }: TLandingApi = {}) => {
-    console.log(form.getFieldsValue(true), "adnan");
     const values = form.getFieldsValue(true);
 
     landingApi.action({
@@ -150,9 +147,6 @@ const SeparationReport = () => {
         WorkplaceGroupId: values?.workplaceGroup?.value,
         WorkplaceId: values?.workplace?.value,
         PageNo: pagination.current || 1,
-        departments: formatFilterValue(values?.departmentId),
-        designations: formatFilterValue(values?.designationId),
-        separationTypeIds: formatFilterValue(values?.separationTypeId),
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
@@ -163,7 +157,7 @@ const SeparationReport = () => {
   };
 
   useEffect(() => {
-    // getWorkplaceGroup();
+    getWorkplaceGroup();
     landingApiCall();
   }, []);
 
@@ -415,9 +409,7 @@ const SeparationReport = () => {
               excelLanding();
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall} />
-
-          {/* <PCardBody className="mb-3">
+          <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -493,7 +485,7 @@ const SeparationReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody> */}
+          </PCardBody>
 
           <DataTable
             bordered

@@ -1,14 +1,13 @@
 import { Col, Row, Tooltip } from "antd";
-import { DataTable, Flex, PButton, PSelect } from "Components";
-import { useEffect } from "react";
+import { DataTable, Flex, PButton, PInput, PSelect } from "Components";
+import React, { useEffect } from "react";
 
-import { DeleteOutlined } from "@ant-design/icons";
 import { FormInstance } from "antd/lib/form";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { DeleteOutlined } from "@ant-design/icons";
+import { tr } from "date-fns/locale";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { de } from "date-fns/locale";
-import { toast } from "react-toastify";
 
 const ListOfPerticipants = ({
   form,
@@ -18,14 +17,18 @@ const ListOfPerticipants = ({
   calculatePerPersonCost,
   departmentDDL,
   positionDDL,
-  workplaceGroup,
-  getWorkplace,
-  workplace,
-  getEmployeDepartment,
-  getEmployeePosition,
-}: any) => {
+}: {
+  form: FormInstance;
+  perticipantField: any[];
+  setperticipantField: (data: any[]) => void;
+  addHandler: (values: any) => void;
+  calculatePerPersonCost: () => number;
+  departmentDDL: any[];
+  positionDDL: any[];
+}) => {
   const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
   const CommonEmployeeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -33,67 +36,24 @@ const ListOfPerticipants = ({
   );
   const { buId, wgId, employeeId, orgId } = profileData;
 
-  const getEmployee = () => {
-    console.log("value", form.getFieldsValue(true));
-    const { bUnit, workplaceGroupPer, workplacePer, department, hrPosition } =
-      form.getFieldsValue(true);
-    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
-    const payload = {
-      businessUnitId: bUnit?.value || 0,
-      workplaceGroupId: workplaceGroupPer?.value || 0,
-      workplaceId: workplacePer?.value || 0,
-      pageNo: 0,
-      pageSize: 1000,
-      isPaginated: false,
-      isHeaderNeed: false,
-      searchTxt: "",
-      fromDate: null,
-      toDate: null,
+  const getEmployee = (value: any) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
-      strDepartmentList: department?.value ? [department?.value] : [],
-      strWorkplaceGroupList: [],
-      strWorkplaceList: [],
-      strLinemanagerList: [],
-      strEmploymentTypeList: [],
-      strSupervisorNameList: [],
-      strDottedSupervisorNameList: [],
-      strDivisionList: [],
-      strPayrollGroupList: [],
-      strDesignationList: [],
-      strHrPositionList: hrPosition?.value ? [hrPosition?.value] : [],
-      strBankList: [],
-      strSectionList: [],
-      //   unnecesary
-      wingNameList: [],
-      soleDepoNameList: [],
-      regionNameList: [],
-      areaNameList: [],
-      territoryNameList: [],
-    };
     CommonEmployeeDDL?.action({
-      urlKey: "EmployeeReportWithFilter",
-      method: "POST",
-      payload: payload,
-      // onSuccess: (res) => {
-      //   console.log(res);
-      //   res?.data?.forEach((item: any, i: number) => {
-      //     console.log(item);
-
-      //     res[i].label = item?.employeeName;
-      //     res[i].value = item?.intEmployeeBasicInfoId;
-      //   });
-      // },
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: profileData?.buId,
+        workplaceGroupId: profileData?.wgId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
     });
-  };
-
-  const formatEmployeeData = (data: any) => {
-    return (
-      data?.map((item: any) => ({
-        ...item,
-        label: item?.employeeName,
-        value: item?.intEmployeeBasicInfoId,
-      })) || []
-    );
   };
 
   useEffect(() => {
@@ -143,7 +103,7 @@ const ListOfPerticipants = ({
               }}
               onClick={() => {
                 const updatedperticipantField = perticipantField.filter(
-                  (item: any) => item.perticipantId !== rec.perticipantId
+                  (item) => item.id !== rec.id
                 );
                 setperticipantField(updatedperticipantField);
               }}
@@ -156,92 +116,25 @@ const ListOfPerticipants = ({
     },
   ];
 
-  // const workplace = Form.useWatch("workplace", form);
-
-  const values = form.getFieldsValue(true);
-
-  console.log("workplaceGroup", CommonEmployeeDDL);
+  console.log(
+    perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
+  );
 
   return (
     <div style={{ marginTop: "13px" }}>
       <h1>List of Perticipants</h1>
       <Row gutter={[10, 2]} style={{ marginTop: "10px" }}>
-        <Col md={6} sm={12} xs={24}>
-          <PSelect
-            options={workplaceGroup?.data || []}
-            name="workplaceGroupPer"
-            label="Workplace Group"
-            placeholder="Workplace Group"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                workplaceGroupPer: op,
-                workplacePer: undefined,
-              });
-              getWorkplace();
-              const values = form.getFieldsValue(true);
-              if (
-                values?.workplacePer &&
-                values?.department &&
-                values?.workplaceGroupPer
-              ) {
-                getEmployee();
-              }
-            }}
-            rules={[{ required: true, message: "Workplace Group is required" }]}
-          />
-        </Col>
-        <Col md={6} sm={12} xs={24}>
-          <PSelect
-            options={workplace?.data || []}
-            name="workplacePer"
-            label="Workplace"
-            placeholder="Workplace"
-            // disabled={+id ? true : false}
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                workplacePer: op,
-              });
-              getEmployeDepartment();
-              getEmployeePosition();
-              const values = form.getFieldsValue(true);
-              if (
-                values?.workplacePer &&
-                values?.department &&
-                values?.workplaceGroupPer
-              ) {
-                getEmployee();
-              }
-              //   getDesignation();
-            }}
-            rules={[{ required: true, message: "Workplace is required" }]}
-          />
-        </Col>
         <Col md={6} sm={24}>
           <PSelect
             options={departmentDDL} // need to change
             name="department"
             label="Department"
-            // disabled={!workplace}
             placeholder="Department"
             onChange={(value, op) => {
               form.setFieldsValue({
                 department: op,
               });
-              const values = form.getFieldsValue(true);
-              if (
-                values?.workplacePer &&
-                values?.department &&
-                values?.workplaceGroupPer
-              ) {
-                getEmployee();
-              }
             }}
-            rules={[
-              {
-                required: true,
-                message: "Department is required",
-              },
-            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -249,37 +142,38 @@ const ListOfPerticipants = ({
             options={positionDDL} // need to change
             name="hrPosition"
             label="HR Position"
-            allowClear
-            // disabled={!workplace}
             placeholder="HR Position"
             onChange={(value, op) => {
               form.setFieldsValue({
                 hrPosition: op,
               });
-              const values = form.getFieldsValue(true);
-              if (
-                values?.workplacePer &&
-                values?.department &&
-                values?.workplaceGroupPer
-              ) {
-                getEmployee();
-              }
             }}
           />
         </Col>
         <Col md={6} sm={24}>
           <PSelect
-            options={formatEmployeeData(CommonEmployeeDDL?.data?.data) || []} // need to change iffff..
             name="employee"
             label="Employee"
-            allowClear
-            // disabled={!workplace}
-            placeholder="Employee"
+            placeholder="Search Min 2 char"
+            options={CommonEmployeeDDL?.data || []}
+            loading={CommonEmployeeDDL?.loading}
             onChange={(value, op) => {
               form.setFieldsValue({
                 employee: op,
               });
             }}
+            onSearch={(value) => {
+              getEmployee(value);
+            }}
+            showSearch
+            filterOption={false}
+            allowClear={true}
+            rules={[
+              {
+                required: true,
+                message: "Employee is required",
+              },
+            ]}
           />
         </Col>
 
@@ -290,31 +184,27 @@ const ListOfPerticipants = ({
             content="Add"
             onClick={() => {
               const values = form.getFieldsValue(true);
-              form
-                .validateFields([
-                  "department",
-                  "workplacePer",
-                  "workplaceGroupPer",
-                ])
-                .then(() => {
-                  if (CommonEmployeeDDL?.data?.data.length === 0) {
-                    toast.error("Employee is blank!");
-                    return;
-                  }
-                  addHandler(values, CommonEmployeeDDL?.data?.data);
-                })
-                .catch(() => {});
-              // addHandler(values);
+
+              addHandler(values);
             }}
           />
         </Col>
       </Row>
-      {calculatePerPersonCost && (
-        <Flex justify="flex-end" align="flex-start" className="mr-2">
-          <h1>Per Person Cost: {calculatePerPersonCost()}</h1>
-        </Flex>
-      )}
-
+      <Flex justify="flex-end" align="flex-start" className="mr-2">
+        <h1>Per Person Cost: {calculatePerPersonCost()}</h1>
+        {/* <div>
+          <PInput
+            type="text"
+            placeholder="Total Cost:"
+            label="Total Cost:"
+            name="totalCost"
+            value={String(
+              perticipantField.reduce((acc, item) => acc + Number(item.costValue), 0)
+            )}
+            disabled={true}
+          />
+        </div> */}
+      </Flex>
       {perticipantField?.length > 0 && (
         <div className="mb-3 mt-2">
           <DataTable

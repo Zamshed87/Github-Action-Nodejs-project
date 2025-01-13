@@ -1,7 +1,3 @@
-function roundToDecimals(number = 0, decimals = 2) {
-  const multiplier = Math.pow(10, decimals);
-  return Math.round(number * multiplier) / multiplier;
-}
 export const getSalaryAssignDDL = (
   accId,
   res,
@@ -301,17 +297,13 @@ export const getSalaryAssignDDLUpdate2 = ({
             ? Math.ceil(grossSalaryAmount)
             : itm?.strBasedOn === "Amount"
             ? Math.ceil(itm?.numAmount)
-            : roundToDecimals(
-                (itm?.numNumberOfPercent * grossSalaryAmount) / 100
-              ),
+            : Math.ceil((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
         numAmount:
           itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
             ? Math.ceil(grossSalaryAmount)
             : itm?.strBasedOn === "Amount"
             ? Math.ceil(itm?.numAmount)
-            : roundToDecimals(
-                (itm?.numNumberOfPercent * grossSalaryAmount) / 100
-              ),
+            : Math.ceil((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
         showPercentage: itm?.numNumberOfPercent,
         levelVariable: itm?.strPayrollElementName
           .toLowerCase()
@@ -377,7 +369,7 @@ export const getByIdSalaryAssignDDLUpdate2 = (
             ? Math.ceil(grossSalaryAmount)
             : element?.strBasedOn === "Amount"
             ? Math.ceil(element?.numAmount)
-            : roundToDecimals(
+            : Math.ceil(
                 (element?.numNumberOfPercent * grossSalaryAmount) / 100
               ), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
         numAmount:
@@ -386,7 +378,7 @@ export const getByIdSalaryAssignDDLUpdate2 = (
             ? Math.ceil(grossSalaryAmount)
             : element?.strBasedOn === "Amount"
             ? Math.ceil(element?.numAmount)
-            : roundToDecimals(
+            : Math.ceil(
                 (element?.numNumberOfPercent * grossSalaryAmount) / 100
               ),
         showPercentage: element?.numNumberOfPercent,
@@ -440,16 +432,14 @@ const adjustOverFollowAmount = (
   // });
   if (overFollowAmount > 0) {
     // console.log({ isOverFollow: overFollowAmount });
-    array[indexOfLowestAmount].numAmount = roundToDecimals(
-      array[indexOfLowestAmount]?.numAmount - overFollowAmount
-    );
+    array[indexOfLowestAmount].numAmount =
+      array[indexOfLowestAmount]?.numAmount - overFollowAmount;
     array[indexOfLowestAmount][payrollElementName] -= overFollowAmount;
   } else {
     // console.log({ isNotOverFollow: overFollowAmount });
 
-    array[indexOfLowestAmount].numAmount = roundToDecimals(
-      array[indexOfLowestAmount]?.numAmount + overFollowAmount * -1
-    );
+    array[indexOfLowestAmount].numAmount =
+      array[indexOfLowestAmount]?.numAmount + overFollowAmount * -1;
     array[indexOfLowestAmount][payrollElementName] += overFollowAmount * -1;
   }
   setterFunc(array);
