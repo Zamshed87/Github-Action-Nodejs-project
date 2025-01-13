@@ -1133,5 +1133,87 @@ export const columnsBonusGenerate = [
   },
 ];
 
+export const columnsIOUAdjustment = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
+  },
+  {
+    title: "Date Range",
+    render: (_, record) => {
+      const fromDate = record?.applicationInformation?.fromDate
+        ? new Date(record.applicationInformation.fromDate).toLocaleDateString()
+        : "N/A";
+      const toDate = record?.applicationInformation?.toDate
+        ? new Date(record.applicationInformation.toDate).toLocaleDateString()
+        : "N/A";
+      return `${fromDate} - ${toDate}`;
+    },
+  },
+  {
+    title: "IOU Amount",
+    dataIndex: ["applicationInformation", "numIouamount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Total Adjusted",
+    dataIndex: ["applicationInformation", "numAdjustedAmount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Payable",
+    dataIndex: ["applicationInformation", "numPayableAmount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Receivable",
+    dataIndex: ["applicationInformation", "numReceivableAmount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    render: (stage) => stage || "N/A",
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "100px",
+    render: (status) => (
+      <div
+        style={{
+          color: status === "Approved" ? "green" : status === "Pending" ? "orange" : "red",
+          fontWeight: "bold",
+        }}
+      >
+        {status}
+      </div>
+    ),
+  },
+];
+
 
 
