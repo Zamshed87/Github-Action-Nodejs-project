@@ -190,7 +190,6 @@ export const submitHandler = ({
     method: "POST",
     payload: finalPayload,
     onSuccess: (res) => {
-      console.log("res", res);
       if (res?.statusCode === 200) {
         toast.success(res?.message || "Submitted successfully");
         cb();
