@@ -1003,6 +1003,135 @@ export const columnsSalaryIncrement = [
   },
 
 ];
+export const columnsSalaryCertificate = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Last Increment Date",
+    dataIndex: ["applicationInformation", "lastIncrementDate"],
+    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
+  },
+  {
+    title: "Last Increment Amount",
+    dataIndex: ["applicationInformation", "lastIncrementAmount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Recent Gross Salary",
+    dataIndex: ["applicationInformation", "recentGrossSalary"],
+    render: (salary) => (salary ? `৳${salary.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Increment Proposal Percentage",
+    dataIndex: ["applicationInformation", "incrementProposalPercentage"],
+    render: (percentage) => (percentage ? `${percentage}%` : "N/A"),
+  },
+  {
+    title: "Increment Proposal Amount",
+    dataIndex: ["applicationInformation", "incrementProposalAmount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    render: (stage) => stage || "N/A",
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "100px",
+    render: (status) => (
+      <div
+        style={{
+          color: status === "Approved" ? "green" : status === "Pending" ? "orange" : "red",
+          fontWeight: "bold",
+        }}
+      >
+        {status}
+      </div>
+    ),
+  },
+];
+
+export const columnsBonusGenerate = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Bonus Name",
+    dataIndex: ["applicationInformation", "strBonusName"],
+    render: (bonusName) => bonusName || "N/A",
+  },
+  {
+    title: "Bonus Amount",
+    dataIndex: ["applicationInformation", "numBonusAmount"],
+    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
+  },
+  {
+    title: "Effective Date",
+    dataIndex: ["applicationInformation", "dteEffectiveDate"],
+    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    render: (stage) => stage || "N/A",
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "100px",
+    render: (status) => (
+      <div
+        style={{
+          color: status === "Approved" ? "green" : status === "Pending" ? "orange" : "red",
+          fontWeight: "bold",
+        }}
+      >
+        {status}
+      </div>
+    ),
+  },
+];
 
 
 
