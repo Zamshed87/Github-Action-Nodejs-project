@@ -201,6 +201,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     form.setFieldsValue({
       workplace: { value: wId, label: wName },
     });
+    form.resetFields(["calendarName","hrPosition","employmentType"]);
+    setMatchingData([])
     getHRPositionDDL();
     getEmploymentTypeDDL();
     getPeopleDeskAllDDL(
@@ -288,7 +290,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         form.setFieldsValue({
                           workplace: option,
                         });
-                        form.resetFields(["calendarName"]);
+                        form.resetFields(["calendarName","hrPosition","employmentType"]);
                         getHRPositionDDL();
                         getEmploymentTypeDDL();
                         getPeopleDeskAllDDL(
