@@ -136,7 +136,7 @@ const MarketVisitReport = () => {
         form={form}
         initialValues={{
           fromDate: moment(getDateOfYear("first")),
-          toDate: moment(getDateOfYear("last")),
+          toDate: moment(getDateOfYear("current")),
         }}
         onFinish={() => {
           landingApiCall({

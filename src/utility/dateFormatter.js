@@ -211,6 +211,9 @@ export const getDateOfYear = (type, year) => {
   } else if (type === "last") {
     const lastDay = new Date(year ? year : currentYear, 11, 31);
     return dateFormatterForInput(lastDay);
+  } else if (type === "current") {
+    const currentDay = new Date();
+    return dateFormatterForInput(currentDay);
   }
 };
 
