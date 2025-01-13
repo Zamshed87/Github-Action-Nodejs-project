@@ -64,15 +64,15 @@ const BulkMovementCreate = () => {
 
   const processData = async (file) => {
     try {
-      const processData = await excelFileToArray(file, "EmployeesIncrement", 3);
+      const processData = await excelFileToArray(file, "EmployeeSalary", 3);
       const payrollInfo = await excelFileToSpecificIndexInfo(
         file,
-        "EmployeesIncrement",
+        "EmployeeSalary",
         1
       );
       const elementInfo = await excelFileToSpecificIndexInfo(
         file,
-        "EmployeesIncrement",
+        "EmployeeSalary",
         2
       );
       if (processData.length < 1) return toast.warn("No data found!");
