@@ -45,7 +45,7 @@ const NightShiftReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30525),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30524),
     []
   );
   // menu permission

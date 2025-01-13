@@ -81,8 +81,10 @@ export const apiList = {
   GetAllEmpExpenseType: "/SaasMasterData/GetAllEmpExpenseType",
   SaveEmpExpenseType: "/SaasMasterData/SaveEmpExpenseType",
   GetAllReligion: "/MasterData/GetAllReligion",
-  ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
+  // ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
+  ApprovalPipeline: "/ApprovalConfiguration/GetAllApprovalConfig",
   ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
+  // ApprovalPipelineDDL: "/Enum/GetEnums",
   BankBranchDDL: "/Employee/BankBranchDDL",
   AccountBankDetailsCRUD: "/SaasMasterData/AccountBankDetailsCRUD",
   AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
@@ -96,10 +98,14 @@ export const apiList = {
     "SaasMasterData/CreateOrUpdateEmpIdCardExternalInfo",
   GetAllTaxchallanConfig: "/SaasMasterData/GetAllTaxchallanConfig",
   BankBranchLanding: "/SaasMasterData/BankBranchLanding",
-  ApprovalPipelineCreateNUpdate:
-    "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
+  CreateApprovalConfiguration:
+    "/ApprovalConfiguration/CreateApprovalConfiguration",
+  UpdateApprovalConfiguration:
+    "/ApprovalConfiguration/UpdateApprovalConfiguration",
+  // ApprovalPipelineHeaderDetailsById:
+  //   "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   ApprovalPipelineHeaderDetailsById:
-    "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
+    "/ApprovalConfiguration/GetApprovalConfigDetails",
   GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
   GetAllTaxBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLandingForTax",
   PFLanding: "/Employee/PfLanding",
@@ -292,5 +298,6 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
+  FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
 };
