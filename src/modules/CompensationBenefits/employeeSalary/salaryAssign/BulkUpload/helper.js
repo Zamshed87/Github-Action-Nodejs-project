@@ -216,8 +216,8 @@ export const processNewBulkUploadSalaryAction = async (
     modifiedData.forEach((item) => {
       if (
         Boolean(item.misMatch) ||
-        item.empName === "N/A" ||
-        item.employeeCode === "N/A" ||
+        // item.empName === "N/A" ||
+        item.employeeCode === "undefined" ||
         Boolean(item?.pmm)
       ) {
         errorData.push(item);
