@@ -47,7 +47,10 @@ const initData = {
   allowanceAndDeduction: "",
   amountDimension: "",
   amount: "",
-  intAllowanceDuration: "",
+  intAllowanceDuration: {
+    value: 2,
+    label: "Per Month",
+  },
   intAllowanceAttendenceStatus: "",
   maxAmount: "",
 };
@@ -81,6 +84,26 @@ const validationSchema = Yup.object({
   amount: Yup.number()
     .min(0, "Amount should be positive number")
     .required("Amount is required"),
+  intAllowanceAttendenceStatus: Yup.object()
+    .nullable()
+    .when("intAllowanceDuration.value", {
+      is: (value) => value === 1 || value === 2, // Required for both Per Day and Per Month
+      then: Yup.object()
+        .shape({
+          label: Yup.string().required("Attendance status is required"),
+          value: Yup.number().required("Attendance status is required"),
+        })
+        .typeError("Attendance status is required"),
+    }),
+  maxAmount: Yup.number()
+    .nullable()
+    .when("intAllowanceDuration.value", {
+      is: (value) => value === 1, // Required only for Per Day
+      then: Yup.number()
+        .min(0, "Max amount should be a positive number")
+        .required("Max amount is required"),
+      otherwise: Yup.number().nullable(), // Optional for other cases
+    }),
 });
 
 const validationSchema2 = Yup.object({
@@ -346,6 +369,8 @@ function AddEditForm() {
         }}
       >
         {({
+          validateForm,
+          setTouched,
           handleSubmit,
           resetForm,
           setValues,
@@ -757,7 +782,7 @@ function AddEditForm() {
                                     [
                                       {
                                         value: 1,
-                                        label: "Default",
+                                        label: "Payable Days",
                                       },
                                       {
                                         value: 2,
@@ -858,7 +883,12 @@ function AddEditForm() {
                                   !values?.salaryType ||
                                   !values?.allowanceAndDeduction ||
                                   !values?.amountDimension ||
-                                  !values?.amount
+                                  !values?.amount ||
+                                  (values?.intAllowanceDuration?.value == 1 &&
+                                    (!values?.intAllowanceAttendenceStatus ||
+                                      Number(values?.maxAmount) < 0 || !values?.maxAmount)) ||
+                                  (values?.intAllowanceDuration?.value == 2 &&
+                                    !values?.intAllowanceAttendenceStatus)
                                 }
                                 style={{ width: "auto" }}
                                 label="Add"
@@ -868,7 +898,7 @@ function AddEditForm() {
                                   editHandler(values, () =>
                                     getAdditionAndDeductionById()
                                   );
-                                  setIsFormOpen(!isFromOpen);
+                                  // setIsFormOpen(!isFromOpen);
                                   resetForm(initData);
                                 }}
                               >
@@ -883,7 +913,12 @@ function AddEditForm() {
                                   !values?.salaryType ||
                                   !values?.allowanceAndDeduction ||
                                   !values?.amountDimension ||
-                                  !values?.amount
+                                  !values?.amount ||
+                                  (values?.intAllowanceDuration?.value == 1 &&
+                                    (!values?.intAllowanceAttendenceStatus ||
+                                      Number(values?.maxAmount) < 0 || !values?.maxAmount)) ||
+                                  (values?.intAllowanceDuration?.value == 2 &&
+                                    !values?.intAllowanceAttendenceStatus)
                                 }
                                 className="btn btn-green btn-green-disable"
                                 style={{ width: "auto" }}
