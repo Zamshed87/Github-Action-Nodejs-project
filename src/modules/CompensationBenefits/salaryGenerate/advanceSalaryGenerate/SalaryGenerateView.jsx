@@ -268,7 +268,7 @@ const AdvanceSalaryGenerateView = () => {
                     color: "#344054",
                   }}
                 >
-                  Additional Info:{" "}
+                  Description:{" "}
                 </span>{" "}
                 {state?.description}
               </p>
