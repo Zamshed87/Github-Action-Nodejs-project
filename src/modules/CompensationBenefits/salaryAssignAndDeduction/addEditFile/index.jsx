@@ -342,6 +342,33 @@ function AddEditForm() {
       : toast.warn("Please add at least one row!!");
   };
 
+  const isDisabled = (values) => {
+    const isFromMonthMissing = !values?.fromMonth;
+    const isSalaryTypeMissing = !values?.salaryType;
+    const isAllowanceAndDeductionMissing = !values?.allowanceAndDeduction;
+    const isAmountDimensionMissing = !values?.amountDimension;
+    const isAmountMissing = !values?.amount;
+    const isShortDurationInvalid =
+      values?.intAllowanceDuration?.value === 1 &&
+      (!values?.intAllowanceAttendenceStatus ||
+        Number(values?.maxAmount) < 0 ||
+        !values?.maxAmount);
+    const isLongDurationInvalid =
+      values?.intAllowanceDuration?.value === 2 &&
+      !values?.intAllowanceAttendenceStatus;
+
+    const isDisabled =
+      isFromMonthMissing ||
+      isSalaryTypeMissing ||
+      isAllowanceAndDeductionMissing ||
+      isAmountDimensionMissing ||
+      isAmountMissing ||
+      isShortDurationInvalid ||
+      isLongDurationInvalid;
+
+    return isDisabled;
+  };
+
   return (
     <>
       <Formik
@@ -369,8 +396,6 @@ function AddEditForm() {
         }}
       >
         {({
-          validateForm,
-          setTouched,
           handleSubmit,
           resetForm,
           setValues,
@@ -878,18 +903,7 @@ function AddEditForm() {
                               <button
                                 type="button"
                                 className="btn btn-green btn-green-disable"
-                                disabled={
-                                  !values?.fromMonth ||
-                                  !values?.salaryType ||
-                                  !values?.allowanceAndDeduction ||
-                                  !values?.amountDimension ||
-                                  !values?.amount ||
-                                  (values?.intAllowanceDuration?.value == 1 &&
-                                    (!values?.intAllowanceAttendenceStatus ||
-                                      Number(values?.maxAmount) < 0 || !values?.maxAmount)) ||
-                                  (values?.intAllowanceDuration?.value == 2 &&
-                                    !values?.intAllowanceAttendenceStatus)
-                                }
+                                disabled={isDisabled(values)}
                                 style={{ width: "auto" }}
                                 label="Add"
                                 onClick={(e) => {
@@ -908,18 +922,7 @@ function AddEditForm() {
                             {!isEdit && isView && (
                               <button
                                 type="button"
-                                disabled={
-                                  !values?.fromMonth ||
-                                  !values?.salaryType ||
-                                  !values?.allowanceAndDeduction ||
-                                  !values?.amountDimension ||
-                                  !values?.amount ||
-                                  (values?.intAllowanceDuration?.value == 1 &&
-                                    (!values?.intAllowanceAttendenceStatus ||
-                                      Number(values?.maxAmount) < 0 || !values?.maxAmount)) ||
-                                  (values?.intAllowanceDuration?.value == 2 &&
-                                    !values?.intAllowanceAttendenceStatus)
-                                }
+                                disabled={isDisabled(values)}
                                 className="btn btn-green btn-green-disable"
                                 style={{ width: "auto" }}
                                 label="Add"
