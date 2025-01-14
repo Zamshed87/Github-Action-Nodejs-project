@@ -47,7 +47,10 @@ const initData = {
   allowanceAndDeduction: "",
   amountDimension: "",
   amount: "",
-  intAllowanceDuration: "",
+  intAllowanceDuration: {
+    value: 2,
+    label: "Per Month",
+  },
   intAllowanceAttendenceStatus: "",
   maxAmount: "",
 };
@@ -81,6 +84,26 @@ const validationSchema = Yup.object({
   amount: Yup.number()
     .min(0, "Amount should be positive number")
     .required("Amount is required"),
+  intAllowanceAttendenceStatus: Yup.object()
+    .nullable()
+    .when("intAllowanceDuration.value", {
+      is: (value) => value === 1 || value === 2, // Required for both Per Day and Per Month
+      then: Yup.object()
+        .shape({
+          label: Yup.string().required("Attendance status is required"),
+          value: Yup.number().required("Attendance status is required"),
+        })
+        .typeError("Attendance status is required"),
+    }),
+  maxAmount: Yup.number()
+    .nullable()
+    .when("intAllowanceDuration.value", {
+      is: (value) => value === 1, // Required only for Per Day
+      then: Yup.number()
+        .min(0, "Max amount should be a positive number")
+        .required("Max amount is required"),
+      otherwise: Yup.number().nullable(), // Optional for other cases
+    }),
 });
 
 const validationSchema2 = Yup.object({
@@ -317,6 +340,33 @@ function AddEditForm() {
     rowDto?.length > 0
       ? createEditAllowanceAndDeduction(rowDto, setLoading, cb)
       : toast.warn("Please add at least one row!!");
+  };
+
+  const isDisabled = (values) => {
+    const isFromMonthMissing = !values?.fromMonth;
+    const isSalaryTypeMissing = !values?.salaryType;
+    const isAllowanceAndDeductionMissing = !values?.allowanceAndDeduction;
+    const isAmountDimensionMissing = !values?.amountDimension;
+    const isAmountMissing = !values?.amount;
+    const isShortDurationInvalid =
+      values?.intAllowanceDuration?.value === 1 &&
+      (!values?.intAllowanceAttendenceStatus ||
+        Number(values?.maxAmount) < 0 ||
+        !values?.maxAmount);
+    const isLongDurationInvalid =
+      values?.intAllowanceDuration?.value === 2 &&
+      !values?.intAllowanceAttendenceStatus;
+
+    const isDisabled =
+      isFromMonthMissing ||
+      isSalaryTypeMissing ||
+      isAllowanceAndDeductionMissing ||
+      isAmountDimensionMissing ||
+      isAmountMissing ||
+      isShortDurationInvalid ||
+      isLongDurationInvalid;
+
+    return isDisabled;
   };
 
   return (
@@ -757,7 +807,7 @@ function AddEditForm() {
                                     [
                                       {
                                         value: 1,
-                                        label: "Default",
+                                        label: "Payable Days",
                                       },
                                       {
                                         value: 2,
@@ -853,13 +903,7 @@ function AddEditForm() {
                               <button
                                 type="button"
                                 className="btn btn-green btn-green-disable"
-                                disabled={
-                                  !values?.fromMonth ||
-                                  !values?.salaryType ||
-                                  !values?.allowanceAndDeduction ||
-                                  !values?.amountDimension ||
-                                  !values?.amount
-                                }
+                                disabled={isDisabled(values)}
                                 style={{ width: "auto" }}
                                 label="Add"
                                 onClick={(e) => {
@@ -868,7 +912,7 @@ function AddEditForm() {
                                   editHandler(values, () =>
                                     getAdditionAndDeductionById()
                                   );
-                                  setIsFormOpen(!isFromOpen);
+                                  // setIsFormOpen(!isFromOpen);
                                   resetForm(initData);
                                 }}
                               >
@@ -878,13 +922,7 @@ function AddEditForm() {
                             {!isEdit && isView && (
                               <button
                                 type="button"
-                                disabled={
-                                  !values?.fromMonth ||
-                                  !values?.salaryType ||
-                                  !values?.allowanceAndDeduction ||
-                                  !values?.amountDimension ||
-                                  !values?.amount
-                                }
+                                disabled={isDisabled(values)}
                                 className="btn btn-green btn-green-disable"
                                 style={{ width: "auto" }}
                                 label="Add"
