@@ -107,7 +107,7 @@ const CopyKpi = () => {
       <div className="table-card">
         <div className="table-card-heading" style={{ marginBottom: "12px" }}>
           <div>
-            <h2 style={{ color: "#344054" }}>Copy KPI</h2>
+            <h2 style={{ color: "#344054" }}>Clone KPI</h2>
           </div>
           <ul className="d-flex flex-wrap">
             <li>
