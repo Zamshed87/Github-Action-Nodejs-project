@@ -1,34 +1,29 @@
-import { EditOutlined } from "@ant-design/icons";
-import { Col, Form, Row, Switch, Tooltip } from "antd";
+import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
   Flex,
   PButton,
+  PCard,
   PCardBody,
   PCardHeader,
   PForm,
   PInput,
 } from "Components";
-import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
+import axios from "axios";
+import { message } from "antd";
 import { createTrainingCost, updateTrainingCost } from "./helper";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { shallowEqual, useSelector } from "react-redux";
+import { EditOutlined } from "@ant-design/icons";
 
 const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-
-  let permission: any = {};
-  permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30500) {
-      permission = item;
-    }
-  });
   const { buId, wgId, employeeId, orgId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -62,6 +57,9 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
     {
       title: "Description",
       dataIndex: "description",
+      filter: true,
+      filterKey: "costDescriptionList",
+      filterSearch: true,
     },
     {
       title: "Status",
@@ -150,7 +148,7 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
   // Watch for editAction changes
   const editAction = Form.useWatch("editAction", form);
 
-  return permission?.isView ? (
+  return (
     <div>
       {loading || (landingLoading && <Loading />)}
       <PForm form={form} initialValues={{}}>
@@ -224,7 +222,9 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
                             // setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {});
+                    .catch(() => {
+                      console.log("error");
+                    });
                 }}
               />
               {editAction && (
@@ -264,8 +264,6 @@ const TrainingCost = ({ setOpenCostTypeModal }: any) => {
         {/* </PCard> */}
       </PForm>
     </div>
-  ) : (
-    <NotPermittedPage />
   );
 };
 
