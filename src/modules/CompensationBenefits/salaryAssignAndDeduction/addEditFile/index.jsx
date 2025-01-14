@@ -36,6 +36,8 @@ import {
 } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import moment from "moment";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   searchString: "",
@@ -250,39 +252,66 @@ function AddEditForm() {
       );
     }
     const obj = {
-      strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
-      intSalaryAdditionAndDeductionId: singleData
-        ? singleData?.intSalaryAdditionAndDeductionId
-        : 0,
-      intAccountId: orgId,
-      intBusinessUnitId:
+      accountId: orgId,
+      businessUnitId:
         empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
-      intWorkplaceGroupId:
+      workplaceGroupId:
         empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
-      intWorkplaceId:
-        empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
-      intEmployeeId: values?.employee?.value,
-      isAutoRenew: values?.isAutoRenew ? true : false,
-      intYear: +values?.fromMonth?.split("-")[0] || null,
-      intMonth: +values?.fromMonth?.split("-")[1] || null,
-      strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-      isAddition: values?.salaryType?.value === "Addition" ? true : false,
-      strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-      intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-      intAmountWillBeId: values?.amountDimension?.value,
-      strAmountWillBe: values?.amountDimension?.label,
-      numAmount: +values?.amount,
-      isActive: true,
-      isReject: false,
-      intActionBy: employeeId,
-      intToYear: +values?.toMonth?.split("-")[0] || null,
-      intToMonth: +values?.toMonth?.split("-")[1] || null,
-      strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
+      workplaceId: empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+      employeeId: values?.employee?.value && `${values?.employee?.value}`,
+      // ------
+      allowanceItems: [
+        {
+          isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+          fromDate: values?.fromMonth + "-01",
+          toDate: values?.toMonth
+            ? moment(values?.toMonth).endOf("month").format("YYYY-MM-DD")
+            : todayDate(),
+          allowanceAttendenceStatusId:
+            values?.intAllowanceAttendenceStatus?.value,
+          allowanceDuration: values?.intAllowanceDuration?.value,
+          numMaxLimitAmount: +values?.maxAmount,
 
-      // new requirement 🔥
-      intAllowanceDuration: values?.intAllowanceDuration?.value,
-      numMaxLimit: +values?.maxAmount,
-      intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+          isAddition: values?.salaryType?.value === "Addition" ? true : false,
+          allowanceName: values?.allowanceAndDeduction?.label,
+          allowanceTypeId: values?.allowanceAndDeduction?.value,
+          amountWillBeId: values?.amountDimension?.value,
+          amountWillBe: values?.amountDimension?.label,
+          numAmount: +values?.amount,
+          allowanceId: singleData?.intSalaryAdditionAndDeductionId
+            ? singleData?.intSalaryAdditionAndDeductionId
+            : 0,
+        },
+      ],
+      // strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
+      // intSalaryAdditionAndDeductionId: singleData
+      //   ? singleData?.intSalaryAdditionAndDeductionId
+      //   : 0,
+
+      // intWorkplaceId:
+      //   empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+      // intEmployeeId: values?.employee?.value,
+      // isAutoRenew: values?.isAutoRenew ? true : false,
+      // intYear: +values?.fromMonth?.split("-")[0] || null,
+      // intMonth: +values?.fromMonth?.split("-")[1] || null,
+      // strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
+      // isAddition: values?.salaryType?.value === "Addition" ? true : false,
+      // strAdditionNDeduction: values?.allowanceAndDeduction?.label,
+      // intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
+      // intAmountWillBeId: values?.amountDimension?.value,
+      // strAmountWillBe: values?.amountDimension?.label,
+      // numAmount: +values?.amount,
+      // isActive: true,
+      // isReject: false,
+      // intActionBy: employeeId,
+      // intToYear: +values?.toMonth?.split("-")[0] || null,
+      // intToMonth: +values?.toMonth?.split("-")[1] || null,
+      // strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
+
+      // // new requirement 🔥
+      // intAllowanceDuration: values?.intAllowanceDuration?.value,
+      // numMaxLimit: +values?.maxAmount,
+      // intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
     };
     createEditAllowanceAndDeduction(obj, setLoading, cb);
   };
