@@ -259,6 +259,7 @@ export default function AddEditForm({
         </Col>
         <Col md={12} sm={24}>
           <PSelect
+            disabled={singleData}
             allowClear
             maxTagCount="responsive"
             mode="multiple"
