@@ -144,6 +144,7 @@ export const pmsObjectiveTableColumn = ({
       dataIndex: "sl",
       sorter: false,
       className: "text-center",
+      render: (_, __, idx) => idx + 1,
     },
     {
       title: "Objective",

@@ -19,7 +19,7 @@ import AntScrollTable from "../../../../../common/AntScrollTable";
 const CoreCompetencies = () => {
   const {
     permissionList,
-    profileData: { buId, orgId, employeeId },
+    profileData: { buId, orgId, employeeId, intAccountId },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -32,6 +32,8 @@ const CoreCompetencies = () => {
   const [competencyId, setCompetencyId] = useState(null);
   const [clusterList, getClusterList, loadingOnGetClusterList, setClusterList] =
     useAxiosGet();
+  const [allMasterPositionDDL, getAllMasterPositionDDL] = useAxiosGet([]);
+
   useEffect(() => {
     onGetCoreCompetencyLanding({
       getCompetencyList,
@@ -45,6 +47,15 @@ const CoreCompetencies = () => {
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PostionGroupDDL&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${
         employeeId || 0
       }`
+    );
+    getAllMasterPositionDDL(
+      `/SaasMasterData/GetAllMasterPosition?accountId=${intAccountId}`,
+      (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strPositionGroupName;
+          res[i].value = item?.intPositionGroupId;
+        });
+      }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, orgId]);
@@ -157,9 +168,11 @@ const CoreCompetencies = () => {
             competencyId={competencyId}
             orgId={orgId}
             buId={buId}
+            intAccountId={intAccountId}
             employeeId={employeeId}
             clusterList={clusterList}
             setClusterList={setClusterList}
+            allMasterPositionDDL={allMasterPositionDDL}
             onHide={() => {
               setShowCreateModal(false);
               setCompetencyId(null);
