@@ -37,7 +37,7 @@ import { LightTooltip } from "common/LightTooltip";
 import { column } from "./helper";
 import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
 import PFilter from "utility/filter/PFilter";
-import { formatFilterValue } from "utility/filter/helper";
+import { formatFilterValue, setCustomFieldsValue } from "utility/filter/helper";
 
 const SeparationReport = () => {
   const dispatch = useDispatch();
@@ -54,6 +54,12 @@ const SeparationReport = () => {
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
+  const [
+    separationtypeNameDDL,
+    getSeparationtypeNameDDL,
+    ,
+    setSeparationtypeNameDDL,
+  ] = useAxiosGet();
   //   const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
@@ -78,6 +84,17 @@ const SeparationReport = () => {
     () => {
       document.title = "PeopleDesk";
     };
+    landingApiCall();
+    getSeparationtypeNameDDL(
+      `/PeopleDeskDdl/PeopleDeskAllDDL?ddlType=SeparationType&businessUnitId=${buId}&workplaceGroupId=0&intWorkplaceId=0`,
+      (data: any) => {
+        const formattedData = data.map((item: any) => ({
+          label: item.SeparationType,
+          value: item.SeparationTypeId,
+        }));
+        setSeparationtypeNameDDL(formattedData);
+      }
+    );
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -137,9 +154,7 @@ const SeparationReport = () => {
     pagination = { current: 1, pageSize: paginationSize },
     searchText = "",
   }: TLandingApi = {}) => {
-    console.log(form.getFieldsValue(true), "adnan");
     const values = form.getFieldsValue(true);
-
     landingApi.action({
       urlKey: "EmployeeSeparationListFilter",
       method: "GET",
@@ -162,10 +177,24 @@ const SeparationReport = () => {
     });
   };
 
+  const workplaceW = Form.useWatch("workplace", form);
+  const workplaceGroupW = Form.useWatch("workplaceGroup", form);
+
   useEffect(() => {
-    // getWorkplaceGroup();
-    landingApiCall();
-  }, []);
+    getSeparationtypeNameDDL(
+      `/PeopleDeskDdl/PeopleDeskAllDDL?ddlType=SeparationType&businessUnitId=${buId}&workplaceGroupId=${
+        workplaceGroupW?.value || 0
+      }&intWorkplaceId=${workplaceW?.value || 0}`,
+      (data: any) => {
+        const formattedData = data.map((item: any) => ({
+          label: item.SeparationType,
+          value: item.SeparationTypeId,
+        }));
+        formattedData.unshift({ label: "All", value: 0 });
+        setSeparationtypeNameDDL(formattedData);
+      }
+    );
+  }, [workplaceW, workplaceGroupW]);
 
   const header: any = [
     {
@@ -415,7 +444,31 @@ const SeparationReport = () => {
               excelLanding();
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall} />
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            resetApiCall={() => {
+              form.setFieldValue("separationType", { label: "All", value: 0 });
+            }}
+          >
+            <Col md={24} sm={12} xs={24}>
+              <PSelect
+                mode="multiple"
+                options={separationtypeNameDDL || []}
+                name="separationType"
+                label="Separation Type"
+                placeholder="Separation Type"
+                disabled={+id ? true : false}
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    separationType: op,
+                  });
+                  setCustomFieldsValue(form, "separationType", op);
+                }}
+                // rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+          </PFilter>
 
           {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
