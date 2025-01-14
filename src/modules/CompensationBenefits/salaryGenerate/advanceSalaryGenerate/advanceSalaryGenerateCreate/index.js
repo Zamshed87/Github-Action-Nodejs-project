@@ -773,11 +773,11 @@ const AdvanceSalaryGenerateCreate = () => {
                           [
                             {
                               value: 1,
-                              label: "Gross",
+                              label: "Gross Salary",
                             },
                             {
                               value: 2,
-                              label: "Basic",
+                              label: "Basic Salary",
                             },
                             {
                               value: 3,
