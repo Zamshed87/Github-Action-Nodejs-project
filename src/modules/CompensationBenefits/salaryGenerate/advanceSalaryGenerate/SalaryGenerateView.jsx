@@ -259,7 +259,20 @@ const AdvanceSalaryGenerateView = () => {
         <div className="table-card-body" style={{ overflow: "hidden" }}>
           <div className="table-card-styled">
             <HeaderInfoBar data={state} setLoading={setLoading} />
-
+            {state?.description && (
+              <p className="my-2">
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#344054",
+                  }}
+                >
+                  Additional Info:{" "}
+                </span>{" "}
+                {state?.description}
+              </p>
+            )}
             <div className="d-flex justify-content-between align-items-center mb-2">
               <div
                 className="d-flex justify-content-between align-items-center"

@@ -405,25 +405,14 @@ const AdvanceSalaryGenerateLanding = () => {
       // },
       {
         title: "Approval Status",
-        dataIndex: "ApprovalStatus",
+        dataIndex: "strStatus",
         sorter: true,
         filter: false,
         width: 140,
         render: (_, item) => {
           return (
             <>
-              {item?.ApprovalStatus === "Approved" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-              {item?.ApprovalStatus === "Send for Approval" && (
+              {item?.strStatus === "Generated" ? (
                 <button
                   style={{
                     height: "24px",
@@ -440,8 +429,7 @@ const AdvanceSalaryGenerateLanding = () => {
                 >
                   Send for Approval
                 </button>
-              )}
-              {item?.ApprovalStatus === "Waiting for Approval" && (
+              ) : (
                 <p
                   style={{
                     fontSize: "12px",
@@ -449,10 +437,10 @@ const AdvanceSalaryGenerateLanding = () => {
                     fontWeight: "400",
                   }}
                 >
-                  {item?.ApprovalStatus}
+                  {item?.strStatus}
                 </p>
               )}
-              {item?.ApprovalStatus === "Rejected" && (
+              {/* {item?.strStatus === "Approved" && (
                 <p
                   style={{
                     fontSize: "12px",
@@ -460,10 +448,44 @@ const AdvanceSalaryGenerateLanding = () => {
                     fontWeight: "400",
                   }}
                 >
-                  {item?.ApprovalStatus}
+                  {item?.strStatus}
                 </p>
               )}
-              {item?.ApprovalStatus === undefined && (
+              {item?.strStatus === "Pending" && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.strStatus}
+                </p>
+              )}
+
+              {item?.strStatus === "Waiting for Approval" && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.strStatus}
+                </p>
+              )}
+              {item?.strStatus === "Rejected" && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.strStatus}
+                </p>
+              )}
+              {item?.strStatus === undefined && (
                 <button
                   style={{
                     height: "24px",
@@ -480,7 +502,7 @@ const AdvanceSalaryGenerateLanding = () => {
                 >
                   Send for Approval
                 </button>
-              )}
+              )} */}
             </>
           );
         },
@@ -493,9 +515,7 @@ const AdvanceSalaryGenerateLanding = () => {
         width: 125,
         render: (data, item) => (
           <>
-            {/* {!!item?.isReGenerate && ( */}
-            {(!!item?.ApprovalStatus ||
-              item?.ApprovalStatus !== "Approved") && (
+            {!item?.isPipelineClosed && (
               <div>
                 <button
                   style={{

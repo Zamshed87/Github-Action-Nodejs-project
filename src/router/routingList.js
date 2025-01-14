@@ -1674,7 +1674,6 @@ const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
 
-
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
