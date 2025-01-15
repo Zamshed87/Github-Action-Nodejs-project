@@ -1549,6 +1549,7 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import DepositeType from "modules/configuration/depositeType";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2192,6 +2193,10 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  {
+    path: "/administration/configuration/depositeType",
+    component: DepositeType,
+  },
   { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/jobLocation", component: JobLocation },
   {
