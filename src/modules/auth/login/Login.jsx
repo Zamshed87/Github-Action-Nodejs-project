@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
@@ -37,7 +37,17 @@ const LogIn = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const strLoginId = params.get("strLoginId");
+    const strPassword = params.get("strPassword");
 
+    if (strLoginId && strPassword) {
+      dispatch(setLoginAction(strLoginId, strPassword, history, setLoading));
+      dispatch(setFirstLevelNameAction("Dashboard"));
+    }
+  }, [dispatch, history]);
+  
   return (
     <Formik
       enableReinitialize={true}
