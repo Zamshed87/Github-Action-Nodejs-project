@@ -83,8 +83,8 @@ export const apiList = {
   GetAllReligion: "/MasterData/GetAllReligion",
   // ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
   ApprovalPipeline: "/ApprovalConfiguration/GetAllApprovalConfig",
-  ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
-  // ApprovalPipelineDDL: "/Enum/GetEnums",
+  // ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
+  ApprovalPipelineDDL: "/Enum/GetEnums",
   BankBranchDDL: "/Employee/BankBranchDDL",
   AccountBankDetailsCRUD: "/SaasMasterData/AccountBankDetailsCRUD",
   AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
@@ -300,4 +300,8 @@ export const apiList = {
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
+  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
+  CreateNUpdateShiftChangeRequest:
+    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
 };

@@ -5,8 +5,12 @@ import { Checkbox, Col, Form, InputNumber, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { labelChangeByOrgId } from "utility/strLabelChange";
-import { approverDDL, header, submitHandler } from "./helper";
+import {
+  fetchApproverData,
+  fetchPipelineData,
+  header,
+  submitHandler,
+} from "./helper";
 import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
@@ -22,13 +26,14 @@ export default function AddEditForm({
   const [randomCount, setRandomCount] = useState(false);
   const [random, setRandom] = useState(false);
   const [isSequence, setIsSequence] = useState(true);
+  const [pipelineDDL, setPipelineDDL] = useState([]);
+  const [approverDDL, setApproverDDL] = useState([]);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
   const CommonEmployeeDDL = useApiRequest([]);
   const getWgDDL = useApiRequest({});
   const getWDDL = useApiRequest({});
-  const getPipelineDDL = useApiRequest({});
   const getUserGroupDDL = useApiRequest({});
   const { supervisor } = useSelector(
     (state) => state?.auth?.keywords,
@@ -110,25 +115,15 @@ export default function AddEditForm({
       },
     });
   }, [orgId, buId, wgId]);
+
   useEffect(() => {
-    getPipelineDDL.action({
-      urlKey: "ApprovalPipelineDDL",
-      method: "GET",
-      params: {
-        employeeId: employeeId || 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strDisplayName;
-          res[i].value = item?.intId;
-        });
-      },
-    });
+    fetchPipelineData(setPipelineDDL);
+    fetchApproverData(setApproverDDL);
   }, [orgId, buId]);
 
   // Form Instance
   const [form] = Form.useForm();
-console.log("singleData",singleData)
+  console.log("singleData", singleData);
   useEffect(() => {
     if (singleData?.id) {
       getPipelineDetails.action({
@@ -145,39 +140,53 @@ console.log("singleData",singleData)
           form.setFieldsValue({
             ...singleData,
             orgName: {
-              value: data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
-              label: data?.header?.workplaceGroupName || singleData?.workplaceGroupName,
+              value:
+                data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
+              label:
+                data?.header?.workplaceGroupName ||
+                singleData?.workplaceGroupName,
             },
             workplace: {
               value: data?.header?.workplaceId || singleData?.workplaceId,
               label: data?.header?.workplaceName || singleData?.workplaceName,
             },
             pipelineName: {
-              value: data?.header?.applicationTypeId || singleData?.applicationTypeId,
-              label: data?.header?.applicationType || singleData?.applicationType,
+              value:
+                data?.header?.applicationTypeId ||
+                singleData?.applicationTypeId,
+              label:
+                data?.header?.applicationType || singleData?.applicationType,
             },
             remarks: data?.header?.strRemarks || "",
             randomCountValue: data?.header?.randomApproverCount || 0,
             isSequence: data?.header?.isInSequence || false,
+            randomCount: !data?.header?.isInSequence,
             id: data?.header?.id || 0,
           });
+
+          setIsSequence(data?.header?.isInSequence);
+          setRandomCount(!data?.header?.isInSequence);
+          setRandom(!data?.header?.isInSequence);
+
           const rowData = data?.row?.map((item) => ({
             approver: item?.approverType || "User Group",
-            userGroup: item?.userGroupOrEmployeeId || "", 
+            approverId: item?.approverTypeId || 0,
+            userGroup: item?.userGroupOrEmployeeId || "",
             intPipelineRowId: item?.id || null,
             configHeaderId: data?.header?.id || 0,
             id: item?.id,
             isSupervisor: item?.approverType === "Supervisor",
             isLineManager: item?.approverType === "Line Manager",
             intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
+            userGroupOrEmployeeName: item?.userGroupOrEmployeeName || "",
             intShortOrder: item?.sequenceId || 0,
             isCreate: false,
-            isDelete: false, 
+            isDelete: false,
             strStatusTitle: item?.afterApproveStatus || "",
             strStatusTitlePending: item?.beforeApproveStatus || "",
-            randomCount: false, 
+            randomCount: false,
           }));
-          
+
           setTableData(rowData);
         },
       });
@@ -250,6 +259,7 @@ console.log("singleData",singleData)
         </Col>
         <Col md={12} sm={24}>
           <PSelect
+            disabled={singleData}
             allowClear
             maxTagCount="responsive"
             mode="multiple"
@@ -268,9 +278,7 @@ console.log("singleData",singleData)
         </Col>
         <Col md={12} sm={24}>
           <PSelect
-            options={
-              getPipelineDDL?.data?.length > 0 ? getPipelineDDL?.data : []
-            }
+            options={pipelineDDL || []}
             name="pipelineName"
             label="Pipeline Name"
             showSearch
@@ -294,7 +302,7 @@ console.log("singleData",singleData)
         </Col> */}
         <Col md={12} sm={24}>
           <PSelect
-            options={approverDDL(orgId, supervisor)}
+            options={approverDDL || []}
             name="approver"
             label="Approver"
             showSearch
@@ -413,10 +421,17 @@ console.log("singleData",singleData)
                   setRandomCount(false);
                   setRandom(false);
                 } else {
-                  form.setFieldsValue({
-                    isSequence: false,
-                  });
-                  setIsSequence(false);
+                  const randomCount = form.getFieldValue("randomCount");
+                  if (!randomCount) {
+                    form.setFieldsValue({ isSequence: true });
+                    setIsSequence(true);
+                    toast.warn("At least one option must be selected!", {
+                      toastId: "isSequence",
+                    });
+                  } else {
+                    form.setFieldsValue({ isSequence: false });
+                    setIsSequence(false);
+                  }
                 }
               }}
             >
@@ -443,10 +458,17 @@ console.log("singleData",singleData)
                   setIsSequence(false);
                   setRandom(true);
                 } else {
-                  form.setFieldsValue({
-                    randomCount: false,
-                  });
-                  setRandomCount(false);
+                  const isSequence = form.getFieldValue("isSequence");
+                  if (!isSequence) {
+                    form.setFieldsValue({ randomCount: true });
+                    setRandomCount(true);
+                    toast.warn("At least one option must be selected!", {
+                      toastId: "randomCount",
+                    });
+                  } else {
+                    form.setFieldsValue({ randomCount: false });
+                    setRandomCount(false);
+                  }
                 }
               }}
             >
@@ -484,7 +506,6 @@ console.log("singleData",singleData)
             }
           />
         </Form.Item>
-
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
@@ -529,11 +550,10 @@ console.log("singleData",singleData)
                       const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
-                      console.log("approver", approver);
                       const obj = {
-                        approverLabel: approver?.label,
-                        approverValue: approver?.value,
-                        userGroup:
+                        approver: approver?.label || "",
+                        approverId: approver?.value || 0,
+                        userGroupOrEmployeeName:
                           userGroup?.label ||
                           employee?.employeeNameWithCode ||
                           "",
@@ -541,7 +561,8 @@ console.log("singleData",singleData)
                         id: 0,
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
-                        intUserGroupHeaderId: userGroup?.value || 0,
+                        intUserGroupHeaderId:
+                          userGroup?.value || employee?.value || 0,
                         intShortOrder: newSequence,
                         isCreate: true,
                         isDelete: false,
@@ -567,7 +588,6 @@ console.log("singleData",singleData)
             );
           }}
         </Form.Item>
-        {console.log("tableData", tableData)}
         <Col md={24} sm={24}>
           {tableData.length > 0 && (
             <DraggableTable

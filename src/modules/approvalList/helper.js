@@ -38,7 +38,7 @@ export const getApprovalDashboardLanding = async (
       `/Approval/GetPendingApprovalDashboard?accountId=${accId}&businessUnitId=${BusinessUnitId}&workplaceGroupId=${WorkplaceGroupId}&workplaceId=${wId}&employeeId=${employeeId}`
     );
     setIsLoading && setIsLoading(false);
-    setter(res?.data || []); // Ensure the setter is passed an array
+    setter(res?.data || []);
   } catch (err) {
     setIsLoading && setIsLoading(false);
     console.error("Error fetching pending approvals:", err);

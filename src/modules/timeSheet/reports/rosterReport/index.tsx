@@ -37,6 +37,8 @@ import axios from "axios";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
+import { formatFilterValue } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const RosterReport = () => {
   const dispatch = useDispatch();
@@ -144,9 +146,11 @@ const RosterReport = () => {
         ReportType: "monthly_roster_report_for_all_employee",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: values?.workplaceGroup?.value || 0,
+        WorkplaceId: values?.workplace?.value || 0,
         PageNo: pagination.current || pages?.current,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageSize:
           pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         EmployeeId: 0,
@@ -293,9 +297,8 @@ const RosterReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
                       values?.fromDate
                     ).format("YYYY-MM-DD")}&DteToDate=${moment(
                       values?.toDate
@@ -303,13 +306,18 @@ const RosterReport = () => {
                       values?.workplaceGroup?.value || 0
                     }&WorkplaceId=${
                       values?.workplace?.value || 0
-                    }&PageNo=1&SearchTxt=${
+                    }&PageNo=1&departments=${
+                      formatFilterValue(values?.department) || 0
+                    }&designations=${formatFilterValue(
+                      values?.designation || 0
+                    )}&SearchTxt=${
                       values?.search || ""
                     }&PageSize=1000&IsPaginated=false`
                   );
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
+                      setExcelLoading(false);
                       return toast.error("No Attendance Data Found");
                     }
 
@@ -379,7 +387,8 @@ const RosterReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -455,7 +464,7 @@ const RosterReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered

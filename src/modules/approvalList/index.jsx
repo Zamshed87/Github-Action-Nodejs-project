@@ -3,7 +3,7 @@ import { Avatar } from "@material-ui/core";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import "./index.css";
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
@@ -19,7 +19,6 @@ const initData = {
 
 export default function ApprovalList() {
   const history = useHistory();
-  const dispatch = useDispatch();
   const { orgId, employeeId, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -45,14 +44,13 @@ export default function ApprovalList() {
     }
   }, [orgId, employeeId, wId, buId, wgId]);
 
-  // map the data to the format required by the table
   useEffect(() => {
     if (approvalData.length > 0) {
       const mappedData = approvalData.map((item) => ({
         id: item.applicationTypeId,
         menuName: item.applicationType,
         totalCount: item.pendingApprovalCount,
-        icon: "path/to/default/icon.png", // Default icon, update as needed
+        icon: "path/to/default/icon.png",
       }));
       setFilteredData(mappedData);
     }
