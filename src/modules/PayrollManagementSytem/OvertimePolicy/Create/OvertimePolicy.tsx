@@ -213,7 +213,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     );
   }, [wId]);
 
-
   const remover = (payload: number) => {
     const filterArr = tableData.filter(
       (itm: any, idx: number) => idx !== payload
