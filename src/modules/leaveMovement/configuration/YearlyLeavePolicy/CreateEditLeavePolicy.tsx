@@ -1020,9 +1020,11 @@ const CreateEditLeavePolicy = () => {
                                   });
                                   form.setFieldsValue({
                                     intWorkplaceList: undefined,
-                                    intEmploymentTypeList:undefined,
-                                    hrPositionListDTO:undefined
+                                    intEmploymentTypeList: undefined,
+                                    hrPositionListDTO: undefined,
                                   });
+                                  EmploymentTypeDDL.reset();
+                                  HRPositionDDL.reset();
                                   // getYearlyPolicyPopUpDDL(
                                   //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
                                   //     bu[0]?.value
