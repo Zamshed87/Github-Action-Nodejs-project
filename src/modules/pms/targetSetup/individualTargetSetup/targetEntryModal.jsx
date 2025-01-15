@@ -298,9 +298,9 @@ export default function TargetEntryModal({
                             <tr>
                               <th className="pl-2">KPI Name</th>
                               <th className="text-center">
-                                {values?.targetFrequency?.value === "Monthly"
+                                {values?.targetFrequency?.label === "Monthly"
                                   ? "Months"
-                                  : values?.targetFrequency?.value ===
+                                  : values?.targetFrequency?.label ===
                                     "Quarterly"
                                   ? "Quarters"
                                   : "Year"}
