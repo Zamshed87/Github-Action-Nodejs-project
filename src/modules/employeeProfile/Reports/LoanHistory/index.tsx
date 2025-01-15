@@ -140,8 +140,8 @@ const EmLoanHistory = () => {
       payload: {
         businessUnitId: buId,
         loanTypeId: 0,
-        departmentIdList: formatFilterValueList(values?.department) || [0],
-        designationIdList: formatFilterValueList(values?.designation) || [0],
+        departmentIdList: formatFilterValueList(values?.department),
+        designationIdList: formatFilterValueList(values?.designation),
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.todate).format("YYYY-MM-DD"),

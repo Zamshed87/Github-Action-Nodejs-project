@@ -196,8 +196,8 @@ const MonthlyPunchReportDetails = () => {
         reportType: "monthly_in_out_attendance_report_for_all_employee",
         accountId: orgId,
         businessUnitId: buId,
-        workplaceGroupId: values?.workplaceGroup?.value || wgId,
-        WorkplaceList: values?.workplace?.value || wId,
+        workplaceGroupId: values?.workplaceGroup?.value,
+        WorkplaceList: values?.workplace?.value,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
         departments: formatFilterValue(values?.department),
@@ -248,19 +248,18 @@ const MonthlyPunchReportDetails = () => {
         width: 35,
         align: "center",
       },
-
-      //   {
-      //     title: "Work. Group/Location",
-      //     dataIndex: "strWorkplaceGroup",
-      //     width: 120,
-      //     fixed: "left",
-      //   },
-      //   {
-      //     title: "Workplace/Concern",
-      //     dataIndex: "strWorkplace",
-      //     width: 130,
-      //     fixed: "left",
-      //   },
+      {
+        title: "Work. Group/Location",
+        dataIndex: "strWorkplaceGroup",
+        width: 120,
+        fixed: "left",
+      },
+      {
+        title: "Workplace/Concern",
+        dataIndex: "strWorkplace",
+        width: 130,
+        fixed: "left",
+      },
       {
         title: "Employee Id",
         dataIndex: "EmployeeCode",
