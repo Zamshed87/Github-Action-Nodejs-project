@@ -52,17 +52,25 @@ export default function ApprovalList() {
   useEffect(() => {
     if (approvalData.length > 0) {
       const iconMapping = {
-        "Type A": <FileOutlined style={{ fontSize: "24px", color: "#1890ff" }} />,
-        "Type B": <UserOutlined style={{ fontSize: "24px", color: "#52c41a" }} />,
-        "Type C": <SettingOutlined style={{ fontSize: "24px", color: "#faad14" }} />,
-        default: <DashboardOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />,
+        "Type A": (
+          <FileOutlined style={{ fontSize: "24px", color: "#1890ff" }} />
+        ),
+        "Type B": (
+          <UserOutlined style={{ fontSize: "24px", color: "#52c41a" }} />
+        ),
+        "Type C": (
+          <SettingOutlined style={{ fontSize: "24px", color: "#faad14" }} />
+        ),
+        default: (
+          <DashboardOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />
+        ),
       };
-  
+
       const mappedData = approvalData.map((item) => ({
         ...item,
         icon: iconMapping.default,
       }));
-  
+
       setFilteredData(mappedData);
     }
   }, [approvalData]);
@@ -142,11 +150,15 @@ export default function ApprovalList() {
                             <tr
                               className="hasEvent"
                               key={index}
-                              onClick={() =>
-                                history.push(
-                                  `/approvalNew/${data.applicationTypeId}`
-                                )
-                              }
+                              onClick={() => {
+                                const serializableData = {
+                                  applicationTypeId: data.applicationTypeId,
+                                  applicationType: data.applicationType,
+                                };
+                                history.push(`/approvalNew/${data.applicationTypeId}`, {
+                                  state: serializableData,
+                                });
+                              }}
                             >
                               <td>
                                 <div className="employeeInfo d-flex align-items-center approval-avatar">

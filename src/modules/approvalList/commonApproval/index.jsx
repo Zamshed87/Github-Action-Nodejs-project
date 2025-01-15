@@ -31,11 +31,17 @@ import {
   columnsSeparation,
 } from "./utils";
 import { fetchPendingApprovals } from "./helper";
-import { useParams } from "react-router-dom";
 import { DataTable } from "Components";
+import { useLocation } from "react-router";
+import { Title } from "@mui/icons-material";
+import ApproveRejectComp from "common/ApproveRejectComp";
+import BackButton from "common/BackButton";
 
 const CommonApprovalComponent = () => {
-  const { id } = useParams();
+  const location = useLocation();
+  const state = location.state;
+  const id = state?.state?.applicationTypeId;
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -111,52 +117,23 @@ const CommonApprovalComponent = () => {
 
   return (
     <div className="approval-container mt-4">
-      <div
-        className="action-buttons"
-        style={{ marginBottom: "16px", display: "flex", gap: "8px" }}
-      >
-        <Button
-          size="small"
-          style={{
-            backgroundColor: "#2196F3",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-          }}
-          onClick={() => window.history.back()}
-          icon={<ArrowLeftOutlined />}
-        >
-          Back
-        </Button>
-        <Button
-          size="small"
-          style={{
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-          }}
-          onClick={() => showConfirmationModal("approve")}
-          disabled={selectedRow.length === 0}
-          icon={<CheckOutlined />}
-        >
-          Approve
-        </Button>
-        <Button
-          size="small"
-          style={{
-            backgroundColor: "#F44336",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-          }}
-          onClick={() => showConfirmationModal("reject")}
-          disabled={selectedRow.length === 0}
-          icon={<CloseOutlined />}
-        >
-          Reject
-        </Button>
+      <div className="d-flex align-items-center">
+        <BackButton title={`${state?.state?.applicationType} Approval`} />
+        {selectedRow?.length > 0 ? (
+          <ApproveRejectComp
+            props={{
+              className: "ml-3",
+              onApprove: () => {
+                showConfirmationModal("approve");
+              },
+              onReject: () => {
+                showConfirmationModal("reject");
+              },
+            }}
+          />
+        ) : null}
       </div>
+
       {loading ? (
         <Spin size="large" />
       ) : (

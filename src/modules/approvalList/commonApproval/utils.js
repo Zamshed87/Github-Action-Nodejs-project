@@ -74,6 +74,10 @@ export const columnsLeave = [
     render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
   },
   {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
     title: "Status",
     dataIndex: ["applicationInformation", "status"],
     render: (status) => (
@@ -86,6 +90,7 @@ export const columnOvertime = [
   {
     title: "SL",
     align: "center",
+    width: "30px",
     render: (_, __, index) => index + 1,
   },
   {
@@ -133,6 +138,10 @@ export const columnOvertime = [
   {
     title: "OT Amount",
     dataIndex: ["applicationInformation", "overTimeAmount"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
   },
   {
     title: "Status",
@@ -280,6 +289,10 @@ export const columnsManual = [
   {
     title: "End Time",
     dataIndex: ["applicationInformation", "endTime"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
   },
   {
     title: "Status",
