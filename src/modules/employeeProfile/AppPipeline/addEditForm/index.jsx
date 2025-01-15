@@ -115,7 +115,6 @@ export default function AddEditForm({
       },
     });
   }, [orgId, buId, wgId]);
-
   useEffect(() => {
     fetchPipelineData(setPipelineDDL);
     fetchApproverData(setApproverDDL);
@@ -123,7 +122,6 @@ export default function AddEditForm({
 
   // Form Instance
   const [form] = Form.useForm();
-  console.log("singleData", singleData);
   useEffect(() => {
     if (singleData?.id) {
       getPipelineDetails.action({
@@ -147,8 +145,12 @@ export default function AddEditForm({
                 singleData?.workplaceGroupName,
             },
             workplace: {
-              value: data?.header?.workplaceId || singleData?.workplaceId,
-              label: data?.header?.workplaceName || singleData?.workplaceName,
+              value:
+                singleData?.type === "extend" ? 0 : data?.header?.workplaceId,
+              label:
+                singleData?.type === "extend"
+                  ? ""
+                  : data?.header?.workplaceName,
             },
             pipelineName: {
               value:
@@ -259,8 +261,9 @@ export default function AddEditForm({
         </Col>
         <Col md={12} sm={24}>
           <PSelect
-            disabled={singleData}
-            allowClear
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
             maxTagCount="responsive"
             mode="multiple"
             options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}

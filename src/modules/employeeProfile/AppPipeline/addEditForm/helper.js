@@ -26,7 +26,7 @@ export const header = (
   setDeletedRow,
   remover,
   random,
-  isSequence,
+  isSequence
 ) =>
   [
     {
@@ -141,15 +141,13 @@ export const submitHandler = ({
     );
   }
 
-  // Ensure workplaces is an array
   const workplaces = Array.isArray(values?.workplace)
     ? values.workplace
     : [values?.workplace];
 
-  // Collect payloads into an array
   const payloadList = workplaces.map((workplace) => ({
     header: {
-      id: values?.id || 0, // header id
+      id: singleData?.type === "extend" ? 0 : values?.id || 0,
       applicationTypeId: +values?.pipelineName?.value || 0,
       applicationType: values?.pipelineName?.label || "",
       accountId: orgId,
@@ -165,8 +163,9 @@ export const submitHandler = ({
       createdAt: todayDate(),
     },
     row: tableData.map((item) => ({
-      id: item?.id || 0, // rowId
-      configHeaderId: item?.configHeaderId || 0, // header Id
+      id: singleData?.type === "extend" ? 0 : item?.id || 0,
+      configHeaderId:
+        singleData?.type === "extend" ? 0 : item?.configHeaderId || 0,
       approverTypeId: item?.approverId || 0,
       approverType: item?.approver || "",
       beforeApproveStatus: item?.strStatusTitlePending || "",
@@ -179,11 +178,19 @@ export const submitHandler = ({
     })),
   }));
 
-  const finalPayload = singleData ? payloadList[0] : payloadList;
+  const finalPayload =
+    singleData?.type === "extend"
+      ? payloadList
+      : singleData
+      ? payloadList[0]
+      : payloadList;
 
-  const urlKey = singleData
-    ? "UpdateApprovalConfiguration"
-    : "CreateApprovalConfiguration";
+  const urlKey =
+    singleData?.type === "extend"
+      ? "CreateApprovalConfiguration"
+      : singleData
+      ? "UpdateApprovalConfiguration"
+      : "CreateApprovalConfiguration";
 
   savePipeline.action({
     urlKey: urlKey,
@@ -194,17 +201,16 @@ export const submitHandler = ({
         toast.success(res?.message || "Submitted successfully");
         cb();
       }
-      if(res?.statusCode === 500){
-        toast.warn(res?.message)
+      if (res?.statusCode === 500) {
+        toast.warn(res?.message);
       }
-      if(res?.statusCode === 400){
-        toast.warn(res?.message)
+      if (res?.statusCode === 400) {
+        toast.warn(res?.message);
       }
     },
     // toast: true,
   });
 };
-
 
 export const fetchPipelineData = async (setPipelineDDL) => {
   try {
@@ -215,11 +221,11 @@ export const fetchPipelineData = async (setPipelineDDL) => {
   }
 };
 
-export const fetchApproverData = async (setApproverDDL) =>{
+export const fetchApproverData = async (setApproverDDL) => {
   try {
     const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
     setApproverDDL(res?.data?.ApproverType);
   } catch (error) {
     console.log("error", error);
   }
-}
+};
