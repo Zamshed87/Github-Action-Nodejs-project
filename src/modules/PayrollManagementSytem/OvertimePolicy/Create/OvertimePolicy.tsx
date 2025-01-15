@@ -273,6 +273,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         form.setFieldsValue({
                           workplace: option,
                         });
+                        form.resetFields(["calendarName"])
                         getHRPositionDDL();
                         getEmploymentTypeDDL();
                         getPeopleDeskAllDDL(
