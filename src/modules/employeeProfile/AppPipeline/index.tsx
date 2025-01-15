@@ -14,8 +14,10 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AddEditForm from "./addEditForm";
 import { dateFormatter } from "utility/dateFormatter";
+import { useHistory } from "react-router";
 
 function CommonAppPipeline() {
+  const history = useHistory();
   // hook
   const dispatch = useDispatch();
 
@@ -147,7 +149,6 @@ function CommonAppPipeline() {
       title: "Random Approval Count",
       dataIndex: "randomApproverCount",
       sorter: true,
-
     },
     {
       width: 50,
@@ -166,6 +167,17 @@ function CommonAppPipeline() {
                   setOpen(true);
                   setId(rec);
                 },
+              },
+              {
+                type: "plus",
+                onClick: () => {
+                  setOpen(true);
+                  setId({ ...rec, type: "extend" });
+                },
+                // history.push({
+                //   pathname: `/administration/leaveandmovement/yearlyLeavePolicy/extention`,
+                //   state: "",
+                // }),
               },
             ]}
           />
@@ -197,9 +209,7 @@ function CommonAppPipeline() {
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={
-              landingApi?.data?.length > 0 ? landingApi?.data : []
-            }
+            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header}
             onChange={(pagination, filters, sorter, extra) => {
