@@ -42,6 +42,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       format,
       disabledDate,
       addOnBefore,
+      iconRender
     } = property;
 
     const Components =
@@ -136,6 +137,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           suffix={suffix}
           allowClear={allowClear}
           value={value}
+          iconRender={iconRender}
         />
       ) : (
         <Input
