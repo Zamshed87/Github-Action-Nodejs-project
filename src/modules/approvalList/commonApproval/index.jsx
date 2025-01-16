@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button, Spin, Modal } from "antd";
-import {
-  CheckOutlined,
-  CloseOutlined,
-  ArrowLeftOutlined,
-} from "@ant-design/icons";
+import { Spin, Modal } from "antd";
+
 import "./index.css";
 import { shallowEqual, useSelector } from "react-redux";
 import {
@@ -29,11 +25,11 @@ import {
   columnsSalaryCertificate,
   columnsSalaryIncrement,
   columnsSeparation,
+  columnsShiftChange,
 } from "./utils";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
-import { Title } from "@mui/icons-material";
 import ApproveRejectComp from "common/ApproveRejectComp";
 import BackButton from "common/BackButton";
 
@@ -184,6 +180,8 @@ const CommonApprovalComponent = () => {
               ? columnsBonusGenerate
               : id == 7
               ? columnsIOUAdjustment
+              : id == 25
+              ? columnsShiftChange
               : columnsDefault
           }
           bordered
