@@ -6,8 +6,9 @@ import {
 } from "antd";
 import { FormInstance } from "antd/es/form";
 import { PickerProps } from "antd/lib/date-picker/generatePicker";
+import { PasswordProps } from "antd/lib/input";
 import { Moment } from "moment";
-import React from "react";
+import React, { ReactNode } from "react";
 
 type onFinishFailedParams = {
   values: any;
@@ -129,11 +130,12 @@ type BaseProps = FormItemProps & {
   format?: string;
   addOnBefore?: string;
   disabledDate?: (currentDate: Moment) => boolean;
+  iconRender?:(visible:boolean) => ReactNode;
 };
 
 type InputTypeMapping = {
   text: InputProps & BaseProps;
-  password: InputProps & BaseProps;
+  password: InputProps & BaseProps & PasswordProps;
   email: InputProps & BaseProps;
   number: InputNumberProps & BaseProps;
   date: PickerProps<Moment> & BaseProps;
