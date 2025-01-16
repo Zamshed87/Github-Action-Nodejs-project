@@ -144,6 +144,7 @@ export const pmsObjectiveTableColumn = ({
       dataIndex: "sl",
       sorter: false,
       className: "text-center",
+      render: (_, __, idx) => idx + 1,
     },
     {
       title: "Objective",
@@ -166,6 +167,7 @@ export const pmsObjectiveTableColumn = ({
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
       sorter: true,
+      filter: true,
       width: 150,
     },
     fromLanding

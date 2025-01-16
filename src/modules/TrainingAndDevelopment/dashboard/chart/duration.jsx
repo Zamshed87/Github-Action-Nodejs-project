@@ -1,32 +1,19 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { Column } from "@ant-design/plots";
 
-const DurationChart = () => {
-  const data = [
-    { month: "Jan", duration_hour: 120 },
-    { month: "Feb", duration_hour: 230 },
-    { month: "Mer", duration_hour: 150 },
-    { month: "Apr", duration_hour: 160 },
-    { month: "May", duration_hour: 70 },
-    { month: "Jun", duration_hour: 80 },
-    { month: "Jul", duration_hour: 20 },
-    { month: "Aug", duration_hour: 300 },
-    { month: "Sep", duration_hour: 170 },
-    { month: "Oct", duration_hour: 75 },
-    { month: "Nov", duration_hour: 97 },
-    { month: "Dec", duration_hour: 23 },
-  ];
+const DurationChart = ({ data }) => {
+  // Ensure data is defined and has a valid structure
+  const validData = Array.isArray(data) ? data : [];
+
   const config = {
-    data,
+    data: validData, // Correctly pass the data key
     xField: "month",
-    yField: "duration_hour",
+    yField: "totalDurationInHours",
     color: "#eb2f96",
     annotations: [
       {
         type: "text",
         position: ["50%", "0%"], // Centered at the top
-        content: "Duration in Hours",
         style: {
           fontSize: 15,
           fontWeight: "bold",
@@ -38,8 +25,15 @@ const DurationChart = () => {
     ],
     onReady: ({ chart }) => {
       try {
+        if (!chart._container) {
+          return;
+        }
         const { height } = chart._container.getBoundingClientRect();
-        const tooltipItem = data[Math.floor(Math.random() * data.length)];
+        if (!validData || validData.length === 0) {
+          return;
+        }
+        const tooltipItem =
+          validData[Math.floor(Math.random() * validData.length)];
         chart.on(
           "afterrender",
           () => {
@@ -57,6 +51,7 @@ const DurationChart = () => {
       }
     },
   };
+
   return <Column {...config} />;
 };
 

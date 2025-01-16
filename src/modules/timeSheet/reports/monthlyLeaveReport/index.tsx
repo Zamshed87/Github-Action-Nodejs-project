@@ -33,6 +33,8 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import axios from "axios";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
 import { column } from "./helper";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValueList } from "utility/filter/helper";
 
 const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
@@ -180,14 +182,13 @@ const MonthlyLeaveReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    const dept = values?.department?.map((item: any) => item?.value);
     landingApi.action({
       urlKey: "MonthlyleaveReport",
       method: "POST",
       payload: {
         accountId: orgId,
         businessUnitId: buId,
-        workPlaceGroupId: values?.workplaceGroup?.value,
+        workPlaceGroupId: values?.workplaceGroup?.value || 0,
         workPlaceId: values?.workplace?.value || 0,
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -197,7 +198,8 @@ const MonthlyLeaveReport = () => {
         pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
         isPaginated: true,
         SearchText: searchText,
-        departmentIdList: dept?.length > 0 ? dept : null,
+        departmentIdList: formatFilterValueList(values?.department) || [0],
+        designationIdList: formatFilterValueList(values?.designation) || [0],
         supervisorId: values?.supervisor?.value || 0,
       },
     });
@@ -388,16 +390,21 @@ const MonthlyLeaveReport = () => {
                     {
                       accountId: orgId,
                       businessUnitId: buId,
-                      workPlaceGroupId: values?.workplaceGroup?.value,
-                      workPlaceId: values?.workplace?.value,
+                      workPlaceGroupId: values?.workplaceGroup?.value || 0,
+                      workPlaceId: values?.workplace?.value || 0,
                       employeeId: 0,
                       fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
                       toDate: moment(values?.toDate).format("YYYY-MM-DD"),
                       pageNo: 1,
                       pageSize: 500,
                       isPaginated: false,
-                      departmentIdList: dept?.length > 0 ? dept : null,
                       supervisorId: values?.supervisor?.value || 0,
+                      departmentIdList: formatFilterValueList(
+                        values?.department
+                      ) || [0],
+                      designationIdList: formatFilterValueList(
+                        values?.designation
+                      ) || [0],
                     }
                   );
                   if (res?.data?.Data) {
@@ -468,7 +475,51 @@ const MonthlyLeaveReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall}>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { workplaceGroup } = form.getFieldsValue(true);
+                return (
+                  <>
+                    {isOfficeAdmin && (
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={supervisorDDL?.data || []}
+                          name="supervisor"
+                          label="Supervisor"
+                          placeholder={`${
+                            workplaceGroup?.value
+                              ? "Search minimum 2 character"
+                              : "Select Workplace Group first"
+                          }`}
+                          //disabled={!workplaceGroup?.value}
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              supervisor: op,
+                            });
+                          }}
+                          showSearch
+                          filterOption={false}
+                          // notFoundContent={null}
+                          loading={supervisorDDL?.loading}
+                          onSearch={(value) => {
+                            getSuperVisorDDL(value);
+                          }}
+                          // rules={[
+                          //   {
+                          //     required: true,
+                          //     message: "Supervisor is required",
+                          //   },
+                          // ]}
+                        />
+                      </Col>
+                    )}
+                  </>
+                );
+              }}
+            </Form.Item>
+          </PFilter>
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={3} sm={12} xs={24}>
                 <PInput
@@ -607,7 +658,7 @@ const MonthlyLeaveReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered

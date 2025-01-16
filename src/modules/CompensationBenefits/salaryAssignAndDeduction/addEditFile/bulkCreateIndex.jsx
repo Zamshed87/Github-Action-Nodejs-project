@@ -391,7 +391,13 @@ function BulkAddEditForm() {
       }
       return false;
     });
-
+    if(values?.intAllowanceDuration?.value == 2 && !values?.intAllowanceAttendenceStatus){
+      toast.warn("Allowance Attendance Status Field is Required.");
+      return;
+    }else if(values?.intAllowanceDuration?.value == 1 && !values?.intAllowanceAttendenceStatus && !values?.maxAmount){
+      toast.warn("Allowance Attendance Status & Max Amount [ for a month ] Field is Required.");
+      return;
+    }
     if (!remainingError) {
       saveHandler(
         values,

@@ -34,9 +34,17 @@ import {
   getBankAdviceRequestLanding,
 } from "./helper";
 import CityBankLetterHead from "./letterheadReports/CityBankLetterHead";
-import CityLiveLetterHead from "./letterheadReports/CityLiveLetterHead";
 import DigitalPaymentLetterHead from "./letterheadReports/DigitalPaymentLetterHead";
 import { TopSheetReport } from "./TopSheetReport";
+import IbblBankLetterHead from "./letterheadReports/IbblBankLetterHead";
+import DblBankLetterHead from "./letterheadReports/DblBankLetterHead";
+import SCBBankLetterHead from "./letterheadReports/SCBBankLetterHead";
+import DBBLBankLetterHead from "./letterheadReports/DBBLBankLetterHead";
+import UCBBankLetterHead from "./letterheadReports/UCBBankLetterHead";
+import BFTNBankLetterHead from "./letterheadReports/BFTNBankLetterHead";
+import EFTNBankLetterHead from "./letterheadReports/EFTNBankLetterHead";
+import UpayBankLetterHead from "./letterheadReports/UpayBankLetterHead";
+import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -55,10 +63,6 @@ const BankAdviceReport = () => {
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({
     contentRef,
-    onAfterPrint: () => {
-      setLandingView("");
-      setLandingViewPdf("");
-    },
   });
   const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
     []
@@ -185,6 +189,7 @@ const BankAdviceReport = () => {
         IntSalaryGenerateRequestId: values?.adviceName?.value,
         StrAdviceType: values?.adviceType?.value,
         StrDownloadType: "TopSheet",
+        bankAdviceFor: values?.bankAdviceFor?.value,
       },
       onSuccess: (res) => {
         fetchLetterHeadAndSignatureImage();
@@ -259,20 +264,22 @@ const BankAdviceReport = () => {
   };
 
   const fetchLetterHeadAndSignatureImage = async () => {
-    if (orgId === 4 && landingApi?.data?.length > 0) {
+    if (landingApi?.data?.length > 0) {
       const letterHeadImageId = landingApi?.data.find(
         (workplace) => workplace.intWorkplaceId === values?.workplace?.value
-      ).intLetterHeadId;
+      )?.intLetterHeadId;
       const signatureImageId = landingApi?.data.find(
         (workplace) => workplace.intWorkplaceId === values?.workplace?.value
-      ).intSignatureId;
+      )?.intSignatureId;
       try {
+        setLoading(true);
         const letterImg = await loadImage(
           `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
         );
         const signatureImg = await loadImage(
           `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
         );
+        setLoading(false);
         if (letterHeadImageId === 0) {
           setLetterHeadImage(null);
         } else {
@@ -284,7 +291,9 @@ const BankAdviceReport = () => {
           setSignatureImage(signatureImg);
         }
       } catch (error) {
-        console.error("Error loading images:", error);
+        setLetterHeadImage(null);
+        setSignatureImage(null);
+        setLoading(false);
       }
     }
   };
@@ -443,7 +452,6 @@ const BankAdviceReport = () => {
         intCreatedBy: employeeId,
       },
       (res) => {
-        console.log(res);
         const response = res
           ?.filter((b) => b?.label)
           ?.map((item) => ({
@@ -460,7 +468,6 @@ const BankAdviceReport = () => {
     getBonusCODEDDLAPI(
       `/Employee/BonusGenerateQueryAll?StrPartName=GetBonusCodebyBonusId&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&IntBonusId=${values?.bonusName?.value}&DteEffectedDate=${month}`,
       (res) => {
-        console.log(res);
         const response = res
           ?.filter((b) => b?.strBonusGenerateCode)
           ?.map((item) => ({
@@ -598,6 +605,10 @@ const BankAdviceReport = () => {
                           value: 2,
                           label: "Bonus",
                         },
+                        {
+                          value: 3,
+                          label: "Advance Salary",
+                        },
                       ]}
                       value={values?.bankAdviceFor}
                       onChange={(valueOption) => {
@@ -626,6 +637,16 @@ const BankAdviceReport = () => {
                             "label",
                             setPayrollPeriodDDL
                           );
+                        } else if (
+                          values?.workplaceGroup?.value &&
+                          valueOption?.value === 3
+                        ) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=advanceSalarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+                            "value",
+                            "label",
+                            setPayrollPeriodDDL
+                          );
                         }
                       }}
                       placeholder=""
@@ -635,7 +656,8 @@ const BankAdviceReport = () => {
                     />
                   </div>
                 </div>
-                {values?.bankAdviceFor?.value === 1 ? (
+                {values?.bankAdviceFor?.value === 1 ||
+                values?.bankAdviceFor?.value === 3 ? (
                   <div className="col-lg-3">
                     <div className="input-field-main">
                       <label>Salary Code</label>
@@ -645,12 +667,21 @@ const BankAdviceReport = () => {
                         value={values?.adviceName}
                         onChange={(valueOption) => {
                           if (valueOption?.value) {
-                            getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
-                              "value",
-                              "label",
-                              setWorkplaceDDL
-                            );
+                            if (values?.bankAdviceFor?.value !== 3) {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                                "value",
+                                "label",
+                                setWorkplaceDDL
+                              );
+                            } else {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebyAdvanceSalaryId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                                "value",
+                                "label",
+                                setWorkplaceDDL
+                              );
+                            }
                           }
                           setValues((prev) => ({
                             ...prev,
@@ -985,8 +1016,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
-
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
                             downloadFile(
                               url,
                               `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetExcel_${values?.monthId}-${values?.yearId}`,
@@ -1008,7 +1038,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=Advice`;
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
                               url,
@@ -1031,13 +1061,25 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            if (orgId === 4) {
+                            const advicenames = [
+                              "IBBL",
+                              "DBL",
+                              "SCB",
+                              "CITY",
+                              "DBBL",
+                              "DBBLAB",
+                              "UCBL",
+                              "BFTN",
+                              "EFTN",
+                              "DigitalPayment",
+                              "Upay",
+                              "SOIBL",
+                            ];
+                            if (
+                              advicenames.includes(values?.adviceType?.value)
+                            ) {
                               if (!commonLanding1?.loading && !loading) {
-                                setLoading(true);
-                                setTimeout(() => {
-                                  reactToPrintFn();
-                                  setLoading(false);
-                                }, 1000);
+                                reactToPrintFn();
                               }
                             } else {
                               const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&StrDownloadType=TopSheet`;
@@ -1062,7 +1104,7 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}`;
+                            const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}`;
 
                             downloadFile(
                               url,
@@ -1204,11 +1246,67 @@ const BankAdviceReport = () => {
               <NoResult />
             )} */}
             <div style={{ overflow: "scroll" }} className="mt-3 w-100">
-              {orgId === 4 && !commonLanding1?.loading && (
+              {!commonLanding1?.loading && (
                 <div style={{ display: "none" }}>
                   <div ref={contentRef}>
+                    {values?.adviceType?.value === "IBBL" && (
+                      <IbblBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DBL" && (
+                      <DblBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "SCB" && (
+                      <SCBBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
                     {values?.adviceType?.value === "CITY" && (
                       <CityBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DBBL" && (
+                      <DBBLBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "DBBLAB" && (
+                      <DBBLBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "UCBL" && (
+                      <UCBBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "BFTN" && (
+                      <BFTNBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "EFTN" && (
+                      <EFTNBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}
@@ -1221,8 +1319,15 @@ const BankAdviceReport = () => {
                         signatureImage={signatureImage}
                       />
                     )}
-                    {values?.adviceType?.value === "BFTN" && (
-                      <CityLiveLetterHead
+                    {values?.adviceType?.value === "Upay" && (
+                      <UpayBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "SOIBL" && (
+                      <SOIBLBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}

@@ -10,6 +10,7 @@ import { customStyles } from "../../../../../utility/selectCustomStyle";
 import EmployeeShortDetails from "./EmployeeShortDetails";
 import { getKPIsCreateMappingData } from "./helper";
 import { getPeopleDeskAllDDL } from "../../../../../common/api";
+import { shallowEqual, useSelector } from "react-redux";
 
 const CreateNEditForm = ({ propsObj }) => {
   const {
@@ -28,6 +29,10 @@ const CreateNEditForm = ({ propsObj }) => {
   } = propsObj;
 
   const location = useLocation();
+  const { wId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // ddls
   const [departmentDDL, setDepartmentDDL] = useState([]);
@@ -40,7 +45,7 @@ const CreateNEditForm = ({ propsObj }) => {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&workplaceGroupId=${wgId}&intWorkplaceId=${wId}&intId=0`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
