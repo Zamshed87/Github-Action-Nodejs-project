@@ -650,11 +650,13 @@ export const saveBulkUploadAction = async (
 
       fromDate:
         item?.intYear && item?.intMonth
-          ? `${item?.intYear}-${item?.intMonth}-01`
+          ? `${item?.intYear}-${moment(item?.intMonth).format("MM")}-01`
           : todayDate(),
       toDate:
         item?.intToMonth && item?.intToYear
-          ? moment(`${item?.intToYear}-${item?.intToMonth}`)
+          ? moment(
+              `${item?.intToYear}-${moment(item?.intToMonth).format("MM")}`
+            )
               .endOf("month")
               .format("YYYY-MM-DD")
           : todayDate(),
