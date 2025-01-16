@@ -865,9 +865,10 @@ function AddEditForm() {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setIsEdit(true);
-                                  editHandler(values, () =>
-                                    getAdditionAndDeductionById()
-                                  );
+                                  editHandler(values, () => {
+                                    getAdditionAndDeductionById();
+                                    setSingleData({});
+                                  });
                                   setIsFormOpen(!isFromOpen);
                                   resetForm(initData);
                                 }}
