@@ -1550,6 +1550,8 @@ import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 import DepositeType from "modules/configuration/depositeType";
+import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
+import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3178,6 +3180,14 @@ export const routingList = [
   },
 
   // Salary assign & deduction
+  {
+    path: "/compensationAndBenefits/securityDeposit",
+    component: SecurityDepositLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/create",
+    component: SecurityDepositCRUD,
+  },
   {
     path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction",
     component: SalaryAssignAndDeduction,
