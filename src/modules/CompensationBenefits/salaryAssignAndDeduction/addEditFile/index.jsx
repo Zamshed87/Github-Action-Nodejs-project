@@ -38,6 +38,7 @@ import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import { todayDate } from "utility/todayDate";
+import { useApiRequest } from "Hooks";
 
 const initData = {
   searchString: "",
@@ -148,7 +149,8 @@ function AddEditForm() {
     location?.state?.state;
   const [isEdit, setIsEdit] = useState(false);
   const [singleData, setSingleData] = useState("");
-
+  const empWiseData = useApiRequest({});
+  const deleteAllowance = useApiRequest({});
   //redux data
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -169,13 +171,54 @@ function AddEditForm() {
   }, []);
 
   const getAdditionAndDeductionById = () => {
-    getSalaryAdditionAndDeductionById(
-      empId,
-      workplaceGroupId,
-      businessUnitId,
-      setRowDto,
-      setLoading
-    );
+    // getSalaryAdditionAndDeductionById(
+    //   empId,
+    //   workplaceGroupId,
+    //   businessUnitId,
+    //   setRowDto,
+    //   setLoading
+    // );
+
+    empWiseData?.action({
+      urlKey: "EmployeeWiseAllowance",
+      method: "get",
+      params: {
+        EmployeeId: empId,
+      },
+      onSuccess: (res) => {
+        // const modify = res.map((allowance) => ({
+        //   intSalaryAdditionAndDeductionId: allowance.allowanceId,
+        //   intAccountId: orgId,
+        //   intBusinessUnitId: buId,
+        //   intWorkplaceGroupId: wgId,
+        //   intEmployeeId: empId,
+        //   isAutoRenew: allowance.autoRenew === "No" ? false : true,
+        //   intYear: null,
+        //   intMonth: null,
+        //   strMonth: null,
+        //   intToYear: null,
+        //   intToMonth: null,
+        //   strToMonth: null,
+        //   isAddition: false,
+        //   strAdditionNDeduction: allowance.allowanceName,
+        //   intAdditionNDeductionTypeId: allowance.allowanceNameId,
+        //   intAmountWillBeId: 1,
+        //   numAmount: allowance.basedOnAmount,
+        //   isActive: true,
+        //   isProcessed: true,
+        //   strCreatedBy: "1",
+        //   dteCreatedAt: "2025-01-16T06:25:24.3",
+        //   intAllowanceDuration: 2,
+        //   intMaxLimit: 0,
+        //   intAllowanceAttendenceStatus: 0,
+        //   intAmountWillBeId1: 1,
+        //   strAmountWillBe: allowance.basedOn,
+        //   strStatus: allowance.status,
+        //   strEmployeeName: "Rubyet Mohsina",
+        // }));
+        setRowDto(res);
+      },
+    });
   };
 
   const getData = () => {
@@ -262,101 +305,84 @@ function AddEditForm() {
       // ------
       allowanceItems: [
         {
-          isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+          isAutoRenew: values?.isAutoRenew ? true : false,
           fromDate: values?.fromMonth + "-01",
           toDate: values?.toMonth
             ? moment(values?.toMonth).endOf("month").format("YYYY-MM-DD")
             : todayDate(),
           allowanceAttendenceStatusId:
             values?.intAllowanceAttendenceStatus?.value,
-          allowanceDuration: values?.intAllowanceDuration?.value,
-          numMaxLimitAmount: +values?.maxAmount,
+          allowanceDuration: values?.intAllowanceDuration?.value || 0,
+          numMaxLimitAmount: +values?.maxAmount || 0,
 
           isAddition: values?.salaryType?.value === "Addition" ? true : false,
           allowanceName: values?.allowanceAndDeduction?.label,
           allowanceTypeId: values?.allowanceAndDeduction?.value,
           amountWillBeId: values?.amountDimension?.value,
           amountWillBe: values?.amountDimension?.label,
-          numAmount: +values?.amount,
-          allowanceId: singleData?.intSalaryAdditionAndDeductionId
-            ? singleData?.intSalaryAdditionAndDeductionId
-            : 0,
+          numAmount: +values?.amount || 0,
+          allowanceId: singleData?.allowanceId ? singleData?.allowanceId : 0,
         },
       ],
-      // strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
-      // intSalaryAdditionAndDeductionId: singleData
-      //   ? singleData?.intSalaryAdditionAndDeductionId
-      //   : 0,
-
-      // intWorkplaceId:
-      //   empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
-      // intEmployeeId: values?.employee?.value,
-      // isAutoRenew: values?.isAutoRenew ? true : false,
-      // intYear: +values?.fromMonth?.split("-")[0] || null,
-      // intMonth: +values?.fromMonth?.split("-")[1] || null,
-      // strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-      // isAddition: values?.salaryType?.value === "Addition" ? true : false,
-      // strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-      // intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-      // intAmountWillBeId: values?.amountDimension?.value,
-      // strAmountWillBe: values?.amountDimension?.label,
-      // numAmount: +values?.amount,
-      // isActive: true,
-      // isReject: false,
-      // intActionBy: employeeId,
-      // intToYear: +values?.toMonth?.split("-")[0] || null,
-      // intToMonth: +values?.toMonth?.split("-")[1] || null,
-      // strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-
-      // // new requirement 🔥
-      // intAllowanceDuration: values?.intAllowanceDuration?.value,
-      // numMaxLimit: +values?.maxAmount,
-      // intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
     };
-    createEditAllowanceAndDeduction(obj, setLoading, cb);
+    createEditAllowanceAndDeduction(
+      obj,
+      setLoading,
+      cb,
+      singleData?.allowanceId ? true : false
+    );
   };
 
   const demoPopup = (values) => {
-    const payload = {
-      strEntryType:
-        isView && !isEdit ? "DeleteEmpSalaryAdditionNDeductionById" : "",
-      intSalaryAdditionAndDeductionId: values
-        ? values?.intSalaryAdditionAndDeductionId
-        : 0,
-      intAccountId: orgId,
-      intBusinessUnitId:
-        empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
-      intWorkplaceGroupId:
-        empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
-      intWorkplaceId:
-        empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
-      intEmployeeId: values?.intEmployeeId,
-      isAutoRenew: values?.isAutoRenew ? true : false,
-      intYear: values?.intYear,
-      intMonth: values?.intMonth,
-      strMonth: values?.strMonth,
-      isAddition: values?.isAddition,
-      strAdditionNDeduction: values?.strAdditionNDeduction,
-      intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
-      intAmountWillBeId: values?.intAmountWillBeId,
-      strAmountWillBe: values?.strAmountWillBe,
-      numAmount: values?.numAmount,
-      isActive: true,
-      isReject: false,
-      intActionBy: employeeId,
-      intToYear: values?.intToYear,
-      intToMonth: values?.intToMonth,
-      strToMonth: values?.strToMonth,
-    };
+    // const payload = {
+    //   strEntryType:
+    //     isView && !isEdit ? "DeleteEmpSalaryAdditionNDeductionById" : "",
+    //   intSalaryAdditionAndDeductionId: values
+    //     ? values?.intSalaryAdditionAndDeductionId
+    //     : 0,
+    //   intAccountId: orgId,
+    //   intBusinessUnitId:
+    //     empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+    //   intWorkplaceGroupId:
+    //     empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
+    //   intWorkplaceId:
+    //     empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+    //   intEmployeeId: values?.intEmployeeId,
+    //   isAutoRenew: values?.isAutoRenew ? true : false,
+    //   intYear: values?.intYear,
+    //   intMonth: values?.intMonth,
+    //   strMonth: values?.strMonth,
+    //   isAddition: values?.isAddition,
+    //   strAdditionNDeduction: values?.strAdditionNDeduction,
+    //   intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
+    //   intAmountWillBeId: values?.intAmountWillBeId,
+    //   strAmountWillBe: values?.strAmountWillBe,
+    //   numAmount: values?.numAmount,
+    //   isActive: true,
+    //   isReject: false,
+    //   intActionBy: employeeId,
+    //   intToYear: values?.intToYear,
+    //   intToMonth: values?.intToMonth,
+    //   strToMonth: values?.strToMonth,
+    // };
 
-    const callback = () => {
-      getAdditionAndDeductionById();
-    };
+    // const callback = () => {
+    //   getAdditionAndDeductionById();
+    // };
     const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you want to sure you delete allowance & deduction?",
       yesAlertFunc: () => {
-        createEditAllowanceAndDeduction(payload, setLoading, callback);
+        deleteAllowance?.action({
+          urlKey: "DeleteAllowance",
+          method: "delete",
+          params: {
+            AllowanceId: values?.allowanceId,
+          },
+          onSuccess: () => {
+            getAdditionAndDeductionById();
+          },
+        });
       },
       noAlertFunc: () => {
         //   history.push("/components/dialogs")
@@ -938,10 +964,11 @@ function AddEditForm() {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setIsEdit(true);
-                                  editHandler(values, () =>
-                                    getAdditionAndDeductionById()
-                                  );
-                                  // setIsFormOpen(!isFromOpen);
+                                  editHandler(values, () => {
+                                    getAdditionAndDeductionById();
+                                    setSingleData({});
+                                  });
+                                  setIsFormOpen(!isFromOpen);
                                   resetForm(initData);
                                 }}
                               >
@@ -993,7 +1020,7 @@ function AddEditForm() {
                       )}
                     </div>
                   </div>
-                  {loading && <Loading />}
+                  {(loading || deleteAllowance?.loading) && <Loading />}
                   <div className="table-card-styled pt-3 pb-3" ref={scrollRef}>
                     {rowDto?.length > 0 ? (
                       <>
@@ -1028,52 +1055,46 @@ function AddEditForm() {
                               {rowDto?.map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
+                                  <td>{item?.allowanceName || "N/A"}</td>
                                   <td>
-                                    {item?.strAdditionNDeduction || "N/A"}
-                                  </td>
-                                  <td>
-                                    {item?.isAddition
+                                    {item?.type
                                       ? "Addition"
                                       : "Deduction" || "N/A"}
                                   </td>
+                                  <td>{item?.autoRenew}</td>
                                   <td>
-                                    {item?.isAutoRenew ? "Yes" : "No" || "N/A"}
+                                    {moment(item?.fromDate).format("MMM-YYYY")}-
+                                    {moment(item?.toDate).format("MMM-YYYY")}
+                                    {!item?.toDate && "Continue"}
                                   </td>
+                                  <td>{item?.basedOn}</td>
                                   <td>
-                                    {item?.strMonth},{item?.intYear} -{" "}
-                                    {item?.strToMonth && item?.strToMonth + ","}
-                                    {item?.intToYear}
-                                    {!item?.intToYear && "Continue"}
-                                  </td>
-                                  <td>{item?.strAmountWillBe}</td>
-                                  <td>
-                                    {item?.numAmount}
-                                    {item?.strAmountWillBe !== "Fixed Amount"
-                                      ? "%"
-                                      : ""}
+                                    {item?.basedOn !== "Fixed Amount"
+                                      ? `${item?.basedOnAmount}%`
+                                      : item?.basedOnAmount}
                                   </td>
                                   <td className="text-center">
-                                    {item?.strStatus === "Approved" && (
+                                    {item?.status === "Approved" && (
                                       <Chips
-                                        label={item?.strStatus}
+                                        label={item?.status}
                                         classess="success"
                                       />
                                     )}
-                                    {item?.strStatus === "Pending" && (
+                                    {item?.status === "Pending" && (
                                       <Chips
-                                        label={item?.strStatus}
+                                        label={item?.status}
                                         classess="warning"
                                       />
                                     )}
-                                    {item?.strStatus === "Rejected" && (
+                                    {item?.status === "Rejected" && (
                                       <Chips
-                                        label={item?.strStatus}
+                                        label={item?.status}
                                         classess="danger"
                                       />
                                     )}
-                                    {item?.strStatus === "Process" && (
+                                    {item?.status === "Process" && (
                                       <Chips
-                                        label={item?.strStatus}
+                                        label={item?.status}
                                         classess="primary"
                                       />
                                     )}
@@ -1100,47 +1121,46 @@ function AddEditForm() {
                                                 setValues({
                                                   ...values,
                                                   employee: {
-                                                    value: item?.intEmployeeId,
+                                                    value: empId,
                                                     label:
-                                                      item?.strEmployeeName,
+                                                      empBasic
+                                                        ?.employeeProfileLandingView
+                                                        ?.strEmployeeName,
                                                   },
                                                   isAutoRenew:
-                                                    item?.isAutoRenew,
-                                                  fromMonth: `${
-                                                    item?.intYear
-                                                  }-${
-                                                    item?.intMonth <= 9
-                                                      ? `0${item?.intMonth}`
-                                                      : `${item?.intMonth}`
-                                                  }`,
-                                                  toMonth: `${
-                                                    item?.intToYear
-                                                  }-${
-                                                    item?.intToMonth <= 9
-                                                      ? `0${item?.intToMonth}`
-                                                      : `${item?.intToMonth}`
-                                                  }`,
+                                                    item?.autoRenew === "No"
+                                                      ? false
+                                                      : true,
+                                                  fromMonth: `${moment(
+                                                    item?.fromDate
+                                                  ).format("YYYY")}-${moment(
+                                                    item?.fromDate
+                                                  ).format("MM")}`,
+                                                  toMonth: `${moment(
+                                                    item?.toDate
+                                                  ).format("YYYY")}-${moment(
+                                                    item?.toDate
+                                                  ).format("MM")}`,
                                                   salaryType: {
-                                                    value: item?.isAddition
-                                                      ? "Addition"
-                                                      : "Deduction",
-                                                    label: item?.isAddition
-                                                      ? "Addition"
-                                                      : "Deduction",
+                                                    value:
+                                                      item?.type === "Addition"
+                                                        ? "Addition"
+                                                        : "Deduction",
+                                                    label:
+                                                      item?.type === "Addition"
+                                                        ? "Addition"
+                                                        : "Deduction",
                                                   },
                                                   allowanceAndDeduction: {
                                                     value:
-                                                      item?.intAdditionNDeductionTypeId,
-                                                    label:
-                                                      item?.strAdditionNDeduction,
+                                                      item?.allowanceNameId,
+                                                    label: item?.allowanceName,
                                                   },
                                                   amountDimension: {
-                                                    value:
-                                                      item?.intAmountWillBeId,
-                                                    label:
-                                                      item?.strAmountWillBe,
+                                                    value: item?.basedOnId,
+                                                    label: item?.basedOn,
                                                   },
-                                                  amount: item?.numAmount,
+                                                  amount: item?.basedOnAmount,
                                                   intAllowanceDuration:
                                                     [
                                                       {
@@ -1192,7 +1212,7 @@ function AddEditForm() {
                                           </button>
                                         </Tooltip>
                                       )}
-                                      {!isView && (
+                                      {isView && (
                                         <Tooltip title="Delete" arrow>
                                           <button
                                             type="button"
@@ -1201,13 +1221,13 @@ function AddEditForm() {
                                             <DeleteOutlineOutlinedIcon
                                               onClick={(e) => {
                                                 e.stopPropagation();
-                                                deleteHandler(index);
+                                                demoPopup(item);
                                               }}
                                             />
                                           </button>
                                         </Tooltip>
                                       )}
-                                      {isView &&
+                                      {!isView &&
                                         item?.strStatus === "Pending" && (
                                           <Tooltip title="Delete" arrow>
                                             <button
@@ -1219,7 +1239,9 @@ function AddEditForm() {
                                                   e.stopPropagation();
                                                   setSingleData("");
                                                   demoPopup(item);
-                                                  // deleteHandler(index);
+                                                  // deleteHandler(
+                                                  //   item?.allowanceId
+                                                  // );
                                                 }}
                                               />
                                             </button>

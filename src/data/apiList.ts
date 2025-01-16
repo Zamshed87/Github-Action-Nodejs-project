@@ -299,6 +299,8 @@ export const apiList = {
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
+  EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
+  DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   SalaryBulkUpload: "/Employee/SalaryBulkUpload",
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
