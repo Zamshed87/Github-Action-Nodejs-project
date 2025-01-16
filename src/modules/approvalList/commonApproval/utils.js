@@ -211,13 +211,11 @@ numIncrementPercentage
     title: "Amount",
     dataIndex: ["applicationInformation", "totalAmount"],
     render: (_, data) => (
-      (
-        <div>
-          {data
-            ? `${data?.applicationInformation?.numIncrementAmount} (${data?.applicationInformation?.numIncrementPercentage}%)`
-            : "0 (0%)"}
-        </div>
-      )
+      <div>
+        {data
+          ? `${data?.applicationInformation?.numIncrementAmount} (${data?.applicationInformation?.numIncrementPercentage}%)`
+          : "0 (0%)"}
+      </div>
     ),
   },
   {
@@ -450,7 +448,7 @@ export const columnsSeparation = [
   },
   {
     title: "Effective Date",
-    dataIndex: ["applicationInformation", "dteEffectiveDate"],
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
     ),
@@ -497,13 +495,7 @@ export const columnsAdvancedSalary = [
     title: "Advance Salary Code",
     dataIndex: ["applicationInformation", "advanceSalaryCode"],
   },
-  {
-    title: "Application Date",
-    dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
-    ),
-  },
+
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
@@ -523,7 +515,7 @@ export const columnsAdvancedSalary = [
   {
     title: "Total Amount",
     dataIndex: ["applicationInformation", "totalAmount"],
-    render: (amount) => <div>{amount ? `$${amount.toFixed(2)}` : "N/A"}</div>,
+    render: (amount) => <div>{amount ? `${amount.toFixed(2)}` : "N/A"}</div>,
   },
   {
     title: "Payment Method",
@@ -536,7 +528,7 @@ export const columnsAdvancedSalary = [
   {
     title: "Advance Percentage",
     dataIndex: ["applicationInformation", "advanceBasedOnPercentage"],
-    render: (percentage) => <div>{percentage ? `${percentage}%` : "N/A"}</div>,
+    render: (percentage) => <div>{percentage ? `${percentage}` : "N/A"}</div>,
   },
   {
     title: "Minimum Present Days",
@@ -1034,7 +1026,7 @@ export const columnsSalaryCertificate = [
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1, // Serial number
+    render: (_, __, index) => index + 1,
   },
   {
     title: "Employee Code",
@@ -1057,26 +1049,7 @@ export const columnsSalaryCertificate = [
     dataIndex: ["applicationInformation", "lastIncrementDate"],
     render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
   },
-  {
-    title: "Last Increment Amount",
-    dataIndex: ["applicationInformation", "lastIncrementAmount"],
-    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
-  },
-  {
-    title: "Recent Gross Salary",
-    dataIndex: ["applicationInformation", "recentGrossSalary"],
-    render: (salary) => (salary ? `৳${salary.toLocaleString()}` : "N/A"),
-  },
-  {
-    title: "Increment Proposal Percentage",
-    dataIndex: ["applicationInformation", "incrementProposalPercentage"],
-    render: (percentage) => (percentage ? `${percentage}%` : "N/A"),
-  },
-  {
-    title: "Increment Proposal Amount",
-    dataIndex: ["applicationInformation", "incrementProposalAmount"],
-    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
-  },
+
   {
     title: "Waiting Stage",
     dataIndex: ["applicationInformation", "waitingStage"],
