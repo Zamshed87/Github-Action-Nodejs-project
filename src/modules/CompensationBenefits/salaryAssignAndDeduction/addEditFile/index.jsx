@@ -260,37 +260,13 @@ function AddEditForm() {
             : 0,
         },
       ],
-      // strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
-      // intSalaryAdditionAndDeductionId: singleData
-      //   ? singleData?.intSalaryAdditionAndDeductionId
-      //   : 0,
-
-      // intWorkplaceId:
-      //   empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
-      // intEmployeeId: values?.employee?.value,
-      // isAutoRenew: values?.isAutoRenew ? true : false,
-      // intYear: +values?.fromMonth?.split("-")[0] || null,
-      // intMonth: +values?.fromMonth?.split("-")[1] || null,
-      // strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-      // isAddition: values?.salaryType?.value === "Addition" ? true : false,
-      // strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-      // intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-      // intAmountWillBeId: values?.amountDimension?.value,
-      // strAmountWillBe: values?.amountDimension?.label,
-      // numAmount: +values?.amount,
-      // isActive: true,
-      // isReject: false,
-      // intActionBy: employeeId,
-      // intToYear: +values?.toMonth?.split("-")[0] || null,
-      // intToMonth: +values?.toMonth?.split("-")[1] || null,
-      // strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-
-      // // new requirement 🔥
-      // intAllowanceDuration: values?.intAllowanceDuration?.value,
-      // numMaxLimit: +values?.maxAmount,
-      // intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
     };
-    createEditAllowanceAndDeduction(obj, setLoading, cb);
+    createEditAllowanceAndDeduction(
+      obj,
+      setLoading,
+      cb,
+      singleData?.intSalaryAdditionAndDeductionId ? true : false
+    );
   };
 
   const demoPopup = (values) => {

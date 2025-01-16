@@ -137,14 +137,15 @@ export const getSalaryAdditionAndDeductionLanding = async (
 export const createEditAllowanceAndDeduction = async (
   payload,
   setLoading,
-  cb
+  cb,
+  isEdit = false
 ) => {
+  const api = isEdit
+    ? `/Allowance/AdditionAndDeduction/EditAllowance`
+    : `/Allowance/AdditionAndDeduction/Allowance`;
   try {
     setLoading(true);
-    const res = await axios.post(
-      `/Allowance/AdditionAndDeduction/Allowance`,
-      payload
-    );
+    const res = await axios.post(api, payload);
     setLoading(false);
     cb && cb();
     toast.success(res?.data?.message);
