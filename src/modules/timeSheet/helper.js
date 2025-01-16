@@ -49,8 +49,8 @@ export const getPeopleDeskAllLandingForCalender = async (
       `/TimeSheet/GetCalenderLanding?IntBusinessUnitId=${busId}&PageNo=${pageNo}&PageSize=${pageSize}&IntWorkplaceId=${wId}${Search}`
     );
     if (res?.data?.data) {
-      setter && setter(res?.data?.data);
-      setAllData && setAllData(res?.data?.data);
+      setter && setter(res?.data);
+      setAllData && setAllData(res?.data);
       setLoading && setLoading(false);
     }
   } catch (error) {
