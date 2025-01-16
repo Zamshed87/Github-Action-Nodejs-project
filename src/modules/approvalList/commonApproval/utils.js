@@ -198,10 +198,27 @@ export const columnIncrement = [
     title: "Depend On",
     dataIndex: ["applicationInformation", "strDependOn"],
   },
+  /**
+   * 
+numIncrementAmount
+: 
+0
+numIncrementPercentage
+: 
+0
+   */
   {
     title: "Amount",
     dataIndex: ["applicationInformation", "totalAmount"],
-    render: (amount) => <div>{amount ? `${amount} (0%)` : "0 (0%)"}</div>,
+    render: (_, data) => (
+      (
+        <div>
+          {data
+            ? `${data?.applicationInformation?.numIncrementAmount} (${data?.applicationInformation?.numIncrementPercentage}%)`
+            : "0 (0%)"}
+        </div>
+      )
+    ),
   },
   {
     title: "Waiting Stage",
@@ -221,7 +238,7 @@ export const columnsManual = [
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1, // Automatically adding a serial number
+    render: (_, __, index) => index + 1,
   },
   {
     title: "Employee Name",
@@ -236,15 +253,43 @@ export const columnsManual = [
     dataIndex: ["applicationInformation", "department"],
   },
   {
-    title: "Workplace Group",
-    dataIndex: ["applicationInformation", "workplaceGroupName"],
+    title: "Attendance Date",
+    dataIndex: ["applicationInformation", "dteAttendanceDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
+    ),
   },
   {
-    title: "Workplace Name",
-    dataIndex: ["applicationInformation", "workplaceName"],
+    title: "Actual In-Time",
+    dataIndex: ["applicationInformation", "tmeStartTime"],
+    render: (time) => (
+      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+    ),
   },
   {
-    title: "Attendance Status",
+    title: "Actual Out-Time",
+    dataIndex: ["applicationInformation", "tmeEndTime"],
+    render: (time) => (
+      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+    ),
+  },
+
+  {
+    title: "Request In-Time",
+    dataIndex: ["applicationInformation", "dteInDateTime"],
+    render: (time) => (
+      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+    ),
+  },
+  {
+    title: "Request Out-Time",
+    dataIndex: ["applicationInformation", "dteOutDateTime"],
+    render: (time) => (
+      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+    ),
+  },
+  {
+    title: "Actual Status",
     dataIndex: ["applicationInformation", "strAttendanceStatus"],
     render: (status) => (
       <div
@@ -261,35 +306,7 @@ export const columnsManual = [
     title: "Request Status",
     dataIndex: ["applicationInformation", "strRequestStatus"],
   },
-  {
-    title: "Application Date",
-    dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
-    ),
-  },
-  {
-    title: "From Date",
-    dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
-    ),
-  },
-  {
-    title: "To Date",
-    dataIndex: ["applicationInformation", "toDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
-    ),
-  },
-  {
-    title: "Start Time",
-    dataIndex: ["applicationInformation", "startTime"],
-  },
-  {
-    title: "End Time",
-    dataIndex: ["applicationInformation", "endTime"],
-  },
+
   {
     title: "Waiting Stage",
     dataIndex: ["applicationInformation", "waitingStage"],
@@ -519,9 +536,7 @@ export const columnsAdvancedSalary = [
   {
     title: "Advance Percentage",
     dataIndex: ["applicationInformation", "advanceBasedOnPercentage"],
-    render: (percentage) => (
-      <div>{percentage ? `${percentage}%` : "N/A"}</div>
-    ),
+    render: (percentage) => <div>{percentage ? `${percentage}%` : "N/A"}</div>,
   },
   {
     title: "Minimum Present Days",
@@ -540,7 +555,6 @@ export const columnsAdvancedSalary = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-
 ];
 
 export const columnsExpense = [
@@ -1014,7 +1028,6 @@ export const columnsSalaryIncrement = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-
 ];
 export const columnsSalaryCertificate = [
   {
@@ -1076,7 +1089,12 @@ export const columnsSalaryCertificate = [
     render: (status) => (
       <div
         style={{
-          color: status === "Approved" ? "green" : status === "Pending" ? "orange" : "red",
+          color:
+            status === "Approved"
+              ? "green"
+              : status === "Pending"
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
@@ -1136,7 +1154,12 @@ export const columnsBonusGenerate = [
     render: (status) => (
       <div
         style={{
-          color: status === "Approved" ? "green" : status === "Pending" ? "orange" : "red",
+          color:
+            status === "Approved"
+              ? "green"
+              : status === "Pending"
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
@@ -1218,7 +1241,12 @@ export const columnsIOUAdjustment = [
     render: (status) => (
       <div
         style={{
-          color: status === "Approved" ? "green" : status === "Pending" ? "orange" : "red",
+          color:
+            status === "Approved"
+              ? "green"
+              : status === "Pending"
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
@@ -1228,5 +1256,99 @@ export const columnsIOUAdjustment = [
   },
 ];
 
-
-
+export const columnsShiftChange = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Attendance Date",
+    dataIndex: ["applicationInformation", "dteAttendanceDate"],
+    render: (date) => (
+      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
+    ),
+  },
+  {
+    title: "Current Calendar",
+    dataIndex: ["applicationInformation", "previousCalendarName"],
+  },
+  {
+    title: "In Time",
+    dataIndex: ["applicationInformation", "dteInDateTime"],
+    render: (time) => (
+      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+    ),
+  },
+  {
+    title: "Out Time",
+    dataIndex: ["applicationInformation", "dteOutDateTime"],
+    render: (time) => (
+      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+    ),
+  },
+  {
+    title: "Attendance Status",
+    dataIndex: ["applicationInformation", "strAttendanceStatus"],
+    render: (strAttendanceStatus) => (
+      <div
+        style={{
+          color: strAttendanceStatus === "Late" ? "red" : "green",
+          fontWeight: "bold",
+        }}
+      >
+        {strAttendanceStatus}
+      </div>
+    ),
+  },
+  {
+    title: "Requested Calendar",
+    dataIndex: ["applicationInformation", "calendarName"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    render: (stage) => stage || "N/A",
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "100px",
+    render: (status) => (
+      <div
+        style={{
+          color:
+            status === "Approved"
+              ? "green"
+              : status === "Pending"
+              ? "orange"
+              : "red",
+          fontWeight: "bold",
+        }}
+      >
+        {status}
+      </div>
+    ),
+  },
+];
