@@ -1,33 +1,36 @@
-import { EditOutlined } from "@ant-design/icons";
-import { Col, Form, Row, Switch, Tooltip } from "antd";
+import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
   Flex,
   PButton,
+  PCard,
   PCardBody,
   PCardHeader,
   PForm,
   PInput,
 } from "Components";
-import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
-import { createTrainingType, updateTrainingType } from "./helper";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import axios from "axios";
+import { message } from "antd";
+import { title } from "process";
+import { dateFormatter } from "utility/dateFormatter";
+import { shallowEqual, useSelector } from "react-redux";
+import {
+  createTrainingType,
+  dataDemo,
+  deleteTrainingType,
+  updateTrainingType,
+} from "./helper";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const TrainingType = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission: any = {};
-  permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30498) {
-      permission = item;
-    }
-  });
   const { buId, wgId, employeeId, orgId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -65,6 +68,9 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     {
       title: "Remarks",
       dataIndex: "remarks",
+      sorter: true,
+      filterKey: "remarksList",
+      filter: true,
       width: 45,
     },
     // {
@@ -166,7 +172,7 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
     landingApiCall();
   }, []);
 
-  return permission?.isView ? (
+  return (
     <div>
       {(loading || landingLoading) && <Loading />}
       <PForm form={form} initialValues={{ editAction: false }}>
@@ -235,7 +241,9 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
                             setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {});
+                    .catch(() => {
+                      console.log("error");
+                    });
                 }}
               />
               {editAction && (
@@ -267,8 +275,6 @@ const TrainingType = ({ setOpenTraingTypeModal }: any) => {
         </div>
       </PForm>
     </div>
-  ) : (
-    <NotPermittedPage />
   );
 };
 
