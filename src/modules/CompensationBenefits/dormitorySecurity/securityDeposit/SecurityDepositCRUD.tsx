@@ -568,47 +568,6 @@ export const SecurityDepositCRUD = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  allowClear
-                  name="employee"
-                  label="Employee"
-                  placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
-                  loading={CommonEmployeeDDL?.loading}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      employee: op,
-                    });
-                    // empBasicInfo(buId, orgId, value, setEmpInfo);
-                  }}
-                  // onSearch={(value) => {
-                  //   getEmployee(value);
-                  // }}
-                  showSearch
-                  // filterOption={false}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Employee is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={4} sm={12} xs={24}>
-                <PInput
-                  type="month"
-                  name="monthYear"
-                  format={"MMM-YYYY"}
-                  label="Month-Year"
-                  placeholder=""
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      monthYear: value,
-                    });
-                  }}
-                />
-              </Col>
               <Col md={6} sm={24}>
                 <PSelect
                   options={
@@ -632,6 +591,52 @@ export const SecurityDepositCRUD = () => {
                   // ]}
                 />
               </Col>
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  allowClear
+                  name="employee"
+                  label="Employee"
+                  placeholder="Search Min 2 char"
+                  options={CommonEmployeeDDL?.data || []}
+                  loading={CommonEmployeeDDL?.loading}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      employee: op,
+                    });
+                    // empBasicInfo(buId, orgId, value, setEmpInfo);
+                  }}
+                  // onSearch={(value) => {
+                  //   getEmployee(value);
+                  // }}
+                  showSearch
+                  // filterOption={false}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Employee is required",
+                  //   },
+                  // ]}
+                />
+              </Col>
+
+              <Col
+                style={{
+                  marginTop: "23px",
+                }}
+              >
+                <PButton
+                  type="primary"
+                  action="button"
+                  onClick={() => {
+                    viewHandler();
+                  }}
+                  content="View"
+                />
+              </Col>
+            </Row>
+          </PCardBody>
+          <PCardBody className="mb-3">
+            <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
                   options={
@@ -647,14 +652,35 @@ export const SecurityDepositCRUD = () => {
                       securityTypeDDL: op,
                     });
                   }}
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Year is required",
-                  //   },
-                  // ]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Type is required",
+                    },
+                  ]}
                 />
               </Col>
+              <Col md={4} sm={12} xs={24}>
+                <PInput
+                  type="month"
+                  name="monthYear"
+                  format={"MMM-YYYY"}
+                  label="Month-Year"
+                  placeholder=""
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      monthYear: value,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Year is required",
+                    },
+                  ]}
+                />
+              </Col>
+
               {/* <Col md={3} sm={12} xs={24}>
                   <PInput
                     type="date"
@@ -720,21 +746,6 @@ export const SecurityDepositCRUD = () => {
                     // rules={[{ required: true, message: "Workplace is required" }]}
                   />
                 </Col> */}
-
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton
-                  type="primary"
-                  action="button"
-                  onClick={() => {
-                    viewHandler();
-                  }}
-                  content="View"
-                />
-              </Col>
             </Row>
           </PCardBody>
 
