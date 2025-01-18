@@ -10,6 +10,8 @@ import AvatarComponent from "../../../../common/AvatarComponent";
 import { excelFileToArray } from "../../../../utility/excelFileToJSON";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import { bulkEmpInputHandler } from "./helper";
+import { todayDate } from "utility/todayDate";
+import moment from "moment";
 
 export const initData = {
   searchString: "",
@@ -135,6 +137,7 @@ export const processDataFromExcelInAllowanceNDeduction = async (
   orgId,
   buId,
   wgId,
+  wId,
   setIsLoadingBulk
 ) => {
   try {
@@ -151,7 +154,8 @@ export const processDataFromExcelInAllowanceNDeduction = async (
       orgId,
       employeeId,
       buId,
-      wgId
+      wgId,
+      wId
     );
   } catch (error) {
     toast.warn("Failed to process!");
@@ -165,7 +169,8 @@ const processBulkUploadAllowanceNDeduction = (
   orgId,
   employeeId,
   buId,
-  wgId
+  wgId,
+  wId
 ) => {
   setIsLoadingBulk && setIsLoadingBulk(true);
   try {
@@ -203,6 +208,7 @@ const processBulkUploadAllowanceNDeduction = (
         intAccountId: orgId,
         intBusinessUnitId: buId,
         intWorkplaceGroupId: wgId,
+        workplaceId: wId,
         employeeCode: item?.["Employee Code"] || 0,
         isAutoRenew: item?.IsAutoRenew,
         intYear: item?.["From Year"] || 0,
@@ -627,41 +633,56 @@ export const saveBulkUploadAction = async (
     return {
       intSalaryAdditionAndDeductionId:
         item?.intSalaryAdditionAndDeductionId || 0,
-      intAccountId: item?.intAccountId,
-      intBusinessUnitId: item?.intBusinessUnitId,
-      intWorkplaceGroupId: item?.intWorkplaceGroupId,
+      accountId: item?.intAccountId,
+      businessUnitId: item?.intBusinessUnitId,
+      workplaceGroupId: item?.intWorkplaceGroupId,
+      // workplaceId: item?.intWorkplaceGroupId,
       employeeCode: `${item?.employeeCode}` || 0,
       isAutoRenew: item?.IsAutoRenew,
-      intYear: item?.intYear || 0,
-      intMonth: item?.intMonth || 0,
-      strMonth: item?.strMonth || "",
       isAddition: item?.isAddition,
-      strAdditionNDeduction: item?.["AllowanceOrDeduction Type"] || "",
-      intAmountWillBeId: 0,
-      strAmountWillBe: item?.strAmountWillBe || item?.strAmountWillBe || "",
+      allowanceName: item?.["AllowanceOrDeduction Type"] || "",
+      amountWillBeId: 0,
+      amountWillBe: item?.strAmountWillBe || item?.strAmountWillBe || "",
+      allowanceAttendenceStatus: item?.attendenceStatus || "",
+      allowanceDuration: item?.strDuration || "",
       numAmount: item?.numAmount || 0,
-      strDuration: item?.strDuration || "",
-      maxAmount: +item?.maxAmount || 0,
-      attendenceStatus: item?.attendenceStatus || "",
-      isActive: true,
-      isReject: false,
-      intActionBy: item?.intActionBy,
-      intToYear: item?.intToYear || null,
-      intToMonth: item?.intToMonth || null,
-      strToMonth: item?.strToMonth || null,
+      numMaxLimitAmount: +item?.maxAmount || 0,
+
+      fromDate:
+        item?.intYear && item?.intMonth
+          ? `${item?.intYear}-${moment(item?.intMonth).format("MM")}-01`
+          : todayDate(),
+      toDate:
+        item?.intToMonth && item?.intToYear
+          ? moment(
+              `${item?.intToYear}-${moment(item?.intToMonth).format("MM")}`
+            )
+              .endOf("month")
+              .format("YYYY-MM-DD")
+          : todayDate(),
+
+      // intYear: item?.intYear || 0,
+      // intMonth: item?.intMonth || 0,
+      // strMonth: item?.strMonth || "",
+      // isActive: true,
+      // isReject: false,
+      // intActionBy: item?.intActionBy,
+      // intToYear: item?.intToYear || null,
+      // intToMonth: item?.intToMonth || null,
+      // strToMonth: item?.strToMonth || null,
     };
   });
 
   const payload = {
     isForceAssign: isForceAssign,
     isSkipNAssign: isSkipNAssign,
-    bulkSalaryAdditionNDeductions,
+    bulkAllowancePayload: bulkSalaryAdditionNDeductions,
   };
 
   try {
     setLoading(true);
     const res = await axios.post(
-      `/Employee/BulkSalaryAdditionNDeduction`,
+      `/Allowance/AdditionAndDeduction/Allowance/Bulk`,
       payload
     );
     setLoading(false);
@@ -670,8 +691,6 @@ export const saveBulkUploadAction = async (
     toast.success(res?.data?.message || "Bulk Submitted successfully");
     console.log({ res });
   } catch (error) {
-    console.log({ error });
-
     const res = error?.response?.data;
 
     const isExist = msgList.filter((i) => i === res?.message);

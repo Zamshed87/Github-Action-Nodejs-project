@@ -23,7 +23,7 @@ const IndividualKpiMapping = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [showKpiViewModal, setShowKpiViewModal] = useState(false);
 
-  const { employeeId, orgId, buId, buName } = useSelector(
+  const { employeeId, orgId, buId, buName, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -46,14 +46,14 @@ const IndividualKpiMapping = () => {
   useEffect(() => {
     if (initData?.businessUnit?.value) {
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${initData?.businessUnit?.value}&intId=0`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${initData?.businessUnit?.value}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
         "DepartmentId",
         "DepartmentName",
         setDepartmentDDL
       );
     }
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
@@ -112,7 +112,7 @@ const IndividualKpiMapping = () => {
         </div>
         <div className="card-style pb-0 mb-2">
           <div className="row">
-            <div className="col-lg-3">
+            {/* <div className="col-lg-3">
               <div className="input-field-main">
                 <label>Business Unit</label>
                 <FormikSelect
@@ -125,7 +125,7 @@ const IndividualKpiMapping = () => {
                     if (valueOption) {
                       setFieldValue("businessUnit", valueOption);
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${valueOption?.value}&intId=0`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${valueOption?.value}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
                         "DepartmentId",
                         "DepartmentName",
                         setDepartmentDDL
@@ -140,7 +140,7 @@ const IndividualKpiMapping = () => {
                   styles={customStyles}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="col-md-3">
               <div className="input-field-main">

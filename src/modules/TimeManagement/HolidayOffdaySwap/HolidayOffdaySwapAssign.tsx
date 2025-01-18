@@ -44,10 +44,12 @@ const HolidayOffdaySwapAssign = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [calendarData, setCalendarData] = useState([]);
   const [selectedSingleEmployee, setSelectedSingleEmployee] = useState<any>([]);
+  const [empSection, setEmpSection] = useState<any>([]);
   const openPop = Boolean(anchorEl);
   const id = openPop ? "simple-popover" : undefined;
   // api states
   const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const holidayOffdayLandingAPI = useApiRequest([]);
@@ -137,6 +139,7 @@ const HolidayOffdaySwapAssign = () => {
   ) => {
     const {
       departments,
+      section,
       designatios,
       hrPositions,
       search,
@@ -151,7 +154,8 @@ const HolidayOffdaySwapAssign = () => {
         workplace: wId,
         workplaceGroup: wgId,
         hrPositions: hrPositions?.map((dto: any) => dto?.value) || [],
-        departments: departments?.map((dto: any) => dto?.value) || [],
+        departments: [departments?.value || 0], //departments?.map((dto: any) => dto?.value) || [],
+        sections: section?.map((dto: any) => dto?.value) || [],
         designatios: designatios?.map((dto: any) => dto?.value) || [],
         searchTxt: search || "",
         attendenceStatus: attendenceStatus?.value,
@@ -161,6 +165,26 @@ const HolidayOffdaySwapAssign = () => {
       },
       onSuccess: (res) => {
         setRowDto(res);
+      },
+    });
+  };
+
+  // section wise ddl
+  const getEmployeeSection = (departmentId: number | string) => {
+    empSectionDDL?.action({
+      urlKey: "SectionDDL",
+      method: "GET",
+      params: {
+        AccountId: orgId,
+        BusinessUnitId: buId,
+        DepartmentId: departmentId || 0,
+        WorkplaceId: wId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.label;
+          res[i].value = item?.value;
+        });
       },
     });
   };
@@ -284,13 +308,31 @@ const HolidayOffdaySwapAssign = () => {
                   filterOption={true}
                   label="Department"
                   allowClear
-                  mode="multiple"
                   placeholder="Department"
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       departments: op,
+                      section: undefined,
+                    });
+                    value && getEmployeeSection(value);
+                  }}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={empSectionDDL.data || []}
+                  name="section"
+                  showSearch
+                  filterOption={true}
+                  label="Section"
+                  mode="multiple"
+                  placeholder="Section"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      section: op,
                     });
                   }}
+                  // rules={[{ required: true, message: "Section is required" }]}
                 />
               </Col>
               <Col md={6} sm={12} xs={24}>

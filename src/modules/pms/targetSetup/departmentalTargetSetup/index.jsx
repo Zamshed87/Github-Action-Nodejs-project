@@ -35,12 +35,12 @@ const DepartmentaltargetSetupLanding = () => {
   });
 
   const {
-    profileData: { orgId, buId, intAccountId },
+    profileData: { orgId, buId, intAccountId, wId, wgId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
