@@ -562,14 +562,14 @@ const updateArData = (ar, response, message) => {
   return ar.map((item) => {
     // Find the corresponding employee in the response array
     const matchedResponse = response.find(
-      (r) => r.strEmployeeCode == item.employeeCode
+      (r) => r.employeeCode == item.employeeCode
     );
 
     // If a match is found, update the fields
     if (matchedResponse) {
       return {
         ...item,
-        "Employee Code": matchedResponse.strEmployeeCode,
+        "Employee Code": matchedResponse.employeeCode,
         "Employee Name":
           matchedResponse.strEmployeeName || item?.["Employee Name"],
         intEmployeeBasicInfoId: matchedResponse.intEmployeeBasicInfoId,
