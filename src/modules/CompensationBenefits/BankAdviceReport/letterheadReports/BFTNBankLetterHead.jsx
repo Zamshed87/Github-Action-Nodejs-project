@@ -1,4 +1,4 @@
-export default function CityBankLetterHead({
+export default function BFTNBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,
@@ -7,6 +7,7 @@ export default function CityBankLetterHead({
     <>
       {letterHeadImage && (
         <img
+          className="invoice-header"
           src={letterHeadImage.src}
           style={{
             height: "1570px",
@@ -42,7 +43,6 @@ export default function CityBankLetterHead({
               style={{
                 margin: "0px 96px",
                 fontSize: "14px",
-                marginTop: "50px",
                 minWidth: "930px",
               }}
             >
@@ -87,15 +87,11 @@ export default function CityBankLetterHead({
                   {landingViewPdf?.[0]?.WorkplaceGroupName}
                   &quot;&nbsp;
                 </b>
-                employees. Please debit <b>BDT</b>&nbsp;
-                <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;
-                </b>
-                from our company account no.&nbsp;
-                <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;
-                </b>
-                to disburse salaries as mentioned below.
+                employees. Please debit BDT&nbsp;
+                {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;from our
+                company account no.&nbsp;
+                {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;to disburse
+                salaries as mentioned below.
               </p>
               <div style={{ marginTop: "50px" }}>
                 Employee Bank Account Information with Transfer Amount:
@@ -110,7 +106,7 @@ export default function CityBankLetterHead({
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "8px",
+                          padding: "4px",
                           textAlign: "center",
                         }}
                       >
@@ -119,29 +115,92 @@ export default function CityBankLetterHead({
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "8px",
+                          padding: "4px",
                           textAlign: "center",
                         }}
                       >
-                        Employee Name
+                        Code No.
                       </th>
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "8px",
+                          padding: "4px",
                           textAlign: "center",
                         }}
                       >
-                        Account Number
+                        Bank Name
                       </th>
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "8px",
+                          padding: "4px",
                           textAlign: "center",
                         }}
                       >
-                        Net Salary Payable
+                        Branch Name
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Routing Number
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Account Type
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Accout Number
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Account Name
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Amount
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Payment Info
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "4px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Remark
                       </th>
                     </tr>
                   </thead>
@@ -151,7 +210,7 @@ export default function CityBankLetterHead({
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
-                            padding: "8px",
+                            padding: "4px",
                           }}
                         >
                           {item?.Sl}
@@ -159,26 +218,82 @@ export default function CityBankLetterHead({
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item?.EmployeeCode}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item?.EmpBankName}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item?.EmpBranchName}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item?.EmpRoutingNo}
+                        </td>{" "}
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {""}
+                        </td>{" "}
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item?.EmpBankAccountNumber}
+                        </td>{" "}
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
                             padding: "8px",
                           }}
                         >
                           {item?.EmpAccountName}
+                        </td>{" "}
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item?.NeyPayableSalary?.toFixed(2)}
                         </td>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
-                            padding: "8px",
+                            padding: "4px",
                           }}
                         >
-                          {item?.EmpBankAccountNumber}
+                          {""}
                         </td>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
-                            padding: "8px",
+                            padding: "4px",
                           }}
                         >
-                          {item?.NeyPayableSalary.toFixed(2)}
+                          {""}
                         </td>
                       </tr>
                     ))}
