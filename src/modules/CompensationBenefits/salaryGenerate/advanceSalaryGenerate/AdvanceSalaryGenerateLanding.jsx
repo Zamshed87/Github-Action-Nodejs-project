@@ -412,7 +412,8 @@ const AdvanceSalaryGenerateLanding = () => {
         render: (_, item) => {
           return (
             <>
-              {item?.strStatus === "Generated" ? (
+              {item?.strStatus === "Generated" ||
+              item?.strStatus === "ReGenerated" ? (
                 <button
                   style={{
                     height: "24px",
