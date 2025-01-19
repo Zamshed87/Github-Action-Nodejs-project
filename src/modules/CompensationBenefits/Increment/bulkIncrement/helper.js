@@ -1,35 +1,86 @@
 import { isDevServer } from "App";
 import axios from "axios";
+import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 export const processBulkUploadIncrementAction = async (
   data,
   setter,
   setLoading,
-  buId,
-  orgId,
+  elementInfo,
+  payrollInfo,
+  values,
+  setErrorData,
+  setOpen,
   employeeId
 ) => {
   try {
     setLoading(true);
-    const modifiedData = data.map((item) => ({
-      intIncrementId: 0,
-      intEmployeeId: item["Employee Id"],
-      strEmployeeName: item["Employee Name"],
-      strDesignation: item["Designation"],
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      strIncrementDependOn: item["Depend On"] || "",
-      numIncrementAmountBasedOnAmount: +item["Fixed Amount"] || 0,
-      numIncrementPercentageBasedOnBasic:
-        +item["Percentage Based On Basic"] || 0,
-      numIncrementPercentBasedOnGross: +item["Percentage Based On Gross"] || 0,
-      numIncrementPercentageOrAmount: +item["Increment percentage/Amount"] || 0, // item["Increment percentage"],
-      dteEffectiveDate: item["Effective Date"],
-      isActive: true,
-      intCreatedBy: employeeId,
-    }));
-    setter(modifiedData);
+    const keyValuePairs = {};
+
+    for (const item of elementInfo) {
+      if (typeof item === "string" && item.includes(" : ")) {
+        const [key, value] = item.split(" : ").map((str) => str.trim());
+        keyValuePairs[key] = value; // Add to the object
+      }
+    }
+    const modifiedData = data.slice(2).map((item, index) => {
+      const {
+        "Employee Name": empName,
+        "Employee Code": employeeCode,
+        "Gross Salary": gross,
+        "Mismatch Amount": misMatch,
+        "Effective Date": effectiveDate,
+        ...fields
+      } = item;
+      const payrollElements = Object.keys(fields)
+        // .filter((key) => key !== "Gross Salary" && key !== "Mismatch Amount")
+        .map((key) => {
+          if (fields[key]?.result !== undefined || !isNaN(fields[key])) {
+            // console.log(keyValuePairs);
+            return {
+              elementName: key,
+              amount: roundToDecimals(fields[key]?.result) || fields[key],
+              elementId: keyValuePairs[key],
+            };
+          }
+          return {
+            elementName: key,
+            amount: 0,
+            elementId: keyValuePairs[key],
+          };
+        })
+        .filter(Boolean); // Remove null values.
+
+      return {
+        slNo: index + 1,
+        empName: empName || "N/A",
+        employeeCode: `${employeeCode}` || "N/A",
+        gross: gross,
+        effectiveDate: effectiveDate || todayDate(),
+        payrollGroupId: values?.pg?.value || payrollInfo[7],
+        misMatch: misMatch?.result || 0,
+        actionBy: employeeId,
+        payrollElements,
+      };
+    });
+    const errorData = [];
+    const cleanData = [];
+    modifiedData.forEach((item) => {
+      if (
+        Boolean(item.misMatch) ||
+        item.empName === "N/A" ||
+        item.employeeCode === "N/A"
+      ) {
+        errorData.push(item);
+      } else {
+        cleanData.push(item);
+      }
+    });
+    setter(cleanData);
+    setErrorData(errorData);
+    errorData?.length > 0 && setOpen(true);
     setLoading(false);
   } catch (error) {
     setter([]);
