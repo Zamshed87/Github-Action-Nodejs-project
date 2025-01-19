@@ -93,7 +93,8 @@ const HeaderInfoBar = ({ data, setLoading }) => {
         <CircleButton
           icon={<BatchPredictionIcon style={{ fontSize: "24px" }} />}
           title={
-            data?.strStatus === "Generated" ? (
+            data?.strStatus === "Generated" ||
+            data?.strStatus === "ReGenerated" ? (
               <div className="d-flex align-items-center justify-content-start">
                 <button
                   style={{
