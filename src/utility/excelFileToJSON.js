@@ -11,7 +11,6 @@ export const excelFileToArray = (file, sheetName, firstRow = 1) => {
         const worksheet = workbook.getWorksheet(sheetName);
         if (!worksheet) return toast.warning("Sheet name does not match");
         const firstRowValues = worksheet.getRow(firstRow).values;
-
         worksheet.eachRow((row, rowIndex) => {
           if (rowIndex !== 1) {
             data.push(createObject(firstRowValues, row.values));
@@ -39,3 +38,20 @@ function createObject(keys, values) {
   }
   return obj;
 }
+export const excelFileToSpecificIndexInfo = (file, sheetName, firstRow = 1) => {
+  return new Promise((resolve, reject) => {
+    const workbook = new Excel.Workbook();
+    workbook.xlsx
+      .load(file)
+      .then(function () {
+        const worksheet = workbook.getWorksheet(sheetName);
+        if (!worksheet) return toast.warning("Sheet name does not match");
+
+        resolve(worksheet.getRow(firstRow).values);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
