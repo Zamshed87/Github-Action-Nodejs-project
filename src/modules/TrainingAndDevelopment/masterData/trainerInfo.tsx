@@ -15,20 +15,12 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
 import { createTrainerInfo, updateTrainerInfo } from "./helper";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-
-  let permission: any = {};
-  permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30501) {
-      permission = item;
-    }
-  });
   const { buId, wgId, employeeId, orgId } = profileData;
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -45,8 +37,8 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.currentPage,
-          pageSize: landingApi?.pageSize,
+          currentPage: 1,
+          pageSize: 1000,
           index,
         }),
       fixed: "left",
@@ -81,6 +73,9 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
     {
       title: "Trainer Email",
       dataIndex: "email",
+      filter: true,
+      filterKey: "trainerEmailList",
+      filterSearch: true,
     },
     {
       title: "Status",
@@ -162,15 +157,8 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
       width: 30,
     },
   ];
-  const landingApiCall = (
-    pagination: { current: number; pageSize: number } = {
-      current: 1,
-      pageSize: 25,
-    }
-  ) => {
-    getLandingApi(
-      `/TrainerInformation/Training/TrainerInformation?pageNumber=${pagination.current}&pageSize=${pagination.pageSize}`
-    );
+  const landingApiCall = () => {
+    getLandingApi("/TrainerInformation/Training/TrainerInformation");
   };
   useEffect(() => {
     landingApiCall();
@@ -178,7 +166,9 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      onValuesChange: (changedValues: any, allValues: any) => {},
+      onValuesChange: (changedValues: any, allValues: any) => {
+        console.log("Form Values:", allValues);
+      },
     });
   }, [form]);
 
@@ -186,7 +176,7 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
   const editAction = Form.useWatch("editAction", form);
   const nameofTrainer = Form.useWatch("nameofTrainer", form);
 
-  return permission?.isView ? (
+  return (
     <div>
       {(loading || landingLoading) && <Loading />}
       <PForm form={form} initialValues={{}}>
@@ -307,7 +297,9 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
                             // setOpenTraingTypeModal
                           );
                     })
-                    .catch(() => {});
+                    .catch(() => {
+                      console.log("error");
+                    });
                 }}
               />
               {editAction && (
@@ -331,24 +323,22 @@ const TrainerInfo = ({ setOpenTraingTypeModal }: any) => {
         <div className="mb-3">
           <DataTable
             bordered
-            data={landingApi?.data || []}
+            data={landingApi || []}
             loading={landingLoading}
             header={header}
-            pagination={{
-              pageSize: landingApi?.pageSize,
-              total: landingApi?.totalCount,
-            }}
-            filterData={landingApi?.filters}
-            onChange={(pagination, filters) => {
-              landingApiCall(pagination);
-            }}
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
+            filterData={landingApi?.data?.filters}
+            // onChange={(pagination, filters) => {
+            //   landingApiCall();
+            // }}
           />
         </div>
         {/* </PCard> */}
       </PForm>
     </div>
-  ) : (
-    <NotPermittedPage />
   );
 };
 

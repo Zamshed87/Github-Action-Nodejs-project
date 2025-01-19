@@ -1,19 +1,32 @@
 import React from "react";
 import { Column } from "@ant-design/plots";
 
-const PerticipantsChart = ({ data }) => {
-  console.log(data, "perticipants data");
-  const validData = Array.isArray(data) ? data : [];
+const PerticipantsChart = () => {
+  const data = [
+    { month: "Jan", perticipants: 20 },
+    { month: "Feb", perticipants: 30 },
+    { month: "Mer", perticipants: 50 },
+    { month: "Apr", perticipants: 60 },
+    { month: "May", perticipants: 70 },
+    { month: "Jun", perticipants: 80 },
+    { month: "Jul", perticipants: 90 },
+    { month: "Aug", perticipants: 100 },
+    { month: "Sep", perticipants: 70 },
+    { month: "Oct", perticipants: 45 },
+    { month: "Nov", perticipants: 67 },
+    { month: "Dec", perticipants: 23 },
+  ];
 
   const config = {
-    data: validData, // Correctly passing validData as the 'data' key
+    data,
     xField: "month",
-    yField: "numberOfParticipants",
+    yField: "perticipants",
     color: "#1890ff", // Single color for bars
     annotations: [
       {
         type: "text",
         position: ["50%", "0%"], // Centered at the top
+        content: "Monthly Participants",
         style: {
           fontSize: 15,
           fontWeight: "bold",
@@ -25,15 +38,8 @@ const PerticipantsChart = ({ data }) => {
     ],
     onReady: ({ chart }) => {
       try {
-        if (!chart._container) {
-          return;
-        }
         const { height } = chart._container.getBoundingClientRect();
-        if (!validData || validData.length === 0) {
-          return;
-        }
-        const tooltipItem =
-          validData[Math.floor(Math.random() * validData.length)];
+        const tooltipItem = data[Math.floor(Math.random() * data.length)];
         chart.on(
           "afterrender",
           () => {

@@ -2,6 +2,7 @@ import { FormInstance } from "antd";
 import axios from "axios";
 import { SetStateAction } from "react";
 import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 // Training Type
 export const createTrainingType = async (
@@ -178,6 +179,7 @@ export const createTrainerInfo = async (
   try {
     const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
+    console.log(values, "values");
 
     const payload = {
       name: values?.nameofTrainer || "",

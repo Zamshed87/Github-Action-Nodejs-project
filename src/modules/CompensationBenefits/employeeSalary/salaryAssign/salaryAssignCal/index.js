@@ -1,4 +1,4 @@
-function roundToDecimals(number = 0, decimals = 2) {
+export function roundToDecimals(number = 0, decimals = 2) {
   const multiplier = Math.pow(10, decimals);
   return Math.round(number * multiplier) / multiplier;
 }
@@ -443,14 +443,17 @@ const adjustOverFollowAmount = (
     array[indexOfLowestAmount].numAmount = roundToDecimals(
       array[indexOfLowestAmount]?.numAmount - overFollowAmount
     );
-    array[indexOfLowestAmount][payrollElementName] -= overFollowAmount;
+    array[indexOfLowestAmount][payrollElementName] -=
+      roundToDecimals(overFollowAmount);
   } else {
     // console.log({ isNotOverFollow: overFollowAmount });
 
     array[indexOfLowestAmount].numAmount = roundToDecimals(
       array[indexOfLowestAmount]?.numAmount + overFollowAmount * -1
     );
-    array[indexOfLowestAmount][payrollElementName] += overFollowAmount * -1;
+    array[indexOfLowestAmount][payrollElementName] += roundToDecimals(
+      overFollowAmount * -1
+    );
   }
   setterFunc(array);
 };

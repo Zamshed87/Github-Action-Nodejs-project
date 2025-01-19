@@ -1,92 +1,55 @@
 import {
   EditOutlined,
+  PlusCircleOutlined,
   SaveOutlined,
-  StepBackwardOutlined,
-  StepForwardOutlined,
 } from "@ant-design/icons";
-import { Form, Steps } from "antd";
+import { Col, Form, FormInstance, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
-import { PCard, PCardBody, PCardHeader, PForm } from "Components";
+import {
+  DataTable,
+  Flex,
+  PButton,
+  PCard,
+  PCardBody,
+  PCardHeader,
+  PForm,
+  PInput,
+  PSelect,
+} from "Components";
 import { useApiRequest } from "Hooks";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 // import { requisitionStatus } from "./helper";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { trainingModeFixDDL, trainingStatusFixDDL } from "./helper";
 import { PModal } from "Components/Modal";
-import { toast } from "react-toastify";
-import TrainingTitle from "../masterData/trainingTitle";
 import TrainingType from "../masterData/trainingType";
-import {
-  addHandlerTriningTimes,
-  calculateDuration,
-  changeTrainingStatus,
-  costMap,
-  createTrainingPlan,
-  createTrainingPlanDetails,
-  createTrainingSchedule,
-  doCheckDuplicateTrainingTime,
-  editTrainingPlan,
-  editTrainingPlanDetails,
-  editTrainingSchedule,
-  perticipantMap,
-  setTrainingDuration,
-  stepOneValidation,
-  trainerMap,
-  ViewTrainingPlan,
-  ViewTrainingSchedule,
-} from "./helper";
+import TrainingTitle from "../masterData/trainingTitle";
+import moment from "moment";
+import { setTrainingDuration } from "./helper";
+import { Delete } from "@mui/icons-material";
 import ListOfCost from "./listOfCost";
 import ListOfPerticipants from "./listOfPerticipants";
-import PlanningInfo from "./planningInfo";
-import TrainerAndOrgInfo from "./trainerAndOrgInfo";
-import moment from "moment";
-import PlanningStepper from "./stepper/planningStepper";
-import { typeDataSetForTitle, typeDataSetForTrainerOrg } from "../helpers";
-
-const cardMargin = { marginBottom: "15px" };
+import { toast } from "react-toastify";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const TnDPlanningCreateEdit = () => {
   interface LocationState {
     data?: any;
-    dataDetails?: any;
-    onlyPerticipant?: boolean;
   }
-  const [form] = Form.useForm();
-  const params = useParams<{ type: string }>();
-  const { type } = params;
 
   const location = useLocation<LocationState>();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const {
-    data = {},
-    dataDetails = {},
-    onlyPerticipant,
-  } = location?.state || {};
+  const data = location?.state?.data;
 
   const [loading, setLoading] = useState(false);
   const [openTraingTypeModal, setOpenTraingTypeModal] = useState(false);
   const [openTrainingTitleModal, setOpenTrainingTitleModal] = useState(false);
-  const [costField, setCostField] = useState<any>(
-    type === "edit" ? costMap(dataDetails?.trainingCostDto) : []
-  );
-  const [trainerOrgField, setTrainerOrgField] = useState<any>(
-    type === "edit" ? trainerMap(dataDetails?.trainingTrainerDto) : []
-  );
-  const [perticipantField, setperticipantField] = useState<any>(
-    type === "edit"
-      ? perticipantMap(dataDetails?.trainingParticipantDto, data)
-      : []
-  );
-  const [trainingTime, setTrainingTime] = useState<any>(
-    type === "edit" ? dataDetails?.trainingTimeDto : []
-  );
-  const [planId, setPlanId] = useState<number>();
-
-  const [planStep, setPlanStep] = useState<string>("");
+  const [costField, setCostField] = useState<any>([]);
+  const [perticipantField, setperticipantField] = useState<any>([]);
 
   const { permissionList, profileData } = useSelector(
     (state: any) => state?.auth,
@@ -108,13 +71,12 @@ const TnDPlanningCreateEdit = () => {
   const empDepartmentDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
 
-  const [
-    nameOfTrainerOrgDDL,
-    getNameOfTrainerOrgDDL,
-    loadingTrainerOrg,
-    setNameOfTrainerOrg,
-  ] = useAxiosGet();
+  const [nameOfTrainerOrgDDL, getNameOfTrainerOrgDDL] = useAxiosGet();
+  const [costTypeDDL, getCostTypeDDL] = useAxiosGet();
 
+  const [form] = Form.useForm();
+  const params = useParams<{ type: string }>();
+  const { type } = params;
   //   api calls
   const CommonEmployeeDDL = useApiRequest([]);
   const [
@@ -175,15 +137,15 @@ const TnDPlanningCreateEdit = () => {
 
   // workplace wise
   const getEmployeDepartment = () => {
-    const { workplaceGroupPer, workplacePer } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
       urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
         businessUnitId: buId,
-        workplaceGroupId: workplaceGroupPer?.value,
-        workplaceId: workplacePer?.value,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
 
         accountId: orgId,
       },
@@ -197,15 +159,16 @@ const TnDPlanningCreateEdit = () => {
   };
 
   const getEmployeePosition = () => {
-    const { workplaceGroupPer, workplacePer } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
     positionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Position",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroupPer?.value,
-        IntWorkplaceId: workplacePer?.value,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -217,9 +180,28 @@ const TnDPlanningCreateEdit = () => {
     });
   };
 
+  const getEmployee = (value: any) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: profileData?.buId,
+        workplaceGroupId: profileData?.wgId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Training & Development"));
-    setPlanStep("STEP_ONE");
     getBUnitDDL.action({
       urlKey: "BusinessUnitWithRoleExtension",
       method: "GET",
@@ -238,36 +220,30 @@ const TnDPlanningCreateEdit = () => {
     });
     getWorkplaceGroup();
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
-    getTrainingTitleDDL(
-      "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
-      (data: any) => {
-        typeDataSetForTitle(data, setTrainingTitle);
-      }
-    );
-    getNameOfTrainerOrgDDL(
-      "/TrainerInformation/Training/TrainerInformation?pageNumber=1&pageSize=200",
-      (data: any) => {
-        typeDataSetForTrainerOrg(data, setNameOfTrainerOrg);
-      }
-    );
-    if (type === "edit") {
-      setTrainingDuration(form);
-      getWorkplace();
-      getEmployeDepartment();
-      getEmployeePosition();
-      setPlanId(data?.id);
-    }
-    if (onlyPerticipant) {
-      setPlanStep("STEP_TWO");
-    }
+    getTrainingTitleDDL("/TrainingTitle/Training/Title", typeDataSetForTitle);
+    getNameOfTrainerOrgDDL("/trainingType");
   }, [profileData?.buId, profileData?.wgId]);
 
   const typeDataSetForType = (data: any) => {
-    const list: any[] = [];
-    data?.map((d: any) => {
-      if (d?.isActive === true) list.push({ label: d?.name, value: d?.id });
+    let list: any[] = [];
+    data?.map((item: any) => {
+      list.push({
+        label: item?.strName,
+        value: item?.intId,
+      });
     });
     setTrainingType(list);
+  };
+
+  const typeDataSetForTitle = (data: any) => {
+    let list: any[] = [];
+    data?.map((item: any) => {
+      list.push({
+        label: item?.strName,
+        value: item?.intId,
+      });
+    });
+    setTrainingTitle(list);
   };
 
   const addHandler = (values: any) => {
@@ -275,183 +251,33 @@ const TnDPlanningCreateEdit = () => {
       toast.error("Cost Value is required");
       return;
     }
-    const isDuplicate = costField.some(
-      (cost: any) => cost.costTypeId === values?.costType?.value
-    );
-
-    if (isDuplicate) {
-      toast.error("Cost type already exists");
-      return;
-    }
     const nextId =
       costField.length > 0 ? costField[costField.length - 1].id + 1 : 1;
-    setCostField([
-      ...costField,
-      {
-        id: nextId,
-        costTypeId: values?.costType?.value,
-        costType: values?.costType?.label,
-        costValue: values?.costValue,
-      },
-    ]);
-    form.resetFields(["costType", "costValue"]);
+    setCostField([...costField, { id: nextId, ...values }]);
   };
 
-  const addHandlerTriningTime = (values: any) => {
-    if (
-      !values?.trainingStartTime ||
-      !values?.trainingEndTime ||
-      !values?.trainingStartDate
-    ) {
-      toast.error("Training date and Time is required");
+  const addHanderForPerticipant = (values: any) => {
+    if (!values?.employee) {
+      toast.error("Employee is required");
       return;
     }
-    const startTime = new Date(values.trainingStartTime);
-    const endTime = new Date(values.trainingEndTime);
-    const trainingDate = new Date(values.trainingStartDate)
-      .toISOString()
-      .split("T")[0]; // Ensure date format consistency
-
-    if (startTime >= endTime) {
-      toast.error("End time must be after start time");
-      return;
-    }
-    if (trainingTime && trainingTime?.length > 0) {
-      const duplicate = doCheckDuplicateTrainingTime(values, trainingTime);
-      if (duplicate?.overlap) {
-        return;
-      }
-    }
-
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    console.log(workplaceGroup, workplace);
     const nextId =
-      trainingTime.length > 0
-        ? trainingTime[trainingTime.length - 1].id + 1
+      perticipantField.length > 0
+        ? perticipantField[perticipantField.length - 1].id + 1
         : 1;
-    const newTrainingTime = [
-      ...trainingTime,
+    setperticipantField([
+      ...perticipantField,
       {
         id: nextId,
-        trainingStartTime: moment(values?.trainingStartTime).format(
-          "hh:mm:ss A"
-        ),
-        trainingEndTime: moment(values?.trainingEndTime).format("hh:mm:ss A"),
-        trainingStartDate: moment(values?.trainingStartDate).format(
-          "YYYY-MM-DD"
-        ),
-        trainingDuration: values?.trainingDuration,
+        perticipant: `${values?.employee?.label} - ${values?.employee?.value}`,
+        department: values?.department?.label,
+        hrPosition: values?.hrPosition?.label,
+        workplaceGroup: workplaceGroup?.label,
+        workplace: workplace?.label,
       },
-    ];
-
-    newTrainingTime.sort((a, b) => {
-      const dateA = moment(a.trainingStartDate).format("YYYY-MM-DD");
-      const dateB = moment(b.trainingStartDate).format("YYYY-MM-DD");
-      if (dateA < dateB) return -1;
-      if (dateA > dateB) return 1;
-
-      const startTimeA = moment(a.trainingStartTime, "hh:mm:ss A").format(
-        "HH:mm:ss"
-      );
-      const startTimeB = moment(b.trainingStartTime, "hh:mm:ss A").format(
-        "HH:mm:ss"
-      );
-      if (startTimeA < startTimeB) return -1;
-      if (startTimeA > startTimeB) return 1;
-
-      const endTimeA = moment(a.trainingEndTime, "hh:mm:ss A").format(
-        "HH:mm:ss"
-      );
-      const endTimeB = moment(b.trainingEndTime, "hh:mm:ss A").format(
-        "HH:mm:ss"
-      );
-      if (endTimeA < endTimeB) return -1;
-      if (endTimeA > endTimeB) return 1;
-
-      return 0;
-    });
-    changeTrainingStatus(form, newTrainingTime);
-    setTrainingTime(newTrainingTime);
-    // form.resetFields([
-    //   "trainingStartTime",
-    //   "trainingEndTime",
-    //   "trainingStartDate",
-    //   "trainingDuration",
-    // ]);
-  };
-
-  const addHandlerTrinerOrg = (values: any) => {
-    if (!values?.nameofTrainerOrganization) {
-      toast.error("Trainer is required");
-      return;
-    }
-    const isDuplicate = trainerOrgField.some(
-      (org: any) => org.name === values?.nameofTrainerOrganization?.name
-    );
-
-    if (isDuplicate) {
-      toast.error("Trainer & organization already exists");
-      return;
-    }
-
-    setTrainerOrgField([
-      ...trainerOrgField,
-      { ...values?.nameofTrainerOrganization },
     ]);
-    form.resetFields(["nameofTrainerOrganization"]);
-  };
-
-  const addHanderForPerticipant = (values: any, employees: any) => {
-    const { workplaceGroupPer, workplacePer } = form.getFieldsValue(true);
-
-    console.log(form.getFieldsValue(true), "values");
-
-    const addParticipant = (employee: any) => {
-      const isDuplicate = perticipantField.some(
-        (participant: any) =>
-          participant.perticipantId === employee.intEmployeeBasicInfoId
-      );
-
-      if (isDuplicate) {
-        // toast.error("Participant already exists");
-        return;
-      }
-
-      const nextId =
-        perticipantField.length > 0
-          ? perticipantField[perticipantField.length - 1].id + 1
-          : 1;
-
-      setperticipantField((prev: any) => [
-        ...prev,
-        {
-          id: nextId,
-          perticipant: `${employee.employeeName} (${employee.employeeCode})`,
-          perticipantId: employee.intEmployeeBasicInfoId,
-          department: employee.strDepartment,
-          departmentId: employee.intDepartmentId,
-          hrPosition: employee.strHrPosition,
-          hrPositionId: employee.intHrPositionId,
-          workplaceGroup: workplaceGroupPer?.label,
-          workplaceGroupId: workplaceGroupPer?.value,
-          workplace: workplacePer?.label,
-          workplaceId: workplacePer?.value,
-        },
-      ]);
-    };
-
-    if (values?.employee) {
-      addParticipant(values.employee);
-    } else {
-      employees.forEach((employee: any) => {
-        addParticipant(employee);
-      });
-    }
-    // form.resetFields([
-    //   "employee",
-    //   "department",
-    //   "hrPosition",
-    //   "workplacePer",
-    //   "workplaceGroupPer",
-    // ]);
   };
 
   const calculatePerPersonCost = () => {
@@ -466,522 +292,389 @@ const TnDPlanningCreateEdit = () => {
       perPersonCost: perPersonCost,
       totalCost: totalCost,
     });
-    return perPersonCost ? perPersonCost : 0;
+    return perPersonCost;
   };
 
-  const buttonContent = () => {
-    if (planStep === "STEP_ONE") return "Next Step";
-    if (planStep === "STEP_TWO") return "Save";
-
-    if (type === "create") return "Save";
-    if (type === "edit") return "Edit";
-    if (type === "view") return "View";
-  };
-
-  useEffect(() => {
-    if (planStep === "STEP_THREE") {
-      ViewTrainingSchedule(planId, setLoading, (d: any) => {
-        const mappedTrainingTime = d.map((item: any) => ({
-          idx: item.id,
-          trainingStartTime: moment(item.startTime, "HH:mm:ss").format(
-            "hh:mm:ss A"
-          ),
-          trainingEndTime: moment(item.endTime, "HH:mm:ss").format(
-            "hh:mm:ss A"
-          ),
-          trainingStartDate: moment(item.trainingDate).format("YYYY-MM-DD"),
-          trainingDuration: calculateDuration(item.startTime, item.endTime),
-        }));
-        setTrainingTime(mappedTrainingTime);
-      });
-    }
-  }, [planStep]);
-
-  console.log(data, "data");
-  console.log(dataDetails, "dataDetails");
-  const values = form.getFieldsValue(true);
-  console.log(values);
-  const onChangeStepper = (current: number) => {
-    if (!planId && type !== "edit") {
-      toast.warning("Please create Training Basic Info. first!");
-      return;
-    }
-    setPlanStep(
-      current === 0 ? "STEP_ONE" : current === 1 ? "STEP_TWO" : "STEP_THREE"
-    );
-  };
+  console.log(perticipantField);
 
   return (
     <div>
-      {(loading || loadingTrainingType) && <Loading />}
+      {loading || (loadingTrainingType && <Loading />)}
       <PForm
         form={form}
-        initialValues={
-          type === "edit"
-            ? {
-                idx: data?.id,
-                bUnit: {
-                  value: data?.businessUnitId,
-                  label: data?.businessUnitName,
-                },
-                workplaceGroup: {
-                  value: data?.workplaceGroupId,
-                  label: data?.workplaceGroupName,
-                },
-                workplace: {
-                  value: data?.workplaceId,
-                  label: data?.workplaceName,
-                },
-                trainingType: {
-                  value: data?.trainingTypeId,
-                  label: data?.trainingTypeName,
-                },
-                trainingTitle: {
-                  value: data?.trainingTitleId,
-                  label: data?.trainingTitleName,
-                },
-                trainingMode: {
-                  value: data?.trainingModeStatus?.value,
-                  label: data?.trainingModeStatus?.label,
-                },
-                trainingOrganizer: {
-                  value: data?.trainingOrganizerType?.value,
-                  label: data?.trainingOrganizerType?.label,
-                },
-                trainingStatus: {
-                  value: data?.status?.value,
-                  label: data?.status?.label,
-                },
-                objectives: data?.objectives,
-                trainingVanue: data?.venueAddress,
-                trainingStartDate: data?.startDate
-                  ? moment(data?.startDate)
-                  : "",
-                trainingStartTime: data?.startTime
-                  ? moment(data?.startTime, "HH:mm:ss A")
-                  : "",
-                trainingEndDate: data?.endDate ? moment(data?.endDate) : "",
-                trainingEndTime: data?.endTime
-                  ? moment(data?.endTime, "HH:mm:ss A")
-                  : "",
-              }
-            : {}
-        }
+        initialValues={{ reasonForRequisition: data?.requestor }}
       >
         <PCard>
           <PCardHeader
             backButton
             title={`Training Plan ${type === "create" ? "Create" : "Edit"}`}
             buttonList={
-              onlyPerticipant
-                ? [
-                    {
-                      type: "primary",
-                      content: "Edit Perticipants",
-                      icon: <EditOutlined />,
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
-
-                        form
-                          .validateFields([])
-                          .then(() => {
-                            editTrainingPlanDetails(
-                              data?.id,
-                              [],
-                              [],
-                              perticipantField,
-                              setLoading,
-                              () => {
-                                history.goBack();
-                              }
-                            );
-
-                            console.log(costField, "costField");
-                            console.log(perticipantField, "perticipantField");
-                          })
-                          .catch(() => {});
-                      },
-                    },
-                  ] // No buttons for "status" type
-                : planStep === "STEP_TWO"
-                ? [
-                    // previous step
-                    // {
-                    //   type: "secondary",
-                    //   content: "Previous Step",
-                    //   icon: <StepBackwardOutlined />,
-                    //   onClick: () => {
-                    //     const values = form.getFieldsValue(true);
-
-                    //     form
-                    //       .validateFields([])
-                    //       .then(() => {
-                    //         if (!planId) {
-                    //           toast.error("Plan Creation is required");
-                    //           return;
-                    //         }
-                    //         setPlanStep("STEP_ONE");
-                    //       })
-                    //       .catch(() => {});
-                    //   },
-                    // },
-                    // previous step
-                    // save and close
-                    {
-                      type: "primary",
-                      content:
-                        type === "edit" ? "Edit & Close" : "Save & Close",
-                      icon:
-                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
-
-                        form
-                          .validateFields(stepOneValidation)
-                          .then(() => {
-                            if (!planId) {
-                              toast.error("Plan Creation is required");
-                              return;
-                            }
-                            type === "edit"
-                              ? editTrainingPlanDetails(
-                                  planId,
-                                  trainerOrgField,
-                                  costField,
-                                  perticipantField,
-                                  setLoading,
-                                  () => {
-                                    history.goBack();
-                                  }
-                                )
-                              : createTrainingPlanDetails(
-                                  planId,
-                                  trainerOrgField,
-                                  costField,
-                                  perticipantField,
-                                  setLoading,
-                                  () => {
-                                    history.goBack();
-                                  }
-                                );
-                            console.log(values, "training plan");
-
-                            console.log(trainerOrgField, "trainerOrgField");
-                            console.log(costField, "costField");
-                            console.log(perticipantField, "perticipantField");
-                            // redirect to planning landing
-                          })
-                          .catch(() => {});
-                      },
-                    },
-                    // save and close
-
-                    {
-                      type: "primary",
-                      content:
-                        type === "edit" ? "Edit & Next Step" : "Next Step",
-                      icon:
-                        type === "create" ? (
-                          <StepForwardOutlined />
-                        ) : (
-                          <EditOutlined />
-                        ),
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
-
-                        form
-                          .validateFields(stepOneValidation)
-                          .then(() => {
-                            if (!planId) {
-                              toast.error("Plan Creation is required");
-                              return;
-                            }
-                            type === "edit"
-                              ? editTrainingPlanDetails(
-                                  planId,
-                                  trainerOrgField,
-                                  costField,
-                                  perticipantField,
-                                  setLoading,
-                                  () => {
-                                    setPlanStep("STEP_THREE");
-                                  }
-                                )
-                              : createTrainingPlanDetails(
-                                  planId,
-                                  trainerOrgField,
-                                  costField,
-                                  perticipantField,
-                                  setLoading,
-                                  () => {
-                                    setPlanStep("STEP_THREE");
-                                  }
-                                );
-                            console.log(costField, "costField");
-                            console.log(perticipantField, "perticipantField");
-                          })
-                          .catch(() => {});
-                      },
-                    },
-                  ]
-                : planStep === "STEP_THREE"
-                ? [
-                    // previous step
-                    // {
-                    //   type: "secondary",
-                    //   content: "Previous Step",
-                    //   icon: <StepBackwardOutlined />,
-                    //   onClick: () => {
-                    //     const values = form.getFieldsValue(true);
-
-                    //     form
-                    //       .validateFields([])
-                    //       .then(() => {
-                    //         if (!planId) {
-                    //           toast.error("Plan Creation is required");
-                    //           return;
-                    //         }
-                    //         setPlanStep("STEP_TWO");
-                    //       })
-                    //       .catch(() => {});
-                    //   },
-                    // },
-                    // previous step
-                    {
-                      type: "primary",
-                      content:
-                        type === "edit" ? "Edit & Close" : "Save & Close",
-                      icon:
-                        type === "create" ? <SaveOutlined /> : <EditOutlined />,
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
-
-                        form
-                          .validateFields([])
-                          .then(() => {
-                            if (!planId) {
-                              toast.error("Plan Creation is required");
-                              return;
-                            }
-                            type === "edit"
-                              ? editTrainingSchedule(
-                                  planId,
-                                  trainingTime,
-                                  form,
-                                  setLoading,
-                                  () => {
-                                    history.goBack();
-                                  }
-                                )
-                              : createTrainingSchedule(
-                                  planId,
-                                  trainingTime,
-                                  form,
-                                  setLoading,
-                                  () => {
-                                    history.goBack();
-                                  }
-                                );
-                            console.log(trainingTime, "trainingTime");
-                            console.log(costField, "costField");
-                            console.log(perticipantField, "perticipantField");
-                          })
-                          .catch(() => {});
-                      },
-                    },
-                  ]
+              type === "view"
+                ? [] // No buttons for "status" type
                 : [
                     {
                       type: "primary",
-                      content:
-                        type === "edit" ? "Edit & Close" : "Save & Close",
+                      content: `${type === "create" ? "Save" : "Edit"}`,
                       icon:
                         type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
                         const values = form.getFieldsValue(true);
 
                         form
-                          .validateFields(stepOneValidation)
+                          .validateFields()
                           .then(() => {
-                            type === "edit"
-                              ? editTrainingPlan(
-                                  form,
-                                  profileData,
-                                  setLoading,
-                                  () => {
-                                    if (onlyPerticipant) {
-                                      ViewTrainingPlan(
-                                        data?.id,
-                                        setLoading,
-                                        (d: any) => {
-                                          history.push(
-                                            "/trainingAndDevelopment/training/attendance",
-                                            {
-                                              data: d,
-                                            }
-                                          );
-                                        }
-                                      );
-                                    } else {
-                                      history.goBack();
-                                    }
-
-                                    // HISTORY BACK
-                                  }
-                                )
-                              : createTrainingPlan(
-                                  form,
-                                  profileData,
-                                  setLoading,
-                                  () => {
-                                    history.goBack();
-                                    // HISTORY BACK
-                                  }
-                                );
-                            console.log(values, "training plan");
-
-                            console.log(trainerOrgField, "trainerOrgField");
-                            console.log(costField, "costField");
-                            console.log(perticipantField, "perticipantField");
-                            // redirect to planning landing
+                            console.log(values);
                           })
-                          .catch(() => {});
-                      },
-                    },
-                    {
-                      type: "primary",
-                      content: buttonContent() || "",
-                      icon:
-                        type === "create" ? (
-                          <StepForwardOutlined />
-                        ) : (
-                          <EditOutlined />
-                        ),
-                      onClick: () => {
-                        const values = form.getFieldsValue(true);
+                          .catch(() => {
+                            console.log(values);
 
-                        form
-                          .validateFields(stepOneValidation)
-                          .then(() => {
-                            type === "edit"
-                              ? editTrainingPlan(
-                                  form,
-                                  profileData,
-                                  setLoading,
-                                  (data: {
-                                    message: string;
-                                    statusCode: number;
-                                    autoId: number;
-                                    user: any;
-                                  }) => {
-                                    setPlanId(data?.autoId);
-                                    setPlanStep("STEP_TWO");
-                                  }
-                                )
-                              : createTrainingPlan(
-                                  form,
-                                  profileData,
-                                  setLoading,
-                                  (data: {
-                                    message: string;
-                                    statusCode: number;
-                                    autoId: number;
-                                    user: any;
-                                  }) => {
-                                    setPlanId(data?.autoId);
-                                    setPlanStep("STEP_TWO");
-                                  }
-                                );
-                          })
-                          .catch(() => {});
+                            console.log("error");
+                          });
                       },
                     },
                   ]
             }
           />
-          <PlanningStepper
-            planStep={planStep}
-            onChangeStepper={onChangeStepper}
-          />
-          {(planStep === "STEP_ONE" || planStep === "STEP_THREE") && (
-            <>
-              <PCardBody styles={cardMargin}>
-                {/* Planning Info */}
-                <PlanningInfo
-                  form={form}
-                  getBUnitDDL={getBUnitDDL}
-                  workplaceGroup={workplaceGroup}
-                  getWorkplace={getWorkplace}
-                  workplace={workplace}
-                  getEmployeDepartment={getEmployeDepartment}
-                  getEmployeePosition={getEmployeePosition}
-                  setTrainingDuration={setTrainingDuration}
-                  trainingTypeDDL={trainingTypeDDL}
-                  setOpenTraingTypeModal={setOpenTraingTypeModal}
-                  trainingTitleDDL={trainingTitleDDL}
-                  setOpenTrainingTitleModal={setOpenTrainingTitleModal}
-                  // Multiple Training Time
-                  trainingTime={trainingTime}
-                  setTrainingTime={setTrainingTime}
-                  addHandler={addHandlerTriningTime}
-                  // new step add
-                  planStep={planStep}
-                  type={type}
+          <PCardBody>
+            <Row gutter={[10, 2]}>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={
+                    getBUnitDDL?.data?.length > 0 ? getBUnitDDL?.data : []
+                  }
+                  name="bUnit"
+                  label="Business Unit"
+                  showSearch
+                  filterOption={true}
+                  placeholder="Business Unit"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      bUnit: op,
+                    });
+                  }}
+                  rules={[{ required: true, message: "District is required" }]}
                 />
-              </PCardBody>
-            </>
-          )}
-          {planStep === "STEP_TWO" && !onlyPerticipant && (
-            <>
-              <PCardBody styles={cardMargin}>
-                {/* Trainer and Org */}
-                <TrainerAndOrgInfo
-                  form={form}
-                  trainerOrgField={trainerOrgField}
-                  setTrainerOrgField={setTrainerOrgField}
-                  nameOfTrainerOrgDDL={nameOfTrainerOrgDDL}
-                  addHandler={addHandlerTrinerOrg}
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={workplaceGroup?.data || []}
+                  name="workplaceGroup"
+                  label="Workplace Group"
+                  placeholder="Workplace Group"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplaceGroup: op,
+                      workplace: undefined,
+                    });
+                    getWorkplace();
+                  }}
+                  rules={[
+                    { required: true, message: "Workplace Group is required" },
+                  ]}
                 />
-              </PCardBody>
-              <PCardBody styles={cardMargin}>
-                <ListOfCost
-                  form={form}
-                  costField={costField}
-                  setCostField={setCostField}
-                  addHandler={addHandler}
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={workplace?.data || []}
+                  name="workplace"
+                  label="Workplace"
+                  placeholder="Workplace"
+                  // disabled={+id ? true : false}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplace: op,
+                    });
+                    getEmployeDepartment();
+                    getEmployeePosition();
+
+                    //   getDesignation();
+                  }}
+                  //   rules={[{ required: true, message: "Workplace is required" }]}
                 />
-              </PCardBody>
-              <PCardBody styles={cardMargin}>
-                <ListOfPerticipants
-                  form={form}
-                  perticipantField={perticipantField}
-                  setperticipantField={setperticipantField}
-                  addHandler={addHanderForPerticipant}
-                  calculatePerPersonCost={calculatePerPersonCost}
-                  departmentDDL={empDepartmentDDL?.data || []}
-                  positionDDL={positionDDL?.data || []}
-                  workplaceGroup={workplaceGroup}
-                  getWorkplace={getWorkplace}
-                  workplace={workplace}
-                  getEmployeDepartment={getEmployeDepartment}
-                  getEmployeePosition={getEmployeePosition}
+              </Col>
+
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingTypeDDL || []}
+                  name="trainingType"
+                  label={
+                    <>
+                      Training Type{" "}
+                      <PlusCircleOutlined
+                        onClick={() => {
+                          setOpenTraingTypeModal(true);
+                        }}
+                        style={{
+                          color: "green",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          margin: "0 5px",
+                        }}
+                      />
+                    </>
+                  }
+                  placeholder="Training Type"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingType: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Type is required",
+                    },
+                  ]}
                 />
-              </PCardBody>
-            </>
-          )}
-          {onlyPerticipant && (
-            <PCardBody styles={cardMargin}>
-              <ListOfPerticipants
-                form={form}
-                perticipantField={perticipantField}
-                setperticipantField={setperticipantField}
-                addHandler={addHanderForPerticipant}
-                calculatePerPersonCost={calculatePerPersonCost}
-                departmentDDL={empDepartmentDDL?.data || []}
-                positionDDL={positionDDL?.data || []}
-              />
-            </PCardBody>
-          )}
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingTitleDDL || []}
+                  name="trainingTitle"
+                  label={
+                    <>
+                      Training Title{" "}
+                      <PlusCircleOutlined
+                        onClick={() => {
+                          setOpenTrainingTitleModal(true);
+                        }}
+                        style={{
+                          color: "green",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          margin: "0 5px",
+                        }}
+                      />
+                    </>
+                  }
+                  placeholder="Training Title"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingTitle: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Title is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingModeFixDDL || []}
+                  name="trainingMode"
+                  label="Training Mode"
+                  placeholder="Training Mode"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingMode: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Mode is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingModeFixDDL || []} // need to change
+                  name="trainingOrganizer"
+                  label="Training Organizer"
+                  placeholder="Training Organizer"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingOrganizer: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Organizer is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={trainingStatusFixDDL || []}
+                  name="trainingStatus"
+                  label="Training Status"
+                  placeholder="Training Status"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      trainingStatus: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Status is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Objectives/ Key Learnings/ Outcomes"
+                  label="Objectives/ Key Learnings/ Outcomes"
+                  name="objectives"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "Objectives/ Key Learnings/ Outcomes is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="text"
+                  placeholder="Training Vanue"
+                  label="Training Vanue"
+                  name="trainingVanue"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Vanue is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="date"
+                  name="trainingStartDate"
+                  label="Training Start Date"
+                  placeholder="Training Start Date"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingStartDate: value,
+                    });
+                    setTrainingDuration(form);
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Start Date is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="time"
+                  name="trainingStartTime"
+                  label="Training Start Time"
+                  placeholder="Training Start Time"
+                  onChange={(value) => {
+                    console.log(value);
+                    form.setFieldsValue({
+                      trainingStartTime: value,
+                    });
+                    setTrainingDuration(form);
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training Start Time is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="date"
+                  name="trainingEndDate"
+                  label="Training End Date"
+                  placeholder="Training End Date"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingEndDate: value,
+                    });
+                    setTrainingDuration(form);
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training End Date is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="time"
+                  name="trainingEndTime"
+                  label="Training End Time"
+                  placeholder="Training End Time"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      trainingEndTime: value,
+                    });
+                    setTrainingDuration(form);
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Training End Time is required",
+                    },
+                  ]}
+                />
+              </Col>
+
+              <Col md={6} sm={24}>
+                <PInput
+                  disabled={true}
+                  type="text"
+                  placeholder="Training Duration"
+                  label="Training Duration"
+                  name="trainingDuration"
+                />
+              </Col>
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={nameOfTrainerOrgDDL || []} // need to change
+                  name="nameofTrainerOrganization"
+                  label="Name of Trainer & Organization"
+                  placeholder="Name of Trainer & Organization"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      nameofTrainerOrganization: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Name of Trainer & Organization is required",
+                    },
+                  ]}
+                />
+              </Col>
+            </Row>
+
+            <ListOfCost
+              form={form}
+              costField={costField}
+              setCostField={setCostField}
+              addHandler={addHandler}
+            />
+            <ListOfPerticipants
+              form={form}
+              perticipantField={perticipantField}
+              setperticipantField={setperticipantField}
+              addHandler={addHanderForPerticipant}
+              calculatePerPersonCost={calculatePerPersonCost}
+              departmentDDL={empDepartmentDDL?.data || []}
+              positionDDL={positionDDL?.data || []}
+            />
+          </PCardBody>
         </PCard>
       </PForm>
       {/* Training Type Modal */}
@@ -1011,10 +704,8 @@ const TnDPlanningCreateEdit = () => {
         onCancel={() => {
           setOpenTrainingTitleModal(false);
           getTrainingTitleDDL(
-            "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
-            (data: any) => {
-              typeDataSetForTitle(data, setTrainingTitle);
-            }
+            "/TrainingTitle/Training/Title",
+            typeDataSetForTitle
           );
         }}
         maskClosable={false}

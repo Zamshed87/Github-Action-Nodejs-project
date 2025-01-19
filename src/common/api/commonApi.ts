@@ -42,17 +42,12 @@ export const getWorkplaceDDL = ({ workplaceDDL, orgId, buId, wgId }: any) => {
 export const getEnumData = async (
   enumType: string,
   setData: any,
-  setLoading?: any,
-  isUnshiftAll?: boolean
+  setLoading?: any
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(`/Enum/GetEnums?types=${enumType}`);
-    const data = res?.data[enumType];
-    if (isUnshiftAll) {
-      data.unshift({ label: "All", value: "" });
-    }
-    setData(data);
+    setData(res?.data[enumType]);
   } catch (error) {
     console.log(error);
   } finally {
