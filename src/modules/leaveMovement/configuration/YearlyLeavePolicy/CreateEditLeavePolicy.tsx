@@ -303,7 +303,7 @@ const CreateEditLeavePolicy = () => {
           isAdvanceLeave: commonDDL[0]?.value,
           bu: { label: buName, value: buId },
           wg: { label: wgName, value: wgId },
-          intWorkplaceList: { label: wName, value: wId },
+          intWorkplaceList: [{ label: wName, value: wId }],
         }}
       >
         <PCard>
