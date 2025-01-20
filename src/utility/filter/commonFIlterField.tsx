@@ -1,8 +1,8 @@
-import { Col, FormInstance } from "antd";
+import { Col } from "antd";
 import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { setCustomFieldsValue } from "./helper";
 
 const CommonFilterField = ({
@@ -18,12 +18,11 @@ const CommonFilterField = ({
   col?: number;
   mode?: string | undefined;
 }) => {
-  const dispatch = useDispatch();
-  const { permissionList, profileData } = useSelector(
+  const { profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId, wId } = profileData;
+  const { buId, wgId, employeeId, orgId } = profileData;
 
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
@@ -63,11 +62,17 @@ const CommonFilterField = ({
         intId: employeeId,
       },
       onSuccess: (res: any) => {
+        const list: any = [];
         res.forEach((item: any, i: any) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
+          list.push(item?.intWorkplaceId);
         });
-        res.unshift({ label: "All", value: 0 });
+        res.unshift({ label: "All", value: list.join(",") });
+        if (workplaceGroup?.value == 0) {
+          res.length = 0;
+          res.push({ label: "All", value: 0 });
+        }
       },
     });
   };
@@ -80,7 +85,7 @@ const CommonFilterField = ({
       params: {
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceId: typeof workplace?.value == "string" ? 0 : workplace?.value,
 
         accountId: orgId,
       },
@@ -103,7 +108,7 @@ const CommonFilterField = ({
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceId: typeof workplace?.value == "string" ? 0 : workplace?.value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
