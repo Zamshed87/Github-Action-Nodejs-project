@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
+import { processDataFromExcelSecurityDeposit } from "./helper";
 
 export const SecurityDepositCRUD = () => {
   const dispatch = useDispatch();
@@ -40,10 +41,7 @@ export const SecurityDepositCRUD = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [landing, setLanding] = useState<any[]>([]);
-  const [anchorElHistory, setAnchorElHistory] = useState(null);
-  const [selectedSingleEmployee, setSelectedSingleEmployee] = useState([]);
-  const openHistory = Boolean(anchorElHistory);
-  const idHistory = openHistory ? "simple-popover" : undefined;
+  const [loading, setLoading] = useState(false);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30338),
@@ -306,9 +304,6 @@ export const SecurityDepositCRUD = () => {
             if ((e as number) < 0) {
               return toast.warn("number must be positive");
             }
-            if ((e as number) > 100) {
-              return toast.warn("Percentage cant be greater than 100");
-            }
 
             const temp = [...landing];
             temp[index].depositeMoney = e;
@@ -476,6 +471,7 @@ export const SecurityDepositCRUD = () => {
       },
     });
   };
+
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -498,74 +494,34 @@ export const SecurityDepositCRUD = () => {
               landingApi?.data?.every((i: any) => i?.id > 0)
             }
             title={`Total ${landingApi?.data?.length || 0} employees`}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                try {
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                        lastIncrementDate: item?.lastIncrementDate
-                          ? dateFormatter(item?.lastIncrementDate)
-                          : "-",
-                        joiningDate: item?.joiningDate
-                          ? dateFormatter(item?.joiningDate)
-                          : "-",
-                        proposedGrossSalary:
-                          +item?.recentGrossSalary +
-                          +item?.incrementProposalAmount,
-                      };
-                    }
-                  );
-                  createCommonExcelFile({
-                    titleWithDate: `Increment Proposal Report - ${dateFormatter(
-                      todayDate()
-                    )} `,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: "",
-                    businessUnit: buName,
-                    tableHeader: columns,
-                    getTableData: () =>
-                      getTableDataDailyAttendance(
-                        newData,
-                        Object.keys(columns)
-                      ),
-
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      C: 30,
-                      B: 30,
-                      D: 30,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
-                } catch (error: any) {
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                  // console.log(error?.message);
-                }
-              };
-              excelLanding();
-            }}
-          />
+          >
+            <Row>
+              <Col>
+                <input
+                  style={{ width: "100px" }}
+                  type="file"
+                  accept=".xlsx"
+                  onChange={(e) => {
+                    setSelectedRow([]);
+                    setLanding([]);
+                    !!e.target.files?.[0] && setLoading(true);
+                    processDataFromExcelSecurityDeposit(
+                      e.target.files?.[0],
+                      employeeId,
+                      orgId,
+                      buId,
+                      wgId,
+                      setLoading,
+                      setLanding
+                    );
+                  }}
+                  // onClick={(e) => {
+                  //   e.target.value = null;
+                  // }}
+                />
+              </Col>
+            </Row>
+          </PCardHeader>
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>

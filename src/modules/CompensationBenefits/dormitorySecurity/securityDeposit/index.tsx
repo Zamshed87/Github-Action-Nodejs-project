@@ -29,6 +29,7 @@ import { yearDDLAction } from "utility/yearDDL";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
+import { downloadFile } from "utility/downloadFile";
 
 export const SecurityDepositLanding = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ export const SecurityDepositLanding = () => {
     permissionList,
     profileData: { buId, employeeId, orgId, buName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
-  const [selectedRow, setSelectedRow] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 8),
@@ -55,7 +56,6 @@ export const SecurityDepositLanding = () => {
   //     { value: true, label: "Assigned" },
   //     { value: false, label: "Not-Assigned" },
   //   ];
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
@@ -265,17 +265,22 @@ export const SecurityDepositLanding = () => {
         <PCard>
           <PCardHeader
             buttonList={[
-              // {
-              //   type: "primary",
-              //   content: "Bulk Upload",
-              //   onClick: () => {
-              //     if (employeeFeature?.isCreate) {
-              //       history.push("/profile/employee/bulk");
-              //     } else {
-              //       toast.warn("You don't have permission");
-              //     }
-              //   },
-              // },
+              {
+                type: "primary",
+                content: "Bulk Template",
+                onClick: () => {
+                  downloadFile(
+                    `${
+                      process.env.NODE_ENV === "development"
+                        ? "/document/downloadfile?id=8386"
+                        : ""
+                    }`,
+                    "Security Deposit Bulk Upload",
+                    "xlsx",
+                    setLoading
+                  );
+                },
+              },
               {
                 type: "primary",
                 content: "Create New",
@@ -293,6 +298,7 @@ export const SecurityDepositLanding = () => {
             ]}
             title={`Total ${landingApi?.data?.length || 0} employees`}
           />
+          {loading && <Loading />}
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={6} sm={12} xs={24}>
