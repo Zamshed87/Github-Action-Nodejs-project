@@ -681,6 +681,11 @@ const SalaryDetailsReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryDetailsReport/index.jsx"
   )
 );
+const SalaryReconciliation = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/salaryReconciliationReport/index.jsx"
+  )
+);
 const IncrementReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/IncrementReport/index.js")
 );
@@ -2846,6 +2851,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/salaryDetailsReport",
     component: SalaryDetailsReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/salaryReconciliation",
+    component: SalaryReconciliation,
   },
   {
     path: "/compensationAndBenefits/reports/salaryRequisitionReport",
