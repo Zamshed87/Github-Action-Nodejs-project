@@ -1552,6 +1552,7 @@ import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 import DepositeType from "modules/configuration/depositeType";
 import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
 import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
+import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3183,6 +3184,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/securityDeposit",
     component: SecurityDepositLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDisbursement",
+    component: SecurityDisbursementLanding,
   },
   {
     path: "/compensationAndBenefits/securityDeposit/create",

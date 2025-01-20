@@ -26,6 +26,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     calender: <CalendarOutlined />,
     reload: <ReloadOutlined />,
     dollar: <DollarOutlined />,
+    disbursement: <DollarOutlined />,
     print: <PrinterFilled />,
   };
 

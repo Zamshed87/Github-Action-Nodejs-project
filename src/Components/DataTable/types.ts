@@ -98,6 +98,7 @@ export type buttonType =
   | "calender"
   | "reload"
   | "dollar"
+  | "disbursement"
   | "print";
 export type buttonList = {
   isActive?: boolean;
