@@ -135,6 +135,8 @@ export default function AddEditForm({
           workplaceId: wId,
         },
         onSuccess: (data) => {
+          const isExtendType = singleData?.type === "extend";
+
           form.setFieldsValue({
             ...singleData,
             orgName: {
@@ -144,14 +146,14 @@ export default function AddEditForm({
                 data?.header?.workplaceGroupName ||
                 singleData?.workplaceGroupName,
             },
-            workplace: {
-              value:
-                singleData?.type === "extend" ? 0 : data?.header?.workplaceId,
-              label:
-                singleData?.type === "extend"
-                  ? ""
-                  : data?.header?.workplaceName,
-            },
+            ...(isExtendType
+              ? {} 
+              : {
+                  workplace: {
+                    value: data?.header?.workplaceId,
+                    label: data?.header?.workplaceName,
+                  },
+                }),
             pipelineName: {
               value:
                 data?.header?.applicationTypeId ||
