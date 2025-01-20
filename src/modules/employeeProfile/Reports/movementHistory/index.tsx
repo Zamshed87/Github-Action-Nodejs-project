@@ -32,6 +32,8 @@ import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveE
 import { column } from "./helper";
 import { getDateOfYear } from "utility/dateFormatter";
 import { getPDFAction } from "utility/downloadFile";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const EmMovementHistory = () => {
   const dispatch = useDispatch();
@@ -143,6 +145,8 @@ const EmMovementHistory = () => {
         IsXls: false,
         WorkplaceGroupId: values?.workplaceGroup?.value,
         WorkplaceId: values?.workplace?.value,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageNo: pagination.current || 1,
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -337,17 +341,21 @@ const EmMovementHistory = () => {
               const values = form.getFieldsValue(true);
               getPDFAction(
                 `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
-                  values?.workplace?.value
+                  values?.workplace?.value || 0
                 }&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value
-                }&FromDate=${moment(values?.fromDate).format(
+                  values?.workplaceGroup?.value || 0
+                }&departments=${formatFilterValue(
+                  values?.department
+                )}&designations=${formatFilterValue(
+                  values?.designation
+                )}&FromDate=${moment(values?.fromDate).format(
                   "YYYY-MM-DD"
                 )}&ToDate=${moment(values?.todate).format("YYYY-MM-DD")}`,
                 setLoading
               );
             }}
           />
-          <PCardBody className="mb-3">
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -423,8 +431,8 @@ const EmMovementHistory = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
-
+          </PCardBody> */}
+          <PFilter form={form} landingApiCall={landingApiCall} />
           <DataTable
             bordered
             data={landingApi?.data?.data || []}

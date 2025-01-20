@@ -545,7 +545,11 @@ const AnnouncementViewPage = lazy(() =>
 const AnnouncementCreateLanding = lazy(() =>
   import("../modules/announcement/index.jsx")
 );
-const ApprovalList = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApprovalList = lazy(() => import("../modules/approvalList/indexOld.jsx"));
+const ApprovalListNew = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApproverCommonLanding = lazy(() =>
+  import("../modules/approvalList/commonApproval/index.jsx")
+);
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
@@ -1538,6 +1542,12 @@ const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
 // Training and Development
+import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
+import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
+import TnDInventory from "modules/TrainingAndDevelopment/reports/trainingInventory/inventory";
+import TnDInventoryDetails from "modules/TrainingAndDevelopment/reports/trainingInventory/inventoryDetails";
+import TnDAssessment from "modules/TrainingAndDevelopment/assessment/assessment";
+import TnDFeedback from "modules/TrainingAndDevelopment/feedback/feedback";
 import TnDRequisitionLanding from "modules/TrainingAndDevelopment/requisition/requisitionLanding";
 import TnDRequisitionCreateEdit from "modules/TrainingAndDevelopment/requisition/requisitionCreateEdit";
 import TnDPlanningCreateEdit from "modules/TrainingAndDevelopment/planning/planningCreateEdit";
@@ -1548,6 +1558,9 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/AdvanceSalaryGenerateLanding";
+import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
+import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 
 // const TrainingApplicationCreate = lazy(() =>
@@ -1656,6 +1669,10 @@ const Test = lazy(() =>
   import("../modules/componentModule/peopledeskTable/test.jsx")
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
+
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -2369,6 +2386,10 @@ export const routingList = [
     component: SelfAttendenceAdjust,
   },
   {
+    path: "/SelfService/timeManagement/shiftChangeRequest",
+    component: AttendanceShiftChange,
+  },
+  {
     path: "/SelfService/timeManagement/overTimeRequisition",
     component: OverTimeRequisition,
   },
@@ -2460,6 +2481,14 @@ export const routingList = [
   {
     path: "/approval",
     component: ApprovalList,
+  },
+  {
+    path: "/approvalNew",
+    component: ApprovalListNew,
+  },
+  {
+    path: "/approvalNew/:id",
+    component: ApproverCommonLanding,
   },
   // {
   //   path: "/approval",
@@ -2689,6 +2718,10 @@ export const routingList = [
     component: BonusGenerateView,
   },
   {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/:id",
+    component: AdvanceSalaryGenerateView,
+  },
+  {
     path: "/compensationAndBenefits/payrollProcess/bonusGenerate/create",
     component: BonusGenerateCreate,
   },
@@ -2711,6 +2744,20 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/payrollProcess/generateSalary",
     component: SalaryGenerateLanding,
+  },
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate",
+    component: AdvanceSalaryGenerateLanding,
+  },
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/create",
+    component: AdvanceSalaryGenerateCreate,
+  },
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/:id",
+    component: AdvanceSalaryGenerateCreate,
   },
   {
     path: "/compensationAndBenefits/payrollProcess/arearSalaryGenerate/view/:id",
@@ -3403,17 +3450,21 @@ export const routingList = [
     path: "/trainingAndDevelopment/training/requisition/view/:id",
     component: RequisitionDetails,
   },
-  {
-    path: "/trainingAndDevelopment/training/attendance",
-    component: TrainingAttendanceLanding,
-  },
-  {
-    path: "/trainingAndDevelopment/training/attendance/view/:id",
-    component: AttendanceView,
-  },
+  // {
+  //   path: "/trainingAndDevelopment/training/attendance",
+  //   component: TrainingAttendanceLanding,
+  // },
+  // {
+  //   path: "/trainingAndDevelopment/training/attendance/view/:id",
+  //   component: AttendanceView,
+  // },
   // Training & Development New
   {
-    path: "/trainingAndDevelopment/requisition",
+    path: "/trainingAndDevelopment/trainingRequisition",
+    component: TnDRequisitionLanding,
+  },
+  {
+    path: "/SelfService/traininganddevelopment/trainingRequisition",
     component: TnDRequisitionLanding,
   },
   {
@@ -3421,7 +3472,11 @@ export const routingList = [
     component: TnDRequisitionCreateEdit,
   },
   {
-    path: "/trainingAndDevelopment/planning",
+    path: "/SelfService/traininganddevelopment/trainingRequisition/:type",
+    component: TnDRequisitionCreateEdit,
+  },
+  {
+    path: "/trainingAndDevelopment/trainingPlan",
     component: TnDPlanningLanding,
   },
   {
@@ -3429,24 +3484,52 @@ export const routingList = [
     component: TnDPlanningCreateEdit,
   },
   {
-    path: "/trainingAndDevelopment/trainingTypes",
+    path: "/trainingAndDevelopment/configuration/trainingTypes",
     component: TrainingType,
   },
   {
-    path: "/trainingAndDevelopment/trainingTitle",
+    path: "/trainingAndDevelopment/configuration/trainingTitle",
     component: TrainingTitle,
   },
   {
-    path: "/trainingAndDevelopment/trainingCostType",
+    path: "/trainingAndDevelopment/configuration/trainingCostType",
     component: TrainingCost,
   },
   {
-    path: "/trainingAndDevelopment/trainerInformation",
+    path: "/trainingAndDevelopment/configuration/trainerInformation",
     component: TrainerInfo,
   },
   {
     path: "/trainingAndDevelopment/dashboard",
     component: TnDDashboard,
+  },
+  {
+    path: "/trainingAndDevelopment/reports/trainingCalendar",
+    component: TrainingCalender,
+  },
+  {
+    path: "/SelfService/traininganddevelopment/trainingCalander",
+    component: TrainingCalender,
+  },
+  {
+    path: "/trainingAndDevelopment/training/attendance",
+    component: TnDAttendanceSave,
+  },
+  {
+    path: "/trainingAndDevelopment/training/assessment",
+    component: TnDAssessment,
+  },
+  {
+    path: "/trainingAndDevelopment/training/feedback",
+    component: TnDFeedback,
+  },
+  {
+    path: "/trainingAndDevelopment/reports/trainingInventory",
+    component: TnDInventory,
+  },
+  {
+    path: "/trainingAndDevelopment/reports/trainingInventory/details",
+    component: TnDInventoryDetails,
   },
   // Trainnning and development ends
 

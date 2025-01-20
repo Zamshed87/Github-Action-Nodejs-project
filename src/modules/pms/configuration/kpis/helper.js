@@ -314,7 +314,15 @@ export const kpisLandingColumn = (
       title: "PM Type",
       dataIndex: "strPmtype",
       render: (data) => <div>{data}</div>,
+      filter: true,
       sorter: true,
+    },
+    {
+      title: "Objective Type",
+      dataIndex: "strObjectiveType",
+      render: (data) => <div>{data}</div>,
+      sorter: true,
+      filter: true,
     },
     {
       title: "Objective",
@@ -340,12 +348,12 @@ export const kpisLandingColumn = (
       render: (data) => <div>{data}</div>,
       sorter: true,
     },
-    {
-      title: "Chart Type",
-      dataIndex: "chartName",
-      render: (data) => <div>{data}</div>,
-      sorter: true,
-    },
+    // {
+    //   title: "Chart Type",
+    //   dataIndex: "chartName",
+    //   render: (data) => <div>{data}</div>,
+    //   sorter: true,
+    // },
     {
       title: "Action",
       dataIndex: "",

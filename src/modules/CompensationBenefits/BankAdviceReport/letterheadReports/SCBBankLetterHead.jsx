@@ -1,6 +1,4 @@
-import React from "react";
-
-export default function CityLiveLetterHead({
+export default function SCBBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,
@@ -9,7 +7,6 @@ export default function CityLiveLetterHead({
     <>
       {letterHeadImage && (
         <img
-          className="invoice-header"
           src={letterHeadImage.src}
           style={{
             height: "1570px",
@@ -45,6 +42,7 @@ export default function CityLiveLetterHead({
               style={{
                 margin: "0px 96px",
                 fontSize: "14px",
+                marginTop: "50px",
                 minWidth: "930px",
               }}
             >
@@ -63,44 +61,43 @@ export default function CityLiveLetterHead({
               <p style={{ color: "black", fontSize: "14px" }}>
                 {landingViewPdf?.[0]?.CompBranchName}
               </p>
-              <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                <b style={{ color: "black", fontSize: "14px" }}>Subject:</b>
-                &nbsp;Salary Disbursement for the month of&nbsp;
-                {landingViewPdf?.[0]?.MonthName},&nbsp;
-                {landingViewPdf?.[0]?.YearId}&nbsp;of&nbsp;
-                <b style={{ color: "black", fontSize: "14px" }}>
-                  &quot;
-                  {landingViewPdf?.[0]?.WorkplaceGroupName}
-                  &quot;&nbsp;
-                </b>
-                employees.
+                {landingViewPdf?.[0]?.CompBankAddress}
               </p>
               <br />
-              <p style={{ color: "black", fontSize: "14px" }}>Dear Sir,</p>
+              <p style={{ color: "black", fontSize: "14px" }}>
+                Dear Recipients,
+              </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                With due respect, we are requesting you to transfer the salary
-                for the month of&nbsp;
-                {landingViewPdf?.[0]?.MonthName},&nbsp;
-                {landingViewPdf?.[0]?.YearId} of
-                <b style={{ color: "black", fontSize: "14px" }}>
-                  &nbsp;&quot;
-                  {landingViewPdf?.[0]?.WorkplaceGroupName}
-                  &quot;&nbsp;
+                <b>
+                  REQUEST TO DISBURSE EMPLOYEE SALARY&nbsp;
+                  {landingViewPdf?.[0]?.MonthName.toUpperCase()},&nbsp;
+                  {landingViewPdf?.[0]?.YearId}.
                 </b>
-                employees. Please debit <b>BDT</b>&nbsp;
+              </p>
+              <br />
+              <p style={{ color: "black", fontSize: "14px" }}>
+                With due respect, please disburse the net payable amount&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
                   {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;
+                  {`(${landingViewPdf?.[0]?.TotalBankPayInWords})`}&nbsp;
                 </b>
-                from our company account no.&nbsp;
+                as Emoloyee Salary&nbsp;
+                {landingViewPdf?.[0]?.MonthName},&nbsp;
+                {landingViewPdf?.[0]?.YearId} to the all account holders as per
+                attached sheet from our Company Account
                 <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;
+                  {`(${landingViewPdf?.[0]?.CompAccountNumber})`}.
                 </b>
-                to disburse salaries as mentioned below.
               </p>
+              <br />
+              <p style={{ color: "black", fontSize: "14px" }}>
+                We are looking forward for your kind cooperation.
+              </p>
+              <br />
+              <p style={{ color: "black", fontSize: "14px" }}>Thanking You,</p>
               <div style={{ marginTop: "50px" }}>
-                Employee Bank Account Information with Transfer Amount:
                 <table
                   style={{
                     borderCollapse: "collapse",
@@ -121,61 +118,34 @@ export default function CityLiveLetterHead({
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "4px",
+                          padding: "8px",
                           textAlign: "center",
                         }}
                       >
-                        Code No.
+                        Account Number
                       </th>
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "4px",
+                          padding: "8px",
                           textAlign: "center",
                         }}
                       >
-                        Bank Name
+                        Net Amount
                       </th>
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "4px",
+                          padding: "8px",
                           textAlign: "center",
                         }}
                       >
-                        Branch Name
+                        Narration
                       </th>
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        Routing Number
-                      </th>
-                      <th
-                        style={{
-                          border: "1px solid #D3D3D3",
-                          padding: "4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        Account Type
-                      </th>
-                      <th
-                        style={{
-                          border: "1px solid #D3D3D3",
-                          padding: "4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        Accout Number
-                      </th>
-                      <th
-                        style={{
-                          border: "1px solid #D3D3D3",
-                          padding: "4px",
+                          padding: "8px",
                           textAlign: "center",
                         }}
                       >
@@ -188,7 +158,16 @@ export default function CityLiveLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Amount
+                        Dr/Cr
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Value Date
                       </th>
                       <th
                         style={{
@@ -197,7 +176,7 @@ export default function CityLiveLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Payment Info
+                        Currency
                       </th>
                       <th
                         style={{
@@ -206,7 +185,7 @@ export default function CityLiveLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Remark
+                        Ref No
                       </th>
                     </tr>
                   </thead>
@@ -224,51 +203,27 @@ export default function CityLiveLetterHead({
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
-                            padding: "4px",
-                          }}
-                        >
-                          {item?.EmployeeCode}
-                        </td>
-                        <td
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "4px",
-                          }}
-                        >
-                          {item?.EmpBankName}
-                        </td>
-                        <td
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "4px",
-                          }}
-                        >
-                          {item?.EmpBranchName}
-                        </td>
-                        <td
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "4px",
-                          }}
-                        >
-                          {item?.EmpRoutingNo}
-                        </td>{" "}
-                        <td
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "4px",
-                          }}
-                        >
-                          {""}
-                        </td>{" "}
-                        <td
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "4px",
+                            padding: "8px",
                           }}
                         >
                           {item?.EmpBankAccountNumber}
-                        </td>{" "}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.NeyPayableSalary.toFixed(2)}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.Narration}
+                        </td>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
@@ -276,14 +231,6 @@ export default function CityLiveLetterHead({
                           }}
                         >
                           {item?.EmpAccountName}
-                        </td>{" "}
-                        <td
-                          style={{
-                            border: "1px solid #D3D3D3",
-                            padding: "4px",
-                          }}
-                        >
-                          {item?.NeyPayableSalary?.toFixed(2)}
                         </td>
                         <td
                           style={{
@@ -291,7 +238,15 @@ export default function CityLiveLetterHead({
                             padding: "4px",
                           }}
                         >
-                          {""}
+                          {"CR"}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.Today}
                         </td>
                         <td
                           style={{
@@ -299,10 +254,51 @@ export default function CityLiveLetterHead({
                             padding: "4px",
                           }}
                         >
-                          {""}
+                          {"BDT"}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "4px",
+                          }}
+                        >
+                          {item.Ref}
                         </td>
                       </tr>
                     ))}
+                    {landingViewPdf.length > 0 && (
+                      <tr>
+                        <th
+                          colSpan="2"
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                            textAlign: "center",
+                          }}
+                        >
+                          Total
+                        </th>
+                        <th
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                            textAlign: "center",
+                          }}
+                        >
+                          {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}
+                        </th>
+                        <th
+                          colSpan="6"
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                            textAlign: "center",
+                          }}
+                        >
+                          {""}
+                        </th>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

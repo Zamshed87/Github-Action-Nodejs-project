@@ -48,7 +48,9 @@ export const useApiRequest = (initialState: any) => {
     } catch (error: any) {
       isToast &&
         toast.warning(
-          error?.response?.data?.message ||
+          error?.response?.data?.Message ||
+            error?.Message ||
+            error?.response?.data?.message ||
             error?.message ||
             "Something went wrong"
         );
