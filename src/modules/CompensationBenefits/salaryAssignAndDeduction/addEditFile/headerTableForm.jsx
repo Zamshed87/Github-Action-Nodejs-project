@@ -17,7 +17,6 @@ const HeaderTableForm = ({
   setLoading,
   allowanceAndDeductionDDL,
 }) => {
-
   return (
     <div className="row card-style pt-3">
       <div className="col-2">
@@ -89,7 +88,7 @@ const HeaderTableForm = ({
             [
               {
                 value: 1,
-                label: "Addition",
+                label: "Allowance",
               },
               {
                 value: 2,
@@ -236,7 +235,10 @@ const HeaderTableForm = ({
         <>
           <div className="col-lg-3">
             <label>
-              Max Amount <small>[ for a month ]  <span className="text-danger fs-3">*</span></small>
+              Max Amount{" "}
+              <small>
+                [ for a month ] <span className="text-danger fs-3">*</span>
+              </small>
             </label>
             <FormikInput
               classes="input-sm"
@@ -252,7 +254,10 @@ const HeaderTableForm = ({
             />
           </div>
           <div className="col-lg-3">
-            <label>Allowanc Attendence Status  <span className="text-danger fs-3">*</span></label>
+            <label>
+              Allowanc Attendence Status{" "}
+              <span className="text-danger fs-3">*</span>
+            </label>
             <FormikSelect
               classes="input-sm"
               styles={customStyles}

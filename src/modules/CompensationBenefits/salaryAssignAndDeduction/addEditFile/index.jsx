@@ -241,7 +241,7 @@ function AddEditForm() {
       intYear: +values?.fromMonth?.split("-")[0] || null,
       intMonth: +values?.fromMonth?.split("-")[1] || null,
       strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-      isAddition: values?.salaryType?.value === "Addition" ? true : false,
+      isAddition: values?.salaryType?.value === "Allowance" ? true : false,
       strAdditionNDeduction: values?.allowanceAndDeduction?.label,
       intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
       intAmountWillBeId: values?.amountDimension?.value,
@@ -292,7 +292,7 @@ function AddEditForm() {
           allowanceDuration: values?.intAllowanceDuration?.value || 0,
           numMaxLimitAmount: +values?.maxAmount || 0,
 
-          isAddition: values?.salaryType?.value === "Addition" ? true : false,
+          isAddition: values?.salaryType?.value === "Allowance" ? true : false,
           allowanceName: values?.allowanceAndDeduction?.label,
           allowanceTypeId: values?.allowanceAndDeduction?.value,
           amountWillBeId: values?.amountDimension?.value,
@@ -634,8 +634,8 @@ function AddEditForm() {
                               options={
                                 [
                                   {
-                                    value: "Addition",
-                                    label: "Addition",
+                                    value: "Allowance",
+                                    label: "Allowance",
                                   },
                                   {
                                     value: "Deduction",
@@ -652,7 +652,7 @@ function AddEditForm() {
                                   buId,
                                   wId,
                                   setAllowanceAndDeductionDDL,
-                                  valueOption?.value === "Addition"
+                                  valueOption?.value === "Allowance"
                                     ? true
                                     : false,
                                   setLoading
@@ -1013,11 +1013,7 @@ function AddEditForm() {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{item?.allowanceName || "N/A"}</td>
-                                  <td>
-                                    {item?.type
-                                      ? "Addition"
-                                      : "Deduction" || "N/A"}
-                                  </td>
+                                  <td>{item?.type}</td>
                                   <td>{item?.autoRenew}</td>
                                   <td>
                                     {moment(item?.fromDate).format("MMM-YYYY")}-
@@ -1099,14 +1095,8 @@ function AddEditForm() {
                                                     item?.toDate
                                                   ).format("MM")}`,
                                                   salaryType: {
-                                                    value:
-                                                      item?.type === "Addition"
-                                                        ? "Addition"
-                                                        : "Deduction",
-                                                    label:
-                                                      item?.type === "Addition"
-                                                        ? "Addition"
-                                                        : "Deduction",
+                                                    value: item?.type,
+                                                    label: item?.type,
                                                   },
                                                   allowanceAndDeduction: {
                                                     value:

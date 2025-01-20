@@ -313,7 +313,6 @@ function BulkAddEditForm() {
     //   // strToMonth: "string",
     //   strEmployeeIdList: empListString,
     // };
-
     const payload = {
       accountId: orgId,
       businessUnitId: buId,
@@ -333,7 +332,7 @@ function BulkAddEditForm() {
           allowanceDuration: values?.intAllowanceDuration?.value,
           numMaxLimitAmount: +values?.maxAmount,
 
-          isAddition: values?.salaryType?.value === "Addition" ? true : false,
+          isAddition: values?.salaryType?.value === 1 ? true : false,
           allowanceName: values?.allowanceAndDeduction?.label,
           allowanceTypeId: values?.allowanceAndDeduction?.value,
           amountWillBeId: values?.amountDimension?.value,
