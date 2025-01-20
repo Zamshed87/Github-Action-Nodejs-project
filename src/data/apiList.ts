@@ -295,4 +295,5 @@ export const apiList = {
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   DepositType: "DepositType",
+  Deposit: "Deposit",
 };

@@ -54,7 +54,7 @@ export const SecurityDepositCRUD = () => {
   const deleteProposal = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const securityTypeDDL = useApiRequest({});
-  const createUpdateIncrementProposal = useApiRequest({});
+  const createUpdateDeposite = useApiRequest({});
 
   const CommonEmployeeDDL = useApiRequest([]);
 
@@ -440,6 +440,7 @@ export const SecurityDepositCRUD = () => {
       });
   };
   const onFinish = () => {
+    const values = form.getFieldsValue(true);
     if (selectedRow?.length == 0) {
       return toast.warn("Select Employees First");
     }
@@ -458,11 +459,15 @@ export const SecurityDepositCRUD = () => {
     const modify = updatedSelectedRows?.map((i) => {
       return {
         ...i,
-        actionBy: employeeId,
+        depositTypeId: values?.securityTypeDDL?.value || 0,
+        employeeId: i?.employeeId,
+        depositAmount: i?.depositeMoney,
+        comment: i?.remarks,
+        // actionBy: employeeId,
       };
     });
-    createUpdateIncrementProposal?.action({
-      urlKey: "CreateUpdateIncrementProposal",
+    createUpdateDeposite?.action({
+      urlKey: "Deposit",
       method: "post",
       payload: modify,
       toast: true,

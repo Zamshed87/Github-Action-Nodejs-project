@@ -16,7 +16,7 @@ export default function ViewFormComponent({ singleData }) {
             </div>
             <div className="modal-body-txt">
               <h6 className="title-item-name">{singleData?.depositTypeName}</h6>
-              <p className="subtitle-p">{"Department Name"}</p>
+              <p className="subtitle-p">{"Deposite Type"}</p>
             </div>
           </div>
           <Divider orientation="left" style={{ marginTop: "4px" }}></Divider>
