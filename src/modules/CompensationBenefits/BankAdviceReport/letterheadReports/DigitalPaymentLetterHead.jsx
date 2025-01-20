@@ -9,8 +9,8 @@ export default function DigitalPaymentLetterHead({
         <img
           src={letterHeadImage.src}
           style={{
-            height: "1400px",
-            width: "991px",
+            height: "1570px",
+            width: "1130px",
             objectFit: "cover",
             position: "fixed",
             zIndex: -1,
@@ -45,6 +45,7 @@ export default function DigitalPaymentLetterHead({
                 style={{
                   borderCollapse: "collapse",
                   width: "100%",
+                  minWidth: "930px",
                 }}
               >
                 <thead>

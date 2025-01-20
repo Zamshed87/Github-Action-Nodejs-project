@@ -293,4 +293,5 @@ export const apiList = {
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
 };
