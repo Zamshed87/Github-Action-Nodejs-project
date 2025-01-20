@@ -45,12 +45,18 @@ const MonthlyPunchReportDetails = () => {
   const {
     permissionList,
     profileData: { buId, wId, wgId, employeeId, orgId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30337),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -196,8 +202,8 @@ const MonthlyPunchReportDetails = () => {
         reportType: "monthly_in_out_attendance_report_for_all_employee",
         accountId: orgId,
         businessUnitId: buId,
-        workplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceList: values?.workplace?.value,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
         departments: formatFilterValue(values?.department),
@@ -207,6 +213,15 @@ const MonthlyPunchReportDetails = () => {
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         searchTxt: searchText || "",
+        workplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        workplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
         //departments: values?.department?.length > 0 ? deptList : "",
         //designations: values?.designation?.length > 0 ? desigList : "",
       },
@@ -214,7 +229,6 @@ const MonthlyPunchReportDetails = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
   //   table column
@@ -354,17 +368,23 @@ const MonthlyPunchReportDetails = () => {
                       values?.toDate
                     ).format(
                       "YYYY-MM-DD"
-                    )}&EmployeeId=${employeeId}&WorkplaceGroupId=${
-                      values?.workplaceGroup?.value || wgId
-                    }&WorkplaceList=${
-                      values?.workplace?.value || wId
-                    }&PageNo=1&departments=${
+                    )}&EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
                       formatFilterValue(values?.department) || 0
                     }&designations=${formatFilterValue(
                       values?.designation || 0
                     )}&SearchTxt=${
                       values?.search || ""
-                    }&PageSize=1000&IsPaginated=false`
+                    }&PageSize=1000&IsPaginated=false&WorkplaceGroupList=${
+                      values?.workplaceGroup?.value == 0 ||
+                      values?.workplaceGroup?.value == undefined
+                        ? decodedToken.workplaceGroupList
+                        : values?.workplaceGroup?.value.toString()
+                    }&WorkplaceList=${
+                      values?.workplace?.value == 0 ||
+                      values?.workplace?.value == undefined
+                        ? decodedToken.workplaceList
+                        : values?.workplace?.value.toString()
+                    }`
                   );
                   if (res?.data) {
                     setExcelLoading(true);

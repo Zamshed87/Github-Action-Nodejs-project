@@ -37,12 +37,18 @@ const EmLoanHistory = () => {
   const {
     permissionList,
     profileData: { orgId, wId, buId, wgId, employeeId },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 99),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -150,8 +156,17 @@ const EmLoanHistory = () => {
         pageNo: pagination?.current || 1,
         ispaginated: true,
         searchText: searchText || "",
-        workplaceGroupId: values?.workplaceGroup?.value || 0,
-        workplaceId: values?.workplace?.value || 0,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };

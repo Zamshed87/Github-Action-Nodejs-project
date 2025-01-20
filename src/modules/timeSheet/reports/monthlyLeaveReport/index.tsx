@@ -40,13 +40,19 @@ const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, isOfficeAdmin },
+    profileData: { buId, wgId, wId, employeeId, orgId, buName, isOfficeAdmin },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30420),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
   const supervisorDDL = useApiRequest([]);
@@ -188,8 +194,8 @@ const MonthlyLeaveReport = () => {
       payload: {
         accountId: orgId,
         businessUnitId: buId,
-        workPlaceGroupId: values?.workplaceGroup?.value || 0,
-        workPlaceId: values?.workplace?.value || 0,
+        workPlaceGroupId: wgId,
+        workPlaceId: wId,
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
@@ -201,6 +207,15 @@ const MonthlyLeaveReport = () => {
         departmentIdList: formatFilterValueList(values?.department) || [0],
         designationIdList: formatFilterValueList(values?.designation) || [0],
         supervisorId: values?.supervisor?.value || 0,
+        workplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        workplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
@@ -386,8 +401,8 @@ const MonthlyLeaveReport = () => {
                     {
                       accountId: orgId,
                       businessUnitId: buId,
-                      workPlaceGroupId: values?.workplaceGroup?.value || 0,
-                      workPlaceId: values?.workplace?.value || 0,
+                      workPlaceGroupId: wgId,
+                      workPlaceId: wId,
                       employeeId: 0,
                       fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
                       toDate: moment(values?.toDate).format("YYYY-MM-DD"),
@@ -402,6 +417,16 @@ const MonthlyLeaveReport = () => {
                         values?.designation
                       ) || [0],
                       supervisorId: values?.supervisor?.value || 0,
+                      workplaceGroupList:
+                        values?.workplaceGroup?.value == 0 ||
+                        values?.workplaceGroup?.value == undefined
+                          ? decodedToken.workplaceGroupList
+                          : values?.workplaceGroup?.value.toString(),
+                      workplaceList:
+                        values?.workplace?.value == 0 ||
+                        values?.workplace?.value == undefined
+                          ? decodedToken.workplaceList
+                          : values?.workplace?.value.toString(),
                     }
                   );
                   if (res?.data?.Data) {

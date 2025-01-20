@@ -43,13 +43,18 @@ const SeparationReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, wId, employeeId, orgId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 96),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
   // menu permission
   const employeeFeature: any = permission;
 
@@ -86,7 +91,13 @@ const SeparationReport = () => {
     };
     landingApiCall();
     getSeparationtypeNameDDL(
-      `/PeopleDeskDdl/PeopleDeskAllDDL?ddlType=SeparationType&businessUnitId=${buId}&workplaceGroupId=0&intWorkplaceId=0`,
+      `/PeopleDeskDdl/PeopleDeskAllDDL?ddlType=SeparationType&businessUnitId=${buId}&workplaceGroupId=${
+        typeof workplaceGroupW?.value == "string"
+          ? 0
+          : workplaceGroupW?.value || 0
+      }&intWorkplaceId=${
+        typeof workplaceW?.value == "string" ? 0 : workplaceW?.value || 0
+      }`,
       (data: any) => {
         const formattedData = data.map((item: any) => ({
           label: item.SeparationType,
@@ -162,8 +173,8 @@ const SeparationReport = () => {
         AccountId: orgId,
         BusinessUnitId: buId,
         IsXls: false,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: wgId,
+        WorkplaceId: wId,
         PageNo: pagination.current || 1,
         departments: formatFilterValue(values?.department),
         designations: formatFilterValue(values?.designation),
@@ -173,6 +184,15 @@ const SeparationReport = () => {
         ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         searchTxt: searchText || "",
         IsForXl: false,
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
@@ -183,8 +203,12 @@ const SeparationReport = () => {
   useEffect(() => {
     getSeparationtypeNameDDL(
       `/PeopleDeskDdl/PeopleDeskAllDDL?ddlType=SeparationType&businessUnitId=${buId}&workplaceGroupId=${
-        workplaceGroupW?.value || 0
-      }&intWorkplaceId=${workplaceW?.value || 0}`,
+        typeof workplaceGroupW?.value == "string"
+          ? 0
+          : workplaceGroupW?.value || 0
+      }&intWorkplaceId=${
+        typeof workplaceW?.value == "string" ? 0 : workplaceW?.value || 0
+      }`,
       (data: any) => {
         const formattedData = data.map((item: any) => ({
           label: item.SeparationType,
@@ -269,12 +293,12 @@ const SeparationReport = () => {
       title: "Separetion Date",
       dataIndex: "dteSeparationDate",
       render: (_: any, item: any) => dateFormatter(item?.dteSeparationDate),
-      width: 50,
+      width: 100,
     },
     {
       title: "Separation Type",
       dataIndex: "strSeparationTypeName",
-      width: 50,
+      width: 80,
 
       render: (_: any, item: any) => {
         return (
