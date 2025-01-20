@@ -33,38 +33,34 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    const payloadFoEdit = {
-      actionTypeId: singleData?.intDepositeTypeId ? 2 : 1,
-      intDepositeTypeId: singleData?.intDepositeTypeId
-        ? singleData?.intDepositeTypeId
-        : 0,
-      strDepositeType: values?.strDepositeType || "",
+    // const payloadFoEdit = {
+    //   actionTypeId: singleData?.intDepositeTypeId ? 2 : 1,
+    //   intDepositeTypeId: singleData?.intDepositeTypeId
+    //     ? singleData?.intDepositeTypeId
+    //     : 0,
+    //   depositTypeName: values?.strDepositeType || "",
 
-      isActive: values?.isActive,
-      intBusinessUnitId: buId,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: employeeId,
-    };
+    //   isActive: values?.isActive,
+    //   intBusinessUnitId: buId,
+    //   intAccountId: orgId,
+    //   dteCreatedAt: todayDate(),
+    //   intCreatedBy: employeeId,
+    //   dteUpdatedAt: todayDate(),
+    //   intUpdatedBy: employeeId,
+    // };
     const payload = {
-      DepositeTypeId: singleData?.intDepositeTypeId
-        ? singleData?.intDepositeTypeId
-        : 0,
-      DepositeTypeName: values?.strDepositeType || "",
-      businessUnitId: buId,
+      depositeTypeId: singleData?.id ? singleData?.id : 0,
+      depositTypeName: values?.depositTypeName || "",
+      comment: values?.comments,
       accountId: orgId,
-
+      isActive: singleData?.id ? values?.isActive : true,
       actionBy: employeeId,
     };
 
     saveDepositeType.action({
-      urlKey: singleData?.intDepositeTypeId
-        ? "SaveEmpDepartment"
-        : "CreateEmpDepartment",
-      method: "POST",
-      payload: singleData?.intDepositeTypeId ? payloadFoEdit : payload,
+      urlKey: "DepositType",
+      method: singleData?.id ? "put" : "POST",
+      payload: payload,
       onSuccess: () => {
         cb();
       },
@@ -74,7 +70,7 @@ export default function AddEditForm({
   // Form Instance
   const [form] = Form.useForm();
   useEffect(() => {
-    if (singleData?.intDepositeTypeId) {
+    if (singleData?.id) {
       form.setFieldsValue({
         ...singleData,
       });
@@ -101,7 +97,7 @@ export default function AddEditForm({
           <Col md={12} sm={24}>
             <PInput
               type="text"
-              name="strDepositeType"
+              name="depositTypeName"
               label="Deposite Type"
               placeholder="Deposite Type"
               rules={[{ required: true, message: "Deposite Type is required" }]}

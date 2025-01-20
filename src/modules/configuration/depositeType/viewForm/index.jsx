@@ -15,7 +15,7 @@ export default function ViewFormComponent({ singleData }) {
               <Avatar icon={<MdOutlineLayers />} />
             </div>
             <div className="modal-body-txt">
-              <h6 className="title-item-name">{singleData?.strDepositeType}</h6>
+              <h6 className="title-item-name">{singleData?.depositTypeName}</h6>
               <p className="subtitle-p">{"Department Name"}</p>
             </div>
           </div>
@@ -29,7 +29,7 @@ export default function ViewFormComponent({ singleData }) {
               <Avatar icon={<FaLightbulb />} />
             </div>
             <div className="modal-body-txt">
-              <h6 className="title-item-name">{singleData?.strcomment}</h6>
+              <h6 className="title-item-name">{singleData?.comment}</h6>
               <p className="subtitle-p">{"Comments"}</p>
             </div>
           </div>

@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AddEditForm from "./addEditForm";
-import ViewFormComponent from "./viewForm";
+// import ViewFormComponent from "./viewForm";
 
 function DepositeType() {
   // hook
@@ -38,16 +38,30 @@ function DepositeType() {
 
   // Api Instance
   const landingApi = useApiRequest({});
+  const deleteApi = useApiRequest({});
 
+  const deleteDepositeById = (item: any) => {
+    deleteApi?.action({
+      urlKey: "DepositType",
+      method: "DELETE",
+      params: {
+        id: item?.id,
+      },
+      toast: true,
+      onSuccess: () => {
+        landingApiCall();
+      },
+    });
+  };
   const landingApiCall = () => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "DepositType",
       method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceId: wId,
-      },
+      // params: {
+      //   accountId: orgId,
+      //   businessUnitId: buId,
+      //   workplaceId: wId,
+      // },
     });
   };
 
@@ -86,21 +100,12 @@ function DepositeType() {
     {
       title: "Deposite Type",
       width: 20,
-      dataIndex: "strDepositeType",
+      dataIndex: "depositTypeName",
       sorter: true,
-
-      render: (_: any, rec: any) => {
-        return (
-          <div className="">
-            <span className="">{rec?.strDepositeType}</span>
-          </div>
-        );
-      },
-      //   fixed: "left",
     },
     {
       title: "Comments",
-      dataIndex: "strComments",
+      dataIndex: "comment",
       sorter: true,
       width: 50,
     },
@@ -135,7 +140,7 @@ function DepositeType() {
     //   //   fixed: "left",
     // },
     {
-      title: "Status",
+      title: "Active",
       dataIndex: "isActive",
       align: "center",
       width: 10,
@@ -153,6 +158,25 @@ function DepositeType() {
         </>
       ),
     },
+    // {
+    //   title: "Status",
+    //   dataIndex: "isActive",
+    //   align: "center",
+    //   width: 10,
+
+    //   sorter: true,
+    //   render: (_: any, rec: any) => (
+    //     <>
+    //       {/* <Chips
+    //         label={rec?.isActive ? "Active" : "Inactive"}
+    //         classess={`${rec?.isActive ? "success" : "danger"}`}
+    //       /> */}
+    //       <Tag color={`${rec?.isActive ? "green" : "red"}`}>
+    //         {rec?.isActive ? "Active" : "Inactive"}
+    //       </Tag>
+    //     </>
+    //   ),
+    // },
 
     {
       width: 20,
@@ -170,6 +194,13 @@ function DepositeType() {
                   }
                   setOpen(true);
                   setId(rec);
+                },
+              },
+              {
+                type: "delete",
+                onClick: (e: any) => {
+                  e.preventDefault();
+                  deleteDepositeById(rec);
                 },
               },
             ]}
@@ -207,13 +238,13 @@ function DepositeType() {
               landingApiCall();
             }}
             // scroll={{ x: 2000 }}
-            onRow={(record) => ({
-              onClick: () => {
-                setView(true);
-                setId(record);
-              },
-              className: "pointer",
-            })}
+            // onRow={(record) => ({
+            //   onClick: () => {
+            //     setView(true);
+            //     setId(record);
+            //   },
+            //   className: "pointer",
+            // })}
           />
         </PCard>
       </PForm>
@@ -236,7 +267,7 @@ function DepositeType() {
           </>
         }
       />
-      <PModal
+      {/* <PModal
         open={view}
         title={"Deposite Type Details"}
         width=""
@@ -250,7 +281,7 @@ function DepositeType() {
             <ViewFormComponent singleData={id} />
           </>
         }
-      />
+      /> */}
     </>
   ) : (
     <NotPermittedPage />
