@@ -169,15 +169,11 @@ function CommonAppPipeline() {
                 },
               },
               {
-                type: "plus",
+                type: "extend",
                 onClick: () => {
                   setOpen(true);
                   setId({ ...rec, type: "extend" });
                 },
-                // history.push({
-                //   pathname: `/administration/leaveandmovement/yearlyLeavePolicy/extention`,
-                //   state: "",
-                // }),
               },
             ]}
           />
@@ -236,7 +232,7 @@ function CommonAppPipeline() {
 
       <PModal
         open={open}
-        title={id ? "Edit Approval Pipeline" : "Create Approval Pipeline"}
+        title={id ? "Edit/Extend Approval Pipeline" : "Create Approval Pipeline"}
         width={1000}
         onCancel={() => {
           setId("");
