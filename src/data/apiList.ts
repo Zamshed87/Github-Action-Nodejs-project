@@ -295,4 +295,5 @@ export const apiList = {
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
 };

@@ -1,4 +1,4 @@
-export default function CityBankLetterHead({
+export default function UpayBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,
@@ -47,13 +47,19 @@ export default function CityBankLetterHead({
               }}
             >
               <p style={{ color: "black", fontSize: "14px" }}>
+                Ref:{" "}
+                {`${landingViewPdf?.[0]?.WorkplaceName}/Salary/${landingViewPdf?.[0]?.MonthName}/UCBL/${landingViewPdf?.[0]?.MonthId}/${landingViewPdf?.[0]?.YearId}`}
+              </p>
+              <br />
+              <p style={{ color: "black", fontSize: "14px" }}>
                 <b style={{ color: "black", fontSize: "14px" }}>
                   Date: {landingViewPdf?.[0]?.Today}
                 </b>
-              </p>
+              </p>{" "}
+              <br />
               <p style={{ color: "black", fontSize: "14px" }}>
                 To <br />
-                Branch Manager,
+                The Senior Executive Vice President,
               </p>
               <p style={{ color: "black", fontSize: "14px" }}>
                 {landingViewPdf?.[0]?.CompBankName}
@@ -61,44 +67,46 @@ export default function CityBankLetterHead({
               <p style={{ color: "black", fontSize: "14px" }}>
                 {landingViewPdf?.[0]?.CompBranchName}
               </p>
+              <p style={{ color: "black", fontSize: "14px" }}>
+                {landingViewPdf?.[0]?.CompBankAddress}
+              </p>
+              <br />
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                <b style={{ color: "black", fontSize: "14px" }}>Subject:</b>
-                &nbsp;Salary Disbursement for the month of&nbsp;
-                {landingViewPdf?.[0]?.MonthName},&nbsp;
-                {landingViewPdf?.[0]?.YearId}&nbsp;of&nbsp;
-                <b style={{ color: "black", fontSize: "14px" }}>
-                  &quot;
-                  {landingViewPdf?.[0]?.WorkplaceGroupName}
-                  &quot;&nbsp;
-                </b>
-                employees.
+                <u>
+                  <b>
+                    Subject: Disbursement of Salary for the Month of&nbsp;
+                    {landingViewPdf?.[0]?.MonthName}-
+                    {landingViewPdf?.[0]?.YearId}.
+                  </b>
+                </u>
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>Dear Sir,</p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                With due respect, we are requesting you to transfer the salary
-                for the month of&nbsp;
-                {landingViewPdf?.[0]?.MonthName},&nbsp;
-                {landingViewPdf?.[0]?.YearId} of
-                <b style={{ color: "black", fontSize: "14px" }}>
-                  &nbsp;&quot;
-                  {landingViewPdf?.[0]?.WorkplaceGroupName}
-                  &quot;&nbsp;
-                </b>
-                employees. Please debit <b>BDT</b>&nbsp;
+                We would request you to kindly to disburse an amouth of
+                Tk.&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
                   {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;
+                  {`(${landingViewPdf?.[0]?.TotalBankPayInWords})`}&nbsp;
                 </b>
-                from our company account no.&nbsp;
+                only to the credit od the respective account of under mentioned
+                officials of {landingViewPdf?.[0]?.WorkplaceName}&nbsp;and
+                please debit our CD A/C No.{" "}
                 <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;
+                  {landingViewPdf?.[0]?.CompAccountNumber}
+                </b>{" "}
+                being maintained with you and credit the{" "}
+                <b>
+                  UCB Fintech Company Limited-Trust Cum Settlement
+                  Account(TCSA)-Salary Disbursement,
                 </b>
-                to disburse salaries as mentioned below.
+                &nbsp;SND A/C No. for the amount mentioned against UPAY-TCSA
+                Salary disbursement account as per attached list of our workers.{" "}
               </p>
+              <br />
               <div style={{ marginTop: "50px" }}>
-                Employee Bank Account Information with Transfer Amount:
                 <table
                   style={{
                     borderCollapse: "collapse",
@@ -110,11 +118,20 @@ export default function CityBankLetterHead({
                       <th
                         style={{
                           border: "1px solid #D3D3D3",
-                          padding: "8px",
+                          padding: "4px",
                           textAlign: "center",
                         }}
                       >
                         SL
+                      </th>
+                      <th
+                        style={{
+                          border: "1px solid #D3D3D3",
+                          padding: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Employee Code
                       </th>
                       <th
                         style={{
@@ -132,7 +149,7 @@ export default function CityBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Account Number
+                        Wallet No
                       </th>
                       <th
                         style={{
@@ -141,7 +158,7 @@ export default function CityBankLetterHead({
                           textAlign: "center",
                         }}
                       >
-                        Net Salary Payable
+                        Principal Amount
                       </th>
                     </tr>
                   </thead>
@@ -151,10 +168,18 @@ export default function CityBankLetterHead({
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
-                            padding: "8px",
+                            padding: "4px",
                           }}
                         >
                           {item?.Sl}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #D3D3D3",
+                            padding: "8px",
+                          }}
+                        >
+                          {item?.EmployeeCode}
                         </td>
                         <td
                           style={{
