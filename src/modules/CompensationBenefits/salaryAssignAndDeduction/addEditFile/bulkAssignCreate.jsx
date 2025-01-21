@@ -34,7 +34,7 @@ function bulkAssignCreate() {
   const { isCreate, isView } = location?.state?.state;
 
   //redux data
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -252,6 +252,7 @@ function bulkAssignCreate() {
                                 orgId,
                                 buId,
                                 wgId,
+                                wId,
                                 setIsLoadingBulk
                               );
                             }}
