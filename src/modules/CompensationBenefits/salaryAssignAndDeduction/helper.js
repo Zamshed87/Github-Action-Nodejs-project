@@ -141,10 +141,7 @@ export const createEditAllowanceAndDeduction = async (
 ) => {
   try {
     setLoading(true);
-    const res = await axios.post(
-      `/Allowance/AdditionAndDeduction/Allowance`,
-      payload
-    );
+    const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
     setLoading(false);
     cb && cb();
     toast.success(res?.data?.message);
