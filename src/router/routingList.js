@@ -2208,7 +2208,7 @@ export const routingList = [
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
   {
-    path: "/administration/configuration/depositeType",
+    path: "/administration/configuration/depositType",
     component: DepositeType,
   },
   { path: "/administration/configuration/section", component: Section },

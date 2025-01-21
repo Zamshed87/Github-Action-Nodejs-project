@@ -51,7 +51,7 @@ export default function AddEditForm({
     const payload = {
       depositeTypeId: singleData?.id ? singleData?.id : 0,
       depositTypeName: values?.depositTypeName || "",
-      comment: values?.comments,
+      comment: values?.comment,
       accountId: orgId,
       isActive: singleData?.id ? values?.isActive : true,
       actionBy: employeeId,
@@ -70,7 +70,7 @@ export default function AddEditForm({
   // Form Instance
   const [form] = Form.useForm();
   useEffect(() => {
-    if (singleData?.id) {
+    if (singleData?.depositTypeName) {
       form.setFieldsValue({
         ...singleData,
       });
@@ -106,7 +106,7 @@ export default function AddEditForm({
           <Col md={12} sm={24}>
             <PInput
               type="text"
-              name="comments"
+              name="comment"
               label="Comments"
               placeholder="Comments"
               // rules={[{ required: true, message: "Deposite Type is required" }]}

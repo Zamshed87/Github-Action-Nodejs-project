@@ -75,7 +75,7 @@ function DepositeType() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 50) {
+    if (item?.menuReferenceId === 30528) {
       employeeFeature = item;
     }
   });
@@ -229,7 +229,9 @@ function DepositeType() {
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
             onChange={(pagination, filters, sorter, extra) => {
