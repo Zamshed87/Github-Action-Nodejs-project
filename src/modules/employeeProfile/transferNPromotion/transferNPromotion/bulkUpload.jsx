@@ -188,8 +188,8 @@ export default function BulkUploadTransferNPromotion() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=8391"
-                                  : "/document/downloadfile?id=9301"
+                                  ? "/document/downloadfile?id=8392"
+                                  : "/document/downloadfile?id=9362"
                               }`,
                               "TransNProm",
                               "xlsx",
