@@ -296,7 +296,7 @@ export const editTrainingPlanDetails = async (
       trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
         id: trainer?.idx || 0,
         trainingId: planId,
-        trainerId: trainer?.value,
+        trainerId: trainer?.trainerId || trainer?.value,
       })),
     };
 
