@@ -28,6 +28,11 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const { tokenData } = useSelector((state: any) => state?.auth, shallowEqual);
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
 
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
@@ -83,6 +88,16 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
             designationIdList: formatFilterValueList(values?.designation) || [
               0,
             ],
+            WorkplaceGroupList:
+              values?.workplaceGroup?.value == 0 ||
+              values?.workplaceGroup?.value == undefined
+                ? decodedToken.workplaceGroupList
+                : values?.workplaceGroup?.value.toString(),
+            WorkplaceList:
+              values?.workplace?.value == 0 ||
+              values?.workplace?.value == undefined
+                ? decodedToken.workplaceList
+                : values?.workplace?.value.toString(),
           },
         });
       })
