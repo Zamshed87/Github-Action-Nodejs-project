@@ -32,18 +32,26 @@ import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveE
 import { column } from "./helper";
 import { getDateOfYear } from "utility/dateFormatter";
 import { getPDFAction } from "utility/downloadFile";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const EmMovementHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { orgId, buId, wgId, employeeId, buName },
+    profileData: { orgId, buId, wId, wgId, employeeId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 101),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -141,19 +149,29 @@ const EmMovementHistory = () => {
       params: {
         BusinessUnitId: buId,
         IsXls: false,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: wgId,
+        WorkplaceId: wId,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageNo: pagination.current || 1,
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(values?.todate).format("YYYY-MM-DD"),
         SearchText: searchText || "",
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
 
@@ -336,18 +354,30 @@ const EmMovementHistory = () => {
             pdfExport={() => {
               const values = form.getFieldsValue(true);
               getPDFAction(
-                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
-                  values?.workplace?.value
-                }&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value
-                }&FromDate=${moment(values?.fromDate).format(
+                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${wgId}&WorkplaceGroupId=${wId}&departments=${formatFilterValue(
+                  values?.department
+                )}&designations=${formatFilterValue(
+                  values?.designation
+                )}&FromDate=${moment(values?.fromDate).format(
                   "YYYY-MM-DD"
-                )}&ToDate=${moment(values?.todate).format("YYYY-MM-DD")}`,
+                )}&ToDate=${moment(values?.todate).format(
+                  "YYYY-MM-DD"
+                )}&WorkplaceGroupList=${
+                  values?.workplaceGroup?.value == 0 ||
+                  values?.workplaceGroup?.value == undefined
+                    ? decodedToken.workplaceGroupList
+                    : values?.workplaceGroup?.value.toString()
+                }&WorkplaceList=${
+                  values?.workplace?.value == 0 ||
+                  values?.workplace?.value == undefined
+                    ? decodedToken.workplaceList
+                    : values?.workplace?.value.toString()
+                }`,
                 setLoading
               );
             }}
           />
-          <PCardBody className="mb-3">
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -423,8 +453,8 @@ const EmMovementHistory = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
-
+          </PCardBody> */}
+          <PFilter form={form} landingApiCall={landingApiCall} />
           <DataTable
             bordered
             data={landingApi?.data?.data || []}
