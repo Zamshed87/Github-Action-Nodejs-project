@@ -302,6 +302,8 @@ export const apiList = {
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  DepositType: "DepositType",
+  Deposit: "Deposit",
   SalaryBulkUpload: "/Employee/SalaryBulkUpload",
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
   CreateNUpdateShiftChangeRequest:
