@@ -45,6 +45,7 @@ import BFTNBankLetterHead from "./letterheadReports/BFTNBankLetterHead";
 import EFTNBankLetterHead from "./letterheadReports/EFTNBankLetterHead";
 import UpayBankLetterHead from "./letterheadReports/UpayBankLetterHead";
 import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
+import MBLBankLetterHead from "./letterheadReports/MBLBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -1328,6 +1329,13 @@ const BankAdviceReport = () => {
                     )}
                     {values?.adviceType?.value === "SOIBL" && (
                       <SOIBLBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "MBL" && (
+                      <MBLBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}
