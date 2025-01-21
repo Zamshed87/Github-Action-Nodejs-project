@@ -1,0 +1,83 @@
+/* Target the custom-stepper directly */
+.custom-stepper {
+  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-left: 5px;
+  width: 80%;
+  height: auto; /* Adjust to fit content */
+}
+
+/* Adjust each step */
+.custom-stepper .ant-steps-item {
+  height: 40px; /* Adjust step height */
+}
+
+/* Active step's icon background */
+.custom-stepper .ant-steps-item-process .ant-steps-item-icon {
+  background-color: #4caf50 !important; /* Green background for active step */
+  border: 0px solid #4caf50;
+}
+
+/* Style stepper icons */
+.custom-stepper .ant-steps-item-icon {
+  height: 30px;
+  width: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+}
+
+.custom-stepper .ant-steps-item-process .ant-steps-item-tail {
+  background-color: #4caf50 !important; /* Green line */
+}
+
+/* Titles with smaller font */
+.custom-stepper .ant-steps-item-title {
+  font-size: 12px; /* Adjust font size */
+}
+
+/* Optional descriptions with smaller font */
+.custom-stepper .ant-steps-item-description {
+  font-size: 10px; /* Adjust font size */
+}
+
+/* Adjust connector line between steps */
+.custom-stepper .ant-steps-item-tail {
+  height: 2px;
+}
+
+/* Green connector line for completed steps */
+.custom-stepper .ant-steps-item-finish .ant-steps-item-tail {
+  background-color: #4caf50 !important; /* Green line */
+}
+
+/* Green connector line for pending steps */
+.custom-stepper .ant-steps-item-wait .ant-steps-item-tail {
+  background-color: #4caf50 !important; /* Green line */
+}
+
+/* Green tick and border for completed steps */
+.custom-stepper .ant-steps-item-finish .ant-steps-item-icon {
+  border-color: #4caf50 !important; /* Green border */
+}
+
+/* Green tick mark inside the step */
+.custom-stepper .ant-steps-item-finish .ant-steps-icon {
+  color: #4caf50 !important; /* Green tick mark */
+}
+
+/* Green title color on hover */
+.custom-stepper .ant-steps-item-title:hover {
+  color: #4caf50 !important; /* Green title on hover */
+}
+
+.custom-stepper .ant-steps-item-icon:hover {
+  color: #4caf50 !important; /* Green title on hover */
+}
+
+.custom-stepper
+  .ant-steps-item-finish
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title::after {
+  background-color: #4caf50 !important;
+}
