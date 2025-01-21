@@ -130,15 +130,23 @@ export const SecurityDepositLanding = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetIncrementProposalLoader",
+      urlKey: "Deposit",
       method: "GET",
       params: {
         fromDate: values?.fromDate
-          ? moment(values?.fromDate).format("YYYY-MM-DD")
+          ? moment(values?.fromDate).startOf("month").format("YYYY-MM-DD")
           : todayDate(),
         toDate: values?.toDate
-          ? moment(values?.toDate).format("YYYY-MM-DD")
+          ? moment(values?.toDate).endOf("month").format("YYYY-MM-DD")
           : todayDate(),
+        pageNumber: 1,
+        pageSize: 100,
+      },
+      onSuccess: (res: any) => {
+        res?.data?.forEach((element: any, idex: number) => {
+          res.data[idex].monthId = element?.monthYear.split("/")[0];
+          res.data[idex].yearId = element?.monthYear.split("/")[1];
+        });
       },
     });
   };
@@ -168,34 +176,29 @@ export const SecurityDepositLanding = () => {
     },
     {
       title: "Deposit Type",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "depositTypeName",
       width: 100,
     },
     {
       title: "Deposits Month Year",
-      dataIndex: "joiningDate",
-      render: (data: any) => (data ? dateFormatter(data) : "-"),
+      // dataIndex: "monthYear",
+      render: (_: any, data: any) =>
+        data?.monthYear
+          ? moment(
+              `${data?.yearId}` +
+                `-${data?.monthId?.toString().padStart(2, "0")}-01`
+            ).format("MMM-YYYY")
+          : "-",
       width: 100,
     },
     {
       title: "Total Employee",
-      dataIndex: "employeeName",
+      dataIndex: "totalEmployees",
       width: 100,
     },
     {
       title: "Deposits Money",
-      dataIndex: "designationName",
-      width: 100,
-    },
-
-    {
-      title: "Last Increment Amount",
-      dataIndex: "lastIncrementAmount",
-      width: 100,
-    },
-    {
-      title: "Recent Gross Salary",
-      dataIndex: "recentGrossSalary",
+      dataIndex: "totalDepositMoney",
       width: 100,
     },
 
@@ -296,7 +299,7 @@ export const SecurityDepositLanding = () => {
                 },
               },
             ]}
-            title={`Total ${landingApi?.data?.length || 0} employees`}
+            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
           />
           {loading && <Loading />}
           <PCardBody className="mb-3">
@@ -311,6 +314,7 @@ export const SecurityDepositLanding = () => {
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
+                      toDate: value,
                     });
                   }}
                 />
@@ -381,7 +385,9 @@ export const SecurityDepositLanding = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data.data : []
+            }
             loading={landingApi?.loading}
             header={header}
             // pagination={{

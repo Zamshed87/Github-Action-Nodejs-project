@@ -462,6 +462,7 @@ export const SecurityDepositCRUD = () => {
         depositTypeId: values?.securityTypeDDL?.value || 0,
         employeeId: i?.employeeId,
         depositAmount: i?.depositeMoney,
+        depositDate: values?.monthYear,
         comment: i?.remarks,
         // actionBy: employeeId,
       };
