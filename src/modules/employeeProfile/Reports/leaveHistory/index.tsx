@@ -28,12 +28,17 @@ const EmLeaveHistory = () => {
   const {
     permissionList,
     profileData: { orgId, buId, wgId, employeeId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 100),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
   // menu permission
   const employeeFeature: any = permission;
 
@@ -141,12 +146,20 @@ const EmLeaveHistory = () => {
           strPartName: "htmlView",
           intAccountId: orgId,
           intYear: values?.yearDDL?.value,
-          strWorkplaceGroupList: values?.workplaceGroup?.value,
-          strWorkplaceList: values?.workplace?.value,
           departments: formatFilterValue(values?.department),
           designations: formatFilterValue(values?.designation),
           strSearchTxt: searchText || "",
           BusinessUnitId: buId,
+          WorkplaceGroupList:
+            values?.workplaceGroup?.value == 0 ||
+            values?.workplaceGroup?.value == undefined
+              ? decodedToken.workplaceGroupList
+              : values?.workplaceGroup?.value.toString(),
+          WorkplaceList:
+            values?.workplace?.value == 0 ||
+            values?.workplace?.value == undefined
+              ? decodedToken.workplaceList
+              : values?.workplace?.value.toString(),
         },
         onSuccess: (res) => {
           setData(res);
@@ -475,15 +488,23 @@ const EmLeaveHistory = () => {
 
                         const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=excelView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
-                        }&strWorkplaceGroupList=${
-                          values?.workplaceGroup?.value
-                        }&strWorkplaceList=${
-                          values?.workplace?.value
                         }&departments=${formatFilterValue(
                           values?.department
                         )}&designations=${formatFilterValue(
                           values?.designation
-                        )}&strSearchTxt=${values?.search || ""}`;
+                        )}&strSearchTxt=${
+                          values?.search || ""
+                        }&WorkplaceGroupList=${
+                          values?.workplaceGroup?.value == 0 ||
+                          values?.workplaceGroup?.value == undefined
+                            ? decodedToken.workplaceGroupList
+                            : values?.workplaceGroup?.value.toString()
+                        }&WorkplaceList=${
+                          values?.workplace?.value == 0 ||
+                          values?.workplace?.value == undefined
+                            ? decodedToken.workplaceList
+                            : values?.workplace?.value.toString()
+                        }`;
 
                         downloadFile(
                           url,
@@ -522,15 +543,23 @@ const EmLeaveHistory = () => {
                         // );
                         const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=pdfView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
-                        }&strWorkplaceGroupList=${
-                          values?.workplaceGroup?.value
-                        }&strWorkplaceList=${
-                          values?.workplace?.value
                         }&departments=${formatFilterValue(
                           values?.department
                         )}&designations=${formatFilterValue(
                           values?.designation
-                        )}&strSearchTxt=${values?.search || ""}`;
+                        )}&strSearchTxt=${
+                          values?.search || ""
+                        }&WorkplaceGroupList=${
+                          values?.workplaceGroup?.value == 0 ||
+                          values?.workplaceGroup?.value == undefined
+                            ? decodedToken.workplaceGroupList
+                            : values?.workplaceGroup?.value.toString()
+                        }&WorkplaceList=${
+                          values?.workplace?.value == 0 ||
+                          values?.workplace?.value == undefined
+                            ? decodedToken.workplaceList
+                            : values?.workplace?.value.toString()
+                        }`;
 
                         getPDFAction(url, setLoading);
                       }}

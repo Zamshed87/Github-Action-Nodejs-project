@@ -354,17 +354,25 @@ const EmMovementHistory = () => {
             pdfExport={() => {
               const values = form.getFieldsValue(true);
               getPDFAction(
-                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
-                  values?.workplace?.value || 0
-                }&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value || 0
-                }&departments=${formatFilterValue(
+                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${wgId}&WorkplaceGroupId=${wId}&departments=${formatFilterValue(
                   values?.department
                 )}&designations=${formatFilterValue(
                   values?.designation
                 )}&FromDate=${moment(values?.fromDate).format(
                   "YYYY-MM-DD"
-                )}&ToDate=${moment(values?.todate).format("YYYY-MM-DD")}`,
+                )}&ToDate=${moment(values?.todate).format(
+                  "YYYY-MM-DD"
+                )}&WorkplaceGroupList=${
+                  values?.workplaceGroup?.value == 0 ||
+                  values?.workplaceGroup?.value == undefined
+                    ? decodedToken.workplaceGroupList
+                    : values?.workplaceGroup?.value.toString()
+                }&WorkplaceList=${
+                  values?.workplace?.value == 0 ||
+                  values?.workplace?.value == undefined
+                    ? decodedToken.workplaceList
+                    : values?.workplace?.value.toString()
+                }`,
                 setLoading
               );
             }}
