@@ -39,13 +39,19 @@ const EmMovementHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { orgId, buId, wgId, employeeId, buName },
+    profileData: { orgId, buId, wId, wgId, employeeId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 101),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -143,8 +149,8 @@ const EmMovementHistory = () => {
       params: {
         BusinessUnitId: buId,
         IsXls: false,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: wgId,
+        WorkplaceId: wId,
         departments: formatFilterValue(values?.department),
         designations: formatFilterValue(values?.designation),
         PageNo: pagination.current || 1,
@@ -152,12 +158,20 @@ const EmMovementHistory = () => {
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(values?.todate).format("YYYY-MM-DD"),
         SearchText: searchText || "",
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
 
