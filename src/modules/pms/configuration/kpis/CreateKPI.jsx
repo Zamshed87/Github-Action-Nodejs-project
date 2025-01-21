@@ -104,10 +104,10 @@ const CreateKPI = () => {
             label: toEditData?.kpiformat,
             value: toEditData?.kpiformat,
           },
-          chartType: {
-            label: toEditData?.chartName,
-            value: toEditData?.chartId,
-          },
+          // chartType: {
+          //   label: toEditData?.chartName,
+          //   value: toEditData?.chartId,
+          // },
         }
       : initialValues,
     validationSchema,
@@ -155,8 +155,8 @@ const CreateKPI = () => {
         kpiformat: values?.kpiFormat?.value,
         intAccountId: orgId,
         intUpdatedBy: employeeId,
-        chartId: values?.chartType?.value,
-        chartName: values?.chartType?.label,
+        // chartId: values?.chartType?.value,
+        // chartName: values?.chartType?.label,
       };
       updateKPIs(payload, setLoading, () => {
         history.push(`/pms/configuration/kpis`);
@@ -176,8 +176,8 @@ const CreateKPI = () => {
         kpiformat: data.kpiFormat.value,
         intAccountId: orgId,
         intCreatedBy: employeeId,
-        chartId: data?.chartType.value,
-        chartName: data?.chartType.label,
+        // chartId: data?.chartType.value,
+        // chartName: data?.chartType.label,
       };
     });
     const callback = () => {
@@ -288,7 +288,7 @@ const CreateKPI = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-3">
+                {/* <div className="col-md-3">
                   <div className="input-field-main">
                     <label>Chart Type</label>
                     <FormikSelect
@@ -309,7 +309,7 @@ const CreateKPI = () => {
                       touched={touched}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="col-md-3">
                   <div className="input-field-main">
                     <label>PM Type</label>

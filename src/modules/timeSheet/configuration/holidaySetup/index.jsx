@@ -7,6 +7,7 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
   EditOutlined,
+  CopyAllOutlined,
 } from "@mui/icons-material";
 import ViewModal from "../../../../common/ViewModal";
 import { useHistory } from "react-router";
@@ -33,6 +34,7 @@ export default function HolidaySetup() {
   // row Data
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
+  const [singleData, setSingleData] = useState({});
 
   // modal
   const [isHolidayGroup, setIsHolidayGroup] = useState(false);
@@ -129,11 +131,41 @@ export default function HolidaySetup() {
       {
         className: "text-center",
         width: 100,
-        render: () => (
+        render: (_, record) => (
           <div className="d-flex justify-content-center">
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
-                <EditOutlined />
+                <EditOutlined
+                  onClick={(e) => {
+                    if (!permission?.isEdit)
+                      return toast.warn("You don't have permission");
+                    history.push({
+                      pathname: `/administration/timeManagement/holidaySetup/${record?.HolidayGroupId}`,
+                      state: { holidayItem: record },
+                    });
+                  }}
+                />
+              </button>
+            </Tooltip>
+            <Tooltip title="Extend" arrow>
+              <button className="iconButton ml-2" type="button">
+                <CopyAllOutlined
+                  onClick={
+                    (e) => {
+                      e.preventDefault();
+                      if (!permission?.isCreate)
+                        return toast.warn("You don't have permission");
+                      e.stopPropagation();
+                      setIsHolidayGroup(true);
+                      setSingleData(record);
+                    }
+                    // history.push({
+                    //   pathname: `/administration/leaveandmovement/yearlyLeavePolicy/extention`,
+                    //   state: policy,
+                    // })
+                  }
+                  style={{ fontSize: "15px" }}
+                />
               </button>
             </Tooltip>
           </div>
@@ -222,6 +254,7 @@ export default function HolidaySetup() {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             e.stopPropagation();
+                            setSingleData({});
                             setIsHolidayGroup(true);
                           }}
                         />
@@ -235,14 +268,14 @@ export default function HolidaySetup() {
                           <AntTable
                             data={rowDto?.length > 0 && rowDto}
                             columnsData={columns()}
-                            onRowClick={(dataRow) => {
-                              if (!permission?.isEdit)
-                                return toast.warn("You don't have permission");
-                              history.push({
-                                pathname: `/administration/timeManagement/holidaySetup/${dataRow?.HolidayGroupId}`,
-                                state: { holidayItem: dataRow },
-                              });
-                            }}
+                            // onRowClick={(dataRow) => {
+                            //   if (!permission?.isEdit)
+                            //     return toast.warn("You don't have permission");
+                            //   history.push({
+                            //     pathname: `/administration/timeManagement/holidaySetup/${dataRow?.HolidayGroupId}`,
+                            //     state: { holidayItem: dataRow },
+                            //   });
+                            // }}
                           />
                         </>
                       ) : (
@@ -272,6 +305,7 @@ export default function HolidaySetup() {
                   onHide={handleClose}
                   setRowDto={setRowDto}
                   setAllData={setAllData}
+                  row={singleData}
                   setLoading={setLoading}
                 />
               </ViewModal>

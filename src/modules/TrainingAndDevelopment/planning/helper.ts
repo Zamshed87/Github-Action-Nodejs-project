@@ -152,9 +152,6 @@ export const createTrainingPlan = async (
     const values = form.getFieldsValue(true);
     console.log(values, "plan");
     const payload = {
-      businessUnitId: values?.bUnit?.value || 0,
-      workplaceGroupId: values?.workplaceGroup?.value || 0,
-      workplaceId: values?.workplace?.value || 0,
       trainingTypeId: values?.trainingType?.value || "",
       trainingTitleId: values?.trainingTitle?.value || "",
       trainingModeStatus: values?.trainingMode?.value,

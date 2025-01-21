@@ -11,6 +11,8 @@ import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { createTimeSheetAction } from "../../../helper";
 import { todayDate } from "./../../../../../utility/todayDate";
 import { yearDDLAction } from "./../../../../../utility/yearDDL";
+import { useApiRequest } from "Hooks";
+import { getWorkplaceDDL } from "common/api/commonApi";
 
 const style = {
   width: "100%",
@@ -23,6 +25,7 @@ const style = {
 const initData = {
   holidayGroup: "",
   year: "",
+  workplace: "",
 };
 
 const validationSchema = Yup.object({
@@ -34,7 +37,14 @@ const validationSchema = Yup.object({
     })
     .typeError("Year is required"),
 });
-
+const validationSchemaExtend = Yup.object({
+  workplace: Yup.object()
+    .shape({
+      label: Yup.string().required("Workplace is required"),
+      value: Yup.string().required("Workplace is required"),
+    })
+    .typeError("Workplace is required"),
+});
 const HolidayGroupModal = ({
   id,
   setLoading,
@@ -43,16 +53,16 @@ const HolidayGroupModal = ({
   setAllData,
   singleData,
   setSingleData,
+  row,
 }) => {
   const yearDDL = yearDDLAction(2, 10);
   const [modifySingleData, setModifySingleData] = useState("");
   const history = useHistory();
-
-  const { orgId, buId, employeeId, wId } = useSelector(
+  const workplaceDDL = useApiRequest();
+  const { orgId, buId, employeeId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
   useEffect(() => {
     if (id) {
       getPeopleDeskAllLanding(
@@ -88,7 +98,7 @@ const HolidayGroupModal = ({
 
   const saveHandler = (values, cb) => {
     const payload = {
-      partType: "HolidayGroup",
+      partType: row?.HolidayGroupId ? "HolidayGroupExtend" : "HolidayGroup",
       employeeId: employeeId,
       autoId: id ? +id : 0,
       value: "",
@@ -96,9 +106,11 @@ const HolidayGroupModal = ({
       isActive: true,
       businessUnitId: buId,
       accountId: orgId,
-      holidayGroupName: values?.holidayGroup,
-      year: +values?.year?.value || 0,
-      holidayGroupId: 0,
+      holidayGroupName: row?.HolidayGroupId
+        ? row?.HolidayGroupName
+        : values?.holidayGroup,
+      year: row?.HolidayGroupId ? row?.Year : +values?.year?.value || 0,
+      holidayGroupId: row?.HolidayGroupId ? row?.HolidayGroupId : 0,
       holidayName: "",
       fromDate: todayDate(),
       toDate: todayDate(),
@@ -120,7 +132,7 @@ const HolidayGroupModal = ({
       daysOfWeekId: 0,
       remarks: "",
       rosterGroupName: "",
-      workplaceId: wId,
+      workplaceId: row?.HolidayGroupId ? values?.workplace?.value : wId,
       workplaceGroupId: 0,
       overtimeDate: todayDate(),
       overtimeHour: 0,
@@ -165,6 +177,7 @@ const HolidayGroupModal = ({
       const callback = (id) => {
         history.push({
           pathname: `/administration/timeManagement/holidaySetup/${id}`,
+          // state: row?.HolidayGroupId ? { ...row, isExtend: true } : "",
         });
         cb();
         onHide();
@@ -178,20 +191,25 @@ const HolidayGroupModal = ({
           null,
           null,
           null,
-          null,
+          wgId,
           wId
         );
       };
       createTimeSheetAction(payload, setLoading, callback);
     }
   };
+  useEffect(() => {
+    getWorkplaceDDL({ workplaceDDL, orgId, buId, wgId });
+  }, [row?.HolidayGroupId]);
 
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={id ? modifySingleData : initData}
-        validationSchema={validationSchema}
+        validationSchema={
+          row?.HolidayGroupId ? validationSchemaExtend : validationSchema
+        }
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
             if (id) {
@@ -218,39 +236,61 @@ const HolidayGroupModal = ({
                   className="modalBody"
                   style={{ padding: "0px 12px 0px 16px" }}
                 >
-                  <div>
-                    <label>Holiday Group Name</label>
-                    <FormikInput
-                      classes="input-sm"
-                      value={values?.holidayGroup}
-                      name="holidayGroup"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("holidayGroup", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                  <div>
-                    <label>Year </label>
-                    <FormikSelect
-                      name="year"
-                      options={yearDDL || []}
-                      value={values?.year}
-                      onChange={(valueOption) => {
-                        setFieldValue("year", valueOption);
-                      }}
-                      placeholder=""
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                      isDisabled={false}
-                      menuPosition="fixed"
-                    />
-                  </div>
+                  {!row?.HolidayGroupId ? (
+                    <>
+                      <div>
+                        <label>Holiday Group Name</label>
+                        <FormikInput
+                          classes="input-sm"
+                          value={values?.holidayGroup}
+                          name="holidayGroup"
+                          type="text"
+                          className="form-control"
+                          placeholder=""
+                          onChange={(e) => {
+                            setFieldValue("holidayGroup", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div>
+                        <label>Year </label>
+                        <FormikSelect
+                          name="year"
+                          options={yearDDL || []}
+                          value={values?.year}
+                          onChange={(valueOption) => {
+                            setFieldValue("year", valueOption);
+                          }}
+                          placeholder=""
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                          isDisabled={false}
+                          menuPosition="fixed"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <label>Workplace </label>
+                      <FormikSelect
+                        name="workplace"
+                        options={workplaceDDL?.data || []}
+                        value={values?.workplace}
+                        onChange={(valueOption) => {
+                          setFieldValue("workplace", valueOption);
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        isDisabled={false}
+                        menuPosition="fixed"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="modal-footer form-modal-footer holiday-group-btn">
                   <button

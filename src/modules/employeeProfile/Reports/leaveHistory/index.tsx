@@ -20,6 +20,8 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import { yearDDLAction } from "utility/yearDDL";
 import { todayDate } from "utility/todayDate";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const EmLeaveHistory = () => {
   const dispatch = useDispatch();
@@ -124,13 +126,14 @@ const EmLeaveHistory = () => {
     // }: TLandingApi = {}
     {
       const values = form.getFieldsValue(true);
+      console.log(values);
 
       // const workplaceList = `${values?.workplace
       //   ?.map((item: any) => item?.intWorkplaceId)
       //   .join(",")}`;
-      const workplaceList = values?.workplace
-        ?.map((item: any) => item?.intWorkplaceId)
-        .join(",");
+      // const workplaceList = values?.workplace
+      //   ?.map((item: any) => item?.intWorkplaceId)
+      //   .join(",");
       landingApi.action({
         urlKey: "GetLeaveHistoryReport",
         method: "GET",
@@ -139,7 +142,9 @@ const EmLeaveHistory = () => {
           intAccountId: orgId,
           intYear: values?.yearDDL?.value,
           strWorkplaceGroupList: values?.workplaceGroup?.value,
-          strWorkplaceList: `${workplaceList}` || "",
+          strWorkplaceList: values?.workplace?.value,
+          departments: formatFilterValue(values?.department),
+          designations: formatFilterValue(values?.designation),
           strSearchTxt: searchText || "",
           BusinessUnitId: buId,
         },
@@ -150,7 +155,7 @@ const EmLeaveHistory = () => {
     };
 
   useEffect(() => {
-    getWorkplaceGroup();
+    // getWorkplaceGroup();
     landingApiCall();
   }, []);
 
@@ -368,7 +373,7 @@ const EmLeaveHistory = () => {
             //   excelLanding();
             // }}
           />
-          <PCardBody className="mb-3">
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PSelect
@@ -429,7 +434,30 @@ const EmLeaveHistory = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
+          <PFilter
+            form={form}
+            ishideDate={true}
+            landingApiCall={() => {
+              // you can add required logic if need any
+              landingApiCall();
+            }}
+          >
+            <Col md={12} sm={12} xs={24}>
+              <PSelect
+                options={yearDDLAction(2, 0) || []}
+                name="yearDDL"
+                label="Year"
+                placeholder="Year"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    yearDDL: op,
+                  });
+                }}
+                rules={[{ required: true, message: "Year is required" }]}
+              />
+            </Col>
+          </PFilter>
           <div>
             {data && (
               <ul className="d-flex flex-row-reverse mt-3 align-items-center justify-content-start">
@@ -441,17 +469,21 @@ const EmLeaveHistory = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const workplaceList = values?.workplace?.map(
-                          (i: any) => i?.value
-                        );
+                        // const workplaceList = values?.workplace?.map(
+                        //   (i: any) => i?.value
+                        // );
 
                         const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=excelView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
                         }&strWorkplaceGroupList=${
                           values?.workplaceGroup?.value
-                        }&strWorkplaceList=${workplaceList}&strSearchTxt=${
-                          values?.search || ""
-                        }`;
+                        }&strWorkplaceList=${
+                          values?.workplace?.value
+                        }&departments=${formatFilterValue(
+                          values?.department
+                        )}&designations=${formatFilterValue(
+                          values?.designation
+                        )}&strSearchTxt=${values?.search || ""}`;
 
                         downloadFile(
                           url,
@@ -485,16 +517,20 @@ const EmLeaveHistory = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const workplaceList = values?.workplace?.map(
-                          (i: any) => i?.value
-                        );
+                        // const workplaceList = values?.workplace?.map(
+                        //   (i: any) => i?.value
+                        // );
                         const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=pdfView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
                         }&strWorkplaceGroupList=${
                           values?.workplaceGroup?.value
-                        }&strWorkplaceList=${workplaceList}&strSearchTxt=${
-                          values?.search || ""
-                        }`;
+                        }&strWorkplaceList=${
+                          values?.workplace?.value
+                        }&departments=${formatFilterValue(
+                          values?.department
+                        )}&designations=${formatFilterValue(
+                          values?.designation
+                        )}&strSearchTxt=${values?.search || ""}`;
 
                         getPDFAction(url, setLoading);
                       }}
