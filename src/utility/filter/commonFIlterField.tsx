@@ -25,7 +25,7 @@ const CommonFilterField = ({
   const { buId, wgId, employeeId, orgId } = profileData;
 
   const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
+  const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
   const positionDDL = useApiRequest([]);
@@ -52,7 +52,7 @@ const CommonFilterField = ({
 
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
+    workplaceDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
@@ -68,11 +68,7 @@ const CommonFilterField = ({
           res[i].value = item?.intWorkplaceId;
           list.push(item?.intWorkplaceId);
         });
-        res.unshift({ label: "All", value: list.join(",") });
-        if (workplaceGroup?.value == 0) {
-          res.length = 0;
-          res.push({ label: "All", value: 0 });
-        }
+        res.unshift({ label: "All", value: 0 });
       },
     });
   };
@@ -182,7 +178,7 @@ const CommonFilterField = ({
       </Col>
       <Col md={col || 6} sm={12} xs={24}>
         <PSelect
-          options={workplace?.data || []}
+          options={workplaceDDL?.data || []}
           name="workplace"
           label="Workplace"
           allowClear
@@ -190,10 +186,24 @@ const CommonFilterField = ({
           mode={mode as "multiple" | undefined | "tags"}
           showSearch
           onChange={(value, op) => {
-            form.setFieldsValue({
-              workplace: op,
-              workplaceId: value,
-            });
+            const { workplaceGroup } = form.getFieldsValue(true);
+            if (workplaceGroup?.value != 0 && value == 0) {
+              form.setFieldsValue({
+                workplace: {
+                  label: "All",
+                  value: workplaceDDL?.data
+                    ?.filter((item: any) => item.value != 0)
+                    ?.map((item: any) => item.value)
+                    .join(","),
+                },
+                workplaceId: value,
+              });
+            } else {
+              form.setFieldsValue({
+                workplace: op,
+                workplaceId: value,
+              });
+            }
             if (isDepartment) {
               getEmployeDepartment();
             }
