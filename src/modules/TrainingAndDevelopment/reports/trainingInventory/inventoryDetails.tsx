@@ -99,6 +99,8 @@ const TnDInventoryDetails = () => {
     {
       title: "Training Organization & Trainer",
       dataIndex: "trainingOrganization",
+      render: (_: any, rec: any) =>
+        rec?.trainingOrganization + ", " + rec?.trainerName,
     },
     {
       title: "Training Duration",
