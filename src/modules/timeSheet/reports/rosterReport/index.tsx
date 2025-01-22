@@ -37,18 +37,26 @@ import axios from "axios";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
+import { formatFilterValue } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const RosterReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, wId, employeeId, orgId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30340),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -144,9 +152,11 @@ const RosterReport = () => {
         ReportType: "monthly_roster_report_for_all_employee",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: wgId,
+        WorkplaceId: wId,
         PageNo: pagination.current || pages?.current,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageSize:
           pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         EmployeeId: 0,
@@ -154,12 +164,20 @@ const RosterReport = () => {
         DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         SearchTxt: searchText || "",
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
   //   table column
@@ -293,23 +311,35 @@ const RosterReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
                       values?.fromDate
                     ).format("YYYY-MM-DD")}&DteToDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
-                      values?.workplaceGroup?.value || 0
-                    }&WorkplaceId=${
-                      values?.workplace?.value || 0
-                    }&PageNo=1&SearchTxt=${
+                    ).format(
+                      "YYYY-MM-DD"
+                    )}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
+                      formatFilterValue(values?.department) || 0
+                    }&designations=${formatFilterValue(
+                      values?.designation || 0
+                    )}&SearchTxt=${
                       values?.search || ""
-                    }&PageSize=1000&IsPaginated=false`
+                    }&PageSize=1000&IsPaginated=false&WorkplaceGroupList=${
+                      values?.workplaceGroup?.value == 0 ||
+                      values?.workplaceGroup?.value == undefined
+                        ? decodedToken.workplaceGroupList
+                        : values?.workplaceGroup?.value.toString()
+                    }&WorkplaceList=${
+                      values?.workplace?.value == 0 ||
+                      values?.workplace?.value == undefined
+                        ? decodedToken.workplaceList
+                        : values?.workplace?.value.toString()
+                    }`
                   );
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
+                      setExcelLoading(false);
                       return toast.error("No Attendance Data Found");
                     }
 
@@ -379,7 +409,8 @@ const RosterReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -455,7 +486,7 @@ const RosterReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
