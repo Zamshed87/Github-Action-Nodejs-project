@@ -12,7 +12,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tag, Tooltip } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -35,6 +35,9 @@ import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper
 import { column } from "./helper";
 import PFilter from "utility/filter/PFilter";
 import { formatFilterValueList } from "utility/filter/helper";
+import { EyeOutlined } from "@ant-design/icons";
+import { PModal } from "Components/Modal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
@@ -55,14 +58,13 @@ const MonthlyLeaveReport = () => {
 
   // menu permission
   const employeeFeature: any = permission;
-  const supervisorDDL = useApiRequest([]);
 
-  const landingApi = useApiRequest({});
-  const empDepartmentDDL = useApiRequest({});
   //   const debounce = useDebounce();
+  //states
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
+  const [viewModal, setViewModal] = useState(false);
   const [pages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -73,6 +75,12 @@ const MonthlyLeaveReport = () => {
   //   api states
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
+  const landingApi = useApiRequest({});
+  const empDepartmentDDL = useApiRequest({});
+  const supervisorDDL = useApiRequest([]);
+  const [apporveStatus, getapporveStatus, apporveStatusLoading] = useAxiosGet(
+    []
+  );
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -348,8 +356,88 @@ const MonthlyLeaveReport = () => {
 
         width: 100,
       },
+      {
+        title: "Total Approver",
+        dataIndex: "TotalApprover",
+        width: 100,
+      },
+      {
+        title: "Approved Application",
+        dataIndex: "ApprovedApplications",
+        width: 100,
+      },
+      {
+        title: "Pending Application",
+        dataIndex: "PendingApplications",
+        width: 100,
+      },
+      {
+        title: "Action",
+        dataIndex: "",
+        render: (rec: any) => (
+          <Tooltip placement="bottom" title={"View"}>
+            <EyeOutlined
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              onClick={() => {
+                console.log(rec);
+                getapporveStatus(
+                  `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntLeaveTypeId}&employeeId=${rec.IntEmployeeId}`,
+                  () => {
+                    setViewModal(true);
+                  }
+                );
+              }}
+            />
+          </Tooltip>
+        ),
+        align: "center",
+        width: 80,
+      },
+    ];
+  };
 
-      //   ...(d as any),
+  const modalheader: any = () => {
+    return [
+      {
+        title: "Approver Name",
+        dataIndex: "ApproverName",
+        width: 100,
+      },
+      {
+        title: "Approver Type",
+        dataIndex: "ApproverTypeName",
+        width: 100,
+      },
+      {
+        title: "Approve Status",
+        dataIndex: "AfterApproveStatus",
+        width: 100,
+      },
+      {
+        title: "Approved",
+        dataIndex: "IsApprove",
+        render: (_: any, rec: any) => (
+          <div className="d-flex align-items-center justify-content-center">
+            <div>
+              {rec?.IsApprove === true && <Tag color="success">Approved</Tag>}
+              {rec?.IsApprove === false && <Tag color="warning">Pending</Tag>}
+            </div>
+          </div>
+        ),
+        width: 100,
+      },
+      {
+        title: "Rejected",
+        dataIndex: "IsReject",
+        render: (_: any, rec: any) => (
+          <div className="d-flex align-items-center justify-content-center">
+            <div>
+              {rec?.IsReject === true && <Tag color="red">Rejected</Tag>}
+            </div>
+          </div>
+        ),
+        width: 100,
+      },
     ];
   };
   const searchFunc = debounce((value) => {
@@ -712,6 +800,23 @@ const MonthlyLeaveReport = () => {
           />
         </PCard>
       </PForm>
+      <PModal
+        open={viewModal}
+        title={"Approver History"}
+        width={1000}
+        onCancel={() => {
+          setViewModal(false);
+        }}
+        maskClosable={false}
+        components={
+          <DataTable
+            bordered
+            header={modalheader()}
+            loading={apporveStatusLoading}
+            data={apporveStatus}
+          />
+        }
+      />
     </>
   ) : (
     <NotPermittedPage />
