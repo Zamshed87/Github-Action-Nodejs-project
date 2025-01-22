@@ -1571,6 +1571,7 @@ import DepositeType from "modules/configuration/depositeType";
 import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
 import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
 import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
+import TurnOver from "modules/timeSheet/reports/turnOverReport";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1955,6 +1956,10 @@ export const routingList = [
   {
     path: "/profile/reports/attendanceLogs",
     component: AttendanceLog,
+  },
+  {
+    path: "/profile/reports/turnover",
+    component: TurnOver,
   },
   {
     path: "/profile/reports/foodAllowenceReport",
