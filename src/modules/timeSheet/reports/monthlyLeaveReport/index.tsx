@@ -413,24 +413,14 @@ const MonthlyLeaveReport = () => {
         width: 100,
       },
       {
-        title: "Approved",
+        title: "Status",
         dataIndex: "IsApprove",
         render: (_: any, rec: any) => (
           <div className="d-flex align-items-center justify-content-center">
             <div>
               {rec?.IsApprove === true && <Tag color="success">Approved</Tag>}
-              {rec?.IsApprove === false && <Tag color="warning">Pending</Tag>}
-            </div>
-          </div>
-        ),
-        width: 100,
-      },
-      {
-        title: "Rejected",
-        dataIndex: "IsReject",
-        render: (_: any, rec: any) => (
-          <div className="d-flex align-items-center justify-content-center">
-            <div>
+              {(rec?.IsApprove === false || rec?.IsApprove === null) &&
+                rec?.IsReject === false && <Tag color="warning">Pending</Tag>}
               {rec?.IsReject === true && <Tag color="red">Rejected</Tag>}
             </div>
           </div>
