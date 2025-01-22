@@ -29,18 +29,26 @@ import { debounce } from "lodash";
 import { numberWithCommas } from "utility/numberWithCommas";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import { todayDate } from "utility/todayDate";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const EmOverTimeReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
     profileData: { buId, wgId, employeeId, orgId },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 102),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -131,13 +139,6 @@ const EmOverTimeReport = () => {
 
     console.log(pagination, pages);
 
-    const workplaceList =
-      values?.workplace?.length > 0
-        ? `${values?.workplace
-            ?.map((item: any) => item?.intWorkplaceId)
-            .join(",")}`
-        : "";
-
     landingApi.action({
       urlKey: "OvertimeReport",
       method: "GET",
@@ -145,9 +146,19 @@ const EmOverTimeReport = () => {
         PartType: "CalculatedHistoryReportForAllEmployee",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
+        WorkplaceGroupId: wgId,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         IsPaginated: true,
@@ -309,13 +320,25 @@ const EmOverTimeReport = () => {
             }}
             onExport={() => {
               const values = form.getFieldsValue(true);
-              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=excelView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
-                values?.workplaceGroup?.value
-              }&dteFromDate=${moment(values?.fromDate).format(
+              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=excelView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&dteFromDate=${moment(
+                values?.fromDate
+              ).format("YYYY-MM-DD")}&dteToDate=${moment(values?.toDate).format(
                 "YYYY-MM-DD"
-              )}&dteToDate=${moment(values?.toDate).format(
-                "YYYY-MM-DD"
-              )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
+              )}&IsPaginated=false&intPageNo=1&intPageSize=20&departments=${formatFilterValue(
+                values?.department
+              )}&designations=${formatFilterValue(
+                values?.designation
+              )}&WorkplaceGroupList=${
+                values?.workplaceGroup?.value == 0 ||
+                values?.workplaceGroup?.value == undefined
+                  ? decodedToken.workplaceGroupList
+                  : values?.workplaceGroup?.value.toString()
+              }&WorkplaceList=${
+                values?.workplace?.value == 0 ||
+                values?.workplace?.value == undefined
+                  ? decodedToken.workplaceList
+                  : values?.workplace?.value.toString()
+              }`;
               downloadFile(
                 url,
                 `Overtime_Report (${todayDate()})`,
@@ -326,17 +349,30 @@ const EmOverTimeReport = () => {
             printIcon={true}
             pdfExport={() => {
               const values = form.getFieldsValue(true);
-              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=pdfView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${
-                values?.workplaceGroup?.value
-              }&dteFromDate=${moment(values?.fromDate).format(
+              const url = `/PdfAndExcelReport/EmployeeOvertimeReport?strPartName=pdfView&partType=CalculatedHistoryReportForAllEmployee&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&dteFromDate=${moment(
+                values?.fromDate
+              ).format("YYYY-MM-DD")}&dteToDate=${moment(values?.toDate).format(
                 "YYYY-MM-DD"
-              )}&dteToDate=${moment(values?.toDate).format(
-                "YYYY-MM-DD"
-              )}&IsPaginated=false&intPageNo=1&intPageSize=20`;
+              )}&IsPaginated=false&intPageNo=1&intPageSize=20&departments=${formatFilterValue(
+                values?.department
+              )}&designations=${formatFilterValue(
+                values?.designation
+              )}&WorkplaceGroupList=${
+                values?.workplaceGroup?.value == 0 ||
+                values?.workplaceGroup?.value == undefined
+                  ? decodedToken.workplaceGroupList
+                  : values?.workplaceGroup?.value.toString()
+              }&WorkplaceList=${
+                values?.workplace?.value == 0 ||
+                values?.workplace?.value == undefined
+                  ? decodedToken.workplaceList
+                  : values?.workplace?.value.toString()
+              }`;
               getPDFAction(url, setExcelLoading);
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -411,7 +447,7 @@ const EmOverTimeReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered

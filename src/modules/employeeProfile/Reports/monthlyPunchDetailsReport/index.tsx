@@ -37,18 +37,26 @@ import axios from "axios";
 import { fromToDateList } from "modules/timeSheet/reports/helper";
 import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
+import { formatFilterValue } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const MonthlyPunchReportDetails = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
     profileData: { buId, wId, wgId, employeeId, orgId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30337),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -183,10 +191,10 @@ const MonthlyPunchReportDetails = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    const deptList = `${values?.department
-      ?.map((item: any) => item?.value)
-      .join(",")}`;
-    const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
+    // const deptList = `${values?.department
+    //   ?.map((item: any) => item?.value)
+    //   .join(",")}`;
+    // const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
@@ -194,23 +202,33 @@ const MonthlyPunchReportDetails = () => {
         reportType: "monthly_in_out_attendance_report_for_all_employee",
         accountId: orgId,
         businessUnitId: buId,
-        workplaceGroupId: values?.workplaceGroup?.value || wgId,
-        WorkplaceList: values?.workplace?.value || wId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
         employeeId: employeeId,
         isPaginated: true,
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         searchTxt: searchText || "",
-        departments: values?.department?.length > 0 ? deptList : "",
-        designations: values?.designation?.length > 0 ? desigList : "",
+        workplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        workplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
+        //departments: values?.department?.length > 0 ? deptList : "",
+        //designations: values?.designation?.length > 0 ? desigList : "",
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
   //   table column
@@ -244,19 +262,18 @@ const MonthlyPunchReportDetails = () => {
         width: 35,
         align: "center",
       },
-
-      //   {
-      //     title: "Work. Group/Location",
-      //     dataIndex: "strWorkplaceGroup",
-      //     width: 120,
-      //     fixed: "left",
-      //   },
-      //   {
-      //     title: "Workplace/Concern",
-      //     dataIndex: "strWorkplace",
-      //     width: 130,
-      //     fixed: "left",
-      //   },
+      {
+        title: "Work. Group/Location",
+        dataIndex: "strWorkplaceGroup",
+        width: 120,
+        fixed: "left",
+      },
+      {
+        title: "Workplace/Concern",
+        dataIndex: "strWorkplace",
+        width: 130,
+        fixed: "left",
+      },
       {
         title: "Employee Id",
         dataIndex: "EmployeeCode",
@@ -276,7 +293,7 @@ const MonthlyPunchReportDetails = () => {
           );
         },
         fixed: "left",
-        width: 120,
+        width: 200,
       },
 
       {
@@ -344,59 +361,90 @@ const MonthlyPunchReportDetails = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+                  const res = await axios.get(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_in_out_attendance_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
+                      values?.fromDate
+                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
+                      values?.toDate
+                    ).format(
+                      "YYYY-MM-DD"
+                    )}&EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
+                      formatFilterValue(values?.department) || 0
+                    }&designations=${formatFilterValue(
+                      values?.designation || 0
+                    )}&SearchTxt=${
+                      values?.search || ""
+                    }&PageSize=1000&IsPaginated=false&WorkplaceGroupList=${
+                      values?.workplaceGroup?.value == 0 ||
+                      values?.workplaceGroup?.value == undefined
+                        ? decodedToken.workplaceGroupList
+                        : values?.workplaceGroup?.value.toString()
+                    }&WorkplaceList=${
+                      values?.workplace?.value == 0 ||
+                      values?.workplace?.value == undefined
+                        ? decodedToken.workplaceList
+                        : values?.workplace?.value.toString()
+                    }`
+                  );
+                  if (res?.data) {
+                    setExcelLoading(true);
+                    if (res?.data < 1) {
+                      setExcelLoading(false);
+                      return toast.error("No Attendance Data Found");
+                    }
 
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
+                    const newData = res?.data?.map((item: any, index: any) => {
                       return {
                         ...item,
                         sl: index + 1,
                       };
-                    }
-                  );
-                  createCommonExcelFile({
-                    titleWithDate: `Monthly Punch Details Report - ${dateFormatter(
-                      moment(values?.fromDate).format("YYYY-MM-DD")
-                    )} to ${dateFormatter(
-                      moment(values?.toDate).format("YYYY-MM-DD")
-                    )}`,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column(
-                      moment(values?.fromDate).format("YYYY-MM-DD"),
-                      moment(values?.toDate).format("YYYY-MM-DD")
-                    ),
-                    getTableData: () =>
-                      getTableDataMonthlyAttendance(
-                        newData,
-                        Object.keys(
-                          column(
-                            moment(values?.fromDate).format("YYYY-MM-DD"),
-                            moment(values?.toDate).format("YYYY-MM-DD")
-                          )
-                        )
-                      ),
+                    });
 
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      C: 30,
-                      B: 15,
-                      D: 30,
-                      E: 25,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
+                    createCommonExcelFile({
+                      titleWithDate: `Monthly Punch Details Report - ${dateFormatter(
+                        moment(values?.fromDate).format("YYYY-MM-DD")
+                      )} to ${dateFormatter(
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      )}`,
+                      fromDate: "",
+                      toDate: "",
+                      buAddress: (buDetails as any)?.strAddress,
+                      businessUnit: values?.workplaceGroup?.value
+                        ? (buDetails as any)?.strWorkplace
+                        : buName,
+                      tableHeader: column(
+                        moment(values?.fromDate).format("YYYY-MM-DD"),
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      ),
+                      getTableData: () =>
+                        getTableDataMonthlyAttendance(
+                          newData,
+                          Object.keys(
+                            column(
+                              moment(values?.fromDate).format("YYYY-MM-DD"),
+                              moment(values?.toDate).format("YYYY-MM-DD")
+                            )
+                          )
+                        ),
+
+                      // eslint-disable-next-line @typescript-eslint/no-empty-function
+                      getSubTableData: () => {},
+                      subHeaderInfoArr: [],
+                      subHeaderColumn: [],
+                      tableFooter: [],
+                      extraInfo: {},
+                      tableHeadFontSize: 10,
+                      widthList: {
+                        C: 30,
+                        B: 15,
+                        D: 30,
+                        E: 25,
+                      },
+                      commonCellRange: "A1:J1",
+                      CellAlignment: "left",
+                    });
+                    setExcelLoading(false);
+                  }
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
@@ -406,7 +454,8 @@ const MonthlyPunchReportDetails = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -530,7 +579,7 @@ const MonthlyPunchReportDetails = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
