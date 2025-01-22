@@ -81,10 +81,8 @@ export const apiList = {
   GetAllEmpExpenseType: "/SaasMasterData/GetAllEmpExpenseType",
   SaveEmpExpenseType: "/SaasMasterData/SaveEmpExpenseType",
   GetAllReligion: "/MasterData/GetAllReligion",
-  // ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
-  ApprovalPipeline: "/ApprovalConfiguration/GetAllApprovalConfig",
+  ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
   ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
-  // ApprovalPipelineDDL: "/Enum/GetEnums",
   BankBranchDDL: "/Employee/BankBranchDDL",
   AccountBankDetailsCRUD: "/SaasMasterData/AccountBankDetailsCRUD",
   AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
@@ -98,14 +96,10 @@ export const apiList = {
     "SaasMasterData/CreateOrUpdateEmpIdCardExternalInfo",
   GetAllTaxchallanConfig: "/SaasMasterData/GetAllTaxchallanConfig",
   BankBranchLanding: "/SaasMasterData/BankBranchLanding",
-  CreateApprovalConfiguration:
-    "/ApprovalConfiguration/CreateApprovalConfiguration",
-  UpdateApprovalConfiguration:
-    "/ApprovalConfiguration/UpdateApprovalConfiguration",
-  // ApprovalPipelineHeaderDetailsById:
-  //   "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
+  ApprovalPipelineCreateNUpdate:
+    "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
   ApprovalPipelineHeaderDetailsById:
-    "/ApprovalConfiguration/GetApprovalConfigDetails",
+    "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
   GetAllTaxBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLandingForTax",
   PFLanding: "/Employee/PfLanding",

@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  peopledesk-v2-front:
+    image: iboslimitedbd/#{Deployment}#:#{Build.BuildId}#
+    ports:
+      - "81:80"
+    restart: always

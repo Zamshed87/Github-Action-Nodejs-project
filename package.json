@@ -55,13 +55,11 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.0.0",
-    "react-sortablejs": "^6.1.4",
     "react-to-print": "^3.0.1",
     "react-toastify": "^7.0.4",
     "redux": "^4.1.0",
     "redux-persist": "^6.0.0",
     "sass": "^1.69.5",
-    "sortablejs": "^1.15.6",
     "swiper": "6.8.2",
     "yarn": "^1.22.19",
     "yup": "^0.32.9"
