@@ -296,4 +296,5 @@ export const apiList = {
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   DepositType: "DepositType",
   Deposit: "Deposit",
+  DepositDetails: "Deposit/GetDetails",
 };
