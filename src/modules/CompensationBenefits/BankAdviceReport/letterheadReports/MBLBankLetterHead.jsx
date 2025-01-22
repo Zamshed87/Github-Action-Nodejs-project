@@ -81,7 +81,7 @@ export default function MBLBankLetterHead({
                 /-&nbsp;
                 {`(${landingViewPdf?.[0]?.TotalBankPayInWords} Only)`}&nbsp;
                 from the Current Account no.&nbsp;
-                {landingViewPdf?.[0]?.CompAccountNumber}&nbsp;{`(Main Branch)`}.
+                {landingViewPdf?.[0]?.CompAccountNumber}.
               </p>
               <p style={{ color: "black", fontSize: "14px" }}>
                 Please take necessary action for transferring the amount against
@@ -103,11 +103,7 @@ export default function MBLBankLetterHead({
                   <p style={{ color: "black", fontSize: "14px" }}>
                     <b style={{ color: "black", fontSize: "14px" }}>
                       {landingViewPdf?.[0]?.WorkplaceName}
-                    </b>
-                  </p>
-                  <p style={{ color: "black", fontSize: "14px" }}>
-                    <b style={{ color: "black", fontSize: "14px" }}>
-                      {landingViewPdf?.[0]?.CompAddress}
+                      {`(${landingViewPdf?.[0]?.CompAddress})`}
                     </b>
                   </p>
                   <p style={{ color: "black", fontSize: "14px" }}>
@@ -124,8 +120,7 @@ export default function MBLBankLetterHead({
                   </p>
                   <p style={{ color: "black", fontSize: "14px" }}>
                     <b style={{ color: "black", fontSize: "14px" }}>
-                      C/D AC NO # {landingViewPdf?.[0]?.CompAccountNumber}{" "}
-                      {`(Main Branch)`}
+                      C/D AC NO # {landingViewPdf?.[0]?.CompAccountNumber}
                     </b>
                   </p>
                 </p>
