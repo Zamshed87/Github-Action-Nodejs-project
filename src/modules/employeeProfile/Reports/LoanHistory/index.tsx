@@ -28,19 +28,27 @@ import { debounce } from "lodash";
 
 import { LightTooltip } from "common/LightTooltip";
 import { InfoOutlined } from "@mui/icons-material";
-import { getPDFAction } from "utility/downloadFile";
+import { getPDFAction, postPDFAction } from "utility/downloadFile";
+import { formatFilterValueList } from "utility/filter/helper";
+import PFilter from "utility/filter/PFilter";
 
 const EmLoanHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
     profileData: { orgId, wId, buId, wgId, employeeId },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 99),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -135,8 +143,8 @@ const EmLoanHistory = () => {
       payload: {
         businessUnitId: buId,
         loanTypeId: 0,
-        departmentId: 0,
-        designationId: 0,
+        departmentIdList: formatFilterValueList(values?.department),
+        designationIdList: formatFilterValueList(values?.designation),
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.todate).format("YYYY-MM-DD"),
@@ -148,8 +156,17 @@ const EmLoanHistory = () => {
         pageNo: pagination?.current || 1,
         ispaginated: true,
         searchText: searchText || "",
-        workplaceGroupId: values?.workplaceGroup?.value,
-        workplaceId: values?.workplace?.value,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
@@ -337,26 +354,52 @@ const EmLoanHistory = () => {
               });
             }}
             onExport={() => {
+              // const values = form.getFieldsValue(true);
+              // getPDFAction(
+              //   `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${
+              //     values?.workplaceGroup?.value
+              //   }&DepartmentId=${0}&DesignationId=${
+              //     values?.designation?.value || 0
+              //   }&EmployeeId=${0}&LoanTypeId=${
+              //     values?.loanType?.value || 0
+              //   }&FromDate=${moment(values?.fromDate).format(
+              //     "YYYY-MM-DD"
+              //   )}&ToDate=${moment(values?.toDate).format(
+              //     "YYYY-MM-DD"
+              //   )}&MinimumAmount=${
+              //     values?.minimumAmount || 0
+              //   }&MaximumAmount=${0}&ApplicationStatus=${""}&InstallmentStatus=${""}`,
+              //   setLoading
+              // );
               const values = form.getFieldsValue(true);
-              getPDFAction(
-                `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value
-                }&DepartmentId=${0}&DesignationId=${
-                  values?.designation?.value || 0
-                }&EmployeeId=${0}&LoanTypeId=${
-                  values?.loanType?.value || 0
-                }&FromDate=${moment(values?.fromDate).format(
-                  "YYYY-MM-DD"
-                )}&ToDate=${moment(values?.toDate).format(
-                  "YYYY-MM-DD"
-                )}&MinimumAmount=${
-                  values?.minimumAmount || 0
-                }&MaximumAmount=${0}&ApplicationStatus=${""}&InstallmentStatus=${""}`,
+              const payload = {
+                businessUnitId: buId,
+                loanTypeId: 0,
+                departmentIdList: formatFilterValueList(values?.department),
+                designationIdList: formatFilterValueList(values?.designation),
+                employeeId: 0,
+                fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+                toDate: moment(values?.todate).format("YYYY-MM-DD"),
+                minimumAmount: 0,
+                maximumAmount: 0,
+                applicationStatus: "",
+                installmentStatus: "",
+                pageSize: 1000,
+                pageNo: 1,
+                ispaginated: false,
+                searchText: "",
+                workplaceGroupId: values?.workplaceGroup?.value || 0,
+                workplaceId: values?.workplace?.value || 0,
+              };
+              postPDFAction(
+                "/PdfAndExcelReport/LoanReportAll",
+                payload,
                 setLoading
               );
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter form={form} landingApiCall={landingApiCall} />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -430,7 +473,7 @@ const EmLoanHistory = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
