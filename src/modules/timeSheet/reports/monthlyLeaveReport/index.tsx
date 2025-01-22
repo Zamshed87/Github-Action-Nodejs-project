@@ -379,7 +379,6 @@ const MonthlyLeaveReport = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                console.log(rec);
                 getapporveStatus(
                   `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntLeaveTypeId}&employeeId=${rec.IntEmployeeId}`,
                   () => {
