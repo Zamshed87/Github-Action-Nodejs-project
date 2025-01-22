@@ -16,6 +16,9 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getFiscalYearForNowOnLoad } from "./helper";
+import FormikCheckBox from "common/FormikCheckbox";
+import { gray900, greenColor } from "utility/customColor";
+import IConfirmModal from "common/IConfirmModal";
 
 const initData = {
   fromEmployee: "",
@@ -72,9 +75,22 @@ const CopyKpi = () => {
       kpiForId: 1,
       objectiveId: 0,
       kpiId: 0,
+      isTarget: values?.isTarget,
     };
     saveCopyKpi(`/PMS/CopyKPI`, payload, null, true);
     cb && cb();
+  };
+
+  const doConfirmation = (setFieldValue) => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do you want to clone target?`,
+      yesAlertFunc: () => {
+        setFieldValue("isTarget", true);
+      },
+      noAlertFunc: () => setFieldValue("isTarget", false),
+    };
+    IConfirmModal(confirmObject);
   };
 
   const { values, setFieldValue } = useFormik({
@@ -110,6 +126,26 @@ const CopyKpi = () => {
             <h2 style={{ color: "#344054" }}>Clone KPI</h2>
           </div>
           <ul className="d-flex flex-wrap">
+            <FormikCheckBox
+              label="With Target"
+              styleObj={{
+                margin: "0 auto!important",
+                color: gray900,
+                checkedColor: greenColor,
+                padding: "1px",
+              }}
+              name="isTarget"
+              color={greenColor}
+              checked={values?.isTarget}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  doConfirmation(setFieldValue);
+                } else {
+                  setFieldValue("isTarget", false);
+                }
+              }}
+              // disabled={item?.ApplicationStatus === "Approved"}
+            />
             <li>
               <PrimaryButton
                 type="button"
