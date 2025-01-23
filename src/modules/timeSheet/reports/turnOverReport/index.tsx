@@ -295,7 +295,7 @@ const TurnOver = () => {
                           <p>
                             Total New Hired:{" "}
                             <strong>
-                              {landingApi?.data?.data?.totalNewHired}
+                              {landingApi?.data?.totalNewHired}
                             </strong>{" "}
                           </p>
                         </div>
@@ -313,13 +313,13 @@ const TurnOver = () => {
                           <p>
                             Total Transfer In:{" "}
                             <strong>
-                              {landingApi?.data?.data?.totalTransferIn}
+                              {landingApi?.data?.totalTransferIn}
                             </strong>{" "}
                           </p>
                           <p>
                             Total Transfer Out:{" "}
                             <strong>
-                              {landingApi?.data?.data?.totalTransferOut}
+                              {landingApi?.data?.totalTransferOut}
                             </strong>
                           </p>
                         </div>
@@ -336,7 +336,7 @@ const TurnOver = () => {
                           <p>
                             Total Separated:{" "}
                             <strong>
-                              {landingApi?.data?.data?.totalSeparated}
+                              {landingApi?.data?.totalSeparated}
                             </strong>
                           </p>
                         </div>
