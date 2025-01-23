@@ -16,7 +16,6 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
-import { empBasicInfo } from "../helper";
 import NoResult from "common/NoResult";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import { todayDate } from "utility/todayDate";
@@ -161,6 +160,10 @@ const TurnOver = () => {
       {
         title: "Ending Head Count",
         dataIndex: "endingHeadCount",
+      },
+      {
+        title: "Employee Turnover Rate (%)",
+        dataIndex: "employeeTurnoverRate",
       },
     ];
   };
