@@ -271,7 +271,7 @@ export const SecurityDepositLanding = () => {
     {
       title: "Deposit Type",
       dataIndex: "depositTypeName",
-      width: 100,
+      width: 80,
     },
     {
       title: "Employee Name",
@@ -285,27 +285,27 @@ export const SecurityDepositLanding = () => {
         );
       },
 
-      width: 50,
+      width: 100,
     },
     {
       title: "Employee Code",
       dataIndex: "employeeCode",
-      width: 30,
+      width: 100,
     },
     {
       title: "Department",
       dataIndex: "department",
-      width: 30,
+      width: 100,
     },
     {
       title: "Designation",
       dataIndex: "designation",
-      width: 30,
+      width: 100,
     },
     {
       title: "Deposit Amount",
       dataIndex: "depositAmount",
-      width: 30,
+      width: 100,
     },
     {
       title: "Deposits Month Year",
@@ -317,7 +317,7 @@ export const SecurityDepositLanding = () => {
     {
       title: "comment",
       dataIndex: "comment",
-      width: 30,
+      width: 100,
     },
     {
       title: "Status",
@@ -337,7 +337,7 @@ export const SecurityDepositLanding = () => {
           </div>
         );
       },
-      width: 30,
+      width: 100,
     },
 
     {
