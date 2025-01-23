@@ -5,6 +5,7 @@ const CommonEmpInfo = ({
   designationName,
   departmentName,
   classes = "ml-3",
+  children = <></>,
 }) => {
   return (
     <div
@@ -25,6 +26,7 @@ const CommonEmpInfo = ({
           Department :{" "}
           <span style={{ fontWeight: "500" }}>{departmentName}</span>
         </div>
+        {children}
       </>
     </div>
   );

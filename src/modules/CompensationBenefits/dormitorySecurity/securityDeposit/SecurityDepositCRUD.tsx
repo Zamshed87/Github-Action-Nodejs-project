@@ -32,6 +32,7 @@ import { todayDate } from "utility/todayDate";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
 import { processDataFromExcelSecurityDeposit } from "./helper";
+import moment from "moment";
 
 export const SecurityDepositCRUD = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,6 @@ export const SecurityDepositCRUD = () => {
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  const deleteProposal = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const securityTypeDDL = useApiRequest({});
   const createUpdateDeposite = useApiRequest({});
@@ -161,13 +161,10 @@ export const SecurityDepositCRUD = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetIncrementProposalLoader",
+      urlKey: "DepositMasterReport",
       method: "GET",
       params: {
-        supervisorId: values?.supervisor?.value,
-        IncrementYear: `${values?.intYear?.value}`,
-        isInserted: values?.isInserted,
-        // isInserted: "true",
+        departmentId: values?.department?.value || 0,
       },
       onSuccess: (res) => {
         const modify = res?.map((i: any, index: number) => {
@@ -194,19 +191,15 @@ export const SecurityDepositCRUD = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepartmentByAccount",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-
         accountId: orgId,
       },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.strDepartment;
+          res.data[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -215,19 +208,15 @@ export const SecurityDepositCRUD = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     securityTypeDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepositType",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-
-        accountId: orgId,
+        id: orgId,
       },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.depositTypeName;
+          res.data[i].value = item?.id;
         });
       },
     });
@@ -272,7 +261,7 @@ export const SecurityDepositCRUD = () => {
     // },
     {
       title: "Employee Code",
-      dataIndex: "employeeName",
+      dataIndex: "employeeCode",
       width: 100,
     },
     {
@@ -429,15 +418,33 @@ export const SecurityDepositCRUD = () => {
   //   return current && current < fromDateMoment.startOf("day");
   // };
   const viewHandler = async () => {
+    const values = form.getFieldsValue(true);
+
     setSelectedRow([]);
-    await form
-      .validateFields()
-      .then(() => {
-        landingApiCall();
-      })
-      .catch(() => {
-        console.error("Validate Failed:");
-      });
+    // await form
+    //   .validateFields()
+    //   .then(() => {
+    if (values?.employee?.value) {
+      setLanding([
+        {
+          employeeId: values?.employee?.value,
+          employeeCode: values?.employee?.employeeCode,
+          employeeName: values?.employee?.employeeNameWithCode,
+          departmentName: empDepartmentDDL?.data?.data?.find(
+            (i: any) => i?.value === values?.employee?.departmentId
+          )?.label,
+          designationName: values?.employee?.designationName,
+          depositeMoney: 0,
+          remarks: "",
+        },
+      ]);
+    } else {
+      landingApiCall();
+    }
+    // })
+    // .catch(() => {
+    //   console.error("Validate Failed:");
+    // });
   };
   const onFinish = () => {
     const values = form.getFieldsValue(true);
@@ -450,19 +457,22 @@ export const SecurityDepositCRUD = () => {
     );
 
     if (
-      updatedSelectedRows?.filter((i) => i?.incrementProposalAmount === 0)
-        ?.length > 0
+      updatedSelectedRows?.filter((i) => i?.depositeMoney === 0)?.length > 0
     ) {
-      return toast.warn("Please fill up the input fields");
+      return toast.warn("Deposit Money should be greate than 0");
     }
-
+    console.log(
+      moment(values?.monthYear).startOf("month").format("YYYY-MM-DD")
+    );
     const modify = updatedSelectedRows?.map((i) => {
       return {
         ...i,
         depositTypeId: values?.securityTypeDDL?.value || 0,
         employeeId: i?.employeeId,
         depositAmount: i?.depositeMoney,
-        depositDate: values?.monthYear,
+        depositDate: moment(values?.monthYear)
+          .startOf("month")
+          .format("YYYY-MM-DD"),
         comment: i?.remarks,
         // actionBy: employeeId,
       };
@@ -532,9 +542,11 @@ export const SecurityDepositCRUD = () => {
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
+                  showSearch
+                  allowClear
                   options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
+                    empDepartmentDDL?.data?.data?.length > 0
+                      ? empDepartmentDDL?.data?.data
                       : []
                   }
                   name="department"
@@ -543,6 +555,7 @@ export const SecurityDepositCRUD = () => {
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       department: op,
+                      employee: undefined,
                     });
                   }}
                   // rules={[
@@ -564,6 +577,7 @@ export const SecurityDepositCRUD = () => {
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       employee: op,
+                      department: undefined,
                     });
                     // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
@@ -602,8 +616,8 @@ export const SecurityDepositCRUD = () => {
               <Col md={6} sm={24}>
                 <PSelect
                   options={
-                    securityTypeDDL?.data.length > 0
-                      ? securityTypeDDL?.data
+                    securityTypeDDL?.data?.data?.length > 0
+                      ? securityTypeDDL?.data?.data
                       : []
                   }
                   name="securityTypeDDL"
@@ -717,7 +731,7 @@ export const SecurityDepositCRUD = () => {
               // landingApi?.data ||
               landing || []
             }
-            loading={landingApi?.loading}
+            // loading={landingApi?.loading}
             header={header}
             // pagination={{
             //   pageSize: landingApi?.data?.pageSize,

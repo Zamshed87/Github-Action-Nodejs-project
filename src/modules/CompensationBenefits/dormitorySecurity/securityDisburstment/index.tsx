@@ -47,6 +47,7 @@ export const SecurityDisbursementLanding = () => {
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const disbursementApi = useApiRequest({});
+  const deleteApi = useApiRequest({});
 
   const CommonEmployeeDDL = useApiRequest([]);
 
@@ -69,20 +70,23 @@ export const SecurityDisbursementLanding = () => {
       },
     });
   };
-  const saveDisbursement = (value: any = "") => {
+  const saveDisbursement = () => {
     // if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
     disbursementApi?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "DepositDisbursement",
       method: "post",
       payload: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        searchText: value,
+        employeeId: modalData[0]?.employeeId,
+        disbursementAmount: modalData[0]?.money,
+        disbursementDate: moment(modalData[0]?.date).format("YYYY-MM-DD"),
+        comment: modalData[0]?.remarks,
       },
       toast: true,
-      onSuccess: (res) => {
+      onSuccess: () => {
         setOpen(false);
+        setModalData([]);
+        landingApiCall();
       },
     });
   };
@@ -90,7 +94,7 @@ export const SecurityDisbursementLanding = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepartmentByAccount",
       method: "GET",
       params: {
         businessUnitId: buId,
@@ -99,10 +103,10 @@ export const SecurityDisbursementLanding = () => {
 
         accountId: orgId,
       },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.strDepartment;
+          res.data[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -188,35 +192,27 @@ export const SecurityDisbursementLanding = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetIncrementProposalLoader",
+      urlKey: "DepositMasterReport",
       method: "GET",
       params: {
-        fromDate: values?.fromDate
-          ? moment(values?.fromDate).format("YYYY-MM-DD")
-          : todayDate(),
-        toDate: values?.toDate
-          ? moment(values?.toDate).format("YYYY-MM-DD")
-          : todayDate(),
+        departmentId: values?.department?.value || 0,
       },
     });
   };
 
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
-
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
+  const deleteDepositById = (item: any) => {
+    deleteApi?.action({
+      urlKey: "DepositDisbursement",
+      method: "DELETE",
+      params: {
+        id: item?.id,
+      },
+      toast: true,
+      onSuccess: () => {
+        landingApiCall();
+      },
+    });
+  };
   const header: any = [
     {
       title: "SL",
@@ -226,22 +222,22 @@ export const SecurityDisbursementLanding = () => {
     },
     {
       title: "Employee Code",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "employeeCode",
       width: 100,
     },
     {
       title: "Employee Name",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "employeeName",
       width: 100,
     },
     {
       title: "Designation",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "designation",
       width: 100,
     },
     {
       title: "Department",
-      dataIndex: "Department",
+      dataIndex: "department",
       width: 100,
     },
     // {
@@ -253,7 +249,7 @@ export const SecurityDisbursementLanding = () => {
 
     {
       title: "Total Deposits Money",
-      dataIndex: "designationName",
+      dataIndex: "totalDepositsMoney",
       width: 100,
     },
 
@@ -284,18 +280,24 @@ export const SecurityDisbursementLanding = () => {
                 //   e.stopPropagation();
                 // }
                 setModalData([
-                  { ...item, date: moment(todayDate()), money: 0, remarks: "" },
+                  {
+                    ...item,
+                    date: moment(todayDate()),
+                    money: item?.TotalDepositsMoney,
+                    totalDepositsMoney: item?.TotalDepositsMoney,
+                    remarks: "",
+                  },
                 ]);
                 setOpen(true);
                 //   setId(rec);
               },
             },
-            // {
-            //   type: "delete",
-            //   onClick: () => {
-            //     // deleteProposalById(item);
-            //   },
-            // },
+            {
+              type: "delete",
+              onClick: () => {
+                deleteDepositById(item);
+              },
+            },
           ]}
         />
       ),
@@ -324,7 +326,7 @@ export const SecurityDisbursementLanding = () => {
     },
     {
       title: "Total Deposits Money",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "totalDepositsMoney",
       width: 100,
     },
     {
@@ -424,9 +426,11 @@ export const SecurityDisbursementLanding = () => {
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
+                  allowClear
+                  showSearch
                   options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
+                    empDepartmentDDL?.data?.data?.length > 0
+                      ? empDepartmentDDL?.data.data
                       : []
                   }
                   name="department"
@@ -448,6 +452,7 @@ export const SecurityDisbursementLanding = () => {
               <Col md={5} sm={12} xs={24}>
                 <PSelect
                   allowClear
+                  showSearch
                   name="employee"
                   label="Employee"
                   placeholder="Search Min 2 char"
@@ -462,7 +467,7 @@ export const SecurityDisbursementLanding = () => {
                   // onSearch={(value) => {
                   //   getEmployee(value);
                   // }}
-                  showSearch
+
                   // filterOption={false}
                   // rules={[
                   //   {
@@ -523,7 +528,9 @@ export const SecurityDisbursementLanding = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
             // pagination={{

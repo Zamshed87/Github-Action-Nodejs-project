@@ -43,6 +43,7 @@ export const SecurityDepositLanding = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<any>({});
+  const [typeId, setTypeId] = useState<any>({});
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 8),
@@ -231,10 +232,15 @@ export const SecurityDepositLanding = () => {
                   params: {
                     month: item?.monthId,
                     year: item?.yearId,
-                    depositType: item?.id,
+                    depositType: item?.depositTypeId,
                   },
                   onSuccess: () => {
                     setOpen(true);
+                    setTypeId({
+                      id: item?.depositTypeId,
+                      month: item?.monthId,
+                      year: item?.yearId,
+                    });
                   },
                 });
               },
@@ -285,7 +291,7 @@ export const SecurityDepositLanding = () => {
         );
       },
 
-      width: 100,
+      width: 150,
     },
     {
       title: "Employee Code",
@@ -325,14 +331,15 @@ export const SecurityDepositLanding = () => {
       render: (_: any, rec: any) => {
         return (
           <div>
-            {rec?.status === "Active" ? (
+            {rec?.status === "Approved" ? (
               <Tag color="green">{rec?.status}</Tag>
-            ) : rec?.status === "Inactive" ? (
-              <Tag color="red">{rec?.status}</Tag>
-            ) : rec?.status === "Pending" ? (
+            ) : // ) : rec?.status === "Inactive" ? (
+            //   <Tag color="red">{rec?.status}</Tag>
+            rec?.status === "Pending" ? (
               <Tag color="orange">{rec?.status}</Tag>
             ) : (
-              <Tag color="gold">{rec?.status}</Tag>
+              <Tag color="red">{rec?.status}</Tag>
+              // <Tag color="gold">{rec?.status}</Tag>
             )}
           </div>
         );
@@ -379,7 +386,15 @@ export const SecurityDepositLanding = () => {
       },
       toast: true,
       onSuccess: () => {
-        landingApiCall();
+        detailsApi?.action({
+          urlKey: "DepositDetails",
+          method: "GET",
+          params: {
+            month: typeId?.month,
+            year: typeId?.year,
+            depositType: typeId?.id,
+          },
+        });
       },
     });
   };

@@ -47,6 +47,7 @@ export const SecurityMoneyReportLanding = () => {
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const disbursementApi = useApiRequest({});
+  const detailsApi = useApiRequest({});
 
   const CommonEmployeeDDL = useApiRequest([]);
 
@@ -90,19 +91,15 @@ export const SecurityMoneyReportLanding = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepartmentByAccount",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-
         accountId: orgId,
       },
       onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.strDepartment;
+          res.data[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -188,15 +185,12 @@ export const SecurityMoneyReportLanding = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetIncrementProposalLoader",
+      urlKey: "DepositMasterReport",
       method: "GET",
       params: {
-        fromDate: values?.fromDate
-          ? moment(values?.fromDate).format("YYYY-MM-DD")
-          : todayDate(),
-        toDate: values?.toDate
-          ? moment(values?.toDate).format("YYYY-MM-DD")
-          : todayDate(),
+        departmentId: values?.department?.value || 0,
+        strSearch: values?.employee?.value,
+        deposittypeId: values?.status?.value,
       },
     });
   };
@@ -226,22 +220,22 @@ export const SecurityMoneyReportLanding = () => {
     },
     {
       title: "Employee Code",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "employeeCode",
       width: 100,
     },
     {
       title: "Employee Name",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "employeeName",
       width: 100,
     },
     {
       title: "Designation",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "designation",
       width: 100,
     },
     {
       title: "Department",
-      dataIndex: "Department",
+      dataIndex: "department",
       width: 100,
     },
     // {
@@ -253,12 +247,12 @@ export const SecurityMoneyReportLanding = () => {
 
     {
       title: "Total Deposits Money",
-      dataIndex: "designationName",
+      dataIndex: "totalDepositsMoney",
       width: 100,
     },
     {
       title: "Disbursement Amount",
-      dataIndex: "designationName",
+      dataIndex: "disbursementAmount",
       width: 100,
     },
 
@@ -273,113 +267,77 @@ export const SecurityMoneyReportLanding = () => {
             {
               type: "view",
               onClick: (e: any) => {
-                if (!employeeFeature?.isEdit) {
-                  return toast.warn("You don't have permission");
-                  e.stopPropagation();
-                }
-                //   setOpen(true);
-                //   setId(rec);
+                detailsApi?.action({
+                  urlKey: "DepositDetailReportByEmployee",
+                  method: "GET",
+                  params: {
+                    employeeId: item?.monthId,
+                  },
+                  onSuccess: () => {
+                    setOpen(true);
+                  },
+                });
               },
             },
-
-            // {
-            //   type: "delete",
-            //   onClick: () => {
-            //     // deleteProposalById(item);
-            //   },
-            // },
           ]}
         />
       ),
     },
   ];
-  const disburseHeader: any = [
-    //  Custom Input Columns
+  const detailsHeader: any = [
     {
-      title: "Disbursement Date",
-      width: 150,
-
-      render: (_value: any, row: any, index: number) => (
-        <PInput
-          type="date"
-          value={row?.date}
-          onChange={(value) => {
-            form.setFieldsValue({
-              toDate: value,
-            });
-            const temp = [...modalData];
-            temp[index].date = moment(value).format("YYYY-MM-DD");
-            setModalData(temp);
-          }}
-        />
-      ),
+      title: "SL",
+      render: (_value: any, _row: any, index: number) => index + 1,
+      align: "center",
+      width: 30,
     },
+
     {
-      title: "Total Deposits Money",
+      title: "Type",
       dataIndex: "workplaceGroupName",
       width: 100,
     },
     {
-      title: "Disbursement Amount",
-      width: 150,
-
-      render: (_value: any, row: any, index: number) => (
-        <PInput
-          type="number"
-          value={+row?.money || 0}
-          placeholder="Decimal Number"
-          onChange={(e) => {
-            if ((e as number) < 0) {
-              return toast.warn("number must be positive");
-            }
-
-            const temp = [...modalData];
-            temp[index].money = e;
-
-            setModalData(temp);
-          }}
-        />
-      ),
+      title: "Deposits Type",
+      dataIndex: "workplaceGroupName",
+      width: 100,
     },
     {
-      title: "Comment",
-      width: 150,
-
-      render: (_value: any, row: any, index: number) => (
-        <PInput
-          type="text"
-          value={row?.remarks}
-          placeholder="Textbox"
-          onChange={(e) => {
-            console.log(e.target?.value);
-            const temp = [...modalData];
-            temp[index].remarks = e.target?.value;
-            setModalData(temp);
-          }}
-        />
-      ),
+      title: "Deposits Time",
+      dataIndex: "workplaceGroupName",
+      width: 100,
     },
-
     {
-      title: "",
-      width: 30,
-
-      align: "center",
-      render: (_: any, item: any) => (
-        <TableButton
-          buttonsList={
-            [
-              // {
-              //   type: "delete",
-              //   onClick: () => {
-              //     deleteProposalById(item);
-              //   },
-              // },
-            ]
-          }
-        />
-      ),
+      title: "Amount",
+      dataIndex: "workplaceGroupName",
+      width: 100,
     },
+    {
+      title: "Comments",
+      dataIndex: "workplaceGroupName",
+      width: 100,
+    },
+
+    // {
+    //   title: "",
+    //   width: 30,
+
+    //   align: "center",
+    //   render: (_: any, item: any) => (
+    //     <TableButton
+    //       buttonsList={
+    //         [
+    //           // {
+    //           //   type: "delete",
+    //           //   onClick: () => {
+    //           //     deleteProposalById(item);
+    //           //   },
+    //           // },
+    //         ]
+    //       }
+    //     />
+    //   ),
+    // },
   ];
   // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   //   const { fromDate } = form.getFieldsValue(true);
@@ -416,9 +374,11 @@ export const SecurityMoneyReportLanding = () => {
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
+                  allowClear
+                  showSearch
                   options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
+                    empDepartmentDDL?.data?.data?.length > 0
+                      ? empDepartmentDDL?.data?.data
                       : []
                   }
                   name="department"
@@ -440,6 +400,7 @@ export const SecurityMoneyReportLanding = () => {
               <Col md={5} sm={12} xs={24}>
                 <PSelect
                   allowClear
+                  showSearch
                   name="employee"
                   label="Employee"
                   placeholder="Search Min 2 char"
@@ -454,7 +415,6 @@ export const SecurityMoneyReportLanding = () => {
                   // onSearch={(value) => {
                   //   getEmployee(value);
                   // }}
-                  showSearch
                   // filterOption={false}
                   // rules={[
                   //   {
@@ -556,7 +516,7 @@ export const SecurityMoneyReportLanding = () => {
           width={900}
           open={open}
           onCancel={() => setOpen(false)}
-          title={`Disbursement`}
+          title={`Security Money Report (Details)`}
           components={
             <>
               <PCardBody className="my-2">
@@ -564,14 +524,39 @@ export const SecurityMoneyReportLanding = () => {
                   employeeName={modalData[0]?.employeeName}
                   designationName={modalData[0]?.designation}
                   departmentName={modalData[0]?.department}
-                />
+                >
+                  <>
+                    <div>
+                      Deposits Money :{" "}
+                      <span style={{ fontWeight: "500" }}>
+                        {modalData[0]?.employeeName}
+                      </span>
+                    </div>
+                    <div>
+                      detailsment Amount :{" "}
+                      <span style={{ fontWeight: "500" }}>
+                        {modalData[0]?.employeeName}
+                      </span>
+                    </div>
+                    <div>
+                      Balance Amount :{" "}
+                      <span style={{ fontWeight: "500" }}>
+                        {modalData[0]?.employeeName}
+                      </span>
+                    </div>
+                  </>
+                </CommonEmpInfo>
               </PCardBody>
               <DataTable
-                header={disburseHeader}
+                header={detailsHeader}
                 bordered
-                data={modalData || []}
+                data={
+                  detailsApi?.data?.data?.length > 0
+                    ? detailsApi?.data?.data
+                    : []
+                }
               />
-              <ModalFooter
+              {/* <ModalFooter
                 submitText={`Save`}
                 submitAction="button"
                 cancelText={false}
@@ -584,7 +569,7 @@ export const SecurityMoneyReportLanding = () => {
                   }
                   saveDisbursement();
                 }}
-              />
+              /> */}
             </>
           }
         />

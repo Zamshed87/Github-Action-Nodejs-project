@@ -297,4 +297,8 @@ export const apiList = {
   DepositType: "DepositType",
   Deposit: "Deposit",
   DepositDetails: "Deposit/GetDetails",
+  DepartmentByAccount: "PeopleDeskDdl/DepartmentByAccount",
+  DepositMasterReport: "/Deposit/DepositMasterReport",
+  DepositDisbursement: "/DepositDisbursement",
+  DepositDetailReportByEmployee: "/DepositDetailReportByEmployee",
 };
