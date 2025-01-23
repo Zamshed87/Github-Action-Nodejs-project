@@ -399,8 +399,18 @@ const EmLoanHistory = () => {
                 pageNo: 1,
                 ispaginated: false,
                 searchText: "",
-                workplaceGroupId: values?.workplaceGroup?.value || 0,
-                workplaceId: values?.workplace?.value || 0,
+                workplaceGroupId: wgId,
+                workplaceId: wId,
+                WorkplaceGroupList:
+                  values?.workplaceGroup?.value == 0 ||
+                  values?.workplaceGroup?.value == undefined
+                    ? decodedToken.workplaceGroupList
+                    : values?.workplaceGroup?.value.toString(),
+                WorkplaceList:
+                  values?.workplace?.value == 0 ||
+                  values?.workplace?.value == undefined
+                    ? decodedToken.workplaceList
+                    : values?.workplace?.value.toString(),
               };
               postPDFAction(
                 "/PdfAndExcelReport/LoanReportAll",
