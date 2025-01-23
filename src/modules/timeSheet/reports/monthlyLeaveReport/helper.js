@@ -16,7 +16,4 @@ export const column = {
   HalfDayHours: "Half Day Hours",
   TotalDays: "Days",
   ApplicationDate: "Application Date",
-  TotalApprover: "Total Approver",
-  ApprovedApplications: "Approved Application",
-  PendingApplications: "Pending Application"
 };

@@ -357,21 +357,6 @@ const MonthlyLeaveReport = () => {
         width: 100,
       },
       {
-        title: "Total Approver",
-        dataIndex: "TotalApprover",
-        width: 100,
-      },
-      {
-        title: "Approved Application",
-        dataIndex: "ApprovedApplications",
-        width: 100,
-      },
-      {
-        title: "Pending Application",
-        dataIndex: "PendingApplications",
-        width: 100,
-      },
-      {
         title: "Action",
         dataIndex: "",
         render: (rec: any) => (
