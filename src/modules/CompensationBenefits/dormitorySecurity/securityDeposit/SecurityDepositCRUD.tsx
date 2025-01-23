@@ -22,7 +22,7 @@ import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { dateFormatter } from "utility/dateFormatter";
 import { Popover } from "@mui/material";
 
@@ -50,6 +50,7 @@ export const SecurityDepositCRUD = () => {
   );
   // menu permission
   const employeeFeature: any = permission;
+  const detailsApi = useApiRequest({});
 
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
@@ -81,12 +82,9 @@ export const SecurityDepositCRUD = () => {
 
   const [, setFilterList] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const options: any = [
-    { value: "", label: "All" },
-    { value: true, label: "Assigned" },
-    { value: false, label: "Not-Assigned" },
-  ];
+
   const { id }: any = useParams();
+  const { state }: any = useLocation();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
@@ -100,6 +98,48 @@ export const SecurityDepositCRUD = () => {
       document.title = "PeopleDesk";
     };
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      detailsApi?.action({
+        urlKey: "DepositDetails",
+        method: "GET",
+        params: {
+          month: state?.month,
+          year: state?.year,
+          depositType: id,
+        },
+        onSuccess: (res: any) => {
+          const date = moment(
+            `${state?.year}` +
+              `-${state?.month?.toString().padStart(2, "0")}-01`
+          );
+
+          form.setFieldsValue({
+            securityTypeDDL: {
+              value: res?.data?.[0]?.id,
+              label: res?.data?.[0]?.depositTypeName,
+            },
+            monthYear: date,
+          });
+          const modify = res?.data?.map((i: any, index: number) => {
+            return {
+              ...i,
+              employeeId: i?.employeeCode,
+              employeeCode: i?.employeeCode,
+              employeeName: i?.employeeName,
+              departmentName: i?.department,
+              designationName: i?.designation,
+              depositeMoney: i?.depositAmount,
+              remarks: i?.comment,
+              key: index,
+            };
+          });
+          setLanding(modify);
+        },
+      });
+    }
+  }, [id]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -226,22 +266,7 @@ export const SecurityDepositCRUD = () => {
     getEmployeDepartment();
     getSecurityType();
   }, []);
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
 
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
   const header: any = [
     {
       title: "SL",
@@ -411,12 +436,6 @@ export const SecurityDepositCRUD = () => {
     status: "Status",
     remarks: "Remarks",
   };
-  // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  //   const { fromDate } = form.getFieldsValue(true);
-  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //   // Disable dates before fromDate and after next3daysForEmp
-  //   return current && current < fromDateMoment.startOf("day");
-  // };
   const viewHandler = async () => {
     const values = form.getFieldsValue(true);
 
@@ -461,12 +480,10 @@ export const SecurityDepositCRUD = () => {
     ) {
       return toast.warn("Deposit Money should be greate than 0");
     }
-    console.log(
-      moment(values?.monthYear).startOf("month").format("YYYY-MM-DD")
-    );
     const modify = updatedSelectedRows?.map((i) => {
       return {
         ...i,
+        id: i?.id || 0,
         depositTypeId: values?.securityTypeDDL?.value || 0,
         employeeId: i?.employeeId,
         depositAmount: i?.depositeMoney,
@@ -479,11 +496,13 @@ export const SecurityDepositCRUD = () => {
     });
     createUpdateDeposite?.action({
       urlKey: "Deposit",
-      method: "post",
+      method: id ? "put" : "post",
       payload: modify,
       toast: true,
       onSuccess: () => {
-        landingApiCall();
+        setLanding([]);
+        setSelectedRow([]);
+        form.resetFields();
       },
     });
   };

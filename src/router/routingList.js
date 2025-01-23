@@ -3202,6 +3202,10 @@ export const routingList = [
     component: SecurityDepositLanding,
   },
   {
+    path: "/compensationAndBenefits/securityDeposit/edit/:id",
+    component: SecurityDepositCRUD,
+  },
+  {
     path: "/compensationAndBenefits/securityDisbursement",
     component: SecurityDisbursementLanding,
   },

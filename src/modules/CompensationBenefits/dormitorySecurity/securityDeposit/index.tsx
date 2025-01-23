@@ -8,12 +8,9 @@ import {
   PCardHeader,
   PForm,
   PInput,
-  PSelect,
   TableButton,
 } from "Components";
 import type { RangePickerProps } from "antd/es/date-picker";
-import { InfoOutlined } from "@mui/icons-material";
-import profileImg from "../../../assets/images/profile.jpg";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tag } from "antd";
@@ -23,10 +20,8 @@ import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import { dateFormatter } from "utility/dateFormatter";
+import { useHistory } from "react-router-dom";
 
-import { yearDDLAction } from "utility/yearDDL";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
@@ -42,7 +37,6 @@ export const SecurityDepositLanding = () => {
     profileData: { buId, employeeId, orgId, buName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
-  const [id, setId] = useState<any>({});
   const [typeId, setTypeId] = useState<any>({});
 
   const permission = useMemo(
@@ -250,8 +244,14 @@ export const SecurityDepositLanding = () => {
               onClick: (e: any) => {
                 if (!employeeFeature?.isEdit) {
                   return toast.warn("You don't have permission");
-                  e.stopPropagation();
                 }
+                history.push({
+                  pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
+                  state: {
+                    month: item?.monthId,
+                    year: item?.yearId,
+                  },
+                });
                 //   setOpen(true);
                 //   setId(rec);
               },
