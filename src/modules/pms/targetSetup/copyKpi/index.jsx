@@ -75,9 +75,16 @@ const CopyKpi = () => {
       kpiForId: 1,
       objectiveId: 0,
       kpiId: 0,
-      isTarget: values?.isTarget,
+      isTarget: values?.cloneType?.value === 2 ? undefined : values?.isTarget,
     };
-    saveCopyKpi(`/PMS/CopyKPI`, payload, null, true);
+    saveCopyKpi(
+      values?.cloneType?.value === 2
+        ? `/PMS/CopyKPIWithoutTarget`
+        : `/PMS/CopyKPI`,
+      payload,
+      null,
+      true
+    );
     cb && cb();
   };
 
@@ -109,10 +116,16 @@ const CopyKpi = () => {
   }, [buId]);
 
   const getFromEmployeeKpiList = () => {
-    getFromEmployeeKpi(
-      `/PMS/GetKpiChartReport?PartName=TargetedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=1&KpiForReffId=${values?.fromEmployee?.value}&accountId=${orgId}&from=1&to=12`
-      // hard coded from and to instructed by Sazzad
-    );
+    let url;
+    if (values?.cloneType?.value === 2) {
+      url = `/PMS/GetKpiByEmployeeId?kpiForReffId=${values?.fromEmployee?.value}&businessUnitId=${buId}`;
+    } else {
+      url = `/PMS/GetKpiChartReport?PartName=TargetedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=1&KpiForReffId=${values?.fromEmployee?.value}&accountId=${orgId}&from=1&to=12`;
+    }
+
+    getFromEmployeeKpi(url);
+
+    // hard coded from and to instructed by Sazzad
   };
 
   return (
@@ -126,26 +139,29 @@ const CopyKpi = () => {
             <h2 style={{ color: "#344054" }}>Clone KPI</h2>
           </div>
           <ul className="d-flex flex-wrap">
-            <FormikCheckBox
-              label="With Target"
-              styleObj={{
-                margin: "0 auto!important",
-                color: gray900,
-                checkedColor: greenColor,
-                padding: "1px",
-              }}
-              name="isTarget"
-              color={greenColor}
-              checked={values?.isTarget}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  doConfirmation(setFieldValue);
-                } else {
-                  setFieldValue("isTarget", false);
-                }
-              }}
-              // disabled={item?.ApplicationStatus === "Approved"}
-            />
+            {values?.cloneType?.value === 1 && (
+              <FormikCheckBox
+                label="With Target"
+                styleObj={{
+                  margin: "0 auto!important",
+                  color: gray900,
+                  checkedColor: greenColor,
+                  padding: "1px",
+                }}
+                name="isTarget"
+                color={greenColor}
+                checked={values?.isTarget}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    doConfirmation(setFieldValue);
+                  } else {
+                    setFieldValue("isTarget", false);
+                  }
+                }}
+                // disabled={item?.ApplicationStatus === "Approved"}
+              />
+            )}
+
             <li>
               <PrimaryButton
                 type="button"
@@ -162,6 +178,25 @@ const CopyKpi = () => {
           </ul>
         </div>
         <div className="card-style pb-0 mb-2">
+          <div className="row">
+            <div className="col-lg-3">
+              <label>Clone Type</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="cloneType"
+                placeholder="Select Clone Type"
+                options={[
+                  { label: "Map With Target", value: 1 },
+                  { label: "Map Without Target", value: 2 },
+                ]}
+                value={values?.cloneType}
+                onChange={(valueOption) => {
+                  setFieldValue("cloneType", valueOption);
+                }}
+                styles={customStyles}
+              />
+            </div>
+          </div>
           <div className="row">
             <div className="col-lg-3">
               <div className="input-field-main">
@@ -223,7 +258,9 @@ const CopyKpi = () => {
                   e.stopPropagation();
                   getFromEmployeeKpiList();
                 }}
-                disabled={!values?.fromEmployee || !values?.year}
+                disabled={
+                  !values?.fromEmployee || !values?.year || !values?.cloneType
+                }
               >
                 View
               </button>
