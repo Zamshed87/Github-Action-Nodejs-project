@@ -126,13 +126,13 @@ const EmLoanHistory = () => {
     },
     {
       title: "Work. Group/Location",
-      dataIndex: "StrWorkPlaceGroupName",
+      dataIndex: "strWorkPlaceGroupName",
       width: 120,
       fixed: "left",
     },
     {
       title: "Workplace/Concern",
-      dataIndex: "StrWorkPlaceName",
+      dataIndex: "strWorkPlaceName",
       width: 120,
       fixed: "left",
     },
