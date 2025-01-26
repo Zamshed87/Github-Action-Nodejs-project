@@ -60,20 +60,19 @@ export const SecurityDepositCRUD = () => {
   const CommonEmployeeDDL = useApiRequest([]);
 
   const getEmployee = (value: any = "") => {
-    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    const { department } = form.getFieldsValue(true);
     CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "GetEmpBasicInfoByDepartmentId",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        searchText: value,
+        DepartmentId: department?.value,
+        StrSearch: value,
       },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: number) => {
+          res.data[i].label = item?.employeeName;
+          res.data[i].value = item?.employeeId;
         });
       },
     });
@@ -443,27 +442,29 @@ export const SecurityDepositCRUD = () => {
     // await form
     //   .validateFields()
     //   .then(() => {
-    if (values?.employee?.value) {
-      setLanding([
-        {
-          employeeId: values?.employee?.value,
-          employeeCode: values?.employee?.employeeCode,
-          employeeName: values?.employee?.employeeNameWithCode,
-          departmentName: empDepartmentDDL?.data?.data?.find(
-            (i: any) => i?.value === values?.employee?.departmentId
-          )?.label,
-          designationName: values?.employee?.designationName,
-          depositeMoney: 0,
-          remarks: "",
-        },
-      ]);
-    } else {
-      landingApiCall();
+    if (
+      landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
+        .length === 0
+    ) {
+      const newEmp = {
+        employeeId: values?.employee?.value,
+        employeeCode: values?.employee?.employeeCode,
+        employeeName: values?.employee?.employeeName,
+        departmentName: values?.employee?.department,
+        designationName: values?.employee?.designation,
+        depositeMoney: 0,
+        remarks: "",
+      };
+      setLanding((prev) => [...prev, newEmp]);
     }
+    // else {
+    //   landingApiCall();
+    // }
     // })
     // .catch(() => {
     //   console.error("Validate Failed:");
     // });
+    form.resetFields(["employee"]);
   };
   const onFinish = () => {
     const values = form.getFieldsValue(true);
@@ -563,6 +564,7 @@ export const SecurityDepositCRUD = () => {
                 <PSelect
                   showSearch
                   allowClear
+                  disabled={+id ? true : false}
                   options={
                     empDepartmentDDL?.data?.data?.length > 0
                       ? empDepartmentDDL?.data?.data
@@ -574,7 +576,6 @@ export const SecurityDepositCRUD = () => {
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       department: op,
-                      employee: undefined,
                     });
                   }}
                   // rules={[
@@ -589,22 +590,21 @@ export const SecurityDepositCRUD = () => {
                 <PSelect
                   allowClear
                   name="employee"
+                  disabled={+id ? true : false}
                   label="Employee"
                   placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
+                  options={CommonEmployeeDDL?.data?.data || []}
                   loading={CommonEmployeeDDL?.loading}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       employee: op,
-                      department: undefined,
                     });
-                    // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
-                  // onSearch={(value) => {
-                  //   getEmployee(value);
-                  // }}
+                  onSearch={(value) => {
+                    getEmployee(value);
+                  }}
                   showSearch
-                  // filterOption={false}
+                  filterOption={false}
                   // rules={[
                   //   {
                   //     required: true,
@@ -622,6 +622,7 @@ export const SecurityDepositCRUD = () => {
                 <PButton
                   type="primary"
                   action="button"
+                  disabled={+id ? true : false}
                   onClick={() => {
                     viewHandler();
                   }}

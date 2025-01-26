@@ -196,6 +196,8 @@ export const SecurityDisbursementLanding = () => {
       method: "GET",
       params: {
         departmentId: values?.department?.value || 0,
+        strSearch: values?.employee?.employeeCode || "",
+        deposittypeId: 0,
       },
     });
   };

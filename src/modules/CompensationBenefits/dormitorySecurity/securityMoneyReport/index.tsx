@@ -271,7 +271,7 @@ export const SecurityMoneyReportLanding = () => {
                   urlKey: "DepositDetailReportByEmployee",
                   method: "GET",
                   params: {
-                    employeeId: item?.monthId,
+                    employeeId: item?.employeeId,
                   },
                   onSuccess: () => {
                     setOpen(true);
@@ -294,32 +294,33 @@ export const SecurityMoneyReportLanding = () => {
 
     {
       title: "Type",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "type",
       width: 100,
     },
     {
       title: "Deposits Type",
-      render: (_: any, data: any) =>
-        data?.type === "Disbursement" ? "-" : data?.depositType,
+      dataIndex: "depositsType",
+      // render: (_: any, data: any) =>
+      //   data?.type === "Disbursement" ? "-" : data?.depositType,
       width: 100,
     },
 
     {
       title: "Deposits Time",
       render: (_: any, data: any) =>
-        data?.type === "Disbursement"
-          ? moment(data?.date).format("MMM-YYYY")
-          : moment(data?.date).format("ll"),
+        data?.type !== "Deposit"
+          ? moment(data?.executionTime).format("MMM-YYYY")
+          : moment(data?.executionTime).format("ll"),
       width: 100,
     },
     {
       title: "Amount",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "amount",
       width: 100,
     },
     {
       title: "Comments",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "comments",
       width: 100,
     },
 

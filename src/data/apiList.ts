@@ -301,4 +301,5 @@ export const apiList = {
   DepositMasterReport: "/Deposit/DepositMasterReport",
   DepositDisbursement: "/DepositDisbursement",
   DepositDetailReportByEmployee: "/DepositDetailReportByEmployee",
+  GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
 };
