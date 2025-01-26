@@ -299,12 +299,17 @@ export const SecurityMoneyReportLanding = () => {
     },
     {
       title: "Deposits Type",
-      dataIndex: "workplaceGroupName",
+      render: (_: any, data: any) =>
+        data?.type === "Disbursement" ? "-" : data?.depositType,
       width: 100,
     },
+
     {
       title: "Deposits Time",
-      dataIndex: "workplaceGroupName",
+      render: (_: any, data: any) =>
+        data?.type === "Disbursement"
+          ? moment(data?.date).format("MMM-YYYY")
+          : moment(data?.date).format("ll"),
       width: 100,
     },
     {
