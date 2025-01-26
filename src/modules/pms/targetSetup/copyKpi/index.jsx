@@ -16,6 +16,9 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getFiscalYearForNowOnLoad } from "./helper";
+import FormikCheckBox from "common/FormikCheckbox";
+import { gray900, greenColor } from "utility/customColor";
+import IConfirmModal from "common/IConfirmModal";
 
 const initData = {
   fromEmployee: "",
@@ -55,7 +58,10 @@ const CopyKpi = () => {
       return toast.warn("From and to employee can not be same");
     }
 
-    if (!fromEmployeeKpi?.infoList?.length) {
+    if (
+      (values?.cloneType?.value === 1 && !fromEmployeeKpi?.infoList?.length) ||
+      (values?.cloneType?.value === 2 && !fromEmployeeKpi?.length)
+    ) {
       return toast.warn("No data found");
     }
 
@@ -72,9 +78,29 @@ const CopyKpi = () => {
       kpiForId: 1,
       objectiveId: 0,
       kpiId: 0,
+      isTarget: values?.cloneType?.value === 2 ? undefined : values?.isTarget,
     };
-    saveCopyKpi(`/PMS/CopyKPI`, payload, null, true);
+    saveCopyKpi(
+      values?.cloneType?.value === 2
+        ? `/PMS/CopyKPIWithoutTarget`
+        : `/PMS/CopyKPI`,
+      payload,
+      null,
+      true
+    );
     cb && cb();
+  };
+
+  const doConfirmation = (setFieldValue) => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do you want to clone target?`,
+      yesAlertFunc: () => {
+        setFieldValue("isTarget", true);
+      },
+      noAlertFunc: () => setFieldValue("isTarget", false),
+    };
+    IConfirmModal(confirmObject);
   };
 
   const { values, setFieldValue } = useFormik({
@@ -93,10 +119,16 @@ const CopyKpi = () => {
   }, [buId]);
 
   const getFromEmployeeKpiList = () => {
-    getFromEmployeeKpi(
-      `/PMS/GetKpiChartReport?PartName=TargetedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=1&KpiForReffId=${values?.fromEmployee?.value}&accountId=${orgId}&from=1&to=12`
-      // hard coded from and to instructed by Sazzad
-    );
+    let url;
+    if (values?.cloneType?.value === 2) {
+      url = `/PMS/GetKpiByEmployeeId?kpiForReffId=${values?.fromEmployee?.value}&businessUnitId=${buId}`;
+    } else {
+      url = `/PMS/GetKpiChartReport?PartName=TargetedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=1&KpiForReffId=${values?.fromEmployee?.value}&accountId=${orgId}&from=1&to=12`;
+    }
+
+    getFromEmployeeKpi(url);
+
+    // hard coded from and to instructed by Sazzad
   };
 
   return (
@@ -110,6 +142,29 @@ const CopyKpi = () => {
             <h2 style={{ color: "#344054" }}>Clone KPI</h2>
           </div>
           <ul className="d-flex flex-wrap">
+            {values?.cloneType?.value === 1 && (
+              <FormikCheckBox
+                label="With Target"
+                styleObj={{
+                  margin: "0 auto!important",
+                  color: gray900,
+                  checkedColor: greenColor,
+                  padding: "1px",
+                }}
+                name="isTarget"
+                color={greenColor}
+                checked={values?.isTarget}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    doConfirmation(setFieldValue);
+                  } else {
+                    setFieldValue("isTarget", false);
+                  }
+                }}
+                // disabled={item?.ApplicationStatus === "Approved"}
+              />
+            )}
+
             <li>
               <PrimaryButton
                 type="button"
@@ -126,6 +181,25 @@ const CopyKpi = () => {
           </ul>
         </div>
         <div className="card-style pb-0 mb-2">
+          <div className="row">
+            <div className="col-lg-3">
+              <label>Clone Type</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="cloneType"
+                placeholder="Select Clone Type"
+                options={[
+                  { label: "Map With Target", value: 1 },
+                  { label: "Map Without Target", value: 2 },
+                ]}
+                value={values?.cloneType}
+                onChange={(valueOption) => {
+                  setFieldValue("cloneType", valueOption);
+                }}
+                styles={customStyles}
+              />
+            </div>
+          </div>
           <div className="row">
             <div className="col-lg-3">
               <div className="input-field-main">
@@ -187,7 +261,9 @@ const CopyKpi = () => {
                   e.stopPropagation();
                   getFromEmployeeKpiList();
                 }}
-                disabled={!values?.fromEmployee || !values?.year}
+                disabled={
+                  !values?.fromEmployee || !values?.year || !values?.cloneType
+                }
               >
                 View
               </button>
@@ -244,69 +320,70 @@ const CopyKpi = () => {
           </div>
         </div>
         {/* table */}
-        <div className="achievement resKpi">
-          <PmsCentralTable
-            header={[
-              { name: "BSC" },
-              { name: "Objective" },
-              { name: "KPI" },
-              { name: "SRF" },
-              { name: "Weight" },
-              { name: "Benchmark" },
-              { name: "Target" },
-              //   { name: "Ach." },
-              //   { name: "Progress" },
-              //   { name: "Score" },
-            ]}
-          >
-            {fromEmployeeKpi?.infoList?.map((itm, indx) => (
-              <>
-                {itm.dynamicList.map((item, index) => (
-                  <tr
-                    key={item?.kpiId}
-                    style={{
-                      backgroundColor:
-                        item?.isTargetAssigned || item?.parentName === "Total"
-                          ? "white"
-                          : "#e6e6e6",
-                    }}
-                  >
-                    {index === 0 && (
-                      <td
-                        className={`bsc bsc${indx}`}
-                        rowSpan={itm.dynamicList.length}
-                      >
-                        <div>{itm?.bsc}</div>
-                      </td>
-                    )}
-                    {item?.isParent && (
-                      <td className="obj" rowSpan={item?.numberOfChild}>
-                        {" "}
-                        {item?.parentName}{" "}
-                      </td>
-                    )}
-                    <td
+        {values?.cloneType?.value === 1 ? (
+          <div className="achievement resKpi">
+            <PmsCentralTable
+              header={[
+                { name: "BSC" },
+                { name: "Objective" },
+                { name: "KPI" },
+                { name: "SRF" },
+                { name: "Weight" },
+                { name: "Benchmark" },
+                { name: "Target" },
+                //   { name: "Ach." },
+                //   { name: "Progress" },
+                //   { name: "Score" },
+              ]}
+            >
+              {fromEmployeeKpi?.infoList?.map((itm, indx) => (
+                <>
+                  {itm.dynamicList.map((item, index) => (
+                    <tr
+                      key={item?.kpiId}
                       style={{
-                        width: "250px",
+                        backgroundColor:
+                          item?.isTargetAssigned || item?.parentName === "Total"
+                            ? "white"
+                            : "#e6e6e6",
                       }}
                     >
-                      {" "}
-                      {item?.label}{" "}
-                    </td>
-                    <td> {item?.strFrequency} </td>
-                    <td className="text-center">
-                      {" "}
-                      {item?.numWeight === 0 ? "" : item?.numWeight}{" "}
-                    </td>
-                    <td className="text-center">
-                      {" "}
-                      {item?.benchmark === 0 ? "" : item?.benchmark}{" "}
-                    </td>
-                    <td className="text-center">
-                      {" "}
-                      {item?.numTarget === 0 ? "" : item?.numTarget}{" "}
-                    </td>
-                    {/* {item?.parentName !== "Total" ? (
+                      {index === 0 && (
+                        <td
+                          className={`bsc bsc${indx}`}
+                          rowSpan={itm.dynamicList.length}
+                        >
+                          <div>{itm?.bsc}</div>
+                        </td>
+                      )}
+                      {item?.isParent && (
+                        <td className="obj" rowSpan={item?.numberOfChild}>
+                          {" "}
+                          {item?.parentName}{" "}
+                        </td>
+                      )}
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.label}{" "}
+                      </td>
+                      <td> {item?.strFrequency} </td>
+                      <td className="text-center">
+                        {" "}
+                        {item?.numWeight === 0 ? "" : item?.numWeight}{" "}
+                      </td>
+                      <td className="text-center">
+                        {" "}
+                        {item?.benchmark === 0 ? "" : item?.benchmark}{" "}
+                      </td>
+                      <td className="text-center">
+                        {" "}
+                        {item?.numTarget === 0 ? "" : item?.numTarget}{" "}
+                      </td>
+                      {/* {item?.parentName !== "Total" ? (
                       <td className="text-center">
                         <span>{item?.numAchivement}</span>
                       </td>
@@ -330,12 +407,61 @@ const CopyKpi = () => {
                       <td></td>
                     )}
                     <td className="text-center"> {item?.score}</td> */}
-                  </tr>
+                    </tr>
+                  ))}
+                </>
+              ))}
+            </PmsCentralTable>
+          </div>
+        ) : (
+          <div className="achievement resKpi">
+            <PmsCentralTable
+              header={[
+                { name: "Objective Type" },
+                { name: "Objective Name" },
+                { name: "KPI" },
+                // { name: "Weight" },
+                // { name: "Benchmark" },
+                // { name: "Target" },
+                //   { name: "Ach." },
+                //   { name: "Progress" },
+                //   { name: "Score" },
+              ]}
+            >
+              {fromEmployeeKpi?.length > 0 &&
+                fromEmployeeKpi?.map((item, index) => (
+                  <>
+                    <tr key={item?.kpiId}>
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.objectiveType}{" "}
+                      </td>
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.objective}{" "}
+                      </td>
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.kpiName}{" "}
+                      </td>
+                    </tr>
+                  </>
                 ))}
-              </>
-            ))}
-          </PmsCentralTable>
-        </div>
+            </PmsCentralTable>
+          </div>
+        )}
       </div>
     </>
   );
