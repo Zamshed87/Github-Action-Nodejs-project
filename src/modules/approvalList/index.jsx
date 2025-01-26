@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar } from "@material-ui/core";
 import { Tooltip } from "@mui/material";
-import { Form, Formik } from "formik";
+import {  Formik } from "formik";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -18,6 +19,7 @@ import {
   SettingOutlined,
   DashboardOutlined,
 } from "@ant-design/icons";
+import PFilter from "utility/filter/PFilter";
 
 const initData = {
   search: "",
@@ -49,6 +51,20 @@ export default function ApprovalList() {
     }
   }, [orgId, employeeId, wId, buId, wgId]);
 
+  const landingApiCall = (values) => {
+    getApprovalDashboardLanding(
+      orgId,
+      employeeId,
+      false,
+      setApprovalData,
+      setLoading,
+      wId,
+      buId,
+      wgId,
+      values
+    );
+  }
+
   useEffect(() => {
     if (approvalData.length > 0) {
       const iconMapping = {
@@ -74,6 +90,7 @@ export default function ApprovalList() {
       setFilteredData(mappedData);
     }
   }, [approvalData]);
+  const [form] = Form.useForm();
 
   return (
     <>
@@ -137,6 +154,9 @@ export default function ApprovalList() {
                           }}
                           isHiddenFilter
                         />
+                      </li>
+                      <li>
+                      <PFilter form={form} landingApiCall={landingApiCall} />
                       </li>
                     </ul>
                   </div>
