@@ -428,36 +428,37 @@ const CopyKpi = () => {
                 //   { name: "Score" },
               ]}
             >
-              {fromEmployeeKpi?.map((item, index) => (
-                <>
-                  <tr key={item?.kpiId}>
-                    <td
-                      style={{
-                        width: "250px",
-                      }}
-                    >
-                      {" "}
-                      {item?.objectiveType}{" "}
-                    </td>
-                    <td
-                      style={{
-                        width: "250px",
-                      }}
-                    >
-                      {" "}
-                      {item?.objective}{" "}
-                    </td>
-                    <td
-                      style={{
-                        width: "250px",
-                      }}
-                    >
-                      {" "}
-                      {item?.kpiName}{" "}
-                    </td>
-                  </tr>
-                </>
-              ))}
+              {fromEmployeeKpi?.length > 0 &&
+                fromEmployeeKpi?.map((item, index) => (
+                  <>
+                    <tr key={item?.kpiId}>
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.objectiveType}{" "}
+                      </td>
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.objective}{" "}
+                      </td>
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.kpiName}{" "}
+                      </td>
+                    </tr>
+                  </>
+                ))}
             </PmsCentralTable>
           </div>
         )}
