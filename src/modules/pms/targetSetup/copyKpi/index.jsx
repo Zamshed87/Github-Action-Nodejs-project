@@ -58,7 +58,10 @@ const CopyKpi = () => {
       return toast.warn("From and to employee can not be same");
     }
 
-    if (!fromEmployeeKpi?.infoList?.length) {
+    if (
+      (values?.cloneType?.value === 1 && !fromEmployeeKpi?.infoList?.length) ||
+      (values?.cloneType?.value === 2 && !fromEmployeeKpi?.length)
+    ) {
       return toast.warn("No data found");
     }
 
@@ -317,69 +320,70 @@ const CopyKpi = () => {
           </div>
         </div>
         {/* table */}
-        <div className="achievement resKpi">
-          <PmsCentralTable
-            header={[
-              { name: "BSC" },
-              { name: "Objective" },
-              { name: "KPI" },
-              { name: "SRF" },
-              { name: "Weight" },
-              { name: "Benchmark" },
-              { name: "Target" },
-              //   { name: "Ach." },
-              //   { name: "Progress" },
-              //   { name: "Score" },
-            ]}
-          >
-            {fromEmployeeKpi?.infoList?.map((itm, indx) => (
-              <>
-                {itm.dynamicList.map((item, index) => (
-                  <tr
-                    key={item?.kpiId}
-                    style={{
-                      backgroundColor:
-                        item?.isTargetAssigned || item?.parentName === "Total"
-                          ? "white"
-                          : "#e6e6e6",
-                    }}
-                  >
-                    {index === 0 && (
-                      <td
-                        className={`bsc bsc${indx}`}
-                        rowSpan={itm.dynamicList.length}
-                      >
-                        <div>{itm?.bsc}</div>
-                      </td>
-                    )}
-                    {item?.isParent && (
-                      <td className="obj" rowSpan={item?.numberOfChild}>
-                        {" "}
-                        {item?.parentName}{" "}
-                      </td>
-                    )}
-                    <td
+        {values?.cloneType?.value === 1 ? (
+          <div className="achievement resKpi">
+            <PmsCentralTable
+              header={[
+                { name: "BSC" },
+                { name: "Objective" },
+                { name: "KPI" },
+                { name: "SRF" },
+                { name: "Weight" },
+                { name: "Benchmark" },
+                { name: "Target" },
+                //   { name: "Ach." },
+                //   { name: "Progress" },
+                //   { name: "Score" },
+              ]}
+            >
+              {fromEmployeeKpi?.infoList?.map((itm, indx) => (
+                <>
+                  {itm.dynamicList.map((item, index) => (
+                    <tr
+                      key={item?.kpiId}
                       style={{
-                        width: "250px",
+                        backgroundColor:
+                          item?.isTargetAssigned || item?.parentName === "Total"
+                            ? "white"
+                            : "#e6e6e6",
                       }}
                     >
-                      {" "}
-                      {item?.label}{" "}
-                    </td>
-                    <td> {item?.strFrequency} </td>
-                    <td className="text-center">
-                      {" "}
-                      {item?.numWeight === 0 ? "" : item?.numWeight}{" "}
-                    </td>
-                    <td className="text-center">
-                      {" "}
-                      {item?.benchmark === 0 ? "" : item?.benchmark}{" "}
-                    </td>
-                    <td className="text-center">
-                      {" "}
-                      {item?.numTarget === 0 ? "" : item?.numTarget}{" "}
-                    </td>
-                    {/* {item?.parentName !== "Total" ? (
+                      {index === 0 && (
+                        <td
+                          className={`bsc bsc${indx}`}
+                          rowSpan={itm.dynamicList.length}
+                        >
+                          <div>{itm?.bsc}</div>
+                        </td>
+                      )}
+                      {item?.isParent && (
+                        <td className="obj" rowSpan={item?.numberOfChild}>
+                          {" "}
+                          {item?.parentName}{" "}
+                        </td>
+                      )}
+                      <td
+                        style={{
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        {item?.label}{" "}
+                      </td>
+                      <td> {item?.strFrequency} </td>
+                      <td className="text-center">
+                        {" "}
+                        {item?.numWeight === 0 ? "" : item?.numWeight}{" "}
+                      </td>
+                      <td className="text-center">
+                        {" "}
+                        {item?.benchmark === 0 ? "" : item?.benchmark}{" "}
+                      </td>
+                      <td className="text-center">
+                        {" "}
+                        {item?.numTarget === 0 ? "" : item?.numTarget}{" "}
+                      </td>
+                      {/* {item?.parentName !== "Total" ? (
                       <td className="text-center">
                         <span>{item?.numAchivement}</span>
                       </td>
@@ -403,12 +407,60 @@ const CopyKpi = () => {
                       <td></td>
                     )}
                     <td className="text-center"> {item?.score}</td> */}
+                    </tr>
+                  ))}
+                </>
+              ))}
+            </PmsCentralTable>
+          </div>
+        ) : (
+          <div className="achievement resKpi">
+            <PmsCentralTable
+              header={[
+                { name: "Objective Type" },
+                { name: "Objective Name" },
+                { name: "KPI" },
+                // { name: "Weight" },
+                // { name: "Benchmark" },
+                // { name: "Target" },
+                //   { name: "Ach." },
+                //   { name: "Progress" },
+                //   { name: "Score" },
+              ]}
+            >
+              {fromEmployeeKpi?.map((item, index) => (
+                <>
+                  <tr key={item?.kpiId}>
+                    <td
+                      style={{
+                        width: "250px",
+                      }}
+                    >
+                      {" "}
+                      {item?.objectiveType}{" "}
+                    </td>
+                    <td
+                      style={{
+                        width: "250px",
+                      }}
+                    >
+                      {" "}
+                      {item?.objective}{" "}
+                    </td>
+                    <td
+                      style={{
+                        width: "250px",
+                      }}
+                    >
+                      {" "}
+                      {item?.kpiName}{" "}
+                    </td>
                   </tr>
-                ))}
-              </>
-            ))}
-          </PmsCentralTable>
-        </div>
+                </>
+              ))}
+            </PmsCentralTable>
+          </div>
+        )}
       </div>
     </>
   );
