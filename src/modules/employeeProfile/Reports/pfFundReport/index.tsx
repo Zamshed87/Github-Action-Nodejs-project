@@ -17,6 +17,8 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { formatMoney } from "utility/formatMoney";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValueList } from "utility/filter/helper";
 
 type TPFFundReport = {};
 const PFFundReport: React.FC<TPFFundReport> = () => {
@@ -26,6 +28,11 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const { tokenData } = useSelector((state: any) => state?.auth, shallowEqual);
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
 
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
@@ -68,8 +75,8 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
         const values = form.getFieldsValue();
         pfFundReportApi.action({
           urlKey: "RefundOrEarningReport",
-          method: "get",
-          params: {
+          method: "post",
+          payload: {
             intAccountId: orgId,
             intEmployeeId: values?.employeeName?.value,
             isCurrentFund:
@@ -77,6 +84,20 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
             status: values?.status?.value,
             pageNo: pagination?.current || 1,
             pageSize: pagination?.pageSize || 25,
+            departmentIdList: formatFilterValueList(values?.department) || [0],
+            designationIdList: formatFilterValueList(values?.designation) || [
+              0,
+            ],
+            WorkplaceGroupList:
+              values?.workplaceGroup?.value == 0 ||
+              values?.workplaceGroup?.value == undefined
+                ? decodedToken.workplaceGroupList
+                : values?.workplaceGroup?.value.toString(),
+            WorkplaceList:
+              values?.workplace?.value == 0 ||
+              values?.workplace?.value == undefined
+                ? decodedToken.workplaceList
+                : values?.workplace?.value.toString(),
           },
         });
       })
@@ -200,86 +221,73 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
     <PForm form={form}>
       <PCard>
         <PCardHeader title="PF Fund Report" />
-        <PCardBody className="my-3">
-          <Row gutter={[10, 2]} className="pb-2">
-            <Col md={6} sm={24}>
-              <PSelect
-                name="employeeName"
-                placeholder="Employee Name"
-                allowClear={true}
-                showSearch={true}
-                rules={[
-                  { required: true, message: "Employee Name Is Required" },
-                ]}
-                onChange={(value: any, option: any) => {
-                  form.setFieldsValue({
-                    employeeName: option,
-                  });
-                  pfFundReportApi.reset();
-                }}
-                options={employeeDDLApi?.data || []}
-                label="Employee Name"
-              />
-            </Col>
-            <Col md={6} sm={24}>
-              <PSelect
-                name="status"
-                placeholder="Status"
-                allowClear={true}
-                showSearch={true}
-                rules={[{ required: true, message: "Status Is Required" }]}
-                options={[
-                  { label: "All", value: 0 },
-                  { label: "Active", value: 1 },
-                  { label: "Inactive", value: 2 },
-                ]}
-                onChange={(value: any, option: any) => {
-                  form.setFieldsValue({
-                    status: option,
-                  });
-                  pfFundReportApi.reset();
-                }}
-                label="Status"
-              />
-            </Col>
-            <Col className="mt-3 pt-1">
-              <PRadio
-                name="elementType"
-                type="group"
-                rules={[
-                  { required: true, message: "Please Select Element Type" },
-                ]}
-                options={[
-                  {
-                    label: "Current Total Fund",
-                    value: "currentTotalFund",
-                  },
-                  {
-                    label: "Fund Details",
-                    value: "fundDetails",
-                  },
-                ]}
-                onChange={(e: any) => {
-                  const value = e.target.value;
-                  setElementType(value);
-                  form.setFieldsValue({
-                    elementType: value,
-                  });
-                  pfFundReportApi.reset();
-                }}
-              />
-            </Col>
-            <Col style={{ marginTop: "23px" }}>
-              <PButton
-                type="primary"
-                content="View"
-                onClick={() => {
-                  landingApi();
-                }}
-              ></PButton>
-            </Col>
-          </Row>
-        </PCardBody>
+        <PFilter form={form} landingApiCall={landingApi}>
+          <Col md={12} sm={24}>
+            <PSelect
+              name="employeeName"
+              placeholder="Employee Name"
+              allowClear={true}
+              showSearch={true}
+              rules={[{ required: true, message: "Employee Name Is Required" }]}
+              onChange={(value: any, option: any) => {
+                form.setFieldsValue({
+                  employeeName: option,
+                });
+                pfFundReportApi.reset();
+              }}
+              options={employeeDDLApi?.data || []}
+              label="Employee Name"
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              name="status"
+              placeholder="Status"
+              allowClear={true}
+              showSearch={true}
+              rules={[{ required: true, message: "Status Is Required" }]}
+              options={[
+                { label: "All", value: 0 },
+                { label: "Active", value: 1 },
+                { label: "Inactive", value: 2 },
+              ]}
+              onChange={(value: any, option: any) => {
+                form.setFieldsValue({
+                  status: option,
+                });
+                pfFundReportApi.reset();
+              }}
+              label="Status"
+            />
+          </Col>
+          <Col className="mt-3 pt-1">
+            <PRadio
+              name="elementType"
+              type="group"
+              rules={[
+                { required: true, message: "Please Select Element Type" },
+              ]}
+              options={[
+                {
+                  label: "Current Total Fund",
+                  value: "currentTotalFund",
+                },
+                {
+                  label: "Fund Details",
+                  value: "fundDetails",
+                },
+              ]}
+              onChange={(e: any) => {
+                const value = e.target.value;
+                setElementType(value);
+                form.setFieldsValue({
+                  elementType: value,
+                });
+                pfFundReportApi.reset();
+              }}
+            />
+          </Col>
+        </PFilter>
         <DataTable
           header={header}
           bordered
