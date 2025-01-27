@@ -17,13 +17,12 @@ export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
   try {
     const res = await axios.post(`/Payroll/SalaryCRUD`, payload);
     cb && cb();
-    toast.success(res.data?.[0].returnMessage || "Successfully");
+    toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    toast.warn(
-      error?.response?.data?.[0].returnMessage || "Something went wrong!"
-    );
+    console.log("error", error);
     setLoading && setLoading(false);
+    toast.warn(error?.response?.data?.message || "Something went wrong!");
   }
 };
 
