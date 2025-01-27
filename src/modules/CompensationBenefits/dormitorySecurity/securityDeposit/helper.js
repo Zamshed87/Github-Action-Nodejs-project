@@ -21,8 +21,8 @@ const processBulkUploadSecurityDeposit = (
         intWorkplaceGroupId: wgId,
         employeeCode: item?.["Employee Code"] || 0,
         employeeName: item?.["Employee Name"] || "",
-        depositsMoney: item?.["Deposits Money"] || "",
-        comments: item?.["Comments"] || "",
+        depositeMoney: item?.["Deposits Money"] || 0,
+        remarks: item?.["Comments"] || "",
       };
     });
     setLanding?.(modifiedData);
