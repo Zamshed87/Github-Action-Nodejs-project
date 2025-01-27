@@ -77,10 +77,6 @@ function TrainingDevelopment({
     ,
     landingTNDError,
   ] = useAxiosGet();
-  const [viewModalModal, setViewModalModal] = useState(false);
-  const [viewData, setViewData] = useState({});
-  const [viewDataDetails, setViewDataDetails] = useState({});
-  const [scheduleDetails, setScheduleDetails] = useState({});
 
   // image
   const inputFile = useRef(null);
@@ -354,131 +350,6 @@ function TrainingDevelopment({
   const onButtonClick = () => {
     inputFile.current.click();
   };
-  const header = [
-    {
-      title: "SL",
-      render: (_, __, index) => index + 1,
-      width: 20,
-      fixed: "left",
-    },
-    {
-      title: "Training Type",
-      dataIndex: "trainingTypeName",
-      filter: true,
-      filterKey: "trainingTypeList",
-      filterSearch: true,
-      fixed: "left",
-    },
-    {
-      title: "Training Title",
-      dataIndex: "trainingTitleName",
-      filter: true,
-      filterKey: "trainingTitleList",
-      filterSearch: true,
-      fixed: "left",
-    },
-    {
-      title: "Training Mode",
-      dataIndex: "trainingMode",
-      render: (_, rec) => rec?.trainingMode?.label,
-      fixed: "left",
-    },
-    {
-      title: "Objectives",
-      dataIndex: "trainingObjectives",
-      width: 70,
-      fixed: "left",
-    },
-    {
-      title: "Date & Time",
-      dataIndex: "trainingDateTime",
-      render: (data) => dateFormatter(data),
-      width: 100,
-      fixed: "left",
-    },
-    {
-      title: "Training Organization & Trainer",
-      dataIndex: "trainingOrganization",
-      render: (_, rec) => rec?.trainingOrganization + ", " + rec?.trainerName,
-      width: 120,
-    },
-    {
-      title: "Duration",
-      dataIndex: "trainingDuration",
-      width: 60,
-    },
-    {
-      title: "Cost",
-      dataIndex: "costPerPerson",
-      width: 50,
-      render: (data) => data?.toFixed(2),
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      render: (_, rec) => (
-        <Dropdown menu={{ items: getMenuItems(rec) }} trigger={["click"]}>
-          <MenuOutlined onClick={(e) => e.preventDefault()} />
-        </Dropdown>
-      ),
-      align: "center",
-      width: 45,
-      fixed: "right",
-    },
-  ];
-
-  const getMenuItems = (rec) => [
-    {
-      label: (
-        <h1
-          rel="noopener noreferrer"
-          onClick={() => {
-            ViewTrainingPlan(
-              rec?.trainingId,
-              setLoading,
-              () => {
-                ViewTrainingPlanDetails(
-                  rec?.trainingId,
-                  setLoading,
-                  setViewDataDetails,
-                  () => {
-                    ViewTrainingSchedule(
-                      rec?.trainingId,
-                      setLoading,
-                      setScheduleDetails,
-                      () => {
-                        setViewModalModal(true);
-                      }
-                    );
-                  }
-                );
-              },
-              setViewData
-            );
-          }}
-        >
-          View
-        </h1>
-      ),
-      key: "0",
-    },
-    {
-      label: (
-        <h1 onClick={() => {}} rel="noopener noreferrer">
-          Feedback
-        </h1>
-      ),
-      key: "3",
-    },
-    {
-      label: (
-        <h1 onClick={() => {}} rel="noopener noreferrer">
-          Assessment
-        </h1>
-      ),
-      key: "4",
-    },
-  ];
 
   return (
     index === tabIndex && (
@@ -524,32 +395,132 @@ function TrainingDevelopment({
                     {loading && <Loading />}
                     <div className="mb-3">
                       <h3 className="pb-2">Company Training</h3>
-                      <DataTable
-                        bordered
-                        data={landingTNDApi || []}
-                        loading={landingTNDLoading}
-                        header={header}
-                        scroll={{ x: 500 }}
-                      />
-                      <PModal
-                        open={viewModalModal}
-                        title={"Training Planning"}
-                        width={1200}
-                        onCancel={() => {
-                          setViewModalModal(false);
-                        }}
-                        maskClosable={false}
-                        components={
-                          <>
-                            <PlanningView
-                              data={viewData}
-                              dataDetails={viewDataDetails}
-                              scheduleDetails={scheduleDetails}
-                              // setOpenTrainingTitleModal={setOpenTrainingTitleModal}
-                            />
-                          </>
-                        }
-                      />
+                      <table className="table table-bordered mt-3">
+                        <thead>
+                          <tr
+                            style={{
+                              backgroundColor: "rgba(247, 247, 247, 1)",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                              color: "rgba(95, 99, 104, 1)!important",
+                            }}
+                          >
+                            <th
+                              className="text-center"
+                              rowSpan="1"
+                              style={{
+                                verticalAlign: "top",
+                              }}
+                            >
+                              SL
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Training Type</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Training Title</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Training Mode</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Objectives</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Date & Time</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">
+                                Training Organization & Trainer
+                              </div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Duration</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Cost</div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {landingTNDApi?.map((item, index) => (
+                            <tr
+                              style={{
+                                color: "rgba(95, 99, 104, 1)",
+                                fontSize: "14px",
+                              }}
+                              key={index}
+                            >
+                              <td className="text-center">
+                                <div>{index + 1}</div>
+                              </td>
+
+                              <td>
+                                <div>{item?.trainingTypeName}</div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingTitleName}</div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingMode?.label}</div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingObjectives}</div>
+                              </td>
+                              <td>
+                                <div>
+                                  {dateFormatter(item?.trainingDateTime)}
+                                </div>
+                              </td>
+                              <td>
+                                <div>
+                                  {item?.trainingOrganization +
+                                    ", " +
+                                    item?.trainerName}
+                                </div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingDuration}</div>
+                              </td>
+                              <td>
+                                <div>{item?.costPerPerson.toFixed(2)}</div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                     <Divider />
                     <div>
