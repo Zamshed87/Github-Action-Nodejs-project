@@ -198,7 +198,11 @@ export const authSlice = createSlice({
       const decodedToken = action.payload
       ? JSON.parse(atob(action.payload.split(".")[1]))
       : null;
-      state.decodedTokenData = decodedToken;
+      const { workplaceGroupList, workplaceList } = decodedToken || {};
+      state.decodedTokenData = {
+        workplaceGroupList,
+        workplaceList,
+      };
     },
     // most clicked menu list updataion and clear end  -----------  
 
