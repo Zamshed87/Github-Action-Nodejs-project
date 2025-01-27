@@ -43,10 +43,10 @@ const SeparationReport = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wName, wId, employeeId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { buId, wgId, wId, employeeId },
+    decodedTokenData: { workplaceGroupList, workplaceList },
+  } = useSelector((state) => state?.auth, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   let permission = null;
@@ -94,7 +94,9 @@ const SeparationReport = () => {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
-      setPages
+      setPages,
+      workplaceGroupList,
+      workplaceList
     );
   };
 
@@ -150,7 +152,9 @@ const SeparationReport = () => {
       setLoading,
       1,
       paginationSize,
-      setPages
+      setPages,
+      workplaceGroupList,
+      workplaceList
     );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
@@ -238,7 +242,9 @@ const SeparationReport = () => {
                                     setLoading,
                                     1,
                                     paginationSize,
-                                    setPages
+                                    setPages,
+                                    workplaceGroupList,
+                                    workplaceList
                                   );
                                 }}
                               />
@@ -266,7 +272,9 @@ const SeparationReport = () => {
                                   setLoading,
                                   1,
                                   paginationSize,
-                                  setPages
+                                  setPages,
+                                  workplaceGroupList,
+                                  workplaceList
                                 );
                               }}
                               cancelHandler={() => {
@@ -284,7 +292,9 @@ const SeparationReport = () => {
                                   setLoading,
                                   1,
                                   paginationSize,
-                                  setPages
+                                  setPages,
+                                  workplaceGroupList,
+                                  workplaceList
                                 );
                               }}
                               handleClick={handleClick}
@@ -405,7 +415,9 @@ const SeparationReport = () => {
                                   setLoading,
                                   1,
                                   paginationSize,
-                                  setPages
+                                  setPages,
+                                  workplaceGroupList,
+                                  workplaceList
                                 );
                               }}
                             >
