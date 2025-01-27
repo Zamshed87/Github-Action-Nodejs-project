@@ -305,6 +305,12 @@ export const apiList = {
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   DepositType: "DepositType",
   Deposit: "Deposit",
+  DepositDetails: "Deposit/GetDetails",
+  DepartmentByAccount: "PeopleDeskDdl/DepartmentByAccount",
+  DepositMasterReport: "/Deposit/DepositMasterReport",
+  DepositDisbursement: "/DepositDisbursement",
+  DepositDetailReportByEmployee: "Deposit/DepositDetailReportByEmployee",
+  GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
   SalaryBulkUpload: "/Employee/SalaryBulkUpload",
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
   CreateNUpdateShiftChangeRequest:

@@ -12,7 +12,7 @@ import {
 } from "Components";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -31,10 +31,11 @@ export const SecurityDisbursementLanding = () => {
 
   const {
     permissionList,
-    profileData: { buId, employeeId, orgId, wgId, wId, buName },
+    profileData: { buId, orgId, wgId, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState(false);
   const [modalData, setModalData] = useState<any[]>([]);
 
   const permission = useMemo(
@@ -47,6 +48,8 @@ export const SecurityDisbursementLanding = () => {
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const disbursementApi = useApiRequest({});
+  const deleteApi = useApiRequest({});
+  const detailsApi = useApiRequest({});
 
   const CommonEmployeeDDL = useApiRequest([]);
 
@@ -69,20 +72,23 @@ export const SecurityDisbursementLanding = () => {
       },
     });
   };
-  const saveDisbursement = (value: any = "") => {
+  const saveDisbursement = () => {
     // if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
     disbursementApi?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "DepositDisbursement",
       method: "post",
       payload: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        searchText: value,
+        employeeId: modalData[0]?.employeeId,
+        disbursementAmount: modalData[0]?.money,
+        disbursementDate: moment(modalData[0]?.date).format("YYYY-MM-DD"),
+        comment: modalData[0]?.remarks,
       },
       toast: true,
-      onSuccess: (res) => {
+      onSuccess: () => {
         setOpen(false);
+        setModalData([]);
+        landingApiCall();
       },
     });
   };
@@ -90,7 +96,7 @@ export const SecurityDisbursementLanding = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepartmentByAccount",
       method: "GET",
       params: {
         businessUnitId: buId,
@@ -99,10 +105,10 @@ export const SecurityDisbursementLanding = () => {
 
         accountId: orgId,
       },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.strDepartment;
+          res.data[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -188,35 +194,29 @@ export const SecurityDisbursementLanding = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetIncrementProposalLoader",
+      urlKey: "DepositMasterReport",
       method: "GET",
       params: {
-        fromDate: values?.fromDate
-          ? moment(values?.fromDate).format("YYYY-MM-DD")
-          : todayDate(),
-        toDate: values?.toDate
-          ? moment(values?.toDate).format("YYYY-MM-DD")
-          : todayDate(),
+        departmentId: values?.department?.value || 0,
+        strSearch: values?.employee?.employeeCode || "",
+        // deposittypeId: 0,
       },
     });
   };
 
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
-
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
+  // const deleteDepositById = (item: any) => {
+  //   deleteApi?.action({
+  //     urlKey: "DepositDisbursement",
+  //     method: "DELETE",
+  //     params: {
+  //       id: item?.id,
+  //     },
+  //     toast: true,
+  //     onSuccess: () => {
+  //       landingApiCall();
+  //     },
+  //   });
+  // };
   const header: any = [
     {
       title: "SL",
@@ -226,22 +226,22 @@ export const SecurityDisbursementLanding = () => {
     },
     {
       title: "Employee Code",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "employeeCode",
       width: 100,
     },
     {
       title: "Employee Name",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "employeeName",
       width: 100,
     },
     {
       title: "Designation",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "designation",
       width: 100,
     },
     {
       title: "Department",
-      dataIndex: "Department",
+      dataIndex: "department",
       width: 100,
     },
     // {
@@ -253,7 +253,7 @@ export const SecurityDisbursementLanding = () => {
 
     {
       title: "Total Deposits Money",
-      dataIndex: "designationName",
+      dataIndex: "totalDepositsMoney",
       width: 100,
     },
 
@@ -272,8 +272,22 @@ export const SecurityDisbursementLanding = () => {
                   return toast.warn("You don't have permission");
                   e.stopPropagation();
                 }
-                //   setOpen(true);
-                //   setId(rec);
+                detailsApi?.action({
+                  urlKey: "DepositDetailReportByEmployee",
+                  method: "GET",
+                  params: {
+                    employeeId: item?.employeeId,
+                  },
+                  onSuccess: (res: any) => {
+                    res?.data?.forEach((row: any, index: any) => {
+                      if (row?.type === "Deposit") {
+                        res?.data?.splice(index, 1);
+                      }
+                    });
+                    setModalData([item]);
+                    setView(true);
+                  },
+                });
               },
             },
             {
@@ -284,7 +298,13 @@ export const SecurityDisbursementLanding = () => {
                 //   e.stopPropagation();
                 // }
                 setModalData([
-                  { ...item, date: moment(todayDate()), money: 0, remarks: "" },
+                  {
+                    ...item,
+                    date: moment(todayDate()),
+                    money: item?.totalBalance,
+                    totalDepositsMoney: item?.totalDepositsMoney,
+                    remarks: "",
+                  },
                 ]);
                 setOpen(true);
                 //   setId(rec);
@@ -293,7 +313,7 @@ export const SecurityDisbursementLanding = () => {
             // {
             //   type: "delete",
             //   onClick: () => {
-            //     // deleteProposalById(item);
+            //     deleteDepositById(item);
             //   },
             // },
           ]}
@@ -316,7 +336,7 @@ export const SecurityDisbursementLanding = () => {
               toDate: value,
             });
             const temp = [...modalData];
-            temp[index].date = moment(value).format("YYYY-MM-DD");
+            temp[index].date = moment(value);
             setModalData(temp);
           }}
         />
@@ -324,7 +344,7 @@ export const SecurityDisbursementLanding = () => {
     },
     {
       title: "Total Deposits Money",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "totalDepositsMoney",
       width: 100,
     },
     {
@@ -389,12 +409,60 @@ export const SecurityDisbursementLanding = () => {
       ),
     },
   ];
-  // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  //   const { fromDate } = form.getFieldsValue(true);
-  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //   // Disable dates before fromDate and after next3daysForEmp
-  //   return current && current < fromDateMoment.startOf("day");
-  // };
+  const detailsHeader: any = [
+    {
+      title: "SL",
+      render: (_value: any, _row: any, index: number) => index + 1,
+      align: "center",
+      width: 30,
+    },
+
+    {
+      title: "Type",
+      dataIndex: "type",
+      width: 100,
+    },
+
+    {
+      title: "Deposits Time",
+      render: (_: any, data: any) =>
+        data?.type === "Deposit"
+          ? moment(data?.executionTime).format("MMM-YYYY")
+          : moment(data?.executionTime).format("ll"),
+      width: 100,
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      width: 100,
+    },
+    {
+      title: "Comments",
+      dataIndex: "comments",
+      width: 100,
+    },
+
+    // {
+    //   title: "",
+    //   width: 30,
+
+    //   align: "center",
+    //   render: (_: any, item: any) => (
+    //     <TableButton
+    //       buttonsList={
+    //         [
+    //           // {
+    //           //   type: "delete",
+    //           //   onClick: () => {
+    //           //     deleteProposalById(item);
+    //           //   },
+    //           // },
+    //         ]
+    //       }
+    //     />
+    //   ),
+    // },
+  ];
 
   const onFinish = () => {
     landingApiCall();
@@ -417,16 +485,18 @@ export const SecurityDisbursementLanding = () => {
       >
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.length || 0} employees`}
+            title={`Total ${landingApi?.data?.data?.length || 0} employees`}
           />
           {loading && <Loading />}
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
+                  allowClear
+                  showSearch
                   options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
+                    empDepartmentDDL?.data?.data?.length > 0
+                      ? empDepartmentDDL?.data.data
                       : []
                   }
                   name="department"
@@ -448,6 +518,7 @@ export const SecurityDisbursementLanding = () => {
               <Col md={5} sm={12} xs={24}>
                 <PSelect
                   allowClear
+                  showSearch
                   name="employee"
                   label="Employee"
                   placeholder="Search Min 2 char"
@@ -459,57 +530,8 @@ export const SecurityDisbursementLanding = () => {
                     });
                     // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
-                  // onSearch={(value) => {
-                  //   getEmployee(value);
-                  // }}
-                  showSearch
-                  // filterOption={false}
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Employee is required",
-                  //   },
-                  // ]}
                 />
               </Col>
-
-              {/* <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplaceGroup?.data || []}
-                    name="workplaceGroup"
-                    label="Workplace Group"
-                    placeholder="Workplace Group"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplaceGroup: op,
-                        workplace: undefined,
-                      });
-                      getWorkplace();
-                    }}
-                    rules={
-                      [
-                        //   { required: true, message: "Workplace Group is required" },
-                      ]
-                    }
-                  />
-                </Col>
-                <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplace?.data || []}
-                    name="workplace"
-                    label="Workplace"
-                    placeholder="Workplace"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplace: op,
-                      });
-                      getWorkplaceDetails(value, setBuDetails);
-                    }}
-                    // rules={[{ required: true, message: "Workplace is required" }]}
-                  />
-                </Col> */}
 
               <Col
                 style={{
@@ -523,23 +545,11 @@ export const SecurityDisbursementLanding = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
-            // pagination={{
-            //   pageSize: landingApi?.data?.pageSize,
-            //   total: landingApi?.data?.totalCount,
-            // }}
-            // onChange={(pagination, filters, sorter, extra) => {
-            //   // Return if sort function is called
-            //   if (extra.action === "sort") return;
-            //   setFilterList(filters);
-
-            //   landingApiCall({
-            //     pagination,
-            //   });
-            // }}
-            // scroll={{ x: 1500 }}
           />
         </PCard>
         <PModal
@@ -574,6 +584,32 @@ export const SecurityDisbursementLanding = () => {
                   }
                   saveDisbursement();
                 }}
+              />
+            </>
+          }
+        />
+        <PModal
+          width={900}
+          open={view}
+          onCancel={() => setView(false)}
+          title={`Disbursement Details`}
+          components={
+            <>
+              <PCardBody className="my-2">
+                <CommonEmpInfo
+                  employeeName={modalData[0]?.employeeName}
+                  designationName={modalData[0]?.designation}
+                  departmentName={modalData[0]?.department}
+                />
+              </PCardBody>
+              <DataTable
+                header={detailsHeader}
+                bordered
+                data={
+                  detailsApi?.data?.data?.length > 0
+                    ? detailsApi?.data?.data
+                    : []
+                }
               />
             </>
           }

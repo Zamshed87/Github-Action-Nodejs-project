@@ -1571,6 +1571,7 @@ import DepositeType from "modules/configuration/depositeType";
 import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
 import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
 import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
+import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 
 // const TrainingApplicationCreate = lazy(() =>
@@ -3247,8 +3248,16 @@ export const routingList = [
     component: SecurityDepositLanding,
   },
   {
+    path: "/compensationAndBenefits/securityDeposit/edit/:id",
+    component: SecurityDepositCRUD,
+  },
+  {
     path: "/compensationAndBenefits/securityDisbursement",
     component: SecurityDisbursementLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityMoneyReport",
+    component: SecurityMoneyReportLanding,
   },
   {
     path: "/compensationAndBenefits/securityDeposit/create",

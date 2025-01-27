@@ -49,7 +49,7 @@ export default function AddEditForm({
     //   intUpdatedBy: employeeId,
     // };
     const payload = {
-      depositeTypeId: singleData?.id ? singleData?.id : 0,
+      id: singleData?.id ? singleData?.id : 0,
       depositTypeName: values?.depositTypeName || "",
       comment: values?.comment,
       accountId: orgId,

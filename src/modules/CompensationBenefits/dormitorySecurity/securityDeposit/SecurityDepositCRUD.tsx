@@ -22,7 +22,7 @@ import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { dateFormatter } from "utility/dateFormatter";
 import { Popover } from "@mui/material";
 
@@ -32,6 +32,7 @@ import { todayDate } from "utility/todayDate";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
 import { processDataFromExcelSecurityDeposit } from "./helper";
+import moment from "moment";
 
 export const SecurityDepositCRUD = () => {
   const dispatch = useDispatch();
@@ -49,9 +50,9 @@ export const SecurityDepositCRUD = () => {
   );
   // menu permission
   const employeeFeature: any = permission;
+  const detailsApi = useApiRequest({});
 
   const landingApi = useApiRequest({});
-  const deleteProposal = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const securityTypeDDL = useApiRequest({});
   const createUpdateDeposite = useApiRequest({});
@@ -59,20 +60,19 @@ export const SecurityDepositCRUD = () => {
   const CommonEmployeeDDL = useApiRequest([]);
 
   const getEmployee = (value: any = "") => {
-    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    const { department } = form.getFieldsValue(true);
     CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "GetEmpBasicInfoByDepartmentId",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        searchText: value,
+        DepartmentId: department?.value,
+        StrSearch: value,
       },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: number) => {
+          res.data[i].label = item?.employeeName;
+          res.data[i].value = item?.employeeId;
         });
       },
     });
@@ -81,12 +81,9 @@ export const SecurityDepositCRUD = () => {
 
   const [, setFilterList] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const options: any = [
-    { value: "", label: "All" },
-    { value: true, label: "Assigned" },
-    { value: false, label: "Not-Assigned" },
-  ];
+
   const { id }: any = useParams();
+  const { state }: any = useLocation();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
@@ -100,6 +97,48 @@ export const SecurityDepositCRUD = () => {
       document.title = "PeopleDesk";
     };
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      detailsApi?.action({
+        urlKey: "DepositDetails",
+        method: "GET",
+        params: {
+          month: state?.month,
+          year: state?.year,
+          depositType: id,
+        },
+        onSuccess: (res: any) => {
+          const date = moment(
+            `${state?.year}` +
+              `-${state?.month?.toString().padStart(2, "0")}-01`
+          );
+
+          form.setFieldsValue({
+            securityTypeDDL: {
+              value: res?.data?.[0]?.id,
+              label: res?.data?.[0]?.depositTypeName,
+            },
+            monthYear: date,
+          });
+          const modify = res?.data?.map((i: any, index: number) => {
+            return {
+              ...i,
+              employeeId: i?.employeeCode,
+              employeeCode: i?.employeeCode,
+              employeeName: i?.employeeName,
+              departmentName: i?.department,
+              designationName: i?.designation,
+              depositeMoney: i?.depositAmount,
+              remarks: i?.comment,
+              key: index,
+            };
+          });
+          setLanding(modify);
+        },
+      });
+    }
+  }, [id]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -161,13 +200,10 @@ export const SecurityDepositCRUD = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetIncrementProposalLoader",
+      urlKey: "DepositMasterReport",
       method: "GET",
       params: {
-        supervisorId: values?.supervisor?.value,
-        IncrementYear: `${values?.intYear?.value}`,
-        isInserted: values?.isInserted,
-        // isInserted: "true",
+        departmentId: values?.department?.value || 0,
       },
       onSuccess: (res) => {
         const modify = res?.map((i: any, index: number) => {
@@ -194,19 +230,15 @@ export const SecurityDepositCRUD = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepartmentByAccount",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-
         accountId: orgId,
       },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.strDepartment;
+          res.data[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -215,19 +247,15 @@ export const SecurityDepositCRUD = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     securityTypeDDL?.action({
-      urlKey: "DepartmentIdAll",
+      urlKey: "DepositType",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-
-        accountId: orgId,
+        id: orgId,
       },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
+      onSuccess: (res: any) => {
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.depositTypeName;
+          res.data[i].value = item?.id;
         });
       },
     });
@@ -237,22 +265,7 @@ export const SecurityDepositCRUD = () => {
     getEmployeDepartment();
     getSecurityType();
   }, []);
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
 
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
   const header: any = [
     {
       title: "SL",
@@ -272,7 +285,7 @@ export const SecurityDepositCRUD = () => {
     // },
     {
       title: "Employee Code",
-      dataIndex: "employeeName",
+      dataIndex: "employeeCode",
       width: 100,
     },
     {
@@ -422,22 +435,36 @@ export const SecurityDepositCRUD = () => {
     status: "Status",
     remarks: "Remarks",
   };
-  // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  //   const { fromDate } = form.getFieldsValue(true);
-  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //   // Disable dates before fromDate and after next3daysForEmp
-  //   return current && current < fromDateMoment.startOf("day");
-  // };
   const viewHandler = async () => {
+    const values = form.getFieldsValue(true);
+
     setSelectedRow([]);
-    await form
-      .validateFields()
-      .then(() => {
-        landingApiCall();
-      })
-      .catch(() => {
-        console.error("Validate Failed:");
-      });
+    // await form
+    //   .validateFields()
+    //   .then(() => {
+    if (
+      landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
+        .length === 0
+    ) {
+      const newEmp = {
+        employeeId: values?.employee?.value,
+        employeeCode: values?.employee?.employeeCode,
+        employeeName: values?.employee?.employeeName,
+        departmentName: values?.employee?.department,
+        designationName: values?.employee?.designation,
+        depositeMoney: 0,
+        remarks: "",
+      };
+      setLanding((prev) => [...prev, newEmp]);
+    }
+    // else {
+    //   landingApiCall();
+    // }
+    // })
+    // .catch(() => {
+    //   console.error("Validate Failed:");
+    // });
+    form.resetFields(["employee"]);
   };
   const onFinish = () => {
     const values = form.getFieldsValue(true);
@@ -450,30 +477,33 @@ export const SecurityDepositCRUD = () => {
     );
 
     if (
-      updatedSelectedRows?.filter((i) => i?.incrementProposalAmount === 0)
-        ?.length > 0
+      updatedSelectedRows?.filter((i) => i?.depositeMoney === 0)?.length > 0
     ) {
-      return toast.warn("Please fill up the input fields");
+      return toast.warn("Deposit Money should be greate than 0");
     }
-
     const modify = updatedSelectedRows?.map((i) => {
       return {
         ...i,
+        id: i?.id || 0,
         depositTypeId: values?.securityTypeDDL?.value || 0,
-        employeeId: i?.employeeId,
+        employeeId: i?.employeeId || 0,
         depositAmount: i?.depositeMoney,
-        depositDate: values?.monthYear,
+        depositDate: moment(values?.monthYear)
+          .startOf("month")
+          .format("YYYY-MM-DD"),
         comment: i?.remarks,
         // actionBy: employeeId,
       };
     });
     createUpdateDeposite?.action({
       urlKey: "Deposit",
-      method: "post",
+      method: id ? "put" : "post",
       payload: modify,
       toast: true,
       onSuccess: () => {
-        landingApiCall();
+        setLanding([]);
+        setSelectedRow([]);
+        form.resetFields();
       },
     });
   };
@@ -532,9 +562,12 @@ export const SecurityDepositCRUD = () => {
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
                 <PSelect
+                  showSearch
+                  allowClear
+                  disabled={+id ? true : false}
                   options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
+                    empDepartmentDDL?.data?.data?.length > 0
+                      ? empDepartmentDDL?.data?.data
                       : []
                   }
                   name="department"
@@ -557,21 +590,21 @@ export const SecurityDepositCRUD = () => {
                 <PSelect
                   allowClear
                   name="employee"
+                  disabled={+id ? true : false}
                   label="Employee"
                   placeholder="Search Min 2 char"
-                  options={CommonEmployeeDDL?.data || []}
+                  options={CommonEmployeeDDL?.data?.data || []}
                   loading={CommonEmployeeDDL?.loading}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       employee: op,
                     });
-                    // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
-                  // onSearch={(value) => {
-                  //   getEmployee(value);
-                  // }}
+                  onSearch={(value) => {
+                    getEmployee(value);
+                  }}
                   showSearch
-                  // filterOption={false}
+                  filterOption={false}
                   // rules={[
                   //   {
                   //     required: true,
@@ -589,6 +622,7 @@ export const SecurityDepositCRUD = () => {
                 <PButton
                   type="primary"
                   action="button"
+                  disabled={+id ? true : false}
                   onClick={() => {
                     viewHandler();
                   }}
@@ -602,8 +636,8 @@ export const SecurityDepositCRUD = () => {
               <Col md={6} sm={24}>
                 <PSelect
                   options={
-                    securityTypeDDL?.data.length > 0
-                      ? securityTypeDDL?.data
+                    securityTypeDDL?.data?.data?.length > 0
+                      ? securityTypeDDL?.data?.data
                       : []
                   }
                   name="securityTypeDDL"
@@ -717,7 +751,7 @@ export const SecurityDepositCRUD = () => {
               // landingApi?.data ||
               landing || []
             }
-            loading={landingApi?.loading}
+            // loading={landingApi?.loading}
             header={header}
             // pagination={{
             //   pageSize: landingApi?.data?.pageSize,
