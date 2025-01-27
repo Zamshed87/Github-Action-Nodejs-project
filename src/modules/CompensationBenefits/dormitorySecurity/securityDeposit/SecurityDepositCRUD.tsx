@@ -116,7 +116,7 @@ export const SecurityDepositCRUD = () => {
 
           form.setFieldsValue({
             securityTypeDDL: {
-              value: res?.data?.[0]?.id,
+              value: id,
               label: res?.data?.[0]?.depositTypeName,
             },
             monthYear: date,
