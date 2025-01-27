@@ -486,7 +486,7 @@ export const SecurityDepositCRUD = () => {
         ...i,
         id: i?.id || 0,
         depositTypeId: values?.securityTypeDDL?.value || 0,
-        employeeId: i?.employeeId,
+        employeeId: i?.employeeId || 0,
         depositAmount: i?.depositeMoney,
         depositDate: moment(values?.monthYear)
           .startOf("month")

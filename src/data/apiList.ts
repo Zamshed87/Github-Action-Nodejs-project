@@ -300,6 +300,6 @@ export const apiList = {
   DepartmentByAccount: "PeopleDeskDdl/DepartmentByAccount",
   DepositMasterReport: "/Deposit/DepositMasterReport",
   DepositDisbursement: "/DepositDisbursement",
-  DepositDetailReportByEmployee: "/DepositDetailReportByEmployee",
+  DepositDetailReportByEmployee: "Deposit/DepositDetailReportByEmployee",
   GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
 };

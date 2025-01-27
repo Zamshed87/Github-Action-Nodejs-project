@@ -479,44 +479,6 @@ export const SecurityDepositLanding = () => {
                 />
               </Col>
 
-              {/* <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplaceGroup?.data || []}
-                    name="workplaceGroup"
-                    label="Workplace Group"
-                    placeholder="Workplace Group"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplaceGroup: op,
-                        workplace: undefined,
-                      });
-                      getWorkplace();
-                    }}
-                    rules={
-                      [
-                        //   { required: true, message: "Workplace Group is required" },
-                      ]
-                    }
-                  />
-                </Col>
-                <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplace?.data || []}
-                    name="workplace"
-                    label="Workplace"
-                    placeholder="Workplace"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplace: op,
-                      });
-                      getWorkplaceDetails(value, setBuDetails);
-                    }}
-                    // rules={[{ required: true, message: "Workplace is required" }]}
-                  />
-                </Col> */}
-
               <Col
                 style={{
                   marginTop: "23px",

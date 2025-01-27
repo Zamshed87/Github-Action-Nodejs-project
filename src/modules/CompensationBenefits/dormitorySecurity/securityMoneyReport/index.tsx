@@ -6,13 +6,12 @@ import {
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
   TableButton,
 } from "Components";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -20,10 +19,9 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
-import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
-import { ModalFooter, PModal } from "Components/Modal";
+import { PModal } from "Components/Modal";
 import CommonEmpInfo from "common/CommonEmpInfo";
 
 export const SecurityMoneyReportLanding = () => {
@@ -31,9 +29,9 @@ export const SecurityMoneyReportLanding = () => {
 
   const {
     permissionList,
-    profileData: { buId, employeeId, orgId, wgId, wId, buName },
+    profileData: { buId, orgId, wgId, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState<any[]>([]);
 
@@ -46,7 +44,6 @@ export const SecurityMoneyReportLanding = () => {
 
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
-  const disbursementApi = useApiRequest({});
   const detailsApi = useApiRequest({});
 
   const CommonEmployeeDDL = useApiRequest([]);
@@ -67,23 +64,6 @@ export const SecurityMoneyReportLanding = () => {
           res[i].label = item?.employeeName;
           res[i].value = item?.employeeId;
         });
-      },
-    });
-  };
-  const saveDisbursement = (value: any = "") => {
-    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    disbursementApi?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "post",
-      payload: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        searchText: value,
-      },
-      toast: true,
-      onSuccess: (res) => {
-        setOpen(false);
       },
     });
   };
@@ -189,28 +169,12 @@ export const SecurityMoneyReportLanding = () => {
       method: "GET",
       params: {
         departmentId: values?.department?.value || 0,
-        strSearch: values?.employee?.value,
+        strSearch: values?.employee?.employeeCode || "",
         deposittypeId: values?.status?.value,
       },
     });
   };
 
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
-
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
   const header: any = [
     {
       title: "SL",
@@ -266,7 +230,7 @@ export const SecurityMoneyReportLanding = () => {
           buttonsList={[
             {
               type: "view",
-              onClick: (e: any) => {
+              onClick: () => {
                 detailsApi?.action({
                   urlKey: "DepositDetailReportByEmployee",
                   method: "GET",
@@ -274,6 +238,7 @@ export const SecurityMoneyReportLanding = () => {
                     employeeId: item?.employeeId,
                   },
                   onSuccess: () => {
+                    setModalData([item]);
                     setOpen(true);
                   },
                 });
@@ -308,7 +273,7 @@ export const SecurityMoneyReportLanding = () => {
     {
       title: "Deposits Time",
       render: (_: any, data: any) =>
-        data?.type !== "Deposit"
+        data?.type === "Deposit"
           ? moment(data?.executionTime).format("MMM-YYYY")
           : moment(data?.executionTime).format("ll"),
       width: 100,
@@ -345,12 +310,6 @@ export const SecurityMoneyReportLanding = () => {
     //   ),
     // },
   ];
-  // const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  //   const { fromDate } = form.getFieldsValue(true);
-  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //   // Disable dates before fromDate and after next3daysForEmp
-  //   return current && current < fromDateMoment.startOf("day");
-  // };
 
   const onFinish = () => {
     landingApiCall();
@@ -373,7 +332,7 @@ export const SecurityMoneyReportLanding = () => {
       >
         <PCard>
           <PCardHeader
-            title={`Total ${landingApi?.data?.length || 0} employees`}
+            title={`Total ${landingApi?.data?.data?.length || 0} employees`}
           />
           {loading && <Loading />}
           <PCardBody className="mb-3">
@@ -418,16 +377,6 @@ export const SecurityMoneyReportLanding = () => {
                     });
                     // empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
-                  // onSearch={(value) => {
-                  //   getEmployee(value);
-                  // }}
-                  // filterOption={false}
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Employee is required",
-                  //   },
-                  // ]}
                 />
               </Col>
               <Col md={6} sm={24}>
@@ -436,56 +385,13 @@ export const SecurityMoneyReportLanding = () => {
                   name="status"
                   label="Status"
                   placeholder="status"
-                  onChange={(value, op) => {
+                  onChange={(value) => {
                     form.setFieldsValue({
                       status: value,
                     });
                   }}
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Year is required",
-                  //   },
-                  // ]}
                 />
               </Col>
-              {/* <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplaceGroup?.data || []}
-                    name="workplaceGroup"
-                    label="Workplace Group"
-                    placeholder="Workplace Group"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplaceGroup: op,
-                        workplace: undefined,
-                      });
-                      getWorkplace();
-                    }}
-                    rules={
-                      [
-                        //   { required: true, message: "Workplace Group is required" },
-                      ]
-                    }
-                  />
-                </Col>
-                <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplace?.data || []}
-                    name="workplace"
-                    label="Workplace"
-                    placeholder="Workplace"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplace: op,
-                      });
-                      getWorkplaceDetails(value, setBuDetails);
-                    }}
-                    // rules={[{ required: true, message: "Workplace is required" }]}
-                  />
-                </Col> */}
 
               <Col
                 style={{
@@ -499,23 +405,11 @@ export const SecurityMoneyReportLanding = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
-            // pagination={{
-            //   pageSize: landingApi?.data?.pageSize,
-            //   total: landingApi?.data?.totalCount,
-            // }}
-            // onChange={(pagination, filters, sorter, extra) => {
-            //   // Return if sort function is called
-            //   if (extra.action === "sort") return;
-            //   setFilterList(filters);
-
-            //   landingApiCall({
-            //     pagination,
-            //   });
-            // }}
-            // scroll={{ x: 1500 }}
           />
         </PCard>
         <PModal
@@ -535,19 +429,19 @@ export const SecurityMoneyReportLanding = () => {
                     <div>
                       Deposits Money :{" "}
                       <span style={{ fontWeight: "500" }}>
-                        {modalData[0]?.employeeName}
+                        {modalData[0]?.totalDepositsMoney}
                       </span>
                     </div>
                     <div>
-                      detailsment Amount :{" "}
+                      Disbursement Amount :{" "}
                       <span style={{ fontWeight: "500" }}>
-                        {modalData[0]?.employeeName}
+                        {modalData[0]?.disbursementAmount}
                       </span>
                     </div>
                     <div>
                       Balance Amount :{" "}
                       <span style={{ fontWeight: "500" }}>
-                        {modalData[0]?.employeeName}
+                        {modalData[0]?.totalBalance}
                       </span>
                     </div>
                   </>
@@ -562,20 +456,6 @@ export const SecurityMoneyReportLanding = () => {
                     : []
                 }
               />
-              {/* <ModalFooter
-                submitText={`Save`}
-                submitAction="button"
-                cancelText={false}
-                onSubmit={() => {
-                  if (!Boolean(modalData[0]?.date)) {
-                    toast.error("Date is Required");
-                  }
-                  if (!Boolean(modalData[0]?.money)) {
-                    toast.error("Disbursement Amount is Required");
-                  }
-                  saveDisbursement();
-                }}
-              /> */}
             </>
           }
         />
