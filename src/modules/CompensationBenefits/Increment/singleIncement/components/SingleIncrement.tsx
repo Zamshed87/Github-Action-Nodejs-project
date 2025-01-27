@@ -901,6 +901,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               updateRowDtoHandler(+e?.target?.value, row, index);
             }}
             disabled={
+              (location?.state as any)?.viewOnly ||
               row?.strBasedOn !== "Amount" ||
               (row?.strDependOn !== "Gross" && row?.isBasicSalary)
             }
