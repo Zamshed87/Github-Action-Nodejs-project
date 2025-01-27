@@ -2498,15 +2498,15 @@ export const routingList = [
     component: TrainingDetails,
   },
   {
-    path: "/approval",
+    path: "/approval/old",
     component: ApprovalList,
   },
   {
-    path: "/approvalNew",
+    path: "/approval",
     component: ApprovalListNew,
   },
   {
-    path: "/approvalNew/:id",
+    path: "/approval/:id",
     component: ApproverCommonLanding,
   },
   // {

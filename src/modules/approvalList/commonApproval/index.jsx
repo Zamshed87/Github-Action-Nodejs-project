@@ -2,9 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Spin, Modal } from "antd";
-
+import { fetchPendingApprovals } from "./helper";
+import { DataTable } from "Components";
+import { useLocation } from "react-router";
+import ApproveRejectComp from "common/ApproveRejectComp";
+import BackButton from "common/BackButton";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import CommonFilter from "common/CommonFilter";
 import "./index.css";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   columnIncrement,
   columnOvertime,
@@ -27,16 +33,14 @@ import {
   columnsSeparation,
   columnsShiftChange,
 } from "./utils";
-import { fetchPendingApprovals } from "./helper";
-import { DataTable } from "Components";
-import { useLocation } from "react-router";
-import ApproveRejectComp from "common/ApproveRejectComp";
-import BackButton from "common/BackButton";
 
 const CommonApprovalComponent = () => {
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
+  const dispatch = useDispatch();
+
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,6 +65,28 @@ const CommonApprovalComponent = () => {
       setData,
     });
   }, [id]);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Approval"));
+    document.title = `${state?.state?.applicationType} Approval`;
+    return () => {
+      document.title = "";
+    };
+  }, []);
+
+  const handleFilter = (values) => {
+    const { workplace, workplaceGroup } = values;
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId: workplaceGroup?.value || wgId,
+      wId: workplace?.value || wId,
+      employeeId,
+      setData,
+    });
+  };
 
   const handleApproveReject = async (isApprove) => {
     const payload = selectedRow.map((key) => {
@@ -113,21 +139,32 @@ const CommonApprovalComponent = () => {
 
   return (
     <div className="approval-container mt-4">
-      <div className="d-flex align-items-center">
-        <BackButton title={`${state?.state?.applicationType} Approval`} />
-        {selectedRow?.length > 0 ? (
-          <ApproveRejectComp
-            props={{
-              className: "ml-3",
-              onApprove: () => {
-                showConfirmationModal("approve");
-              },
-              onReject: () => {
-                showConfirmationModal("reject");
-              },
-            }}
-          />
-        ) : null}
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="d-flex align-items-center">
+          <BackButton title={`${state?.state?.applicationType} Approval`} />
+          {selectedRow?.length > 0 ? (
+            <ApproveRejectComp
+              props={{
+                className: "ml-3",
+                onApprove: () => {
+                  showConfirmationModal("approve");
+                },
+                onReject: () => {
+                  showConfirmationModal("reject");
+                },
+              }}
+            />
+          ) : null}
+        </div>
+        <CommonFilter
+          visible={isFilterVisible}
+          onClose={(visible) => setIsFilterVisible(visible)}
+          onFilter={handleFilter}
+          isDate={true}
+          isWorkplaceGroup={true}
+          isWorkplace={true}
+          isAllValue={true}
+        />
       </div>
 
       {loading ? (
@@ -188,9 +225,10 @@ const CommonApprovalComponent = () => {
           data={data.map((item) => ({ ...item, key: item.id }))}
         />
       )}
+
       <Modal
         title="Confirmation"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         okText="Yes"
