@@ -36,7 +36,7 @@ export const SecurityMoneyReportLanding = () => {
   const [modalData, setModalData] = useState<any[]>([]);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 8),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30531),
     []
   );
   // menu permission
@@ -88,8 +88,8 @@ export const SecurityMoneyReportLanding = () => {
 
   const options: any = [
     { value: "", label: "All" },
-    { value: true, label: "Disbursed" },
-    { value: false, label: "Pending" },
+    { value: "approved", label: "Approved" },
+    { value: "pending", label: "Pending" },
   ];
   // Form Instance
   const [form] = Form.useForm();
@@ -170,7 +170,7 @@ export const SecurityMoneyReportLanding = () => {
       params: {
         departmentId: values?.department?.value || 0,
         strSearch: values?.employee?.employeeCode || "",
-        deposittypeId: values?.status?.value,
+        status: values?.status || "",
       },
     });
   };

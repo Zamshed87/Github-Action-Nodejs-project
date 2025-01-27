@@ -471,9 +471,9 @@ export const SecurityDepositCRUD = () => {
     if (selectedRow?.length == 0) {
       return toast.warn("Select Employees First");
     }
-    const selectedRowEmpID = selectedRow.map((item) => item?.employeeId);
+    const selectedRowEmpID = selectedRow.map((item) => item?.employeeCode);
     const updatedSelectedRows = landing?.filter((item) =>
-      selectedRowEmpID.includes(item.employeeId)
+      selectedRowEmpID.includes(item.employeeCode)
     );
 
     if (
@@ -483,10 +483,9 @@ export const SecurityDepositCRUD = () => {
     }
     const modify = updatedSelectedRows?.map((i) => {
       return {
-        ...i,
         id: i?.id || 0,
         depositTypeId: values?.securityTypeDDL?.value || 0,
-        employeeId: i?.employeeId || 0,
+        employeeCode: `${i?.employeeCode}` || 0,
         depositAmount: i?.depositeMoney,
         depositDate: moment(values?.monthYear)
           .startOf("month")
