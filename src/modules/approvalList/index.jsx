@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar } from "@material-ui/core";
 import { Tooltip } from "@mui/material";
-import {  Formik } from "formik";
+import { Formik } from "formik";
 import { Form } from "antd";
 import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import "./index.css";
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
@@ -20,6 +20,8 @@ import {
   DashboardOutlined,
 } from "@ant-design/icons";
 import PFilter from "utility/filter/PFilter";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import CommonFilter from "common/CommonFilter";
 
 const initData = {
   search: "",
@@ -31,39 +33,48 @@ export default function ApprovalList() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [approvalData, setApprovalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (wgId && wId) {
-      getApprovalDashboardLanding(
-        orgId,
-        employeeId,
-        false,
-        setApprovalData,
-        setLoading,
-        wId,
-        buId,
-        wgId
-      );
-    }
-  }, [orgId, employeeId, wId, buId, wgId]);
+  const landingApiCall = () => {
+    const values = form.getFieldsValue(true);
 
-  const landingApiCall = (values) => {
     getApprovalDashboardLanding(
       orgId,
       employeeId,
       false,
       setApprovalData,
       setLoading,
-      wId,
+      values?.workplace?.value || wId,
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       values
     );
-  }
+  };
+
+  useEffect(() => {
+    if (wId && wgId) {
+      landingApiCall();
+    }
+  }, [wId, wgId]);
+
+  const handleFilter = (values) => {
+    const { workplace, workplaceGroup } = values;
+    getApprovalDashboardLanding(
+      orgId,
+      employeeId,
+      false,
+      setApprovalData,
+      setLoading,
+      workplace?.value || wId,
+      buId,
+      workplaceGroup?.value || wgId,
+      values
+    );
+  };
 
   useEffect(() => {
     if (approvalData.length > 0) {
@@ -84,13 +95,26 @@ export default function ApprovalList() {
 
       const mappedData = approvalData.map((item) => ({
         ...item,
-        icon: iconMapping.default,
+        icon: iconMapping[item.type] || iconMapping.default,
       }));
 
       setFilteredData(mappedData);
+    } else {
+      setFilteredData([]);
     }
-  }, [approvalData]);
+  }, [approvalData, wgId, wId]);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Approval";
+    return () => {
+      document.title = "";
+    };
+  }, []);
+
   const [form] = Form.useForm();
+
+  console.log("Form", form);
 
   return (
     <>
@@ -156,7 +180,15 @@ export default function ApprovalList() {
                         />
                       </li>
                       <li>
-                      <PFilter form={form} landingApiCall={landingApiCall} />
+                        <CommonFilter
+                          visible={isFilterVisible}
+                          onClose={(visible) => setIsFilterVisible(visible)}
+                          onFilter={handleFilter}
+                          isDate={true}
+                          isWorkplaceGroup={true}
+                          isWorkplace={true}
+                          isAllValue={true}
+                        />
                       </li>
                     </ul>
                   </div>
@@ -175,9 +207,12 @@ export default function ApprovalList() {
                                   applicationTypeId: data.applicationTypeId,
                                   applicationType: data.applicationType,
                                 };
-                                history.push(`/approvalNew/${data.applicationTypeId}`, {
-                                  state: serializableData,
-                                });
+                                history.push(
+                                  `/approval/${data.applicationTypeId}`,
+                                  {
+                                    state: serializableData,
+                                  }
+                                );
                               }}
                             >
                               <td>
