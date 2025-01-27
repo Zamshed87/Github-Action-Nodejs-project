@@ -21,6 +21,7 @@ const initState = {
   selectedUser: "",
   tokenData: "",
   mostClickedMenuList: [], // this is for most clicked menu list]
+  decodedTokenData: null,
 };
 
 export const authSlice = createSlice({
@@ -157,6 +158,7 @@ export const authSlice = createSlice({
       };
       state.tokenData = "";
       state.isExpiredToken = false;
+      state.decodedTokenData=null;
     },
     SetImageView: (state, action) => {
       const { payload } = action;
@@ -191,6 +193,12 @@ export const authSlice = createSlice({
     },
     clearMoseClickedMenuList: (state) => {
       state.mostClickedMenuList = [];
+    },
+    setDecodedTokenData: (state, action) => {
+      const decodedToken = action.payload
+      ? JSON.parse(atob(action.payload.split(".")[1]))
+      : null;
+      state.decodedTokenData = decodedToken;
     },
     // most clicked menu list updataion and clear end  -----------  
 
