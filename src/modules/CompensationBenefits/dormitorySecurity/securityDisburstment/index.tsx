@@ -39,7 +39,7 @@ export const SecurityDisbursementLanding = () => {
   const [modalData, setModalData] = useState<any[]>([]);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 8),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30532),
     []
   );
   // menu permission
@@ -128,12 +128,11 @@ export const SecurityDisbursementLanding = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
-    document.title = "Security Disbursement ";
+    document.title = "Security Disbursement";
     () => {
       document.title = "PeopleDesk";
     };
   }, []);
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   // workplace wise

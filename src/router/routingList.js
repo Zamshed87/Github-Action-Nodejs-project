@@ -3198,7 +3198,7 @@ export const routingList = [
 
   // Salary assign & deduction
   {
-    path: "/compensationAndBenefits/securityDeposit",
+    path: "/compensationAndBenefits/securitydeposit/securityDeposits",
     component: SecurityDepositLanding,
   },
   {
@@ -3206,11 +3206,11 @@ export const routingList = [
     component: SecurityDepositCRUD,
   },
   {
-    path: "/compensationAndBenefits/securityDisbursement",
+    path: "/compensationAndBenefits/securitydeposit/disbursement",
     component: SecurityDisbursementLanding,
   },
   {
-    path: "/compensationAndBenefits/securityMoneyReport",
+    path: "/compensationAndBenefits/reports/securitymoneyreport",
     component: SecurityMoneyReportLanding,
   },
   {

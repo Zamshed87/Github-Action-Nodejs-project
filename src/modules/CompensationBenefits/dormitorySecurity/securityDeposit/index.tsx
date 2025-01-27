@@ -40,7 +40,7 @@ export const SecurityDepositLanding = () => {
   const [typeId, setTypeId] = useState<any>({});
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 8),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30530),
     []
   );
   // menu permission
