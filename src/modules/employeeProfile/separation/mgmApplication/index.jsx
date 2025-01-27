@@ -45,10 +45,10 @@ export default function ManagementSeparation() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, wId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { buId, wgId, wId },
+    decodedTokenData: { workplaceGroupList, workplaceList },
+  } = useSelector((state) => state?.auth, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -88,7 +88,10 @@ export default function ManagementSeparation() {
       pagination?.current,
       pagination?.pageSize,
       setPages,
-      wId
+      wId,
+      "",
+      workplaceGroupList,
+      workplaceList
     );
   };
 
@@ -148,7 +151,10 @@ export default function ManagementSeparation() {
       1,
       paginationSize,
       setPages,
-      wId
+      wId,
+      "",
+      workplaceGroupList,
+      workplaceList
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -193,7 +199,10 @@ export default function ManagementSeparation() {
                           1,
                           paginationSize,
                           setPages,
-                          wId
+                          wId,
+                          "",
+                          workplaceGroupList,
+                          workplaceList
                         );
                       }}
                     />
@@ -221,7 +230,10 @@ export default function ManagementSeparation() {
                           1,
                           paginationSize,
                           setPages,
-                          wId
+                          wId,
+                          "",
+                          workplaceGroupList,
+                          workplaceList
                         );
                       } else {
                         getSeparationLanding(
@@ -237,7 +249,10 @@ export default function ManagementSeparation() {
                           1,
                           paginationSize,
                           setPages,
-                          wId
+                          wId,
+                          "",
+                          workplaceGroupList,
+                          workplaceList
                         );
                       }
                     }}
@@ -256,7 +271,10 @@ export default function ManagementSeparation() {
                         1,
                         paginationSize,
                         setPages,
-                        wId
+                        wId,
+                        "",
+                        workplaceGroupList,
+                        workplaceList
                       );
                     }}
                   />
