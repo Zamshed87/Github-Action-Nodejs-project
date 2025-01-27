@@ -330,21 +330,10 @@ Step 1: Declare State
 
 const [isFilterVisible, setIsFilterVisible] = useState(false);
 
-
-Step 2: Add a Button to Open the Drawer
-
-<Button
-  type="primary"
-  icon={<FilterOutlined />}
-  onClick={() => setIsFilterVisible(true)} // Opens the drawer
->
-  Filter
-</Button>
-
 ---
 
-Step 3: Add the FilterDrawer Component
-- Add the `FilterDrawer` component and pass the required props:
+Step 2: Add the CommonFilter Component
+- Add the `CommonFilter` component and pass the required props:
 
       <CommonFilter
         visible={isFilterVisible} // Control visibility
@@ -356,7 +345,7 @@ Step 3: Add the FilterDrawer Component
         isAllValue={true}
       />
 
-Step 4: Configure Conditional Fields
+Step 3: Configure Conditional Fields
 
 const handleFilter = (values) => {
   console.log("Filters Applied:", values);
