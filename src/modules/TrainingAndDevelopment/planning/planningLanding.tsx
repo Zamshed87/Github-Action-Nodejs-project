@@ -159,7 +159,9 @@ const TnDPlanningLanding = () => {
       title: "Training Date & Time",
       dataIndex: "startDate",
       render: (text: any, record: any) =>
-        dateNewFormatter(record.startDate, record.endDate),
+        !record.startDate || !record.endDate
+          ? ""
+          : dateNewFormatter(record.startDate, record.endDate),
       align: "left",
       width: 150,
     },

@@ -356,7 +356,7 @@ export const createTrainingSchedule = async (
       `/Training/TrainingScheduleDetails/${planId}`,
       payload
     );
-    // toast.success("Created Successfully", { toastId: 1222 });
+    toast.success("Created Successfully", { toastId: 12229 });
     cb && cb();
     setLoading(false);
   } catch (error: any) {
