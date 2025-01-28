@@ -47,16 +47,21 @@ const TnDRequisitionLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission: any = {};
-  permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30512) {
-      permission = item;
-    }
-  });
+
   // router states
   const history = useHistory();
   const location = useLocation();
   const firstSegment = location.pathname.split("/")[1];
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (firstSegment !== "SelfService" && item?.menuReferenceId === 30512) {
+      permission = item;
+    }
+    if (firstSegment === "SelfService" && item?.menuReferenceId === 30522) {
+      permission = item;
+    }
+  });
 
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
