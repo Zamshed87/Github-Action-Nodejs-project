@@ -980,6 +980,11 @@ const TnDPlanningCreateEdit = () => {
                 calculatePerPersonCost={calculatePerPersonCost}
                 departmentDDL={empDepartmentDDL?.data || []}
                 positionDDL={positionDDL?.data || []}
+                workplaceGroup={workplaceGroup}
+                getWorkplace={getWorkplace}
+                workplace={workplace}
+                getEmployeDepartment={getEmployeDepartment}
+                getEmployeePosition={getEmployeePosition}
               />
             </PCardBody>
           )}
