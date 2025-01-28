@@ -32,7 +32,7 @@ const TrainingCalender: React.FC = () => {
     if (firstSegment !== "SelfService" && item?.menuReferenceId === 30515) {
       permission = item;
     }
-    if (firstSegment === "SelfService" && item?.menuReferenceId === 30515) {
+    if (firstSegment === "SelfService" && item?.menuReferenceId === 30523) {
       permission = item;
     }
   });

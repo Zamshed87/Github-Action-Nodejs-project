@@ -58,7 +58,7 @@ const TnDRequisitionLanding = () => {
     if (firstSegment !== "SelfService" && item?.menuReferenceId === 30512) {
       permission = item;
     }
-    if (firstSegment === "SelfService" && item?.menuReferenceId === 30512) {
+    if (firstSegment === "SelfService" && item?.menuReferenceId === 30522) {
       permission = item;
     }
   });
