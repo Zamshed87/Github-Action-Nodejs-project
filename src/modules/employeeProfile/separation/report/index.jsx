@@ -45,7 +45,7 @@ const SeparationReport = () => {
   // redux
   const {
     profileData: { buId, wgId, wId, employeeId },
-    decodedTokenData: { workplaceGroupList, workplaceList },
+    decodedTokenData: { workplaceGroupList= "", workplaceList="" },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
