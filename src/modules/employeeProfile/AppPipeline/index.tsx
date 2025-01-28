@@ -196,31 +196,23 @@ function CommonAppPipeline() {
         }}
       >
         <PCard>
-          <div
-            style={{
-              position: "relative",
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              marginBottom: "16px",
-            }}
-          >
-            <CommonFilter
-              visible={isFilterVisible}
-              onClose={(visible: any) => setIsFilterVisible(visible)}
-              onFilter={handleFilter}
-              isDate={true}
-              isWorkplaceGroup={true}
-              isWorkplace={true}
-              isAllValue={true}
-            />
-          </div>
           <PCardHeader
             title="Common Approval Pipeline"
             submitText="Approval Pipeline"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
+            filterComponent={
+              <CommonFilter
+                visible={isFilterVisible}
+                onClose={(visible: any) => setIsFilterVisible(visible)}
+                onFilter={handleFilter}
+                isDate={true}
+                isWorkplaceGroup={true}
+                isWorkplace={true}
+                isAllValue={true}
+              />
+            }
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
