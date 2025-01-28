@@ -42,7 +42,7 @@ const MonthlyInOutReport = () => {
   const {
     permissionList,
     profileData: { buId, wgId, employeeId, orgId, buName, wId, wgName },
-    decodedTokenData: { workplaceGroupList, workplaceList },
+    decodedTokenData: { workplaceGroupList= "", workplaceList="" },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(

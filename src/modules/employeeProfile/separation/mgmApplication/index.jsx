@@ -47,7 +47,7 @@ export default function ManagementSeparation() {
   // redux
   const {
     profileData: { buId, wgId, wId },
-    decodedTokenData: { workplaceGroupList, workplaceList },
+    decodedTokenData: { workplaceGroupList= "", workplaceList="" },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

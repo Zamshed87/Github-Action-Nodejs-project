@@ -21,7 +21,7 @@ const initState = {
   selectedUser: "",
   tokenData: "",
   mostClickedMenuList: [], // this is for most clicked menu list]
-  decodedTokenData: null,
+  decodedTokenData: {},
 };
 
 export const authSlice = createSlice({
@@ -158,7 +158,7 @@ export const authSlice = createSlice({
       };
       state.tokenData = "";
       state.isExpiredToken = false;
-      state.decodedTokenData=null;
+      state.decodedTokenData={};
     },
     SetImageView: (state, action) => {
       const { payload } = action;
