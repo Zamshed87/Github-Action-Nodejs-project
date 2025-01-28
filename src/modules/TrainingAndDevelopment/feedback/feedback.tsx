@@ -118,7 +118,7 @@ const TnDFeedback = () => {
           {
             title: (
               <>
-                Feedback Done
+                Send Request
                 <br />
                 <Checkbox
                   style={{
