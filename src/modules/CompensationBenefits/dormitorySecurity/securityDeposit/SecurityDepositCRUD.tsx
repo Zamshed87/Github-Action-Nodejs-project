@@ -230,15 +230,19 @@ export const SecurityDepositCRUD = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentByAccount",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+
         accountId: orgId,
       },
       onSuccess: (res: any) => {
-        res?.data?.forEach((item: any, i: any) => {
-          res.data[i].label = item?.strDepartment;
-          res.data[i].value = item?.intDepartmentId;
+        res?.forEach((item: any, i: any) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -444,7 +448,8 @@ export const SecurityDepositCRUD = () => {
     //   .then(() => {
     if (
       landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
-        .length === 0
+        .length === 0 &&
+      values?.employee?.value
     ) {
       const newEmp = {
         employeeId: values?.employee?.value,
@@ -565,8 +570,8 @@ export const SecurityDepositCRUD = () => {
                   allowClear
                   disabled={+id ? true : false}
                   options={
-                    empDepartmentDDL?.data?.data?.length > 0
-                      ? empDepartmentDDL?.data?.data
+                    empDepartmentDDL?.data?.length > 0
+                      ? empDepartmentDDL?.data
                       : []
                   }
                   name="department"

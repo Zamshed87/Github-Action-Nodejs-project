@@ -96,7 +96,7 @@ export const SecurityDisbursementLanding = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentByAccount",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
         businessUnitId: buId,
@@ -106,9 +106,9 @@ export const SecurityDisbursementLanding = () => {
         accountId: orgId,
       },
       onSuccess: (res: any) => {
-        res?.data?.forEach((item: any, i: any) => {
-          res.data[i].label = item?.strDepartment;
-          res.data[i].value = item?.intDepartmentId;
+        res?.forEach((item: any, i: any) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -494,8 +494,8 @@ export const SecurityDisbursementLanding = () => {
                   allowClear
                   showSearch
                   options={
-                    empDepartmentDDL?.data?.data?.length > 0
-                      ? empDepartmentDDL?.data.data
+                    empDepartmentDDL?.data?.length > 0
+                      ? empDepartmentDDL?.data
                       : []
                   }
                   name="department"
