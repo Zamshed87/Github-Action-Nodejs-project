@@ -1,15 +1,11 @@
 import {
   Avatar,
   DataTable,
-  PButton,
   PCard,
-  PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tag, Tooltip } from "antd";
@@ -28,16 +24,16 @@ import {
   monthLastDate,
 } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
+import axios from "axios";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import axios from "axios";
-import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
-import { column } from "./helper";
 import PFilter from "utility/filter/PFilter";
 import { formatFilterValueList } from "utility/filter/helper";
 import { EyeOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
+import { column } from "./helper";
 
 const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
@@ -92,69 +88,6 @@ const MonthlyLeaveReport = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
-
-  // workplace wise
-  const getEmployeDepartment = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        workplaceId: workplace?.value,
-
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-  };
   const getSuperVisorDDL = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
@@ -229,9 +162,9 @@ const MonthlyLeaveReport = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
+
   //   table column
   const header: any = () => {
     return [
@@ -419,12 +352,6 @@ const MonthlyLeaveReport = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -436,8 +363,8 @@ const MonthlyLeaveReport = () => {
         onFinish={() => {
           landingApiCall({
             pagination: {
-              current: pages?.current,
-              pageSize: landingApi?.data?.TotalCount,
+              current: landingApi?.data?.currentPage,
+              pageSize: landingApi?.data?.totalCount,
             },
           });
         }}
@@ -609,147 +536,6 @@ const MonthlyLeaveReport = () => {
               }}
             </Form.Item>
           </PFilter>
-          {/* <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={3} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={3} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  allowClear
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                      department: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
-                />
-              </Col>
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  allowClear
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                    getEmployeDepartment();
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-              <Col md={7} sm={12} xs={24}>
-                <PSelect
-                  mode="multiple"
-                  allowClear
-                  options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
-                      : []
-                  }
-                  name="department"
-                  label="Department"
-                  placeholder="Department"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      department: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-
-              <Form.Item shouldUpdate noStyle>
-                {() => {
-                  const { workplaceGroup } = form.getFieldsValue(true);
-                  return (
-                    <>
-                      {isOfficeAdmin && (
-                        <Col md={6} sm={24}>
-                          <PSelect
-                            options={supervisorDDL?.data || []}
-                            name="supervisor"
-                            label="Supervisor"
-                            placeholder={`${
-                              workplaceGroup?.value
-                                ? "Search minimum 2 character"
-                                : "Select Workplace Group first"
-                            }`}
-                            disabled={!workplaceGroup?.value}
-                            onChange={(value, op) => {
-                              form.setFieldsValue({
-                                supervisor: op,
-                              });
-                            }}
-                            showSearch
-                            filterOption={false}
-                            // notFoundContent={null}
-                            loading={supervisorDDL?.loading}
-                            onSearch={(value) => {
-                              getSuperVisorDDL(value);
-                            }}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Supervisor is required",
-                            //   },
-                            // ]}
-                          />
-                        </Col>
-                      )}
-                    </>
-                  );
-                }}
-              </Form.Item>
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody> */}
-
           <DataTable
             bordered
             data={
