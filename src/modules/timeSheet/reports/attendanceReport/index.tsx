@@ -411,10 +411,10 @@ const AttendanceReport = () => {
 
                   const payload = {
                     intBusinessUnitId: buId,
-                    intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
+                    intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
 
                     workplaceList:
-                      workplaceList?.length > 0 ? `${workplaceList}` : 0,
+                      workplaceList?.length > 0 ? `${workplaceList}` : wId,
                     pageNo: 0,
                     pageSize: 0,
                     isPaginated: true,
@@ -453,8 +453,16 @@ const AttendanceReport = () => {
                         };
                       }
                     );
+                    const reportStartDate = moment(values?.fromDate).format(
+                      "DD MMM YYYY"
+                    );
+
+                    const reportEndDate = moment(values?.toDate).format(
+                      "DD MMM YYYY"
+                    );
+
                     createCommonExcelFile({
-                      titleWithDate: `Employees Attendance Report ${getCurrentMonthName()}-${currentYear()}`,
+                      titleWithDate: `Employees Attendance Report ${reportStartDate} to ${reportEndDate}`,
                       fromDate: "",
                       toDate: "",
                       buAddress: (buDetails as any)?.strAddress,
