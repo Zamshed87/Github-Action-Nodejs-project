@@ -209,8 +209,9 @@ const MonthlyInOutReport = () => {
         // isXls: false,
         departments: values?.department?.length > 0 ? deptList : 0,
         designations: values?.designation?.length > 0 ? desigList : 0,
-        workplaceGroupList: values?.workplaceGroup?.value || workplaceGroupList,
-        workplaceList: values?.workplace?.value || workplaceList,
+        workplaceGroupList:
+          values?.workplaceGroup?.value || workplaceGroupList || "",
+        workplaceList: values?.workplace?.value || workplaceList || "",
       },
     });
   };
