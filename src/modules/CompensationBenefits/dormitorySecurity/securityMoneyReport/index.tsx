@@ -71,15 +71,19 @@ export const SecurityMoneyReportLanding = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
-      urlKey: "DepartmentByAccount",
+      urlKey: "DepartmentIdAll",
       method: "GET",
       params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+
         accountId: orgId,
       },
       onSuccess: (res) => {
-        res?.data?.forEach((item: any, i: any) => {
-          res.data[i].label = item?.strDepartment;
-          res.data[i].value = item?.intDepartmentId;
+        res?.forEach((item: any, i: any) => {
+          res[i].label = item?.strDepartment;
+          res[i].value = item?.intDepartmentId;
         });
       },
     });
@@ -342,8 +346,8 @@ export const SecurityMoneyReportLanding = () => {
                   allowClear
                   showSearch
                   options={
-                    empDepartmentDDL?.data?.data?.length > 0
-                      ? empDepartmentDDL?.data?.data
+                    empDepartmentDDL?.data?.length > 0
+                      ? empDepartmentDDL?.data
                       : []
                   }
                   name="department"

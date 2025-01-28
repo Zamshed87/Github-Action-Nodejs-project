@@ -255,7 +255,10 @@ function DepositeType() {
         open={open}
         title={id ? "Edit Deposite Type" : "Create Deposite Type"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          setId("");
+        }}
         maskClosable={false}
         components={
           <>

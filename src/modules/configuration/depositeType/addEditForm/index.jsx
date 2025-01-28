@@ -32,6 +32,7 @@ export default function AddEditForm({
       resetForm();
       setIsAddEditForm(false);
       getData();
+      setId("");
     };
     // const payloadFoEdit = {
     //   actionTypeId: singleData?.intDepositeTypeId ? 2 : 1,
@@ -63,6 +64,7 @@ export default function AddEditForm({
       payload: payload,
       onSuccess: () => {
         cb();
+        form.resetFields();
       },
       toast: true,
     });
@@ -91,7 +93,7 @@ export default function AddEditForm({
             isEdit,
           });
         }}
-        initialValues={{ bUnit: { value: buId, label: strBusinessUnit } }}
+        initialValues={{ depositTypeName: undefined, comment: undefined }}
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
@@ -181,6 +183,7 @@ export default function AddEditForm({
           onCancel={() => {
             setId("");
             setIsAddEditForm(false);
+            form.resetFields();
           }}
           submitAction="submit"
           loading={saveDepositeType.loading}
