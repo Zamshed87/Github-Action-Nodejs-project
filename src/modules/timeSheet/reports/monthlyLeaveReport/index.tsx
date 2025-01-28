@@ -8,7 +8,8 @@ import {
 } from "Components";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form } from "antd";
+import { Col, Form, Row, Tag, Tooltip } from "antd";
+import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -28,6 +29,9 @@ import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import PFilter from "utility/filter/PFilter";
 import { formatFilterValueList } from "utility/filter/helper";
+import { EyeOutlined } from "@ant-design/icons";
+import { PModal } from "Components/Modal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
 import { column } from "./helper";
 
@@ -52,7 +56,6 @@ const MonthlyLeaveReport = () => {
   const employeeFeature: any = permission;
   const supervisorDDL = useApiRequest([]);
 
-  const landingApi = useApiRequest({});
   //   const debounce = useDebounce();
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
@@ -64,6 +67,14 @@ const MonthlyLeaveReport = () => {
   });
   // Form Instance
   const [form] = Form.useForm();
+  //   api states
+  const workplaceGroup = useApiRequest([]);
+  const workplace = useApiRequest([]);
+  const landingApi = useApiRequest({});
+  const empDepartmentDDL = useApiRequest({});
+  const [apporveStatus, getapporveStatus, apporveStatusLoading] = useAxiosGet(
+    []
+  );
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
