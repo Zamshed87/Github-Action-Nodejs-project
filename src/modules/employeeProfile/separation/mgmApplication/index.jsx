@@ -90,8 +90,8 @@ export default function ManagementSeparation() {
       setPages,
       wId,
       "",
-      workplaceGroupList,
-      workplaceList
+      workplaceGroupList || "",
+      workplaceList || ""
     );
   };
 
@@ -153,8 +153,8 @@ export default function ManagementSeparation() {
       setPages,
       wId,
       "",
-      workplaceGroupList,
-      workplaceList
+      workplaceGroupList || "",
+      workplaceList || ""
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -201,8 +201,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList,
-                          workplaceList
+                          workplaceGroupList || "",
+                          workplaceList || ""
                         );
                       }}
                     />
@@ -232,8 +232,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList,
-                          workplaceList
+                          workplaceGroupList || "",
+                          workplaceList || ""
                         );
                       } else {
                         getSeparationLanding(
@@ -251,8 +251,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList,
-                          workplaceList
+                          workplaceGroupList || "",
+                          workplaceList || ""
                         );
                       }
                     }}
@@ -273,8 +273,8 @@ export default function ManagementSeparation() {
                         setPages,
                         wId,
                         "",
-                        workplaceGroupList,
-                        workplaceList
+                        workplaceGroupList || "",
+                        workplaceList || ""
                       );
                     }}
                   />
