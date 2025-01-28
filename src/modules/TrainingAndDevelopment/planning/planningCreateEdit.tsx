@@ -44,6 +44,7 @@ import TrainerAndOrgInfo from "./trainerAndOrgInfo";
 import moment from "moment";
 import PlanningStepper from "./stepper/planningStepper";
 import { typeDataSetForTitle, typeDataSetForTrainerOrg } from "../helpers";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const cardMargin = { marginBottom: "15px" };
 
@@ -92,10 +93,10 @@ const TnDPlanningCreateEdit = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission = null;
+  let permission: any = {};
 
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30356) {
+    if (item?.menuReferenceId === 30513) {
       permission = item;
     }
   });
@@ -511,7 +512,7 @@ const TnDPlanningCreateEdit = () => {
     );
   };
 
-  return (
+  return permission?.isCreate ? (
     <div>
       {(loading || loadingTrainingType) && <Loading />}
       <PForm
@@ -1027,6 +1028,8 @@ const TnDPlanningCreateEdit = () => {
         }
       />
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

@@ -39,6 +39,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { formatFilterValue } from "../helpers";
+import { toast } from "react-toastify";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(3, "months");
@@ -172,6 +173,10 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
+                if (!permission?.isEdit) {
+                  toast.warning("You don't have permission to edit");
+                  return;
+                }
                 ViewTrainingRequistion(
                   rec?.id,
                   setLoading,
