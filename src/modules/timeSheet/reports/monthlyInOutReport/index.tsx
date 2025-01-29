@@ -35,19 +35,24 @@ import { fromToDateList } from "../helper";
 import { gray600 } from "utility/customColor";
 import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import axios from "axios";
-import Department from "modules/configuration/department";
 
 const MonthlyInOutReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
     profileData: { buId, wgId, employeeId, orgId, buName, wId, wgName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30316),
     []
   );
+
+  const decodedToken = tokenData
+  ? JSON.parse(atob(tokenData.split(".")[1]))
+  : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -197,7 +202,6 @@ const MonthlyInOutReport = () => {
         businessUnitId: buId,
         workplaceGroupId: values?.workplaceGroup?.value || wgId,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: values?.workplace?.value || wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
         employeeId: 0,
@@ -206,8 +210,17 @@ const MonthlyInOutReport = () => {
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         searchTxt: searchText || "",
         // isXls: false,
-        departments: values?.department?.length > 0 ? deptList : "",
-        designations: values?.designation?.length > 0 ? desigList : "",
+        departments: values?.department?.length > 0 ? deptList : 0,
+        designations: values?.designation?.length > 0 ? desigList : 0,
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
