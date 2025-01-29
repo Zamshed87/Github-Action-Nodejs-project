@@ -41,6 +41,7 @@ import { getEnumData } from "common/api/commonApi";
 import { formatDate, setCustomFieldsValue } from "../requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { formatFilterValue, typeDataSetForTitle } from "../helpers";
+import { toast } from "react-toastify";
 const TnDPlanningLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(3, "months");
@@ -159,7 +160,9 @@ const TnDPlanningLanding = () => {
       title: "Training Date & Time",
       dataIndex: "startDate",
       render: (text: any, record: any) =>
-        dateNewFormatter(record.startDate, record.endDate),
+        !record.startDate || !record.endDate
+          ? ""
+          : dateNewFormatter(record.startDate, record.endDate),
       align: "left",
       width: 150,
     },
@@ -284,6 +287,10 @@ const TnDPlanningLanding = () => {
       label: (
         <h1
           onClick={() => {
+            if (!permission?.isEdit) {
+              toast.warning("You don't have permission to edit");
+              return;
+            }
             ViewTrainingPlan(
               rec?.id,
               setLoading,

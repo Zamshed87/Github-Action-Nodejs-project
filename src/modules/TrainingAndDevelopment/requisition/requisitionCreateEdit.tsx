@@ -21,6 +21,7 @@ import {
 } from "./helper";
 import { getEnumData } from "common/api/commonApi";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
@@ -38,6 +39,16 @@ const TnDRequisitionCreateEdit = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (firstSegment !== "SelfService" && item?.menuReferenceId === 30512) {
+      permission = item;
+    }
+    if (firstSegment === "SelfService" && item?.menuReferenceId === 30522) {
+      permission = item;
+    }
+  });
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -105,7 +116,7 @@ const TnDRequisitionCreateEdit = () => {
     }
   }, [profileData?.buId, profileData?.wgId]);
 
-  return (
+  return permission?.isCreate ? (
     <div>
       {(loading || loadingTrainingType) && <Loading />}
       <PForm
@@ -341,6 +352,8 @@ const TnDRequisitionCreateEdit = () => {
         </PCard>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

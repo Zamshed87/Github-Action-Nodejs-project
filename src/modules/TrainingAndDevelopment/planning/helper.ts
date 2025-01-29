@@ -299,7 +299,7 @@ export const editTrainingPlanDetails = async (
       trainingTrainerPayload: trainerOrgFieldList.map((trainer) => ({
         id: trainer?.idx || 0,
         trainingId: planId,
-        trainerId: trainer?.value,
+        trainerId: trainer?.trainerId || trainer?.value,
       })),
     };
 
@@ -356,7 +356,7 @@ export const createTrainingSchedule = async (
       `/Training/TrainingScheduleDetails/${planId}`,
       payload
     );
-    // toast.success("Created Successfully", { toastId: 1222 });
+    toast.success("Created Successfully", { toastId: 12229 });
     cb && cb();
     setLoading(false);
   } catch (error: any) {

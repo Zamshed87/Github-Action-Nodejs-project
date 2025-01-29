@@ -137,6 +137,11 @@ const EmInterviewLanding = () => {
       dataIndex: "completedDate",
     },
     {
+      title: "Interview Type",
+      dataIndex: "questionnaireType",
+      render: (_: any, rec: any) => rec?.questionnaireType?.label,
+    },
+    {
       title: "Status",
       dataIndex: "status",
       width: 50,
@@ -168,7 +173,12 @@ const EmInterviewLanding = () => {
                 padding: "0 4px",
                 fontSize: "10px",
                 border: 0,
-                backgroundColor: "var(--error)",
+                backgroundColor:
+                  rec?.questionnaireType?.label === "Exit Interview"
+                    ? "var(--error)"
+                    : rec?.questionnaireType?.label === "Training Assessment"
+                    ? "var(--success)"
+                    : "var(--orange)",
                 color: "white",
                 borderRadius: "3px",
               }}
@@ -178,7 +188,11 @@ const EmInterviewLanding = () => {
                 });
               }}
             >
-              INTERVIEW
+              {rec?.questionnaireType?.label === "Exit Interview"
+                ? "Interview"
+                : rec?.questionnaireType?.label === "Training Assessment"
+                ? "Assessment"
+                : "Feedback"}
             </button>
           ) : (
             <button
