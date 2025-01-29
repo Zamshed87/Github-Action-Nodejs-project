@@ -2616,7 +2616,7 @@ export const routingList = [
   },
   {
     path: "/SelfService/loanFinancialAid/loanRequest",
-    component: Application,
+    component: EmLoanApplication,
   },
   {
     path: "/SelfService/loanFinancialAid/loanReschedule",
