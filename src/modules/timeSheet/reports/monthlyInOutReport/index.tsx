@@ -42,7 +42,7 @@ const MonthlyInOutReport = () => {
   const {
     permissionList,
     profileData: { buId, wgId, employeeId, orgId, buName, wId, wgName },
-    decodedTokenData: { workplaceGroupList, workplaceList },
+    decodedTokenData: { workplaceGroupList= "", workplaceList="" },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -209,8 +209,9 @@ const MonthlyInOutReport = () => {
         // isXls: false,
         departments: values?.department?.length > 0 ? deptList : 0,
         designations: values?.designation?.length > 0 ? desigList : 0,
-        workplaceGroupList: values?.workplaceGroup?.value || workplaceGroupList,
-        workplaceList: values?.workplace?.value || workplaceList,
+        workplaceGroupList:
+          values?.workplaceGroup?.value || workplaceGroupList || "",
+        workplaceList: values?.workplace?.value || workplaceList || "",
       },
     });
   };
