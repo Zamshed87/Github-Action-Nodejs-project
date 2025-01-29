@@ -1,19 +1,14 @@
 import {
   Avatar,
   DataTable,
-  PButton,
   PCard,
-  PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
-import { getWorkplaceDetails } from "common/api";
+import { Col, Form } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -28,9 +23,11 @@ import {
   monthLastDate,
 } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
+import axios from "axios";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import axios from "axios";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValueList } from "utility/filter/helper";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
 import { column } from "./helper";
 
@@ -38,19 +35,24 @@ const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, isOfficeAdmin },
+    profileData: { buId, wgId, wId, employeeId, orgId, buName, isOfficeAdmin },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30420),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
   const supervisorDDL = useApiRequest([]);
 
   const landingApi = useApiRequest({});
-  const empDepartmentDDL = useApiRequest({});
   //   const debounce = useDebounce();
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
@@ -62,9 +64,6 @@ const MonthlyLeaveReport = () => {
   });
   // Form Instance
   const [form] = Form.useForm();
-  //   api states
-  const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -76,69 +75,6 @@ const MonthlyLeaveReport = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
-
-  // workplace wise
-  const getEmployeDepartment = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        workplaceId: workplace?.value,
-
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-  };
   const getSuperVisorDDL = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
@@ -180,15 +116,14 @@ const MonthlyLeaveReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    const dept = values?.department?.map((item: any) => item?.value);
     landingApi.action({
       urlKey: "MonthlyleaveReport",
       method: "POST",
       payload: {
         accountId: orgId,
         businessUnitId: buId,
-        workPlaceGroupId: values?.workplaceGroup?.value,
-        workPlaceId: values?.workplace?.value || 0,
+        workPlaceGroupId: wgId,
+        workPlaceId: wId,
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
@@ -197,16 +132,26 @@ const MonthlyLeaveReport = () => {
         pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
         isPaginated: true,
         SearchText: searchText,
-        departmentIdList: dept?.length > 0 ? dept : null,
+        departmentIdList: formatFilterValueList(values?.department) || [0],
+        designationIdList: formatFilterValueList(values?.designation) || [0],
         supervisorId: values?.supervisor?.value || 0,
+        workplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        workplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
+
   //   table column
   const header: any = () => {
     return [
@@ -340,12 +285,6 @@ const MonthlyLeaveReport = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -357,8 +296,8 @@ const MonthlyLeaveReport = () => {
         onFinish={() => {
           landingApiCall({
             pagination: {
-              current: pages?.current,
-              pageSize: landingApi?.data?.TotalCount,
+              current: landingApi?.data?.currentPage,
+              pageSize: landingApi?.data?.totalCount,
             },
           });
         }}
@@ -379,25 +318,37 @@ const MonthlyLeaveReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  const dept = values?.department?.map(
-                    (item: any) => item?.value
-                  );
-
                   const res = await axios.post(
                     "/LeaveMovement/MonthlyleaveReport",
                     {
                       accountId: orgId,
                       businessUnitId: buId,
-                      workPlaceGroupId: values?.workplaceGroup?.value,
-                      workPlaceId: values?.workplace?.value,
+                      workPlaceGroupId: wgId,
+                      workPlaceId: wId,
                       employeeId: 0,
                       fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
                       toDate: moment(values?.toDate).format("YYYY-MM-DD"),
                       pageNo: 1,
                       pageSize: 500,
                       isPaginated: false,
-                      departmentIdList: dept?.length > 0 ? dept : null,
+                      SearchText: "",
+                      departmentIdList: formatFilterValueList(
+                        values?.department
+                      ) || [0],
+                      designationIdList: formatFilterValueList(
+                        values?.designation
+                      ) || [0],
                       supervisorId: values?.supervisor?.value || 0,
+                      workplaceGroupList:
+                        values?.workplaceGroup?.value == 0 ||
+                        values?.workplaceGroup?.value == undefined
+                          ? decodedToken.workplaceGroupList
+                          : values?.workplaceGroup?.value.toString(),
+                      workplaceList:
+                        values?.workplace?.value == 0 ||
+                        values?.workplace?.value == undefined
+                          ? decodedToken.workplaceList
+                          : values?.workplace?.value.toString(),
                     }
                   );
                   if (res?.data?.Data) {
@@ -468,147 +419,56 @@ const MonthlyLeaveReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={3} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={3} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  allowClear
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                      department: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
-                />
-              </Col>
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  allowClear
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                    getEmployeDepartment();
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-              <Col md={7} sm={12} xs={24}>
-                <PSelect
-                  mode="multiple"
-                  allowClear
-                  options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
-                      : []
-                  }
-                  name="department"
-                  label="Department"
-                  placeholder="Department"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      department: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-
-              <Form.Item shouldUpdate noStyle>
-                {() => {
-                  const { workplaceGroup } = form.getFieldsValue(true);
-                  return (
-                    <>
-                      {isOfficeAdmin && (
-                        <Col md={6} sm={24}>
-                          <PSelect
-                            options={supervisorDDL?.data || []}
-                            name="supervisor"
-                            label="Supervisor"
-                            placeholder={`${
-                              workplaceGroup?.value
-                                ? "Search minimum 2 character"
-                                : "Select Workplace Group first"
-                            }`}
-                            disabled={!workplaceGroup?.value}
-                            onChange={(value, op) => {
-                              form.setFieldsValue({
-                                supervisor: op,
-                              });
-                            }}
-                            showSearch
-                            filterOption={false}
-                            // notFoundContent={null}
-                            loading={supervisorDDL?.loading}
-                            onSearch={(value) => {
-                              getSuperVisorDDL(value);
-                            }}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Supervisor is required",
-                            //   },
-                            // ]}
-                          />
-                        </Col>
-                      )}
-                    </>
-                  );
-                }}
-              </Form.Item>
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody>
-
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            resetApiCall={() => {
+              form.setFieldValue("supervisor", null);
+            }}
+          >
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { workplaceGroup } = form.getFieldsValue(true);
+                return (
+                  <>
+                    {isOfficeAdmin && (
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={supervisorDDL?.data || []}
+                          name="supervisor"
+                          label="Supervisor"
+                          placeholder={`${
+                            workplaceGroup?.value
+                              ? "Search minimum 2 character"
+                              : "Select Workplace Group first"
+                          }`}
+                          //disabled={!workplaceGroup?.value}
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              supervisor: op,
+                            });
+                          }}
+                          showSearch
+                          filterOption={false}
+                          // notFoundContent={null}
+                          loading={supervisorDDL?.loading}
+                          onSearch={(value) => {
+                            getSuperVisorDDL(value);
+                          }}
+                          // rules={[
+                          //   {
+                          //     required: true,
+                          //     message: "Supervisor is required",
+                          //   },
+                          // ]}
+                        />
+                      </Col>
+                    )}
+                  </>
+                );
+              }}
+            </Form.Item>
+          </PFilter>
           <DataTable
             bordered
             data={

@@ -39,6 +39,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { formatFilterValue } from "../helpers";
+import { toast } from "react-toastify";
 const TnDRequisitionLanding = () => {
   const defaultToDate = moment();
   const defaultFromDate = moment().subtract(3, "months");
@@ -47,16 +48,21 @@ const TnDRequisitionLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  let permission: any = {};
-  permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30512) {
-      permission = item;
-    }
-  });
+
   // router states
   const history = useHistory();
   const location = useLocation();
   const firstSegment = location.pathname.split("/")[1];
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (firstSegment !== "SelfService" && item?.menuReferenceId === 30512) {
+      permission = item;
+    }
+    if (firstSegment === "SelfService" && item?.menuReferenceId === 30522) {
+      permission = item;
+    }
+  });
 
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
@@ -167,6 +173,10 @@ const TnDRequisitionLanding = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
+                if (!permission?.isEdit) {
+                  toast.warning("You don't have permission to edit");
+                  return;
+                }
                 ViewTrainingRequistion(
                   rec?.id,
                   setLoading,
