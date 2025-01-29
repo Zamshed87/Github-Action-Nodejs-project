@@ -47,8 +47,12 @@ export default function ManagementSeparation() {
   // redux
   const {
     profileData: { buId, wgId, wId },
-    decodedTokenData: { workplaceGroupList, workplaceList },
+    tokenData,
   } = useSelector((state) => state?.auth, shallowEqual);
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -90,8 +94,8 @@ export default function ManagementSeparation() {
       setPages,
       wId,
       "",
-      workplaceGroupList || "",
-      workplaceList || ""
+      decodedToken.workplaceGroupList || "",
+      decodedToken.workplaceList || ""
     );
   };
 
@@ -153,8 +157,8 @@ export default function ManagementSeparation() {
       setPages,
       wId,
       "",
-      workplaceGroupList || "",
-      workplaceList || ""
+      decodedToken.workplaceGroupList || "",
+      decodedToken.workplaceList || ""
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -201,8 +205,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList || "",
-                          workplaceList || ""
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       }}
                     />
@@ -232,8 +236,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList || "",
-                          workplaceList || ""
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       } else {
                         getSeparationLanding(
@@ -251,8 +255,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList || "",
-                          workplaceList || ""
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       }
                     }}
@@ -273,8 +277,8 @@ export default function ManagementSeparation() {
                         setPages,
                         wId,
                         "",
-                        workplaceGroupList || "",
-                        workplaceList || ""
+                        decodedToken.workplaceGroupList || "",
+                        decodedToken.workplaceList || ""
                       );
                     }}
                   />
