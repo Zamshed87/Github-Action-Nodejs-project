@@ -46,11 +46,13 @@ export default function ManagementSeparation() {
 
   // redux
   const {
-    profileData: { buId, wgId, wId } = {},  // Provide default empty object
-    decodedTokenData = {}  // Default to an empty object to avoid undefined errors
-  } = useSelector((state) => state?.auth || {}, shallowEqual);
-  
-  const { workplaceGroupList = "", workplaceList = "" } = decodedTokenData;
+    profileData: { buId, wgId, wId },
+    tokenData,
+  } = useSelector((state) => state?.auth, shallowEqual);
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -92,8 +94,8 @@ export default function ManagementSeparation() {
       setPages,
       wId,
       "",
-      workplaceGroupList || "",
-      workplaceList || ""
+      decodedToken.workplaceGroupList || "",
+      decodedToken.workplaceList || ""
     );
   };
 
@@ -155,8 +157,8 @@ export default function ManagementSeparation() {
       setPages,
       wId,
       "",
-      workplaceGroupList || "",
-      workplaceList || ""
+      decodedToken.workplaceGroupList || "",
+      decodedToken.workplaceList || ""
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -203,8 +205,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList || "",
-                          workplaceList || ""
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       }}
                     />
@@ -234,8 +236,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList || "",
-                          workplaceList || ""
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       } else {
                         getSeparationLanding(
@@ -253,8 +255,8 @@ export default function ManagementSeparation() {
                           setPages,
                           wId,
                           "",
-                          workplaceGroupList || "",
-                          workplaceList || ""
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       }
                     }}
@@ -275,8 +277,8 @@ export default function ManagementSeparation() {
                         setPages,
                         wId,
                         "",
-                        workplaceGroupList || "",
-                        workplaceList || ""
+                        decodedToken.workplaceGroupList || "",
+                        decodedToken.workplaceList || ""
                       );
                     }}
                   />
