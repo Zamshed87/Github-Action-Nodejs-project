@@ -95,6 +95,25 @@ const ListOfPerticipants = ({
       })) || []
     );
   };
+  const getWorkplacePer = () => {
+    const { workplaceGroupPer } = form.getFieldsValue(true);
+    workplace?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroupPer?.value,
+        intId: employeeId,
+      },
+      onSuccess: (res: any) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
 
   useEffect(() => {
     getCostTypeDDL({ url: "/costType" });
@@ -177,7 +196,7 @@ const ListOfPerticipants = ({
                 workplaceGroupPer: op,
                 workplacePer: undefined,
               });
-              getWorkplace();
+              getWorkplacePer();
               const values = form.getFieldsValue(true);
               if (
                 values?.workplacePer &&

@@ -237,7 +237,9 @@ function SalaryAssignAndDeduction() {
                             : initYear;
                           try {
                             const res = await axios.get(
-                              `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&PageSize=10000000`
+                              `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${
+                                pages?.current || 1
+                              }&PageSize=10000000`
                             );
 
                             if (res?.data?.data?.length < 1) {
