@@ -59,7 +59,7 @@ export const getSeparationLanding = async (
   pageSize,
   setPages,
   wId,
-  empId = null,
+  empId,
   workplaceGroupList,
   workplaceList
 ) => {
