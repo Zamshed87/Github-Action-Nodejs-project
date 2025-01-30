@@ -1121,9 +1121,9 @@ function AddEditForm() {
                                                     ].find(
                                                       (el) =>
                                                         el.value ===
-                                                        item?.intAllowanceDuration
+                                                        item?.allowanceDuration
                                                     ) || "",
-                                                  maxAmount: item?.intMaxLimit,
+                                                  maxAmount: item?.maxAmount,
                                                   intAllowanceAttendenceStatus:
                                                     [
                                                       {
@@ -1148,7 +1148,7 @@ function AddEditForm() {
                                                     ].find(
                                                       (el) =>
                                                         el.value ===
-                                                        item?.intAllowanceAttendenceStatus
+                                                        item?.allowanceAttendanceStatus
                                                     ) || "",
                                                 });
                                                 !isFromOpen &&
