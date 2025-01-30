@@ -12,7 +12,7 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { IconButton } from "@mui/material";
 import { DataTable, Flex, PButton, PCard, PCardBody, PForm } from "Components";
 import CommonForm from "modules/pms/CommonForm/commonForm";
-import { Form, Tooltip } from "antd";
+import { Col, Form, Tooltip } from "antd";
 import { formConfig } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { EditOutlined } from "@ant-design/icons";
@@ -78,7 +78,7 @@ const EvaluationCriteria = () => {
               onClick={() => {
                 setEditMode(true);
                 form.setFieldsValue({
-                  userName: rec?.participantName,
+                  leadership: rec?.participantName,
                   age: rec?.kpiScore,
                   department: rec?.hrPositionName,
                 });
@@ -186,36 +186,50 @@ const EvaluationCriteria = () => {
         <h1 className="mb-2">Evaluation Criteria Score and Scale</h1>
         <CommonForm formConfig={formConfig} form={form}>
           {!editMode && (
-            <PButton
-              style={{
-                marginTop: "22px",
-                marginRight: "10px",
-              }}
-              type="primary"
-              content={"Save"}
-              onClick={() => {
-                const values = form.getFieldsValue(true);
-                form.validateFields().then(() => {
-                  console.log(values);
-                });
-              }}
-            />
+            <Col span={4}>
+              <PButton
+                style={{
+                  marginTop: "22px",
+                  marginRight: "10px",
+                }}
+                type="primary"
+                content={"Save"}
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      console.log(values);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }}
+              />
+            </Col>
           )}
           {editMode && (
-            <PButton
-              style={{
-                marginTop: "22px",
-                backgroundColor: "red",
-              }}
-              type="primary"
-              content={"Edit"}
-              onClick={() => {
-                const values = form.getFieldsValue(true);
-                form.validateFields().then(() => {
-                  console.log(values);
-                });
-              }}
-            />
+            <Col span={4}>
+              <PButton
+                style={{
+                  marginTop: "22px",
+                  backgroundColor: "red",
+                }}
+                type="primary"
+                content={"Edit"}
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      console.log(values);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }}
+              />
+            </Col>
           )}
         </CommonForm>
         <div className="mt-2">

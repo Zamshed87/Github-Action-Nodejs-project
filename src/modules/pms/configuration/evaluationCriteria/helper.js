@@ -2,7 +2,7 @@ export const formConfig = [
   {
     type: "ddl",
     label: "Level of Leadership",
-    varName: "leadership",
+    varname: "leadership",
     placeholder: "Select the leadership",
     ddl: [
       { label: "HR", value: "hr" },
@@ -18,7 +18,7 @@ export const formConfig = [
   {
     type: "ddl",
     label: "Designation",
-    varName: "designation",
+    varname: "designation",
     placeholder: "Select the Designation",
     ddl: [
       { label: "HR", value: "hr" },
@@ -34,14 +34,14 @@ export const formConfig = [
   {
     type: "number",
     label: "KPI Score",
-    varName: "kpiScore",
+    varname: "kpiScore",
     placeholder: "KPI Score",
     col: 4,
   },
   {
     type: "number",
     label: "BAR Score",
-    varName: "barScore",
+    varname: "barScore",
     placeholder: "BAR Score",
     col: 4,
   },

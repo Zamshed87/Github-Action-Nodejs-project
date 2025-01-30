@@ -9,12 +9,12 @@ const CommonForm = ({ formConfig, form, children }) => {
         <PSelect
           {...field}
           options={field.ddl || []}
-          name={field.varName}
+          name={field.varname}
           label={field.label}
           placeholder={field.placeholder}
           onChange={(value, op) => {
             form.setFieldsValue({
-              [field.varName]: op,
+              [field.varname]: op,
             });
             field?.onChange && field.onChange(value, op);
           }}
@@ -28,7 +28,7 @@ const CommonForm = ({ formConfig, form, children }) => {
           {...field}
           type={field.type}
           placeholder={field.placeholder}
-          name={field.varName}
+          name={field.varname}
           label={field.label}
           rules={field.rules}
           disabled={field.disabled}
