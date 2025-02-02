@@ -12,6 +12,7 @@ import CommonFilter from "common/CommonFilter";
 import "./index.css";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  columnDeposit,
   columnDisbursment,
   columnIncrement,
   columnOvertime,
@@ -233,6 +234,8 @@ const CommonApprovalComponent = () => {
               ? columnsShiftChange
               : id == 28
               ? columnDisbursment
+              : id == 27
+              ? columnDeposit
               : columnsDefault
           }
           bordered
