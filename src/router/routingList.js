@@ -1560,6 +1560,7 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import SeparationApplicationForm from "modules/retirement/separation/mgmApplication/addEditForm";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3995,6 +3996,10 @@ export const routingList = [
   {
     path: "/retirement/separation",
     component: Separation,
+  },
+  {
+    path: "/retirement/separation/create",
+    component: SeparationApplicationForm,
   },
 ];
 
