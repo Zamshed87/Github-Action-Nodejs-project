@@ -55,7 +55,7 @@ const validationSchema = Yup.object().shape({
   applicationBody: Yup.string().required("Application body is required"),
 });
 
-export default function ManagementApplicationSeparationForm() {
+export default function SeparationApplicationForm() {
   const params = useParams();
   const dispatch = useDispatch();
   const inputFile = useRef(null);
@@ -108,7 +108,7 @@ export default function ManagementApplicationSeparationForm() {
   };
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Retirement"));
   }, [dispatch]);
 
   useEffect(() => {

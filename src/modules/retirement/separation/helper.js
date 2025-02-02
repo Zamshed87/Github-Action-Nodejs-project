@@ -80,8 +80,7 @@ export const getSeparationLanding = async (
 ) => {
   try {
     setLoading && setLoading(true);
-
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
+    let apiUrl = `/separation/GetSeparations?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
 
     search && (apiUrl += `&searchTxt=${search}`);
     empId && (apiUrl += `&EmployeeId=${empId}`);
@@ -90,7 +89,7 @@ export const getSeparationLanding = async (
 
     if (res?.data) {
       if (partType === "EmployeeSeparationList") {
-        const modifiedData = res?.data?.data?.map((item, index) => ({
+        const modifiedData = res?.data?.list?.map((item, index) => ({
           ...item,
           initialSerialNumber: index + 1,
           docArr: item?.strDocumentId?.split(","),
@@ -98,9 +97,9 @@ export const getSeparationLanding = async (
         setter?.(modifiedData);
 
         setPages({
-          current: res?.data?.currentPage,
-          pageSize: res?.data?.pageSize,
-          total: res?.data?.totalCount,
+          current: res?.data?.pageparam?.pageNo,
+          pageSize: res?.data?.pageparam?.pageSize,
+          total: res?.data?.pageparam?.totalCount,
         });
       }
     }
