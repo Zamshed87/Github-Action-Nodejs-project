@@ -118,6 +118,23 @@ export const defaultCalculation = (
   if (isNegativeBasicArr?.length > 0) {
     return toast.warn("Every form should be given Positive value!!!");
   }
+  if (dynamicForm[0]?.strDependOn === "Gross") {
+    const totalPercent = modifyPayrollElementList?.reduce(
+      (sum, itm) =>
+        itm?.strBasedOn === "Percentage"
+          ? sum + (+itm?.numNumberOfPercent || 0)
+          : sum,
+      0
+    );
+
+    const isAllPercent = dynamicForm?.every(
+      (itm) => itm?.strBasedOn === "Percentage"
+    );
+
+    if (!isAllPercent && totalPercent >= 100) {
+      return toast.warn("Percentage must be less than 100!!!");
+    }
+  }
 
   // for amount
   const isNegativeArr = modifyPayrollElementList?.filter(
