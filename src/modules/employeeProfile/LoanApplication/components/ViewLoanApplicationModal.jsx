@@ -162,30 +162,32 @@ const ViewLoanApplicationModal = ({
                 <p className="subtitle-p">Purpose</p>
               </div>
             </div>
-            <div
-              className="d-flex align-items-center py-1"
-              style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}
-            >
-              <div style={{ marginRight: "17px" }}>
-                <Avatar sx={avatarSx}>
-                  <AttachFile sx={{ color: "rgba(0, 0, 0, 0.6)" }} />
-                </Avatar>
-              </div>
-
+            {singleData?.fileUrl > 0 && (
               <div
-                className="pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(getDownlloadFileView_Action(singleData?.fileUrl));
-                }}
+                className="d-flex align-items-center py-1"
+                style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}
               >
-                <h6 className="title-item-name" style={{ color: "#009CDE" }}>
-                  {" "}
-                  {singleData?.fileUrl ? <Attachment /> : ""}
-                </h6>
-                <p className="subtitle-p">File</p>
+                <div style={{ marginRight: "17px" }}>
+                  <Avatar sx={avatarSx}>
+                    <AttachFile sx={{ color: "rgba(0, 0, 0, 0.6)" }} />
+                  </Avatar>
+                </div>
+
+                <div
+                  className="pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(getDownlloadFileView_Action(singleData?.fileUrl));
+                  }}
+                >
+                  <h6 className="title-item-name" style={{ color: "#009CDE" }}>
+                    {" "}
+                    {singleData?.fileUrl ? <Attachment /> : ""}
+                  </h6>
+                  <p className="subtitle-p">File</p>
+                </div>
               </div>
-            </div>
+            )}
             <div
               className="d-flex align-items-center py-1"
               style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}
