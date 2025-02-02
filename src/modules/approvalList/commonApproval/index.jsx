@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Spin, Modal } from "antd";
+import { Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
@@ -12,6 +12,7 @@ import CommonFilter from "common/CommonFilter";
 import "./index.css";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  columnDisbursment,
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
@@ -33,26 +34,33 @@ import {
   columnsSeparation,
   columnsShiftChange,
 } from "./utils";
+import ApprovalModel from "./ApprovalModel";
 
 const CommonApprovalComponent = () => {
+
+  // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
 
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
+  // state
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalAction, setModalAction] = useState(null);
   const [selectedRow, setSelectedRow] = useState([]);
 
+  // redux
   const { orgId, employeeId, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
+
+  // fetch data
   useEffect(() => {
     fetchPendingApprovals({
       id,
@@ -74,6 +82,7 @@ const CommonApprovalComponent = () => {
     };
   }, []);
 
+  // handle filter
   const handleFilter = (values) => {
     const { workplace, workplaceGroup } = values;
     fetchPendingApprovals({
@@ -88,6 +97,7 @@ const CommonApprovalComponent = () => {
     });
   };
 
+  // handle approve or reject
   const handleApproveReject = async (isApprove) => {
     const payload = selectedRow.map((key) => {
       const row = data.find((item) => item.id === key?.key);
@@ -122,6 +132,7 @@ const CommonApprovalComponent = () => {
     }
   };
 
+  // show confirmation modal
   const showConfirmationModal = (action) => {
     setModalAction(action);
     setIsModalVisible(true);
@@ -137,6 +148,7 @@ const CommonApprovalComponent = () => {
     setModalAction(null);
   };
 
+  // render
   return (
     <div className="approval-container mt-4">
       <div className="d-flex align-items-center justify-content-between">
@@ -219,6 +231,8 @@ const CommonApprovalComponent = () => {
               ? columnsIOUAdjustment
               : id == 25
               ? columnsShiftChange
+              : id == 28
+              ? columnDisbursment
               : columnsDefault
           }
           bordered
@@ -226,16 +240,13 @@ const CommonApprovalComponent = () => {
         />
       )}
 
-      <Modal
-        title="Confirmation"
-        open={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-        okText="Yes"
-        cancelText="No"
-      >
-        <p>Are you sure you want to {modalAction} the selected applications?</p>
-      </Modal>
+      {/* approve or reject confirmation model  */}
+      <ApprovalModel
+        isModalVisible={isModalVisible}
+        handleModalOk={handleModalOk}
+        handleModalCancel={handleModalCancel}
+        modalAction={modalAction}
+      />
     </div>
   );
 };
