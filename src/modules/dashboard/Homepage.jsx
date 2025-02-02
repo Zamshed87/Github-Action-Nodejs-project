@@ -146,6 +146,9 @@ const Homepage = () => {
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
       image = assetManagement;
+    } else if (label === "Retirement") {
+      to = "/retirement/separation";
+      image = assetManagement;
     }
     return { to, image };
   };
@@ -188,7 +191,6 @@ const Homepage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);
-
   return (
     <>
       <Formik
