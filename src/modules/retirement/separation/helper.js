@@ -44,10 +44,10 @@ export const getRoleAssigneToUser = async (buId, wgId, id, setter) => {
 };
 
 // self separation create
-export const separationCrud = async (payload, setLoading, cb) => {
+export const CreateSeparation = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.post("/Employee/CRUDEmployeeSeparation", payload);
+    const res = await axios.post("/separation/CreateSeparation", payload);
     cb && cb();
     setLoading && setLoading(false);
     toast.success(res?.data?.message || "Submitted Successfully", {

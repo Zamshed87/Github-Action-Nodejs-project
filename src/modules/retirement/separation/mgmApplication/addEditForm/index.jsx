@@ -22,7 +22,7 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import { deleteSeparationAttachment, separationCrud } from "../../helper";
+import { CreateSeparation, deleteSeparationAttachment } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
@@ -101,7 +101,7 @@ export default function SeparationApplicationForm() {
       },
       noAlertFunc: () => {
         setIsLoanModal(false);
-        history.push("/profile/separation");
+        history.push("/retirement/separation");
       },
     };
     IConfirmModal(confirmObject);
@@ -226,7 +226,7 @@ export default function SeparationApplicationForm() {
         strDocumentId: modifyImageArray,
       };
     }
-    separationCrud(payload, setLoading, callback);
+    CreateSeparation(payload, setLoading, callback);
   };
 
   const {
