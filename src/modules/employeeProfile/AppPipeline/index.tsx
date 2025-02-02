@@ -15,11 +15,14 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AddEditForm from "./addEditForm";
 import { dateFormatter } from "utility/dateFormatter";
 import { useHistory } from "react-router";
+import CommonFilter from "common/CommonFilter";
 
 function CommonAppPipeline() {
   const history = useHistory();
   // hook
   const dispatch = useDispatch();
+
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   // redux
   const { buId, wgId, wId, orgId } = useSelector(
@@ -181,6 +184,8 @@ function CommonAppPipeline() {
       ),
     },
   ];
+
+  const handleFilter = (values: any) => {};
   // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
@@ -193,13 +198,21 @@ function CommonAppPipeline() {
         <PCard>
           <PCardHeader
             title="Common Approval Pipeline"
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            // }}
             submitText="Approval Pipeline"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
+            filterComponent={
+              <CommonFilter
+                visible={isFilterVisible}
+                onClose={(visible: any) => setIsFilterVisible(visible)}
+                onFilter={handleFilter}
+                isDate={true}
+                isWorkplaceGroup={true}
+                isWorkplace={true}
+                isAllValue={true}
+              />
+            }
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
@@ -232,7 +245,9 @@ function CommonAppPipeline() {
 
       <PModal
         open={open}
-        title={id ? "Edit/Extend Approval Pipeline" : "Create Approval Pipeline"}
+        title={
+          id ? "Edit/Extend Approval Pipeline" : "Create Approval Pipeline"
+        }
         width={1000}
         onCancel={() => {
           setId("");
