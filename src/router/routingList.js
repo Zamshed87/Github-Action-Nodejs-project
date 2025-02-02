@@ -1668,6 +1668,11 @@ const Test = lazy(() =>
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
 
+// Retirement Module
+const Separation = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/index.jsx")
+);
+
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -3984,6 +3989,12 @@ export const routingList = [
   {
     path: "/administration/timeManagement/flexibleTimesheet",
     component: FlexibleTimeSheet,
+  },
+
+  // Retirement Routes
+  {
+    path: "/retirement/separation",
+    component: Separation,
   },
 ];
 
