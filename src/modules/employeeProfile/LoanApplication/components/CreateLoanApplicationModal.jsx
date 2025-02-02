@@ -250,13 +250,52 @@ const CreateLoanApplicationModal = ({
       }
       validationSchema={validationSchema}
       onSubmit={(values, { resetForm }) => {
-        saveHandler(values, () => {
-          getData();
-          resetForm(initData);
-          setFileId("");
-          setSingleData(null);
-          setFileId("");
-          setShow(false);
+        saveHandler(values, (res) => {
+          if (isSelf) {
+            getData();
+            resetForm(initData);
+            setFileId("");
+            setSingleData(null);
+            setFileId("");
+            setShow(false);
+          }
+          if (!isSelf && tableData?.length !== 0) {
+            getData();
+            resetForm(initData);
+            setFileId("");
+            setSingleData(null);
+            setFileId("");
+            setShow(false);
+          }
+          if (!isSelf && tableData?.length === 0) {
+            getForView(
+              `/Employee/LoanInstallmentRowGetById?loanId=${res?.autoId}`,
+              (data) => {
+                const effectiveDate = moment(values?.effectiveDate); // Parse effective date
+                const modifyData = {
+                  row: data?.map((item, index) => {
+                    const repaymentDate = effectiveDate
+                      .clone()
+                      .add(index, "months"); // Start from effective date month
+                    return {
+                      isHold: item?.isHold || false,
+                      date: repaymentDate.format("YYYY-MM"), // Format as "YYYY-MM"
+                      paymentYear: repaymentDate.year() || 0,
+                      paymentMonth: repaymentDate.month() + 1,
+                      strRemarks: item?.strRemarks || "",
+                      loanApplicationId: item?.loanApplicationId || 0,
+                      intInterest: +item?.intInterest || 0,
+                      totalLoanAmount: +item?.totalLoanAmount || 0,
+                      intInstallmentNumber: +item?.intInstallmentNumber || 0,
+                      intInstallmentAmount: +item?.intInstallmentAmount || 0,
+                      strApplicantName: item?.strApplicantName || "",
+                    };
+                  }),
+                };
+                setTableData(modifyData?.row);
+              }
+            );
+          }
         });
       }}
     >
@@ -887,7 +926,7 @@ const CreateLoanApplicationModal = ({
                   </div>
                 </div>
               </div>
-              {singleData?.loanApplicationId && (
+              {(singleData?.loanApplicationId || tableData?.length > 0) && (
                 <div style={{ textAlign: "right", marginRight: "10px" }}>
                   <span
                     style={{
@@ -904,7 +943,7 @@ const CreateLoanApplicationModal = ({
               )}
 
               {/* row table start */}
-              {singleData?.loanApplicationId && (
+              {(singleData?.loanApplicationId || tableData?.length > 0) && (
                 <div className="table-card-body pt-3">
                   <div
                     className=" table-card-styled tableOne"
