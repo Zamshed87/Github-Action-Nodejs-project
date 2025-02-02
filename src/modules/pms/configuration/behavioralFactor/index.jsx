@@ -12,6 +12,7 @@ import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import ViewModal from "common/ViewModal";
+import Clone from "./Clone";
 // import CreateEdit from "./createEdit";
 
 const BehavioralFactor = () => {
@@ -152,31 +153,20 @@ const BehavioralFactor = () => {
           />
         </div>
         <PModal
-          title="Evaluation Criteria Score Settings"
-          open={isScoreSettings?.open}
+          title="Behavioral Factor Clone"
+          open={behavioralFactorCloneModal}
           onCancel={() => {
-            setIsScoreSettings(() => ({ open: false, type: "EC" }));
+            setBehavioralFactorCloneModal(false);
           }}
           components={
-            <></>
-            // <CreateEdit
-            //   isScoreSettings={isScoreSettings}
-            //   setIsScoreSettings={setIsScoreSettings}
-            // />
+            <Clone
+              isScoreSettings={behavioralFactorCloneModal}
+              setIsScoreSettings={setBehavioralFactorCloneModal}
+            />
           }
           width={1000}
         />
       </PForm>
-      <ViewModal
-        size="lg"
-        title="Behavioral Factor Clone"
-        backdrop="static"
-        classes="default-modal"
-        show={behavioralFactorCloneModal}
-        onHide={() => setBehavioralFactorCloneModal(false)}
-      >
-        <h1>Hello</h1>
-      </ViewModal>
     </div>
   ) : (
     <NotPermittedPage />
