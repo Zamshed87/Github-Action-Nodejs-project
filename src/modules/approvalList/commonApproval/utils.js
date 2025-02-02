@@ -1380,3 +1380,62 @@ export const columnDisbursment =  [
     ),
   },
 ]
+
+export const columnDeposit = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Deposit Date",
+    dataIndex: ["applicationInformation", "depositDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Deposit Amount",
+    dataIndex: ["applicationInformation", "depositAmount"],
+  },
+  {
+    title: "Deposit Type",
+    dataIndex: ["applicationInformation", "depositsType"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+]
