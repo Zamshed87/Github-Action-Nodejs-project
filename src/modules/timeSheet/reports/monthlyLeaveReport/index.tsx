@@ -58,7 +58,7 @@ const MonthlyLeaveReport = () => {
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [viewModal, setViewModal] = useState(false);
-  const [pages] = useState({
+  const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
@@ -134,9 +134,10 @@ const MonthlyLeaveReport = () => {
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        pageNo: pagination?.current || 1,
+        pageNo: pagination.current || pages?.current,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
+        PageSize:
+          pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         isPaginated: true,
         SearchText: searchText,
         departmentIdList: formatFilterValueList(values?.department) || [0],
@@ -536,9 +537,14 @@ const MonthlyLeaveReport = () => {
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
-
+              setPages({
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+              });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}
@@ -625,7 +631,11 @@ const MonthlyLeaveReport = () => {
               bordered
               header={modalheader()}
               loading={apporveStatusLoading}
-              data={apporveStatus?.[0]?.ApprovalStatusDetails || []}
+              data={
+                apporveStatus?.[0]?.ApprovalStatusDetails?.length > 0
+                  ? apporveStatus?.[0]?.ApprovalStatusDetails
+                  : []
+              }
             />
           </>
         }
