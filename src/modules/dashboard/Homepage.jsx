@@ -10,6 +10,7 @@ import administration from "../../assets/images/administration.svg";
 import analystics from "../../assets/images/analystics.svg";
 import approval from "../../assets/images/approval.svg";
 import assetManagement from "../../assets/images/assetManagement.svg";
+import assetRetirement from "../../assets/images/retirement.png";
 import calander from "../../assets/images/calander.svg";
 import employeeSelfService from "../../assets/images/employee-self-service.svg";
 import employeeManagement from "../../assets/images/employeeManagement.svg";
@@ -148,7 +149,7 @@ const Homepage = () => {
       image = assetManagement;
     } else if (label === "Retirement") {
       to = "/retirement/separation";
-      image = assetManagement;
+      image = assetRetirement;
     }
     return { to, image };
   };
