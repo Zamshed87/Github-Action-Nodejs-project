@@ -1667,7 +1667,6 @@ const Test = lazy(() =>
   import("../modules/componentModule/peopledeskTable/test.jsx")
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
-
 // Retirement Module
 const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
@@ -1682,7 +1681,6 @@ const RetirementViewSeparationForm = lazy(() =>
 const RetirementReleaseSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
 );
-
 
 export const routingList = [
   { path: "/", component: Homepage },
