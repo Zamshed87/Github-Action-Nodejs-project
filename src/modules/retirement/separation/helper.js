@@ -375,11 +375,11 @@ export const separationApplicationLandingTableColumn = (
 };
 
 // self separation get by id
-export const getSeparationLandingById = async (payload, setter, setLoading) => {
+export const getSeparationLandingById = async (id, setter, setLoading) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/EmployeeSeparationById?SeparationId=${payload}`
+      `/separation/GetSeparationById/${id}`
     );
 
     const modifyRes = [res?.data]?.map((itm) => {
@@ -551,7 +551,7 @@ export const releasedEmployeeSeparation = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
-      "/Employee/ReleasedEmployeeSeparation",
+      "/separation/ReleasedSeparation",
       payload
     );
     cb && cb();
