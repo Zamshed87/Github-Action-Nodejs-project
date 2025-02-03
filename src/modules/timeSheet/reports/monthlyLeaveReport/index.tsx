@@ -6,26 +6,27 @@ import {
   PForm,
   PSelect,
 } from "Components";
-
+import { EyeOutlined } from "@ant-design/icons";
+import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form } from "antd";
+import { Col, Form, Tag, Tooltip, Typography } from "antd";
+import axios from "axios";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { debounce } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import {
   dateFormatter,
   monthFirstDate,
   monthLastDate,
 } from "utility/dateFormatter";
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import axios from "axios";
-import { debounce } from "lodash";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import PFilter from "utility/filter/PFilter";
 import { formatFilterValueList } from "utility/filter/helper";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
@@ -50,20 +51,26 @@ const MonthlyLeaveReport = () => {
 
   // menu permission
   const employeeFeature: any = permission;
-  const supervisorDDL = useApiRequest([]);
 
-  const landingApi = useApiRequest({});
   //   const debounce = useDebounce();
+  //states
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const [pages] = useState({
+  const [viewModal, setViewModal] = useState(false);
+  const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
   // Form Instance
   const [form] = Form.useForm();
+  //   api states
+  const landingApi = useApiRequest({});
+  const supervisorDDL = useApiRequest([]);
+  const [apporveStatus, getapporveStatus, apporveStatusLoading] = useAxiosGet(
+    []
+  );
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -127,9 +134,10 @@ const MonthlyLeaveReport = () => {
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        pageNo: pagination?.current || 1,
+        pageNo: pagination.current || pages?.current,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
+        PageSize:
+          pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         isPaginated: true,
         SearchText: searchText,
         departmentIdList: formatFilterValueList(values?.department) || [0],
@@ -276,8 +284,62 @@ const MonthlyLeaveReport = () => {
 
         width: 100,
       },
+      {
+        title: "Action",
+        dataIndex: "",
+        render: (rec: any) => (
+          <Tooltip placement="bottom" title={"View"}>
+            <EyeOutlined
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              onClick={() => {
+                getapporveStatus(
+                  `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntLeaveTypeId}&employeeId=${rec.IntEmployeeId}`,
+                  () => {
+                    setViewModal(true);
+                  }
+                );
+              }}
+            />
+          </Tooltip>
+        ),
+        align: "center",
+        width: 80,
+      },
+    ];
+  };
 
-      //   ...(d as any),
+  const modalheader: any = () => {
+    return [
+      {
+        title: "Approver Name",
+        dataIndex: "ApproverName",
+        width: 100,
+      },
+      {
+        title: "Approver Type",
+        dataIndex: "ApproverTypeName",
+        width: 100,
+      },
+      {
+        title: "Approve Status",
+        dataIndex: "AfterApproveStatus",
+        width: 100,
+      },
+      {
+        title: "Status",
+        dataIndex: "IsApprove",
+        render: (_: any, rec: any) => (
+          <div className="d-flex align-items-center justify-content-center">
+            <div>
+              {rec?.IsApprove === true && <Tag color="success">Approved</Tag>}
+              {(rec?.IsApprove === false || rec?.IsApprove === null) &&
+                rec?.IsReject === false && <Tag color="warning">Pending</Tag>}
+              {rec?.IsReject === true && <Tag color="red">Rejected</Tag>}
+            </div>
+          </div>
+        ),
+        width: 100,
+      },
     ];
   };
   const searchFunc = debounce((value) => {
@@ -413,7 +475,6 @@ const MonthlyLeaveReport = () => {
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
-                  // console.log(error?.message);
                 }
               };
               excelLanding();
@@ -442,7 +503,6 @@ const MonthlyLeaveReport = () => {
                               ? "Search minimum 2 character"
                               : "Select Workplace Group first"
                           }`}
-                          //disabled={!workplaceGroup?.value}
                           onChange={(value, op) => {
                             form.setFieldsValue({
                               supervisor: op,
@@ -450,17 +510,10 @@ const MonthlyLeaveReport = () => {
                           }}
                           showSearch
                           filterOption={false}
-                          // notFoundContent={null}
                           loading={supervisorDDL?.loading}
                           onSearch={(value) => {
                             getSuperVisorDDL(value);
                           }}
-                          // rules={[
-                          //   {
-                          //     required: true,
-                          //     message: "Supervisor is required",
-                          //   },
-                          // ]}
                         />
                       </Col>
                     )}
@@ -484,15 +537,109 @@ const MonthlyLeaveReport = () => {
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
-
+              setPages({
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+              });
               landingApiCall({
                 pagination,
+                searchText: form.getFieldValue("search"),
               });
             }}
             scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
+      <PModal
+        open={viewModal}
+        title={"Approver History"}
+        width={1000}
+        onCancel={() => {
+          setViewModal(false);
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <div className="d-flex">
+              <div className="d-flex" style={{ marginLeft: "8px" }}>
+                <Typography.Title level={5} style={{ fontSize: "12px" }}>
+                  Total Approver:
+                </Typography.Title>
+                <Typography.Title
+                  level={5}
+                  style={{
+                    minWidth: "20px",
+                    marginLeft: "5px",
+                    marginTop: "-.5px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {apporveStatus?.[0]?.TotalApprover || 0}
+                </Typography.Title>
+              </div>
+              <div className="d-flex" style={{ marginLeft: "116px" }}>
+                <Typography.Title level={5} style={{ fontSize: "12px" }}>
+                  Approved Application:
+                </Typography.Title>
+                <Typography.Title
+                  level={5}
+                  style={{
+                    minWidth: "20px",
+                    marginLeft: "5px",
+                    marginTop: "-.5px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {apporveStatus?.[0]?.ApprovedApplication || 0}
+                </Typography.Title>
+              </div>
+              <div className="d-flex" style={{ marginLeft: "70px" }}>
+                <Typography.Title level={5} style={{ fontSize: "12px" }}>
+                  Pending Application:
+                </Typography.Title>
+                <Typography.Title
+                  level={5}
+                  style={{
+                    minWidth: "20px",
+                    marginLeft: "5px",
+                    marginTop: "-.5px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {apporveStatus?.[0]?.PendingApplication || 0}
+                </Typography.Title>
+              </div>
+              <div className="d-flex" style={{ marginLeft: "82px" }}>
+                <Typography.Title level={5} style={{ fontSize: "12px" }}>
+                  Rejected Application:
+                </Typography.Title>
+                <Typography.Title
+                  level={5}
+                  style={{
+                    minWidth: "20px",
+                    marginLeft: "5px",
+                    marginTop: "-.5px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {apporveStatus?.[0]?.RejectedApplication || 0}
+                </Typography.Title>
+              </div>
+            </div>
+            <DataTable
+              bordered
+              header={modalheader()}
+              loading={apporveStatusLoading}
+              data={
+                apporveStatus?.[0]?.ApprovalStatusDetails?.length > 0
+                  ? apporveStatus?.[0]?.ApprovalStatusDetails
+                  : []
+              }
+            />
+          </>
+        }
+      />
     </>
   ) : (
     <NotPermittedPage />
