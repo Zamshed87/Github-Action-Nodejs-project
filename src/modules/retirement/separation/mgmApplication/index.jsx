@@ -366,7 +366,7 @@ export default function ManagementSeparation() {
                 isScrollAble={false}
                 onRowClick={(data) => {
                   history.push(
-                    `/profile/separation/view/${data?.separationId}`
+                    `/retirement/separation/view/${data?.separationId}`
                   );
                 }}
               />

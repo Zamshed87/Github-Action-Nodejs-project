@@ -16,7 +16,7 @@ import { dateFormatter } from "../../../../../utility/dateFormatter";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 
-export default function ManagementViewSeparationForm() {
+export default function RetirementViewSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -39,7 +39,7 @@ export default function ManagementViewSeparationForm() {
   const [singleData, setSingleData] = useState([]);
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Retirement"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

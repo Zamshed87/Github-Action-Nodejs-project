@@ -22,7 +22,7 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import { CreateSeparation, deleteSeparationAttachment } from "../../helper";
+import { CreateSeparation, deleteSeparationAttachment, UpdateSeparation } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
@@ -122,7 +122,7 @@ export default function SeparationApplicationForm() {
 
   const getEmpSeparationDataHandlerById = () => {
     getSeparationDataApi(
-      `/Employee/EmployeeSeparationById?SeparationId=${+params?.id}`,
+      `/separation/GetSeparationById/${+params?.id}`,
       (res) => {
         setValues((prev) => ({
           ...prev,
@@ -218,6 +218,7 @@ export default function SeparationApplicationForm() {
         intSeparationId: +params?.id,
         strDocumentId: [...modifyImageArray, ...modifyAttachmentList],
       };
+      UpdateSeparation(payload, setLoading, callback);
     } else {
       payload = {
         ...payload,
@@ -225,8 +226,8 @@ export default function SeparationApplicationForm() {
         intSeparationId: 0,
         strDocumentId: modifyImageArray,
       };
+      CreateSeparation(payload, setLoading, callback);
     }
-    CreateSeparation(payload, setLoading, callback);
   };
 
   const {

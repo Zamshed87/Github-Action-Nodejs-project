@@ -43,11 +43,26 @@ export const getRoleAssigneToUser = async (buId, wgId, id, setter) => {
   } catch (error) { }
 };
 
-// self separation create
+// separation create
 export const CreateSeparation = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post("/separation/CreateSeparation", payload);
+    cb && cb();
+    setLoading && setLoading(false);
+    toast.success(res?.data?.message || "Submitted Successfully", {
+      toastId: 1,
+    });
+  } catch (error) {
+    setLoading && setLoading(false);
+    toast.warn(error?.response?.data?.message || "Failed, try again");
+  }
+};
+// separation update
+export const UpdateSeparation = async (payload, setLoading, cb) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.post("/separation/UpdateSeparation", payload);
     cb && cb();
     setLoading && setLoading(false);
     toast.success(res?.data?.message || "Submitted Successfully", {
@@ -313,7 +328,7 @@ export const separationApplicationLandingTableColumn = (
                     if (!permission?.isEdit)
                       return toast.warn("You don't have permission");
                     history.push(
-                      `/profile/separation/edit/${item?.separationId}`
+                      `/retirement/separation/edit/${item?.separationId}`
                     );
                   }}
                 />
@@ -343,7 +358,7 @@ export const separationApplicationLandingTableColumn = (
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
                 history.push(
-                  `/profile/separation/release/${item?.separationId}`
+                  `/retirement/separation/release/${item?.separationId}`
                 );
               }}
             >

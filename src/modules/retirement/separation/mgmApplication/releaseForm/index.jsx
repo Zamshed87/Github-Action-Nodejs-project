@@ -33,7 +33,7 @@ const initData = {
   isReleased: false,
 };
 
-export default function ManagementReleaseSeparationForm() {
+export default function RetirementReleaseSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -59,7 +59,7 @@ export default function ManagementReleaseSeparationForm() {
   const [userRole, setUserRole] = useState([]);
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Retirement"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
