@@ -405,7 +405,7 @@ export const getSeparationLandingById = async (id, setter, setLoading) => {
 export const deleteSeparationAttachment = async (id, documentationId, cb) => {
   try {
     const res = await axios.post(
-      `/Employee/EmployeeSeparationDocumentDelete?intSeparationid=${id}&DocumentId=${documentationId}`
+      `/separation/DocumentDelete?id=${id}&documentId=${documentationId}`
     );
     if (res.status === 200 && res?.data) {
       toast.success(res?.data?.message || "Delete Successfully", {
