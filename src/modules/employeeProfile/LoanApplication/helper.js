@@ -24,10 +24,13 @@ export const onGetLoanRequestLanding = (
   buId,
   wgId,
   values,
-  setRowDto
+  setRowDto,
+  empId,
+  isSelf
 ) => {
+  const id = isSelf ? `&intId=${empId}` : "";
   getLoanRequestLanding(
-    `/Employee/PeopleDeskAllLanding?TableName=LoanApplicationList&AccountId=${orgId}&BusinessUnitId=${buId}&fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}&WorkplaceGroupId=${wgId}`,
+    `/Employee/PeopleDeskAllLanding?TableName=LoanApplicationList&AccountId=${orgId}&BusinessUnitId=${buId}&fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}&WorkplaceGroupId=${wgId}${id}`,
     (data) => {
       setRowDto?.(data);
     }
@@ -63,7 +66,8 @@ export const loanRequestLandingTableColumns = (
   paginationSize,
   buId,
   wgId,
-  setLoading
+  setLoading,
+  isSelf
 ) => {
   return [
     {
@@ -307,64 +311,74 @@ export const loanRequestLandingTableColumns = (
               <Chips label={data?.installmentStatus} classess="danger" />
             )}
           </div>
-          <div>
-            {data?.applicationStatus === "Pending" && (
-              <div className="d-flex">
-                <Tooltip title="Edit" arrow>
-                  <button
-                    type="button"
-                    className="iconButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSingleLoanApplication(data, setSingleData, setFileId);
-                      setShow(true);
-                    }}
-                  >
-                    <CreateOutlined />
-                  </button>
-                </Tooltip>
-                <Tooltip title="Delete" arrow>
-                  <button
-                    type="button"
-                    className="iconButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      loanCrudAction(
-                        data,
-                        getData,
-                        setLoading,
-                        employeeId,
-                        null,
-                        orgId,
-                        true,
-                        buId,
-                        wgId
-                      );
-                    }}
-                  >
-                    <DeleteOutline />
-                  </button>
-                </Tooltip>
-              </div>
-            )}
-            {data?.installmentStatus === "Running" && (
-              <div className="d-flex">
-                <Tooltip title="Edit" arrow>
-                  <button
-                    type="button"
-                    className="iconButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSingleLoanApplication(data, setSingleData, setFileId);
-                      setShow(true);
-                    }}
-                  >
-                    <CreateOutlined />
-                  </button>
-                </Tooltip>
-              </div>
-            )}
-          </div>
+          {!isSelf && (
+            <div>
+              {data?.applicationStatus === "Pending" && (
+                <div className="d-flex">
+                  <Tooltip title="Edit" arrow>
+                    <button
+                      type="button"
+                      className="iconButton"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSingleLoanApplication(
+                          data,
+                          setSingleData,
+                          setFileId
+                        );
+                        setShow(true);
+                      }}
+                    >
+                      <CreateOutlined />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title="Delete" arrow>
+                    <button
+                      type="button"
+                      className="iconButton"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        loanCrudAction(
+                          data,
+                          getData,
+                          setLoading,
+                          employeeId,
+                          null,
+                          orgId,
+                          true,
+                          buId,
+                          wgId
+                        );
+                      }}
+                    >
+                      <DeleteOutline />
+                    </button>
+                  </Tooltip>
+                </div>
+              )}
+              {data?.installmentStatus === "Running" && (
+                <div className="d-flex">
+                  <Tooltip title="Edit" arrow>
+                    <button
+                      type="button"
+                      className="iconButton"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSingleLoanApplication(
+                          data,
+                          setSingleData,
+                          setFileId
+                        );
+                        setShow(true);
+                      }}
+                    >
+                      <CreateOutlined />
+                    </button>
+                  </Tooltip>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ),
       width: 180,
