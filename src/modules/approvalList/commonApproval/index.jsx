@@ -12,6 +12,7 @@ import CommonFilter from "common/CommonFilter";
 import "./index.css";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  columnAdditionDeduction,
   columnDeposit,
   columnDisbursment,
   columnIncrement,
@@ -236,6 +237,8 @@ const CommonApprovalComponent = () => {
               ? columnDisbursment
               : id == 27
               ? columnDeposit
+              : id == 18
+              ? columnAdditionDeduction
               : columnsDefault
           }
           bordered
