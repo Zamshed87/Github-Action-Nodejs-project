@@ -37,30 +37,30 @@ import {
   columnsShiftChange,
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
+import ViewFormComponent from "./utils/ViewFormComponent";
 
 const CommonApprovalComponent = () => {
-
   // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
 
-
   // state
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
+  const [viewData, setViewData] = useState({});
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalAction, setModalAction] = useState(null);
   const [selectedRow, setSelectedRow] = useState([]);
+  const [viewModal, setViewModal] = useState(false);
 
   // redux
   const { orgId, employeeId, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
 
   // fetch data
   useEffect(() => {
@@ -150,6 +150,13 @@ const CommonApprovalComponent = () => {
     setModalAction(null);
   };
 
+  const handleOpen = () => {
+    setViewModal(false);
+  };
+
+  // for view Modal
+  const handleViewClose = () => setViewModal(false);
+
   // render
   return (
     <div className="approval-container mt-4">
@@ -196,7 +203,7 @@ const CommonApprovalComponent = () => {
           }}
           header={
             id == 8
-              ? columnsLeave
+              ? columnsLeave(dispatch)
               : id == 15
               ? columnOvertime
               : id == 4
@@ -206,7 +213,7 @@ const CommonApprovalComponent = () => {
               : id == 14
               ? columnsMovement
               : id == 21
-              ? columnsSeparation
+              ? columnsSeparation(setViewData, setViewModal)
               : id == 26
               ? columnsAdvancedSalary
               : id == 3
@@ -252,6 +259,19 @@ const CommonApprovalComponent = () => {
         handleModalOk={handleModalOk}
         handleModalCancel={handleModalCancel}
         modalAction={modalAction}
+      />
+      <ViewFormComponent
+        objProps={{
+          show: viewModal,
+          title: "Separation Details",
+          onHide: handleViewClose,
+          size: "lg",
+          backdrop: "static",
+          classes: "default-modal",
+          handleOpen,
+          viewData,
+          setViewData
+        }}
       />
     </div>
   );

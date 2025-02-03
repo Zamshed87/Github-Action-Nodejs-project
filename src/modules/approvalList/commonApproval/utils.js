@@ -1,3 +1,8 @@
+import { Attachment } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { dateFormatter } from "utility/dateFormatter";
+import { EyeOutlined } from "@ant-design/icons";
+
 export const columnsDefault = [
   {
     title: "SL",
@@ -40,7 +45,7 @@ export const columnsDefault = [
   },
 ];
 
-export const columnsLeave = [
+export const columnsLeave = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -61,17 +66,49 @@ export const columnsLeave = [
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "Attachment",
+    dataIndex: "documentId",
+    render: (_, record) => (
+      <div className="leave-application-document ml-1">
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            if (record?.applicationInformation?.documentId !== 0) {
+              dispatch(
+                getDownlloadFileView_Action(
+                  record?.applicationInformation?.documentId
+                )
+              );
+            }
+          }}
+        >
+          {record?.applicationInformation?.documentId !== 0 && (
+            <div style={{ color: "green", cursor: "pointer" }}>
+              <Attachment /> attachment
+            </div>
+          )}
+        </span>
+      </div>
+    ),
+    filter: false,
+    sorter: false,
   },
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "To Date",
     dataIndex: ["applicationInformation", "toDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "Total Days",
+    dataIndex: ["applicationInformation", "totalDays"],
   },
   {
     title: "Waiting Stage",
@@ -398,7 +435,7 @@ export const columnsMovement = [
   },
 ];
 
-export const columnsSeparation = [
+export const columnsSeparation = (setViewData, setViewModal) => [
   {
     title: "SL",
     align: "center",
@@ -414,33 +451,40 @@ export const columnsSeparation = [
   {
     title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
+    width: "90px",
   },
   {
     title: "Designation",
     dataIndex: ["applicationInformation", "designation"],
+    width: "70px",
   },
   {
     title: "Department",
     dataIndex: ["applicationInformation", "department"],
+    width: "70px",
   },
   {
     title: "Application Type",
     dataIndex: ["applicationType"],
+    width: "90px",
   },
 
   {
     title: "Separation Type",
     dataIndex: ["applicationInformation", "separationTypeName"],
+    width: "90px",
   },
   {
     title: "Separation Date",
     dataIndex: ["applicationInformation", "separationDate"],
+    width: "90px",
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
     ),
   },
   {
     title: "Last Working Date",
+    width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
@@ -448,18 +492,16 @@ export const columnsSeparation = [
   },
   {
     title: "Effective Date",
+    width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
     ),
   },
   {
-    title: "Remarks",
-    dataIndex: ["applicationInformation", "remarks"],
-  },
-  {
     title: "Waiting Stage",
     dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
   },
   {
     title: "Status",
@@ -467,6 +509,23 @@ export const columnsSeparation = [
     dataIndex: ["applicationInformation", "status"],
     render: (status) => (
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+  {
+    title: "Action",
+    dataIndex: "action",
+    width: "50px",
+    render: (_, render) => (
+      <div>
+        <EyeOutlined
+          style={{ marginRight: 5 }}
+          onClick={() => {
+            console.log("render", render)
+            setViewData(render?.applicationInformation);
+            setViewModal(true);
+          }}
+        />
+      </div>
     ),
   },
 ];
@@ -1326,7 +1385,7 @@ export const columnsShiftChange = [
   },
 ];
 
-export const columnDisbursment =  [
+export const columnDisbursment = [
   {
     title: "SL",
     align: "center",
@@ -1379,7 +1438,7 @@ export const columnDisbursment =  [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-]
+];
 
 export const columnDeposit = [
   {
@@ -1438,7 +1497,7 @@ export const columnDeposit = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-]
+];
 
 export const columnAdditionDeduction = [
   {
@@ -1488,4 +1547,4 @@ export const columnAdditionDeduction = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-]
+];
