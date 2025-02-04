@@ -304,16 +304,16 @@ const EmLoanHistory = () => {
                 searchText: "",
                 workplaceGroupId: wgId,
                 workplaceId: wId,
-                WorkplaceGroupList:
-                  values?.workplaceGroup?.value == 0 ||
-                  values?.workplaceGroup?.value == undefined
-                    ? decodedToken.workplaceGroupList
-                    : values?.workplaceGroup?.value.toString(),
-                WorkplaceList:
-                  values?.workplace?.value == 0 ||
-                  values?.workplace?.value == undefined
-                    ? decodedToken.workplaceList
-                    : values?.workplace?.value.toString(),
+                // WorkplaceGroupList:
+                //   values?.workplaceGroup?.value == 0 ||
+                //   values?.workplaceGroup?.value == undefined
+                //     ? decodedToken.workplaceGroupList
+                //     : values?.workplaceGroup?.value.toString(),
+                // WorkplaceList:
+                //   values?.workplace?.value == 0 ||
+                //   values?.workplace?.value == undefined
+                //     ? decodedToken.workplaceList
+                //     : values?.workplace?.value.toString(),
               };
               postPDFAction(
                 "/PdfAndExcelReport/LoanReportAll",
