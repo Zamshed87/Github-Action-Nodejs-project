@@ -115,6 +115,14 @@ export const incomeTaxColumnData = (
       fieldType: "string",
     },
     {
+      title: "Age",
+      dataIndex: "employeeAge",
+      // sort: false,
+      // filter: true,
+      // filterDropDownList: headerList[`sectionList`],
+      fieldType: "string",
+    },
+    {
       title: "Take-Home Pay",
       dataIndex: "isTakeHomePay",
       sort: true,
