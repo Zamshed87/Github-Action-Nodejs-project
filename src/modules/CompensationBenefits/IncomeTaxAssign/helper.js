@@ -121,6 +121,7 @@ export const incomeTaxColumnData = (
       // filter: true,
       // filterDropDownList: headerList[`sectionList`],
       fieldType: "string",
+      width: 50,
     },
     {
       title: "Take-Home Pay",
