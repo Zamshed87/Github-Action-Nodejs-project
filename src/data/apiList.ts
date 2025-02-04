@@ -300,4 +300,5 @@ export const apiList = {
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  GetWorkplaceWisePipelineStatusDdl: "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl"
 };
