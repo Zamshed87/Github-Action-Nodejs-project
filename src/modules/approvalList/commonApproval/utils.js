@@ -1522,6 +1522,11 @@ export const columnAdditionDeduction = [
     title: "Department",
     dataIndex: ["applicationInformation", "department"],
   },
+  {
+    title: "Application Date",
+    dataIndex: ["dteCreatedAt"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
 
   {
     title: "Addition/Deduction Type",
