@@ -113,7 +113,6 @@ export default function ApprovalList() {
 
   const [form] = Form.useForm();
 
-  console.log("Form", form);
 
   return (
     <>
