@@ -14,11 +14,9 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AddEditForm from "./addEditForm";
 import { dateFormatter } from "utility/dateFormatter";
-import { useHistory } from "react-router";
 import CommonFilter from "common/CommonFilter";
 
 function CommonAppPipeline() {
-  const history = useHistory();
   // hook
   const dispatch = useDispatch();
 
