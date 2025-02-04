@@ -283,18 +283,18 @@ export const columnsManual = [
   },
   {
     title: "Designation",
+    width: "60px",
     dataIndex: ["applicationInformation", "designation"],
   },
   {
     title: "Department",
+    width: "60px",
     dataIndex: ["applicationInformation", "department"],
   },
   {
     title: "Attendance Date",
     dataIndex: ["applicationInformation", "dteAttendanceDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "-"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "-"}</div>,
   },
   {
     title: "Actual In-Time",
@@ -331,17 +331,31 @@ export const columnsManual = [
     render: (status) => (
       <div
         style={{
-          color: status === "Late" ? "red" : "green",
           fontWeight: "bold",
         }}
       >
-        {status}
+        {status === "Late" ? (
+          <Chips label="Late" classess="warning" />
+        ) : status === "Absent" ? (
+          <Chips label="Absent" classess="danger" />
+        ) : status === "Movement" ? (
+          <Chips label="Movement" classess="movement" />
+        ) : status === "Leave" ? (
+          <Chips label="Leave" classess="indigo" />
+        ) : status === "Offday" ? (
+          <Chips label="Offday" classess="primary" />
+        ) : status === "Holiday" ? (
+          <Chips label="Holiday" classess="secondary" />
+        ) : (
+          ""
+        )}
       </div>
     ),
   },
   {
     title: "Request Status",
     dataIndex: ["applicationInformation", "strRequestStatus"],
+    width: "120px",
     render: (status, record) => (
       <div>
         <LightTooltip
@@ -367,6 +381,9 @@ export const columnsManual = [
           <Chips label="Movement" classess="movement" />
         )}
         {status === "Absent" && <Chips label="Absent" classess="danger" />}
+        {status === "Changed In/Out Time" && (
+          <Chips label="Changed In/Out Time" classess="success" />
+        )}
       </div>
     ),
   },
@@ -1559,11 +1576,11 @@ export const columnAdditionDeduction = [
 
   {
     title: "Addition/Deduction Type",
-    dataIndex: ["applicationInformation", "strAdditionDeductionType"],
+    dataIndex: ["applicationInformation", "additionDeductionType"],
   },
   {
     title: "Amount",
-    dataIndex: ["applicationInformation", "numAmount"],
+    dataIndex: ["applicationInformation", "numTotalAmount"],
   },
   {
     title: "Remarks",
