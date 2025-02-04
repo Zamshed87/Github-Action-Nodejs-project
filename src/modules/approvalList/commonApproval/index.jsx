@@ -74,7 +74,7 @@ const CommonApprovalComponent = () => {
       employeeId,
       setData,
     });
-  }, [id]);
+  }, [id, wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));

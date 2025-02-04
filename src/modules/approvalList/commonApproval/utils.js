@@ -1,7 +1,9 @@
-import { Attachment } from "@mui/icons-material";
+import { Attachment, InfoOutlined } from "@mui/icons-material";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { dateFormatter } from "utility/dateFormatter";
 import { EyeOutlined } from "@ant-design/icons";
+import Chips from "common/Chips";
+import { LightTooltip } from "common/LightTooltip";
 
 export const columnsDefault = [
   {
@@ -291,7 +293,7 @@ export const columnsManual = [
     title: "Attendance Date",
     dataIndex: ["applicationInformation", "dteAttendanceDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
+      <div>{date ? dateFormatter(date) : "-"}</div>
     ),
   },
   {
@@ -340,6 +342,33 @@ export const columnsManual = [
   {
     title: "Request Status",
     dataIndex: ["applicationInformation", "strRequestStatus"],
+    render: (status, record) => (
+      <div>
+        <LightTooltip
+          style={{ fontSize: "14px" }}
+          title={
+            <div className="movement-tooltip p-1">
+              <div className="">
+                <p className="tooltip-title">Reason</p>
+                <p className="tooltip-subTitle mb-0">{record?.reason}</p>
+              </div>
+            </div>
+          }
+          arrow
+        >
+          <InfoOutlined sx={{ marginRight: "12px" }} />
+        </LightTooltip>
+        {status === "Present" && <Chips label="Present" classess="success" />}
+        {status === "Late" && <Chips label="Late" classess="warning" />}
+        {status === "Holiday" && <Chips label="Holiday" classess="secondary" />}
+        {status === "Offday" && <Chips label="Offday" classess="primary" />}
+        {status === "Leave" && <Chips label="Leave" classess="indigo" />}
+        {status === "Movement" && (
+          <Chips label="Movement" classess="movement" />
+        )}
+        {status === "Absent" && <Chips label="Absent" classess="danger" />}
+      </div>
+    ),
   },
 
   {
@@ -520,7 +549,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
         <EyeOutlined
           style={{ marginRight: 5 }}
           onClick={() => {
-            console.log("render", render)
+            console.log("render", render);
             setViewData(render?.applicationInformation);
             setViewModal(true);
           }}
@@ -634,25 +663,25 @@ export const columnsExpense = [
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "To Date",
     dataIndex: ["applicationInformation", "toDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
-  {
-    title: "Total Days",
-    dataIndex: ["applicationInformation", "totalDays"],
-  },
+  // {
+  //   title: "Total Days",
+  //   dataIndex: ["applicationInformation", "totalDays"],
+  // },
   {
     title: "Remarks",
-    dataIndex: ["applicationInformation", "remarks"],
+    dataIndex: ["applicationInformation", "reason"],
   },
   {
     title: "Expense Type",
