@@ -22,7 +22,7 @@ export const createTrainingRequisition = async (
       reasonForRequisition: values?.reasonForRequisition || "",
       objectivesToAchieve: values?.objectivesToAchieve || "",
       remarks: values?.remarks || "",
-      statusId: 1,
+      statusId: "0",
     };
     const res = await axios.post(
       `/TrainingRequisition/Training/TrainingRequisition`,
