@@ -168,7 +168,6 @@ export default function IncomeTaxAssign() {
 
     createTaxAssign(payload, setLoading, callBack);
   };
-  console.log({ checkedList });
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
