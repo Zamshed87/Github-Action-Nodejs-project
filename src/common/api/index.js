@@ -183,7 +183,7 @@ export const getPeopleDeskAllDDLModify = async (apiUrl, value, label, setter, cb
       };
     });
 
-    setter && setter(newDDL); // Do NOT add "All" option
+    setter && setter(newDDL);
     cb && cb();
   } catch (error) {
     console.error("Error fetching DDL:", error);
