@@ -2,7 +2,6 @@ import axios from "axios";
 import MasterFilter from "common/MasterFilter";
 import MultiCheckedSelect from "common/MultiCheckedSelect";
 import { useFormik } from "formik";
-import { message } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
@@ -780,11 +779,18 @@ const SalaryGenerateCreate = () => {
                       <PSelect
                         maxTagCount="responsive"
                         mode="multiple"
-                        value={selectedWorkplaces} // Bind the state to the selected workplaces
+                        value={selectedWorkplaces}
                         options={
                           workplaceDDL?.map((opt) => ({
                             ...opt,
-                            disabled: opt.isNotSetup, // Disable workplaces with isNotSetup: true
+                            disabled:
+                              (selectedWorkplaces.some(
+                                (sel) => sel.isIndividualSetup
+                              ) &&
+                                !opt.isIndividualSetup) ||
+                              (selectedWorkplaces.length > 0 &&
+                                opt.isIndividualSetup &&
+                                !selectedWorkplaces.includes(opt.value)),
                           })) || []
                         }
                         name="workplace"
@@ -795,27 +801,19 @@ const SalaryGenerateCreate = () => {
                           let selectedValues = value;
                           let selectedOptions = options;
 
-                          // Check if any Individual Setup workplace is selected
                           const individualOption = selectedOptions.find(
                             (opt) => opt.isIndividualSetup
                           );
 
                           if (individualOption) {
-                            // Restrict selection to only the Individual Setup workplace
-                            console.log(
-                              "Individual Option Selected:",
-                              individualOption
-                            );
-
                             selectedValues = [individualOption.value];
                             selectedOptions = [individualOption];
                           }
 
-                          // Update the selectedWorkplaces state
                           setSelectedWorkplaces(selectedValues);
-
-                          // Optional: Fetch new data or update additional fields if necessary
                           const valuesStr = selectedValues.join(",");
+                          setFieldValue("workplace", selectedOptions);
+
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,
                             "PositionId",
