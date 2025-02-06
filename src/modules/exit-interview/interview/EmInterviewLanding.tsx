@@ -81,6 +81,7 @@ const EmInterviewLanding = () => {
       resignStatusList: filters?.resignStatus || [],
       interviewCompletedByList: filters?.interviewCompletedBy || [],
       statusList: filters?.status || [],
+      interviewTypeList: filters?.questionnaireType || [],
     };
     landingApi?.action({
       urlKey: "GetInterviewLanding",
@@ -115,6 +116,11 @@ const EmInterviewLanding = () => {
       width: 100,
     },
     {
+      title: "Training Title",
+      dataIndex: "trainingTitle",
+      width: 80,
+    },
+    {
       title: "Length of Service",
       dataIndex: "lengthOfService",
     },
@@ -144,6 +150,9 @@ const EmInterviewLanding = () => {
     {
       title: "Interview Type",
       dataIndex: "questionnaireType",
+      filter: true,
+      filterKey: "interviewTypeList",
+      filterSearch: true,
       render: (_: any, rec: any) => rec?.questionnaireType?.label,
     },
     {
