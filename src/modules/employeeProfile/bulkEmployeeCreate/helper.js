@@ -43,7 +43,7 @@ export const processBulkUploadEmployeeAction = async (
       dteConfirmationDate: item["Confirmation Date"] || null,
       dteInternCloseDate: item["InternCloseDate"] || null,
       ProbationaryEndInDays: item["Probation Period"] || null,
-      dteProbationaryCloseDate: item["ProbationaryCloseDate"]?.result || null,
+      dteProbationaryCloseDate: item["ProbationaryCloseDate"] || null,
       dteContactFromDate: item["Contact From Date"] || null,
       dteContactToDate: item["Contact To Date"] || null,
       strSupervisorCode: item["Supervisor"] + "" || "",
@@ -75,8 +75,8 @@ export const processBulkUploadEmployeeAction = async (
         item["OT Type"] === 2
           ? "With Salary"
           : item["OT Type"] === 3
-          ? "Without Salary/Additional OT"
-          : "Not Applicable",
+            ? "Without Salary/Additional OT"
+            : "Not Applicable",
       intOtTypeId: +item["OT Type"],
       intOTFixedHour: +item?.["OT Fixed Hour"] || 0,
       strJobLocation: item["Job Location"] || "",
