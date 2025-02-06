@@ -1,29 +1,19 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import Loading from "common/loading/Loading";
-import {
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
+import { PForm } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation, useParams } from "react-router-dom";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { formConfig, makerFormConfig } from "./helper";
+import { useLocation, useParams } from "react-router-dom";
+import { makerFormConfig } from "./helper";
 
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import CommonForm from "modules/pms/CommonForm/commonForm";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { ModalFooter } from "Components/Modal";
+import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
 
-const CreateEdit = ({ isScoreSettings, setIsScoreSettings }) => {
+const Clone = ({ isScoreSettings, setIsScoreSettings }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const data = location?.state?.data;
@@ -119,17 +109,18 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings }) => {
 
         <ModalFooter
           onCancel={() => {
-            setIsScoreSettings(() => ({ open: false, type: "" }));
+            setIsScoreSettings(false);
           }}
+          submitText="Clone"
           submitAction="submit"
           onSubmit={() => {
             const values = form.getFieldsValue(true);
             form
               .validateFields()
               .then(() => {
-                if (values?.barScore + values?.kpiScore !== 100) {
-                  return toast.error("Sum of KPI and BAR must be 100");
-                }
+                // if (values?.barScore + values?.kpiScore !== 100) {
+                //   return toast.error("Sum of KPI and BAR must be 100");
+                // }
               })
               .catch((error) => {
                 console.log(error);
@@ -143,4 +134,4 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings }) => {
   );
 };
 
-export default CreateEdit;
+export default Clone;
