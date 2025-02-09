@@ -309,6 +309,10 @@ export default function AddEditForm({
                   label: "Admin",
                   value: "Admin",
                 },
+                {
+                  label: "Director",
+                  value: "Director",
+                },
               ]}
               name="strCostCenterDivision"
               label="Cost Center Division"
