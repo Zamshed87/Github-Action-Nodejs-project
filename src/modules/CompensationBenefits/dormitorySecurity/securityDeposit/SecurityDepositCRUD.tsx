@@ -441,7 +441,6 @@ export const SecurityDepositCRUD = () => {
   };
   const viewHandler = async () => {
     const values = form.getFieldsValue(true);
-    console.log({ values });
     setSelectedRow([]);
     // await form
     //   .validateFields()
