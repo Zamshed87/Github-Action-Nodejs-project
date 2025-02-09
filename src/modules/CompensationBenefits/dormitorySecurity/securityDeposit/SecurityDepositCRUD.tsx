@@ -441,14 +441,13 @@ export const SecurityDepositCRUD = () => {
   };
   const viewHandler = async () => {
     const values = form.getFieldsValue(true);
-
     setSelectedRow([]);
     // await form
     //   .validateFields()
     //   .then(() => {
     if (
-      landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
-        .length === 0 &&
+      // landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
+      //   .length === 0 &&
       values?.employee?.value
     ) {
       const newEmp = {
@@ -460,11 +459,32 @@ export const SecurityDepositCRUD = () => {
         depositeMoney: 0,
         remarks: "",
       };
-      setLanding((prev) => [...prev, newEmp]);
+      landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
+        .length === 0 && landing?.length > 0
+        ? setLanding((prev) => [...prev, newEmp])
+        : setLanding([newEmp]);
+    } else {
+      CommonEmployeeDDL?.action({
+        urlKey: "GetEmpBasicInfoByDepartmentId",
+        method: "GET",
+        params: {
+          DepartmentId: values?.department?.value,
+          // StrSearch: value,
+        },
+        onSuccess: (res: any) => {
+          res?.data?.forEach((item: any, i: number) => {
+            res.data[i].label = item?.employeeName;
+            res.data[i].value = item?.employeeId;
+            res.data[i].designationName = item?.designation;
+            res.data[i].departmentName = item?.department;
+            res.data[i].depositeMoney = 0;
+            res.data[i].remarks = "";
+          });
+
+          setLanding(res?.data);
+        },
+      });
     }
-    // else {
-    //   landingApiCall();
-    // }
     // })
     // .catch(() => {
     //   console.error("Validate Failed:");
