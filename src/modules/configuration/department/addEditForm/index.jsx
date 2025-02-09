@@ -24,10 +24,8 @@ export default function AddEditForm({
   const workplaceGroup = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
 
-  const { orgId, buId, employeeId, wgId, wId, strBusinessUnit } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, wgId, wId, strBusinessUnit, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   // states
 
@@ -309,10 +307,14 @@ export default function AddEditForm({
                   label: "Admin",
                   value: "Admin",
                 },
-                {
-                  label: "Director",
-                  value: "Director",
-                },
+                ...(intAccountId === 1
+                  ? [
+                      {
+                        label: "Director",
+                        value: "Director",
+                      },
+                    ]
+                  : []),
               ]}
               name="strCostCenterDivision"
               label="Cost Center Division"
