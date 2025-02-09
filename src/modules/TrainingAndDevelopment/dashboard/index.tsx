@@ -65,7 +65,7 @@ const { Title } = Typography;
 // need to refactor code
 
 const TnDDashboard = () => {
-  const defaultToDate = moment();
+  const defaultToDate = moment().endOf("month"); // Last day of the current month
   const defaultFromDate = moment().startOf("year");
   const dispatch = useDispatch();
 

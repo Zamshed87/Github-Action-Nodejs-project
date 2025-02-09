@@ -8,7 +8,7 @@ import { useApiRequest } from "Hooks";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import ViewModal from "./components/view-modal";
 import { PModal } from "Components/Modal";
 import { getQuestionaireById } from "./helper";
@@ -21,6 +21,11 @@ const EmInterviewLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+  interface LocationState {
+    fromId?: any;
+  }
+  const location = useLocation<LocationState>();
+  const { fromId } = location?.state || {};
   const { buId, wgId, wId } = profileData;
 
   const [filterList, setFilterList] = useState({});
@@ -64,7 +69,7 @@ const EmInterviewLanding = () => {
     filters = filterList,
   }: TLandingApi) => {
     const payload = {
-      //   assignedToEmployeeId: 0,
+      assignedToEmployeeId: fromId ? fromId : undefined,
       businessUnitId: buId,
       workplaceGroupId: wgId,
       workplaceId: wId,
@@ -76,6 +81,7 @@ const EmInterviewLanding = () => {
       resignStatusList: filters?.resignStatus || [],
       interviewCompletedByList: filters?.interviewCompletedBy || [],
       statusList: filters?.status || [],
+      interviewTypeList: filters?.questionnaireType || [],
     };
     landingApi?.action({
       urlKey: "GetInterviewLanding",
@@ -110,6 +116,11 @@ const EmInterviewLanding = () => {
       width: 100,
     },
     {
+      title: "Training Title",
+      dataIndex: "trainingTitle",
+      width: 80,
+    },
+    {
       title: "Length of Service",
       dataIndex: "lengthOfService",
     },
@@ -139,6 +150,9 @@ const EmInterviewLanding = () => {
     {
       title: "Interview Type",
       dataIndex: "questionnaireType",
+      filter: true,
+      filterKey: "interviewTypeList",
+      filterSearch: true,
       render: (_: any, rec: any) => rec?.questionnaireType?.label,
     },
     {
@@ -169,6 +183,7 @@ const EmInterviewLanding = () => {
         <Flex justify="center">
           {status === "Assigned" ? (
             <button
+              disabled={fromId ? true : false}
               style={{
                 padding: "0 4px",
                 fontSize: "10px",
@@ -188,7 +203,9 @@ const EmInterviewLanding = () => {
                 });
               }}
             >
-              {rec?.questionnaireType?.label === "Exit Interview"
+              {fromId
+                ? ""
+                : rec?.questionnaireType?.label === "Exit Interview"
                 ? "Interview"
                 : rec?.questionnaireType?.label === "Training Assessment"
                 ? "Assessment"
@@ -228,6 +245,7 @@ const EmInterviewLanding = () => {
       <PForm form={form}>
         <PCard>
           <PCardHeader
+            backButton={fromId ? true : false}
             title={`Total ${landingApi?.data?.totalCount || 0} Questionnaires`}
           />
           <div className="mb-3">
