@@ -15,6 +15,7 @@ import {
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 import { Tooltip, styled, tooltipClasses } from "@mui/material";
+import moment from "moment";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -275,6 +276,28 @@ export const separationApplicationLandingTableColumn = (
       sort: true,
       filter: false,
       fieldType: "date",
+    },
+    {
+      title: "Created By",
+      dataIndex: "strCreatedBy",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Created Date",
+      dataIndex: "dteCreatedAt",
+      render: (data) => (
+        <>
+          {data?.dteCreatedAt
+            ? dateFormatter(data?.dteCreatedAt)
+            : "N/A"}
+        </>
+      ),
+      sort: true,
+      filter: false,
+      fieldType: "date",
+      width: 100,
     },
     {
       title: "Status",
