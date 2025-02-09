@@ -35,7 +35,7 @@ const RequisitionView = ({ data }: any) => {
 
       <Col md={8} sm={24}>
         <div style={labelStyle}>Upcoming Training:</div>
-        <div style={valueStyle}>{data?.upcommingTrainingName || "N/A"}</div>
+        <div style={valueStyle}>{data?.upcommingTraining?.label || "N/A"}</div>
       </Col>
 
       <Col md={8} sm={24}>

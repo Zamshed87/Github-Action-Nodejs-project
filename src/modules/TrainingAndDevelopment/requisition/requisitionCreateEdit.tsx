@@ -294,9 +294,7 @@ const TnDRequisitionCreateEdit = () => {
                   <PSelect
                     options={reqStatusDDL || []}
                     name="requisitionStatus"
-                    disabled={
-                      firstSegment === "SelfService" && data?.status?.value == 1
-                    }
+                    disabled={firstSegment === "SelfService" && type === "edit"}
                     label="Requisition Status"
                     placeholder="Requisition Status"
                     onChange={(value, op) => {
@@ -321,9 +319,7 @@ const TnDRequisitionCreateEdit = () => {
               {type === "edit" && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
-                    disabled={
-                      firstSegment === "SelfService" && data?.status?.value == 1
-                    }
+                    disabled={firstSegment === "SelfService" && type === "edit"}
                     options={upcommingTrainingDDL || []}
                     name="upcommingTraining"
                     label="Upcomming Training"
@@ -345,9 +341,6 @@ const TnDRequisitionCreateEdit = () => {
               {type === "edit" && (
                 <Col md={6} sm={24}>
                   <PInput
-                    disabled={
-                      firstSegment === "SelfService" && data?.status?.value == 1
-                    }
                     type="text"
                     placeholder="Comments"
                     label="Comments"
