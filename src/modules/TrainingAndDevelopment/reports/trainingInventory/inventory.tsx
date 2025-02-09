@@ -29,8 +29,8 @@ import {
 import { getSerial } from "Utils";
 import moment from "moment";
 const TnDInventory = () => {
-  const defaultToDate = moment();
-  const defaultFromDate = moment().subtract(3, "months");
+  const defaultFromDate = moment().subtract(3, "months").startOf("month"); // 1st day of 3 months ago
+  const defaultToDate = moment().endOf("month"); // Last day of the current month
   // router states
   const history = useHistory();
 

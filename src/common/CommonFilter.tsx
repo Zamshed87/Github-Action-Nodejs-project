@@ -5,7 +5,31 @@ import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { FilterOutlined } from "@ant-design/icons";
 
-const CommonFilter = ({
+type CommonFilterProps = {
+  visible: boolean;
+  onClose: (visible: boolean) => void;
+  onFilter: (values: any) => void;
+  isDate?: boolean;
+  isWorkplaceGroup?: boolean;
+  isWorkplace?: boolean;
+  isDepartment?: boolean;
+  isDesignation?: boolean;
+  isAllValue?: boolean;
+};
+
+type TokenData = {
+  workplaceGroupList: any[];
+  workplaceList: any[];
+};
+
+type ProfileData = {
+  buId: number;
+  wgId: number;
+  employeeId: number;
+  orgId: number;
+};
+
+const CommonFilter: React.FC<CommonFilterProps> = ({
   visible,
   onClose,
   onFilter,
@@ -16,24 +40,23 @@ const CommonFilter = ({
   isDesignation,
   isAllValue,
 }) => {
-
   // Form Instance
   const [form] = Form.useForm();
 
   // Redux Data
   const { profileData, tokenData } = useSelector(
-    (state) => state?.auth,
+    (state: any) => state?.auth,
     shallowEqual
-  );
+  ) as { profileData: ProfileData; tokenData: string };
+
   const { buId, wgId, employeeId, orgId } = profileData;
 
   // Decode Token Data
-  const decodedToken = tokenData
+  const decodedToken: TokenData = tokenData
     ? JSON.parse(atob(tokenData.split(".")[1]))
-    : null;
+    : { workplaceGroupList: [], workplaceList: [] };
 
   const { workplaceGroupList, workplaceList } = decodedToken;
-
 
   // API Calls
   const workplaceGroup = useApiRequest([]);
@@ -52,7 +75,7 @@ const CommonFilter = ({
         workplaceGroupId: wgId,
         empId: employeeId,
       },
-      onSuccess: (res) => {
+      onSuccess: (res: any[]) => {
         res.forEach((item, i) => {
           res[i].label = item?.strWorkplaceGroup;
           res[i].value = item?.intWorkplaceGroupId;
@@ -77,8 +100,8 @@ const CommonFilter = ({
         WorkplaceGroupId: workplaceGroup?.value,
         intId: employeeId,
       },
-      onSuccess: (res) => {
-        const list = [];
+      onSuccess: (res: any[]) => {
+        const list: number[] = [];
         res.forEach((item, i) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
@@ -103,10 +126,9 @@ const CommonFilter = ({
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
         workplaceId: workplace?.value,
-
         accountId: orgId,
       },
-      onSuccess: (res) => {
+      onSuccess: (res: any[]) => {
         res.forEach((item, i) => {
           res[i].label = item?.strDepartment;
           res[i].value = item?.intDepartmentId;
@@ -128,7 +150,7 @@ const CommonFilter = ({
         workplaceGroupId: workplaceGroup?.value,
         workplaceId: workplace?.value,
       },
-      onSuccess: (res) => {
+      onSuccess: (res: any[]) => {
         res.forEach((item, i) => {
           res[i].label = item?.designationName;
           res[i].value = item?.designationId;
@@ -137,7 +159,6 @@ const CommonFilter = ({
       },
     });
   };
-
 
   // Fetch Data
   useEffect(() => {
@@ -194,32 +215,29 @@ const CommonFilter = ({
         >
           <Row gutter={[10, 10]}>
             {isDate && (
-              <>
-                <Col md={24} sm={24}>
-                  <PInput
-                    label="Date Range"
-                    type="dateRange"
-                    name="dateRange"
-                    onChange={(value) => {
-                      if (value && value.length === 2) {
-                        const [fromDate, toDate] = value.map((date) =>
-                          date ? date.format("DD/MM/YYYY") : null
-                        );
-                        form.setFieldsValue({
-                          fromDate,
-                          toDate,
-                        });
-                      } else {
-                        form.setFieldsValue({
-                          fromDate: null,
-                          toDate: null,
-                        });
-                      }
-                    }}
-                    placeholder={["From Date", "To Date"]}
-                  />
-                </Col>
-              </>
+              <Col md={24} sm={24}>
+                <PInput
+                  label="Date Range"
+                  type="dateRange"
+                  name="dateRange"
+                  onChange={(value) => {
+                    if (Array.isArray(value) && value.length === 2) {
+                      const [fromDate, toDate] = value?.map((date:any) =>
+                        date ? date.format("DD/MM/YYYY") : null
+                      );
+                      form.setFieldsValue({
+                        fromDate,
+                        toDate,
+                      });
+                    } else {
+                      form.setFieldsValue({
+                        fromDate: null,
+                        toDate: null,
+                      });
+                    }
+                  }}                  
+                />
+              </Col>
             )}
 
             {isWorkplaceGroup && (
@@ -272,6 +290,7 @@ const CommonFilter = ({
                 />
               </Col>
             )}
+
             {isDesignation && (
               <Col md={24} sm={24}>
                 <PSelect
@@ -302,7 +321,7 @@ const CommonFilter = ({
                 }}
               />
               <PButton
-                type="default"
+                type="secondary"
                 content={"Reset"}
                 onClick={() => {
                   form.resetFields();
@@ -317,38 +336,3 @@ const CommonFilter = ({
 };
 
 export default CommonFilter;
-
-/**
- * 
- * How to use
- * 
- * 
-Short Documentation for Filter Drawer Integration
-
-Step 1: Declare State
-- Add a state variable to control the visibility of the drawer:
-
-const [isFilterVisible, setIsFilterVisible] = useState(false);
-
----
-
-Step 2: Add the CommonFilter Component
-- Add the `CommonFilter` component and pass the required props:
-
-      <CommonFilter
-        visible={isFilterVisible} // Control visibility
-        onClose={(visible) => setIsFilterVisible(visible)} // Update visibility state
-        onFilter={handleFilter} // Handle filter submission
-        isDate={true}
-        isWorkplaceGroup={true}
-        isWorkplace={true}
-        isAllValue={true}
-      />
-
-Step 3: Configure Conditional Fields
-
-const handleFilter = (values) => {
-  console.log("Filters Applied:", values);
-  // Implement API calls or logic with filter values
-};
- */

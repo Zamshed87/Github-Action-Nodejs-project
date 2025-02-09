@@ -1,3 +1,10 @@
+import { Attachment, InfoOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { dateFormatter } from "utility/dateFormatter";
+import { EyeOutlined } from "@ant-design/icons";
+import Chips from "common/Chips";
+import { LightTooltip } from "common/LightTooltip";
+
 export const columnsDefault = [
   {
     title: "SL",
@@ -40,7 +47,7 @@ export const columnsDefault = [
   },
 ];
 
-export const columnsLeave = [
+export const columnsLeave = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -61,17 +68,49 @@ export const columnsLeave = [
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "Attachment",
+    dataIndex: "documentId",
+    render: (_, record) => (
+      <div className="leave-application-document ml-1">
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            if (record?.applicationInformation?.documentId !== 0) {
+              dispatch(
+                getDownlloadFileView_Action(
+                  record?.applicationInformation?.documentId
+                )
+              );
+            }
+          }}
+        >
+          {record?.applicationInformation?.documentId !== 0 && (
+            <div style={{ color: "green", cursor: "pointer" }}>
+              <Attachment /> attachment
+            </div>
+          )}
+        </span>
+      </div>
+    ),
+    filter: false,
+    sorter: false,
   },
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "To Date",
     dataIndex: ["applicationInformation", "toDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "Total Days",
+    dataIndex: ["applicationInformation", "totalDays"],
   },
   {
     title: "Waiting Stage",
@@ -244,18 +283,18 @@ export const columnsManual = [
   },
   {
     title: "Designation",
+    width: "60px",
     dataIndex: ["applicationInformation", "designation"],
   },
   {
     title: "Department",
+    width: "60px",
     dataIndex: ["applicationInformation", "department"],
   },
   {
     title: "Attendance Date",
     dataIndex: ["applicationInformation", "dteAttendanceDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "-"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "-"}</div>,
   },
   {
     title: "Actual In-Time",
@@ -292,17 +331,61 @@ export const columnsManual = [
     render: (status) => (
       <div
         style={{
-          color: status === "Late" ? "red" : "green",
           fontWeight: "bold",
         }}
       >
-        {status}
+        {status === "Late" ? (
+          <Chips label="Late" classess="warning" />
+        ) : status === "Absent" ? (
+          <Chips label="Absent" classess="danger" />
+        ) : status === "Movement" ? (
+          <Chips label="Movement" classess="movement" />
+        ) : status === "Leave" ? (
+          <Chips label="Leave" classess="indigo" />
+        ) : status === "Offday" ? (
+          <Chips label="Offday" classess="primary" />
+        ) : status === "Holiday" ? (
+          <Chips label="Holiday" classess="secondary" />
+        ) : (
+          ""
+        )}
       </div>
     ),
   },
   {
     title: "Request Status",
     dataIndex: ["applicationInformation", "strRequestStatus"],
+    width: "120px",
+    render: (status, record) => (
+      <div>
+        <LightTooltip
+          style={{ fontSize: "14px" }}
+          title={
+            <div className="movement-tooltip p-1">
+              <div className="">
+                <p className="tooltip-title">Reason</p>
+                <p className="tooltip-subTitle mb-0">{record?.reason}</p>
+              </div>
+            </div>
+          }
+          arrow
+        >
+          <InfoOutlined sx={{ marginRight: "12px" }} />
+        </LightTooltip>
+        {status === "Present" && <Chips label="Present" classess="success" />}
+        {status === "Late" && <Chips label="Late" classess="warning" />}
+        {status === "Holiday" && <Chips label="Holiday" classess="secondary" />}
+        {status === "Offday" && <Chips label="Offday" classess="primary" />}
+        {status === "Leave" && <Chips label="Leave" classess="indigo" />}
+        {status === "Movement" && (
+          <Chips label="Movement" classess="movement" />
+        )}
+        {status === "Absent" && <Chips label="Absent" classess="danger" />}
+        {status === "Changed In/Out Time" && (
+          <Chips label="Changed In/Out Time" classess="success" />
+        )}
+      </div>
+    ),
   },
 
   {
@@ -398,7 +481,7 @@ export const columnsMovement = [
   },
 ];
 
-export const columnsSeparation = [
+export const columnsSeparation = (setViewData, setViewModal) => [
   {
     title: "SL",
     align: "center",
@@ -414,33 +497,40 @@ export const columnsSeparation = [
   {
     title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
+    width: "90px",
   },
   {
     title: "Designation",
     dataIndex: ["applicationInformation", "designation"],
+    width: "70px",
   },
   {
     title: "Department",
     dataIndex: ["applicationInformation", "department"],
+    width: "70px",
   },
   {
     title: "Application Type",
     dataIndex: ["applicationType"],
+    width: "90px",
   },
 
   {
     title: "Separation Type",
     dataIndex: ["applicationInformation", "separationTypeName"],
+    width: "90px",
   },
   {
     title: "Separation Date",
     dataIndex: ["applicationInformation", "separationDate"],
+    width: "90px",
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
     ),
   },
   {
     title: "Last Working Date",
+    width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
@@ -448,18 +538,16 @@ export const columnsSeparation = [
   },
   {
     title: "Effective Date",
+    width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
       <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
     ),
   },
   {
-    title: "Remarks",
-    dataIndex: ["applicationInformation", "remarks"],
-  },
-  {
     title: "Waiting Stage",
     dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
   },
   {
     title: "Status",
@@ -467,6 +555,23 @@ export const columnsSeparation = [
     dataIndex: ["applicationInformation", "status"],
     render: (status) => (
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+  {
+    title: "Action",
+    dataIndex: "action",
+    width: "50px",
+    render: (_, render) => (
+      <div>
+        <EyeOutlined
+          style={{ marginRight: 5 }}
+          onClick={() => {
+            console.log("render", render);
+            setViewData(render?.applicationInformation);
+            setViewModal(true);
+          }}
+        />
+      </div>
     ),
   },
 ];
@@ -575,25 +680,25 @@ export const columnsExpense = [
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "To Date",
     dataIndex: ["applicationInformation", "toDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
-  {
-    title: "Total Days",
-    dataIndex: ["applicationInformation", "totalDays"],
-  },
+  // {
+  //   title: "Total Days",
+  //   dataIndex: ["applicationInformation", "totalDays"],
+  // },
   {
     title: "Remarks",
-    dataIndex: ["applicationInformation", "remarks"],
+    dataIndex: ["applicationInformation", "reason"],
   },
   {
     title: "Expense Type",
@@ -1322,6 +1427,175 @@ export const columnsShiftChange = [
       >
         {status}
       </div>
+    ),
+  },
+];
+
+export const columnDisbursment = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Disbursement Date",
+    dataIndex: ["applicationInformation", "disbursementDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Disbursement Amount",
+    dataIndex: ["applicationInformation", "disbursementAmount"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnDeposit = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Deposit Date",
+    dataIndex: ["applicationInformation", "depositDate"],
+    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+  },
+  {
+    title: "Deposit Amount",
+    dataIndex: ["applicationInformation", "depositAmount"],
+  },
+  {
+    title: "Deposit Type",
+    dataIndex: ["applicationInformation", "depositsType"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnAdditionDeduction = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["dteCreatedAt"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+
+  {
+    title: "Addition/Deduction Type",
+    dataIndex: ["applicationInformation", "additionDeductionType"],
+  },
+  {
+    title: "Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+  },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
 ];

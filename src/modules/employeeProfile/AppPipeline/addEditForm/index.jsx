@@ -1,7 +1,7 @@
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Checkbox, Col, Form, InputNumber, Row } from "antd";
+import { Checkbox, Col, Form, InputNumber, message, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -68,6 +68,47 @@ export default function AddEditForm({
     });
   };
 
+  const getWorkplace = () => {
+    const values = form.getFieldsValue();
+    getWDDL.action({
+      urlKey: "GetWorkplaceWisePipelineStatusDdl",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: values?.orgName?.intWorkplaceGroupId || wgId,
+        applicationTypeId: values?.pipelineName?.value || 0,
+      },
+      onSuccess: (res) => {
+        // Add "All" option without status label
+        res.unshift({
+          label: "All",
+          value: -1,
+          customLabel: "All",
+        });
+
+        res.forEach((item, i) => {
+          // Skip the "All" option when adding status labels
+          if (item.value !== -1) {
+            res[i].isNotSetup = true;
+
+            let statusLabel = " 🔴 (Not Setup)";
+            if (item.isIndividualSetup) {
+              statusLabel = " 🟢 (Individual Setup)";
+            } else if (item.isAllSetup) {
+              statusLabel = " 🔵 (All Setup)";
+            }
+
+            res[i].label = `${item?.label} ${statusLabel}`;
+          }
+
+          res[i].customLabel = `${item?.label}`;
+          res[i].value = item?.value;
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     getWgDDL.action({
       urlKey: "WorkplaceGroupIdAll",
@@ -83,21 +124,22 @@ export default function AddEditForm({
         });
       },
     });
-    getWDDL.action({
-      urlKey: "WorkplaceIdAll",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
+    // getWDDL.action({
+    //   urlKey: "WorkplaceIdAll",
+    //   method: "GET",
+    //   params: {
+    //     accountId: orgId,
+    //     businessUnitId: buId,
+    //     workplaceGroupId: wgId,
+    //   },
+    //   onSuccess: (res) => {
+    //     res.forEach((item, i) => {
+    //       res[i].label = item?.strWorkplace;
+    //       res[i].value = item?.intWorkplaceId;
+    //     });
+    //   },
+    // });
+
     getUserGroupDDL.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -147,7 +189,7 @@ export default function AddEditForm({
                 singleData?.workplaceGroupName,
             },
             ...(isExtendType
-              ? {} 
+              ? {}
               : {
                   workplace: {
                     value: data?.header?.workplaceId,
@@ -231,6 +273,24 @@ export default function AddEditForm({
       <Row gutter={[10, 2]}>
         <Col md={12} sm={24}>
           <PSelect
+            options={pipelineDDL || []}
+            name="pipelineName"
+            label="Pipeline Name"
+            showSearch
+            filterOption={true}
+            placeholder="Pipeline Name"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                pipelineName: op,
+              });
+              console.log("op", op);
+              getWorkplace();
+            }}
+            rules={[{ required: true, message: "Pipeline Name is required" }]}
+          />
+        </Col>
+        <Col md={12} sm={24}>
+          <PSelect
             options={getWgDDL?.data?.length > 0 ? getWgDDL?.data : []}
             name="orgName"
             label="Workplace Group"
@@ -242,25 +302,12 @@ export default function AddEditForm({
                 orgName: op,
                 workplace: undefined,
               });
-              getWDDL.action({
-                urlKey: "WorkplaceIdAll",
-                method: "GET",
-                params: {
-                  accountId: orgId,
-                  businessUnitId: buId,
-                  workplaceGroupId: value,
-                },
-                onSuccess: (res) => {
-                  res.forEach((item, i) => {
-                    res[i].label = item?.strWorkplace;
-                    res[i].value = item?.intWorkplaceId;
-                  });
-                },
-              });
+              getWorkplace();
             }}
             rules={[{ required: true, message: "Workplace Group is required" }]}
           />
         </Col>
+
         <Col md={12} sm={24}>
           <PSelect
             disabled={
@@ -274,37 +321,52 @@ export default function AddEditForm({
             showSearch
             filterOption={true}
             placeholder="Workplace"
-            onChange={(value, op) => {
+            onChange={(value, options) => {
+              let selectedValues = value;
+              let selectedOptions = options;
+
+              const isSelectingAll = selectedValues.includes(-1);
+              const isSelectingIndividual = selectedOptions.some((opt) =>
+                opt.label.includes("🟢 (Individual Setup)")
+              );
+              const isSelectingAllSetup = selectedOptions.some((opt) =>
+                opt.label.includes("🔵 (All Setup)")
+              );
+
+              if (isSelectingAll) {
+                selectedValues = [-1];
+                selectedOptions = options.filter((opt) => opt.value === -1);
+              } else if (isSelectingIndividual) {
+                selectedValues = [
+                  selectedOptions.find((opt) =>
+                    opt.label.includes("🟢 (Individual Setup)")
+                  )?.value,
+                ];
+                selectedOptions = [
+                  selectedOptions.find((opt) =>
+                    opt.label.includes("🟢 (Individual Setup)")
+                  ),
+                ];
+              } else {
+                selectedValues = selectedValues.filter((val) => val !== -1);
+                selectedOptions = selectedOptions.filter(
+                  (opt) => opt.value !== -1
+                );
+              }
+
+              if (isSelectingAllSetup) {
+                message.warning(
+                  "This workplace is already set up inside All Setup."
+                );
+              }
+
               form.setFieldsValue({
-                workplace: op,
+                workplace: selectedOptions,
               });
             }}
           />
         </Col>
-        <Col md={12} sm={24}>
-          <PSelect
-            options={pipelineDDL || []}
-            name="pipelineName"
-            label="Pipeline Name"
-            showSearch
-            filterOption={true}
-            placeholder="Pipeline Name"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                pipelineName: op,
-              });
-            }}
-            rules={[{ required: true, message: "Pipeline Name is required" }]}
-          />
-        </Col>
-        {/* <Col md={12} sm={24}>
-          <PInput
-            type="text"
-            name="remarks"
-            label="Remarks"
-            placeholder="Remarks"
-          />
-        </Col> */}
+
         <Col md={12} sm={24}>
           <PSelect
             options={approverDDL || []}

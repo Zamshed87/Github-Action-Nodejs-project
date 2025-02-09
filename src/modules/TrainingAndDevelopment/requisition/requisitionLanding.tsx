@@ -41,19 +41,18 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { formatFilterValue } from "../helpers";
 import { toast } from "react-toastify";
 const TnDRequisitionLanding = () => {
-  const defaultToDate = moment();
-  const defaultFromDate = moment().subtract(3, "months");
+  const defaultFromDate = moment().subtract(3, "months").startOf("month"); // 1st day of 3 months ago
+  const defaultToDate = moment().endOf("month"); // Last day of the current month
   const dispatch = useDispatch();
-  const { permissionList, profileData } = useSelector(
-    (state: any) => state?.auth,
-    shallowEqual
-  );
+  const {
+    permissionList,
+    profileData: { intEmployeeId },
+  } = useSelector((state: any) => state?.auth, shallowEqual);
 
   // router states
   const history = useHistory();
   const location = useLocation();
   const firstSegment = location.pathname.split("/")[1];
-
   let permission: any = {};
   permissionList.forEach((item: any) => {
     if (firstSegment !== "SelfService" && item?.menuReferenceId === 30512) {
@@ -63,7 +62,6 @@ const TnDRequisitionLanding = () => {
       permission = item;
     }
   });
-
   // hooks
   const [landingApi, getLandingApi, landingLoading, , landingError] =
     useAxiosGet();
@@ -182,7 +180,11 @@ const TnDRequisitionLanding = () => {
                   setLoading,
                   setViewData,
                   (d: any) => {
-                    history.push("/trainingAndDevelopment/requisition/edit", {
+                    let url =
+                      firstSegment === "SelfService"
+                        ? "/SelfService/traininganddevelopment/trainingRequisition/edit"
+                        : "/trainingAndDevelopment/requisition/edit";
+                    history.push(url, {
                       data: d,
                     });
                   }
@@ -231,7 +233,9 @@ const TnDRequisitionLanding = () => {
       formatFilterValue(values?.requisitionStatus)
         ? formatFilterValue(values?.requisitionStatus)
         : ""
-    }&pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`;
+    }&empId=${firstSegment === "SelfService" ? intEmployeeId : ""}&pageNumber=${
+      pagination?.current
+    }&pageSize=${pagination?.pageSize}`;
 
     console.log(apiUrl); // Check the constructed URL
     getLandingApi(apiUrl);
@@ -335,47 +339,55 @@ const TnDRequisitionLanding = () => {
                     ]}
                   />
                 </Col>
-                <UserInfoCommonField
-                  form={form}
-                  col={12}
-                  isDepartment={true}
-                  isDesignation={true}
-                />
-                <Col md={12} sm={24}>
-                  <PSelect
-                    options={trainingTypeDDL || []}
-                    name="trainingType"
-                    label="Training Type"
-                    mode="multiple"
-                    onChange={(value, op) => {
-                      setCustomFieldsValue(form, "trainingType", value);
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Training Type is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={12} sm={24}>
-                  <PSelect
-                    options={reqStatusDDL || []}
-                    name="requisitionStatus"
-                    mode="multiple"
-                    disabled={false}
-                    label="Requisition Status"
-                    onChange={(value, op) => {
-                      setCustomFieldsValue(form, "requisitionStatus", value);
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Requisition Status is required",
-                      },
-                    ]}
-                  />
-                </Col>
+                {firstSegment !== "SelfService" && (
+                  <>
+                    <UserInfoCommonField
+                      form={form}
+                      col={12}
+                      isDepartment={true}
+                      isDesignation={true}
+                    />
+                    <Col md={12} sm={24}>
+                      <PSelect
+                        options={trainingTypeDDL || []}
+                        name="trainingType"
+                        label="Training Type"
+                        mode="multiple"
+                        onChange={(value, op) => {
+                          setCustomFieldsValue(form, "trainingType", value);
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Training Type is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={12} sm={24}>
+                      <PSelect
+                        options={reqStatusDDL || []}
+                        name="requisitionStatus"
+                        mode="multiple"
+                        disabled={false}
+                        label="Requisition Status"
+                        onChange={(value, op) => {
+                          setCustomFieldsValue(
+                            form,
+                            "requisitionStatus",
+                            value
+                          );
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Requisition Status is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                  </>
+                )}
                 <Col md={6} sm={24}>
                   <PButton
                     style={{ marginTop: "20px" }}
@@ -393,6 +405,7 @@ const TnDRequisitionLanding = () => {
                     }}
                   />
                 </Col>
+
                 <Col md={6} sm={24}>
                   <PButton
                     style={{ marginTop: "20px" }}

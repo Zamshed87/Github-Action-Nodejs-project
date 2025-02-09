@@ -205,7 +205,6 @@ const MonthlyLeaveReport = () => {
         width: 80,
         fixed: "left",
       },
-
       {
         title: "Employee Name",
         dataIndex: "StrEmployeeName",
@@ -220,7 +219,6 @@ const MonthlyLeaveReport = () => {
         fixed: "left",
         width: 120,
       },
-
       {
         title: "Designation",
         dataIndex: "StrDesignation",
@@ -293,7 +291,7 @@ const MonthlyLeaveReport = () => {
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
                 getapporveStatus(
-                  `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntLeaveTypeId}&employeeId=${rec.IntEmployeeId}`,
+                  `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntApplicationId}&employeeId=${rec.IntEmployeeId}`,
                   () => {
                     setViewModal(true);
                   }
@@ -547,7 +545,7 @@ const MonthlyLeaveReport = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            //scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
@@ -627,6 +625,26 @@ const MonthlyLeaveReport = () => {
                 </Typography.Title>
               </div>
             </div>
+            {apporveStatus?.[0]?.IsApprovedByAdmin && (
+              <div className="d-flex">
+                <div className="d-flex" style={{ marginLeft: "8px" }}>
+                  <Typography.Title level={5} style={{ fontSize: "12px" }}>
+                    Approved By Status:
+                  </Typography.Title>
+                  <Typography.Title
+                    level={5}
+                    style={{
+                      minWidth: "20px",
+                      marginLeft: "5px",
+                      marginTop: "-.5px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {apporveStatus?.[0]?.ApprovedByAdminStatus || 0}
+                  </Typography.Title>
+                </div>
+              </div>
+            )}
             <DataTable
               bordered
               header={modalheader()}

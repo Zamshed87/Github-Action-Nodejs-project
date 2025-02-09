@@ -19,7 +19,6 @@ import {
   SettingOutlined,
   DashboardOutlined,
 } from "@ant-design/icons";
-import PFilter from "utility/filter/PFilter";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import CommonFilter from "common/CommonFilter";
 
@@ -114,7 +113,6 @@ export default function ApprovalList() {
 
   const [form] = Form.useForm();
 
-  console.log("Form", form);
 
   return (
     <>

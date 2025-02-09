@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Spin, Modal } from "antd";
+import { Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
@@ -12,6 +12,9 @@ import CommonFilter from "common/CommonFilter";
 import "./index.css";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
+  columnAdditionDeduction,
+  columnDeposit,
+  columnDisbursment,
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
@@ -33,26 +36,33 @@ import {
   columnsSeparation,
   columnsShiftChange,
 } from "./utils";
+import ApprovalModel from "./ApprovalModel";
+import ViewFormComponent from "./utils/ViewFormComponent";
 
 const CommonApprovalComponent = () => {
+  // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
 
+  // state
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-
   const [data, setData] = useState([]);
+  const [viewData, setViewData] = useState({});
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalAction, setModalAction] = useState(null);
   const [selectedRow, setSelectedRow] = useState([]);
+  const [viewModal, setViewModal] = useState(false);
 
+  // redux
   const { orgId, employeeId, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
+  // fetch data
   useEffect(() => {
     fetchPendingApprovals({
       id,
@@ -64,7 +74,7 @@ const CommonApprovalComponent = () => {
       employeeId,
       setData,
     });
-  }, [id]);
+  }, [id, wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
@@ -74,6 +84,7 @@ const CommonApprovalComponent = () => {
     };
   }, []);
 
+  // handle filter
   const handleFilter = (values) => {
     const { workplace, workplaceGroup } = values;
     fetchPendingApprovals({
@@ -88,6 +99,7 @@ const CommonApprovalComponent = () => {
     });
   };
 
+  // handle approve or reject
   const handleApproveReject = async (isApprove) => {
     const payload = selectedRow.map((key) => {
       const row = data.find((item) => item.id === key?.key);
@@ -122,6 +134,7 @@ const CommonApprovalComponent = () => {
     }
   };
 
+  // show confirmation modal
   const showConfirmationModal = (action) => {
     setModalAction(action);
     setIsModalVisible(true);
@@ -137,6 +150,14 @@ const CommonApprovalComponent = () => {
     setModalAction(null);
   };
 
+  const handleOpen = () => {
+    setViewModal(false);
+  };
+
+  // for view Modal
+  const handleViewClose = () => setViewModal(false);
+
+  // render
   return (
     <div className="approval-container mt-4">
       <div className="d-flex align-items-center justify-content-between">
@@ -182,7 +203,7 @@ const CommonApprovalComponent = () => {
           }}
           header={
             id == 8
-              ? columnsLeave
+              ? columnsLeave(dispatch)
               : id == 15
               ? columnOvertime
               : id == 4
@@ -192,7 +213,7 @@ const CommonApprovalComponent = () => {
               : id == 14
               ? columnsMovement
               : id == 21
-              ? columnsSeparation
+              ? columnsSeparation(setViewData, setViewModal)
               : id == 26
               ? columnsAdvancedSalary
               : id == 3
@@ -219,6 +240,12 @@ const CommonApprovalComponent = () => {
               ? columnsIOUAdjustment
               : id == 25
               ? columnsShiftChange
+              : id == 28
+              ? columnDisbursment
+              : id == 27
+              ? columnDeposit
+              : id == 18
+              ? columnAdditionDeduction
               : columnsDefault
           }
           bordered
@@ -226,16 +253,26 @@ const CommonApprovalComponent = () => {
         />
       )}
 
-      <Modal
-        title="Confirmation"
-        open={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-        okText="Yes"
-        cancelText="No"
-      >
-        <p>Are you sure you want to {modalAction} the selected applications?</p>
-      </Modal>
+      {/* approve or reject confirmation model  */}
+      <ApprovalModel
+        isModalVisible={isModalVisible}
+        handleModalOk={handleModalOk}
+        handleModalCancel={handleModalCancel}
+        modalAction={modalAction}
+      />
+      <ViewFormComponent
+        objProps={{
+          show: viewModal,
+          title: "Separation Details",
+          onHide: handleViewClose,
+          size: "lg",
+          backdrop: "static",
+          classes: "default-modal",
+          handleOpen,
+          viewData,
+          setViewData
+        }}
+      />
     </div>
   );
 };

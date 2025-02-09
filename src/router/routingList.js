@@ -122,6 +122,9 @@ const EvaluationCriteria = lazy(() =>
 const BehavioralFactor = lazy(() =>
   import("../modules/pms/configuration/behavioralFactor/index.jsx")
 );
+const Questionaires = lazy(() =>
+  import("../modules/pms/configuration/behavioralFactor/questionaires")
+);
 const EvaluationCriteriaCreateEdit = lazy(() =>
   import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
 );
@@ -1680,6 +1683,20 @@ const Test = lazy(() =>
   import("../modules/componentModule/peopledeskTable/test.jsx")
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
+// Retirement Module
+const Separation = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/index.jsx")
+);
+const SeparationApplicationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+);
+
+const RetirementViewSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
+);
+const RetirementReleaseSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+);
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -3790,6 +3807,10 @@ export const routingList = [
     component: BehavioralFactor,
   },
   {
+    path: "/pms/configuration/BehavioralFactor/create",
+    component: Questionaires,
+  },
+  {
     path: "/pms/configuration/objective",
     component: PMSObjective,
   },
@@ -4059,6 +4080,28 @@ export const routingList = [
   {
     path: "/administration/timeManagement/flexibleTimesheet",
     component: FlexibleTimeSheet,
+  },
+
+  // Retirement Routes
+  {
+    path: "/retirement/separation",
+    component: Separation,
+  },
+  {
+    path: "/retirement/separation/create",
+    component: SeparationApplicationForm,
+  },
+  {
+    path: "/retirement/separation/edit/:id",
+    component: SeparationApplicationForm,
+  },
+  {
+    path: "/retirement/separation/view/:id",
+    component: RetirementViewSeparationForm,
+  },
+  {
+    path: "/retirement/separation/release/:id",
+    component: RetirementReleaseSeparationForm,
   },
 ];
 

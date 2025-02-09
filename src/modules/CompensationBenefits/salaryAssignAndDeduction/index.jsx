@@ -234,23 +234,21 @@ function SalaryAssignAndDeduction() {
                         e.preventDefault();
                         setLoading(true);
                         const excelLanding = async () => {
-                          // const intMonth = values?.fromMonth
-                          //   ? +values?.fromMonth.split("-")[1]
-                          //   : +modifyMonthResult;
-                          // const intYear = values?.fromMonth
-                          //   ? +values?.fromMonth?.split("-")[0]
-                          //   : initYear;
+                          const intMonth = values?.fromMonth
+                            ? +values?.fromMonth.split("-")[1]
+                            : +modifyMonthResult;
+                          const intYear = values?.fromMonth
+                            ? +values?.fromMonth?.split("-")[0]
+                            : initYear;
                           const fromDate = values?.fromMonth
                             ? `${values?.fromMonth}-01`
                             : monthFirstDate();
 
                           try {
                             const res = await axios.get(
-                              `/Allowance/AdditionAndDeduction/AllAllowance?fromDate=${fromDate}&searchTxt=${
-                                values?.searchString
-                              }&AccountId=${orgId}&WorkplaceGroupId=${wgId}&PageSize=
-                               10000000000000000
-                              &PageNo=${pages?.current || 1}`
+                              `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${
+                                pages?.current || 1
+                              }&PageSize=10000000`
                             );
 
                             if (res?.data?.data?.length < 1) {
