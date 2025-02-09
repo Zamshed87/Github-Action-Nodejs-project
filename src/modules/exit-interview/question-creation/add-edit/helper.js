@@ -47,8 +47,8 @@ export const saveQuestionnaire = async (
       if (
         !obj ||
         !obj?.questionType ||
-        !obj?.questionTitle ||
-        !obj?.expectedAns
+        !obj?.questionTitle
+        // || !obj?.expectedAns
       ) {
         toast.warning("Please fill question fields");
         return;

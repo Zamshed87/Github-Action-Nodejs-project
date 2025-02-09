@@ -313,13 +313,13 @@ const PlanningInfo = ({
           <Col md={6} sm={24}>
             <PInput
               type="text"
-              placeholder="Training Vanue"
-              label="Training Vanue"
+              placeholder="Training Venue"
+              label="Training Venue"
               name="trainingVanue"
               rules={[
                 {
                   required: true,
-                  message: "Training Vanue is required",
+                  message: "Training Venue is required",
                 },
               ]}
             />
