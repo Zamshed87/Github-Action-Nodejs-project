@@ -10,6 +10,7 @@ import administration from "../../assets/images/administration.svg";
 import analystics from "../../assets/images/analystics.svg";
 import approval from "../../assets/images/approval.svg";
 import assetManagement from "../../assets/images/assetManagement.svg";
+import assetRetirement from "../../assets/images/retirement.png";
 import calander from "../../assets/images/calander.svg";
 import employeeSelfService from "../../assets/images/employee-self-service.svg";
 import employeeManagement from "../../assets/images/employeeManagement.svg";
@@ -146,6 +147,9 @@ const Homepage = () => {
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
       image = assetManagement;
+    } else if (label === "Retirement") {
+      to = "/retirement/separation";
+      image = assetRetirement;
     }
     return { to, image };
   };
@@ -188,7 +192,6 @@ const Homepage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);
-
   return (
     <>
       <Formik
