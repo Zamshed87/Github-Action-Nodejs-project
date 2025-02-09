@@ -194,7 +194,7 @@ const EmOverTimeReport = () => {
       {
         title: "Workplace/Concern",
         dataIndex: "workplace",
-        width: 130,
+        width: 100,
         fixed: "left",
       },
       {
@@ -266,7 +266,7 @@ const EmOverTimeReport = () => {
         dataIndex: "Hour Amount Rate",
         sort: false,
         filter: false,
-        width: 100,
+        width: 30,
         fixed: "right",
         render: (_: any, data: any) => {
           return (
