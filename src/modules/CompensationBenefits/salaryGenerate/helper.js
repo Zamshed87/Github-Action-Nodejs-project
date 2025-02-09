@@ -53,7 +53,7 @@ export const getSalaryGenerateRequestLanding = async (
   values
 ) => {
   setLoading && setLoading(true);
-  const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+  const valueArray = values?.workplace?.map((obj) => obj?.value) || [];
   // Joining the values into a string separated by commas
   const workplaceListFromValues = valueArray.join(",");
   const valueArrayHRPosition = values?.hrPosition?.map((obj) => obj.value);
