@@ -25,6 +25,7 @@ import { statusDDL } from "./utils";
 import { Col, Drawer, Form, Row } from "antd";
 import { PButton, PForm, PInput, PSelect } from "Components";
 import moment from "moment";
+import SeparationHistoryview from "./viewForm/SeparationHistoryview";
 
 const paginationSize = 100;
 export const formatDate = (date) => {
@@ -77,7 +78,6 @@ export default function ManagementSeparation() {
   const defaultToDate = moment().endOf("month");
 
   const getData = (pagination, searchText) => {
-
     const fromDate = formatDate(values?.fromDate || defaultFromDate);
     const toDate = formatDate(values?.toDate || defaultToDate);
 
@@ -370,7 +370,7 @@ export default function ManagementSeparation() {
                   );
                 }}
               />
-              <PModal
+              {/* <PModal
                 title="Separation History View"
                 open={openModal}
                 onCancel={() => {
@@ -382,6 +382,17 @@ export default function ManagementSeparation() {
                     type="view"
                     empId={empId}
                   />
+                }
+                width={1000}
+              /> */}
+              <PModal
+                title="Separation History View"
+                open={openModal}
+                onCancel={() => {
+                  setOpenModal(false);
+                }}
+                components={
+                  <SeparationHistoryview id={id} type="view" empId={empId} />
                 }
                 width={1000}
               />
