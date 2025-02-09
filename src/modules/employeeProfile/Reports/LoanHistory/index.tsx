@@ -87,7 +87,7 @@ const EmLoanHistory = () => {
         designationIdList: formatFilterValueList(values?.designation),
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        toDate: moment(values?.todate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         minimumAmount: 0,
         maximumAmount: 0,
         applicationStatus: "",
@@ -127,7 +127,7 @@ const EmLoanHistory = () => {
     {
       title: "Work. Group/Location",
       dataIndex: "strWorkPlaceGroupName",
-      width: 120,
+      width: 80,
       fixed: "left",
     },
     {
@@ -139,10 +139,9 @@ const EmLoanHistory = () => {
     {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
-      width: 35,
+      width: 80,
       fixed: "left",
     },
-
     {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
@@ -155,19 +154,19 @@ const EmLoanHistory = () => {
         );
       },
       fixed: "left",
-      width: 60,
+      width: 150,
     },
     {
       title: "Designation",
       dataIndex: "strDesignation",
 
-      width: 70,
+      width: 80,
     },
     {
       title: "Department",
       dataIndex: "strDepartment",
 
-      width: 70,
+      width: 80,
     },
     {
       title: "Application Date",
@@ -194,6 +193,7 @@ const EmLoanHistory = () => {
           <span>{record?.loanType}</span>
         </div>
       ),
+      width: 100,
     },
     {
       title: "Loan Amount",
@@ -203,11 +203,12 @@ const EmLoanHistory = () => {
           <span>BDT {record?.loanAmount}</span>
         </>
       ),
+      width: 80,
     },
     {
       title: "Installment",
       dataIndex: "numberOfInstallment",
-      width: 30,
+      width: 50,
     },
     {
       title: "Approval",
@@ -227,7 +228,7 @@ const EmLoanHistory = () => {
           </div>
         </div>
       ),
-      width: 50,
+      width: 100,
     },
     {
       title: "Status",
@@ -247,7 +248,7 @@ const EmLoanHistory = () => {
           </div>
         </div>
       ),
-      width: 50,
+      width: 100,
     },
   ];
   const searchFunc = debounce((value) => {
@@ -293,7 +294,7 @@ const EmLoanHistory = () => {
                 designationIdList: formatFilterValueList(values?.designation),
                 employeeId: 0,
                 fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-                toDate: moment(values?.todate).format("YYYY-MM-DD"),
+                toDate: moment(values?.toDate).format("YYYY-MM-DD"),
                 minimumAmount: 0,
                 maximumAmount: 0,
                 applicationStatus: "",
@@ -354,7 +355,7 @@ const EmLoanHistory = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            //scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

@@ -298,8 +298,7 @@ const SeparationReport = () => {
     {
       title: "Separation Type",
       dataIndex: "strSeparationTypeName",
-      width: 80,
-
+      width: 100,
       render: (_: any, item: any) => {
         return (
           <div className="d-flex align-items-center">
@@ -360,12 +359,12 @@ const SeparationReport = () => {
               <Tag color="red">Rejected</Tag>
             )}
             {rec?.approvalStatus === "Released" && (
-              <Tag color="secondary">Released</Tag>
+              <Tag color="blue">Released</Tag>
             )}
           </div>
         </div>
       ),
-      width: 80,
+      width: 120,
     },
   ];
   const searchFunc = debounce((value) => {
@@ -591,7 +590,7 @@ const SeparationReport = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            //scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

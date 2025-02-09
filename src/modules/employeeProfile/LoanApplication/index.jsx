@@ -39,10 +39,17 @@ const initData = {
 
 const EmLoanApplication = () => {
   const dispatch = useDispatch();
+  const isSelf = window.location.pathname.includes("SelfService")
+    ? true
+    : false;
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(
+      setFirstLevelNameAction(
+        isSelf ? "Employee Self Service" : "Employee Management"
+      )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    document.title = "Loan Request";
+    document.title = isSelf ? "Self-Loan Request" : "Loan Request";
   }, []);
   const [show, setShow] = useState(false);
   const [fileId, setFileId] = useState("");
@@ -69,7 +76,9 @@ const EmLoanApplication = () => {
       buId,
       wgId,
       values,
-      setRowDto
+      setRowDto,
+      employeeId,
+      isSelf
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
@@ -90,7 +99,7 @@ const EmLoanApplication = () => {
     <>
       <>
         {(loadingOnGetLoanLanding || loading) && <Loading />}
-        {permission?.isView ? (
+        {(!isSelf && permission?.isView) || isSelf ? (
           <div className="table-card">
             <div
               className="table-card-heading"
@@ -98,47 +107,48 @@ const EmLoanApplication = () => {
             >
               <div></div>
               <div className="table-card-head-right">
-                <ul>
-                  {values?.search && (
+                {!isSelf && (
+                  <ul>
+                    {values?.search && (
+                      <li>
+                        <ResetButton
+                          title="reset"
+                          icon={
+                            <SettingsBackupRestoreOutlined
+                              sx={{ marginRight: "10px" }}
+                            />
+                          }
+                          onClick={() => {
+                            setFieldValue("search", "");
+                            setFieldValue("status", "");
+                            setFieldValue("loanStatus", "");
+                            setRowDto(loanRequestLanding);
+                          }}
+                        />
+                      </li>
+                    )}
                     <li>
-                      <ResetButton
-                        title="reset"
-                        icon={
-                          <SettingsBackupRestoreOutlined
-                            sx={{ marginRight: "10px" }}
-                          />
-                        }
-                        onClick={() => {
+                      <MasterFilter
+                        isHiddenFilter
+                        width="200px"
+                        inputWidth="200px"
+                        value={values?.search}
+                        setValue={(value) => {
+                          setFieldValue("search", value);
+                          onFilterLoanApplication(
+                            value,
+                            loanRequestLanding,
+                            setRowDto
+                          );
+                        }}
+                        cancelHandler={() => {
                           setFieldValue("search", "");
-                          setFieldValue("status", "");
-                          setFieldValue("loanStatus", "");
                           setRowDto(loanRequestLanding);
                         }}
                       />
                     </li>
-                  )}
-                  <li>
-                    <MasterFilter
-                      isHiddenFilter
-                      width="200px"
-                      inputWidth="200px"
-                      value={values?.search}
-                      setValue={(value) => {
-                        setFieldValue("search", value);
-                        onFilterLoanApplication(
-                          value,
-                          loanRequestLanding,
-                          setRowDto
-                        );
-                      }}
-                      cancelHandler={() => {
-                        setFieldValue("search", "");
-                        setRowDto(loanRequestLanding);
-                      }}
-                    />
-                  </li>
-                </ul>
-
+                  </ul>
+                )}
                 <PrimaryButton
                   type="button"
                   className="btn btn-default flex-center"
@@ -149,7 +159,7 @@ const EmLoanApplication = () => {
                     />
                   }
                   onClick={() => {
-                    if (!permission?.isCreate)
+                    if (!isSelf && !permission?.isCreate)
                       return toast.warn("You don't have permission");
                     setShow(true);
                   }}
@@ -204,7 +214,9 @@ const EmLoanApplication = () => {
                         buId,
                         wgId,
                         values,
-                        setRowDto
+                        setRowDto,
+                        employeeId,
+                        isSelf
                       );
                     }}
                   >
@@ -229,7 +241,9 @@ const EmLoanApplication = () => {
                           buId,
                           wgId,
                           values,
-                          setRowDto
+                          setRowDto,
+                          employeeId,
+                          isSelf
                         ),
                       employeeId,
                       orgId,
@@ -239,7 +253,8 @@ const EmLoanApplication = () => {
                       paginationSize,
                       buId,
                       wgId,
-                      setLoading
+                      setLoading,
+                      isSelf
                     )}
                     onRowClick={(rowData) => {
                       setSingleLoanApplication(
@@ -293,13 +308,16 @@ const EmLoanApplication = () => {
               buId,
               wgId,
               values,
-              setRowDto
+              setRowDto,
+              employeeId,
+              isSelf
             );
           }}
           setShow={setShow}
           fileId={fileId}
           setFileId={setFileId}
           setSingleData={setSingleData}
+          isSelf={isSelf}
         />
       </ViewModal>
       <ViewModal
