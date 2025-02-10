@@ -389,7 +389,6 @@ const MonthlyInOutReport = () => {
                       values?.designation?.length > 0 ? desigList : 0
                     }`
                   );
-
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
