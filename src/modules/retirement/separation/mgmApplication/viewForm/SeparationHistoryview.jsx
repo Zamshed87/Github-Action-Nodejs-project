@@ -5,8 +5,11 @@ import { gray700 } from "utility/customColor";
 import profileImg from "../../../../../assets/images/profile.jpg";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { shallowEqual, useSelector } from "react-redux";
+import Loading from "common/loading/Loading";
+import Chips from "common/Chips";
+import { PButton } from "Components";
 
-function SeparationHistoryview({ id, type, empId }) {
+function SeparationHistoryview({ id, type, empId, singleSeparationData }) {
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -23,16 +26,17 @@ function SeparationHistoryview({ id, type, empId }) {
         }
       );
     }
-  });
-
+  }, [id]);
+  console.log(singleSeparationData);
   return (
     <>
+      {loading && <Loading />}
       {empBasic && (
         <div>
           <div
             style={{
               fontWeight: "bold",
-              fontSize: "16px",
+              fontSize: "12.5px",
               color: gray700,
               marginBottom: "10px",
             }}
@@ -88,7 +92,7 @@ function SeparationHistoryview({ id, type, empId }) {
                       </span>{" "}
                     </h4>
                   </div>
-                  <div className="employee-info-div" style={{ width: "550px" }}>
+                  <div className="employee-info-div" style={{ width: "500px" }}>
                     <div>
                       <div className="single-info">
                         <p
@@ -256,8 +260,53 @@ function SeparationHistoryview({ id, type, empId }) {
                   </div>
                 </div>
               </div>
-              <div>
-                <div className="single-info">status</div>
+              <div style={{ minWidth: "340px" }}>
+                <br />
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <span style={{ fontSize: "13.5px" }}>Status:</span>&nbsp;
+                    {
+                      <>
+                        {singleSeparationData?.approvalStatus === "Approve" && (
+                          <Chips label="Approved" classess="success p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus === "Pending" && (
+                          <Chips label="Pending" classess="warning p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus === "Process" && (
+                          <Chips label="Process" classess="primary p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus === "Reject" && (
+                          <Chips label="Rejected" classess="danger p-2 mr-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Released" && (
+                          <Chips label="Released" classess="indigo p-2 mr-2" />
+                        )}
+                      </>
+                    }
+                  </div>
+                  <div>
+                    <PButton
+                      type="primary"
+                      content={
+                        <div style={{ fontSize: "10px" }}>
+                          Charge Handed Over
+                        </div>
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="d-flex justify-content-end mt-2">
+                  <div>
+                    <PButton
+                      type="primary"
+                      content={
+                        <div style={{ fontSize: "10px" }}>Exit Interview</div>
+                      }
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

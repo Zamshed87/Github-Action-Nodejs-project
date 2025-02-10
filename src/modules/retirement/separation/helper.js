@@ -134,7 +134,8 @@ export const separationApplicationLandingTableColumn = (
   setOpenModal,
   permission,
   setId,
-  setEmpId
+  setEmpId,
+  setSingleSeparationData
 ) => {
   return [
     {
@@ -337,6 +338,7 @@ export const separationApplicationLandingTableColumn = (
                   e.stopPropagation();
                   setId(item?.separationId);
                   setEmpId(item?.intEmployeeId);
+                  setSingleSeparationData(item);
                   setOpenModal(true);
                 }}
               />
