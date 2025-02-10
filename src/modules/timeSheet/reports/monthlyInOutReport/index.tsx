@@ -50,8 +50,8 @@ const MonthlyInOutReport = () => {
   );
 
   const decodedToken = tokenData
-  ? JSON.parse(atob(tokenData.split(".")[1]))
-  : null;
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
 
   // menu permission
   const employeeFeature: any = permission;
@@ -374,14 +374,21 @@ const MonthlyInOutReport = () => {
                     ).format("YYYY-MM-DD")}&employeeId=0&workplaceGroupId=${
                       values?.workplaceGroup?.value || wgId
                     }&WorkplaceList=${
-                      values?.workplace?.value || wId
+                      values?.workplace?.value == 0 ||
+                      values?.workplace?.value == undefined
+                        ? decodedToken.workplaceList
+                        : values?.workplace?.value.toString()
+                    }&WorkplaceGroupList=${
+                      values?.workplaceGroup?.value == 0 ||
+                      values?.workplaceGroup?.value == undefined
+                        ? decodedToken.workplaceGroupList
+                        : values?.workplaceGroup?.value.toString()
                     }&pageNo=1&pageSize=1000&isPaginated=false&businessUnitId=${buId}&departments=${
-                      values?.department?.length > 0 ? deptList : ""
+                      values?.department?.length > 0 ? deptList : 0
                     }&designations=${
-                      values?.designation?.length > 0 ? desigList : ""
+                      values?.designation?.length > 0 ? desigList : 0
                     }`
                   );
-
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
