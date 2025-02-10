@@ -20,7 +20,6 @@ import {
   separationApplicationLandingTableColumn,
 } from "../helper";
 import { PModal } from "Components/Modal";
-import ManagementSeparationHistoryView from "./viewForm/ManagementSeparationHistoryView";
 import { statusDDL } from "./utils";
 import { Col, Drawer, Form, Row } from "antd";
 import { PButton, PForm, PInput, PSelect } from "Components";
@@ -61,7 +60,6 @@ export default function ManagementSeparation() {
   const [openModal, setOpenModal] = useState(false);
   const [id, setId] = useState(null);
   const [empId, setEmpId] = useState(null);
-  const [singleSeparationData, setSingleSeparationData] = useState(null);
 
   // landing
   const [rowDto, setRowDto] = useState([]);
@@ -350,8 +348,7 @@ export default function ManagementSeparation() {
                   setOpenModal,
                   permission,
                   setId,
-                  setEmpId,
-                  setSingleSeparationData
+                  setEmpId
                 )}
                 pages={pages}
                 rowDto={rowDto}
@@ -371,35 +368,13 @@ export default function ManagementSeparation() {
                   );
                 }}
               />
-              {/* <PModal
-                title="Separation History View"
-                open={openModal}
-                onCancel={() => {
-                  setOpenModal(false);
-                }}
-                components={
-                  <ManagementSeparationHistoryView
-                    id={id}
-                    type="view"
-                    empId={empId}
-                  />
-                }
-                width={1000}
-              /> */}
               <PModal
                 title="Separation History View"
                 open={openModal}
                 onCancel={() => {
                   setOpenModal(false);
                 }}
-                components={
-                  <SeparationHistoryview
-                    id={id}
-                    type="view"
-                    empId={empId}
-                    singleSeparationData={singleSeparationData}
-                  />
-                }
+                components={<SeparationHistoryview id={id} />}
                 width={1000}
               />
             </>

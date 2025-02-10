@@ -1,33 +1,105 @@
+import { FilePresentOutlined } from "@mui/icons-material";
 import { APIUrl } from "App";
+import Chips from "common/Chips";
+import Loading from "common/loading/Loading";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { DataTable, PButton } from "Components";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { gray700 } from "utility/customColor";
-import profileImg from "../../../../../assets/images/profile.jpg";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { shallowEqual, useSelector } from "react-redux";
-import Loading from "common/loading/Loading";
-import Chips from "common/Chips";
-import { PButton } from "Components";
+import { dateFormatter } from "utility/dateFormatter";
+import profileImg from "../../../../../assets/images/profile.jpg";
+import { getSeparationLandingById } from "../../helper";
 
-function SeparationHistoryview({ id, type, empId, singleSeparationData }) {
+function SeparationHistoryview({ id }) {
+  //Redux Data
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  const [, getApprovalListData, loading] = useAxiosGet();
+  const dispatch = useDispatch();
+
+  //Api Hooks
+  const [, getApprovalListData] = useAxiosGet();
+
+  //States
   const [empBasic, setEmpBasic] = useState({});
+  const [singleSeparationData, setSingleSeparationData] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  //Table Header
+  const header = [
+    {
+      title: "Separation Type",
+      dataIndex: "strSeparationTypeName",
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Application Date",
+      dataIndex: "dteSeparationDate",
+      render: (data) => <>{data ? dateFormatter(data) : "N/A"}</>,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "Last Working Date",
+      dataIndex: "dteLastWorkingDate",
+      render: (data) => <>{data ? dateFormatter(data) : "N/A"}</>,
+      width: 150,
+      fixed: "left",
+    },
+    {
+      title: "",
+      dataIndex: "docArr",
+      render: (data) =>
+        data?.length > 0
+          ? data.map((item, index) => (
+              <p
+                style={{
+                  margin: "6px 0 0",
+                  fontWeight: "400",
+                  fontSize: "12px",
+                  lineHeight: "18px",
+                  color: "#009cde",
+                  cursor: "pointer",
+                }}
+                key={index}
+              >
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(getDownlloadFileView_Action(item));
+                  }}
+                >
+                  <>
+                    <FilePresentOutlined /> {`Attachment_${index + 1}`}
+                  </>
+                </span>
+              </p>
+            ))
+          : "-",
+      width: 150,
+      fixed: "left",
+    },
+  ];
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
       getApprovalListData(
         `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
         (res) => {
           setEmpBasic(res);
+          setLoading(false);
         }
       );
+      getSeparationLandingById(id, setSingleSeparationData, setLoading);
     }
   }, [id]);
-  console.log(singleSeparationData);
+
   return (
     <>
       {loading && <Loading />}
@@ -309,6 +381,35 @@ function SeparationHistoryview({ id, type, empId, singleSeparationData }) {
                 </div>
               </div>
             </div>
+          </div>
+          <DataTable
+            bordered
+            data={singleSeparationData ? [singleSeparationData] : []}
+            header={header}
+          />
+          <div style={{ marginTop: "10px" }}>
+            <DataTable
+              bordered
+              data={singleSeparationData ? [singleSeparationData] : []}
+              header={[
+                {
+                  title: "Application",
+                  dataIndex: "fullReason",
+                  render: (data) => (
+                    <>
+                      <small
+                        style={{ fontSize: "12px", lineHeight: "1.5" }}
+                        dangerouslySetInnerHTML={{
+                          __html: data,
+                        }}
+                      />
+                    </>
+                  ),
+                  width: 150,
+                  fixed: "left",
+                },
+              ]}
+            />
           </div>
         </div>
       )}
