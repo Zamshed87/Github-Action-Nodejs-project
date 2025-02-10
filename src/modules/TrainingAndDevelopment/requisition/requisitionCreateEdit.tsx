@@ -111,7 +111,7 @@ const TnDRequisitionCreateEdit = () => {
       `/TrainingRequisition/Training/TrainingRequisition/UpComming?status=0,1&fromDate=${fromDate}&toDate=${toDate}`
     );
     getEnumData("RequisitionStatus", setReqStatus);
-    if (type === "edit" && data?.status?.value == 2) {
+    if (type === "edit" && data?.status?.value == 1) {
       setUpcommi(true);
     }
   }, [profileData?.buId, profileData?.wgId]);
@@ -294,7 +294,7 @@ const TnDRequisitionCreateEdit = () => {
                   <PSelect
                     options={reqStatusDDL || []}
                     name="requisitionStatus"
-                    disabled={false}
+                    disabled={firstSegment === "SelfService" && type === "edit"}
                     label="Requisition Status"
                     placeholder="Requisition Status"
                     onChange={(value, op) => {
@@ -319,6 +319,7 @@ const TnDRequisitionCreateEdit = () => {
               {type === "edit" && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
+                    disabled={firstSegment === "SelfService" && type === "edit"}
                     options={upcommingTrainingDDL || []}
                     name="upcommingTraining"
                     label="Upcomming Training"

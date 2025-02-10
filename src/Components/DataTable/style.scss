@@ -40,7 +40,7 @@
               border: 1px solid rgba(166, 159, 161, 0.5);
               box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
               border-radius: 50%;
-              opacity: 0;
+              opacity: 1;
               transition: 0.3s;
               color: var(--gray600);
               display: flex;
@@ -105,7 +105,7 @@
 // Table Button Style
 .PTableButton {
   cursor: pointer;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.1s ease-in-out;
   display: inline-flex;
   .anticon {
