@@ -22,7 +22,11 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import { CreateSeparation, deleteSeparationAttachment, UpdateSeparation } from "../../helper";
+import {
+  CreateSeparation,
+  deleteSeparationAttachment,
+  UpdateSeparation,
+} from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
@@ -392,10 +396,9 @@ export default function SeparationApplicationForm() {
                           classes="input-sm"
                           value={values?.lastWorkingDay}
                           min={
-                            values?.separationType?.label?.toLowerCase() ===
-                            "termination"
-                              ? ""
-                              : lastWorkingDay || values?.applicationDate
+                            values?.applicationDate
+                              ? dateFormatterForInput(values?.applicationDate)
+                              : lastWorkingDay
                           }
                           onChange={(e) => {
                             setFieldValue("lastWorkingDay", e.target.value);

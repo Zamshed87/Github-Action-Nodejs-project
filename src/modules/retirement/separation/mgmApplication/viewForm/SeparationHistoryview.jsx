@@ -12,6 +12,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 import profileImg from "../../../../../assets/images/profile.jpg";
 import { getSeparationLandingById } from "../../helper";
+import { Popover } from "antd";
 
 function SeparationHistoryview({ id }) {
   //Redux Data
@@ -23,6 +24,7 @@ function SeparationHistoryview({ id }) {
 
   //Api Hooks
   const [, getApprovalListData] = useAxiosGet();
+  const [handoverData, getHandoverData] = useAxiosGet();
 
   //States
   const [empBasic, setEmpBasic] = useState({});
@@ -359,14 +361,26 @@ function SeparationHistoryview({ id }) {
                     }
                   </div>
                   <div>
-                    <PButton
-                      type="primary"
-                      content={
-                        <div style={{ fontSize: "10px" }}>
-                          Charge Handed Over
-                        </div>
-                      }
-                    />
+                    <Popover
+                      content={<div>Lorem ipsum</div>}
+                      title="Charge Handed Over"
+                      trigger="click"
+                      placement="left"
+                    >
+                      <PButton
+                        type="primary"
+                        content={
+                          <div style={{ fontSize: "10px" }}>
+                            Charge Handed Over
+                          </div>
+                        }
+                        onClick={() => {
+                          if (id) {
+                            getHandoverData();
+                          }
+                        }}
+                      />
+                    </Popover>
                   </div>
                 </div>
                 <div className="d-flex justify-content-end mt-2">
