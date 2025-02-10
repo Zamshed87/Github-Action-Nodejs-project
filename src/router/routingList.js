@@ -1674,10 +1674,6 @@ const Separation = lazy(() =>
 const SeparationApplicationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
 );
-
-const RetirementViewSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
-);
 const RetirementReleaseSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
 );
@@ -4012,10 +4008,6 @@ export const routingList = [
   {
     path: "/retirement/separation/edit/:id",
     component: SeparationApplicationForm,
-  },
-  {
-    path: "/retirement/separation/view/:id",
-    component: RetirementViewSeparationForm,
   },
   {
     path: "/retirement/separation/release/:id",
