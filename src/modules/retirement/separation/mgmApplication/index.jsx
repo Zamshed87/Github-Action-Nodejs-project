@@ -61,6 +61,7 @@ export default function ManagementSeparation() {
   const [openModal, setOpenModal] = useState(false);
   const [id, setId] = useState(null);
   const [empId, setEmpId] = useState(null);
+  const [singleSeparationData, setSingleSeparationData] = useState(null);
 
   // landing
   const [rowDto, setRowDto] = useState([]);
@@ -156,7 +157,6 @@ export default function ManagementSeparation() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
-
   return (
     <>
       {loading && <Loading />}
@@ -350,7 +350,8 @@ export default function ManagementSeparation() {
                   setOpenModal,
                   permission,
                   setId,
-                  setEmpId
+                  setEmpId,
+                  setSingleSeparationData
                 )}
                 pages={pages}
                 rowDto={rowDto}
@@ -392,7 +393,12 @@ export default function ManagementSeparation() {
                   setOpenModal(false);
                 }}
                 components={
-                  <SeparationHistoryview id={id} type="view" empId={empId} />
+                  <SeparationHistoryview
+                    id={id}
+                    type="view"
+                    empId={empId}
+                    singleSeparationData={singleSeparationData}
+                  />
                 }
                 width={1000}
               />
