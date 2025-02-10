@@ -24,7 +24,7 @@ function SeparationHistoryview({ id }) {
 
   //Api Hooks
   const [, getApprovalListData] = useAxiosGet();
-  const [handoverData, getHandoverData] = useAxiosGet();
+  const [handoverData, getHandoverData, handoverloading] = useAxiosGet();
 
   //States
   const [empBasic, setEmpBasic] = useState({});
@@ -362,10 +362,41 @@ function SeparationHistoryview({ id }) {
                   </div>
                   <div>
                     <Popover
-                      content={<div>Lorem ipsum</div>}
+                      content={
+                        <DataTable
+                          bordered
+                          data={handoverData.data ? handoverData.data : []}
+                          loading={handoverloading}
+                          header={[
+                            {
+                              title: "Charge Handed Over To",
+                              dataIndex: "strEmployeeName",
+                              fixed: "left",
+                            },
+                            {
+                              title: "Designation",
+                              dataIndex: "strDesignation",
+                              fixed: "left",
+                            },
+                            {
+                              title: "Department",
+                              dataIndex: "strDesignation",
+                              fixed: "left",
+                            },
+                            {
+                              title: "Comment",
+                              dataIndex: "comment",
+                              fixed: "left",
+                            },
+                          ]}
+                        />
+                      }
                       title="Charge Handed Over"
                       trigger="click"
                       placement="left"
+                      overlayStyle={{
+                        width: "600px",
+                      }}
                     >
                       <PButton
                         type="primary"
@@ -376,7 +407,12 @@ function SeparationHistoryview({ id }) {
                         }
                         onClick={() => {
                           if (id) {
-                            getHandoverData();
+                            getHandoverData(
+                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`,
+                              () => {
+                                setLoading(false);
+                              }
+                            );
                           }
                         }}
                       />
