@@ -252,7 +252,7 @@ export const SecurityDisbursementLanding = () => {
 
     {
       title: "Total Deposits Money",
-      dataIndex: "totalDepositsMoney",
+      dataIndex: "totalBalance",
       width: 100,
     },
 
