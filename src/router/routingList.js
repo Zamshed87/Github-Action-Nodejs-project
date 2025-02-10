@@ -1560,6 +1560,7 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import { NewLeavePolicy } from "modules/leaveMovement/configuration/newLeavePolicy";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1672,14 +1673,18 @@ const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
 );
 
 const RetirementViewSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
 );
 
 export const routingList = [
@@ -2118,6 +2123,10 @@ export const routingList = [
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/edit/:id",
     component: CreateEditLeavePolicy,
+  },
+  {
+    path: "/administration/leaveandmovement/newPolicy",
+    component: NewLeavePolicy,
   },
   {
     path: "/administration/timeManagement/holidaySetup",
