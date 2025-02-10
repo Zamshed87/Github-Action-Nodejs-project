@@ -1200,6 +1200,7 @@ export const columnForHeadOffice = {
   strEmploymentType: "Employment Type",
   contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strBloodGroup: "Blood Group",
   strEmployeeStatus: "Status",
 };
 export const columnForFinish = {
@@ -1219,6 +1220,7 @@ export const columnForFinish = {
   strEmploymentType: "Employment Type",
   contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strBloodGroup: "Blood Group",
   strEmployeeStatus: "Status",
 };
 
