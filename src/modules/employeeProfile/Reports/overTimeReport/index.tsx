@@ -1,42 +1,26 @@
-import {
-  Avatar,
-  DataTable,
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
-
+import { Avatar, DataTable, PCard, PCardHeader, PForm } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { debounce } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
-// import { column, getTableDataMonthlyAttendance } from "./helper";
-// import { fromToDateList } from "../helper";
-import { numberWithCommas } from "utility/numberWithCommas";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
-import { todayDate } from "utility/todayDate";
 import PFilter from "utility/filter/PFilter";
 import { formatFilterValue } from "utility/filter/helper";
+import { numberWithCommas } from "utility/numberWithCommas";
+import { todayDate } from "utility/todayDate";
 
 const EmOverTimeReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId },
+    profileData: { buId, wgId, orgId },
     tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
@@ -62,17 +46,12 @@ const EmOverTimeReport = () => {
     pageSize: paginationSize,
     total: 0,
   });
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
-  //   api states
-  const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Overtime Report";
-
     () => {
       document.title = "PeopleDesk";
     };
@@ -80,45 +59,6 @@ const EmOverTimeReport = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
   // data call
   type TLandingApi = {
     pagination?: {
@@ -136,9 +76,6 @@ const EmOverTimeReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-
-    console.log(pagination, pages);
-
     landingApi.action({
       urlKey: "OvertimeReport",
       method: "GET",
@@ -147,7 +84,6 @@ const EmOverTimeReport = () => {
         AccountId: orgId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        // WorkplaceId: values?.workplace?.value,
         WorkplaceGroupList:
           values?.workplaceGroup?.value == 0 ||
           values?.workplaceGroup?.value == undefined
@@ -170,9 +106,9 @@ const EmOverTimeReport = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
+
   //   table column
   const header: any = () => {
     return [
@@ -181,26 +117,19 @@ const EmOverTimeReport = () => {
         render: (_: any, rec: any, index: number) =>
           (pages?.current - 1) * pages?.pageSize + index + 1,
         fixed: "left",
-        width: 35,
+        width: 20,
         align: "center",
       },
-
-      //   {
-      //     title: "Work. Group/Location",
-      //     dataIndex: "strWorkplaceGroup",
-      //     width: 120,
-      //     fixed: "left",
-      //   },
       {
         title: "Workplace/Concern",
         dataIndex: "workplace",
-        width: 130,
+        width: 80,
         fixed: "left",
       },
       {
         title: "Employee Id",
         dataIndex: "employeeCode",
-        width: 40,
+        width: 30,
         fixed: "left",
       },
 
@@ -216,7 +145,7 @@ const EmOverTimeReport = () => {
           );
         },
         fixed: "left",
-        width: 100,
+        width: 80,
       },
 
       {
@@ -251,12 +180,12 @@ const EmOverTimeReport = () => {
       {
         title: "Hour",
         dataIndex: "hours",
-        width: 80,
+        width: 40,
       },
       {
         title: "Hour Amount Rate",
         dataIndex: "perHourRate",
-        width: 200,
+        width: 40,
         render: (_: any, data: any) => {
           return <span className="text-right">{data?.perHourRate}</span>;
         },
@@ -266,12 +195,12 @@ const EmOverTimeReport = () => {
         dataIndex: "Hour Amount Rate",
         sort: false,
         filter: false,
-        width: 100,
+        width: 40,
         fixed: "right",
         render: (_: any, data: any) => {
           return (
             <span className="text-right">
-              {numberWithCommas(data?.payAmount)}{" "}
+              {numberWithCommas(data?.payAmount)}
             </span>
           );
         },
@@ -283,12 +212,6 @@ const EmOverTimeReport = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -372,83 +295,6 @@ const EmOverTimeReport = () => {
             }}
           />
           <PFilter form={form} landingApiCall={landingApiCall} />
-          {/* <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  mode="multiple"
-                  maxTagCount={"responsive"}
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody> */}
-
           <DataTable
             bordered
             data={landingApi?.data?.length > 0 ? landingApi?.data : []}
