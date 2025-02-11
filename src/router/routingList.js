@@ -1687,6 +1687,9 @@ const RetirementReleaseSeparationForm = lazy(() =>
     "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
   )
 );
+const SelfServiceSeparation = lazy(() =>
+  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -3269,7 +3272,10 @@ export const routingList = [
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
-
+  {
+    path: "/SelfService/separation/applicationV2",
+    componet: SelfSeparation
+  },
   // Asset Management Start
   {
     path: "/SelfService/asset/assetRequisition",
