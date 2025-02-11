@@ -30,6 +30,7 @@ import { Tooltip } from "@mui/material";
 import axios from "axios";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
 import { getWorkplaceDetails } from "common/api";
+import { monthFirstDate } from "utility/dateFormatter";
 
 const date = new Date();
 const initYear = date.getFullYear(); // 2022
@@ -133,7 +134,8 @@ function SalaryAssignAndDeduction() {
       "",
       pages,
       setPages,
-      wgId
+      wgId,
+      orgId
     );
   };
 
@@ -147,7 +149,8 @@ function SalaryAssignAndDeduction() {
       "",
       pages,
       setPages,
-      wgId
+      wgId,
+      orgId
     );
     getWorkplaceDetails(wId, setBuDetails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -186,7 +189,8 @@ function SalaryAssignAndDeduction() {
         total: pages?.total,
       },
       setPages,
-      wgId
+      wgId,
+      orgId
     );
   };
 
@@ -207,7 +211,8 @@ function SalaryAssignAndDeduction() {
         total: pages?.total,
       },
       setPages,
-      wgId
+      wgId,
+      orgId
     );
   };
 
@@ -235,6 +240,10 @@ function SalaryAssignAndDeduction() {
                           const intYear = values?.fromMonth
                             ? +values?.fromMonth?.split("-")[0]
                             : initYear;
+                          const fromDate = values?.fromMonth
+                            ? `${values?.fromMonth}-01`
+                            : monthFirstDate();
+
                           try {
                             const res = await axios.get(
                               `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${
@@ -326,7 +335,8 @@ function SalaryAssignAndDeduction() {
                             "",
                             pages,
                             setPages,
-                            wgId
+                            wgId,
+                            orgId
                           );
                         }}
                         errors={errors}
@@ -357,7 +367,8 @@ function SalaryAssignAndDeduction() {
                               pageSize: pages?.pageSize,
                             },
                             setPages,
-                            wgId
+                            wgId,
+                            orgId
                           );
                         }, 500);
                       }}
@@ -375,7 +386,8 @@ function SalaryAssignAndDeduction() {
                             pageSize: pages?.pageSize,
                           },
                           setPages,
-                          wgId
+                          wgId,
+                          orgId
                         );
                       }}
                       handleClick={(e) => setFilterAnchorEl(e.currentTarget)}
@@ -479,14 +491,14 @@ function SalaryAssignAndDeduction() {
                         {
                           state: {
                             isView: true,
-                            empId: item?.intEmployeeId,
-                            businessUnitId: item?.intBusinessUnitId,
-                            workplaceGroupId: item?.intWorkplaceGroupId,
+                            empId: item?.employeeId,
+                            businessUnitId: buId,
+                            workplaceGroupId: item?.workplaceGroupId,
                           },
                         }
                       );
                     }}
-                    uniqueKey="intEmployeeId"
+                    uniqueKey="employeeId"
                   />
                 ) : (
                   <>

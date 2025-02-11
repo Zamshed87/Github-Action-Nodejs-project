@@ -144,6 +144,7 @@ type InputTypeMapping = {
   search: InputProps & BaseProps;
   time: InputProps & BaseProps;
   month: PickerProps<Moment> & BaseProps;
+  dateRange: PickerProps<Moment> & BaseProps;
 };
 
 export type InputType = keyof InputTypeMapping;
