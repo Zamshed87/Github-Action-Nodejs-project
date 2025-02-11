@@ -211,18 +211,15 @@ const EmployeePdfLanding = () => {
     let api = "";
     if (orgId === 1) {
       api = `/PdfAndExcelReport/ExportIdCardForMatador?employeeIds=${empId}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=true`;
+      downloadFile(api, "Employee ID Cards", "pdf", setLoading,"get");
     }
     if (orgId === 7) {
-      api = `/PdfAndExcelReport/${
-        isEnglish
-          ? "ExportIdCardForBangjinInEnglish"
-          : "ExportIdCardForBangjinInBangla"
-      }?employeeIds=${empId}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
+      api = `/generate-employee-id-card?employeeIds=${empId}&workplaceId=${wId}&intAccountId=${orgId}&isEnglish=${
         orgId === 7 ? isEnglish : true
       }`;
+      downloadFile(api, "Employee ID Cards", "pdf", setLoading,"post");
     }
 
-    downloadFile(api, "Employee ID Cards", "pdf", setLoading);
   };
   return (
     <PForm
