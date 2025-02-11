@@ -1,5 +1,3 @@
-import { EditOutlined } from "@ant-design/icons";
-import { AddOutlined } from "@mui/icons-material";
 import { DataTable, Flex, PForm } from "Components";
 import { PModal } from "Components/Modal";
 import { Form, Tooltip } from "antd";
@@ -7,7 +5,6 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
@@ -31,7 +28,7 @@ const EvaluationCriteria = () => {
   }, []);
   useEffect(() => {
     getCriteriaList(
-      `/PMS/GetEvaluationCriteria?accountId=${profileData?.intAccountId}`
+      `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,19 +44,15 @@ const EvaluationCriteria = () => {
     },
     {
       title: "Level of Leadership",
-      dataIndex: "participantName",
-    },
-    {
-      title: "Designation",
-      dataIndex: "hrPositionName",
+      dataIndex: "levelOfLeadershipName",
     },
     {
       title: "KPI Score",
-      dataIndex: "hrPositionName",
+      dataIndex: "percentageOfKPI",
     },
     {
       title: "BAR Score",
-      dataIndex: "hrPositionName",
+      dataIndex: "percentageOfBAR",
     },
     {
       title: "Action",
@@ -90,40 +83,7 @@ const EvaluationCriteria = () => {
       align: "center",
     },
   ];
-  const demoData = [
-    {
-      key: "1",
-      participantName: "John Doe",
-      hrPositionName: "Manager",
-      kpiScore: 85,
-      barScore: 90,
-      letterGenerateId: "12345",
-    },
-    {
-      key: "2",
-      participantName: "Jane Smith",
-      hrPositionName: "Senior Developer",
-      kpiScore: 78,
-      barScore: 88,
-      letterGenerateId: "67890",
-    },
-    {
-      key: "3",
-      participantName: "Alice Johnson",
-      hrPositionName: "Team Lead",
-      kpiScore: 92,
-      barScore: 85,
-      letterGenerateId: "11223",
-    },
-    {
-      key: "4",
-      participantName: "Bob Brown",
-      hrPositionName: "Analyst",
-      kpiScore: 80,
-      barScore: 82,
-      letterGenerateId: "44556",
-    },
-  ];
+
   return permission?.isView ? (
     <div className="table-card">
       {/* <div className="table-card-heading justify-content-end">
@@ -150,7 +110,7 @@ const EvaluationCriteria = () => {
         <div className="mt-2">
           <DataTable
             bordered
-            data={demoData || []}
+            data={criteriaList || []}
             header={evaluationCriteriaHeader}
           />
         </div>

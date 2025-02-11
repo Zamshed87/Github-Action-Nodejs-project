@@ -1,31 +1,19 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import Loading from "common/loading/Loading";
-import {
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
-import { useApiRequest } from "Hooks";
+import { PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation, useParams } from "react-router-dom";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { useParams } from "react-router-dom";
 import {
-  formConfig,
   handleEvaluationCriteriaScoreSetting,
   levelOfLeaderApiCall,
   makerFormConfig,
 } from "./helper";
 
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import CommonForm from "modules/pms/CommonForm/commonForm";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { ModalFooter } from "Components/Modal";
+import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
 
 const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data }) => {
@@ -61,7 +49,9 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data }) => {
       <PForm
         form={form}
         initialValues={{
-          leadership: "Management",
+          leadership: data?.levelOfLeadershipName,
+          kpiScore: data?.percentageOfKPI,
+          barScore: data?.percentageOfBAR,
         }}
       >
         <CommonForm formConfig={makerFormConfig()} form={form} />
