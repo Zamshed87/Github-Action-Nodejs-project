@@ -328,6 +328,9 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
+const HiredeskOnboarding = lazy(() =>
+  import("../modules/onboarding/index.js")
+);
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
 );
@@ -1677,10 +1680,14 @@ const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
 );
 const SelfServiceSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
@@ -1793,6 +1800,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/shiftManagement",
     component: ShiftManagement,
+  },
+  {
+    path: "/administration/thirdPartyIntegration/hireDesk",
+    component: HiredeskOnboarding,
   },
   {
     path: "/administration/timeManagement/fixedRosterSetup",
