@@ -23,6 +23,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { gray500, gray700, gray900 } from "utility/customColor";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 
@@ -37,12 +38,13 @@ export default function SelfServiceSeparation() {
 
   // redux
   const {
-    profileData: { buId, wgId, wId },
+    profileData: { buId, wgId, wId, employeeId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   const [SeperationData, getSeperationData] = useAxiosGet();
+  const [, postCancelSeperationData] = useAxiosPost();
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -124,6 +126,22 @@ export default function SelfServiceSeparation() {
               onClick={(e) => {
                 e.stopPropagation();
                 history.push("/SelfService/separation/applicationV2/create");
+              }}
+            />
+          </div>
+          <div
+            className="table-card-heading d-flex justify-content-end"
+            style={{ marginBottom: "20px" }}
+          >
+            <PrimaryButton
+              type="button"
+              className="btn btn-default"
+              label={"Cancel"}
+              icon={<AddOutlined sx={{ marginRight: "11px" }} />}
+              onClick={(e) => {
+                postCancelSeperationData(
+                  `/Separation/CancelSeparation?id=${231}&employeeId=${employeeId}`
+                );
               }}
             />
           </div>
