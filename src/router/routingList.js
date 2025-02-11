@@ -1116,6 +1116,11 @@ const SelfApplicationSeparationForm = lazy(() =>
     "../modules/employeeProfile/separation/selfApplication/addEditForm/index.jsx"
   )
 );
+const SelfServiceSeparationForm = lazy(() =>
+  import(
+    "../modules/employeeProfile/separation/selfApplication/addEditFormV2/index.jsx"
+  )
+);
 const SelfSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/index.jsx")
 );
@@ -3269,12 +3274,16 @@ export const routingList = [
     component: SelfApplicationSeparationForm,
   },
   {
+    path: "/SelfService/separation/applicationV2/create",
+    component: SelfServiceSeparationForm,
+  },
+  {
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
   {
     path: "/SelfService/separation/applicationV2",
-    componet: SelfSeparation
+    component: SelfServiceSeparation,
   },
   // Asset Management Start
   {
