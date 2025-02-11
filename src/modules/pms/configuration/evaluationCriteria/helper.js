@@ -1,15 +1,15 @@
-export const makerFormConfig = (levelOfLeaderApi) => {
+import axios from "axios";
+import { toast } from "react-toastify";
+
+export const makerFormConfig = () => {
   return [
     {
-      type: "ddl",
+      type: "text",
       label: "Level of Leadership",
       varname: "leadership",
       placeholder: "Select the leadership",
-      ddl: levelOfLeaderApi || [],
       rules: [{ required: true, message: "Level of Leadership is required!" }],
-      onChange: (value, op) => {
-        console.log(value, op, "adnantest");
-      },
+      disabled: true,
       col: 12,
     },
     {
@@ -29,4 +29,56 @@ export const makerFormConfig = (levelOfLeaderApi) => {
       rules: [{ required: true, message: "BAR Score is required!" }],
     },
   ];
+};
+
+export const levelOfLeaderApiCall = async (
+  intAccountId,
+  setState,
+  setLoading
+) => {
+  try {
+    setLoading && setLoading(true);
+    const { data } = await axios.get(
+      `/SaasMasterData/GetAllMasterPosition?accountId=${intAccountId}`
+    );
+
+    const formattedData = data.map((item) => ({
+      label: item?.strPositionGroupName,
+      value: item?.intPositionGroupId,
+    }));
+
+    setState(formattedData || []); // Return the transformed data if needed
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.error("Error fetching master positions:", error);
+    setLoading && setLoading(false);
+  }
+};
+
+export const handleEvaluationCriteriaScoreSetting = async (
+  form,
+  profileData,
+  setLoading,
+  cb
+) => {
+  setLoading && setLoading(true);
+  const values = form.getFieldsValue(true);
+  const payload = {
+    scoreScaleId: values?.id,
+    accountId: profileData?.intAccountId,
+    percentageOfKPI: values?.kpiScore,
+    percentageOfBAR: values?.barScore,
+    actionBy: profileData?.employeeId,
+    positionGroupId: values?.leadership,
+  };
+  try {
+    const res = await axios.post(`/PMS/SaveKpiMapping`, payload);
+    cb && cb();
+    toast.success(res?.data?.message);
+    setLoading && setLoading(false);
+    form.resetFields();
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    setLoading && setLoading(false);
+  }
 };

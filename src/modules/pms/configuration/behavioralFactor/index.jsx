@@ -124,25 +124,6 @@ const BehavioralFactor = () => {
   ];
   return permission?.isView ? (
     <div className="table-card">
-      <div className="table-card-heading justify-content-end">
-        <ul className="d-flex flex-wrap">
-          <ul className="d-flex flex-wrap">
-            <li>
-              <PrimaryButton
-                type="button"
-                className="btn btn-default flex-center"
-                label={"Create"}
-                icon={<AddOutlined sx={{ marginRight: "11px" }} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // history.push("/pms/configuration/EvaluationCriteria/create");
-                  setIsScoreSettings(() => ({ open: true, type: "EC" }));
-                }}
-              />
-            </li>
-          </ul>
-        </ul>
-      </div>
       {criteriaListLoader && <Loading />}
       <PForm form={form}>
         <div className="mt-2">

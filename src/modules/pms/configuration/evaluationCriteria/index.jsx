@@ -20,7 +20,7 @@ const EvaluationCriteria = () => {
     type: "",
   });
   const [form] = Form.useForm();
-  // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
+  const [rowData, setRowData] = useState({});
   const { profileData } = useSelector((state) => state?.auth, shallowEqual);
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
@@ -67,22 +67,23 @@ const EvaluationCriteria = () => {
       render: (generateId, rec) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title={"Edit"}>
-            <EditOutlined
+            <button
               style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
+                height: "24px",
+                fontSize: "12px",
+                padding: "0px 12px 0px 12px",
+                backgroundColor: "var(--green)",
+                color: "white",
               }}
+              className="btn"
+              type="button"
               onClick={() => {
-                // setEditMode(true);
-                // form.setFieldsValue({
-                //   leadership: rec?.participantName,
-                //   age: rec?.kpiScore,
-                //   department: rec?.hrPositionName,
-                // });
+                setRowData(rec);
+                setIsScoreSettings(() => ({ open: true, type: "EC" }));
               }}
-            />
+            >
+              Score Setup
+            </button>
           </Tooltip>
         </Flex>
       ),
@@ -125,7 +126,7 @@ const EvaluationCriteria = () => {
   ];
   return permission?.isView ? (
     <div className="table-card">
-      <div className="table-card-heading justify-content-end">
+      {/* <div className="table-card-heading justify-content-end">
         <ul className="d-flex flex-wrap">
           <ul className="d-flex flex-wrap">
             <li>
@@ -143,7 +144,7 @@ const EvaluationCriteria = () => {
             </li>
           </ul>
         </ul>
-      </div>
+      </div> */}
       {criteriaListLoader && <Loading />}
       <PForm form={form}>
         <div className="mt-2">
@@ -163,6 +164,7 @@ const EvaluationCriteria = () => {
             <CreateEdit
               isScoreSettings={isScoreSettings}
               setIsScoreSettings={setIsScoreSettings}
+              data={rowData}
             />
           }
           width={1000}
