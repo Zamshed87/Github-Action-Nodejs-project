@@ -121,18 +121,18 @@ export const NewLeavePolicy = () => {
 
   const getLeaveTypes = () => {
     leaveTypeApi?.action({
-      urlKey: "newLanding",
+      urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
+        DDLType: "LeaveType",
+        BusinessUnitId: buId,
+        intId: 0,
+        WorkplaceGroupId: wgId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
+          res[i].label = item?.LeaveType;
+          res[i].value = item?.LeaveTypeId;
         });
       },
     });
@@ -497,10 +497,12 @@ export const NewLeavePolicy = () => {
                   }}
                 />
               </Col> */}
-              <Col md={12} sm={24}>
+              <Col md={6} sm={24}>
                 <PSelect
                   mode="multiple"
-                  options={leaveTypeApi?.data || []}
+                  options={
+                    leaveTypeApi?.data?.length > 0 ? leaveTypeApi?.data : []
+                  }
                   name="leaveType"
                   label=" Leave Type"
                   placeholder="  Leave Type"
@@ -519,7 +521,7 @@ export const NewLeavePolicy = () => {
                   ]}
                 />
               </Col>
-              <Col md={12} sm={24}>
+              <Col md={6} sm={24}>
                 <PSelect
                   //   mode="multiple"
                   options={[
