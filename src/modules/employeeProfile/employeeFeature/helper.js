@@ -129,6 +129,7 @@ export const createEditEmpAction = async (
       intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
       nid: values?.nid || "",
+      jobApplicationId: values?.jobApplicationId,
       tinNo: values?.tinNo || "",
       strOTbasedon: values?.strOTbasedon?.value || "",
       intOTFixedHour: +values?.intOTFixedHour || 0,
