@@ -52,6 +52,7 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data }) => {
           leadership: data?.levelOfLeadershipName,
           kpiScore: data?.percentageOfKPI,
           barScore: data?.percentageOfBAR,
+          id: data?.scoreScaleId,
         }}
       >
         <CommonForm formConfig={makerFormConfig()} form={form} />
