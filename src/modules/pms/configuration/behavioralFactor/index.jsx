@@ -61,7 +61,7 @@ const BehavioralFactor = () => {
           <Tooltip placement="bottom" title={"Add Questionnaires"}>
             <button
               style={{
-                height: "24px",
+                height: "22px",
                 fontSize: "12px",
                 padding: "0px 12px 0px 12px",
                 marginRight: "5px",
@@ -81,7 +81,7 @@ const BehavioralFactor = () => {
           <Tooltip placement="bottom" title={"Clone"}>
             <button
               style={{
-                height: "24px",
+                height: "22px",
                 fontSize: "12px",
                 padding: "0px 12px 0px 12px",
               }}

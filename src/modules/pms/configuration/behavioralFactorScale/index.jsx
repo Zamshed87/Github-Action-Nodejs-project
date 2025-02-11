@@ -21,12 +21,12 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { EditableCell } from "./editableCell";
 
 const originData = Array.from({
-  length: 100,
+  length: 5,
 }).map((_, i) => ({
   key: i.toString(),
-  name: `Edward ${i}`,
-  age: 32,
-  address: `London Park no. ${i}`,
+  factor: `Edward ${i}`,
+  displayName: `Edward King ${i}+2`,
+  scale: 32,
 }));
 const BehavioralFactorScale = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
@@ -57,9 +57,8 @@ const BehavioralFactorScale = () => {
   );
   const edit = (record) => {
     form.setFieldsValue({
-      name: "",
-      age: "",
-      address: "",
+      displayName: "",
+      scale: "",
       ...record,
     });
     setEditingKey(record.key);
@@ -91,21 +90,20 @@ const BehavioralFactorScale = () => {
   };
   const columns = [
     {
-      title: "name",
-      dataIndex: "name",
+      title: "Factor",
+      dataIndex: "factor",
+      width: "25%",
+    },
+    {
+      title: "Display Name",
+      dataIndex: "displayName",
       width: "25%",
       editable: true,
     },
     {
-      title: "age",
-      dataIndex: "age",
-      width: "15%",
-      editable: true,
-    },
-    {
-      title: "address",
-      dataIndex: "address",
-      width: "40%",
+      title: "Scale",
+      dataIndex: "scale",
+      width: "20%",
       editable: true,
     },
     {
@@ -124,8 +122,10 @@ const BehavioralFactorScale = () => {
                   height: "24px",
                   fontSize: "12px",
                   padding: "0px 12px 0px 12px",
+                  backgroundColor: "var(--green)",
+                  color: "white",
                 }}
-                className="btn btn-secondary"
+                className="btn"
                 type="button"
               >
                 Save
@@ -147,17 +147,31 @@ const BehavioralFactorScale = () => {
             </button>
           </div>
         ) : (
-          <EditOutlined
+          <button
             style={{
-              color: "green",
-              fontSize: "15px",
-              cursor: "pointer",
-              margin: "1px 5px",
+              height: "24px",
+              fontSize: "12px",
+              padding: "0px 12px 0px 12px",
             }}
+            className="btn btn-secondary"
+            type="button"
             onClick={() => {
               edit(record);
             }}
-          />
+          >
+            Change
+          </button>
+          // <EditOutlined
+          //   style={{
+          //     color: "green",
+          //     fontSize: "15px",
+          //     cursor: "pointer",
+          //     margin: "1px 5px",
+          //   }}
+          //   onClick={() => {
+          //     edit(record);
+          //   }}
+          // />
         );
       },
     },
@@ -180,6 +194,7 @@ const BehavioralFactorScale = () => {
   return permission?.isView ? (
     <div className="table-card">
       {criteriaListLoader && <Loading />}
+      <h1>Behavioral Factor Scale</h1>
       <PForm form={form}>
         <div className="mt-2">
           <DataTable
