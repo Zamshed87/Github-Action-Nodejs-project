@@ -125,6 +125,9 @@ const BehavioralFactor = lazy(() =>
 const Questionaires = lazy(() =>
   import("../modules/pms/configuration/behavioralFactor/questionaires")
 );
+const BehavioralFactorScale = lazy(() =>
+  import("../modules/pms/configuration/behavioralFactorScale/index.jsx")
+);
 const EvaluationCriteriaCreateEdit = lazy(() =>
   import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
 );
@@ -1695,7 +1698,6 @@ const SeparationApplicationForm = lazy(() =>
     "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
   )
 );
-
 const RetirementViewSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
 );
@@ -1704,7 +1706,6 @@ const RetirementReleaseSeparationForm = lazy(() =>
     "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
   )
 );
-
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
@@ -3820,6 +3821,10 @@ export const routingList = [
   {
     path: "/pms/configuration/BehavioralFactor/create",
     component: Questionaires,
+  },
+  {
+    path: "/pms/configuration/behavioralFactorScale",
+    component: BehavioralFactorScale,
   },
   {
     path: "/pms/configuration/objective",
