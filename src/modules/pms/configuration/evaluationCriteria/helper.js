@@ -43,6 +43,7 @@ export const levelOfLeaderApiCall = async (
     );
 
     const formattedData = data.map((item) => ({
+      ...item,
       label: item?.strPositionGroupName,
       value: item?.intPositionGroupId,
     }));
@@ -69,10 +70,13 @@ export const handleEvaluationCriteriaScoreSetting = async (
     percentageOfKPI: values?.kpiScore,
     percentageOfBAR: values?.barScore,
     actionBy: profileData?.employeeId,
-    positionGroupId: values?.leadership,
+    positionGroupId: values?.positionGroupId,
   };
   try {
-    const res = await axios.post(`/PMS/SaveKpiMapping`, payload);
+    const res = await axios.post(
+      `/PMS/SaveEvaluationCriteriaScoreSetting`,
+      payload
+    );
     cb && cb();
     toast.success(res?.data?.message);
     setLoading && setLoading(false);

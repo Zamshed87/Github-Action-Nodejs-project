@@ -22,14 +22,15 @@ const EvaluationCriteria = () => {
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
   const history = useHistory();
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Performance Management System"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
+
+  const landingApi = () => {
     getCriteriaList(
       `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
     );
+  };
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Performance Management System"));
+    landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const permission = useMemo(
@@ -119,12 +120,14 @@ const EvaluationCriteria = () => {
           open={isScoreSettings?.open}
           onCancel={() => {
             setIsScoreSettings(() => ({ open: false, type: "EC" }));
+            landingApi();
           }}
           components={
             <CreateEdit
               isScoreSettings={isScoreSettings}
               setIsScoreSettings={setIsScoreSettings}
               data={rowData}
+              cb={landingApi}
             />
           }
           width={1000}

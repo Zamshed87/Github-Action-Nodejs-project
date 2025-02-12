@@ -1,5 +1,3 @@
-import { EditOutlined } from "@ant-design/icons";
-import { AddOutlined } from "@mui/icons-material";
 import { DataTable, Flex, PForm } from "Components";
 import { PModal } from "Components/Modal";
 import { Form, Tooltip } from "antd";
@@ -7,22 +5,17 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import ViewModal from "common/ViewModal";
+import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import Clone from "./Clone";
 // import CreateEdit from "./createEdit";
 
 const BehavioralFactor = () => {
-  const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
+  const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
   const [behavioralFactorCloneModal, setBehavioralFactorCloneModal] =
     useState(false);
-  const [isScoreSettings, setIsScoreSettings] = useState({
-    open: false,
-    type: "",
-  });
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
   const { profileData } = useSelector((state) => state?.auth, shallowEqual);
@@ -31,14 +24,14 @@ const BehavioralFactor = () => {
   const history = useHistory();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
+    levelOfLeaderApiCall(
+      profileData?.intAccountId,
+      setLevelofLeaderShip,
+      setLoading
+    ); // Call the API
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    getCriteriaList(
-      `/PMS/GetEvaluationCriteria?accountId=${profileData?.intAccountId}`
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
   const permission = useMemo(
     () => permissionList.find((item) => item?.menuReferenceId === 30469),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,13 +44,13 @@ const BehavioralFactor = () => {
     },
     {
       title: "Leadership Position",
-      dataIndex: "participantName",
+      dataIndex: "label",
     },
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId, rec) => (
-        <Flex justify="center" gap={10}>
+        <Flex justify="left" gap={10}>
           <Tooltip placement="bottom" title={"Add Questionnaires"}>
             <button
               style={{
@@ -97,39 +90,19 @@ const BehavioralFactor = () => {
           </Tooltip>
         </Flex>
       ),
+      width: "40%",
       align: "center",
     },
   ];
-  const demoData = [
-    {
-      key: "1",
-      participantName: "John Doe",
-      letterGenerateId: "12345",
-    },
-    {
-      key: "2",
-      participantName: "Jane Smith",
-      letterGenerateId: "67890",
-    },
-    {
-      key: "3",
-      participantName: "Alice Johnson",
-      letterGenerateId: "11223",
-    },
-    {
-      key: "4",
-      participantName: "Bob Brown",
-      letterGenerateId: "44556",
-    },
-  ];
+
   return permission?.isView ? (
     <div className="table-card">
-      {criteriaListLoader && <Loading />}
+      {loading && <Loading />}
       <PForm form={form}>
         <div className="mt-2">
           <DataTable
             bordered
-            data={demoData || []}
+            data={levelofLeaderShip || []}
             header={evaluationCriteriaHeader}
           />
         </div>

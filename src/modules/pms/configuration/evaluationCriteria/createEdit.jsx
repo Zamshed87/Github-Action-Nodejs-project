@@ -16,7 +16,7 @@ import { ModalFooter } from "Components/Modal";
 import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
 
-const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data }) => {
+const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data, cb }) => {
   // redux
   const { permissionList, profileData } = useSelector(
     (state) => state?.auth,
@@ -50,6 +50,7 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data }) => {
         form={form}
         initialValues={{
           leadership: data?.levelOfLeadershipName,
+          positionGroupId: data?.levelOfLeadershipId,
           kpiScore: data?.percentageOfKPI,
           barScore: data?.percentageOfBAR,
           id: data?.scoreScaleId,
@@ -75,6 +76,7 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data }) => {
                   profileData,
                   setLoading,
                   () => {
+                    cb && cb();
                     setIsScoreSettings(() => ({ open: false, type: "" }));
                   }
                 );
