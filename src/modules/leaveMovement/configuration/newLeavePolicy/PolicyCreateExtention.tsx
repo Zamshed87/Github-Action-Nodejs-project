@@ -83,6 +83,7 @@ export const PolicyCreateExtention = () => {
   const [sandWitchLanding, setSandWitchLanding] =
     useState<any[]>(SandwitchData);
   const [tableData, setTableData] = useState<any>([]);
+  const [balanceTable, setBalanceTable] = useState<any>([]);
 
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
   const [selectedRow2, setSelectedRow2] = useState<any[]>([]);
@@ -303,7 +304,7 @@ export const PolicyCreateExtention = () => {
       ),
     },
   ];
-  const header: any = [
+  const balanceHeader: any = [
     {
       title: "SL",
       render: (_value: any, _row: any, index: number) => index + 1,
@@ -311,41 +312,14 @@ export const PolicyCreateExtention = () => {
       width: 30,
     },
     {
-      title: "Scenario",
-      dataIndex: "scenario",
+      title: "Service Length",
+      dataIndex: "serviceLength",
       width: 100,
     },
     {
-      title: "Leave Type",
-      dataIndex: "leaveType",
+      title: "Leave Days",
+      dataIndex: "leaveDaysForCalculativeDays",
       width: 100,
-    },
-    {
-      title: "Display Name",
-      dataIndex: "displayName",
-      width: 100,
-    },
-    {
-      title: "Display Code",
-      dataIndex: "displayCode",
-      width: 100,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (_: any, rec: any) => {
-        return (
-          <div>
-            {rec?.status === "Active" ? (
-              <Tag color="green">{rec?.status}</Tag>
-            ) : rec?.status === "Inactive" ? (
-              <Tag color="red">{rec?.status}</Tag>
-            ) : (
-              <Tag color="gold">{rec?.status}</Tag>
-            )}
-          </div>
-        );
-      },
     },
 
     {
@@ -353,55 +327,20 @@ export const PolicyCreateExtention = () => {
       width: 30,
 
       align: "center",
-      render: (_: any, item: any) => (
+      render: (_: any, item: any, index: number) => (
         <TableButton
           buttonsList={[
             {
-              type: "view",
-              onClick: (e: any) => {
-                //   setOpen(true);
-                // detailsApi?.action({
-                //   urlKey: "DepositDetails",
-                //   method: "GET",
-                //   params: {
-                //     month: item?.monthId,
-                //     year: item?.yearId,
-                //     depositType: item?.depositTypeId,
-                //   },
-                //   onSuccess: () => {
-                //     setOpen(true);
-                //     setTypeId({
-                //       id: item?.depositTypeId,
-                //       month: item?.monthId,
-                //       year: item?.yearId,
-                //     });
-                //   },
-                // });
+              type: "delete",
+              onClick: () => {
+                setBalanceTable((prev: any) => {
+                  const filterArr = prev.filter(
+                    (itm: any, idx: number) => idx !== index
+                  );
+                  return filterArr;
+                });
               },
             },
-            {
-              type: "extend",
-              onClick: (e: any) => {
-                // if (!employeeFeature?.isEdit) {
-                //   return toast.warn("You don't have permission");
-                // }
-                // history.push({
-                //   pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
-                //   state: {
-                //     month: item?.monthId,
-                //     year: item?.yearId,
-                //   },
-                // });
-                //   setOpen(true);
-                //   setId(rec);
-              },
-            },
-            // {
-            //   type: "delete",
-            //   onClick: () => {
-            //     deleteDepositById(item);
-            //   },
-            // },
           ]}
         />
       ),
@@ -441,8 +380,8 @@ export const PolicyCreateExtention = () => {
           />
           {loading && <Loading />}
           <PCardBody className="mb-3">
+            {/* ----------general info----------- */}
             <Row gutter={[10, 2]}>
-              {/* ----------general info----------- */}
               <Divider
                 style={{
                   marginBlock: "4px",
@@ -729,6 +668,7 @@ export const PolicyCreateExtention = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col> */}
             </Row>
+            {/*consume  */}
             <Row gutter={[10, 2]}>
               <Divider
                 style={{
@@ -802,22 +742,38 @@ export const PolicyCreateExtention = () => {
                   ]}
                 />
               </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="number"
-                  name="standardWorkHour"
-                  label="Standard Working Hour"
-                  placeholder=""
-                  rules={[
-                    {
-                      required: true,
-                      message: "Standard Working Hour is required",
-                    },
-                  ]}
-                />
-              </Col>
-            </Row>
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { leaveConsumeType } = form.getFieldsValue(true);
 
+                  return (
+                    leaveConsumeType?.filter((i: any) => i?.value === 3)
+                      .length > 0 && (
+                      <>
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="number"
+                            name="standardWorkHour"
+                            label="Standard Working Hour"
+                            placeholder=""
+                            rules={[
+                              {
+                                required:
+                                  leaveConsumeType?.filter(
+                                    (i: any) => i?.value === 3
+                                  ).length > 0,
+                                message: "Standard Working Hour is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    )
+                  );
+                }}
+              </Form.Item>
+            </Row>
+            {/* sandwitch */}
             <Row gutter={[10, 2]}>
               <Divider
                 style={{
@@ -883,6 +839,7 @@ export const PolicyCreateExtention = () => {
                 />
               </Col>
             </Row>
+            {/* lapse */}
             <Row gutter={[10, 2]}>
               <Divider
                 style={{
@@ -930,21 +887,35 @@ export const PolicyCreateExtention = () => {
                   ]}
                 />
               </Col>
-              <Col md={6} sm={24}>
-                <PInput
-                  type="number"
-                  name="afterLeaveCompleted"
-                  label="After Leaves Completed"
-                  placeholder=""
-                  rules={[
-                    {
-                      required: true,
-                      message: "After Leaves Completed is required",
-                    },
-                  ]}
-                />
-              </Col>
+
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { leavelapse } = form.getFieldsValue(true);
+
+                  return (
+                    leavelapse?.value === 5 && (
+                      <>
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="number"
+                            name="afterLeaveCompleted"
+                            label="After Leaves Completed"
+                            placeholder=""
+                            rules={[
+                              {
+                                required: leavelapse?.value === 5,
+                                message: "After Leaves Completed is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    )
+                  );
+                }}
+              </Form.Item>
             </Row>
+            {/* carry */}
             <Row gutter={[10, 2]}>
               <Divider
                 style={{
@@ -973,88 +944,104 @@ export const PolicyCreateExtention = () => {
                   name="isCarryForward"
                 />
               </Col>
-              <Col md={4} sm={24}>
-                <PSelect
-                  // mode="multiple"
-                  allowClear
-                  options={[
-                    { value: 1, label: "Percentage of Days" },
-                    { value: 2, label: "Fixed Days" },
-                    // { value: 3, label: "Clock Time" },
-                  ]}
-                  name="leaveCarryForwardType"
-                  label="Leave Carry Forward Type"
-                  placeholder="Leave Carry Forward Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      leaveCarryForwardType: op,
-                    });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Leave Carry Forward Type is required",
-                    },
-                  ]}
-                />
-              </Col>
+
               <Form.Item shouldUpdate noStyle>
                 {() => {
-                  const { leaveCarryForwardType } = form.getFieldsValue(true);
+                  const { isCarryForward, leaveCarryForwardType } =
+                    form.getFieldsValue(true);
 
                   return (
-                    <>
-                      <Col md={5} sm={24}>
-                        <PInput
-                          type="number"
-                          name="minConsumeTime"
-                          label={`Max Carry Forward After Lapse (${
-                            leaveCarryForwardType?.value === 1 ? "%" : "Days"
-                          })`}
-                          placeholder=""
-                          rules={[
-                            {
-                              required: true,
-                              message:
-                                "Max Carry Forward After Lapse (%, Days) is required",
-                            },
-                          ]}
-                        />
-                      </Col>
-                    </>
+                    isCarryForward && (
+                      <>
+                        <Col md={4} sm={24}>
+                          <PSelect
+                            // mode="multiple"
+                            allowClear
+                            options={[
+                              { value: 1, label: "Percentage of Days" },
+                              { value: 2, label: "Fixed Days" },
+                            ]}
+                            name="leaveCarryForwardType"
+                            label="Leave Carry Forward Type"
+                            placeholder="Leave Carry Forward Type"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                leaveCarryForwardType: op,
+                              });
+                            }}
+                            rules={[
+                              {
+                                required: isCarryForward,
+                                message: "Leave Carry Forward Type is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={5} sm={24}>
+                          <PInput
+                            type="number"
+                            name="minConsumeTime"
+                            label={`Max Carry Forward After Lapse (${
+                              leaveCarryForwardType?.value === 1 ? "%" : "Days"
+                            })`}
+                            placeholder=""
+                            rules={[
+                              {
+                                required: isCarryForward,
+                                message:
+                                  "Max Carry Forward After Lapse (%, Days) is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="number"
+                            name="expiryCarryForwardDaysAfterLapse"
+                            label="Expiry of Carry Forward Days After Lapse"
+                            placeholder=""
+                            rules={[
+                              {
+                                required: isCarryForward,
+                                message:
+                                  "Expiry of Carry Forward Days After Lapse is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    )
                   );
                 }}
               </Form.Item>
 
-              <Col md={6} sm={24}>
-                <PInput
-                  type="number"
-                  name="expiryCarryForwardDaysAfterLapse"
-                  label="Expiry of Carry Forward Days After Lapse"
-                  placeholder=""
-                  rules={[
-                    {
-                      required: true,
-                      message:
-                        "Expiry of Carry Forward Days After Lapse is required",
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={5} sm={24}>
-                <PInput
-                  type="number"
-                  name="maxCarryForwardBalance"
-                  label="Max Carry Forward Balance (Days)"
-                  placeholder=""
-                  rules={[
-                    {
-                      required: true,
-                      message: "Max Carry Forward Balance (Days) is required",
-                    },
-                  ]}
-                />
-              </Col>
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { leavelapse } = form.getFieldsValue(true);
+
+                  return (
+                    leavelapse?.value === 5 && (
+                      <>
+                        <Col md={5} sm={24}>
+                          <PInput
+                            type="number"
+                            name="maxCarryForwardBalance"
+                            label="Max Carry Forward Balance (Days)"
+                            placeholder=""
+                            rules={[
+                              {
+                                required: leavelapse?.value === 5,
+                                message:
+                                  "Max Carry Forward Balance (Days) is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    )
+                  );
+                }}
+              </Form.Item>
             </Row>
             {/* encash */}
             <Row gutter={[10, 2]}>
@@ -1300,15 +1287,602 @@ export const PolicyCreateExtention = () => {
                     );
                   }}
                 </Form.Item>
-                <Col>
-                  <DataTable
-                    bordered
-                    data={tableData}
-                    loading={false}
-                    header={encashheader}
+                {tableData?.length > 0 && (
+                  <Col>
+                    <DataTable
+                      bordered
+                      data={tableData}
+                      loading={false}
+                      header={encashheader}
+                    />
+                  </Col>
+                )}
+              </Row>
+            </Row>
+            {/* rata */}
+            <Row gutter={[10, 2]}>
+              <Divider
+                style={{
+                  marginBlock: "4px",
+                  marginTop: "20px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+                orientation="left"
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                  }}
+                >
+                  <span>Pro Rata</span>
+                </div>
+              </Divider>
+              <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
+                <PInput
+                  label="Is Pro Rata Basis"
+                  type="checkbox"
+                  layout="horizontal"
+                  name="isProRata"
+                />
+              </Col>
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { isProRata } = form.getFieldsValue(true);
+
+                  return (
+                    isProRata && (
+                      <>
+                        <Col md={6} sm={24}>
+                          <PSelect
+                            // mode="multiple"
+                            allowClear
+                            options={[
+                              { value: 1, label: "Monthly Increment" },
+                              { value: 2, label: "Update From Start" },
+                              { value: 3, label: "Update After End" },
+                              // { value: 3, label: "Clock Time" },
+                            ]}
+                            name="proRataBasis"
+                            label="Pro Rata Basis"
+                            placeholder=""
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                proRataBasis: op,
+                              });
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Pro Rata Basis is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={8} sm={24}>
+                          <PInput
+                            type="number"
+                            name="proRataCount"
+                            label="Pro Rata Count Last Start Days (As Calander Date)"
+                            placeholder=""
+                            rules={[
+                              {
+                                required: true,
+                                message: "proRataCount is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    )
+                  );
+                }}
+              </Form.Item>
+            </Row>
+            {/* additional */}
+            <Row gutter={[10, 2]}>
+              <Divider
+                style={{
+                  marginBlock: "4px",
+                  marginTop: "20px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+                orientation="left"
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                  }}
+                >
+                  <span>Additional Configuration</span>
+                </div>
+              </Divider>
+              <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
+                <PInput
+                  label="Show Balance From Self Service"
+                  type="checkbox"
+                  layout="horizontal"
+                  name="isEssShowBalance"
+                />
+              </Col>
+              <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
+                <PInput
+                  label="Apply From Self Service"
+                  type="checkbox"
+                  layout="horizontal"
+                  name="isEssApply"
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PSelect
+                  // mode="multiple"
+                  allowClear
+                  options={[
+                    { value: 1, label: "No Round" },
+                    { value: 2, label: "Round Up" },
+                    { value: 3, label: "Round Down" },
+                    // { value: 3, label: "Clock Time" },
+                  ]}
+                  name="leaveRoundingType"
+                  label="Leave Rounding Type"
+                  placeholder=""
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      leaveRoundingType: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Leave Rounding Type is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PSelect
+                  // mode="multiple"
+                  allowClear
+                  options={[
+                    { value: 1, label: "Before Leave" },
+                    { value: 2, label: "After Leave" },
+                    { value: 3, label: "Anytime" },
+                    // { value: 3, label: "Clock Time" },
+                  ]}
+                  name="leaveApplicationTime"
+                  label="Leave Application Time"
+                  placeholder=""
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      leaveApplicationTime: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Leave Rounding Type is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
+                <PInput
+                  label="Attachment Mandatory"
+                  type="checkbox"
+                  layout="horizontal"
+                  name="isAttachmentMandatory"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Attachment Mandatory is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { isAttachmentMandatory } = form.getFieldsValue(true);
+
+                  return (
+                    isAttachmentMandatory && (
+                      <>
+                        <Col md={7} sm={24}>
+                          <PInput
+                            type="number"
+                            name="attachmentMandatoryAfter"
+                            label="Attachment Mandatory After consuming (Days)"
+                            placeholder=""
+                            rules={[
+                              {
+                                required: isAttachmentMandatory,
+                                message: "attachmentMandatoryAfter is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    )
+                  );
+                }}
+              </Form.Item>
+            </Row>
+            {/* balance */}
+            <>
+              <Row gutter={[10, 2]}>
+                <Divider
+                  style={{
+                    marginBlock: "4px",
+                    marginTop: "20px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                  }}
+                  orientation="left"
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <span>Leave Balance</span>
+                  </div>
+                </Divider>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    // mode="multiple"
+                    allowClear
+                    options={[
+                      { value: 1, label: "Fixed Days" },
+                      { value: 2, label: "Date of Joining" },
+                      { value: 3, label: "Date of Confirmation" },
+                      { value: 4, label: "Calculative" },
+                      { value: 5, label: "Bridge Leave" },
+                      // { value: 3, label: "Clock Time" },
+                    ]}
+                    name="dependsOn"
+                    label="Depends On"
+                    placeholder=""
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        dependsOn: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Depends On is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="number"
+                    name="balanceServiceLengthStart"
+                    label="Service Length Start"
+                    placeholder=""
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "From Service Length (Month) is required",
+                    //   },
+                    // ]}
                   />
                 </Col>
               </Row>
+              <Row gutter={[10, 2]}>
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="number"
+                    name="serviceStartLengthBalance"
+                    label="From Service Length (Month)"
+                    placeholder=""
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "From Service Length (Month) is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="number"
+                    name="serviceEndLengthBalance"
+                    label="To Service Length (Month)"
+                    placeholder=""
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "To Service Length (Month) is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const { dependsOn } = form.getFieldsValue(true);
+
+                    return dependsOn?.value === 4 ? (
+                      <>
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="number"
+                            name="calculativeDays"
+                            label="Calculative Days"
+                            placeholder=""
+                            rules={[
+                              {
+                                required: dependsOn?.value === 4,
+                                message: "Calculative Days is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    ) : (
+                      dependsOn?.value === 5 && (
+                        <>
+                          <Col md={6} sm={24}>
+                            <PSelect
+                              // mode="multiple"
+                              allowClear
+                              options={[
+                                { value: 1, label: "Off Days" },
+                                { value: 2, label: "HoliDays" },
+                                { value: 3, label: "Both" },
+                              ]}
+                              name="bridgeLeaveFor"
+                              label="Bridge Leave For"
+                              placeholder=""
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  bridgeLeaveFor: op,
+                                });
+                              }}
+                              rules={[
+                                {
+                                  required: dependsOn?.value === 5,
+                                  message: "Bridge Leave For is required",
+                                },
+                              ]}
+                            />
+                          </Col>
+                          <Col md={6} sm={24}>
+                            <PInput
+                              type="number"
+                              name="expireAfterAvailable"
+                              label="Expire After Available (Days)"
+                              placeholder=""
+                              rules={[
+                                {
+                                  required: dependsOn?.value === 5,
+                                  message:
+                                    "Expire After Available (Days) is required",
+                                },
+                              ]}
+                            />
+                          </Col>
+                        </>
+                      )
+                    );
+                  }}
+                </Form.Item>
+
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="number"
+                    name="leaveDaysForCalculativeDays"
+                    label="Leave Days (For Calculative Days)"
+                    placeholder=""
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "To Service Length (Month) is required",
+                    //   },
+                    // ]}
+                  />
+                </Col>
+
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const {
+                      leaveDaysForCalculativeDays,
+                      dependsOn,
+                      serviceEndLengthBalance,
+                      serviceStartLengthBalance,
+                    } = form.getFieldsValue(true);
+
+                    return (
+                      true && (
+                        <>
+                          <Col
+                            style={{
+                              marginTop: "23px",
+                            }}
+                          >
+                            <PButton
+                              type="primary"
+                              action="button"
+                              content="Add"
+                              onClick={() => {
+                                if (
+                                  leaveDaysForCalculativeDays === undefined ||
+                                  serviceEndLengthBalance === undefined ||
+                                  serviceStartLengthBalance === undefined
+                                ) {
+                                  return toast.warn(
+                                    "Please fill up the fields"
+                                  );
+                                }
+                                if (
+                                  serviceEndLengthBalance <
+                                  serviceStartLengthBalance
+                                ) {
+                                  return toast.warn(
+                                    "Service End Length must be greater than Service Start Length"
+                                  );
+                                }
+
+                                setBalanceTable((prev: any) => [
+                                  ...prev,
+                                  {
+                                    serviceLength: `${serviceStartLengthBalance} - ${serviceEndLengthBalance}`,
+                                    leaveDaysForCalculativeDays,
+                                  },
+                                ]);
+                                form.setFieldsValue({
+                                  serviceStartLengthBalance: undefined,
+                                  serviceEndLengthBalance: undefined,
+                                  leaveDaysForCalculativeDays: undefined,
+                                });
+                              }}
+                            />
+                          </Col>
+                        </>
+                      )
+                    );
+                  }}
+                </Form.Item>
+                {balanceTable?.length > 0 && (
+                  <Col>
+                    <DataTable
+                      bordered
+                      data={balanceTable}
+                      loading={false}
+                      header={balanceHeader}
+                    />
+                  </Col>
+                )}
+              </Row>
+            </>
+            {/* Calculative Days */}
+            <>
+              <Row gutter={[10, 2]}>
+                <Divider
+                  style={{
+                    marginBlock: "4px",
+                    marginTop: "20px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                  }}
+                  orientation="left"
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <span>Calculative Days</span>
+                  </div>
+                </Divider>
+                <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
+                  <PInput
+                    label="Include Offday"
+                    type="checkbox"
+                    layout="horizontal"
+                    name="isOffday"
+                  />
+                </Col>
+                <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
+                  <PInput
+                    label="Include Holiday"
+                    type="checkbox"
+                    layout="horizontal"
+                    name="isHoliday"
+                  />
+                </Col>
+              </Row>
+              <Row gutter={[10, 2]}>
+                <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
+                  <PInput
+                    label="Include Absent"
+                    type="checkbox"
+                    layout="horizontal"
+                    name="isAbsent"
+                  />
+                </Col>
+                <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
+                  <PInput
+                    label="Include Present & Movement"
+                    type="checkbox"
+                    layout="horizontal"
+                    name="isPresentMovement"
+                  />
+                </Col>
+              </Row>
+            </>
+            {/*Leave  Calculation  */}
+            <Row gutter={[10, 2]}>
+              <Divider
+                style={{
+                  marginBlock: "4px",
+                  marginTop: "20px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+                orientation="left"
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                  }}
+                >
+                  <span>Leave Calculation</span>
+                </div>
+              </Divider>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="number"
+                  name="maxLeaveApplyMonthly"
+                  label="Max. Leave Apply Days (Monthly)"
+                  placeholder=""
+                  rules={[
+                    {
+                      required: true,
+                      message: "Max. Leave Apply Days (Monthly) is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="number"
+                  name="maxLeaveApplyYearly"
+                  label="Max. Leave Apply Days (Yearly)"
+                  placeholder=""
+                  rules={[
+                    {
+                      required: true,
+                      message: "Max. Leave Apply Days (Yearly) is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PInput
+                  type="number"
+                  name="minLeaveApplyDays"
+                  label="Min. Leave Apply Days (At a Time)"
+                  placeholder=""
+                  rules={[
+                    {
+                      required: true,
+                      message: "Min. Leave Apply Days (At a Time) is required",
+                    },
+                  ]}
+                />
+              </Col>
             </Row>
           </PCardBody>
         </PCard>
