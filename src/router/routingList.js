@@ -328,9 +328,7 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
-const HiredeskOnboarding = lazy(() =>
-  import("../modules/onboarding/index.js")
-);
+const HiredeskOnboarding = lazy(() => import("../modules/onboarding/index.js"));
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
 );
@@ -1564,6 +1562,7 @@ import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 import { NewLeavePolicy } from "modules/leaveMovement/configuration/newLeavePolicy";
+import { PolicyCreateExtention } from "modules/leaveMovement/configuration/newLeavePolicy/PolicyCreateExtention";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2121,7 +2120,7 @@ export const routingList = [
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
-    component: CreateEditLeavePolicy,
+    component: PolicyCreateExtention,
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/extention",
