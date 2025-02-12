@@ -1,4 +1,5 @@
 import { FilePresentOutlined } from "@mui/icons-material";
+import { Popover } from "antd";
 import { APIUrl } from "App";
 import Chips from "common/Chips";
 import Loading from "common/loading/Loading";
@@ -12,7 +13,6 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
 import profileImg from "../../../../../assets/images/profile.jpg";
 import { getSeparationLandingById } from "../../helper";
-import { Popover } from "antd";
 
 function SeparationHistoryview({ id }) {
   //Redux Data
@@ -369,7 +369,7 @@ function SeparationHistoryview({ id }) {
                           loading={handoverloading}
                           header={[
                             {
-                              title: "Charge Handed Over To",
+                              title: "Charge Handedover To",
                               dataIndex: "strEmployeeName",
                               fixed: "left",
                             },
@@ -380,7 +380,7 @@ function SeparationHistoryview({ id }) {
                             },
                             {
                               title: "Department",
-                              dataIndex: "strDesignation",
+                              dataIndex: "strDepartment",
                               fixed: "left",
                             },
                             {

@@ -66,7 +66,6 @@ export default function SelfServiceSeparation() {
   useEffect(() => {
     getData();
   }, [buId, wgId, wId]);
-  console.log(separationId);
 
   return (
     <>
@@ -116,12 +115,12 @@ export default function SelfServiceSeparation() {
                 isScrollAble={false}
               />
               <PModal
-                title="Charge Handover Modal"
+                title="Charge Handover"
                 open={openChargeHandOverModal}
                 onCancel={() => {
                   setChargeHandOverModal(false);
                 }}
-                components={<ChargeHandOver />}
+                components={<ChargeHandOver separationId={separationId} />}
                 width={1000}
               />
             </>
