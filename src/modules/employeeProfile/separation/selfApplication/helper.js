@@ -1,49 +1,17 @@
 import {
-  EditOutlined,
   FilePresentOutlined,
-  InfoOutlined,
-  VisibilityOutlined,
+  InfoOutlined
 } from "@mui/icons-material";
-import axios from "axios";
-import { toast } from "react-toastify";
-
-import { Tooltip, styled, tooltipClasses } from "@mui/material";
-import moment from "moment";
-import { gray500, gray700, gray900 } from "utility/customColor";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
-import Chips from "common/Chips";
-import { todayDate } from "utility/todayDate";
-import PrimaryButton from "common/PrimaryButton";
-import IConfirmModal from "common/IConfirmModal";
 import { Dropdown } from "antd";
-
-export const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(() => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: "#fff !important",
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#fff",
-    color: "rgba(0, 0, 0, 0.87)",
-    maxWidth: 300,
-    boxShadow:
-      "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
-    fontSize: 11,
-  },
-}));
-
-export const getRoleAssigneToUser = async (buId, wgId, id, setter) => {
-  try {
-    const res = await axios.post(
-      `/Auth/RoleAssignToUserById?businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${id}`
-    );
-    if (res?.data) {
-      setter && setter(res?.data);
-    }
-  } catch (error) { }
-};
+import axios from "axios";
+import Chips from "common/Chips";
+import IConfirmModal from "common/IConfirmModal";
+import { LightTooltip } from "common/LightTooltip";
+import PrimaryButton from "common/PrimaryButton";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { toast } from "react-toastify";
+import { gray500, gray700, gray900 } from "utility/customColor";
+import { dateFormatter } from "utility/dateFormatter";
 
 // separation create
 export const CreateSeparation = async (payload, setLoading, cb) => {
@@ -173,11 +141,11 @@ export const separationApplicationLandingTableColumn = (
             width: "160px",
             height: "35px",
           }}
-          label={"Charge Hand Over"}
+          label={"Charge Handover"}
           onClick={() => {
             setChargeHandOverModal(true);
           }}
-          disabled={aprovalStatus != "Approve"}
+          disabled={aprovalStatus != "Pending"}//need to change
         />
       ),
     },
@@ -510,131 +478,5 @@ export const getEmployeeProfileViewData = async (
     }
   } catch (error) {
     setLoading && setLoading(false);
-  }
-};
-
-export const employeeSeparationCrud = async (
-  partId,
-  employeeId,
-  values,
-  setLoading,
-  getData,
-  orgId,
-  buId,
-  wgId
-) => {
-  try {
-    setLoading(true);
-    let payload = {
-      partId: partId,
-      intSeparationId: values?.autoId || 0,
-      businessUnitId: buId,
-      workplaceGroupId: wgId,
-      intEmployeeId: values?.employee?.value || 0,
-      strEmployeeName: values?.employee?.label || "",
-      strEmployeeCode: values?.employee?.strEmployeeCode || "",
-      intSeparationTypeId: values?.separationType?.value || "",
-      strSeparationTypeName: values?.separationType?.label || "",
-      dteLastWorkingDay: values?.lastWorkingDay || "",
-      strReason: values?.reason || "",
-      numAdjustedAmound: values?.adjustedAmount || 0,
-      isActive: true,
-      intAccountId: orgId,
-      intCreatedBy: employeeId,
-    };
-    const res = await axios.post("/Employee/CRUDEmployeeSeparation", payload);
-    getData();
-    setLoading(false);
-    toast.success(res?.data?.message || "Submitted Successfully");
-  } catch (error) {
-    setLoading(false);
-    toast.warn(error?.response?.data?.message || "Failed, try again");
-  }
-};
-
-export const getEmployeeSeparationLanding = async (
-  wId,
-  buId,
-  wgId,
-  formData,
-  toData,
-  search,
-  isForXl = false,
-  setter,
-  setLoading,
-  pageNo,
-  pageSize,
-  setPages,
-  workplaceGroupList,
-  workplaceList
-) => {
-  setLoading && setLoading(true);
-
-  try {
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
-
-    search = search && (apiUrl += `&searchTxt=${search}`);
-
-    const res = await axios.get(apiUrl);
-
-    if (res?.data) {
-      const modifiedData = res?.data?.data?.map((item, index) => ({
-        ...item,
-        initialSerialNumber: index + 1,
-      }));
-
-      setter && setter?.(modifiedData);
-
-      setPages({
-        current: res?.data?.currentPage,
-        pageSize: res?.data?.pageSize,
-        total: res?.data?.totalCount,
-      });
-
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
-};
-
-export const searchData = (keywords, allData, setRowDto, setLoading) => {
-  try {
-    if (!keywords) {
-      setRowDto(allData);
-      return;
-    }
-    setLoading && setLoading(true);
-    const regex = new RegExp(keywords?.toLowerCase());
-    let newData = allData?.filter(
-      (item) =>
-        regex.test(item?.EmployeeName?.toLowerCase()) ||
-        regex.test(item?.DepartmentName?.toLowerCase()) ||
-        regex.test(item?.DesignationName?.toLowerCase()) ||
-        regex.test(item?.SeparationTypeName?.toLowerCase())
-    );
-    setRowDto(newData);
-    setLoading && setLoading(false);
-  } catch (error) {
-    setLoading && setLoading(false);
-    setRowDto([]);
-  }
-};
-
-export const releasedEmployeeSeparation = async (payload, setLoading, cb) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.post(
-      "/separation/ReleasedSeparation",
-      payload
-    );
-    cb && cb();
-    setLoading && setLoading(false);
-    toast.success(res?.data?.message || "Submitted Successfully", {
-      toastId: 1,
-    });
-  } catch (error) {
-    setLoading && setLoading(false);
-    toast.warn(error?.response?.data?.message || "Failed, try again");
   }
 };
