@@ -1521,7 +1521,7 @@ export const columnDeposit = [
   },
   {
     title: "Deposit Amount",
-    dataIndex: ["applicationInformation", "depositAmount"],
+    dataIndex: ["applicationInformation", "depositsAmount"],
   },
   {
     title: "Deposit Type",

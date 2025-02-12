@@ -10,12 +10,9 @@ import {
   PSelect,
   TableButton,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
-import { InfoOutlined } from "@mui/icons-material";
-import profileImg from "../../../assets/images/profile.jpg";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -23,14 +20,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { dateFormatter } from "utility/dateFormatter";
-import { Popover } from "@mui/material";
-
-import { yearDDLAction } from "utility/yearDDL";
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
 import { processDataFromExcelSecurityDeposit } from "./helper";
 import moment from "moment";
 
@@ -38,7 +28,7 @@ export const SecurityDepositCRUD = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, employeeId, orgId, wId, wgId, buName },
+    profileData: { buId, employeeId, orgId, wId, wgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [landing, setLanding] = useState<any[]>([]);
@@ -60,7 +50,7 @@ export const SecurityDepositCRUD = () => {
   const CommonEmployeeDDL = useApiRequest([]);
 
   const getEmployee = (value: any = "") => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
     const { department } = form.getFieldsValue(true);
     CommonEmployeeDDL?.action({
       urlKey: "GetEmpBasicInfoByDepartmentId",
@@ -71,16 +61,16 @@ export const SecurityDepositCRUD = () => {
       },
       onSuccess: (res: any) => {
         res?.data?.forEach((item: any, i: number) => {
-          res.data[i].label = item?.employeeName;
-          res.data[i].value = item?.employeeId;
+          res.data[i].label =
+            item?.employeeName + "[" + item?.employeeCode + "]";
+          res.data[i].value = item?.employeeCode;
         });
       },
     });
   };
   //   const debounce = useDebounce();
 
-  const [, setFilterList] = useState({});
-  const [excelLoading, setExcelLoading] = useState(false);
+  const [excelLoading] = useState(false);
 
   const { id }: any = useParams();
   const { state }: any = useLocation();
@@ -182,50 +172,6 @@ export const SecurityDepositCRUD = () => {
   //   });
   // };
 
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-    IsForXl?: boolean;
-    date?: string;
-  };
-  const landingApiCall = ({
-    pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
-  }: TLandingApi = {}) => {
-    const values = form.getFieldsValue(true);
-
-    landingApi.action({
-      urlKey: "DepositMasterReport",
-      method: "GET",
-      params: {
-        departmentId: values?.department?.value || 0,
-      },
-      onSuccess: (res) => {
-        const modify = res?.map((i: any, index: number) => {
-          return {
-            ...i,
-            key: index,
-            proposedGrossSalary:
-              +i?.recentGrossSalary + +i?.incrementProposalAmount,
-          };
-        });
-        setLanding(modify);
-        const selected = modify?.filter((i: any) => i?.id > 0);
-        if (selected?.length) {
-          setSelectedRow(selected);
-        }
-      },
-      onError: (res: any) => {
-        setLanding([]);
-        toast.warn(res?.response?.data?.title);
-      },
-    });
-  };
   const getEmployeDepartment = () => {
     // const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
@@ -265,7 +211,6 @@ export const SecurityDepositCRUD = () => {
     });
   };
   useEffect(() => {
-    getEmployee();
     getEmployeDepartment();
     getSecurityType();
   }, []);
@@ -417,38 +362,16 @@ export const SecurityDepositCRUD = () => {
       ),
     },
   ];
-  const columns = {
-    sl: "SL",
-    workplaceGroupName: "Workplace Group",
-    workplaceName: "Workplace",
-    employeeName: "Employee Name",
-    designationName: "Designation",
-    departmentName: "Department",
-    sectionName: "Section",
-    supervisorName: "Supervisor",
-    dottedSupervisorName: "Dotted Supervisor",
-    lineManagerName: "Line Manager",
-    incrementYear: "Increment Year",
-    joiningDate: "Date of Joining",
-    lastIncrementDate: "Last Increment Date",
-    lastIncrementAmount: "Last Increment Amount",
-    recentGrossSalary: "Recent Gross Salary",
-    incrementProposalPercentage: "Proposed Increment (%) by Gross Salary",
-    incrementProposalAmount: "Proposed Increment Amount by Gross Salary",
-    proposedGrossSalary: "Proposed Gross Salary",
-    status: "Status",
-    remarks: "Remarks",
-  };
+
   const viewHandler = async () => {
     const values = form.getFieldsValue(true);
-
     setSelectedRow([]);
     // await form
     //   .validateFields()
     //   .then(() => {
     if (
-      landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
-        .length === 0 &&
+      // landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
+      //   .length === 0 &&
       values?.employee?.value
     ) {
       const newEmp = {
@@ -460,11 +383,33 @@ export const SecurityDepositCRUD = () => {
         depositeMoney: 0,
         remarks: "",
       };
-      setLanding((prev) => [...prev, newEmp]);
+      landing?.filter(
+        (i: any) => i?.employeeId === values?.employee?.employeeId
+      ).length === 0 && landing?.length > 0
+        ? setLanding((prev) => [...prev, newEmp])
+        : setLanding([newEmp]);
+    } else {
+      CommonEmployeeDDL?.action({
+        urlKey: "GetEmpBasicInfoByDepartmentId",
+        method: "GET",
+        params: {
+          DepartmentId: values?.department?.value,
+          // StrSearch: value,
+        },
+        onSuccess: (res: any) => {
+          res?.data?.forEach((item: any, i: number) => {
+            res.data[i].label = item?.employeeName;
+            res.data[i].value = item?.employeeCode;
+            res.data[i].designationName = item?.designation;
+            res.data[i].departmentName = item?.department;
+            res.data[i].depositeMoney = 0;
+            res.data[i].remarks = "";
+          });
+
+          setLanding(res?.data);
+        },
+      });
     }
-    // else {
-    //   landingApiCall();
-    // }
     // })
     // .catch(() => {
     //   console.error("Validate Failed:");
@@ -581,6 +526,7 @@ export const SecurityDepositCRUD = () => {
                     form.setFieldsValue({
                       department: op,
                     });
+                    getEmployee();
                   }}
                   // rules={[
                   //   {
