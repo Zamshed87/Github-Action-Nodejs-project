@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { EvaluationPipelineForm, StakeholderForm } from "./helper";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { useApiRequest } from "Hooks";
 
 const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   // redux
@@ -37,6 +38,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   permissionList.forEach((item) => {
     permission = item;
   });
+  const CommonEmployeeDDL = useApiRequest([]);
 
   const [form] = Form.useForm();
   const params = useParams();
@@ -55,6 +57,26 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
         stakeholder: undefined,
       });
     }
+  };
+
+  const getEmployee = (value) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: profileData?.buId,
+        workplaceGroupId: profileData?.wgId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
   };
 
   useEffect(() => {
@@ -84,7 +106,8 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
             getStakeholderType,
             stakeholderApi,
             modal?.type,
-            form
+            form,
+            getEmployee
           )}
           form={form}
         >

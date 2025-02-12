@@ -38,7 +38,8 @@ export const StakeholderForm = (
   getStakeholderType,
   stakeholderApi,
   type,
-  form
+  form,
+  getEmployee
 ) => {
   const values = form.getFieldsValue(true);
   console.log(values?.stakeholderType?.label, "adnan");
@@ -71,6 +72,11 @@ export const StakeholderForm = (
       placeholder: "Select the stakeholder",
       rules: [{ required: true, message: "Stakeholder Type is required!" }],
       col: 6,
+      //   onSearch:(value) => {
+      //     getEmployee(value);
+      //   },
+      //   showSearch: true,
+      //   filterOption:false
     },
     {
       type: "number",
