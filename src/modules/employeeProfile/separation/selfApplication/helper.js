@@ -14,6 +14,9 @@ import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
 import Chips from "common/Chips";
 import { todayDate } from "utility/todayDate";
+import PrimaryButton from "common/PrimaryButton";
+import IConfirmModal from "common/IConfirmModal";
+import { Dropdown } from "antd";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -129,11 +132,97 @@ export const separationApplicationLandingTableColumn = (
   paginationSize,
   history,
   dispatch,
-  setOpenModal,
-  permission,
-  setId,
-  setEmpId
+  employeeId,
+  getData,
+  setChargeHandOverModal,
+  postCancelSeperationData,
+  aprovalStatus,
+  setAprovalStatus,
+  separationId
 ) => {
+  const confirmPopup = () => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: "Are you sure you want to withdraw this application?",
+      yesAlertFunc: () => {
+        postCancelSeperationData(
+          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          "",
+          () => {
+            getData();
+          }
+        );
+      },
+      noAlertFunc: () => {
+        history.push("/SelfService/separation/applicationV2");
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+  const items = [
+    {
+      key: "1",
+      label: (
+        <PrimaryButton
+          type="button"
+          className="btn btn-default"
+          customStyle={{
+            backgroundColor: "#1677ff",
+            borderColor: "#1677ff",
+            fontSize: "11px",
+            width: "160px",
+            height: "35px",
+          }}
+          label={"Charge Hand Over"}
+          onClick={() => {
+            setChargeHandOverModal(true);
+          }}
+          disabled={aprovalStatus != "Approve"}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <PrimaryButton
+          type="button"
+          className="btn btn-default"
+          customStyle={{
+            backgroundColor: "#13c2c2",
+            borderColor: "#13c2c2",
+            fontSize: "12px",
+            width: "160px",
+            height: "35px",
+          }}
+          label={"Exit Interview"}
+          onClick={() => {
+            console.log("Exit Interview");
+          }}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <PrimaryButton
+          type="button"
+          className="btn btn-default"
+          customStyle={{
+            backgroundColor: "#ff4d4f",
+            borderColor: "#ff4d4f",
+            fontSize: "12px",
+            width: "160px",
+            height: "35px",
+          }}
+          label={"Withdraw"}
+          onClick={() => {
+            confirmPopup();
+          }}
+        />
+      ),
+    },
+  ];
+
   return [
     {
       title: "SL",
@@ -286,11 +375,7 @@ export const separationApplicationLandingTableColumn = (
       title: "Created Date",
       dataIndex: "dteCreatedAt",
       render: (data) => (
-        <>
-          {data?.dteCreatedAt
-            ? dateFormatter(data?.dteCreatedAt)
-            : "N/A"}
-        </>
+        <>{data?.dteCreatedAt ? dateFormatter(data?.dteCreatedAt) : "N/A"}</>
       ),
       sort: true,
       filter: false,
@@ -328,64 +413,32 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
-          <Tooltip title="View" arrow>
-            <button className="iconButton" type="button">
-              <VisibilityOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setId(item?.separationId);
-                  setEmpId(item?.intEmployeeId);
-                  setOpenModal(true);
+          <>
+            <Dropdown
+              menu={{
+                items,
+              }}
+              placement="bottom"
+              arrow={{
+                pointAtCenter: true,
+              }}
+              trigger={["click"]}
+            >
+              <PrimaryButton
+                type="button"
+                className="btn btn-default"
+                label={"Options"}
+                customStyle={{
+                  height: "24px",
+                  fontSize: "12px",
+                  padding: "0px 12px 0px 12px",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
                 }}
               />
-            </button>
-          </Tooltip>
-          {item?.approvalStatus === "Pending" && (
-            <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
-                <EditOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!permission?.isEdit)
-                      return toast.warn("You don't have permission");
-                    history.push(
-                      `/retirement/separation/edit/${item?.separationId}`
-                    );
-                  }}
-                />
-              </button>
-            </Tooltip>
-          )}
-          {item?.approvalStatus === "Approve" && (
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-              }}
-              className="btn btn-default btn-assign"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (
-                  dateFormatterForInput(item?.dteLastWorkingDate) +
-                  "T00:00:00" >
-                  todayDate() + "T00:00:00"
-                ) {
-                  return toast.warn(
-                    `Can not release due to the employee having some working days left`
-                  );
-                }
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
-                history.push(
-                  `/retirement/separation/release/${item?.separationId}`
-                );
-              }}
-            >
-              Release
-            </button>
-          )}
+            </Dropdown>
+          </>
         </div>
       ),
       sort: false,
