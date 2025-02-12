@@ -38,7 +38,7 @@ const CommonForm = ({ formConfig, form, children }) => {
   };
 
   return (
-    <Row gutter={16}>
+    <Row gutter={16} className="mb-3">
       {formConfig.map((field, index) => (
         <Col span={field.col || 6} key={index}>
           {renderField(field)}

@@ -131,6 +131,9 @@ const BehavioralFactorScale = lazy(() =>
 const EvaluationCriteriaCreateEdit = lazy(() =>
   import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
 );
+const EvaluationPipeline = lazy(() =>
+  import("../modules/pms/configuration/evaluationPipeline/index.jsx")
+);
 const ObjectiveCreateAndEdit = lazy(() =>
   import("../modules/pms/configuration/objective/ObjectiveCreateAndEdit.jsx")
 );
@@ -334,9 +337,7 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
-const HiredeskOnboarding = lazy(() =>
-  import("../modules/onboarding/index.js")
-);
+const HiredeskOnboarding = lazy(() => import("../modules/onboarding/index.js"));
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
 );
@@ -3740,6 +3741,10 @@ export const routingList = [
   {
     path: "/pms/configuration/EvaluationCriteria",
     component: EvaluationCriteria,
+  },
+  {
+    path: "/pms/configuration/EvaluationPipeline",
+    component: EvaluationPipeline,
   },
   {
     path: "/pms/configuration/BehavioralFactor",

@@ -29,7 +29,7 @@ import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 import IndividualKpiPresentation from "modules/pms/performancePlanning/individualKpiEntrySelf/kpiPresentation";
 
 export const origin = window.location.origin;
-export const prodUrl = "https://192.168.7.189:7020";
+export const prodUrl = "https://devapp.peopledesk.io";
 
 export const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
