@@ -34,7 +34,8 @@ export const makerFormConfig = () => {
 export const levelOfLeaderApiCall = async (
   intAccountId,
   setState,
-  setLoading
+  setLoading,
+  isAll
 ) => {
   try {
     setLoading && setLoading(true);
@@ -47,6 +48,8 @@ export const levelOfLeaderApiCall = async (
       label: item?.strPositionGroupName,
       value: item?.intPositionGroupId,
     }));
+
+    if (isAll) formattedData?.unshift({ label: "All", value: 0 });
 
     setState(formattedData || []); // Return the transformed data if needed
     setLoading && setLoading(false);

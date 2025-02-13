@@ -153,12 +153,12 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
         scoreWeight: values?.scoreWeight,
       },
     ]);
-    form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
+    // form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
   };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading); // Call the API
+    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading, true); // Call the API
   }, []);
   const st = Form.useWatch("stakeholderType", form);
 
@@ -167,16 +167,22 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
       {loading && <Loading />}
       <PForm
         form={form}
-        initialValues={{
-          leadership: data?.levelOfLeadershipName,
-          positionGroupId: data?.levelOfLeadershipId,
-          kpiScore: data?.percentageOfKPI,
-          barScore: data?.percentageOfBAR,
-          id: data?.scoreScaleId,
-        }}
+        initialValues={
+          {
+            // leadership: data?.levelOfLeadershipName,
+            // positionGroupId: data?.levelOfLeadershipId,
+            // kpiScore: data?.percentageOfKPI,
+            // barScore: data?.percentageOfBAR,
+            // id: data?.scoreScaleId,
+          }
+        }
       >
         <CommonForm
-          formConfig={EvaluationPipelineForm(levelofLeaderShip, modal?.type)}
+          formConfig={EvaluationPipelineForm(
+            levelofLeaderShip,
+            modal?.type,
+            form
+          )}
           form={form}
         />
         {modal?.type !== "view" && (
@@ -223,9 +229,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
             form
               .validateFields()
               .then(() => {
-                if (values?.barScore + values?.kpiScore !== 100) {
-                  return toast.error("Sum of KPI and BAR must be 100");
-                }
+                console.log("values", values);
                 // handleEvaluationCriteriaScoreSetting(
                 //   form,
                 //   profileData,

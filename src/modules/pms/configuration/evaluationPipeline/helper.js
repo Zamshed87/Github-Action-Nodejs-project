@@ -1,14 +1,23 @@
-export const EvaluationPipelineForm = (leadershipApi, type) => {
+import { setCustomFieldsValue } from "utility/filter/helper";
+
+export const EvaluationPipelineForm = (leadershipApi, type, form) => {
   return [
     {
       type: "ddl",
       label: "Level of Leadership",
       varname: "leadership",
+      mode: "multiple",
       ddl: leadershipApi || [],
       placeholder: "Select the leadership",
       rules: [{ required: true, message: "Level of Leadership is required!" }],
       disabled: type === "view" || (type === "edit" && true),
       col: 8,
+      onChange: (value, op) => {
+        form.setFieldsValue({
+          leadership: op,
+        });
+        setCustomFieldsValue(form, "leadership", op);
+      },
     },
     {
       type: "ddl",
