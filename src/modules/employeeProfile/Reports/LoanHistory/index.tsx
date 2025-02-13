@@ -1,19 +1,6 @@
-import {
-  Avatar,
-  DataTable,
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
-
+import { Avatar, DataTable, PCard, PCardHeader, PForm } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
-import { getWorkplaceDetails } from "common/api";
+import { Form, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -21,22 +8,19 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
-
 import { debounce } from "lodash";
-
-import { LightTooltip } from "common/LightTooltip";
 import { InfoOutlined } from "@mui/icons-material";
+import { LightTooltip } from "common/LightTooltip";
 import { getPDFAction, postPDFAction } from "utility/downloadFile";
-import { formatFilterValueList } from "utility/filter/helper";
 import PFilter from "utility/filter/PFilter";
+import { formatFilterValueList } from "utility/filter/helper";
 
 const EmLoanHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { orgId, wId, buId, wgId, employeeId },
+    profileData: { orgId, wId, buId, wgId },
     tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
@@ -63,12 +47,8 @@ const EmLoanHistory = () => {
     total: 0,
   });
 
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
-  //   api states
-  const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -79,46 +59,6 @@ const EmLoanHistory = () => {
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
 
   type TLandingApi = {
     pagination?: {
@@ -147,7 +87,7 @@ const EmLoanHistory = () => {
         designationIdList: formatFilterValueList(values?.designation),
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        toDate: moment(values?.todate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         minimumAmount: 0,
         maximumAmount: 0,
         applicationStatus: "",
@@ -172,7 +112,6 @@ const EmLoanHistory = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
 
@@ -185,14 +124,24 @@ const EmLoanHistory = () => {
       width: 35,
       align: "center",
     },
-
+    {
+      title: "Work. Group/Location",
+      dataIndex: "strWorkPlaceGroupName",
+      width: 80,
+      fixed: "left",
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkPlaceName",
+      width: 120,
+      fixed: "left",
+    },
     {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
-      width: 35,
+      width: 80,
       fixed: "left",
     },
-
     {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
@@ -205,23 +154,20 @@ const EmLoanHistory = () => {
         );
       },
       fixed: "left",
-      width: 60,
+      width: 150,
     },
-
     {
       title: "Designation",
       dataIndex: "strDesignation",
 
-      width: 70,
+      width: 80,
     },
-
     {
       title: "Department",
       dataIndex: "strDepartment",
 
-      width: 70,
+      width: 80,
     },
-
     {
       title: "Application Date",
       dataIndex: "applicationDate",
@@ -247,6 +193,7 @@ const EmLoanHistory = () => {
           <span>{record?.loanType}</span>
         </div>
       ),
+      width: 100,
     },
     {
       title: "Loan Amount",
@@ -256,13 +203,13 @@ const EmLoanHistory = () => {
           <span>BDT {record?.loanAmount}</span>
         </>
       ),
+      width: 80,
     },
     {
       title: "Installment",
       dataIndex: "numberOfInstallment",
-      width: 30,
+      width: 50,
     },
-
     {
       title: "Approval",
       dataIndex: "applicationStatus",
@@ -281,7 +228,7 @@ const EmLoanHistory = () => {
           </div>
         </div>
       ),
-      width: 50,
+      width: 100,
     },
     {
       title: "Status",
@@ -298,19 +245,10 @@ const EmLoanHistory = () => {
             ) : rec?.installmentStatus === "deleted" ? (
               <Tag color="red">{rec?.installmentStatus}</Tag>
             ) : null}
-            {/* {rec?.applicationStatus === "Running" && (
-              <Tag color="gold">{rec?.applicationStatus}</Tag>
-            )} */}
-            {/* {rec?.applicationStatus === "Not Started" && (
-              <Tag color="blue">{rec?.applicationStatus}</Tag>
-            )} */}
-            {/* {rec?.applicationStatus === "deleted" && (
-              <Tag color="red">{rec?.applicationStatus}</Tag>
-            )} */}
           </div>
         </div>
       ),
-      width: 50,
+      width: 100,
     },
   ];
   const searchFunc = debounce((value) => {
@@ -318,12 +256,6 @@ const EmLoanHistory = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -354,23 +286,6 @@ const EmLoanHistory = () => {
               });
             }}
             onExport={() => {
-              // const values = form.getFieldsValue(true);
-              // getPDFAction(
-              //   `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${
-              //     values?.workplaceGroup?.value
-              //   }&DepartmentId=${0}&DesignationId=${
-              //     values?.designation?.value || 0
-              //   }&EmployeeId=${0}&LoanTypeId=${
-              //     values?.loanType?.value || 0
-              //   }&FromDate=${moment(values?.fromDate).format(
-              //     "YYYY-MM-DD"
-              //   )}&ToDate=${moment(values?.toDate).format(
-              //     "YYYY-MM-DD"
-              //   )}&MinimumAmount=${
-              //     values?.minimumAmount || 0
-              //   }&MaximumAmount=${0}&ApplicationStatus=${""}&InstallmentStatus=${""}`,
-              //   setLoading
-              // );
               const values = form.getFieldsValue(true);
               const payload = {
                 businessUnitId: buId,
@@ -379,7 +294,7 @@ const EmLoanHistory = () => {
                 designationIdList: formatFilterValueList(values?.designation),
                 employeeId: 0,
                 fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-                toDate: moment(values?.todate).format("YYYY-MM-DD"),
+                toDate: moment(values?.toDate).format("YYYY-MM-DD"),
                 minimumAmount: 0,
                 maximumAmount: 0,
                 applicationStatus: "",
@@ -388,8 +303,18 @@ const EmLoanHistory = () => {
                 pageNo: 1,
                 ispaginated: false,
                 searchText: "",
-                workplaceGroupId: values?.workplaceGroup?.value || 0,
-                workplaceId: values?.workplace?.value || 0,
+                workplaceGroupId: wgId,
+                workplaceId: wId,
+                WorkplaceGroupList:
+                  values?.workplaceGroup?.value == 0 ||
+                  values?.workplaceGroup?.value == undefined
+                    ? decodedToken.workplaceGroupList
+                    : values?.workplaceGroup?.value.toString(),
+                WorkplaceList:
+                  values?.workplace?.value == 0 ||
+                  values?.workplace?.value == undefined
+                    ? decodedToken.workplaceList
+                    : values?.workplace?.value.toString(),
               };
               postPDFAction(
                 "/PdfAndExcelReport/LoanReportAll",
@@ -399,82 +324,6 @@ const EmLoanHistory = () => {
             }}
           />
           <PFilter form={form} landingApiCall={landingApiCall} />
-          {/* <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={[
-                    { required: true, message: "Workplace Group is required" },
-                  ]}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                  }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody> */}
-
           <DataTable
             bordered
             data={landingApi?.data?.data || []}
@@ -506,7 +355,7 @@ const EmLoanHistory = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            //scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
