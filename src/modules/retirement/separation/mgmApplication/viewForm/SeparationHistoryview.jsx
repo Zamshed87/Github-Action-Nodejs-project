@@ -14,7 +14,7 @@ import { dateFormatter } from "utility/dateFormatter";
 import profileImg from "../../../../../assets/images/profile.jpg";
 import { getSeparationLandingById } from "../../helper";
 
-function SeparationHistoryview({ id }) {
+function SeparationHistoryview({ id, empId }) {
   //Redux Data
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -25,6 +25,8 @@ function SeparationHistoryview({ id }) {
   //Api Hooks
   const [, getApprovalListData] = useAxiosGet();
   const [handoverData, getHandoverData, handoverloading] = useAxiosGet();
+  const [exitInterviewData, getExitInterviewData, exitInterviewDataloading] =
+    useAxiosGet();
 
   //States
   const [empBasic, setEmpBasic] = useState({});
@@ -101,7 +103,6 @@ function SeparationHistoryview({ id }) {
       getSeparationLandingById(id, setSingleSeparationData, setLoading);
     }
   }, [id]);
-
   return (
     <>
       {loading && <Loading />}
@@ -421,12 +422,120 @@ function SeparationHistoryview({ id }) {
                 </div>
                 <div className="d-flex justify-content-end mt-2">
                   <div>
-                    <PButton
-                      type="primary"
+                    <Popover
                       content={
-                        <div style={{ fontSize: "10px" }}>Exit Interview</div>
+                        <DataTable
+                          bordered
+                          scroll={{ x: false }}
+                          data={[exitInterviewData?.data] || []}
+                          loading={exitInterviewDataloading}
+                          header={[
+                            {
+                              title: "Assigned To",
+                              dataIndex: "strEmployeeName",
+                            },
+                            {
+                              title: "Length of Service",
+                              dataIndex: "serviceLength",
+                            },
+                            {
+                              title: "Date of Resign",
+                              dataIndex: "dteLastWorkingDate",
+                              render: (data) => (
+                                <>{data ? dateFormatter(data) : "N/A"}</>
+                              ),
+                            },
+                            {
+                              title: "Resign Status",
+                              dataIndex: "approvalStatus",
+                              sort: true,
+                              filter: false,
+                              render: (item) => (
+                                <div className="d-flex justify-content-center">
+                                  {item === "Approve" && (
+                                    <Chips
+                                      label="Approved"
+                                      classess="success p-2"
+                                    />
+                                  )}
+                                  {item === "Pending" && (
+                                    <Chips
+                                      label="Pending"
+                                      classess="warning p-2"
+                                    />
+                                  )}
+                                  {item === "Process" && (
+                                    <Chips
+                                      label="Process"
+                                      classess="primary p-2"
+                                    />
+                                  )}
+                                  {item === "Reject" && (
+                                    <Chips
+                                      label="Rejected"
+                                      classess="danger p-2 mr-2"
+                                    />
+                                  )}
+                                  {item === "Released" && (
+                                    <Chips
+                                      label="Released"
+                                      classess="indigo p-2 mr-2"
+                                    />
+                                  )}
+                                  {item === "Cancelled" && (
+                                    <Chips
+                                      label="Released"
+                                      classess="danger p-2 mr-2"
+                                    />
+                                  )}
+                                </div>
+                              ),
+                              fieldType: "string",
+                            },
+                            {
+                              title: "Interview Completed By ",
+                              dataIndex: "strInterviewCompletedBy",
+                              width: 80,
+                            },
+                            {
+                              title: "Completed Date",
+                              dataIndex: "dteInterviewCompletedDate",
+                              render: (data) => (
+                                <>{data ? dateFormatter(data) : "N/A"}</>
+                              ),
+                            },
+                            {
+                              title: "Status",
+                              dataIndex: "strInterviewStatus",
+                              width: 60,
+                            },
+                          ]}
+                        />
                       }
-                    />
+                      title="Exit Interview"
+                      trigger="click"
+                      placement="left"
+                      overlayStyle={{
+                        width: "900px",
+                      }}
+                    >
+                      <PButton
+                        type="primary"
+                        content={
+                          <div style={{ fontSize: "10px" }}>Exit Interview</div>
+                        }
+                        onClick={() => {
+                          if (id) {
+                            getExitInterviewData(
+                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`,
+                              () => {
+                                setLoading(false);
+                              }
+                            );
+                          }
+                        }}
+                      />
+                    </Popover>
                   </div>
                 </div>
               </div>

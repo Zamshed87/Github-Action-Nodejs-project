@@ -1,8 +1,9 @@
+import { CloseCircleTwoTone, SettingTwoTone } from "@ant-design/icons";
 import {
   FilePresentOutlined,
   InfoOutlined
 } from "@mui/icons-material";
-import { Dropdown } from "antd";
+import { Dropdown, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
 import IConfirmModal from "common/IConfirmModal";
@@ -103,6 +104,7 @@ export const separationApplicationLandingTableColumn = (
   employeeId,
   getData,
   setChargeHandOverModal,
+  postWithdrawSeperationData,
   postCancelSeperationData,
   aprovalStatus,
   setAprovalStatus,
@@ -112,6 +114,27 @@ export const separationApplicationLandingTableColumn = (
     const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you sure you want to withdraw this application?",
+      yesAlertFunc: () => {
+        postWithdrawSeperationData(
+          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          "",
+          () => {
+            getData();
+          },
+          true
+        );
+      },
+      noAlertFunc: () => {
+        history.push("/SelfService/separation/applicationV2");
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  const cancelConfirmPopup = () => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: "Do you want to Cancel this application?",
       yesAlertFunc: () => {
         postCancelSeperationData(
           `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
@@ -127,6 +150,8 @@ export const separationApplicationLandingTableColumn = (
     };
     IConfirmModal(confirmObject);
   };
+
+
   const items = [
     {
       key: "1",
@@ -145,7 +170,6 @@ export const separationApplicationLandingTableColumn = (
           onClick={() => {
             setChargeHandOverModal(true);
           }}
-          disabled={aprovalStatus != "Pending"}//need to change
         />
       ),
     },
@@ -379,34 +403,53 @@ export const separationApplicationLandingTableColumn = (
     {
       title: "",
       dataIndex: "approvalStatus",
-      render: (item) => (
+      render: (item, data) => (
         <div className="d-flex">
-          <>
+          <Tooltip placement="top" color={"#34a853"} title={"Manage"}>
             <Dropdown
               menu={{
                 items,
               }}
-              placement="bottom"
+              placement="bottomLeft"
               arrow={{
                 pointAtCenter: true,
               }}
               trigger={["click"]}
+              disabled={item?.approvalStatus !== "Approve"}
             >
               <PrimaryButton
                 type="button"
-                className="btn btn-default"
-                label={"Options"}
+                icon={<SettingTwoTone twoToneColor="#34a853" />}
                 customStyle={{
-                  height: "24px",
-                  fontSize: "12px",
+                  height: "30px",
+                  fontSize: "16px",
                   padding: "0px 12px 0px 12px",
+                  border: "none",
                 }}
                 onClick={() => {
                   setAprovalStatus(item?.approvalStatus);
                 }}
               />
             </Dropdown>
-          </>
+          </Tooltip>
+          {item?.approvalStatus === "Pending" && <Tooltip placement="top" color={"#ff4d4f"} title={"Cancel"}>
+            <PrimaryButton
+              type="button"
+              icon={<CloseCircleTwoTone twoToneColor="#ff4d4f" />}
+              customStyle={{
+                height: "30px",
+                fontSize: "16px",
+                padding: "0px 12px 0px 12px",
+                border: "none",
+              }}
+              onClick={() => {
+                setAprovalStatus(item?.approvalStatus);
+                cancelConfirmPopup()
+              }
+              }
+            />
+          </Tooltip>}
+
         </div>
       ),
       sort: false,
