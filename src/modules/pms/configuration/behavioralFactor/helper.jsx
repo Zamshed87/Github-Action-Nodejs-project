@@ -1,3 +1,6 @@
+import axios from "axios";
+import { toast } from "react-toastify";
+
 export const makerFormConfig = (levelOfLeaderApi) => {
   return [
     {
@@ -20,9 +23,26 @@ export const makerFormConfig = (levelOfLeaderApi) => {
   ];
 };
 
-export const handleBehavouralFactorClone = (
-  data,
+export const handleBehavouralFactorClone = async (
+  values,
   profileData,
   setLoading,
-  callback
-) => {};
+  cb
+) => {
+  setLoading && setLoading(true);
+  const payload = {
+    fromPositionGroupId: values?.fromLeadership?.value,
+    toPositionGroupId: values?.toLeadership?.value,
+    actionBy: profileData?.intEmployeeId,
+  };
+  try {
+    const res = await axios.post(`/PMS/CloneQuestionnaireHeader`, payload);
+    cb && cb();
+    toast.success(res?.data?.message);
+    setLoading && setLoading(false);
+    // form.resetFields();
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    setLoading && setLoading(false);
+  }
+};

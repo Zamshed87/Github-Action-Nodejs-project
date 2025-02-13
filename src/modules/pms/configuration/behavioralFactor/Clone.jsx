@@ -89,7 +89,7 @@ const Clone = ({ data, isScoreSettings, setIsScoreSettings }) => {
               .validateFields()
               .then(() => {
                 handleBehavouralFactorClone(
-                  data,
+                  values,
                   profileData,
                   setLoading,
                   () => {
