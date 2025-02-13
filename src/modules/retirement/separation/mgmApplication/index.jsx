@@ -3,27 +3,27 @@ import {
   FilterAltOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import React, { useEffect, useState } from "react";
+import { Col, Drawer, Form, Row } from "antd";
+import { PButton, PForm, PInput, PSelect } from "Components";
+import { PModal } from "Components/Modal";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
-import PrimaryButton from "../../../../common/PrimaryButton";
-import ResetButton from "../../../../common/ResetButton";
-import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../../common/peopleDeskTable";
+import PrimaryButton from "../../../../common/PrimaryButton";
+import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   getSeparationLanding,
   separationApplicationLandingTableColumn,
 } from "../helper";
-import { PModal } from "Components/Modal";
 import { statusDDL } from "./utils";
-import { Col, Drawer, Form, Row } from "antd";
-import { PButton, PForm, PInput, PSelect } from "Components";
-import moment from "moment";
 import SeparationHistoryview from "./viewForm/SeparationHistoryview";
 
 const paginationSize = 100;
@@ -369,7 +369,7 @@ export default function ManagementSeparation() {
                 onCancel={() => {
                   setOpenModal(false);
                 }}
-                components={<SeparationHistoryview id={id} />}
+                components={<SeparationHistoryview id={id} empId={empId} />}
                 width={1000}
               />
             </>

@@ -31,6 +31,7 @@ export default function SelfServiceSeparation() {
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   const [, getSeperationData] = useAxiosGet();
+  const [, postWithdrawSeperationData] = useAxiosPost();
   const [, postCancelSeperationData] = useAxiosPost();
   const [aprovalStatus, setAprovalStatus] = useState("");
   const [separationId, setSeparationId] = useState("");
@@ -102,6 +103,7 @@ export default function SelfServiceSeparation() {
                   employeeId,
                   getData,
                   setChargeHandOverModal,
+                  postWithdrawSeperationData,
                   postCancelSeperationData,
                   aprovalStatus,
                   setAprovalStatus,
