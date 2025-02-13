@@ -398,6 +398,11 @@ export const General = ({
               <Col md={24} sm={24}>
                 <h2 style={{ marginBottom: "12px" }}>Leave Description</h2>
                 <ReactQuill
+                  style={{
+                    height: "100px",
+                    // width: "500px",
+                    marginBottom: "50px",
+                  }}
                   value={applicationBody}
                   preserveWhitespace={true}
                   onChange={(value) =>
