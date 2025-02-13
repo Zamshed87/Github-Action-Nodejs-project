@@ -50,9 +50,11 @@ const Questionaires = () => {
   );
 
   useEffect(() => {
-    getQuestionnariesList(`/PMS/GetQuestionnaireGroupName?accountId=${orgId}`);
+    getQuestionnariesList(
+      `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
+  }, []);
 
   return (
     <>
@@ -136,13 +138,14 @@ const Questionaires = () => {
             onHide={() => setQuestionnairesGroupNameModal(false)}
           >
             <AddQuestionnariesGroupName
+              data={data}
               employeeId={employeeId}
               permission={permission}
               orgId={orgId}
               onHide={() => {
                 setQuestionnairesGroupNameModal(false);
                 getQuestionnariesList(
-                  `/PMS/GetQuestionnaireGroupName?accountId=${orgId}`
+                  `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`
                 );
               }}
               questionnariesList={questionnariesList}
@@ -176,7 +179,7 @@ const Questionaires = () => {
               questionnariesList={questionnariesList}
               onHide={() => {
                 getQuestionnariesList(
-                  `/PMS/GetQuestionnaireGroupName?accountId=${orgId}`
+                  `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`
                 );
                 setQuestionnairesEditModal(false);
               }}

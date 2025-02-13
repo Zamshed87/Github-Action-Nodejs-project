@@ -3,7 +3,7 @@ export const makerFormConfig = (levelOfLeaderApi) => {
     {
       type: "ddl",
       label: "Level of Leadership(From Clone)",
-      varname: "leadership",
+      varname: "fromLeadership",
       placeholder: "Select the leadership",
       disabled: true,
       col: 12,
@@ -11,7 +11,7 @@ export const makerFormConfig = (levelOfLeaderApi) => {
     {
       type: "ddl",
       label: "Level of Leadership(To Clone)",
-      varname: "leadership",
+      varname: "toLeadership",
       placeholder: "Select the leadership",
       ddl: levelOfLeaderApi,
       rules: [{ required: true, message: "Please select the leadership" }],
@@ -19,3 +19,10 @@ export const makerFormConfig = (levelOfLeaderApi) => {
     },
   ];
 };
+
+export const handleBehavouralFactorClone = (
+  data,
+  profileData,
+  setLoading,
+  callback
+) => {};

@@ -5,7 +5,7 @@ import { useApiRequest } from "Hooks";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { makerFormConfig } from "./helper";
+import { handleBehavouralFactorClone, makerFormConfig } from "./helper";
 
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -13,10 +13,9 @@ import { ModalFooter } from "Components/Modal";
 import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
 
-const Clone = ({ isScoreSettings, setIsScoreSettings }) => {
+const Clone = ({ data, isScoreSettings, setIsScoreSettings }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const data = location?.state?.data;
   const firstSegment = location.pathname.split("/")[1];
   const [loading, setLoading] = useState(false);
   // redux
@@ -66,41 +65,12 @@ const Clone = ({ isScoreSettings, setIsScoreSettings }) => {
       {(loading || levelOfLeaderApi?.loading) && <Loading />}
       <PForm
         form={form}
-        initialValues={
-          type === "create"
-            ? {
-                employee: {
-                  label: null,
-                  value:
-                    firstSegment === "SelfService"
-                      ? profileData?.intEmployeeId
-                      : null,
-                },
-              }
-            : {
-                reqId: data?.id,
-                reasonForRequisition: data?.reasonForRequisition,
-                employee: {
-                  label: data?.employmentName,
-                  value: data?.employmentTypeId,
-                },
-                trainingType: {
-                  label: data?.trainingTypeName,
-                  value: data?.trainingTypeId,
-                },
-                objectivesToAchieve: data?.objectivesToAchieve,
-                remarks: data?.remarks,
-                requisitionStatus: {
-                  label: data?.status?.label,
-                  value: data?.status?.value,
-                },
-                upcommingTraining: {
-                  label: data?.upcommingTraining?.label,
-                  value: data?.upcommingTraining?.value,
-                },
-                comments: data?.comments,
-              }
-        }
+        initialValues={{
+          fromLeadership: {
+            label: data?.label,
+            value: data?.value,
+          },
+        }}
       >
         <CommonForm
           formConfig={makerFormConfig(levelOfLeaderApi?.data)}
@@ -118,9 +88,14 @@ const Clone = ({ isScoreSettings, setIsScoreSettings }) => {
             form
               .validateFields()
               .then(() => {
-                // if (values?.barScore + values?.kpiScore !== 100) {
-                //   return toast.error("Sum of KPI and BAR must be 100");
-                // }
+                handleBehavouralFactorClone(
+                  data,
+                  profileData,
+                  setLoading,
+                  () => {
+                    setIsScoreSettings(false);
+                  }
+                );
               })
               .catch((error) => {
                 console.log(error);

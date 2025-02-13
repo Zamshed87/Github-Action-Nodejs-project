@@ -15,6 +15,7 @@ const BehavioralFactor = () => {
   const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
   const [behavioralFactorCloneModal, setBehavioralFactorCloneModal] =
     useState(false);
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
@@ -81,6 +82,7 @@ const BehavioralFactor = () => {
               className="btn btn-secondary"
               type="button"
               onClick={(e) => {
+                setData(rec);
                 e.stopPropagation();
                 setBehavioralFactorCloneModal(true);
               }}
@@ -114,6 +116,7 @@ const BehavioralFactor = () => {
           }}
           components={
             <Clone
+              data={data}
               isScoreSettings={behavioralFactorCloneModal}
               setIsScoreSettings={setBehavioralFactorCloneModal}
             />
