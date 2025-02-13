@@ -425,7 +425,12 @@ export const SecurityMoneyReportLanding = () => {
             <>
               <PCardBody className="my-2">
                 <CommonEmpInfo
-                  employeeName={modalData[0]?.employeeName}
+                  employeeName={
+                    modalData[0]?.employeeName +
+                    `[` +
+                    modalData[0]?.employeeCode +
+                    `]`
+                  }
                   designationName={modalData[0]?.designation}
                   departmentName={modalData[0]?.department}
                 >

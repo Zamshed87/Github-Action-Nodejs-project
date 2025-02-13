@@ -500,9 +500,9 @@ export const SecurityDepositCRUD = () => {
                       setLanding
                     );
                   }}
-                  // onClick={(e) => {
-                  //   e.target.value = null;
-                  // }}
+                  onClick={(e: any) => {
+                    e.target.value = null;
+                  }}
                 />
               </Col>
             </Row>
