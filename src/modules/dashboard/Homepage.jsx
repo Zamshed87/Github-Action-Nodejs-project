@@ -79,7 +79,7 @@ const Homepage = () => {
   //     to = "/performancemanagementsystem";
   //     image = performance;
   //   } else if (label === "Recruitment") {
-  //     to = "https://devhire.peopledesk.io/";
+  //     to = "https://hiredesk.work/";
   //     image = requirment;
   //   } else if (label === "Manning") {
   //     to = "/manning";
@@ -136,7 +136,7 @@ const Homepage = () => {
       to = "/pms/configuration/EvaluationCriteria";
       image = performance;
     } else if (label === "Recruitment") {
-      to = "https://devhire.peopledesk.io/";
+      to = "https://hiredesk.work/";
       image = requirment;
     } else if (label === "Manning") {
       to = "/manning";
@@ -165,7 +165,7 @@ const Homepage = () => {
     ) {
       dispatch(handleMostClickedMenuListAction(childMenu?.[0]));
     }
-    if (to === "https://devhire.peopledesk.io/") {
+    if (to === "https://hiredesk.work/") {
       window.open(to, "_blank");
     } else {
       history.push(to);

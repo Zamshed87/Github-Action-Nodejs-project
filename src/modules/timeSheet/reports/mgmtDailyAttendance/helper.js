@@ -2,6 +2,7 @@ import axios from "axios";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import { convertTo12HourFormat } from "../../../../utility/timeFormatter";
+import { Typography } from "antd";
 
 // daily attendance generate landing
 export const getDailyAttendanceData = async (
@@ -250,6 +251,10 @@ export const subHeaderColumn = {
   movementCount: "Movement",
   weekendCount: "Weekend",
   holidayCount: "Holiday",
+  leaveWithOutPayCount: "Leave Without Pay",
+  halfDayLeaveCount: "Half Day Leave",
+  earlyOutCount: "Early Out",
+  naCount: "NA Count",
   manualPresentCount: "Manual Present",
 };
 
@@ -274,6 +279,47 @@ export const getTableDataSummaryHeadData = (item) => {
     new Cell(item?.movementCount || 0, "center", "text").getCell(),
     new Cell(item?.weekendCount || 0, "center", "text").getCell(),
     new Cell(item?.holidayCount || 0, "center", "text").getCell(),
+    new Cell(item?.leaveWithOutPayCount || 0, "center", "text").getCell(),
+    new Cell(item?.halfDayLeaveCount || 0, "center", "text").getCell(),
+    new Cell(item?.earlyOutCount || 0, "center", "text").getCell(),
+    new Cell(item?.naCount || 0, "center", "text").getCell(),
     new Cell(item?.manualPresentCount || 0, "center", "text").getCell(),
   ];
 };
+
+
+
+
+const EmployeeStats = ({ landingApi }) => {
+  return (
+    <div style={{ overflowX: "auto", whiteSpace: "nowrap", paddingBottom: "5px" }}>
+      <div className="d-flex justify-content-between align-items-center my-2" style={{ minWidth: "900px" }}>
+        {[
+          { label: "Total Employee", value: landingApi?.data?.totalEmployee || 0 },
+          { label: "Present", value: landingApi?.data?.presentCount || 0 },
+          { label: "Absent", value: landingApi?.data?.absentCount || 0 },
+          { label: "Late", value: landingApi?.data?.lateCount || 0 },
+          { label: "Leave", value: landingApi?.data?.leaveCount || 0 },
+          { label: "Movement", value: landingApi?.data?.movementCount || 0 },
+          { label: "Weekend", value: landingApi?.data?.weekendCount || 0 },
+          { label: "Holiday", value: landingApi?.data?.holidayCount || 0 },
+          { label: "Leave Without Pay", value: landingApi?.data?.leaveWithOutPayCount || 0 },
+          { label: "Half Day Leave", value: landingApi?.data?.halfDayLeaveCount || 0 },
+          { label: "Early Out", value: landingApi?.data?.earlyOutCount || 0 },
+          { label: "NA Count", value: landingApi?.data?.naCount || 0 },
+        ].map((item, index) => (
+          <div key={index} className="d-flex align-items-center mx-2">
+            <span style={{ fontSize: "12px" }}>
+              {item.label}:
+            </span>
+            <span style={{ marginLeft: "5px", fontSize: "12px" }}>
+              {item.value}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default EmployeeStats;
