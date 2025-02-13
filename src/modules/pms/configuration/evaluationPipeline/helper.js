@@ -35,15 +35,28 @@ export const EvaluationPipelineForm = (leadershipApi, type) => {
 };
 
 export const StakeholderForm = (
-  getStakeholderType,
-  stakeholderApi,
+  st,
   type,
   form,
-  getEmployee
+  getEmployee,
+  CommonEmployeeDDL,
+  doUserGrp,
+  userGrp
 ) => {
-  const values = form.getFieldsValue(true);
-  console.log(values?.stakeholderType?.label, "adnan");
-  return [
+  console.log(st);
+
+  // Common configurations for the "Stakeholder" field
+  const commonStakeholderConfig = {
+    type: "ddl",
+    label: "Stakeholder",
+    varname: "stakeholder",
+    placeholder: "Select the stakeholder",
+    rules: [{ required: true, message: "Stakeholder is required!" }],
+    col: 6,
+  };
+
+  // Base configuration without "Score Weight (%)"
+  const formConfig = [
     {
       type: "ddl",
       label: "Stakeholder Type",
@@ -59,32 +72,54 @@ export const StakeholderForm = (
       placeholder: "Select the Stakeholder Type",
       rules: [{ required: true, message: "Stakeholder Type is required!" }],
       col: 6,
-      onChange: (value, op) => {
-        getStakeholderType(op);
+      onChange: (label) => {
+        form.setFieldsValue({ stakeholder: undefined });
+        if (label === "User Group") {
+          doUserGrp();
+        }
       },
     },
-    {
-      type: "ddl",
-      label: "Stakeholder",
-      varname: "stakeholder",
-      disabled: values?.stakeholderType?.label === "Self",
-      ddl: stakeholderApi || [],
-      placeholder: "Select the stakeholder",
-      rules: [{ required: true, message: "Stakeholder Type is required!" }],
-      col: 6,
-      //   onSearch:(value) => {
-      //     getEmployee(value);
-      //   },
-      //   showSearch: true,
-      //   filterOption:false
-    },
-    {
-      type: "number",
-      label: "Score Weight (%)",
-      varname: "scoreWeight",
-      placeholder: "Score Weight (%)",
-      rules: [{ required: true, message: "Score Weight (%) is required!" }],
-      col: 6,
-    },
   ];
+
+  // Add Stakeholder field based on the selected type
+  if (st?.label === "Individual Employee") {
+    formConfig.push({
+      ...commonStakeholderConfig,
+      ddl: CommonEmployeeDDL?.data || [],
+      onSearch: (value) => {
+        getEmployee(value);
+      },
+      showSearch: true,
+      filterOption: false,
+      allowClear: true,
+      loading: CommonEmployeeDDL?.loading,
+    });
+  } else if (st?.label === "User Group") {
+    formConfig.push({
+      ...commonStakeholderConfig,
+      ddl: userGrp || [],
+    });
+  } else if (
+    ["Self", "Supervisor", "Dotted Supervisor", "Line Manager"].includes(
+      st?.label
+    )
+  ) {
+    formConfig.push({
+      ...commonStakeholderConfig,
+      ddl: [],
+      disabled: true,
+    });
+  }
+
+  // Add "Score Weight (%)" as the last object
+  formConfig?.push({
+    type: "number",
+    label: "Score Weight (%)",
+    varname: "scoreWeight",
+    placeholder: "Score Weight (%)",
+    rules: [{ required: true, message: "Score Weight (%) is required!" }],
+    col: 6,
+  });
+
+  return formConfig;
 };

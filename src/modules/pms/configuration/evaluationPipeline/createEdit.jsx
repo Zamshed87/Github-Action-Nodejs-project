@@ -27,12 +27,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   const firstSegment = location.pathname.split("/")[1];
   const [loading, setLoading] = useState(false);
   const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
-  const [
-    stakeholderApi,
-    getStakeholderApi,
-    loaderStakeholder,
-    setStakeholderApi,
-  ] = useAxiosGet([]);
+  const [userGrp, getUserGrp, loadingUserGrp, setUserGrp] = useAxiosGet([]);
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -44,19 +39,18 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   const params = useParams();
   const { type } = params;
 
-  const getStakeholderType = (type) => {
-    form.setFieldsValue({
-      stakeholder: undefined,
-    });
-    // getStakeholderApi(`/pms/GetStakeholderTypeDDL`);
-    if (type?.label === "Individual Employee") {
-      setStakeholderApi([{ value: 1, label: "Manager" }]);
-    } else if (type?.label === "Self") {
-      setStakeholderApi([]);
-      form.setFieldsValue({
-        stakeholder: undefined,
+  const doUserGrp = () => {
+    const api = `/Auth/GetAllUserGroupByAccountId?PageNo=1&PageSize=125&searchTxt=`;
+    getUserGrp(api, (res) => {
+      const list = [];
+      res?.data?.forEach((item, i) => {
+        list.push({
+          label: item?.strUserGroup,
+          value: item?.intUserGroupHeaderId,
+        });
       });
-    }
+      setUserGrp(list);
+    });
   };
 
   const getEmployee = (value) => {
@@ -83,6 +77,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
     levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading); // Call the API
   }, []);
+  const st = Form.useWatch("stakeholderType", form);
 
   return permission?.isCreate ? (
     <div>
@@ -103,11 +98,13 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
         />
         <CommonForm
           formConfig={StakeholderForm(
-            getStakeholderType,
-            stakeholderApi,
+            st,
             modal?.type,
             form,
-            getEmployee
+            getEmployee,
+            CommonEmployeeDDL,
+            doUserGrp,
+            userGrp
           )}
           form={form}
         >
