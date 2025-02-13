@@ -23,6 +23,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { processDataFromExcelSecurityDeposit } from "./helper";
 import moment from "moment";
+import { ModalFooter, PModal } from "Components/Modal";
 
 export const SecurityDepositCRUD = () => {
   const dispatch = useDispatch();
@@ -33,6 +34,8 @@ export const SecurityDepositCRUD = () => {
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
   const [landing, setLanding] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [errorData, setErrorData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30338),
@@ -362,6 +365,39 @@ export const SecurityDepositCRUD = () => {
       ),
     },
   ];
+  const errorHeader: any = [
+    {
+      title: "SL",
+      render: (_value: any, _row: any, index: number) => index + 1,
+      align: "center",
+      width: 30,
+    },
+
+    {
+      title: "Employee Code",
+      dataIndex: "employeeCode",
+      width: 100,
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "employeeName",
+      width: 100,
+    },
+
+    //  Custom Input Columns
+    {
+      title: "Deposits Money",
+      width: 150,
+      dataIndex: "depositeMoney",
+    },
+
+    {
+      title: "Comment",
+      width: 150,
+
+      dataIndex: "remarks",
+    },
+  ];
 
   const viewHandler = async () => {
     const values = form.getFieldsValue(true);
@@ -497,7 +533,9 @@ export const SecurityDepositCRUD = () => {
                       buId,
                       wgId,
                       setLoading,
-                      setLanding
+                      setLanding,
+                      setOpen,
+                      setErrorData
                     );
                   }}
                   onClick={(e: any) => {
@@ -727,6 +765,27 @@ export const SecurityDepositCRUD = () => {
             checkBoxColWidth={50}
           />
         </PCard>
+
+        <PModal
+          width={900}
+          open={open}
+          onCancel={() => setOpen(false)}
+          title={`Missing Data`}
+          components={
+            <>
+              <DataTable header={errorHeader} bordered data={errorData || []} />
+              <ModalFooter
+                submitText={`Skip (${errorData?.length}) and Proceed`}
+                submitAction="button"
+                cancelText={false}
+                onSubmit={() => {
+                  setOpen(false);
+                  setErrorData([]);
+                }}
+              />
+            </>
+          }
+        />
       </PForm>
     </>
   ) : (
