@@ -1,48 +1,17 @@
 import {
-  EditOutlined,
   FilePresentOutlined,
-  InfoOutlined,
-  VisibilityOutlined,
+  InfoOutlined
 } from "@mui/icons-material";
+import { Dropdown } from "antd";
 import axios from "axios";
+import Chips from "common/Chips";
+import IConfirmModal from "common/IConfirmModal";
+import { LightTooltip } from "common/LightTooltip";
+import PrimaryButton from "common/PrimaryButton";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { toast } from "react-toastify";
-import Chips from "../../../common/Chips";
-import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
-import { gray500, gray700, gray900 } from "../../../utility/customColor";
-import {
-  dateFormatter,
-  dateFormatterForInput,
-} from "../../../utility/dateFormatter";
-import { todayDate } from "../../../utility/todayDate";
-import { Tooltip, styled, tooltipClasses } from "@mui/material";
-import moment from "moment";
-
-export const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(() => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: "#fff !important",
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#fff",
-    color: "rgba(0, 0, 0, 0.87)",
-    maxWidth: 300,
-    boxShadow:
-      "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
-    fontSize: 11,
-  },
-}));
-
-export const getRoleAssigneToUser = async (buId, wgId, id, setter) => {
-  try {
-    const res = await axios.post(
-      `/Auth/RoleAssignToUserById?businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${id}`
-    );
-    if (res?.data) {
-      setter && setter(res?.data);
-    }
-  } catch (error) { }
-};
+import { gray500, gray700, gray900 } from "utility/customColor";
+import { dateFormatter } from "utility/dateFormatter";
 
 // separation create
 export const CreateSeparation = async (payload, setLoading, cb) => {
@@ -131,11 +100,97 @@ export const separationApplicationLandingTableColumn = (
   paginationSize,
   history,
   dispatch,
-  setOpenModal,
-  permission,
-  setId,
-  setEmpId
+  employeeId,
+  getData,
+  setChargeHandOverModal,
+  postCancelSeperationData,
+  aprovalStatus,
+  setAprovalStatus,
+  separationId
 ) => {
+  const confirmPopup = () => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: "Are you sure you want to withdraw this application?",
+      yesAlertFunc: () => {
+        postCancelSeperationData(
+          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          "",
+          () => {
+            getData();
+          }
+        );
+      },
+      noAlertFunc: () => {
+        history.push("/SelfService/separation/applicationV2");
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+  const items = [
+    {
+      key: "1",
+      label: (
+        <PrimaryButton
+          type="button"
+          className="btn btn-default"
+          customStyle={{
+            backgroundColor: "#1677ff",
+            borderColor: "#1677ff",
+            fontSize: "11px",
+            width: "160px",
+            height: "35px",
+          }}
+          label={"Charge Handover"}
+          onClick={() => {
+            setChargeHandOverModal(true);
+          }}
+          disabled={aprovalStatus != "Pending"}//need to change
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <PrimaryButton
+          type="button"
+          className="btn btn-default"
+          customStyle={{
+            backgroundColor: "#13c2c2",
+            borderColor: "#13c2c2",
+            fontSize: "12px",
+            width: "160px",
+            height: "35px",
+          }}
+          label={"Exit Interview"}
+          onClick={() => {
+            console.log("Exit Interview");
+          }}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <PrimaryButton
+          type="button"
+          className="btn btn-default"
+          customStyle={{
+            backgroundColor: "#ff4d4f",
+            borderColor: "#ff4d4f",
+            fontSize: "12px",
+            width: "160px",
+            height: "35px",
+          }}
+          label={"Withdraw"}
+          onClick={() => {
+            confirmPopup();
+          }}
+        />
+      ),
+    },
+  ];
+
   return [
     {
       title: "SL",
@@ -288,11 +343,7 @@ export const separationApplicationLandingTableColumn = (
       title: "Created Date",
       dataIndex: "dteCreatedAt",
       render: (data) => (
-        <>
-          {data?.dteCreatedAt
-            ? dateFormatter(data?.dteCreatedAt)
-            : "N/A"}
-        </>
+        <>{data?.dteCreatedAt ? dateFormatter(data?.dteCreatedAt) : "N/A"}</>
       ),
       sort: true,
       filter: false,
@@ -330,64 +381,32 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
-          <Tooltip title="View" arrow>
-            <button className="iconButton" type="button">
-              <VisibilityOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setId(item?.separationId);
-                  setEmpId(item?.intEmployeeId);
-                  setOpenModal(true);
+          <>
+            <Dropdown
+              menu={{
+                items,
+              }}
+              placement="bottom"
+              arrow={{
+                pointAtCenter: true,
+              }}
+              trigger={["click"]}
+            >
+              <PrimaryButton
+                type="button"
+                className="btn btn-default"
+                label={"Options"}
+                customStyle={{
+                  height: "24px",
+                  fontSize: "12px",
+                  padding: "0px 12px 0px 12px",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
                 }}
               />
-            </button>
-          </Tooltip>
-          {item?.approvalStatus === "Pending" && (
-            <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
-                <EditOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!permission?.isEdit)
-                      return toast.warn("You don't have permission");
-                    history.push(
-                      `/retirement/separation/edit/${item?.separationId}`
-                    );
-                  }}
-                />
-              </button>
-            </Tooltip>
-          )}
-          {item?.approvalStatus === "Approve" && (
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-              }}
-              className="btn btn-default btn-assign"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (
-                  dateFormatterForInput(item?.dteLastWorkingDate) +
-                  "T00:00:00" >
-                  todayDate() + "T00:00:00"
-                ) {
-                  return toast.warn(
-                    `Can not release due to the employee having some working days left`
-                  );
-                }
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
-                history.push(
-                  `/retirement/separation/release/${item?.separationId}`
-                );
-              }}
-            >
-              Release
-            </button>
-          )}
+            </Dropdown>
+          </>
         </div>
       ),
       sort: false,
@@ -459,131 +478,5 @@ export const getEmployeeProfileViewData = async (
     }
   } catch (error) {
     setLoading && setLoading(false);
-  }
-};
-
-export const employeeSeparationCrud = async (
-  partId,
-  employeeId,
-  values,
-  setLoading,
-  getData,
-  orgId,
-  buId,
-  wgId
-) => {
-  try {
-    setLoading(true);
-    let payload = {
-      partId: partId,
-      intSeparationId: values?.autoId || 0,
-      businessUnitId: buId,
-      workplaceGroupId: wgId,
-      intEmployeeId: values?.employee?.value || 0,
-      strEmployeeName: values?.employee?.label || "",
-      strEmployeeCode: values?.employee?.strEmployeeCode || "",
-      intSeparationTypeId: values?.separationType?.value || "",
-      strSeparationTypeName: values?.separationType?.label || "",
-      dteLastWorkingDay: values?.lastWorkingDay || "",
-      strReason: values?.reason || "",
-      numAdjustedAmound: values?.adjustedAmount || 0,
-      isActive: true,
-      intAccountId: orgId,
-      intCreatedBy: employeeId,
-    };
-    const res = await axios.post("/Employee/CRUDEmployeeSeparation", payload);
-    getData();
-    setLoading(false);
-    toast.success(res?.data?.message || "Submitted Successfully");
-  } catch (error) {
-    setLoading(false);
-    toast.warn(error?.response?.data?.message || "Failed, try again");
-  }
-};
-
-export const getEmployeeSeparationLanding = async (
-  wId,
-  buId,
-  wgId,
-  formData,
-  toData,
-  search,
-  isForXl = false,
-  setter,
-  setLoading,
-  pageNo,
-  pageSize,
-  setPages,
-  workplaceGroupList,
-  workplaceList
-) => {
-  setLoading && setLoading(true);
-
-  try {
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
-
-    search = search && (apiUrl += `&searchTxt=${search}`);
-
-    const res = await axios.get(apiUrl);
-
-    if (res?.data) {
-      const modifiedData = res?.data?.data?.map((item, index) => ({
-        ...item,
-        initialSerialNumber: index + 1,
-      }));
-
-      setter && setter?.(modifiedData);
-
-      setPages({
-        current: res?.data?.currentPage,
-        pageSize: res?.data?.pageSize,
-        total: res?.data?.totalCount,
-      });
-
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
-};
-
-export const searchData = (keywords, allData, setRowDto, setLoading) => {
-  try {
-    if (!keywords) {
-      setRowDto(allData);
-      return;
-    }
-    setLoading && setLoading(true);
-    const regex = new RegExp(keywords?.toLowerCase());
-    let newData = allData?.filter(
-      (item) =>
-        regex.test(item?.EmployeeName?.toLowerCase()) ||
-        regex.test(item?.DepartmentName?.toLowerCase()) ||
-        regex.test(item?.DesignationName?.toLowerCase()) ||
-        regex.test(item?.SeparationTypeName?.toLowerCase())
-    );
-    setRowDto(newData);
-    setLoading && setLoading(false);
-  } catch (error) {
-    setLoading && setLoading(false);
-    setRowDto([]);
-  }
-};
-
-export const releasedEmployeeSeparation = async (payload, setLoading, cb) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.post(
-      "/separation/ReleasedSeparation",
-      payload
-    );
-    cb && cb();
-    setLoading && setLoading(false);
-    toast.success(res?.data?.message || "Submitted Successfully", {
-      toastId: 1,
-    });
-  } catch (error) {
-    setLoading && setLoading(false);
-    toast.warn(error?.response?.data?.message || "Failed, try again");
   }
 };

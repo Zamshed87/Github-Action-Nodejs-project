@@ -20,11 +20,11 @@ import {
   separationApplicationLandingTableColumn,
 } from "../helper";
 import { PModal } from "Components/Modal";
-import ManagementSeparationHistoryView from "./viewForm/ManagementSeparationHistoryView";
 import { statusDDL } from "./utils";
 import { Col, Drawer, Form, Row } from "antd";
 import { PButton, PForm, PInput, PSelect } from "Components";
 import moment from "moment";
+import SeparationHistoryview from "./viewForm/SeparationHistoryview";
 
 const paginationSize = 100;
 export const formatDate = (date) => {
@@ -77,7 +77,6 @@ export default function ManagementSeparation() {
   const defaultToDate = moment().endOf("month");
 
   const getData = (pagination, searchText) => {
-
     const fromDate = formatDate(values?.fromDate || defaultFromDate);
     const toDate = formatDate(values?.toDate || defaultToDate);
 
@@ -156,7 +155,6 @@ export default function ManagementSeparation() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
-
   return (
     <>
       {loading && <Loading />}
@@ -364,11 +362,6 @@ export default function ManagementSeparation() {
                 uniqueKey="strEmployeeCode"
                 isCheckBox={false}
                 isScrollAble={false}
-                onRowClick={(data) => {
-                  history.push(
-                    `/retirement/separation/view/${data?.separationId}`
-                  );
-                }}
               />
               <PModal
                 title="Separation History View"
@@ -376,13 +369,7 @@ export default function ManagementSeparation() {
                 onCancel={() => {
                   setOpenModal(false);
                 }}
-                components={
-                  <ManagementSeparationHistoryView
-                    id={id}
-                    type="view"
-                    empId={empId}
-                  />
-                }
+                components={<SeparationHistoryview id={id} />}
                 width={1000}
               />
             </>
