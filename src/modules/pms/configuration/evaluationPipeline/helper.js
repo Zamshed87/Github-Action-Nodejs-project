@@ -51,7 +51,6 @@ export const StakeholderForm = (
     label: "Stakeholder",
     varname: "stakeholder",
     placeholder: "Select the stakeholder",
-    rules: [{ required: true, message: "Stakeholder is required!" }],
     col: 6,
   };
 
@@ -93,11 +92,13 @@ export const StakeholderForm = (
       filterOption: false,
       allowClear: true,
       loading: CommonEmployeeDDL?.loading,
+      rules: [{ required: true, message: "Stakeholder is required!" }],
     });
   } else if (st?.label === "User Group") {
     formConfig.push({
       ...commonStakeholderConfig,
       ddl: userGrp || [],
+      rules: [{ required: true, message: "Stakeholder is required!" }],
     });
   } else if (
     ["Self", "Supervisor", "Dotted Supervisor", "Line Manager"].includes(

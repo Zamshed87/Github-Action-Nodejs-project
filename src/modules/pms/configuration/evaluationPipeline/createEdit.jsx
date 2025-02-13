@@ -1,6 +1,6 @@
-import { Col, Form } from "antd";
+import { Col, Form, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
-import { PButton, PForm } from "Components";
+import { DataTable, Flex, PButton, PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -14,6 +14,8 @@ import { EvaluationPipelineForm, StakeholderForm } from "./helper";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { useApiRequest } from "Hooks";
+import { DeleteOutlined } from "@ant-design/icons";
+import { getSerial } from "Utils";
 
 const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   // redux
@@ -28,6 +30,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   const [loading, setLoading] = useState(false);
   const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
   const [userGrp, getUserGrp, loadingUserGrp, setUserGrp] = useAxiosGet([]);
+  const [stakeholderField, setStakeholderField] = useState([]);
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -73,6 +76,86 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
     });
   };
 
+  const header = [
+    {
+      title: "SL",
+      render: (_, rec, index) =>
+        getSerial({
+          currentPage: 1,
+          pageSize: 1000,
+          index,
+        }),
+      fixed: "left",
+      align: "center",
+    },
+    {
+      title: "Stakeholder Type",
+      dataIndex: "stakeholderTypeName",
+    },
+    {
+      title: "Stakeholder",
+      dataIndex: "stakeholderName",
+    },
+
+    {
+      title: "Score Weight",
+      dataIndex: "scoreWeight",
+    },
+    {
+      title: "Action",
+      dataIndex: "status",
+      render: (_, rec) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                const updatedstakeholderField = stakeholderField?.filter(
+                  (item) =>
+                    !(
+                      item.stakeholderTypeId === rec.stakeholderTypeId &&
+                      item.stakeholderId === rec.stakeholderId
+                    )
+                );
+                setStakeholderField(updatedstakeholderField);
+              }}
+            />
+          </Tooltip>
+        </Flex>
+      ),
+      align: "center",
+      width: 40,
+    },
+  ];
+
+  const addHandler = (values) => {
+    const isDuplicate = stakeholderField.some(
+      (org) => org.stakeholderName === values?.stakeholder?.label
+    );
+
+    if (isDuplicate) {
+      toast.error("Stakeholder already exists");
+      return;
+    }
+
+    setStakeholderField([
+      ...stakeholderField,
+      {
+        stakeholderName: values?.stakeholder?.label,
+        stakeholderId: values?.stakeholder?.value,
+        stakeholderTypeName: values?.stakeholderType?.label,
+        stakeholderTypeId: values?.stakeholderType?.value,
+        scoreWeight: values?.scoreWeight,
+      },
+    ]);
+    form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
+  };
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
     levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading); // Call the API
@@ -96,35 +179,39 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
           formConfig={EvaluationPipelineForm(levelofLeaderShip, modal?.type)}
           form={form}
         />
-        <CommonForm
-          formConfig={StakeholderForm(
-            st,
-            modal?.type,
-            form,
-            getEmployee,
-            CommonEmployeeDDL,
-            doUserGrp,
-            userGrp
-          )}
-          form={form}
-        >
-          <Col md={6} sm={24}>
-            <PButton
-              style={{ marginTop: "22px" }}
-              type="primary"
-              content={"Add"}
-              onClick={() => {
-                const values = form.getFieldsValue(true);
-                form
-                  .validateFields()
-                  .then(() => {
-                    console.log(values);
-                  })
-                  .catch(() => {});
-              }}
-            />
-          </Col>
-        </CommonForm>
+        {modal?.type !== "view" && (
+          <CommonForm
+            formConfig={StakeholderForm(
+              st,
+              modal?.type,
+              form,
+              getEmployee,
+              CommonEmployeeDDL,
+              doUserGrp,
+              userGrp
+            )}
+            form={form}
+          >
+            <Col md={6} sm={24}>
+              <PButton
+                style={{ marginTop: "22px" }}
+                type="primary"
+                content={"Add"}
+                onClick={() => {
+                  const values = form.getFieldsValue(true);
+                  form
+                    .validateFields()
+                    .then(() => {
+                      const values = form.getFieldsValue(true);
+
+                      addHandler(values);
+                    })
+                    .catch(() => {});
+                }}
+              />
+            </Col>
+          </CommonForm>
+        )}
 
         <ModalFooter
           onCancel={() => {
@@ -155,6 +242,16 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
           }}
         />
       </PForm>
+      {stakeholderField?.length > 0 && (
+        <div className="mb-3 mt-2">
+          <DataTable
+            bordered
+            data={stakeholderField || []}
+            loading={false}
+            header={header}
+          />
+        </div>
+      )}
     </div>
   ) : (
     <NotPermittedPage />
