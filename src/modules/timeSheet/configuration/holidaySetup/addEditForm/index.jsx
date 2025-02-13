@@ -175,10 +175,11 @@ const HolidayGroupModal = ({
       createTimeSheetAction(payload, setLoading, callback);
     } else {
       const callback = (id) => {
-        history.push({
-          pathname: `/administration/timeManagement/holidaySetup/${id}`,
-          // state: row?.HolidayGroupId ? { ...row, isExtend: true } : "",
-        });
+        !row?.HolidayGroupId &&
+          history.push({
+            pathname: `/administration/timeManagement/holidaySetup/${id}`,
+            // state: row?.HolidayGroupId ? { ...row, isExtend: true } : "",
+          });
         cb();
         onHide();
         getPeopleDeskAllLanding(
