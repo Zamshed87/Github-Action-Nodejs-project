@@ -1692,6 +1692,9 @@ const RetirementReleaseSeparationForm = lazy(() =>
 const SelfServiceSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
 );
+const ExitInterviewLanding = lazy(() =>
+  import("../modules/retirement/exitInterview/index.jsx")
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4039,6 +4042,10 @@ export const routingList = [
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
   },
+  {
+    path: "/retirement/exitInterview",
+    component: ExitInterviewLanding,
+  }
 ];
 
 // Those hidden menu just use for develper
