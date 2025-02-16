@@ -19,10 +19,8 @@ const BehavioralFactor = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
   const [behavioralFactorCloneModal, setBehavioralFactorCloneModal] =
     useState(false);
-  const [isScoreSettings, setIsScoreSettings] = useState({
-    open: false,
-    type: "",
-  });
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
   const { profileData } = useSelector((state) => state?.auth, shallowEqual);
@@ -124,8 +122,8 @@ const BehavioralFactor = () => {
   ];
   return permission?.isView ? (
     <div className="table-card">
-      {criteriaListLoader && <Loading />}
       <PForm form={form}>
+        {loading && <Loading />}
         <div className="mt-2">
           <DataTable
             bordered
