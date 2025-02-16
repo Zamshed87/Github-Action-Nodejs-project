@@ -15,7 +15,6 @@ import {
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 import { Tooltip, styled, tooltipClasses } from "@mui/material";
-import moment from "moment";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
