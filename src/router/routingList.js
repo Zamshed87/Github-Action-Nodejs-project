@@ -1697,29 +1697,29 @@ const Test = lazy(() =>
   import("../modules/componentModule/peopledeskTable/test.jsx")
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
-// Retirement Module
-const Separation = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/index.jsx")
-);
-const SeparationApplicationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
-  )
-);
-const RetirementViewSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
-);
-const RetirementReleaseSeparationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
-  )
-);
+
 const SelfServiceSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
 );
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
+
+// Retirement Module
+const Separation = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/index.jsx")
+);
+const SeparationApplicationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+);
+
+const RetirementViewSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
+);
+const RetirementReleaseSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+);
+
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4132,6 +4132,10 @@ export const routingList = [
   {
     path: "/retirement/separation/edit/:id",
     component: SeparationApplicationForm,
+  },
+  {
+    path: "/retirement/separation/view/:id",
+    component: RetirementViewSeparationForm,
   },
   {
     path: "/retirement/separation/release/:id",

@@ -362,6 +362,11 @@ export default function ManagementSeparation() {
                 uniqueKey="strEmployeeCode"
                 isCheckBox={false}
                 isScrollAble={false}
+                onRowClick={(data) => {
+                  history.push(
+                    `/retirement/separation/view/${data?.separationId}`
+                  );
+                }}
               />
               <PModal
                 title="Separation History View"
