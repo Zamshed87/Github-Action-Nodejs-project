@@ -1557,7 +1557,6 @@ const MonthlyAttendanceReport = lazy(() =>
 const EmployeesShift = lazy(() =>
   import("../modules/timeSheet/reports/employeesShift/index.tsx")
 );
-
 // Training and Development
 import TrainingCalender from "modules/TrainingAndDevelopment/reports/trainingCalender/calender";
 import TnDAttendanceSave from "modules/TrainingAndDevelopment/attendanceTracker/attendanceSave";
@@ -1576,25 +1575,6 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
-// Retirement Module
-const Separation = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/index.jsx")
-);
-const SeparationApplicationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
-  )
-);
-const RetirementReleaseSeparationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
-  )
-);
-const SelfServiceSeparation = lazy(() =>
-  import(
-    "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
-  )
-);
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1702,6 +1682,25 @@ const Test = lazy(() =>
   import("../modules/componentModule/peopledeskTable/test.jsx")
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
+// Retirement Module
+const Separation = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/index.jsx")
+);
+const SeparationApplicationForm = lazy(() =>
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
+);
+const RetirementReleaseSeparationForm = lazy(() =>
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
+);
+const SelfServiceSeparation = lazy(() =>
+  import(
+    "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
+  )
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
