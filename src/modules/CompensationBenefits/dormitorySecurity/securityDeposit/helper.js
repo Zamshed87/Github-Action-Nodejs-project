@@ -8,11 +8,13 @@ const processBulkUploadSecurityDeposit = (
   buId,
   wgId,
   setLoading,
-  setLanding
+  setLanding,
+  setOpen,
+  setErrorData
 ) => {
   setLoading && setLoading(true);
   try {
-    let modifiedData = processData.map((item) => {
+    const modifiedData = processData.map((item) => {
       return {
         ...item,
         intSalaryAdditionAndDeductionId: 0,
@@ -25,7 +27,19 @@ const processBulkUploadSecurityDeposit = (
         remarks: item?.["Comments"] || "",
       };
     });
-    setLanding?.(modifiedData);
+    const errorData = [];
+    const cleanData = [];
+    modifiedData.forEach((item) => {
+      if (!item.employeeCode || !item.depositeMoney) {
+        errorData.push(item);
+      } else {
+        cleanData.push(item);
+      }
+    });
+    setLanding?.(cleanData);
+    setErrorData(errorData);
+    errorData?.length > 0 && setOpen(true);
+
     setLoading?.(false);
   } catch (error) {
     setLanding([]);
@@ -40,7 +54,9 @@ export const processDataFromExcelSecurityDeposit = async (
   buId,
   wgId,
   setLoading,
-  setLanding
+  setLanding,
+  setOpen,
+  setErrorData
 ) => {
   try {
     const processData = await excelFileToArray(file, "SecurityDeposit");
@@ -52,7 +68,9 @@ export const processDataFromExcelSecurityDeposit = async (
       buId,
       wgId,
       setLoading,
-      setLanding
+      setLanding,
+      setOpen,
+      setErrorData
     );
   } catch (error) {
     toast.warn("Failed to process!");

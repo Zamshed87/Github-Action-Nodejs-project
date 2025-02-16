@@ -1,10 +1,8 @@
-import { AddOutlined, EditOutlined } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { AddOutlined } from "@mui/icons-material";
 import { PCard, PCardHeader, PForm } from "Components";
 import { Collapse, Form } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import NoResult from "../../../../../common/NoResult";
 import ViewModal from "../../../../../common/ViewModal";
 import Loading from "../../../../../common/loading/Loading";
 import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
@@ -12,9 +10,27 @@ import useAxiosPost from "../../../../../utility/customHooks/useAxiosPost";
 import AddQuestionnariesGroupName from "./AddQuestionnariesGroupName";
 import EditQuestionnaires from "./EditQuestionnaires";
 import QuestionnairesList from "./QuestionnairesList";
+import { useLocation } from "react-router-dom";
 const { Panel } = Collapse;
 const Questionaires = () => {
   const [form] = Form.useForm();
+  const location = useLocation();
+  const { data } = location?.state;
+  //   {
+  //     "intPositionGroupId": 2,
+  //     "strPositionGroupCode": "TCL",
+  //     "strPositionGroupName": "Tactical Leader",
+  //     "intAccountId": 12,
+  //     "intActionBy": 0,
+  //     "dteLastActionDateTime": "2025-02-02T10:37:39.697",
+  //     "dteServerDateTime": "2023-02-06T00:00:00",
+  //     "isActive": true,
+  //     "strEvaluationCriteriaOfPms": "BSC",
+  //     "label": "Tactical Leader",
+  //     "value": 2,
+  //     "key": 3,
+  //     "sl": 4
+  // }
   const {
     permissionList,
     profileData: { buId, orgId, employeeId },
@@ -34,9 +50,11 @@ const Questionaires = () => {
   );
 
   useEffect(() => {
-    getQuestionnariesList(`/PMS/GetQuestionnaireGroupName?accountId=${orgId}`);
+    getQuestionnariesList(
+      `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
+  }, []);
 
   return (
     <>
@@ -120,13 +138,14 @@ const Questionaires = () => {
             onHide={() => setQuestionnairesGroupNameModal(false)}
           >
             <AddQuestionnariesGroupName
+              data={data}
               employeeId={employeeId}
               permission={permission}
               orgId={orgId}
               onHide={() => {
                 setQuestionnairesGroupNameModal(false);
                 getQuestionnariesList(
-                  `/PMS/GetQuestionnaireGroupName?accountId=${orgId}`
+                  `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`
                 );
               }}
               questionnariesList={questionnariesList}
@@ -160,7 +179,7 @@ const Questionaires = () => {
               questionnariesList={questionnariesList}
               onHide={() => {
                 getQuestionnariesList(
-                  `/PMS/GetQuestionnaireGroupName?accountId=${orgId}`
+                  `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`
                 );
                 setQuestionnairesEditModal(false);
               }}

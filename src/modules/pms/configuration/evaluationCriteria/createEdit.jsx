@@ -1,41 +1,33 @@
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import Loading from "common/loading/Loading";
-import {
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
-import { useApiRequest } from "Hooks";
+import { PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation, useParams } from "react-router-dom";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { formConfig, makerFormConfig } from "./helper";
+import { useParams } from "react-router-dom";
+import {
+  handleEvaluationCriteriaScoreSetting,
+  levelOfLeaderApiCall,
+  makerFormConfig,
+} from "./helper";
 
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import CommonForm from "modules/pms/CommonForm/commonForm";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { ModalFooter } from "Components/Modal";
+import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
 
-const CreateEdit = ({ isScoreSettings, setIsScoreSettings }) => {
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const data = location?.state?.data;
-  const firstSegment = location.pathname.split("/")[1];
-  const [loading, setLoading] = useState(false);
+const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data, cb }) => {
   // redux
   const { permissionList, profileData } = useSelector(
     (state) => state?.auth,
     shallowEqual
   );
 
-  const { buId, wgId, wId, orgId } = profileData;
+  const { buId, wgId, wId, orgId, intAccountId } = profileData;
+  const dispatch = useDispatch();
+  const firstSegment = location.pathname.split("/")[1];
+  const [loading, setLoading] = useState(false);
+  const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -45,77 +37,26 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings }) => {
   const [form] = Form.useForm();
   const params = useParams();
   const { type } = params;
-  // Api Instance
-  const levelOfLeaderApi = useApiRequest([]);
-
-  const levelOfLeaderApiCall = () => {
-    levelOfLeaderApi.action({
-      urlKey: "GetAllPosition",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        workplaceId: wId,
-        businessUnitId: buId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strPositionGroupName;
-          res[i].value = item?.intPositionGroupId;
-        });
-      },
-    });
-  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    levelOfLeaderApiCall();
+    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading); // Call the API
   }, []);
 
   return permission?.isCreate ? (
     <div>
-      {(loading || levelOfLeaderApi?.loading) && <Loading />}
+      {loading && <Loading />}
       <PForm
         form={form}
-        initialValues={
-          type === "create"
-            ? {
-                employee: {
-                  label: null,
-                  value:
-                    firstSegment === "SelfService"
-                      ? profileData?.intEmployeeId
-                      : null,
-                },
-              }
-            : {
-                reqId: data?.id,
-                reasonForRequisition: data?.reasonForRequisition,
-                employee: {
-                  label: data?.employmentName,
-                  value: data?.employmentTypeId,
-                },
-                trainingType: {
-                  label: data?.trainingTypeName,
-                  value: data?.trainingTypeId,
-                },
-                objectivesToAchieve: data?.objectivesToAchieve,
-                remarks: data?.remarks,
-                requisitionStatus: {
-                  label: data?.status?.label,
-                  value: data?.status?.value,
-                },
-                upcommingTraining: {
-                  label: data?.upcommingTraining?.label,
-                  value: data?.upcommingTraining?.value,
-                },
-                comments: data?.comments,
-              }
-        }
+        initialValues={{
+          leadership: data?.levelOfLeadershipName,
+          positionGroupId: data?.levelOfLeadershipId,
+          kpiScore: data?.percentageOfKPI,
+          barScore: data?.percentageOfBAR,
+          id: data?.scoreScaleId,
+        }}
       >
-        <CommonForm
-          formConfig={makerFormConfig(levelOfLeaderApi?.data)}
-          form={form}
-        />
+        <CommonForm formConfig={makerFormConfig()} form={form} />
 
         <ModalFooter
           onCancel={() => {
@@ -130,6 +71,15 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings }) => {
                 if (values?.barScore + values?.kpiScore !== 100) {
                   return toast.error("Sum of KPI and BAR must be 100");
                 }
+                handleEvaluationCriteriaScoreSetting(
+                  form,
+                  profileData,
+                  setLoading,
+                  () => {
+                    cb && cb();
+                    setIsScoreSettings(() => ({ open: false, type: "" }));
+                  }
+                );
               })
               .catch((error) => {
                 console.log(error);

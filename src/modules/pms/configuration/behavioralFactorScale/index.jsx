@@ -1,24 +1,14 @@
-import { EditOutlined } from "@ant-design/icons";
-import { AddOutlined } from "@mui/icons-material";
-import { DataTable, Flex, PForm } from "Components";
-import { PModal } from "Components/Modal";
-import {
-  Form,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Tooltip,
-  Typography,
-} from "antd";
+import { DataTable, PForm } from "Components";
+import { Form, Popconfirm } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { EditableCell } from "./editableCell";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const originData = Array.from({
   length: 5,
@@ -29,7 +19,8 @@ const originData = Array.from({
   scale: 32,
 }));
 const BehavioralFactorScale = () => {
-  const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
+  const [factorScale, getFactorScale, factorScaleLoader] = useAxiosGet();
+  const [, saveFactorScale, saveFactorScaleLoader] = useAxiosPost();
   const [isScoreSettings, setIsScoreSettings] = useState({
     open: false,
     type: "",
@@ -42,15 +33,7 @@ const BehavioralFactorScale = () => {
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
   const history = useHistory();
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Performance Management System"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    getCriteriaList(
-      `/PMS/GetEvaluationCriteria?accountId=${profileData?.intAccountId}`
-    );
-  }, []);
+
   const permission = useMemo(
     () => permissionList.find((item) => item?.menuReferenceId === 30540),
     []
@@ -68,22 +51,31 @@ const BehavioralFactorScale = () => {
   };
   const save = async (key) => {
     try {
-      const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
+      const values = form.getFieldsValue(true);
+      form
+        .validateFields()
+        .then(() => {
+          const payload = {
+            scoreScaleId: values?.scoreScaleId,
+            accountId: profileData?.intAccountId,
+            actionBy: profileData?.employeeId,
+            displayName: values?.displayName,
+            scaleValue: values?.scaleValue,
+          };
+          saveFactorScale(
+            `/PMS/SaveBehavioralFactorScaleSetting`,
+            payload,
+            () => {
+              landingApi();
+              setEditingKey("");
+            },
+            true
+          );
+          // save api call
+        })
+        .catch((error) => {
+          console.log(error);
         });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey("");
-      }
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
     }
@@ -102,7 +94,7 @@ const BehavioralFactorScale = () => {
     },
     {
       title: "Scale",
-      dataIndex: "scale",
+      dataIndex: "scaleValue",
       width: "20%",
       editable: true,
     },
@@ -161,17 +153,6 @@ const BehavioralFactorScale = () => {
           >
             Change
           </button>
-          // <EditOutlined
-          //   style={{
-          //     color: "green",
-          //     fontSize: "15px",
-          //     cursor: "pointer",
-          //     margin: "1px 5px",
-          //   }}
-          //   onClick={() => {
-          //     edit(record);
-          //   }}
-          // />
         );
       },
     },
@@ -184,16 +165,29 @@ const BehavioralFactorScale = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
+        inputType: col.dataIndex === "scaleValue" ? "number" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
       }),
     };
   });
+
+  const landingApi = () => {
+    getFactorScale(
+      `/PMS/GetAllBehavioralFactorScaleSettingData?accountId=${profileData?.intAccountId}`
+    );
+  };
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Performance Management System"));
+    landingApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return permission?.isView ? (
     <div className="table-card">
-      {criteriaListLoader && <Loading />}
+      {factorScaleLoader && <Loading />}
       <h1>Behavioral Factor Scale</h1>
       <PForm form={form}>
         <div className="mt-2">
@@ -205,7 +199,7 @@ const BehavioralFactorScale = () => {
             }}
             rowClassName="editable-row"
             bordered
-            data={data || []}
+            data={factorScale || []}
             header={mergedColumns}
           />
         </div>

@@ -131,6 +131,9 @@ const BehavioralFactorScale = lazy(() =>
 const EvaluationCriteriaCreateEdit = lazy(() =>
   import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
 );
+const EvaluationPipeline = lazy(() =>
+  import("../modules/pms/configuration/evaluationPipeline/index.jsx")
+);
 const ObjectiveCreateAndEdit = lazy(() =>
   import("../modules/pms/configuration/objective/ObjectiveCreateAndEdit.jsx")
 );
@@ -337,9 +340,7 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
-const HiredeskOnboarding = lazy(() =>
-  import("../modules/onboarding/index.js")
-);
+const HiredeskOnboarding = lazy(() => import("../modules/onboarding/index.js"));
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
 );
@@ -1700,7 +1701,12 @@ const Test = lazy(() =>
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
 
 const SelfServiceSeparation = lazy(() =>
-  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
+  import(
+    "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
+  )
+);
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
 
 // Retirement Module
@@ -1708,19 +1714,19 @@ const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
 );
 
 const RetirementViewSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
 );
-const AttendanceShiftChange = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
-);
-
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -3836,6 +3842,10 @@ export const routingList = [
   {
     path: "/pms/configuration/EvaluationCriteria",
     component: EvaluationCriteria,
+  },
+  {
+    path: "/pms/configuration/EvaluationPipeline",
+    component: EvaluationPipeline,
   },
   {
     path: "/pms/configuration/BehavioralFactor",

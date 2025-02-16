@@ -1512,12 +1512,12 @@ export const columnDeposit = [
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "Deposit Date",
     dataIndex: ["applicationInformation", "depositDate"],
-    render: (date) => <div>{new Date(date).toLocaleDateString()}</div>,
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "Deposit Amount",
