@@ -1693,7 +1693,7 @@ const SelfServiceSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
 );
 const ExitInterviewLanding = lazy(() =>
-  import("../modules/retirement/exitInterview/index.jsx")
+  import("../modules/retirement/exitinterview/index.jsx")
 );
 
 export const routingList = [
