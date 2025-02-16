@@ -131,6 +131,9 @@ const BehavioralFactorScale = lazy(() =>
 const EvaluationCriteriaCreateEdit = lazy(() =>
   import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
 );
+const EvaluationPipeline = lazy(() =>
+  import("../modules/pms/configuration/evaluationPipeline/index.jsx")
+);
 const ObjectiveCreateAndEdit = lazy(() =>
   import("../modules/pms/configuration/objective/ObjectiveCreateAndEdit.jsx")
 );
@@ -3834,6 +3837,10 @@ export const routingList = [
   {
     path: "/pms/configuration/EvaluationCriteria",
     component: EvaluationCriteria,
+  },
+  {
+    path: "/pms/configuration/EvaluationPipeline",
+    component: EvaluationPipeline,
   },
   {
     path: "/pms/configuration/BehavioralFactor",

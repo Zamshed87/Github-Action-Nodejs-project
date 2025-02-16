@@ -12,6 +12,7 @@ const initialValues = {
   weight: "",
 };
 const AddQuestionnariesGroupName = ({
+  data,
   employeeId,
   orgId,
   addQuestionnariesGroupName,
@@ -31,6 +32,7 @@ const AddQuestionnariesGroupName = ({
             numWeightage: item?.numWeightage,
             intActionBy: employeeId,
             intAccountId: orgId,
+            intPositionGroupId: data?.value,
             questionRows: [],
           };
         });
@@ -100,7 +102,7 @@ const AddQuestionnariesGroupName = ({
 
   useEffect(() => {
     getQuestionGroupList(
-      `/PMS/GetQuestionnaireGroupName?accountId=${orgId}`,
+      `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`,
       (data) => {
         const modifiedData = data?.map((item) => {
           return {

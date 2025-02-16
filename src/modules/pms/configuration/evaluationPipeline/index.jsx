@@ -1,4 +1,4 @@
-import { DataTable, Flex, PForm } from "Components";
+import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
 import { PModal } from "Components/Modal";
 import { Form, Tooltip } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -8,11 +8,15 @@ import { useHistory } from "react-router-dom";
 import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import CreateEdit from "./createEdit";
+import { EyeOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
+import { EditOutlined } from "@mui/icons-material";
+import EPCreateEdit from "./createEdit";
+// import CreateEdit from "./createEdit";
 
-const EvaluationCriteria = () => {
+const EvaluationPipeline = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
-  const [isScoreSettings, setIsScoreSettings] = useState({
+  const [modal, setModal] = useState({
     open: false,
     type: "",
   });
@@ -48,36 +52,40 @@ const EvaluationCriteria = () => {
       dataIndex: "levelOfLeadershipName",
     },
     {
-      title: "KPI Score",
-      dataIndex: "percentageOfKPI",
-    },
-    {
-      title: "BAR Score",
-      dataIndex: "percentageOfBAR",
+      title: "Evaluation Criteria",
+      dataIndex: "evaluationCriteria",
     },
     {
       title: "Action",
       dataIndex: "letterGenerateId",
       render: (generateId, rec) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"Edit"}>
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-                backgroundColor: "var(--green)",
-                color: "white",
-              }}
-              className="btn"
-              type="button"
+          <Tooltip placement="bottom" title={"View"}>
+            <EyeOutlined
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
                 setRowData(rec);
-                setIsScoreSettings(() => ({ open: true, type: "EC" }));
+                setModal(() => ({ open: true, type: "view" }));
               }}
-            >
-              Score Setup
-            </button>
+            />
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Edit"}>
+            <EditOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                if (!permission?.isEdit) {
+                  toast.warning("You don't have permission to edit");
+                  return;
+                }
+                setRowData(rec);
+                setModal(() => ({ open: true, type: "edit" }));
+              }}
+            />
           </Tooltip>
         </Flex>
       ),
@@ -86,52 +94,47 @@ const EvaluationCriteria = () => {
   ];
 
   return permission?.isView ? (
-    <div className="table-card">
-      {/* <div className="table-card-heading justify-content-end">
-        <ul className="d-flex flex-wrap">
-          <ul className="d-flex flex-wrap">
-            <li>
-              <PrimaryButton
-                type="button"
-                className="btn btn-default flex-center"
-                label={"Create"}
-                icon={<AddOutlined sx={{ marginRight: "11px" }} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // history.push("/pms/configuration/EvaluationCriteria/create");
-                  setIsScoreSettings(() => ({ open: true, type: "EC" }));
-                }}
-              />
-            </li>
-          </ul>
-        </ul>
-      </div> */}
+    <div>
       {criteriaListLoader && <Loading />}
       <PForm form={form}>
-        <div className="mt-2">
-          <DataTable
-            bordered
-            data={criteriaList || []}
-            header={evaluationCriteriaHeader}
+        <PCard>
+          <PCardHeader
+            buttonList={[
+              {
+                type: "primary",
+                content: "Create New",
+                icon: "plus",
+                onClick: () => {
+                  setModal(() => ({ open: true, type: "create" }));
+                },
+              },
+            ]}
           />
-        </div>
-        <PModal
-          title="Evaluation Criteria Score Settings"
-          open={isScoreSettings?.open}
-          onCancel={() => {
-            setIsScoreSettings(() => ({ open: false, type: "EC" }));
-            landingApi();
-          }}
-          components={
-            <CreateEdit
-              isScoreSettings={isScoreSettings}
-              setIsScoreSettings={setIsScoreSettings}
-              data={rowData}
-              cb={landingApi}
+          <div className="mt-2">
+            <DataTable
+              bordered
+              data={criteriaList || []}
+              header={evaluationCriteriaHeader}
             />
-          }
-          width={1000}
-        />
+          </div>
+          <PModal
+            title="Evaluation pipeline Settings"
+            open={modal?.open}
+            onCancel={() => {
+              setModal(() => ({ open: false, type: "EC" }));
+              landingApi();
+            }}
+            components={
+              <EPCreateEdit
+                modal={modal}
+                setModal={setModal}
+                data={rowData}
+                cb={landingApi}
+              />
+            }
+            width={1000}
+          />
+        </PCard>
       </PForm>
     </div>
   ) : (
@@ -139,4 +142,4 @@ const EvaluationCriteria = () => {
   );
 };
 
-export default EvaluationCriteria;
+export default EvaluationPipeline;
