@@ -12,8 +12,9 @@ import {
 } from "Components";
 import { Col, Form, Row } from "antd";
 import { getHeader } from "./helper";
-import useYearlyPerformanceReportFilters from "./hooks/useYearlyPerformanceReportFilters";
 import useYearlyPerformanceReport from "./hooks/useYearlyPerformanceReport";
+import useKpiAndYearlyReportFilters from "../common/useKpiAndYearlyReportFilters";
+import useYearlyPerformanceReportFilters from "./hooks/useYearlyPerformanceReportFilters";
 
 const YearlyPerformanceReport = () => {
   const [pages, setPages] = useState({
@@ -28,6 +29,7 @@ const YearlyPerformanceReport = () => {
   const department = Form.useWatch("department", form);
   const designation = Form.useWatch("designation", form);
   const year = Form.useWatch("year", form);
+  const levelOfLeadershipId = Form.useWatch("levelOfLeadershipId", form);
 
   const {
     // permissionList,
@@ -40,13 +42,14 @@ const YearlyPerformanceReport = () => {
     departmentDDL,
     designationDDL,
     yearDDL,
-  } = useYearlyPerformanceReportFilters({
+  } = useKpiAndYearlyReportFilters({
     orgId,
     buId,
     wgId,
     wId,
     employeeId,
   });
+  const {levelOfLeaderShipDDL} = useYearlyPerformanceReportFilters({orgId})
 
   const { reportData, fetchYearlyPerformanceReport, loading } = useYearlyPerformanceReport({
     buId,
@@ -66,6 +69,7 @@ const YearlyPerformanceReport = () => {
           departmentId:values?.department?.value,
           designationId:values?.designation?.value,
           year:values?.year?.value,
+          levelOfLeadershipId:values?.levelOfLeadershipId?.value,
           pages,
         });
       }}
@@ -147,6 +151,21 @@ const YearlyPerformanceReport = () => {
                 // rules={[{ required: true, message: "Year is required" }]}
               />
             </Col>
+            <Col md={3} sm={12} xs={24}>
+              <PSelect
+                options={levelOfLeaderShipDDL || []}
+                name="levelOfLeadershipId"
+                label="LevelOfLeadershipId"
+                showSearch
+                placeholder="Year"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    year: op,
+                  });
+                }}
+                // rules={[{ required: true, message: "Year is required" }]}
+              />
+            </Col>
             <Col
               style={{
                 marginTop: "23px",
@@ -174,6 +193,7 @@ const YearlyPerformanceReport = () => {
                 departmentId:department?.value,
                 designationId:designation?.value,
                 year:year?.value,
+                levelOfLeadershipId:levelOfLeadershipId?.value,
                 pages:pagination,
               });
               setPages(pagination)

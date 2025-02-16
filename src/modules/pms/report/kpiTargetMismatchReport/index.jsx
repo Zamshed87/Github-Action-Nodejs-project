@@ -12,8 +12,8 @@ import {
 } from "Components";
 import { Col, Form, Row } from "antd";
 import { getHeader } from "./helper";
-import useKpiMismatchFilters from "./hooks/useKpiMismatchFilters";
 import useKpiMismatchReport from "./hooks/useKpiMismatchReport";
+import useKpiAndYearlyReportFilters from "../common/useKpiAndYearlyReportFilters";
 
 const KpiTargetMismatchReport = () => {
   const [pages, setPages] = useState({
@@ -40,7 +40,7 @@ const KpiTargetMismatchReport = () => {
     departmentDDL,
     designationDDL,
     yearDDL,
-  } = useKpiMismatchFilters({
+  } = useKpiAndYearlyReportFilters({
     orgId,
     buId,
     wgId,

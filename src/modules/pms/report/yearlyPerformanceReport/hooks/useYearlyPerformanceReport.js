@@ -8,11 +8,12 @@ const useYearlyPerformanceReport = ({ buId, wId, wgId }) => {
     departmentId,
     designationId,
     year,
+    levelOfLeadershipId,
     pages,
     search="",
   }) => {
     getReportData(
-      `/PMS/YearlyPerformanceReport?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisorId}&DepartmentId=${departmentId}&DesignationId=${designationId}&Year=${year}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${search}`,
+      `/PMS/YearlyPerformanceReport?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisorId}&DepartmentId=${departmentId}&DesignationId=${designationId}&Year=${year}&LevelOfLeadershipId=${levelOfLeadershipId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${search}`,
       (res) => {
         setReportData(res);
       }

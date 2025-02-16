@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 
-const useKpiMismatchFilters = ({
+const useKpiAndYearlyReportFilters = ({
   orgId,
   buId,
   wgId,
@@ -80,12 +80,13 @@ const useKpiMismatchFilters = ({
       },
     });
   };
-
   useEffect(() => {
     getDepartments();
     getDesignations();
     getFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
-  }, []);
+    
+  }, [orgId, buId, wgId, wId]);
+  
 
   return {
     supervisorDDL,
@@ -96,4 +97,4 @@ const useKpiMismatchFilters = ({
   };
 };
 
-export default useKpiMismatchFilters;
+export default useKpiAndYearlyReportFilters;
