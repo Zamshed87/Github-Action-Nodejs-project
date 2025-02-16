@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 
-const useKpiMismatchFilters = ({
+const useYearlyPerformanceReportFilters = ({
   orgId,
   buId,
   wgId,
@@ -80,7 +80,6 @@ const useKpiMismatchFilters = ({
       },
     });
   };
-
   useEffect(() => {
     getDepartments();
     getDesignations();
@@ -96,4 +95,4 @@ const useKpiMismatchFilters = ({
   };
 };
 
-export default useKpiMismatchFilters;
+export default useYearlyPerformanceReportFilters;
