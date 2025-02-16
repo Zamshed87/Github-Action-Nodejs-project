@@ -1,8 +1,5 @@
 import { CloseCircleTwoTone, SettingTwoTone } from "@ant-design/icons";
-import {
-  FilePresentOutlined,
-  InfoOutlined
-} from "@mui/icons-material";
+import { FilePresentOutlined, InfoOutlined } from "@mui/icons-material";
 import { Dropdown, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
@@ -10,6 +7,7 @@ import IConfirmModal from "common/IConfirmModal";
 import { LightTooltip } from "common/LightTooltip";
 import PrimaryButton from "common/PrimaryButton";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import moment from "moment";
 import { toast } from "react-toastify";
 import { gray500, gray700, gray900 } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
@@ -151,8 +149,7 @@ export const separationApplicationLandingTableColumn = (
     IConfirmModal(confirmObject);
   };
 
-
-  const items = [
+  const getMenuItems = (data) => [
     {
       key: "1",
       label: (
@@ -188,7 +185,9 @@ export const separationApplicationLandingTableColumn = (
           }}
           label={"Exit Interview"}
           onClick={() => {
-            console.log("Exit Interview");
+            history.push("/SelfService/separation/applicationV2/interView", {
+              data: data,
+            });
           }}
         />
       ),
@@ -284,29 +283,29 @@ export const separationApplicationLandingTableColumn = (
                   />
                   {item?.docArr?.length && item?.docArr?.[0] !== ""
                     ? item?.docArr.map((image, i) => (
-                      <p
-                        style={{
-                          margin: "6px 0 0",
-                          fontWeight: "400",
-                          fontSize: "12px",
-                          lineHeight: "18px",
-                          color: "#009cde",
-                          cursor: "pointer",
-                        }}
-                        key={i}
-                      >
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            dispatch(getDownlloadFileView_Action(image));
+                        <p
+                          style={{
+                            margin: "6px 0 0",
+                            fontWeight: "400",
+                            fontSize: "12px",
+                            lineHeight: "18px",
+                            color: "#009cde",
+                            cursor: "pointer",
                           }}
+                          key={i}
                         >
-                          <>
-                            <FilePresentOutlined /> {`Attachment_${i + 1}`}
-                          </>
-                        </span>
-                      </p>
-                    ))
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(getDownlloadFileView_Action(image));
+                            }}
+                          >
+                            <>
+                              <FilePresentOutlined /> {`Attachment_${i + 1}`}
+                            </>
+                          </span>
+                        </p>
+                      ))
                     : ""}
                 </div>
               </div>
@@ -408,7 +407,7 @@ export const separationApplicationLandingTableColumn = (
           <Tooltip placement="top" color={"#34a853"} title={"Manage"}>
             <Dropdown
               menu={{
-                items,
+                items: getMenuItems(item),
               }}
               placement="bottomLeft"
               arrow={{
@@ -432,24 +431,24 @@ export const separationApplicationLandingTableColumn = (
               />
             </Dropdown>
           </Tooltip>
-          {item?.approvalStatus === "Pending" && <Tooltip placement="top" color={"#ff4d4f"} title={"Cancel"}>
-            <PrimaryButton
-              type="button"
-              icon={<CloseCircleTwoTone twoToneColor="#ff4d4f" />}
-              customStyle={{
-                height: "30px",
-                fontSize: "16px",
-                padding: "0px 12px 0px 12px",
-                border: "none",
-              }}
-              onClick={() => {
-                setAprovalStatus(item?.approvalStatus);
-                cancelConfirmPopup()
-              }
-              }
-            />
-          </Tooltip>}
-
+          {item?.approvalStatus === "Pending" && (
+            <Tooltip placement="top" color={"#ff4d4f"} title={"Cancel"}>
+              <PrimaryButton
+                type="button"
+                icon={<CloseCircleTwoTone twoToneColor="#ff4d4f" />}
+                customStyle={{
+                  height: "30px",
+                  fontSize: "16px",
+                  padding: "0px 12px 0px 12px",
+                  border: "none",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
+                  cancelConfirmPopup();
+                }}
+              />
+            </Tooltip>
+          )}
         </div>
       ),
       sort: false,
@@ -463,9 +462,7 @@ export const separationApplicationLandingTableColumn = (
 export const getSeparationLandingById = async (id, setter, setLoading) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(
-      `/separation/GetSeparationById/${id}`
-    );
+    const res = await axios.get(`/separation/GetSeparationById/${id}`);
 
     const modifyRes = [res?.data]?.map((itm) => {
       return {
@@ -521,5 +518,46 @@ export const getEmployeeProfileViewData = async (
     }
   } catch (error) {
     setLoading && setLoading(false);
+  }
+};
+
+export const interViewQuestionSave = async (
+  data,
+  fieldsArr,
+  values,
+  setLoading,
+  cb
+) => {
+  setLoading(true);
+  try {
+    const payload = {
+      EmployeeId: data?.intEmployeeId || 0,
+      SeparationId: data?.separationId || 0,
+      Request: {
+        id: data?.intQuestionAssignId || 0,
+        startDateTime: values?.startTime,
+        endDateTime: moment().format("YYYY-MM-DDTHH:mm:ss"),
+        questions: fieldsArr.map((field) => {
+          const id = `field-${field.id}`;
+          const answer = values[id];
+
+          return {
+            id: field.id,
+            answer: field.typeName === "Checkbox" ? answer : [answer] || [],
+          };
+        }),
+      },
+    };
+
+
+    const res = await axios.post(`/ExitInterview/SubmitExitInterview`, payload);
+    cb && cb();
+    toast.success(res?.data?.Message, { toastId: 1 });
+  } catch (error) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong", {
+      toastId: 1,
+    });
+  } finally {
+    setLoading(false);
   }
 };
