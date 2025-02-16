@@ -13,6 +13,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { separationApplicationLandingTableColumn } from "../helper";
 import ChargeHandOver from "./components/ChargeHandOver";
+import InterViewModal from "./components/InterViewModal";
 
 const paginationSize = 100;
 export const formatDate = (date) => {
@@ -31,6 +32,7 @@ export default function SelfServiceSeparation() {
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   const [, getSeperationData] = useAxiosGet();
+  const [, postWithdrawSeperationData] = useAxiosPost();
   const [, postCancelSeperationData] = useAxiosPost();
   const [aprovalStatus, setAprovalStatus] = useState("");
   const [separationId, setSeparationId] = useState("");
@@ -102,10 +104,11 @@ export default function SelfServiceSeparation() {
                   employeeId,
                   getData,
                   setChargeHandOverModal,
+                  postWithdrawSeperationData,
                   postCancelSeperationData,
                   aprovalStatus,
                   setAprovalStatus,
-                  separationId
+                  separationId,
                 )}
                 pages={pages}
                 rowDto={rowDto || []}

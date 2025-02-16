@@ -99,7 +99,7 @@ const KpiTargetMismatchReport = () => {
                 onSearch={(value) => {
                   getSuperVisors(value);
                 }}
-                // rules={[{ required: true, message: "Workplace is required" }]}
+                // rules={[{ required: true, message: "Supervisor is required" }]}
               />
             </Col>
             <Col md={5} sm={12} xs={24}>
@@ -114,7 +114,7 @@ const KpiTargetMismatchReport = () => {
                     department: op,
                   });
                 }}
-                // rules={[{ required: true, message: "Workplace is required" }]}
+                // rules={[{ required: true, message: "Department is required" }]}
               />
             </Col>
             <Col md={5} sm={12} xs={24}>
@@ -129,7 +129,7 @@ const KpiTargetMismatchReport = () => {
                     designation: op,
                   });
                 }}
-                // rules={[{ required: true, message: "Workplace is required" }]}
+                // rules={[{ required: true, message: "Designation is required" }]}
               />
             </Col>
             <Col md={3} sm={12} xs={24}>
@@ -144,7 +144,7 @@ const KpiTargetMismatchReport = () => {
                     year: op,
                   });
                 }}
-                // rules={[{ required: true, message: "Workplace is required" }]}
+                // rules={[{ required: true, message: "Year is required" }]}
               />
             </Col>
             <Col
