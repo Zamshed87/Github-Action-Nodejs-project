@@ -286,7 +286,7 @@ export const getPeopleDeskAllLanding = async (
   const status = statusId ? `&intStatusId=${statusId}` : "";
   const yearFilter = year ? `&YearId=${year}` : "";
   const workplace = wId ? `&workplaceId=${wId}` : "";
-  const workplaceGroup = wId ? `&WorkplaceGroupId=${wgId}` : "";
+  const workplaceGroup = wgId ? `&WorkplaceGroupId=${wgId}` : "";
   try {
     const res = await axios.get(
       `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}${workplaceGroup}&intId=${id}`

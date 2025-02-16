@@ -328,6 +328,9 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
+const HiredeskOnboarding = lazy(() =>
+  import("../modules/onboarding/index.js")
+);
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
 );
@@ -1114,6 +1117,11 @@ const SelfApplicationSeparationForm = lazy(() =>
     "../modules/employeeProfile/separation/selfApplication/addEditForm/index.jsx"
   )
 );
+const SelfServiceSeparationForm = lazy(() =>
+  import(
+    "../modules/employeeProfile/separation/selfApplication/addEditFormV2/index.jsx"
+  )
+);
 const SelfSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/index.jsx")
 );
@@ -1679,14 +1687,17 @@ const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
-);
-
-const RetirementViewSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
+);
+const SelfServiceSeparation = lazy(() =>
+  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
 );
 
 export const routingList = [
@@ -1796,6 +1807,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/shiftManagement",
     component: ShiftManagement,
+  },
+  {
+    path: "/administration/thirdPartyIntegration/hireDesk",
+    component: HiredeskOnboarding,
   },
   {
     path: "/administration/timeManagement/fixedRosterSetup",
@@ -3289,10 +3304,17 @@ export const routingList = [
     component: SelfApplicationSeparationForm,
   },
   {
+    path: "/SelfService/separation/applicationV2/create",
+    component: SelfServiceSeparationForm,
+  },
+  {
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
-
+  {
+    path: "/SelfService/separation/applicationV2",
+    component: SelfServiceSeparation,
+  },
   // Asset Management Start
   {
     path: "/SelfService/asset/assetRequisition",
@@ -4045,10 +4067,6 @@ export const routingList = [
   {
     path: "/retirement/separation/edit/:id",
     component: SeparationApplicationForm,
-  },
-  {
-    path: "/retirement/separation/view/:id",
-    component: RetirementViewSeparationForm,
   },
   {
     path: "/retirement/separation/release/:id",
