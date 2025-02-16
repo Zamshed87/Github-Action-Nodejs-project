@@ -35,7 +35,7 @@ export const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
 
 export const APIUrl =
-  process.env.NODE_ENV === "development" ? `http://192.168.7.63:7020/api` : `${origin}/api`;
+  process.env.NODE_ENV === "development" ? `${prodUrl}/api` : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
 export const domainUrl =
