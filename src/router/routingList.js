@@ -1705,7 +1705,6 @@ const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
 
-// New
 // Retirement Module
 const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
