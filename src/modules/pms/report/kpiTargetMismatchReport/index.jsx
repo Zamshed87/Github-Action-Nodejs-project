@@ -158,7 +158,7 @@ const KpiTargetMismatchReport = () => {
                     year: op,
                   });
                 }}
-                // rules={[{ required: true, message: "Year is required" }]}
+                rules={[{ required: true, message: "Year is required" }]}
               />
             </Col>
             <Col

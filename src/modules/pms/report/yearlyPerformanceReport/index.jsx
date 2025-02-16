@@ -16,8 +16,11 @@ import useYearlyPerformanceReport from "./hooks/useYearlyPerformanceReport";
 import useKpiAndYearlyReportFilters from "../common/useKpiAndYearlyReportFilters";
 import useYearlyPerformanceReportFilters from "./hooks/useYearlyPerformanceReportFilters";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { downloadFile } from "utility/downloadFile";
+import { toast } from "react-toastify";
 
 const YearlyPerformanceReport = () => {
+  const [excelLoading, setExcelLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 20,
@@ -85,7 +88,7 @@ const YearlyPerformanceReport = () => {
         });
       }}
     >
-      {loading && <Loading />}
+      {loading || (excelLoading && <Loading />)}
       <PCard>
         <PCardHeader
           title={`Total Report ${reportData?.totalCount || 0}`}
@@ -96,7 +99,31 @@ const YearlyPerformanceReport = () => {
           //   fetchKpiMismatchReport({ pages, search: e.target.value });
           // }}
           exportIcon
-          onExport={() => {}}
+          onExport={() => {
+            const missingFields = [];
+
+            if (supervisor?.value == null) missingFields.push("Supervisor");
+            if (department?.value == null) missingFields.push("Department");
+            if (designation?.value == null) missingFields.push("Designation");
+            if (year?.value == null) missingFields.push("Year");
+            if (levelOfLeadershipId?.value == null)
+              missingFields.push("Level of Leadership");
+
+            if (missingFields.length > 0) {
+              toast.warn(
+                `Missing required fields: ${missingFields.join(", ")}`
+              );
+            } else {
+              const url = `/PdfAndExcelReport/PMS/YearlyPerformanceReportExcel?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisor?.value}&DepartmentId=${department?.value}&DesignationId=${designation?.value}&Year=${year?.value}&LevelOfLeadershipId=${levelOfLeadershipId?.value}`;
+
+              downloadFile(
+                url,
+                `YearlyPerformanceReport`,
+                "xlsx",
+                setExcelLoading
+              );
+            }
+          }}
         />
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
@@ -167,12 +194,14 @@ const YearlyPerformanceReport = () => {
                     year: op,
                   });
                 }}
-                // rules={[{ required: true, message: "Year is required" }]}
+                rules={[{ required: true, message: "Year is required" }]}
               />
             </Col>
             <Col md={3} sm={12} xs={24}>
               <PSelect
-                options={levelOfLeaderShipDDL || []}
+                options={
+                  [{ value: 0, label: "All" }, ...levelOfLeaderShipDDL] || []
+                }
                 name="levelOfLeadershipId"
                 label="Level Of Leadership"
                 showSearch
