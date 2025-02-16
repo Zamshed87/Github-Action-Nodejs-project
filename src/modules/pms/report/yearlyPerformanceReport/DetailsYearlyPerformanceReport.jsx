@@ -1,6 +1,7 @@
+import useYearlyPerformanceReportDetails from "./hooks/useYearlyPerformanceReportDetails";
 
-const DetailsYearlyPerformanceReport = ({record}) => {
-    console.log(record)
+const DetailsYearlyPerformanceReport = ({employeeId,year}) => {
+    const {details,loading} = useYearlyPerformanceReportDetails({employeeId,year})
     return (
         <div>
             
