@@ -18,9 +18,12 @@ import useYearlyPerformanceReportFilters from "./hooks/useYearlyPerformanceRepor
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { downloadFile } from "utility/downloadFile";
 import { toast } from "react-toastify";
+import { PModal } from "Components/Modal";
+import DetailsYearlyPerformanceReport from "./DetailsYearlyPerformanceReport";
 
 const YearlyPerformanceReport = () => {
   const [excelLoading, setExcelLoading] = useState(false);
+  const [modal, setModal] = useState({open:false,data:{}});
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 20,
@@ -37,7 +40,7 @@ const YearlyPerformanceReport = () => {
 
   const {
     // permissionList,
-    profileData: { orgId, buId, wgId, wId, employeeId },
+    profileData: { orgId, buId, wgId, wId, employeeId, isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
 
@@ -69,188 +72,203 @@ const YearlyPerformanceReport = () => {
   }, []);
 
   return (
-    <PForm
-      form={form}
-      initialValues={{
-        supervisor: { value: 0, label: "All" },
-        department: { value: 0, label: "All" },
-        designation: { value: 0, label: "All" },
-        levelOfLeadershipId: { value: 0, label: "All" },
-      }}
-      onFinish={(values) => {
-        fetchYearlyPerformanceReport({
-          supervisorId: values?.supervisor?.value,
-          departmentId: values?.department?.value,
-          designationId: values?.designation?.value,
-          year: values?.year?.value,
-          levelOfLeadershipId: values?.levelOfLeadershipId?.value,
-          pages,
-        });
-      }}
-    >
-      {loading || (excelLoading && <Loading />)}
-      <PCard>
-        <PCardHeader
-          title={`Total Report ${reportData?.totalCount || 0}`}
-          // onSearch={(e) => {
-          //   form.setFieldsValue({
-          //     search: e?.target?.value,
-          //   });
-          //   fetchKpiMismatchReport({ pages, search: e.target.value });
-          // }}
-          exportIcon
-          onExport={() => {
-            const missingFields = [];
+    <>
+      <PForm
+        form={form}
+        initialValues={{
+          supervisor: isOfficeAdmin ? { value: 0, label: "All" } : undefined,
+          department: { value: 0, label: "All" },
+          designation: { value: 0, label: "All" },
+          levelOfLeadershipId: { value: 0, label: "All" },
+        }}
+        onFinish={(values) => {
+          fetchYearlyPerformanceReport({
+            supervisorId: values?.supervisor?.value,
+            departmentId: values?.department?.value,
+            designationId: values?.designation?.value,
+            year: values?.year?.value,
+            levelOfLeadershipId: values?.levelOfLeadershipId?.value,
+            pages,
+          });
+        }}
+      >
+        {loading || (excelLoading && <Loading />)}
+        <PCard>
+          <PCardHeader
+            title={`Total Report ${reportData?.totalCount || 0}`}
+            // onSearch={(e) => {
+            //   form.setFieldsValue({
+            //     search: e?.target?.value,
+            //   });
+            //   fetchKpiMismatchReport({ pages, search: e.target.value });
+            // }}
+            exportIcon
+            onExport={() => {
+              const missingFields = [];
 
-            if (supervisor?.value == null) missingFields.push("Supervisor");
-            if (department?.value == null) missingFields.push("Department");
-            if (designation?.value == null) missingFields.push("Designation");
-            if (year?.value == null) missingFields.push("Year");
-            if (levelOfLeadershipId?.value == null)
-              missingFields.push("Level of Leadership");
+              if (supervisor?.value == null) missingFields.push("Supervisor");
+              if (department?.value == null) missingFields.push("Department");
+              if (designation?.value == null) missingFields.push("Designation");
+              if (year?.value == null) missingFields.push("Year");
+              if (levelOfLeadershipId?.value == null)
+                missingFields.push("Level of Leadership");
 
-            if (missingFields.length > 0) {
-              toast.warn(
-                `Missing required fields: ${missingFields.join(", ")}`
-              );
-            } else {
-              const url = `/PdfAndExcelReport/PMS/YearlyPerformanceReportExcel?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisor?.value}&DepartmentId=${department?.value}&DesignationId=${designation?.value}&Year=${year?.value}&LevelOfLeadershipId=${levelOfLeadershipId?.value}`;
+              if (missingFields.length > 0) {
+                toast.warn(
+                  `Missing required fields: ${missingFields.join(", ")}`
+                );
+              } else {
+                const url = `/PdfAndExcelReport/PMS/YearlyPerformanceReportExcel?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisor?.value}&DepartmentId=${department?.value}&DesignationId=${designation?.value}&Year=${year?.value}&LevelOfLeadershipId=${levelOfLeadershipId?.value}`;
 
-              downloadFile(
-                url,
-                `YearlyPerformanceReport`,
-                "xlsx",
-                setExcelLoading
-              );
-            }
-          }}
-        />
-        <PCardBody className="mb-3">
-          <Row gutter={[10, 2]}>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={
-                  [{ value: 0, label: "All" }, ...supervisorDDL.data] || []
-                }
-                name="supervisor"
-                label="Supervisor"
-                placeholder="Search minimum 2 character"
-                showSearch
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    supervisor: op,
-                  });
+                downloadFile(
+                  url,
+                  `YearlyPerformanceReport`,
+                  "xlsx",
+                  setExcelLoading
+                );
+              }
+            }}
+          />
+          <PCardBody className="mb-3">
+            <Row gutter={[10, 2]}>
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  options={
+                    [
+                      isOfficeAdmin && { value: 0, label: "All" },
+                      ...supervisorDDL.data,
+                    ] || []
+                  }
+                  name="supervisor"
+                  label="Supervisor"
+                  placeholder="Search minimum 2 character"
+                  showSearch
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      supervisor: op,
+                    });
+                  }}
+                  loading={supervisorDDL.loading}
+                  onSearch={(value) => {
+                    getSuperVisors(value);
+                  }}
+                  // rules={[{ required: true, message: "Supervisor is required" }]}
+                />
+              </Col>
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  options={
+                    [{ value: 0, label: "All" }, ...departmentDDL.data] || []
+                  }
+                  name="department"
+                  label="Department"
+                  placeholder="Department"
+                  showSearch
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      department: op,
+                    });
+                  }}
+                  // rules={[{ required: true, message: "Department is required" }]}
+                />
+              </Col>
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  options={
+                    [{ value: 0, label: "All" }, ...designationDDL.data] || []
+                  }
+                  name="designation"
+                  label="Designation"
+                  placeholder="Designation"
+                  showSearch
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      designation: op,
+                    });
+                  }}
+                  // rules={[{ required: true, message: "Designation is required" }]}
+                />
+              </Col>
+              <Col md={3} sm={12} xs={24}>
+                <PSelect
+                  options={yearDDL || []}
+                  name="year"
+                  label="Year"
+                  showSearch
+                  placeholder="Year"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      year: op,
+                    });
+                  }}
+                  rules={[{ required: true, message: "Year is required" }]}
+                />
+              </Col>
+              <Col md={3} sm={12} xs={24}>
+                <PSelect
+                  options={
+                    [{ value: 0, label: "All" }, ...levelOfLeaderShipDDL] || []
+                  }
+                  name="levelOfLeadershipId"
+                  label="Level Of Leadership"
+                  showSearch
+                  placeholder="Level Of Leadership"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      year: op,
+                    });
+                  }}
+                  // rules={[{ required: true, message: "Year is required" }]}
+                />
+              </Col>
+              <Col
+                style={{
+                  marginTop: "23px",
                 }}
-                loading={supervisorDDL.loading}
-                onSearch={(value) => {
-                  getSuperVisors(value);
-                }}
-                // rules={[{ required: true, message: "Supervisor is required" }]}
-              />
-            </Col>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={
-                  [{ value: 0, label: "All" }, ...departmentDDL.data] || []
-                }
-                name="department"
-                label="Department"
-                placeholder="Department"
-                showSearch
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    department: op,
-                  });
-                }}
-                // rules={[{ required: true, message: "Department is required" }]}
-              />
-            </Col>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={
-                  [{ value: 0, label: "All" }, ...designationDDL.data] || []
-                }
-                name="designation"
-                label="Designation"
-                placeholder="Designation"
-                showSearch
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    designation: op,
-                  });
-                }}
-                // rules={[{ required: true, message: "Designation is required" }]}
-              />
-            </Col>
-            <Col md={3} sm={12} xs={24}>
-              <PSelect
-                options={yearDDL || []}
-                name="year"
-                label="Year"
-                showSearch
-                placeholder="Year"
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    year: op,
-                  });
-                }}
-                rules={[{ required: true, message: "Year is required" }]}
-              />
-            </Col>
-            <Col md={3} sm={12} xs={24}>
-              <PSelect
-                options={
-                  [{ value: 0, label: "All" }, ...levelOfLeaderShipDDL] || []
-                }
-                name="levelOfLeadershipId"
-                label="Level Of Leadership"
-                showSearch
-                placeholder="Level Of Leadership"
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    year: op,
-                  });
-                }}
-                // rules={[{ required: true, message: "Year is required" }]}
-              />
-            </Col>
-            <Col
-              style={{
-                marginTop: "23px",
-              }}
-            >
-              <PButton type="primary" action="submit" content="View" />
-            </Col>
-          </Row>
-        </PCardBody>
-
-        <DataTable
-          header={getHeader(pages)}
-          bordered
-          data={reportData?.data || []}
-          loading={loading}
-          pagination={{
-            pageSize: reportData?.pageSize,
-            total: reportData?.totalCount,
-            pageSizeOptions: ["25", "50", "100"],
-          }}
-          onChange={(pagination, _, __, extra) => {
-            if (extra.action === "paginate") {
-              fetchYearlyPerformanceReport({
-                supervisorId: supervisor?.value,
-                departmentId: department?.value,
-                designationId: designation?.value,
-                year: year?.value,
-                levelOfLeadershipId: levelOfLeadershipId?.value,
-                pages: pagination,
-              });
-              setPages(pagination);
-            }
-          }}
-          scroll={{x:"2200px"}}
-        />
-      </PCard>
-    </PForm>
+              >
+                <PButton type="primary" action="submit" content="View" />
+              </Col>
+            </Row>
+          </PCardBody>
+          <DataTable
+            header={getHeader(pages,setModal)}
+            bordered
+            data={reportData?.data || []}
+            loading={loading}
+            pagination={{
+              pageSize: reportData?.pageSize,
+              total: reportData?.totalCount,
+              pageSizeOptions: ["25", "50", "100"],
+            }}
+            onChange={(pagination, _, __, extra) => {
+              if (extra.action === "paginate") {
+                fetchYearlyPerformanceReport({
+                  supervisorId: supervisor?.value,
+                  departmentId: department?.value,
+                  designationId: designation?.value,
+                  year: year?.value,
+                  levelOfLeadershipId: levelOfLeadershipId?.value,
+                  pages: pagination,
+                });
+                setPages(pagination);
+              }
+            }}
+            scroll={{ x: "2200px" }}
+          />
+        </PCard>
+      </PForm>
+      <PModal
+        title="Details Yearly Performance Report"
+        open={modal.open}
+        onCancel={() => {
+          setModal({open:false,data:{}});
+        }}
+        components={
+          <DetailsYearlyPerformanceReport record={modal.data}/>
+        }
+        width={1500}
+      />
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import { PButton } from "Components";
 
-export const getHeader = (pages) => [
+export const getHeader = (pages,setModal) => [
   {
     title: "SL",
     render: (text, record, index) => (pages?.current - 1) * pages?.pageSize + index + 1,
@@ -127,7 +127,7 @@ export const getHeader = (pages) => [
     dataIndex: "",
     align: "center",
     render: (_, rec) => {
-      return <PButton content="Details" color="primary" />;
+      return <PButton content="Details" color="primary" onClick={()=>{setModal({open:true,data:rec})}}/>;
     },
   },
 ];
