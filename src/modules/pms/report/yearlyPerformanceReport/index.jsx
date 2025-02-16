@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import {
   DataTable,
@@ -15,6 +15,7 @@ import { getHeader } from "./helper";
 import useYearlyPerformanceReport from "./hooks/useYearlyPerformanceReport";
 import useKpiAndYearlyReportFilters from "../common/useKpiAndYearlyReportFilters";
 import useYearlyPerformanceReportFilters from "./hooks/useYearlyPerformanceReportFilters";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const YearlyPerformanceReport = () => {
   const [pages, setPages] = useState({
@@ -35,6 +36,7 @@ const YearlyPerformanceReport = () => {
     // permissionList,
     profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
+  const dispatch = useDispatch();
 
   const {
     supervisorDDL,
@@ -49,27 +51,36 @@ const YearlyPerformanceReport = () => {
     wId,
     employeeId,
   });
-  const {levelOfLeaderShipDDL} = useYearlyPerformanceReportFilters({orgId})
+  const { levelOfLeaderShipDDL } = useYearlyPerformanceReportFilters({ orgId });
 
-  const { reportData, fetchYearlyPerformanceReport, loading } = useYearlyPerformanceReport({
-    buId,
-    wgId,
-    wId,
-  });
+  const { reportData, fetchYearlyPerformanceReport, loading } =
+    useYearlyPerformanceReport({
+      buId,
+      wgId,
+      wId,
+    });
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Performance Management System"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <PForm
       form={form}
       initialValues={{
-        isEnglish: true,
+        supervisor: { value: 0, label: "All" },
+        department: { value: 0, label: "All" },
+        designation: { value: 0, label: "All" },
+        levelOfLeadershipId: { value: 0, label: "All" },
       }}
       onFinish={(values) => {
         fetchYearlyPerformanceReport({
-          supervisorId:values?.supervisor?.value,
-          departmentId:values?.department?.value,
-          designationId:values?.designation?.value,
-          year:values?.year?.value,
-          levelOfLeadershipId:values?.levelOfLeadershipId?.value,
+          supervisorId: values?.supervisor?.value,
+          departmentId: values?.department?.value,
+          designationId: values?.designation?.value,
+          year: values?.year?.value,
+          levelOfLeadershipId: values?.levelOfLeadershipId?.value,
           pages,
         });
       }}
@@ -84,12 +95,16 @@ const YearlyPerformanceReport = () => {
           //   });
           //   fetchKpiMismatchReport({ pages, search: e.target.value });
           // }}
+          exportIcon
+          onExport={() => {}}
         />
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={supervisorDDL.data || []}
+                options={
+                  [{ value: 0, label: "All" }, ...supervisorDDL.data] || []
+                }
                 name="supervisor"
                 label="Supervisor"
                 placeholder="Search minimum 2 character"
@@ -108,7 +123,9 @@ const YearlyPerformanceReport = () => {
             </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={departmentDDL.data || []}
+                options={
+                  [{ value: 0, label: "All" }, ...departmentDDL.data] || []
+                }
                 name="department"
                 label="Department"
                 placeholder="Department"
@@ -123,7 +140,9 @@ const YearlyPerformanceReport = () => {
             </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={designationDDL.data || []}
+                options={
+                  [{ value: 0, label: "All" }, ...designationDDL.data] || []
+                }
                 name="designation"
                 label="Designation"
                 placeholder="Designation"
@@ -155,9 +174,9 @@ const YearlyPerformanceReport = () => {
               <PSelect
                 options={levelOfLeaderShipDDL || []}
                 name="levelOfLeadershipId"
-                label="LevelOfLeadershipId"
+                label="Level Of Leadership"
                 showSearch
-                placeholder="Year"
+                placeholder="Level Of Leadership"
                 onChange={(value, op) => {
                   form.setFieldsValue({
                     year: op,
@@ -187,16 +206,16 @@ const YearlyPerformanceReport = () => {
             pageSizeOptions: ["25", "50", "100"],
           }}
           onChange={(pagination, _, __, extra) => {
-            if (extra.action === "paginate"){
+            if (extra.action === "paginate") {
               fetchYearlyPerformanceReport({
-                supervisorId:supervisor?.value,
-                departmentId:department?.value,
-                designationId:designation?.value,
-                year:year?.value,
-                levelOfLeadershipId:levelOfLeadershipId?.value,
-                pages:pagination,
+                supervisorId: supervisor?.value,
+                departmentId: department?.value,
+                designationId: designation?.value,
+                year: year?.value,
+                levelOfLeadershipId: levelOfLeadershipId?.value,
+                pages: pagination,
               });
-              setPages(pagination)
+              setPages(pagination);
             }
           }}
         />

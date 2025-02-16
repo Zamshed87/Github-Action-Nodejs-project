@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import {
   DataTable,
@@ -14,6 +14,7 @@ import { Col, Form, Row } from "antd";
 import { getHeader } from "./helper";
 import useKpiMismatchReport from "./hooks/useKpiMismatchReport";
 import useKpiAndYearlyReportFilters from "../common/useKpiAndYearlyReportFilters";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const KpiTargetMismatchReport = () => {
   const [pages, setPages] = useState({
@@ -21,7 +22,7 @@ const KpiTargetMismatchReport = () => {
     pageSize: 20,
     total: 0,
   });
-
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
 
   const supervisor = Form.useWatch("supervisor", form);
@@ -54,18 +55,25 @@ const KpiTargetMismatchReport = () => {
     wId,
   });
 
+  useEffect(() => {
+      dispatch(setFirstLevelNameAction("Performance Management System"));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
   return (
     <PForm
       form={form}
       initialValues={{
-        isEnglish: true,
+        supervisor:{ value: 0, label: "All" },
+        department:{ value: 0, label: "All" },
+        designation:{ value: 0, label: "All" },
       }}
       onFinish={(values) => {
         fetchKpiMismatchReport({
-          supervisorId:values?.supervisor?.value,
-          departmentId:values?.department?.value,
-          designationId:values?.designation?.value,
-          year:values?.year?.value,
+          supervisorId: values?.supervisor?.value,
+          departmentId: values?.department?.value,
+          designationId: values?.designation?.value,
+          year: values?.year?.value,
           pages,
         });
       }}
@@ -85,7 +93,9 @@ const KpiTargetMismatchReport = () => {
           <Row gutter={[10, 2]}>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={supervisorDDL.data || []}
+                options={
+                  [...supervisorDDL.data, { value: 0, label: "All" }] || []
+                }
                 name="supervisor"
                 label="Supervisor"
                 placeholder="Search minimum 2 character"
@@ -104,7 +114,9 @@ const KpiTargetMismatchReport = () => {
             </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={departmentDDL.data || []}
+                options={
+                  [...departmentDDL.data, { value: 0, label: "All" }] || []
+                }
                 name="department"
                 label="Department"
                 placeholder="Department"
@@ -119,7 +131,9 @@ const KpiTargetMismatchReport = () => {
             </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={designationDDL.data || []}
+                options={
+                  [...designationDDL.data, { value: 0, label: "All" }] || []
+                }
                 name="designation"
                 label="Designation"
                 placeholder="Designation"
@@ -168,15 +182,15 @@ const KpiTargetMismatchReport = () => {
             pageSizeOptions: ["25", "50", "100"],
           }}
           onChange={(pagination, _, __, extra) => {
-            if (extra.action === "paginate"){
+            if (extra.action === "paginate") {
               fetchKpiMismatchReport({
-                supervisorId:supervisor?.value,
-                departmentId:department?.value,
-                designationId:designation?.value,
-                year:year?.value,
-                pages:pagination,
+                supervisorId: supervisor?.value,
+                departmentId: department?.value,
+                designationId: designation?.value,
+                year: year?.value,
+                pages: pagination,
               });
-              setPages(pagination)
+              setPages(pagination);
             }
           }}
         />
