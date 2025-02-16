@@ -53,6 +53,7 @@ export const levelOfLeaderApiCall = async (
 
     setState(formattedData || []); // Return the transformed data if needed
     setLoading && setLoading(false);
+    return formattedData;
   } catch (error) {
     toast.error("Error fetching master positions:", error);
     setLoading && setLoading(false);

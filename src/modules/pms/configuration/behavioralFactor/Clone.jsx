@@ -39,9 +39,30 @@ const Clone = ({ data, isScoreSettings, setIsScoreSettings }) => {
   const { type } = params;
   // Api Instance
 
+  const filterLeadershipDDL = (items) => {
+    console.log("items", items);
+    const list = [];
+    items?.forEach((item, i) => {
+      if (item?.label !== data?.label)
+        list.push({
+          label: item?.label,
+          value: item?.value,
+        });
+    });
+    setLevelofLeaderShip(list);
+  };
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading);
+    const fetchData = async () => {
+      const data = await levelOfLeaderApiCall(
+        intAccountId,
+        setLevelofLeaderShip,
+        setLoading
+      );
+      filterLeadershipDDL(data);
+    };
+    fetchData();
   }, []);
 
   return permission?.isCreate ? (
