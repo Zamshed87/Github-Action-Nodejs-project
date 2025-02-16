@@ -12,19 +12,22 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { ModalFooter } from "Components/Modal";
 import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
+import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 
 const Clone = ({ data, isScoreSettings, setIsScoreSettings }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const firstSegment = location.pathname.split("/")[1];
   const [loading, setLoading] = useState(false);
+  const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
+
   // redux
   const { permissionList, profileData } = useSelector(
     (state) => state?.auth,
     shallowEqual
   );
 
-  const { buId, wgId, wId, orgId } = profileData;
+  const { buId, wgId, wId, orgId, intAccountId } = profileData;
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -35,34 +38,15 @@ const Clone = ({ data, isScoreSettings, setIsScoreSettings }) => {
   const params = useParams();
   const { type } = params;
   // Api Instance
-  const levelOfLeaderApi = useApiRequest([]);
-
-  const levelOfLeaderApiCall = () => {
-    levelOfLeaderApi.action({
-      urlKey: "GetAllPosition",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        workplaceId: wId,
-        businessUnitId: buId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strPositionGroupName;
-          res[i].value = item?.intPositionGroupId;
-        });
-      },
-    });
-  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    levelOfLeaderApiCall();
+    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading);
   }, []);
 
   return permission?.isCreate ? (
     <div>
-      {(loading || levelOfLeaderApi?.loading) && <Loading />}
+      {loading && <Loading />}
       <PForm
         form={form}
         initialValues={{
@@ -73,7 +57,7 @@ const Clone = ({ data, isScoreSettings, setIsScoreSettings }) => {
         }}
       >
         <CommonForm
-          formConfig={makerFormConfig(levelOfLeaderApi?.data)}
+          formConfig={makerFormConfig(levelofLeaderShip)}
           form={form}
         />
 
