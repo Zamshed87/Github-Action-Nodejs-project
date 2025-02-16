@@ -99,8 +99,8 @@ const BehavioralFactor = () => {
 
   return permission?.isView ? (
     <div className="table-card">
-      {loading && <Loading />}
       <PForm form={form}>
+        {loading && <Loading />}
         <div className="mt-2">
           <DataTable
             bordered
