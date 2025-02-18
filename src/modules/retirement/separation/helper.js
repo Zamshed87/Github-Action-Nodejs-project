@@ -306,7 +306,7 @@ export const separationApplicationLandingTableColumn = (
       sort: true,
       filter: false,
       render: (data) => (
-        <div className="d-flex">
+        <div className="d-flex align-items-center">
           <div>
             <div className="content tableBody-title d-flex align-items-center">
               <LightTooltip
@@ -335,7 +335,7 @@ export const separationApplicationLandingTableColumn = (
             </div>
           </div>
           <div className="ml-2">
-            {data?.approvalStatus === "Approve" && (
+            {data?.approvalStatus === "Approved" && (
               <Chips label="Approved" classess="success p-2" />
             )}
             {data?.approvalStatus === "Pending" && (
@@ -349,6 +349,12 @@ export const separationApplicationLandingTableColumn = (
             )}
             {data?.approvalStatus === "Released" && (
               <Chips label="Released" classess="indigo p-2 mr-2" />
+            )}
+            {data?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2 mr-2" />
+            )}
+            {data?.approvalStatus === "Withdrawn" && (
+              <Chips label="Withdrawn" classess="danger p-2 mr-2" />
             )}
           </div>
         </div>

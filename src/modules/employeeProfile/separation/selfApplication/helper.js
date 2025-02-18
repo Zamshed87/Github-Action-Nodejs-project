@@ -184,6 +184,7 @@ export const separationApplicationLandingTableColumn = (
             height: "35px",
           }}
           label={"Exit Interview"}
+          disabled={data?.intQuestionAssignId === null ? true : false || data?.isExitInterviewDone === true ? true : false}
           onClick={() => {
             history.push("/SelfService/separation/applicationV2/interView", {
               data: data,
@@ -379,23 +380,61 @@ export const separationApplicationLandingTableColumn = (
       sort: true,
       filter: false,
       render: (item) => (
-        <>
-          {item?.approvalStatus === "Approve" && (
-            <Chips label="Approved" classess="success p-2" />
-          )}
-          {item?.approvalStatus === "Pending" && (
-            <Chips label="Pending" classess="warning p-2" />
-          )}
-          {item?.approvalStatus === "Process" && (
-            <Chips label="Process" classess="primary p-2" />
-          )}
-          {item?.approvalStatus === "Reject" && (
-            <Chips label="Rejected" classess="danger p-2 mr-2" />
-          )}
-          {item?.approvalStatus === "Released" && (
-            <Chips label="Released" classess="indigo p-2 mr-2" />
-          )}
-        </>
+        <div className="d-flex justify-content-center align-items-center">
+          <div>
+            <div className="content tableBody-title d-flex align-items-center">
+              <LightTooltip
+                title={
+                  <div className="p-1">
+                    <div className="mb-1">
+                      <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                        <tr>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{item?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{item?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                }
+                arrow
+              >
+                <InfoOutlined
+                  sx={{
+                    color: gray900,
+                  }}
+                />
+              </LightTooltip>
+            </div>
+          </div>
+          <div className="ml-2">
+            {item?.approvalStatus?.includes("Approved") && (
+              <Chips
+                label="Approved"
+                classess="success p-2"
+              />
+            )}
+            {item?.approvalStatus === "Released" && (
+              <Chips
+                label="Released"
+                classess="indigo p-2 mr-2"
+              />
+            )}
+            {item?.approvalStatus === "Clearance" && (
+              <Chips
+                label="Clearance"
+                classess="info p-2 mr-2"
+              />
+            )}
+            {item?.approvalStatus === "Withdrawn" && (
+              <Chips
+                label="Withdrawn"
+                classess="danger p-2 mr-2"
+              />
+            )}
+          </div>
+        </div>
       ),
       fieldType: "string",
     },
@@ -414,7 +453,7 @@ export const separationApplicationLandingTableColumn = (
                 pointAtCenter: true,
               }}
               trigger={["click"]}
-              disabled={item?.approvalStatus !== "Approve"}
+              disabled={item?.approvalStatus !== "Approved"}
             >
               <PrimaryButton
                 type="button"
