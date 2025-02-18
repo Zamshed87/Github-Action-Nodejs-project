@@ -1571,6 +1571,7 @@ import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3293,6 +3294,10 @@ export const routingList = [
   {
     path: "/SelfService/separation/applicationV2",
     component: SelfServiceSeparation,
+  },
+  {
+    path: "/SelfService/separation/applicationV2/interView",
+    component: InterViewModal,
   },
   // Asset Management Start
   {
