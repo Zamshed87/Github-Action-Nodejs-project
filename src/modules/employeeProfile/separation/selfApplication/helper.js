@@ -114,7 +114,7 @@ export const separationApplicationLandingTableColumn = (
       message: "Are you sure you want to withdraw this application?",
       yesAlertFunc: () => {
         postWithdrawSeperationData(
-          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          `/Separation/WithdrawalSeparation?id=${separationId}&employeeId=${employeeId}`,
           "",
           () => {
             getData();
@@ -283,29 +283,29 @@ export const separationApplicationLandingTableColumn = (
                   />
                   {item?.docArr?.length && item?.docArr?.[0] !== ""
                     ? item?.docArr.map((image, i) => (
-                        <p
-                          style={{
-                            margin: "6px 0 0",
-                            fontWeight: "400",
-                            fontSize: "12px",
-                            lineHeight: "18px",
-                            color: "#009cde",
-                            cursor: "pointer",
+                      <p
+                        style={{
+                          margin: "6px 0 0",
+                          fontWeight: "400",
+                          fontSize: "12px",
+                          lineHeight: "18px",
+                          color: "#009cde",
+                          cursor: "pointer",
+                        }}
+                        key={i}
+                      >
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(getDownlloadFileView_Action(image));
                           }}
-                          key={i}
                         >
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              dispatch(getDownlloadFileView_Action(image));
-                            }}
-                          >
-                            <>
-                              <FilePresentOutlined /> {`Attachment_${i + 1}`}
-                            </>
-                          </span>
-                        </p>
-                      ))
+                          <>
+                            <FilePresentOutlined /> {`Attachment_${i + 1}`}
+                          </>
+                        </span>
+                      </p>
+                    ))
                     : ""}
                 </div>
               </div>

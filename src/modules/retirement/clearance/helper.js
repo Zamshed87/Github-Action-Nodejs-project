@@ -112,13 +112,13 @@ export const getClearanceLandingTableColumn = (
     empId,
     setEmpId,
 ) => {
-    const confirmClearancePopup = () => {
+    const confirmClearancePopup = (sepId, employeeId) => {
         const confirmObject = {
             closeOnClickOutside: false,
             message: "Are you sure you want to send this application for Clearance?",
             yesAlertFunc: () => {
                 postClearanceData(
-                    `/Separation/StartSeparationClearance?id=${id}&employeeId=${empId}`,
+                    `/Separation/StartSeparationClearance?id=${sepId}&employeeId=${employeeId}`,
                     "",
                     () => {
                         getData();
@@ -133,12 +133,12 @@ export const getClearanceLandingTableColumn = (
         IConfirmModal(confirmObject);
     };
 
-    const confirmReleasePopup = () => {
+    const confirmReleasePopup = (sepId, employeeId) => {
         const confirmObject = {
             closeOnClickOutside: false,
             message: "Are you sure you want to release this application?",
             yesAlertFunc: () => {
-                console.log("release", id, empId);
+                console.log("release", sepId, employeeId);
             },
             noAlertFunc: () => {
                 getData();
@@ -310,7 +310,7 @@ export const getClearanceLandingTableColumn = (
                                     onClick={() => {
                                         setId(data?.separationId)
                                         setEmpId(data?.intEmployeeId)
-                                        confirmClearancePopup();
+                                        confirmClearancePopup(data?.separationId, data?.intEmployeeId);
                                     }}
                                 ><CheckCircleTwoTone twoToneColor="#34a853" />
                                 </button>
@@ -329,7 +329,7 @@ export const getClearanceLandingTableColumn = (
                                     onClick={() => {
                                         setId(data?.separationId)
                                         setEmpId(data?.intEmployeeId)
-                                        confirmReleasePopup();
+                                        confirmReleasePopup(data?.separationId, data?.intEmployeeId);
                                     }}
                                 ><SendTwoToneIcon color="success" />
                                 </button>
