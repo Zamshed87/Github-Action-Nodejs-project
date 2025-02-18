@@ -189,6 +189,9 @@ const KpiTargetMismatchReport = lazy(() =>
 const YearlyPerformanceReport = lazy(() =>
   import("../modules/pms/report/yearlyPerformanceReport/index.jsx")
 );
+const PerformanceAppraisalReport = lazy(() =>
+  import("../modules/pms/report/performanceAppraisalReport/index.jsx")
+);
 const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
 const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
 const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
@@ -3826,6 +3829,10 @@ export const routingList = [
   {
     path: "/pms/reports/YearlyPerformanceReport",
     component: YearlyPerformanceReport,
+  },
+  {
+    path: "/pms/reports/PerformanceAppraisalReport",
+    component: PerformanceAppraisalReport,
   },
   {
     path: "/performancemanagementsystem/pms/strategicplan",
