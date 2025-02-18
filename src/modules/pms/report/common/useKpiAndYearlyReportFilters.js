@@ -1,10 +1,10 @@
 import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import { useEffect } from "react";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { orgIdsForBn } from "utility/orgForBanglaField";
-import { yearDDLAction } from "utility/yearDDL";
 
-const useKpiMismatchFilters = ({
+const useKpiAndYearlyReportFilters = ({
   orgId,
   buId,
   wgId,
@@ -14,6 +14,7 @@ const useKpiMismatchFilters = ({
   const supervisorDDL = useApiRequest([]);
   const departmentDDL = useApiRequest([]);
   const designationDDL = useApiRequest([]);
+  const [fiscalYearDDL, getFiscalYearDDL] = useAxiosGet();
 
   const getSuperVisors = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
@@ -82,15 +83,18 @@ const useKpiMismatchFilters = ({
   useEffect(() => {
     getDepartments();
     getDesignations();
-  }, []);
+    getFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
+    
+  }, [orgId, buId, wgId, wId]);
+  
 
   return {
     supervisorDDL,
     getSuperVisors,
     departmentDDL,
     designationDDL,
-    yearDDL: yearDDLAction(2, 0) || [],
+    yearDDL: fiscalYearDDL,
   };
 };
 
-export default useKpiMismatchFilters;
+export default useKpiAndYearlyReportFilters;

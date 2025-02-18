@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import {
   DataTable,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
   PForm,
-  PSelect,
 } from "Components";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import { getHeader } from "./helper";
-import useKpiMismatchFilters from "./hooks/useKpiMismatchFilters";
 import useKpiMismatchReport from "./hooks/useKpiMismatchReport";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import ReportFilters from "../common/ReportFilters";
+import useReportFilters from "../common/useReportFilters";
 
 const KpiTargetMismatchReport = () => {
   const [pages, setPages] = useState({
@@ -21,7 +21,7 @@ const KpiTargetMismatchReport = () => {
     pageSize: 20,
     total: 0,
   });
-
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
 
   const supervisor = Form.useWatch("supervisor", form);
@@ -34,18 +34,20 @@ const KpiTargetMismatchReport = () => {
     profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
+
   const {
     supervisorDDL,
     getSuperVisors,
     departmentDDL,
     designationDDL,
     yearDDL,
-  } = useKpiMismatchFilters({
+  } = useReportFilters({
     orgId,
     buId,
     wgId,
     wId,
     employeeId,
+    includeLeadership: false,
   });
 
   const { reportData, fetchKpiMismatchReport, loading } = useKpiMismatchReport({
@@ -54,18 +56,25 @@ const KpiTargetMismatchReport = () => {
     wId,
   });
 
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Performance Management System"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <PForm
       form={form}
       initialValues={{
-        isEnglish: true,
+        supervisor: { value: 0, label: "All" },
+        department: { value: 0, label: "All" },
+        designation: { value: 0, label: "All" },
       }}
       onFinish={(values) => {
         fetchKpiMismatchReport({
-          supervisorId:values?.supervisor?.value,
-          departmentId:values?.department?.value,
-          designationId:values?.designation?.value,
-          year:values?.year?.value,
+          supervisorId: values?.supervisor?.value,
+          departmentId: values?.department?.value,
+          designationId: values?.designation?.value,
+          year: values?.year?.value,
           pages,
         });
       }}
@@ -82,79 +91,15 @@ const KpiTargetMismatchReport = () => {
           // }}
         />
         <PCardBody className="mb-3">
-          <Row gutter={[10, 2]}>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={supervisorDDL.data || []}
-                name="supervisor"
-                label="Supervisor"
-                placeholder="Search minimum 2 character"
-                showSearch
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    supervisor: op,
-                  });
-                }}
-                loading={supervisorDDL.loading}
-                onSearch={(value) => {
-                  getSuperVisors(value);
-                }}
-                // rules={[{ required: true, message: "Supervisor is required" }]}
-              />
-            </Col>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={departmentDDL.data || []}
-                name="department"
-                label="Department"
-                placeholder="Department"
-                showSearch
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    department: op,
-                  });
-                }}
-                // rules={[{ required: true, message: "Department is required" }]}
-              />
-            </Col>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={designationDDL.data || []}
-                name="designation"
-                label="Designation"
-                placeholder="Designation"
-                showSearch
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    designation: op,
-                  });
-                }}
-                // rules={[{ required: true, message: "Designation is required" }]}
-              />
-            </Col>
-            <Col md={3} sm={12} xs={24}>
-              <PSelect
-                options={yearDDL || []}
-                name="year"
-                label="Year"
-                showSearch
-                placeholder="Year"
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    year: op,
-                  });
-                }}
-                // rules={[{ required: true, message: "Year is required" }]}
-              />
-            </Col>
-            <Col
-              style={{
-                marginTop: "23px",
-              }}
-            >
-              <PButton type="primary" action="submit" content="View" />
-            </Col>
-          </Row>
+          <ReportFilters
+            form={form}
+            supervisorDDL={supervisorDDL}
+            getSuperVisors={getSuperVisors}
+            departmentDDL={departmentDDL}
+            designationDDL={designationDDL}
+            yearDDL={yearDDL}
+            showLevelOfLeadership={false}
+          />
         </PCardBody>
 
         <DataTable
@@ -168,15 +113,15 @@ const KpiTargetMismatchReport = () => {
             pageSizeOptions: ["25", "50", "100"],
           }}
           onChange={(pagination, _, __, extra) => {
-            if (extra.action === "paginate"){
+            if (extra.action === "paginate") {
               fetchKpiMismatchReport({
-                supervisorId:supervisor?.value,
-                departmentId:department?.value,
-                designationId:designation?.value,
-                year:year?.value,
-                pages:pagination,
+                supervisorId: supervisor?.value,
+                departmentId: department?.value,
+                designationId: designation?.value,
+                year: year?.value,
+                pages: pagination,
               });
-              setPages(pagination)
+              setPages(pagination);
             }
           }}
         />
