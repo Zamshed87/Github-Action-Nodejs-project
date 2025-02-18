@@ -1727,6 +1727,12 @@ const RetirementReleaseSeparationForm = lazy(() =>
     "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
   )
 );
+const ExitInterviewLanding = lazy(() =>
+  import("../modules/retirement/exitInterview/index.jsx")
+);
+const ClearanceLanding = lazy(() =>
+  import("../modules/retirement/clearance/index.jsx")
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4156,6 +4162,14 @@ export const routingList = [
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
   },
+  {
+    path: "/retirement/exitInterview",
+    component: ExitInterviewLanding,
+  },
+  {
+    path: "/retirement/clearance",
+    component: ClearanceLanding,
+  }
 ];
 
 // Those hidden menu just use for develper

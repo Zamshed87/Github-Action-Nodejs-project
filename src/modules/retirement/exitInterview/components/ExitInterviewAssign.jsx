@@ -4,19 +4,20 @@ import { APIUrl } from "App";
 import Chips from "common/Chips";
 import Loading from "common/loading/Loading";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { DataTable, PButton } from "Components";
+import { DataTable, PButton, PSelect } from "Components";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { gray700 } from "utility/customColor";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
-import profileImg from "../../../../../assets/images/profile.jpg";
-import { getSeparationLandingById } from "../../helper";
+import profileImg from "../../../../assets/images/profile.jpg";
+import { getSeparationLandingById } from "../helper";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
-function SeparationHistoryview({ id, empId }) {
+export default function ExitInterviewAssign({ id, empId }) {
   //Redux Data
-  const { orgId } = useSelector(
+  const { orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -27,11 +28,15 @@ function SeparationHistoryview({ id, empId }) {
   const [handoverData, getHandoverData, handoverloading] = useAxiosGet();
   const [exitInterviewData, getExitInterviewData, exitInterviewDataloading] =
     useAxiosGet();
+  const [, getInterviewQuestionsDDL] = useAxiosGet();
+  const [, postExitInterviewData] = useAxiosPost();
 
   //States
   const [empBasic, setEmpBasic] = useState({});
   const [singleSeparationData, setSingleSeparationData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [interviewQuestionsDDL, setInterviewQuestionsDDL] = useState([]);
+  const [interviewQuestionId, setinterviewQuestionId] = useState();
 
   //Table Header
   const header = [
@@ -101,6 +106,17 @@ function SeparationHistoryview({ id, empId }) {
         }
       );
       getSeparationLandingById(id, setSingleSeparationData, setLoading);
+      getInterviewQuestionsDDL(
+        `/ExitInterview/GetActiveQuestions?workplaceId=${wId}`,
+        (res) => {
+          setInterviewQuestionsDDL(
+            res?.data?.map((item) => ({
+              label: item?.text,
+              value: item?.value,
+            }))
+          );
+        }
+      );
     }
   }, [id]);
   return (
@@ -109,14 +125,37 @@ function SeparationHistoryview({ id, empId }) {
       {empBasic && (
         <div>
           <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "12.5px",
-              color: gray700,
-              marginBottom: "10px",
-            }}
+            className="d-flex justify-content-between align-items-center"
+            style={{ marginBottom: "10px" }}
           >
-            Employee Details
+            <div
+              style={{
+                fontWeight: "bold",
+                fontSize: "12.5px",
+                color: gray700,
+              }}
+            >
+              Employee Details
+            </div>
+            <PButton
+              type="primary"
+              content={<div style={{ fontSize: "10px" }}>Save</div>}
+              onClick={() => {
+                if (id) {
+                  const payload = {
+                    EmployeeId: empId,
+                    QuestionId: interviewQuestionId,
+                    SeparationId: id,
+                  };
+                  postExitInterviewData(
+                    `/ExitInterview/AssignExitInterviewQuestion`,
+                    payload,
+                    "",
+                    true
+                  );
+                }
+              }}
+            />
           </div>
           <div className="card-about-info-main about-info-card">
             <div className="d-flex justify-content-between">
@@ -420,7 +459,20 @@ function SeparationHistoryview({ id, empId }) {
                     </Popover>
                   </div>
                 </div>
-                <div className="d-flex justify-content-end mt-2">
+                <div className="d-flex justify-content-between mt-2">
+                  <div>
+                    <span style={{ fontSize: "13.5px" }}>
+                      Exit Interview Question Assign
+                    </span>
+                    <PSelect
+                      options={interviewQuestionsDDL || []}
+                      name="Questions"
+                      placeholder="Select Questions"
+                      onChange={(value) => {
+                        setinterviewQuestionId(value);
+                      }}
+                    />
+                  </div>
                   <div>
                     <Popover
                       content={
@@ -486,12 +538,6 @@ function SeparationHistoryview({ id, empId }) {
                                     <Chips
                                       label="Released"
                                       classess="danger p-2 mr-2"
-                                    />
-                                  )}
-                                  {item === "Clearance" && (
-                                    <Chips
-                                      label="Clearance"
-                                      classess="indigo p-2 mr-2"
                                     />
                                   )}
                                 </div>
@@ -581,5 +627,3 @@ function SeparationHistoryview({ id, empId }) {
     </>
   );
 }
-
-export default SeparationHistoryview;
