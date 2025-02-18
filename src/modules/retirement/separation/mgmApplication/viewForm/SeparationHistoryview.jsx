@@ -358,6 +358,10 @@ function SeparationHistoryview({ id, empId }) {
                           "Released" && (
                           <Chips label="Released" classess="indigo p-2 mr-2" />
                         )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Clearance" && (
+                          <Chips label="Clearance" classess="info p-2 mr-2" />
+                        )}
                       </>
                     }
                   </div>
@@ -482,16 +486,16 @@ function SeparationHistoryview({ id, empId }) {
                                       classess="indigo p-2 mr-2"
                                     />
                                   )}
-                                  {item === "Cancelled" && (
-                                    <Chips
-                                      label="Released"
-                                      classess="danger p-2 mr-2"
-                                    />
-                                  )}
                                   {item === "Clearance" && (
                                     <Chips
                                       label="Clearance"
-                                      classess="indigo p-2 mr-2"
+                                      classess="info p-2 mr-2"
+                                    />
+                                  )}
+                                  {item === "Withdrawn" && (
+                                    <Chips
+                                      label="Withdrawn"
+                                      classess="danger p-2 mr-2"
                                     />
                                   )}
                                 </div>

@@ -262,6 +262,12 @@ export const getClearanceLandingTableColumn = (
                     {item?.approvalStatus === "Clearance" && (
                         <Chips
                             label="Clearance"
+                            classess="info p-2 mr-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Withdrawn" && (
+                        <Chips
+                            label="Withdrawn"
                             classess="danger p-2 mr-2"
                         />
                     )}
