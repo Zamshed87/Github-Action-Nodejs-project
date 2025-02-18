@@ -357,36 +357,6 @@ export const separationApplicationLandingTableColumn = (
               </button>
             </Tooltip>
           )}
-          {item?.approvalStatus === "Approve" && (
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-              }}
-              className="btn btn-default btn-assign"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (
-                  dateFormatterForInput(item?.dteLastWorkingDate) +
-                  "T00:00:00" >
-                  todayDate() + "T00:00:00"
-                ) {
-                  return toast.warn(
-                    `Can not release due to the employee having some working days left`
-                  );
-                }
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
-                history.push(
-                  `/retirement/separation/release/${item?.separationId}`
-                );
-              }}
-            >
-              Release
-            </button>
-          )}
         </div>
       ),
       sort: false,
