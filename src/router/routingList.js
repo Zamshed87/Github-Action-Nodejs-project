@@ -1699,7 +1699,7 @@ const RetirementReleaseSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
 );
 const ExitInterviewLanding = lazy(() =>
-  import("../modules/retirement/exitinterview/index.jsx")
+  import("../modules/retirement/exitInterview/index.jsx")
 );
 const ClearanceLanding = lazy(() =>
   import("../modules/retirement/clearance/index.jsx")

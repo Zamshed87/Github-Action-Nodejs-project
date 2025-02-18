@@ -10,14 +10,14 @@ import {
   getExitInterviewLandingTableColumn,
   SearchFilter,
   statusDDL,
-} from "../exitinterview/helper";
+} from "../exitInterview/helper.js";
 import { shallowEqual, useSelector } from "react-redux";
 import NoResult from "common/NoResult";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import ExitInterviewAssign from "./components/ExitInterviewAssign";
+import ExitInterviewAssign from "./components/ExitInterviewAssign.jsx";
 import { PModal } from "Components/Modal";
-import ExitInterviewDataView from "./components/ExitInterviewDataView";
+import ExitInterviewDataView from "./components/ExitInterviewDataView.jsx";
 
 export default function ExitInterviewLanding() {
   const {
