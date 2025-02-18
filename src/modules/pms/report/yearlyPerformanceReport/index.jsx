@@ -3,27 +3,25 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import {
   DataTable,
-  PButton,
   PCard,
   PCardBody,
   PCardHeader,
   PForm,
-  PSelect,
 } from "Components";
-import { Col, Form, Row } from "antd";
+import { Form } from "antd";
 import { getHeader } from "./helper";
 import useYearlyPerformanceReport from "./hooks/useYearlyPerformanceReport";
-import useKpiAndYearlyReportFilters from "../common/useKpiAndYearlyReportFilters";
-import useYearlyPerformanceReportFilters from "./hooks/useYearlyPerformanceReportFilters";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { downloadFile } from "utility/downloadFile";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import DetailsYearlyPerformanceReport from "./DetailsYearlyPerformanceReport";
+import useReportFilters from "../common/useReportFilters";
+import ReportFilters from "../common/ReportFilters";
 
 const YearlyPerformanceReport = () => {
   const [excelLoading, setExcelLoading] = useState(false);
-  const [modal, setModal] = useState({open:false,data:{}});
+  const [modal, setModal] = useState({ open: false, data: {} });
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 20,
@@ -50,14 +48,15 @@ const YearlyPerformanceReport = () => {
     departmentDDL,
     designationDDL,
     yearDDL,
-  } = useKpiAndYearlyReportFilters({
+    levelOfLeadershipDDL,
+  } = useReportFilters({
     orgId,
     buId,
     wgId,
     wId,
     employeeId,
+    includeLeadership: true,
   });
-  const { levelOfLeaderShipDDL } = useYearlyPerformanceReportFilters({ orgId });
 
   const { reportData, fetchYearlyPerformanceReport, loading } =
     useYearlyPerformanceReport({
@@ -130,108 +129,19 @@ const YearlyPerformanceReport = () => {
             }}
           />
           <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={
-                    [
-                      isOfficeAdmin && { value: 0, label: "All" },
-                      ...supervisorDDL.data,
-                    ] || []
-                  }
-                  name="supervisor"
-                  label="Supervisor"
-                  placeholder="Search minimum 2 character"
-                  showSearch
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      supervisor: op,
-                    });
-                  }}
-                  loading={supervisorDDL.loading}
-                  onSearch={(value) => {
-                    getSuperVisors(value);
-                  }}
-                  // rules={[{ required: true, message: "Supervisor is required" }]}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={
-                    [{ value: 0, label: "All" }, ...departmentDDL.data] || []
-                  }
-                  name="department"
-                  label="Department"
-                  placeholder="Department"
-                  showSearch
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      department: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Department is required" }]}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={
-                    [{ value: 0, label: "All" }, ...designationDDL.data] || []
-                  }
-                  name="designation"
-                  label="Designation"
-                  placeholder="Designation"
-                  showSearch
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      designation: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Designation is required" }]}
-                />
-              </Col>
-              <Col md={3} sm={12} xs={24}>
-                <PSelect
-                  options={yearDDL || []}
-                  name="year"
-                  label="Year"
-                  showSearch
-                  placeholder="Year"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      year: op,
-                    });
-                  }}
-                  rules={[{ required: true, message: "Year is required" }]}
-                />
-              </Col>
-              <Col md={3} sm={12} xs={24}>
-                <PSelect
-                  options={
-                    [{ value: 0, label: "All" }, ...levelOfLeaderShipDDL] || []
-                  }
-                  name="levelOfLeadershipId"
-                  label="Level Of Leadership"
-                  showSearch
-                  placeholder="Level Of Leadership"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      year: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Year is required" }]}
-                />
-              </Col>
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
+            <ReportFilters
+              form={form}
+              supervisorDDL={supervisorDDL}
+              getSuperVisors={getSuperVisors}
+              departmentDDL={departmentDDL}
+              designationDDL={designationDDL}
+              yearDDL={yearDDL}
+              levelOfLeadershipDDL={levelOfLeadershipDDL}
+              showLevelOfLeadership={true}
+            />
           </PCardBody>
           <DataTable
-            header={getHeader(pages,setModal)}
+            header={getHeader(pages, setModal)}
             bordered
             data={reportData?.data || []}
             loading={loading}
@@ -261,11 +171,9 @@ const YearlyPerformanceReport = () => {
         title="Details Yearly Performance Report"
         open={modal.open}
         onCancel={() => {
-          setModal({open:false,data:{}});
+          setModal({ open: false, data: {} });
         }}
-        components={
-          <DetailsYearlyPerformanceReport record={modal.data}/>
-        }
+        components={<DetailsYearlyPerformanceReport record={modal.data} />}
         width={1500}
       />
     </>
