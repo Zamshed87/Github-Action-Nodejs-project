@@ -342,7 +342,8 @@ function SeparationHistoryview({ id, empId }) {
                     <span style={{ fontSize: "13.5px" }}>Status:</span>&nbsp;
                     {
                       <>
-                        {singleSeparationData?.approvalStatus === "Approve" && (
+                        {singleSeparationData?.approvalStatus ===
+                          "Approved" && (
                           <Chips label="Approved" classess="success p-2" />
                         )}
                         {singleSeparationData?.approvalStatus === "Pending" && (
@@ -361,6 +362,10 @@ function SeparationHistoryview({ id, empId }) {
                         {singleSeparationData?.approvalStatus ===
                           "Clearance" && (
                           <Chips label="Clearance" classess="info p-2 mr-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Withdrawn" && (
+                          <Chips label="Withdrawn" classess="danger p-2 mr-2" />
                         )}
                       </>
                     }
@@ -456,7 +461,7 @@ function SeparationHistoryview({ id, empId }) {
                               filter: false,
                               render: (item) => (
                                 <div className="d-flex justify-content-center">
-                                  {item === "Approve" && (
+                                  {item === "Approved" && (
                                     <Chips
                                       label="Approved"
                                       classess="success p-2"

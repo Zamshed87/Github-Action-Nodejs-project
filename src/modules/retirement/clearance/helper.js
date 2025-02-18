@@ -1,12 +1,15 @@
 import { CheckCircleTwoTone, EyeTwoTone } from "@ant-design/icons";
+import { InfoOutlined } from "@mui/icons-material";
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import { Form, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
 import IConfirmModal from "common/IConfirmModal";
+import { LightTooltip } from "common/LightTooltip";
 import MasterFilter from "common/MasterFilter";
 import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
+import { gray900 } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
@@ -245,36 +248,62 @@ export const getClearanceLandingTableColumn = (
             dataIndex: "approvalStatus",
             sort: true,
             filter: false,
-            render: (item) => (
-                <div className="d-flex justify-content-center">
-                    {item?.approvalStatus?.includes("Approved") && (
-                        <Chips
-                            label="Approved"
-                            classess="success p-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Released" && (
-                        <Chips
-                            label="Released"
-                            classess="indigo p-2 mr-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Clearance" && (
-                        <Chips
-                            label="Clearance"
-                            classess="info p-2 mr-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Withdrawn" && (
-                        <Chips
-                            label="Withdrawn"
-                            classess="danger p-2 mr-2"
-                        />
-                    )}
+            render: (data) => (
+                <div className="d-flex align-items-center">
+                    <div>
+                        <div className="content tableBody-title d-flex align-items-center">
+                            <LightTooltip
+                                title={
+                                    <div className="p-1">
+                                        <div className="mb-1">
+                                            <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
+                                                <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
+                                                <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                                                <tr>
+                                                    <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                                                    <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                arrow
+                            >
+                                <InfoOutlined
+                                    sx={{
+                                        color: gray900,
+                                    }}
+                                />
+                            </LightTooltip>
+                        </div>
+                    </div>
+                    <div className="ml-2">
+                        {data?.approvalStatus === "Approved" && (
+                            <Chips label="Approved" classess="success p-2" />
+                        )}
+                        {data?.approvalStatus === "Pending" && (
+                            <Chips label="Pending" classess="warning p-2" />
+                        )}
+                        {data?.approvalStatus === "Process" && (
+                            <Chips label="Process" classess="primary p-2" />
+                        )}
+                        {data?.approvalStatus === "Reject" && (
+                            <Chips label="Rejected" classess="danger p-2 mr-2" />
+                        )}
+                        {data?.approvalStatus === "Released" && (
+                            <Chips label="Released" classess="indigo p-2 mr-2" />
+                        )}
+                        {data?.approvalStatus === "Clearance" && (
+                            <Chips label="Clearance" classess="info p-2 mr-2" />
+                        )}
+                        {data?.approvalStatus === "Withdrawn" && (
+                            <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+                        )}
+                    </div>
                 </div>
             ),
             fieldType: "string",
-            width: 50,
+            width: 80,
         },
         {
             title: "",

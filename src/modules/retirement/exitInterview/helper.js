@@ -134,7 +134,7 @@ export const getExitInterviewLandingTableColumn = (
             filter: false,
             render: (item) => (
                 <div className="d-flex justify-content-center">
-                    {item?.approvalStatus === "Approve" && (
+                    {item?.approvalStatus === "Approved" && (
                         <Chips
                             label="Approved"
                             classess="success p-2"
@@ -167,6 +167,18 @@ export const getExitInterviewLandingTableColumn = (
                     {item?.approvalStatus === "Cancelled" && (
                         <Chips
                             label="Released"
+                            classess="danger p-2 mr-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Clearance" && (
+                        <Chips
+                            label="Clearance"
+                            classess="info p-2 mr-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Withdrawn" && (
+                        <Chips
+                            label="Withdrawn"
                             classess="danger p-2 mr-2"
                         />
                     )}
