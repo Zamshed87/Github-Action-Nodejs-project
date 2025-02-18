@@ -10,13 +10,14 @@ import {
   getExitInterviewLandingTableColumn,
   SearchFilter,
   statusDDL,
-} from "./helper";
+} from "../exitinterview/helper";
 import { shallowEqual, useSelector } from "react-redux";
 import NoResult from "common/NoResult";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import ExitInterviewView from "./components/ExitInterviewView";
+import ExitInterviewAssign from "./components/ExitInterviewAssign";
 import { PModal } from "Components/Modal";
+import ExitInterviewDataView from "./components/ExitInterviewDataView";
 
 export default function ExitInterviewLanding() {
   const {
@@ -49,7 +50,10 @@ export default function ExitInterviewLanding() {
   });
 
   const [openFilter, setOpenFilter] = useState(false);
-  const [openExitInterviewModal, setOpenExitInterviewModal] = useState(false);
+  const [openExitInterviewAssignModal, setOpenExitInterviewAssignModal] =
+    useState(false);
+  const [openExitInterviewDataViewModal, setOpenExitInterviewDataViewModal] =
+    useState(false);
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
@@ -228,12 +232,9 @@ export default function ExitInterviewLanding() {
                     content={"Filter"}
                     onClick={() => {
                       const values = form.getFieldsValue(true);
-                      form
-                        .validateFields()
-                        .then(() => {
-                          getData(pages, values?.search);
-                        })
-                        .catch(() => {});
+                      form.validateFields().then(() => {
+                        getData(pages, values?.search);
+                      });
                     }}
                   />
                 </Col>
@@ -258,7 +259,8 @@ export default function ExitInterviewLanding() {
                   columnData={getExitInterviewLandingTableColumn(
                     pages?.current,
                     pages?.pageSize,
-                    setOpenExitInterviewModal,
+                    setOpenExitInterviewAssignModal,
+                    setOpenExitInterviewDataViewModal,
                     setId,
                     setEmpId
                   )}
@@ -276,8 +278,8 @@ export default function ExitInterviewLanding() {
                   isScrollAble={false}
                 />
                 <PModal
-                  title="Exit Interview"
-                  open={openExitInterviewModal}
+                  title="Assign Exit Interview"
+                  open={openExitInterviewAssignModal}
                   onCancel={() => {
                     getExitInterviewLanding(
                       "ExitInterview",
@@ -297,9 +299,36 @@ export default function ExitInterviewLanding() {
                       decodedToken.workplaceGroupList || "",
                       decodedToken.workplaceList || ""
                     );
-                    setOpenExitInterviewModal(false);
+                    setOpenExitInterviewAssignModal(false);
                   }}
-                  components={<ExitInterviewView id={id} empId={empId} />}
+                  components={<ExitInterviewAssign id={id} empId={empId} />}
+                  width={1000}
+                />
+                <PModal
+                  title="Exit Interview"
+                  open={openExitInterviewDataViewModal}
+                  onCancel={() => {
+                    getExitInterviewLanding(
+                      "ExitInterview",
+                      buId,
+                      wgId,
+                      values?.filterFromDate || "",
+                      values?.filterToDate || "",
+                      values?.status?.value || 0,
+                      "",
+                      setRowDto,
+                      setLoading,
+                      1,
+                      paginationSize,
+                      setPages,
+                      wId,
+                      "",
+                      decodedToken.workplaceGroupList || "",
+                      decodedToken.workplaceList || ""
+                    );
+                    setOpenExitInterviewDataViewModal(false);
+                  }}
+                  components={<ExitInterviewDataView id={id} empId={empId} />}
                   width={1000}
                 />
               </>

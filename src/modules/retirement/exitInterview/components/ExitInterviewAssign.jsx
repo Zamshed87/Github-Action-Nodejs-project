@@ -15,7 +15,7 @@ import profileImg from "../../../../assets/images/profile.jpg";
 import { getSeparationLandingById } from "../helper";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 
-export default function ExitInterviewView({ id, empId }) {
+export default function ExitInterviewAssign({ id, empId }) {
   //Redux Data
   const { orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,

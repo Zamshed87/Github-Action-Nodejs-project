@@ -86,7 +86,8 @@ export const getExitInterviewLanding = async (
 export const getExitInterviewLandingTableColumn = (
     page,
     paginationSize,
-    setOpenExitInterviewModal,
+    setOpenExitInterviewAssignModal,
+    setOpenExitInterviewDataViewModal,
     setId,
     setEmpId
 ) => {
@@ -217,7 +218,7 @@ export const getExitInterviewLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
-                                    setOpenExitInterviewModal(true);
+                                    setOpenExitInterviewAssignModal(true);
                                 }}
                             />
                         </Tooltip>
@@ -232,7 +233,13 @@ export const getExitInterviewLandingTableColumn = (
                                     fontSize: "16px",
                                     padding: "0px 12px 0px 12px",
                                     border: "none",
-                                }} />
+                                }}
+                                onClick={() => {
+                                    setId(data?.separationId)
+                                    setEmpId(data?.intEmployeeId)
+                                    setOpenExitInterviewDataViewModal(true);
+                                }}
+                            />
                         </Tooltip>
                     )}
                     {data?.strInterviewStatus === "Assigned" && (
