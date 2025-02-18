@@ -488,6 +488,12 @@ function SeparationHistoryview({ id, empId }) {
                                       classess="danger p-2 mr-2"
                                     />
                                   )}
+                                  {item === "Clearance" && (
+                                    <Chips
+                                      label="Clearance"
+                                      classess="indigo p-2 mr-2"
+                                    />
+                                  )}
                                 </div>
                               ),
                               fieldType: "string",

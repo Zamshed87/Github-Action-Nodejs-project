@@ -1,6 +1,9 @@
-import { EyeTwoTone, HighlightTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import { CheckCircleTwoTone, EyeTwoTone } from "@ant-design/icons";
+import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import { Form, Tooltip } from "antd";
 import axios from "axios";
+import Chips from "common/Chips";
+import IConfirmModal from "common/IConfirmModal";
 import MasterFilter from "common/MasterFilter";
 import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
@@ -101,11 +104,49 @@ export const getClearanceLanding = async (
 export const getClearanceLandingTableColumn = (
     page,
     paginationSize,
-    setOpenExitInterviewAssignModal,
+    postClearanceData,
     setOpenExitInterviewDataViewModal,
+    getData,
+    id,
     setId,
-    setEmpId
+    empId,
+    setEmpId,
 ) => {
+    const confirmClearancePopup = () => {
+        const confirmObject = {
+            closeOnClickOutside: false,
+            message: "Are you sure you want to send this application for Clearance?",
+            yesAlertFunc: () => {
+                postClearanceData(
+                    `/Separation/StartSeparationClearance?id=${id}&employeeId=${empId}`,
+                    "",
+                    () => {
+                        getData();
+                    },
+                    true
+                );
+            },
+            noAlertFunc: () => {
+                getData();
+            },
+        };
+        IConfirmModal(confirmObject);
+    };
+
+    const confirmReleasePopup = () => {
+        const confirmObject = {
+            closeOnClickOutside: false,
+            message: "Are you sure you want to release this application?",
+            yesAlertFunc: () => {
+                console.log("release", id, empId);
+            },
+            noAlertFunc: () => {
+                getData();
+            },
+        };
+        IConfirmModal(confirmObject);
+    };
+
     return [
         {
             title: "SL",
@@ -201,67 +242,100 @@ export const getClearanceLandingTableColumn = (
         },
         {
             title: "Status",
-            dataIndex: "strInterviewStatus",
-            width: 60,
+            dataIndex: "approvalStatus",
             sort: true,
             filter: false,
+            render: (item) => (
+                <div className="d-flex justify-content-center">
+                    {item?.approvalStatus?.includes("Approved") && (
+                        <Chips
+                            label="Approved"
+                            classess="success p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Released" && (
+                        <Chips
+                            label="Released"
+                            classess="indigo p-2 mr-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Clearance" && (
+                        <Chips
+                            label="Clearance"
+                            classess="danger p-2 mr-2"
+                        />
+                    )}
+                </div>
+            ),
+            fieldType: "string",
+            width: 50,
         },
         {
             title: "",
             dataIndex: "approvalStatus",
             render: (data) => (
                 <div className="d-flex justify-content-evenly align-items-center">
-                    {(data?.strInterviewStatus === "Not Assigned") && (
-                        <Tooltip placement="top" color={"#34a853"} title={"Assign Questions"}>
-                            <PrimaryButton
-                                type="button"
-                                icon={<ProfileTwoTone twoToneColor="#34a853" />}
-                                customStyle={{
-                                    height: "30px",
-                                    fontSize: "16px",
-                                    padding: "0px 12px 0px 12px",
-                                    border: "none",
-                                }}
-                                onClick={() => {
-                                    setId(data?.separationId)
-                                    setEmpId(data?.intEmployeeId)
-                                    setOpenExitInterviewAssignModal(true);
-                                }}
-                            />
-                        </Tooltip>
-                    )}
-                    {(data?.strInterviewStatus === "Completed" || data?.strInterviewStatus === "Clearance" || data?.strInterviewStatus === "Assigned") && (
-                        <Tooltip placement="top" color={"#34a853"} title={"View"}>
-                            <PrimaryButton
-                                type="button"
-                                icon={<EyeTwoTone twoToneColor="#34a853" />}
-                                customStyle={{
-                                    height: "30px",
-                                    fontSize: "16px",
-                                    padding: "0px 12px 0px 12px",
-                                    border: "none",
-                                }}
-                                onClick={() => {
-                                    setId(data?.separationId)
-                                    setEmpId(data?.intEmployeeId)
-                                    setOpenExitInterviewDataViewModal(true);
-                                }}
-                            />
-                        </Tooltip>
-                    )}
-                    {data?.strInterviewStatus === "Assigned" && (
-                        <Tooltip placement="top" color={"#34a853"} title={"Interview"}>
-                            <PrimaryButton
-                                type="button"
-                                icon={<HighlightTwoTone twoToneColor="#34a853" />}
-                                customStyle={{
-                                    height: "30px",
-                                    fontSize: "16px",
-                                    padding: "0px 12px 0px 12px",
-                                    border: "none",
-                                }} />
-                        </Tooltip>
-                    )}
+                    <div>
+                        {data?.approvalStatus && (
+                            <Tooltip placement="top" color={"#34a853"} title={"View"}>
+                                <PrimaryButton
+                                    type="button"
+                                    icon={<EyeTwoTone twoToneColor="#34a853" />}
+                                    customStyle={{
+                                        height: "30px",
+                                        fontSize: "16px",
+                                        padding: "0px 12px 0px 12px",
+                                        border: "none",
+                                    }}
+                                    onClick={() => {
+                                        setId(data?.separationId)
+                                        setEmpId(data?.intEmployeeId)
+                                        setOpenExitInterviewDataViewModal(true);
+                                    }}
+                                />
+                            </Tooltip>
+                        )}
+                    </div>
+                    <div>
+                        {data?.approvalStatus?.includes("Approved") && (
+                            <Tooltip placement="top" color={"#34a853"} title={"Clearance"}>
+                                <button
+                                    style={{
+                                        height: "24px",
+                                        fontSize: "12px",
+                                        padding: "0px 12px 0px 12px",
+                                        border: "none"
+                                    }}
+                                    type="button"
+                                    onClick={() => {
+                                        setId(data?.separationId)
+                                        setEmpId(data?.intEmployeeId)
+                                        confirmClearancePopup();
+                                    }}
+                                ><CheckCircleTwoTone twoToneColor="#34a853" />
+                                </button>
+                            </Tooltip>
+                        )}
+                        {data?.approvalStatus?.includes("Clearance") && (
+                            <Tooltip placement="top" color={"#34a853"} title={"Release"}>
+                                <button
+                                    style={{
+                                        height: "24px",
+                                        fontSize: "12px",
+                                        padding: "0px 12px 0px 12px",
+                                        border: "none"
+                                    }}
+                                    type="button"
+                                    onClick={() => {
+                                        setId(data?.separationId)
+                                        setEmpId(data?.intEmployeeId)
+                                        confirmReleasePopup();
+                                    }}
+                                ><SendTwoToneIcon color="success" />
+                                </button>
+                            </Tooltip>
+                        )}
+                    </div>
                 </div>
             ),
             width: 60,

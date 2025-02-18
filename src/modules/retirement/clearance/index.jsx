@@ -16,6 +16,8 @@ import { FilterAltOutlined } from "@mui/icons-material";
 import { PModal } from "Components/Modal";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import SeparationHistoryview from "../separation/mgmApplication/viewForm/SeparationHistoryview";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 export default function ClearanceLanding() {
   const {
@@ -48,10 +50,9 @@ export default function ClearanceLanding() {
   });
 
   const [openFilter, setOpenFilter] = useState(false);
-  const [openExitInterviewAssignModal, setOpenExitInterviewAssignModal] =
-    useState(false);
   const [openExitInterviewDataViewModal, setOpenExitInterviewDataViewModal] =
     useState(false);
+  const [, postClearanceData] = useAxiosPost();
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
@@ -257,9 +258,12 @@ export default function ClearanceLanding() {
                   columnData={getClearanceLandingTableColumn(
                     pages?.current,
                     pages?.pageSize,
-                    setOpenExitInterviewAssignModal,
+                    postClearanceData,
                     setOpenExitInterviewDataViewModal,
+                    getData,
+                    id,
                     setId,
+                    empId,
                     setEmpId
                   )}
                   pages={pages}
@@ -274,33 +278,6 @@ export default function ClearanceLanding() {
                   uniqueKey="strEmployeeCode"
                   isCheckBox={false}
                   isScrollAble={false}
-                />
-                <PModal
-                  title="Assign Exit Interview"
-                  open={openExitInterviewAssignModal}
-                  onCancel={() => {
-                    getClearanceLanding(
-                      "Clearance",
-                      buId,
-                      wgId,
-                      values?.filterFromDate || "",
-                      values?.filterToDate || "",
-                      values?.status?.value || 0,
-                      "",
-                      setRowDto,
-                      setLoading,
-                      1,
-                      paginationSize,
-                      setPages,
-                      wId,
-                      "",
-                      decodedToken.workplaceGroupList || "",
-                      decodedToken.workplaceList || ""
-                    );
-                    setOpenExitInterviewAssignModal(false);
-                  }}
-                  components={<></>}
-                  width={1000}
                 />
                 <PModal
                   title="Exit Interview"
@@ -326,7 +303,11 @@ export default function ClearanceLanding() {
                     );
                     setOpenExitInterviewDataViewModal(false);
                   }}
-                  components={<></>}
+                  components={
+                    <>
+                      <SeparationHistoryview id={id} empId={empId} />
+                    </>
+                  }
                   width={1000}
                 />
               </>

@@ -15,6 +15,8 @@ import {
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 import { Tooltip, styled, tooltipClasses } from "@mui/material";
+import { Steps } from "antd";
+import { DataTable } from "Components";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -303,24 +305,53 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       sort: true,
       filter: false,
-      render: (item) => (
-        <>
-          {item?.approvalStatus === "Approve" && (
-            <Chips label="Approved" classess="success p-2" />
-          )}
-          {item?.approvalStatus === "Pending" && (
-            <Chips label="Pending" classess="warning p-2" />
-          )}
-          {item?.approvalStatus === "Process" && (
-            <Chips label="Process" classess="primary p-2" />
-          )}
-          {item?.approvalStatus === "Reject" && (
-            <Chips label="Rejected" classess="danger p-2 mr-2" />
-          )}
-          {item?.approvalStatus === "Released" && (
-            <Chips label="Released" classess="indigo p-2 mr-2" />
-          )}
-        </>
+      render: (data) => (
+        <div className="d-flex">
+          <div>
+            <div className="content tableBody-title d-flex align-items-center">
+              <LightTooltip
+                title={
+                  <div className="p-1">
+                    <div className="mb-1">
+                      <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                        <tr>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                }
+                arrow
+              >
+                <InfoOutlined
+                  sx={{
+                    color: gray900,
+                  }}
+                />
+              </LightTooltip>
+            </div>
+          </div>
+          <div className="ml-2">
+            {data?.approvalStatus === "Approve" && (
+              <Chips label="Approved" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Pending" && (
+              <Chips label="Pending" classess="warning p-2" />
+            )}
+            {data?.approvalStatus === "Process" && (
+              <Chips label="Process" classess="primary p-2" />
+            )}
+            {data?.approvalStatus === "Reject" && (
+              <Chips label="Rejected" classess="danger p-2 mr-2" />
+            )}
+            {data?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2 mr-2" />
+            )}
+          </div>
+        </div>
       ),
       fieldType: "string",
     },
