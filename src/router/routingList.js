@@ -1700,6 +1700,9 @@ const RetirementReleaseSeparationForm = lazy(() =>
 const ExitInterviewLanding = lazy(() =>
   import("../modules/retirement/exitinterview/index.jsx")
 );
+const ClearanceLanding = lazy(() =>
+  import("../modules/retirement/clearance/index.jsx")
+);
 
 
 export const routingList = [
@@ -4059,6 +4062,10 @@ export const routingList = [
   {
     path: "/retirement/exitInterview",
     component: ExitInterviewLanding,
+  },
+  {
+    path: "/retirement/clearance",
+    component: ClearanceLanding,
   }
 ];
 

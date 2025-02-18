@@ -1,11 +1,9 @@
 import { EyeTwoTone, HighlightTwoTone, ProfileTwoTone } from "@ant-design/icons";
 import { Form, Tooltip } from "antd";
 import axios from "axios";
-import Chips from "common/Chips";
 import MasterFilter from "common/MasterFilter";
 import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
-import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
@@ -40,7 +38,7 @@ export const SearchFilter = ({ form, pages, getData }) => {
     );
 };
 
-export const getExitInterviewLanding = async (
+export const getClearanceLanding = async (
     partType = "",
     buId,
     wgId,
@@ -60,15 +58,31 @@ export const getExitInterviewLanding = async (
 ) => {
     try {
         setLoading && setLoading(true);
-        let apiUrl = `/ExitInterview/GetEmployeeSeparations?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
+        const payload = {
+            pageSize,
+            pageNo,
+            businessUnitId: buId,
+            workplaceGroupId: wgId,
+            workplaceId: wId,
+            employeeId: empId,
+            fromDate,
+            toDate,
+            isForXl: false,
+            searchTxt: search,
+            status,
+            separationTypeIds: "",
+            departments: "",
+            designations: "",
+            workplaceGroupList,
+            workplaceList,
+        };
 
-        search && (apiUrl += `&searchTxt=${search}`);
-        empId && (apiUrl += `&EmployeeId=${empId}`);
-
-        const res = await axios.get(apiUrl);
+        const res = await axios.get("/SeparationClearance/GetEmployeeSeparations", {
+            params: payload,
+        });
 
         if (res?.data) {
-            if (partType === "ExitInterview") {
+            if (partType === "Clearance") {
                 setter(res?.data?.data);
                 setPages({
                     current: res?.data?.pageNo,
@@ -84,14 +98,13 @@ export const getExitInterviewLanding = async (
     }
 };
 
-export const getExitInterviewLandingTableColumn = (
+export const getClearanceLandingTableColumn = (
     page,
     paginationSize,
     setOpenExitInterviewAssignModal,
     setOpenExitInterviewDataViewModal,
     setId,
-    setEmpId,
-    setQuestionId
+    setEmpId
 ) => {
     return [
         {
@@ -100,22 +113,58 @@ export const getExitInterviewLandingTableColumn = (
             sort: false,
             filter: false,
             className: "text-center",
-            width: 30,
         },
         {
-            title: "Assigned To",
-            dataIndex: "strEmployeeName",
-            width: 120,
+            title: "Code",
+            dataIndex: "strEmployeeCode",
             sort: true,
             filter: false,
+            fieldType: "string",
         },
         {
-            title: "Length of Service",
-            dataIndex: "serviceLength",
-            width: 50,
+            title: "Employee",
+            dataIndex: "strEmployeeName",
+            sort: true,
+            filter: false,
+            fieldType: "string",
         },
         {
-            title: "Date of Resign",
+            title: "Designation",
+            dataIndex: "strDesignation",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Department",
+            dataIndex: "strDepartment",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Separation Type",
+            dataIndex: "strSeparationTypeName",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Application Date",
+            dataIndex: "dteSeparationDate",
+            render: (data) => (
+                <>
+                    {data?.dteSeparationDate
+                        ? dateFormatter(data?.dteSeparationDate)
+                        : "N/A"}
+                </>
+            ),
+            sort: true,
+            filter: false,
+            fieldType: "date",
+        },
+        {
+            title: "Last Working Date",
             dataIndex: "dteLastWorkingDate",
             render: (data) => (
                 <>
@@ -124,75 +173,31 @@ export const getExitInterviewLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            width: 50,
-
-        },
-        {
-            title: "Resign Status",
-            dataIndex: "approvalStatus",
             sort: true,
             filter: false,
-            render: (item) => (
-                <div className="d-flex justify-content-center">
-                    {item?.approvalStatus === "Approve" && (
-                        <Chips
-                            label="Approved"
-                            classess="success p-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Pending" && (
-                        <Chips
-                            label="Pending"
-                            classess="warning p-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Process" && (
-                        <Chips
-                            label="Process"
-                            classess="primary p-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Reject" && (
-                        <Chips
-                            label="Rejected"
-                            classess="danger p-2 mr-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Released" && (
-                        <Chips
-                            label="Released"
-                            classess="indigo p-2 mr-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Cancelled" && (
-                        <Chips
-                            label="Released"
-                            classess="danger p-2 mr-2"
-                        />
-                    )}
-                </div>
-            ),
+            fieldType: "date",
+        },
+        {
+            title: "Created By",
+            dataIndex: "strCreatedBy",
+            sort: true,
+            filter: false,
             fieldType: "string",
-            width: 50,
         },
         {
-            title: "Interview Completed By ",
-            dataIndex: "strInterviewCompletedBy",
-            width: 80,
-            sort: true,
-            filter: false,
-        },
-        {
-            title: "Completed Date",
-            dataIndex: "dteInterviewCompletedDate",
+            title: "Created Date",
+            dataIndex: "dteCreatedAt",
             render: (data) => (
                 <>
-                    {data?.dteInterviewCompletedDate
-                        ? dateFormatter(data?.dteInterviewCompletedDate)
+                    {data?.dteCreatedAt
+                        ? dateFormatter(data?.dteCreatedAt)
                         : "N/A"}
                 </>
             ),
-            width: 50,
+            sort: true,
+            filter: false,
+            fieldType: "date",
+            width: 100,
         },
         {
             title: "Status",
@@ -239,7 +244,6 @@ export const getExitInterviewLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
-                                    setQuestionId(data?.intQuestionAssignId)
                                     setOpenExitInterviewDataViewModal(true);
                                 }}
                             />
@@ -287,19 +291,6 @@ export const getSeparationLandingById = async (id, setter, setLoading) => {
         setter(modifyRes[0]);
         setLoading && setLoading(false);
     } catch (error) {
-        setLoading && setLoading(false);
-    }
-};
-
-export const getQuestionaireById = async (id, setData, setLoading, setOpen) => {
-    setLoading && setLoading(true);
-    try {
-        const res = await axios.get(`/Questionnaire/AssignedTo/${id}`);
-        setData(res.data);
-        setOpen && setOpen(true);
-    } catch (error) {
-        toast.warning("Something went wrong");
-    } finally {
         setLoading && setLoading(false);
     }
 };

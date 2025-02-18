@@ -1,25 +1,23 @@
-import { FilterAltOutlined } from "@mui/icons-material";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import { Col, Drawer, Form, Row } from "antd";
 import PeopleDeskTable, { paginationSize } from "common/peopleDeskTable";
-import { PButton, PForm, PInput, PSelect } from "Components";
-import moment from "moment";
-import { useEffect, useState } from "react";
 import {
   formatDate,
-  getExitInterviewLanding,
-  getExitInterviewLandingTableColumn,
+  getClearanceLanding,
+  getClearanceLandingTableColumn,
   SearchFilter,
   statusDDL,
-} from "../exitinterview/helper";
-import { shallowEqual, useSelector } from "react-redux";
-import NoResult from "common/NoResult";
+} from "./helper";
 import Loading from "common/loading/Loading";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import ExitInterviewAssign from "./components/ExitInterviewAssign";
+import { PButton, PForm, PInput, PSelect } from "Components";
+import { FilterAltOutlined } from "@mui/icons-material";
 import { PModal } from "Components/Modal";
-import ExitInterviewDataView from "./components/ExitInterviewDataView";
+import NoResult from "common/NoResult";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
-export default function ExitInterviewLanding() {
+export default function ClearanceLanding() {
   const {
     profileData: { buId, wgId, wId },
     permissionList,
@@ -28,7 +26,7 @@ export default function ExitInterviewLanding() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30544) {
+    if (item?.menuReferenceId === 30545) {
       permission = item;
     }
   });
@@ -58,7 +56,6 @@ export default function ExitInterviewLanding() {
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
   const [empId, setEmpId] = useState(null);
-  const [questionId, setQuestionId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const getData = (pagination, searchText) => {
@@ -66,8 +63,8 @@ export default function ExitInterviewLanding() {
       form.getFieldValue("fromDate") || defaultFromDate
     );
     const toDate = formatDate(form.getFieldValue("toDate") || defaultToDate);
-    getExitInterviewLanding(
-      "ExitInterview",
+    getClearanceLanding(
+      "Clearance",
       buId,
       wgId,
       fromDate,
@@ -115,8 +112,8 @@ export default function ExitInterviewLanding() {
   };
 
   useEffect(() => {
-    getExitInterviewLanding(
-      "ExitInterview",
+    getClearanceLanding(
+      "Clearance",
       buId,
       wgId,
       values?.filterFromDate || "",
@@ -257,14 +254,13 @@ export default function ExitInterviewLanding() {
               <>
                 <PeopleDeskTable
                   customClass="iouManagementTable"
-                  columnData={getExitInterviewLandingTableColumn(
+                  columnData={getClearanceLandingTableColumn(
                     pages?.current,
                     pages?.pageSize,
                     setOpenExitInterviewAssignModal,
                     setOpenExitInterviewDataViewModal,
                     setId,
-                    setEmpId,
-                    setQuestionId
+                    setEmpId
                   )}
                   pages={pages}
                   rowDto={rowDto || []}
@@ -283,8 +279,8 @@ export default function ExitInterviewLanding() {
                   title="Assign Exit Interview"
                   open={openExitInterviewAssignModal}
                   onCancel={() => {
-                    getExitInterviewLanding(
-                      "ExitInterview",
+                    getClearanceLanding(
+                      "Clearance",
                       buId,
                       wgId,
                       values?.filterFromDate || "",
@@ -303,15 +299,15 @@ export default function ExitInterviewLanding() {
                     );
                     setOpenExitInterviewAssignModal(false);
                   }}
-                  components={<ExitInterviewAssign id={id} empId={empId} />}
+                  components={<></>}
                   width={1000}
                 />
                 <PModal
                   title="Exit Interview"
                   open={openExitInterviewDataViewModal}
                   onCancel={() => {
-                    getExitInterviewLanding(
-                      "ExitInterview",
+                    getClearanceLanding(
+                      "Clearance",
                       buId,
                       wgId,
                       values?.filterFromDate || "",
@@ -330,13 +326,7 @@ export default function ExitInterviewLanding() {
                     );
                     setOpenExitInterviewDataViewModal(false);
                   }}
-                  components={
-                    <ExitInterviewDataView
-                      id={id}
-                      empId={empId}
-                      questionId={questionId}
-                    />
-                  }
+                  components={<></>}
                   width={1000}
                 />
               </>
