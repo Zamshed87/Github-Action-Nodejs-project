@@ -397,6 +397,14 @@ export default function ExitInterviewAssign({ id, empId }) {
                           "Released" && (
                           <Chips label="Released" classess="indigo p-2 mr-2" />
                         )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Clearance" && (
+                          <Chips label="Clearance" classess="info p-2 mr-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Withdrawn" && (
+                          <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+                        )}
                       </>
                     }
                   </div>
