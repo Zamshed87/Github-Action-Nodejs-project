@@ -105,7 +105,7 @@ const KpiTargetMismatchReport = () => {
         </PCardBody>
 
         <DataTable
-          header={getHeader(pages,history)}
+          header={getHeader(pages,history,year)}
           bordered
           data={reportData?.data || []}
           loading={loading}

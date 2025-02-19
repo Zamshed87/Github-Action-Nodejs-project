@@ -39,14 +39,14 @@ export const getHeader = (pages) => [
     children: [
       {
         title: "Scale",
-        dataIndex: ["keyPerformanceIndicator", "scale"],
+        dataIndex: "keyPerformanceIndicatorScale",
         sorter: true,
         width: 50,
         align: "center",
       },
       {
         title: "Score",
-        dataIndex: ["keyPerformanceIndicator", "score"],
+        dataIndex: "keyPerformanceIndicatorScore",
         sorter: true,
         width: 50,
         align: "center",
@@ -58,14 +58,14 @@ export const getHeader = (pages) => [
     children: [
       {
         title: "Scale",
-        dataIndex: ["behaviorallyAnchoredRating", "scale"],
+        dataIndex: "behaviorallyAnchoredRatingScale",
         sorter: true,
         width: 50,
         align: "center",
       },
       {
         title: "Score",
-        dataIndex: ["behaviorallyAnchoredRating", "score"],
+        dataIndex: "behaviorallyAnchoredRatingScore",
         sorter: true,
         width: 50,
         align: "center",

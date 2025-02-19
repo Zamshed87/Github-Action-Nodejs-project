@@ -1,6 +1,6 @@
 import { PButton } from "Components";
 
-export const getHeader = (pages, history) => [
+export const getHeader = (pages, history,year) => [
   {
     title: "SL",
     render: (text, record, index) =>
@@ -62,11 +62,11 @@ export const getHeader = (pages, history) => [
           type="primary-outline"
           onClick={() => {
             history?.push({
-              pathname: `/pms/targetsetup/EmployeeTarget/edit/${record?.employeeId}`,
+              pathname: `/pms/targetsetup/EmployeeTarget/view/${record?.employeeId}`,
               state: {
-                isEdit: true,
-                empInfo: record,
-                // prevlandingValues: values,
+                isEdit: false,
+                empInfo: {...record,pmTypeId:0},
+                prevlandingValues: {year},
               },
             });
           }}
