@@ -1,19 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
-import { useState } from "react";
-import { APIUrl } from "../../../App";
-import { gray700, gray900 } from "../../../utility/customColor";
-import AccordionCom from "./AccordionSeeMore";
-import profileImg from "../../../assets/images/profile.jpg";
-import Loading from "common/loading/Loading";
+import profileImg from "../../../../../assets/images/profile.jpg";
+import { APIUrl } from "App";
+import { gray700 } from "utility/customColor";
 
-const Accordion = ({ empBasic }) => {
-  const [isAccordion, setIsAccordion] = useState(false);
-  const [loading, setLoading] = useState(false);
-
+const EmployeeDetails = ({ empBasic }) => {
   return (
-    <div className="card-about-info-main about-info-card">
-      {loading && <Loading/>}
+    <div className="p-2">
+      <h3 className="pb-2">Employee Details</h3>
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex">
           <div>
@@ -31,9 +24,9 @@ const Accordion = ({ empBasic }) => {
                 htmlFor="contained-button-file"
                 className="label-add-image"
               >
-                {empBasic?.empEmployeePhotoIdentity ? (
+                {empBasic?.profilePicFileUrlId ? (
                   <img
-                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId}`}
+                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.profilePicFileUrlId}`}
                     alt=""
                     style={{ maxHeight: "78px", minWidth: "78px" }}
                   />
@@ -53,9 +46,9 @@ const Accordion = ({ empBasic }) => {
           <div className="content-about-info-card ml-3">
             <div className="d-flex justify-content-between">
               <h4 className="name-about-info" style={{ marginBottom: "5px" }}>
-                {empBasic?.employeeProfileLandingView?.strEmployeeName}
+                {empBasic?.name}
                 <span style={{ fontWeight: "400", color: gray700 }}>
-                  [{empBasic?.employeeProfileLandingView?.strCardNumber}]
+                  [{empBasic?.code}]
                 </span>{" "}
               </h4>
             </div>
@@ -67,7 +60,7 @@ const Accordion = ({ empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Department -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strDepartment}
+                {empBasic?.department}
               </p>
             </div>
             <div className="single-info">
@@ -78,7 +71,7 @@ const Accordion = ({ empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Designation -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strDesignation}
+                {empBasic?.designation}
               </p>
             </div>
             <div className="single-info">
@@ -89,54 +82,58 @@ const Accordion = ({ empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Employment Type -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strEmploymentType}
+                {empBasic?.employmentType}
               </p>
             </div>
-            <AccordionCom empBasic={empBasic} isAccordion={isAccordion} />
+            <div className="single-info">
+              <p
+                className="text-single-info"
+                style={{ fontWeight: "500", color: gray700 }}
+              >
+                <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                  Business Unit -
+                </small>{" "}
+                {empBasic?.businessUnit}
+              </p>
+            </div>
+            <div className="single-info">
+              <p
+                className="text-single-info"
+                style={{ fontWeight: "500", color: gray700 }}
+              >
+                <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                  Workplace Group -
+                </small>{" "}
+                {empBasic?.workplaceGroup}
+              </p>
+            </div>
+            <div className="single-info">
+              <p
+                className="text-single-info"
+                style={{ fontWeight: "500", color: gray700 }}
+              >
+                <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                  Workplace -
+                </small>{" "}
+                {empBasic?.workplace}
+              </p>
+            </div>
+            <div className="single-info">
+              <p
+                className="text-single-info"
+                style={{ fontWeight: "500", color: gray700 }}
+              >
+                <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                  Supervisor -
+                </small>{" "}
+                {empBasic?.supervisor}
+              </p>
+            </div>
           </div>
         </div>
-
-        <div
-          className="see-more-btn-main"
-          style={{ marginTop: isAccordion ? "130px" : "70px" }}
-        >
-          <button
-            type="button"
-            className="btn-see-more"
-            onClick={(e) => {
-              setIsAccordion(!isAccordion);
-              e.stopPropagation();
-            }}
-          >
-            <small className="text-btn-see-more">
-              {isAccordion ? "See Less" : "See More"}
-            </small>
-            {isAccordion ? (
-              <ArrowDropUp
-                sx={{
-                  marginLeft: "10px",
-                  fontSize: "20px",
-                  color: gray900,
-                  position: "relative",
-                  top: "0px",
-                }}
-              />
-            ) : (
-              <ArrowDropDown
-                sx={{
-                  marginLeft: "10px",
-                  fontSize: "20px",
-                  color: gray900,
-                  position: "relative",
-                  top: "0px",
-                }}
-              />
-            )}
-          </button>
-        </div>
       </div>
-    </div>
+      </div>
   );
 };
 
-export default Accordion;
+export default EmployeeDetails;
