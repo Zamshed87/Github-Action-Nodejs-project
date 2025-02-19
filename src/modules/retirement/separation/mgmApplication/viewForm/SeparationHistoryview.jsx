@@ -56,7 +56,7 @@ function SeparationHistoryview({ id, empId }) {
       fixed: "left",
     },
     {
-      title: "Attachment ",
+      title: "Attachment",
       dataIndex: "docArr",
       render: (data) =>
         data?.length > 0
