@@ -253,7 +253,6 @@ function Calendar() {
                                       fontSize: "12px",
                                     }}
                                     onClick={(e) => {
-                                      console.log("first");
                                       e.stopPropagation();
                                       if (!permission?.isCreate)
                                         return toast.warn(
