@@ -7,6 +7,7 @@ import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
+import QuizIcon from '@mui/icons-material/Quiz';
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
 
@@ -113,7 +114,7 @@ export const getExitInterviewLandingTableColumn = (
         {
             title: "Length of Service",
             dataIndex: "serviceLength",
-            width: 50,
+            width: 120,
         },
         {
             title: "Date of Resign",
@@ -186,12 +187,12 @@ export const getExitInterviewLandingTableColumn = (
                 </div>
             ),
             fieldType: "string",
-            width: 50,
+            width: 30,
         },
         {
             title: "Interview Completed By ",
             dataIndex: "strInterviewCompletedBy",
-            width: 80,
+            width: 120,
             sort: true,
             filter: false,
         },
@@ -224,11 +225,10 @@ export const getExitInterviewLandingTableColumn = (
                             <PrimaryButton
                                 type="button"
                                 icon={<ProfileTwoTone twoToneColor="#34a853" />}
+                                className={"iconButton"}
                                 customStyle={{
-                                    height: "30px",
-                                    fontSize: "16px",
-                                    padding: "0px 12px 0px 12px",
-                                    border: "none",
+                                    height: "25px",
+                                    width: "25px"
                                 }}
                                 onClick={() => {
                                     setId(data?.separationId)
@@ -243,11 +243,10 @@ export const getExitInterviewLandingTableColumn = (
                             <PrimaryButton
                                 type="button"
                                 icon={<EyeTwoTone twoToneColor="#34a853" />}
+                                className={"iconButton"}
                                 customStyle={{
-                                    height: "30px",
-                                    fontSize: "16px",
-                                    padding: "0px 12px 0px 12px",
-                                    border: "none",
+                                    height: "25px",
+                                    width: "25px"
                                 }}
                                 onClick={() => {
                                     setId(data?.separationId)
@@ -262,12 +261,11 @@ export const getExitInterviewLandingTableColumn = (
                         <Tooltip placement="top" color={"#34a853"} title={"Interview"}>
                             <PrimaryButton
                                 type="button"
-                                icon={<HighlightTwoTone twoToneColor="#34a853" />}
+                                icon={<QuizIcon sx={{ color: "#34a853" }} />}
+                                className={"iconButton"}
                                 customStyle={{
-                                    height: "30px",
-                                    fontSize: "16px",
-                                    padding: "0px 12px 0px 12px",
-                                    border: "none",
+                                    height: "25px",
+                                    width: "25px"
                                 }}
                                 onClick={() => {
                                     history.push("/SelfService/separation/applicationV2/interView", {

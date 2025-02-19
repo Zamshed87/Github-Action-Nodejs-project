@@ -367,8 +367,12 @@ export const separationApplicationLandingTableColumn = (
       render: (item) => (
         <div className="d-flex">
           <Tooltip title="View" arrow>
-            <button className="iconButton" type="button">
+            <button className="iconButton" type="button" style={{
+              height: "25px",
+              width: "25px"
+            }}>
               <VisibilityOutlined
+                sx={{ color: "#34a853" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setId(item?.separationId);
@@ -380,8 +384,12 @@ export const separationApplicationLandingTableColumn = (
           </Tooltip>
           {item?.approvalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
+              <button className="iconButton" type="button" style={{
+                height: "25px",
+                width: "25px"
+              }}>
                 <EditOutlined
+                  sx={{ color: "#34a853" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!permission?.isEdit)
