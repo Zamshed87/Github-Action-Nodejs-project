@@ -87,6 +87,7 @@ export const getExitInterviewLanding = async (
 export const getExitInterviewLandingTableColumn = (
     page,
     paginationSize,
+    history,
     setOpenExitInterviewAssignModal,
     setOpenExitInterviewDataViewModal,
     setId,
@@ -267,7 +268,13 @@ export const getExitInterviewLandingTableColumn = (
                                     fontSize: "16px",
                                     padding: "0px 12px 0px 12px",
                                     border: "none",
-                                }} />
+                                }}
+                                onClick={() => {
+                                    history.push("/SelfService/separation/applicationV2/interView", {
+                                        data: data,
+                                    });
+                                }}
+                            />
                         </Tooltip>
                     )}
                 </div>
@@ -313,5 +320,47 @@ export const getQuestionaireById = async (id, setData, setLoading, setOpen) => {
         toast.warning("Something went wrong");
     } finally {
         setLoading && setLoading(false);
+    }
+};
+
+
+export const interViewQuestionSave = async (
+    data,
+    fieldsArr,
+    values,
+    setLoading,
+    cb
+) => {
+    setLoading(true);
+    try {
+        const payload = {
+            EmployeeId: data?.intEmployeeId || 0,
+            SeparationId: data?.separationId || 0,
+            Request: {
+                id: data?.intQuestionAssignId || 0,
+                startDateTime: values?.startTime,
+                endDateTime: moment().format("YYYY-MM-DDTHH:mm:ss"),
+                questions: fieldsArr.map((field) => {
+                    const id = `field-${field.id}`;
+                    const answer = values[id];
+
+                    return {
+                        id: field.id,
+                        answer: field.typeName === "Checkbox" ? answer : [answer] || [],
+                    };
+                }),
+            },
+        };
+
+
+        const res = await axios.post(`/ExitInterview/SubmitExitInterview`, payload);
+        cb && cb();
+        toast.success(res?.data?.Message, { toastId: 1 });
+    } catch (error) {
+        toast.warn(error?.response?.data?.Message || "Something went wrong", {
+            toastId: 1,
+        });
+    } finally {
+        setLoading(false);
     }
 };

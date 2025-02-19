@@ -18,6 +18,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import ExitInterviewAssign from "./components/ExitInterviewAssign.jsx";
 import { PModal } from "Components/Modal";
 import ExitInterviewDataView from "./components/ExitInterviewDataView.jsx";
+import { useHistory } from "react-router-dom";
 
 export default function ExitInterviewLanding() {
   const {
@@ -54,6 +55,8 @@ export default function ExitInterviewLanding() {
     useState(false);
   const [openExitInterviewDataViewModal, setOpenExitInterviewDataViewModal] =
     useState(false);
+
+  const history = useHistory();
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
@@ -260,6 +263,7 @@ export default function ExitInterviewLanding() {
                   columnData={getExitInterviewLandingTableColumn(
                     pages?.current,
                     pages?.pageSize,
+                    history,
                     setOpenExitInterviewAssignModal,
                     setOpenExitInterviewDataViewModal,
                     setId,
