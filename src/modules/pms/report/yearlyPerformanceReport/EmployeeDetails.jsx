@@ -2,10 +2,10 @@
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { useState } from "react";
 import { APIUrl } from "../../../App";
-import Loading from "../../../common/loading/Loading";
 import { gray700, gray900 } from "../../../utility/customColor";
 import AccordionCom from "./AccordionSeeMore";
 import profileImg from "../../../assets/images/profile.jpg";
+import Loading from "common/loading/Loading";
 
 const Accordion = ({ empBasic }) => {
   const [isAccordion, setIsAccordion] = useState(false);
@@ -13,7 +13,7 @@ const Accordion = ({ empBasic }) => {
 
   return (
     <div className="card-about-info-main about-info-card">
-      {loading && <Loading />}
+      {loading && <Loading/>}
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex">
           <div>

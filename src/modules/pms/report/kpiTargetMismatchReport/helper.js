@@ -1,9 +1,10 @@
 import { PButton } from "Components";
 
-export const getHeader = (pages) => [
+export const getHeader = (pages, history) => [
   {
     title: "SL",
-    render: (text, record, index) => (pages?.current - 1) * pages?.pageSize + index + 1,
+    render: (text, record, index) =>
+      (pages?.current - 1) * pages?.pageSize + index + 1,
     width: 25,
     align: "center",
   },
@@ -54,8 +55,23 @@ export const getHeader = (pages) => [
     title: "Action",
     dataIndex: "",
     align: "center",
-    render: (_, rec) => {
-      return <PButton content="Details" />;
+    render: (_, record) => {
+      return (
+        <PButton
+          content="Details"
+          type="primary-outline"
+          onClick={() => {
+            history?.push({
+              pathname: `/pms/targetsetup/EmployeeTarget/edit/${record?.employeeId}`,
+              state: {
+                isEdit: true,
+                empInfo: record,
+                // prevlandingValues: values,
+              },
+            });
+          }}
+        />
+      );
     },
   },
 ];
