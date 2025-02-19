@@ -34,7 +34,7 @@ export const Encashment = ({ form }: any) => {
       width: 100,
     },
     {
-      title: "Paid Amount",
+      title: `Paid Amount/%`,
       dataIndex: "paidAmount",
       width: 100,
     },
@@ -84,12 +84,53 @@ export const Encashment = ({ form }: any) => {
           <span>Leave Encashment</span>
         </div>
       </Divider>
-      <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
-        <PInput
-          label="Is Encashment"
-          type="checkbox"
-          layout="horizontal"
+
+      <Col md={4} sm={24}>
+        <PSelect
+          // mode="multiple"
+          allowClear
+          options={[
+            { value: 1, label: "Yes" },
+            { value: 0, label: "No" },
+          ]}
           name="isEncashment"
+          label="Leave Encashment "
+          placeholder="Leave Encashment "
+          onChange={(value, op) => {
+            form.setFieldsValue({
+              isEncashment: op,
+            });
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Leave Encashment  is required",
+            },
+          ]}
+        />
+      </Col>
+      <Col md={6} sm={24}>
+        <PSelect
+          // mode="multiple"
+          allowClear
+          options={[
+            { value: 1, label: "Date of Joining" },
+            { value: 2, label: "Date of Confirmation" },
+          ]}
+          name="enLengthDependOn"
+          label="Service Length Depend On"
+          placeholder="Service Length Depend On"
+          onChange={(value, op) => {
+            form.setFieldsValue({
+              enLengthDependOn: op,
+            });
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Service Length Depend On is required",
+            },
+          ]}
         />
       </Col>
       <Col md={6} sm={24}>
@@ -125,12 +166,12 @@ export const Encashment = ({ form }: any) => {
             name="serviceStartLength"
             label="From Service Length (Month)"
             placeholder=""
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "From Service Length (Month) is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: tableData?.length === 0,
+                message: "From Service Length (Month) is required",
+              },
+            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -139,12 +180,12 @@ export const Encashment = ({ form }: any) => {
             name="serviceEndLength"
             label="To Service Length (Month)"
             placeholder=""
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "To Service Length (Month) is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: tableData?.length === 0,
+                message: "To Service Length (Month) is required",
+              },
+            ]}
           />
         </Col>
         <Col md={6} sm={24}>
@@ -164,12 +205,12 @@ export const Encashment = ({ form }: any) => {
                 encashType: op,
               });
             }}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "Leave Carry Forward Type is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: tableData?.length === 0,
+                message: "Leave Carry Forward Type is required",
+              },
+            ]}
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
@@ -186,13 +227,13 @@ export const Encashment = ({ form }: any) => {
                       encashType?.value === 1 ? "% of Days" : "Fixed Days"
                     })`}
                     placeholder=""
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message:
-                    //       "Max Carry Forward After Lapse (%, Days) is required",
-                    //   },
-                    // ]}
+                    rules={[
+                      {
+                        required: tableData?.length === 0,
+                        message:
+                          "Max Carry Forward After Lapse (%, Days) is required",
+                      },
+                    ]}
                   />
                 </Col>
               </>
@@ -216,12 +257,12 @@ export const Encashment = ({ form }: any) => {
                 encashBenefits: op,
               });
             }}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "Leave Carry Forward Type is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: tableData?.length === 0,
+                message: "Leave Carry Forward Type is required",
+              },
+            ]}
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
@@ -241,17 +282,17 @@ export const Encashment = ({ form }: any) => {
                   <PInput
                     type="number"
                     name="paidAmount"
-                    label={`Max Leave Encashment (${
+                    label={`Paid (${
                       encashBenefits?.value !== 3 ? "% " : "Amount"
                     })`}
                     placeholder=""
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message:
-                    //       "Max Carry Forward After Lapse (%, Days) is required",
-                    //   },
-                    // ]}
+                    rules={[
+                      {
+                        required: tableData?.length === 0,
+                        message:
+                          "Max Carry Forward After Lapse (%, Days) is required",
+                      },
+                    ]}
                   />
                 </Col>
                 <Col
@@ -279,25 +320,39 @@ export const Encashment = ({ form }: any) => {
                           "Service End Length must be greater than Service Start Length"
                         );
                       }
-
-                      setTableData((prev: any) => [
-                        ...prev,
-                        {
-                          serviceLength: `${serviceStartLength} - ${serviceEndLength}`,
-                          encashmentType: encashType?.label,
-                          maxEncashment,
-                          encashBenefits: encashBenefits?.label,
-                          paidAmount,
-                        },
-                      ]);
-                      form.setFieldsValue({
-                        serviceStartLength: undefined,
-                        serviceEndLength: undefined,
-                        encashmentType: undefined,
-                        maxEncashment: undefined,
-                        encashBenefits: undefined,
-                        paidAmount: undefined,
-                      });
+                      const fields = [
+                        "serviceStartLength",
+                        "serviceEndLength",
+                        "encashmentType",
+                        "maxEncashment",
+                        "encashBenefits",
+                        "paidAmount",
+                      ];
+                      form
+                        .validateFields(fields)
+                        .then(() => {
+                          setTableData((prev: any) => [
+                            ...prev,
+                            {
+                              serviceLength: `${serviceStartLength} - ${serviceEndLength}`,
+                              encashmentType: encashType?.label,
+                              maxEncashment,
+                              encashBenefits: encashBenefits?.label,
+                              paidAmount,
+                            },
+                          ]);
+                          form.setFieldsValue({
+                            serviceStartLength: undefined,
+                            serviceEndLength: undefined,
+                            encashmentType: undefined,
+                            maxEncashment: undefined,
+                            encashBenefits: undefined,
+                            paidAmount: undefined,
+                          });
+                        })
+                        .catch((e: any) => {
+                          console.log({ e });
+                        });
                     }}
                   />
                 </Col>

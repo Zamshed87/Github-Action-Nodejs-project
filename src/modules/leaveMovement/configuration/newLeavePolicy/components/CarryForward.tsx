@@ -24,12 +24,28 @@ export const CarryForward = ({ form }: any) => {
           <span>Leave Carry Forward</span>
         </div>
       </Divider>
-      <Col md={3} sm={24} style={{ marginTop: "1.2rem" }}>
-        <PInput
-          label="Is Carry Forward"
-          type="checkbox"
-          layout="horizontal"
+      <Col md={4} sm={24}>
+        <PSelect
+          // mode="multiple"
+          allowClear
+          options={[
+            { value: 1, label: "Yes" },
+            { value: 0, label: "No" },
+          ]}
           name="isCarryForward"
+          label="Leave Carry Forward "
+          placeholder="Leave Carry Forward "
+          onChange={(value, op) => {
+            form.setFieldsValue({
+              isCarryForward: op,
+            });
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Leave Carry Forward  is required",
+            },
+          ]}
         />
       </Col>
 
@@ -39,7 +55,7 @@ export const CarryForward = ({ form }: any) => {
             form.getFieldsValue(true);
 
           return (
-            isCarryForward && (
+            isCarryForward?.value === 1 && (
               <>
                 <Col md={4} sm={24}>
                   <PSelect
@@ -75,7 +91,7 @@ export const CarryForward = ({ form }: any) => {
                     placeholder=""
                     rules={[
                       {
-                        required: isCarryForward,
+                        required: isCarryForward?.value,
                         message:
                           "Max Carry Forward After Lapse (%, Days) is required",
                       },
@@ -90,7 +106,7 @@ export const CarryForward = ({ form }: any) => {
                     placeholder=""
                     rules={[
                       {
-                        required: isCarryForward,
+                        required: isCarryForward?.value,
                         message:
                           "Expiry of Carry Forward Days After Lapse is required",
                       },
@@ -129,6 +145,30 @@ export const CarryForward = ({ form }: any) => {
           );
         }}
       </Form.Item>
+      <Col md={5} sm={24}>
+        <PSelect
+          // mode="multiple"
+          allowClear
+          options={[
+            { value: 1, label: "Yes" },
+            { value: 0, label: "No" },
+          ]}
+          name="addPrevCarry"
+          label="Add previous year carry balance "
+          placeholder="Add previous year carry balance "
+          onChange={(value, op) => {
+            form.setFieldsValue({
+              addPrevCarry: op,
+            });
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Add previous year carry balance  is required",
+            },
+          ]}
+        />
+      </Col>
     </Row>
   );
 };

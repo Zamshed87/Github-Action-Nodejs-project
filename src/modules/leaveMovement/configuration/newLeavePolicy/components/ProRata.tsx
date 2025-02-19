@@ -24,12 +24,29 @@ export const ProRata = ({ form }: any) => {
           <span>Pro Rata</span>
         </div>
       </Divider>
-      <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
-        <PInput
-          label="Is Pro Rata Basis"
-          type="checkbox"
-          layout="horizontal"
+
+      <Col md={4} sm={24}>
+        <PSelect
+          // mode="multiple"
+          allowClear
+          options={[
+            { value: 1, label: "Yes" },
+            { value: 0, label: "No" },
+          ]}
           name="isProRata"
+          label="ProRata "
+          placeholder="ProRata "
+          onChange={(value, op) => {
+            form.setFieldsValue({
+              isProRata: op,
+            });
+          }}
+          rules={[
+            {
+              required: true,
+              message: "ProRata  is required",
+            },
+          ]}
         />
       </Col>
       <Form.Item shouldUpdate noStyle>
@@ -37,8 +54,23 @@ export const ProRata = ({ form }: any) => {
           const { isProRata } = form.getFieldsValue(true);
 
           return (
-            isProRata && (
+            isProRata?.value === 1 && (
               <>
+                <Col md={8} sm={24}>
+                  <PInput
+                    type="number"
+                    name="proRataCount"
+                    label="Pro Rata Count Last Start Days (As Calander Date)"
+                    placeholder=""
+                    rules={[
+                      {
+                        required: isProRata?.value === 1,
+                        message:
+                          "Pro Rata Count Last Start Days (As Calander Date) is required",
+                      },
+                    ]}
+                  />
+                </Col>
                 <Col md={6} sm={24}>
                   <PSelect
                     // mode="multiple"
@@ -59,22 +91,8 @@ export const ProRata = ({ form }: any) => {
                     }}
                     rules={[
                       {
-                        required: true,
+                        required: isProRata?.value === 1,
                         message: "Pro Rata Basis is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={8} sm={24}>
-                  <PInput
-                    type="number"
-                    name="proRataCount"
-                    label="Pro Rata Count Last Start Days (As Calander Date)"
-                    placeholder=""
-                    rules={[
-                      {
-                        required: true,
-                        message: "proRataCount is required",
                       },
                     ]}
                   />

@@ -18,8 +18,33 @@ export const Balance = ({ form }: any) => {
       width: 100,
     },
     {
+      title: "Leave Balance Depend On",
+      dataIndex: "leaveDependsOn",
+      width: 100,
+    },
+    {
+      title: "Calculative Days",
+      dataIndex: "calculativeDays",
+      width: 100,
+    },
+    {
+      title: "Bridge Leave For",
+      dataIndex: "bridgeLeaveFor",
+      width: 100,
+    },
+    {
+      title: "Minumum Working Hour",
+      dataIndex: "minWorkHr",
+      width: 100,
+    },
+    {
       title: "Leave Days",
-      dataIndex: "leaveDaysForCalculativeDays",
+      dataIndex: "leaveDaysFor",
+      width: 100,
+    },
+    {
+      title: "Expire After Available (Days)",
+      dataIndex: "expireAfterAvailable",
       width: 100,
     },
 
@@ -74,15 +99,15 @@ export const Balance = ({ form }: any) => {
             // mode="multiple"
             allowClear
             options={[
-              { value: 1, label: "Fixed Days" },
+              // { value: 1, label: "Fixed Days" },
               { value: 2, label: "Date of Joining" },
               { value: 3, label: "Date of Confirmation" },
-              { value: 4, label: "Calculative" },
-              { value: 5, label: "Bridge Leave" },
+              // { value: 4, label: "Calculative" },
+              // { value: 5, label: "Bridge Leave" },
               // { value: 3, label: "Clock Time" },
             ]}
             name="dependsOn"
-            label="Depends On"
+            label="Service Length Depend On"
             placeholder=""
             onChange={(value, op) => {
               form.setFieldsValue({
@@ -92,12 +117,12 @@ export const Balance = ({ form }: any) => {
             rules={[
               {
                 required: true,
-                message: "Depends On is required",
+                message: "Service Length Depend On is required",
               },
             ]}
           />
         </Col>
-        <Col md={6} sm={24}>
+        {/* <Col md={6} sm={24}>
           <PInput
             type="number"
             name="balanceServiceLengthStart"
@@ -110,42 +135,68 @@ export const Balance = ({ form }: any) => {
             //   },
             // ]}
           />
-        </Col>
+        </Col> */}
       </Row>
       <Row gutter={[10, 2]}>
-        <Col md={6} sm={24}>
+        <Col md={5} sm={24}>
           <PInput
             type="number"
             name="serviceStartLengthBalance"
             label="From Service Length (Month)"
             placeholder=""
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "From Service Length (Month) is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: balanceTable?.length === 0,
+                message: "From Service Length (Month) is required",
+              },
+            ]}
           />
         </Col>
-        <Col md={6} sm={24}>
+        <Col md={5} sm={24}>
           <PInput
             type="number"
             name="serviceEndLengthBalance"
             label="To Service Length (Month)"
             placeholder=""
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "To Service Length (Month) is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: balanceTable?.length === 0,
+                message: "To Service Length (Month) is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={5} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Fixed Days" },
+              { value: 4, label: "Calculative" },
+              { value: 5, label: "Bridge Leave" },
+              // { value: 3, label: "Clock Time" },
+            ]}
+            name="leaveDependsOn"
+            label="Leave Balance Depend On"
+            placeholder=""
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                leaveDependsOn: op,
+              });
+            }}
+            rules={[
+              {
+                required: balanceTable?.length === 0,
+                message: "Leave Balance Depend On is required",
+              },
+            ]}
           />
         </Col>
         <Form.Item shouldUpdate noStyle>
           {() => {
-            const { dependsOn } = form.getFieldsValue(true);
+            const { leaveDependsOn } = form.getFieldsValue(true);
 
-            return dependsOn?.value === 4 ? (
+            return leaveDependsOn?.value === 4 ? (
               <>
                 <Col md={6} sm={24}>
                   <PInput
@@ -155,7 +206,7 @@ export const Balance = ({ form }: any) => {
                     placeholder=""
                     rules={[
                       {
-                        required: dependsOn?.value === 4,
+                        required: leaveDependsOn?.value === 4,
                         message: "Calculative Days is required",
                       },
                     ]}
@@ -163,7 +214,7 @@ export const Balance = ({ form }: any) => {
                 </Col>
               </>
             ) : (
-              dependsOn?.value === 5 && (
+              leaveDependsOn?.value === 5 && (
                 <>
                   <Col md={6} sm={24}>
                     <PSelect
@@ -184,7 +235,7 @@ export const Balance = ({ form }: any) => {
                       }}
                       rules={[
                         {
-                          required: dependsOn?.value === 5,
+                          required: leaveDependsOn?.value === 5,
                           message: "Bridge Leave For is required",
                         },
                       ]}
@@ -198,8 +249,22 @@ export const Balance = ({ form }: any) => {
                       placeholder=""
                       rules={[
                         {
-                          required: dependsOn?.value === 5,
+                          required: leaveDependsOn?.value === 5,
                           message: "Expire After Available (Days) is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="number"
+                      name="minWorkHr"
+                      label="Minumum Working Hour"
+                      placeholder=""
+                      rules={[
+                        {
+                          required: leaveDependsOn?.value === 5,
+                          message: "Minumum Working Hour is required",
                         },
                       ]}
                     />
@@ -213,25 +278,29 @@ export const Balance = ({ form }: any) => {
         <Col md={6} sm={24}>
           <PInput
             type="number"
-            name="leaveDaysForCalculativeDays"
-            label="Leave Days (For Calculative Days)"
+            name="leaveDaysFor"
+            label="Leave Days"
             placeholder=""
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "To Service Length (Month) is required",
-            //   },
-            // ]}
+            rules={[
+              {
+                required: balanceTable?.length === 0,
+                message: "Leave Days is required",
+              },
+            ]}
           />
         </Col>
 
         <Form.Item shouldUpdate noStyle>
           {() => {
             const {
-              leaveDaysForCalculativeDays,
-              dependsOn,
+              leaveDaysFor,
+              leaveDependsOn,
               serviceEndLengthBalance,
               serviceStartLengthBalance,
+              calculativeDays,
+              bridgeLeaveFor,
+              minWorkHr,
+              expireAfterAvailable,
             } = form.getFieldsValue(true);
 
             return (
@@ -248,9 +317,10 @@ export const Balance = ({ form }: any) => {
                       content="Add"
                       onClick={() => {
                         if (
-                          leaveDaysForCalculativeDays === undefined ||
+                          leaveDaysFor === undefined ||
                           serviceEndLengthBalance === undefined ||
-                          serviceStartLengthBalance === undefined
+                          serviceStartLengthBalance === undefined ||
+                          leaveDependsOn === undefined
                         ) {
                           return toast.warn("Please fill up the fields");
                         }
@@ -261,19 +331,47 @@ export const Balance = ({ form }: any) => {
                             "Service End Length must be greater than Service Start Length"
                           );
                         }
+                        const fields = [
+                          "serviceStartLengthBalance",
+                          "serviceEndLengthBalance",
+                          "leaveDependsOn",
+                          "leaveDaysFor",
+                          "calculativeDays",
+                          "bridgeLeaveFor",
+                          "minWorkHr",
+                          "expireAfterAvailable",
+                        ];
+                        form
+                          .validateFields(fields)
+                          .then(() => {
+                            setBalanceTable((prev: any) => [
+                              ...prev,
+                              {
+                                serviceLength: `${serviceStartLengthBalance} - ${serviceEndLengthBalance}`,
+                                leaveDaysFor,
+                                leaveDependsOn: leaveDependsOn?.label,
+                                calculativeDays: calculativeDays || "-",
+                                minWorkHr: minWorkHr || "-",
+                                expireAfterAvailable:
+                                  expireAfterAvailable || "-",
 
-                        setBalanceTable((prev: any) => [
-                          ...prev,
-                          {
-                            serviceLength: `${serviceStartLengthBalance} - ${serviceEndLengthBalance}`,
-                            leaveDaysForCalculativeDays,
-                          },
-                        ]);
-                        form.setFieldsValue({
-                          serviceStartLengthBalance: undefined,
-                          serviceEndLengthBalance: undefined,
-                          leaveDaysForCalculativeDays: undefined,
-                        });
+                                bridgeLeaveFor: bridgeLeaveFor?.label || "-",
+                              },
+                            ]);
+                            form.setFieldsValue({
+                              serviceStartLengthBalance: undefined,
+                              serviceEndLengthBalance: undefined,
+                              leaveDaysFor: undefined,
+                              expireAfterAvailable: undefined,
+                              minWorkHr: undefined,
+                              bridgeLeaveFor: undefined,
+                              leaveDependsOn: undefined,
+                              calculativeDays: undefined,
+                            });
+                          })
+                          .catch((e: any) => {
+                            console.log({ e });
+                          });
                       }}
                     />
                   </Col>

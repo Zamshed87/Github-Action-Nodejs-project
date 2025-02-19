@@ -101,7 +101,10 @@ export const Sandwitch = ({ form }: any) => {
             gap: "5px",
           }}
         >
-          <span>Sandwitch Leave</span>
+          <span>
+            Sandwitch Leave [The leave will be generated only after the salary
+            has been processed.]
+          </span>
         </div>
       </Divider>
       <Col md={12}>
