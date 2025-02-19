@@ -216,7 +216,7 @@ export const getExitInterviewLandingTableColumn = (
             filter: false,
         },
         {
-            title: "",
+            title: "Actions",
             dataIndex: "approvalStatus",
             render: (data) => (
                 <div className="d-flex justify-content-evenly align-items-center">

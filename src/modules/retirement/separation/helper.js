@@ -362,7 +362,7 @@ export const separationApplicationLandingTableColumn = (
       fieldType: "string",
     },
     {
-      title: "",
+      title: "Actions",
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
@@ -407,6 +407,7 @@ export const separationApplicationLandingTableColumn = (
       sort: false,
       filter: false,
       fieldType: "string",
+      width: 60,
     },
   ];
 };

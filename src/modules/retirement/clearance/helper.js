@@ -306,7 +306,7 @@ export const getClearanceLandingTableColumn = (
             width: 80,
         },
         {
-            title: "",
+            title: "Actions",
             dataIndex: "approvalStatus",
             render: (data) => (
                 <div className="d-flex justify-content-evenly align-items-center">
