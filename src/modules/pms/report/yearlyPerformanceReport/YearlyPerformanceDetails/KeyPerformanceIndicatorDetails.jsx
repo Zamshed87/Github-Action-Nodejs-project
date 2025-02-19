@@ -1,13 +1,15 @@
 import { DataTable } from "Components";
 import { getHeader } from "./helper";
 import { Table } from "antd";
+import { useHistory } from "react-router-dom";
 
 const KeyPerformanceIndicatorDetails = ({ details }) => {
+  const history = useHistory();
   return (
     <div>
     <h3 className="pb-3 pt-3">Key Performance Indicator (KPI) Details</h3>
       <DataTable 
-      header={getHeader(details?.kpiDetails?.length,details?.totalKPIScoreByScale)} 
+      header={getHeader(details?.kpiDetails?.length,details?.totalKPIScoreByScale,history)} 
       bordered
       data={details?.kpiDetails || []} 
       summary={() => (
