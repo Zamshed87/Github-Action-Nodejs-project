@@ -127,7 +127,7 @@ export const getHeader = (pages,setModal) => [
     dataIndex: "",
     align: "center",
     render: (_, rec) => {
-      return <PButton content="Details" color="primary" type="primary-outline" onClick={()=>{setModal({open:true,data:rec})}}/>;
+      return <PButton content="Details" color="primary" onClick={()=>{setModal({open:true,data:rec})}}/>;
     },
   },
 ];
