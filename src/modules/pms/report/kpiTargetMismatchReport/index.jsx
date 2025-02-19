@@ -14,6 +14,7 @@ import useKpiMismatchReport from "./hooks/useKpiMismatchReport";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import ReportFilters from "../common/ReportFilters";
 import useReportFilters from "../common/useReportFilters";
+import { useHistory } from "react-router-dom";
 
 const KpiTargetMismatchReport = () => {
   const [pages, setPages] = useState({
@@ -22,6 +23,7 @@ const KpiTargetMismatchReport = () => {
     total: 0,
   });
   const dispatch = useDispatch();
+  const history = useHistory();
   const [form] = Form.useForm();
 
   const supervisor = Form.useWatch("supervisor", form);
@@ -103,7 +105,7 @@ const KpiTargetMismatchReport = () => {
         </PCardBody>
 
         <DataTable
-          header={getHeader(pages)}
+          header={getHeader(pages,history,year)}
           bordered
           data={reportData?.data || []}
           loading={loading}

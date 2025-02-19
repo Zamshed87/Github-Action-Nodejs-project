@@ -114,11 +114,11 @@ const PerformanceAppraisalReport = () => {
                   `Missing required fields: ${missingFields.join(", ")}`
                 );
               } else {
-                const url = `/PdfAndExcelReport/PMS/YearlyPerformanceReportExcel?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisor?.value}&DepartmentId=${department?.value}&DesignationId=${designation?.value}&Year=${year?.value}&LevelOfLeadershipId=${levelOfLeadershipId?.value}`;
+                const url = `/PdfAndExcelReport/PMS/PerformanceAppraisalReportExcel?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisor?.value}&DepartmentId=${department?.value}&DesignationId=${designation?.value}&Year=${year?.value}&LevelOfLeadershipId=${levelOfLeadershipId?.value}`;
 
                 downloadFile(
                   url,
-                  `YearlyPerformanceReport`,
+                  `PerformanceAppraisalReport`,
                   "xlsx",
                   setExcelLoading
                 );

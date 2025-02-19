@@ -15,7 +15,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { downloadFile } from "utility/downloadFile";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import DetailsYearlyPerformanceReport from "./DetailsYearlyPerformanceReport";
+import DetailsYearlyPerformanceReport from "./YearlyPerformanceDetails/DetailsYearlyPerformanceReport";
 import useReportFilters from "../common/useReportFilters";
 import ReportFilters from "../common/ReportFilters";
 
@@ -173,7 +173,7 @@ const YearlyPerformanceReport = () => {
         onCancel={() => {
           setModal({ open: false, data: {} });
         }}
-        components={<DetailsYearlyPerformanceReport record={modal.data} />}
+        components={<DetailsYearlyPerformanceReport employeeId={modal?.data?.employeeId} year={year?.value}/>}
         width={1500}
       />
     </>
