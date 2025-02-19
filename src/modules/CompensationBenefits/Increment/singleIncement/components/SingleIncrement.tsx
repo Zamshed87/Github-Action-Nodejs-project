@@ -328,6 +328,16 @@ const SingleIncrement: React.FC<TIncrement> = () => {
     // -------------------
     const gradeBasedPayload = {
       id: id || 0,
+      payScaleName:
+        values?.salaryType?.value === "Grade" ? values?.payscale?.label : "",
+      salaryBreakDownHeaderId:
+        values?.salaryType?.value !== "Grade" ? values?.payrollGroup?.value : 0,
+      salaryBreakDownHeaderTitle:
+        values?.salaryType?.value !== "Grade"
+          ? values?.payrollGroup?.label
+          : "",
+      newGrossAmount: values?.grossAmount,
+
       employeeId: values?.employee?.value,
       accountId: orgId,
       businessUnitId: buId,
@@ -729,7 +739,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               (location?.state as any)?.singleData?.incrementList?.[0]
                 ?.strIncrementDependOn === "Basic" &&
               res?.incrementDependOnValue,
-            payrollGroup: employeeInfo?.data[0]?.isGradeBasedSalary
+            payrollGroup: res?.isGradeBasedSalary
               ? undefined
               : {
                   value: res?.salaryBreakDownHeaderId,
@@ -747,7 +757,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           });
 
           setRowDto(modify);
-          getAssignedPayscaleInfo(res);
+          res?.isGradeBasedSalary && getAssignedPayscaleInfo(res);
         },
       });
     }
