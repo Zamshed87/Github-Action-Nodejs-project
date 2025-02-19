@@ -2,6 +2,7 @@ import EmployeeDetails from "./EmployeeDetails";
 import useYearlyPerformanceReportDetails from "../hooks/useYearlyPerformanceReportDetails";
 import PerformanceSummary from "./PerformanceSummary";
 import KeyPerformanceIndicatorDetails from "./KeyPerformanceIndicatorDetails";
+import BehaviorallyAnchoredRatingBARDetails from "./BehaviorallyAnchoredRatingBARDetails";
 
 const DetailsYearlyPerformanceReport = ({ employeeId, year }) => {
   const { details, loading } = useYearlyPerformanceReportDetails({
@@ -16,6 +17,7 @@ const DetailsYearlyPerformanceReport = ({ employeeId, year }) => {
         <PerformanceSummary summary={details} />
       </div>
       <KeyPerformanceIndicatorDetails details={details}/>
+      <BehaviorallyAnchoredRatingBARDetails details={details}/>
     </div>
   );
 };

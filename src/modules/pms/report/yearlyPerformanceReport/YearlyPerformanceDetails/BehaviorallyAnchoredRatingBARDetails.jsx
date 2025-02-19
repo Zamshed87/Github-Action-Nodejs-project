@@ -1,37 +1,37 @@
 import { DataTable } from "Components";
-import { getHeader } from "./helper";
+import { getBarHeader } from "./helper";
 import { Table } from "antd";
 
-const KeyPerformanceIndicatorDetails = ({ details }) => {
+const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
   return (
     <div>
-    <h3 className="pb-3 pt-3">Key Performance Indicator (KPI) Details</h3>
+    <h3 className="pb-3 pt-3">Behaviorally Anchored Rating (BAR) Details</h3>
       <DataTable 
-      header={getHeader(details?.kpiDetails?.length,details?.totalKPIScoreByScale)} 
+      header={getBarHeader(details?.barDetails?.length,details?.totalBARScoreByScale)} 
       bordered
-      data={details?.kpiDetails || []} 
+      data={details?.barDetails || []} 
       summary={() => (
         <Table.Summary.Row>
-          <Table.Summary.Cell colSpan={4} align="end">
+          <Table.Summary.Cell colSpan={2} align="end">
             Total
           </Table.Summary.Cell>
           <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.weight}
+            {details?.barTotal?.desiredValue}
           </Table.Summary.Cell>
           <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.target}
+            {details?.barTotal?.selfScore}
           </Table.Summary.Cell>
           <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.selfAchivement}
+            {details?.barTotal?.supervisorScore}
           </Table.Summary.Cell>
           <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.supervisorAchivement}
+            {details?.barTotal?.crossFuncationalScore}
           </Table.Summary.Cell>
           <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.avgKPIScore}
+            {details?.barTotal?.avgBARScore}
           </Table.Summary.Cell>
           <Table.Summary.Cell  align="center">
-            {details?.totalKPIScoreByScale}
+            {details?.totalBARScoreByScale}
           </Table.Summary.Cell>
         </Table.Summary.Row>
       )}
@@ -40,4 +40,4 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
   );
 };
 
-export default KeyPerformanceIndicatorDetails;
+export default BehaviorallyAnchoredRatingBARDetails;
