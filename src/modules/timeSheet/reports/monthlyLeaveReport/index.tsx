@@ -205,7 +205,6 @@ const MonthlyLeaveReport = () => {
         width: 80,
         fixed: "left",
       },
-
       {
         title: "Employee Name",
         dataIndex: "StrEmployeeName",
@@ -220,7 +219,6 @@ const MonthlyLeaveReport = () => {
         fixed: "left",
         width: 120,
       },
-
       {
         title: "Designation",
         dataIndex: "StrDesignation",
@@ -547,7 +545,7 @@ const MonthlyLeaveReport = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            //scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
