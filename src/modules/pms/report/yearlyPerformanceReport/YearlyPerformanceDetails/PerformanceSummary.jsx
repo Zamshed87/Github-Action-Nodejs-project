@@ -1,4 +1,3 @@
-import { gray700 } from "utility/customColor";
 
 const PerformanceSummary = ({ summary }) => {
   return (  
