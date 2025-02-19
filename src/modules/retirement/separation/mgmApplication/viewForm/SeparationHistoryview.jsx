@@ -56,7 +56,7 @@ function SeparationHistoryview({ id, empId }) {
       fixed: "left",
     },
     {
-      title: "",
+      title: "Attachment ",
       dataIndex: "docArr",
       render: (data) =>
         data?.length > 0
@@ -328,7 +328,7 @@ function SeparationHistoryview({ id, empId }) {
                           >
                             Notice Period -
                           </small>{" "}
-                          {empBasic?.noticePeriod || "N/A"}
+                          {`${empBasic?.noticePeriod} Days` || "N/A"}
                         </p>
                       </div>
                     </div>
