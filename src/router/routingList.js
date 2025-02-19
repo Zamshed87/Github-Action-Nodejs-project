@@ -183,6 +183,9 @@ const PerformanceMarkingView = lazy(() =>
 const PerformanceMarking = lazy(() =>
   import("../modules/pms/report/performanceMarking/index.jsx")
 );
+const KpiTargetMismatchReport = lazy(() =>
+  import("../modules/pms/report/kpiTargetMismatchReport/index.jsx")
+);
 const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
 const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
 const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
@@ -1675,23 +1678,26 @@ const Test = lazy(() =>
   import("../modules/componentModule/peopledeskTable/test.jsx")
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
+
+const SelfServiceSeparation = lazy(() =>
+  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
+);
+
 // Retirement Module
 const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
-  )
+  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+);
+
+const RetirementViewSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
-  )
+  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
 );
-const SelfServiceSeparation = lazy(() =>
-  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
-);
+
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -3815,6 +3821,10 @@ export const routingList = [
     component: PerformanceMarking,
   },
   {
+    path: "/pms/report/KPITargetMismatchReport",
+    component: KpiTargetMismatchReport,
+  },
+  {
     path: "/performancemanagementsystem/pms/strategicplan",
     component: StrPlan,
   },
@@ -4038,6 +4048,10 @@ export const routingList = [
   {
     path: "/retirement/separation/edit/:id",
     component: SeparationApplicationForm,
+  },
+  {
+    path: "/retirement/separation/view/:id",
+    component: RetirementViewSeparationForm,
   },
   {
     path: "/retirement/separation/release/:id",
