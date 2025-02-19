@@ -102,9 +102,9 @@ export const PolicyCreateExtention = () => {
             <Encashment form={form} />
             <ProRata form={form} />
             <Balance form={form} />
-            <Additional form={form} />
             <CalculativeDays form={form} />
-            <LeaveCalculation form={form} />
+            <Additional form={form} />
+            {/* <LeaveCalculation form={form} /> */}
           </PCardBody>
         </PCard>
       </PForm>

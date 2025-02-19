@@ -38,7 +38,7 @@ export const LeaveCalculation = ({ form }: any) => {
           ]}
         />
       </Col>
-      <Col md={6} sm={24}>
+      {/* <Col md={6} sm={24}>
         <PInput
           type="number"
           name="maxLeaveApplyYearly"
@@ -51,7 +51,7 @@ export const LeaveCalculation = ({ form }: any) => {
             },
           ]}
         />
-      </Col>
+      </Col> */}
       <Col md={6} sm={24}>
         <PInput
           type="number"
