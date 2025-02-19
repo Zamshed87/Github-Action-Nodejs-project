@@ -27,6 +27,7 @@ import { Additional } from "./components/Additional";
 import { Balance } from "./components/Balance";
 import { CalculativeDays } from "./components/CalculativeDays";
 import { LeaveCalculation } from "./components/LeaveCalculation";
+import { PaidLeave } from "./components/PaidLeave";
 
 export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
@@ -93,6 +94,7 @@ export const PolicyCreateExtention = () => {
               employeeId={employeeId}
               wgId={wgId}
             />
+            <PaidLeave form={form} />
             <Consumption form={form} />
             <Sandwitch form={form} />
             <Lapse form={form} />

@@ -1,8 +1,61 @@
+import { InfoOutlined } from "@mui/icons-material";
 import { Col, Divider, Form, Row } from "antd";
-import { PInput, PSelect } from "Components";
-import React from "react";
+import { LightTooltip } from "common/LightTooltip";
+import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { failColor } from "utility/customColor";
 
 export const Consumption = ({ form }: any) => {
+  const [tableData, setTableData] = useState<any>([]);
+
+  const encashheader: any = [
+    {
+      title: "SL",
+      render: (_value: any, _row: any, index: number) => index + 1,
+      align: "center",
+      width: 30,
+    },
+    {
+      title: "Leave Consume Type",
+      dataIndex: "leaveConsumeType",
+      width: 100,
+    },
+    {
+      title: "Consume Hour",
+      dataIndex: "consumeHr",
+      width: 100,
+    },
+    {
+      title: "Standard Working Hour",
+      dataIndex: "standardWorkHour",
+      width: 100,
+    },
+
+    {
+      title: "",
+      width: 30,
+
+      align: "center",
+      render: (_: any, item: any, index: number) => (
+        <TableButton
+          buttonsList={[
+            {
+              type: "delete",
+              onClick: () => {
+                setTableData((prev: any) => {
+                  const filterArr = prev.filter(
+                    (itm: any, idx: number) => idx !== index
+                  );
+                  return filterArr;
+                });
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ];
   return (
     <Row gutter={[10, 2]}>
       <Divider
@@ -24,14 +77,15 @@ export const Consumption = ({ form }: any) => {
           <span>Leave Consume Type</span>
         </div>
       </Divider>
-      <Col md={6} sm={24}>
+      <Col md={5} sm={24}>
         <PSelect
-          mode="multiple"
+          // mode="multiple"
           allowClear
           options={[
             { value: 1, label: "Full Day" },
-            { value: 2, label: "Half Day" },
-            { value: 3, label: "Clock Time" },
+            { value: 2, label: "1st Half Day" },
+            { value: 3, label: "2nd Half Day" },
+            { value: 4, label: "Clock Time" },
           ]}
           name="leaveConsumeType"
           label="Leave Consume Type"
@@ -43,68 +97,189 @@ export const Consumption = ({ form }: any) => {
           }}
           rules={[
             {
-              required: true,
+              required: tableData?.length === 0,
               message: "Leave Consume Type is required",
             },
           ]}
         />
       </Col>
-      <Col md={6} sm={24}>
-        <PInput
-          type="number"
-          name="minConsumeTime"
-          label="Minimum Consume Time"
-          placeholder=""
-          rules={[
-            {
-              required: true,
-              message: "Minimum Consume Time is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PInput
-          type="number"
-          name="maxConsumeTime"
-          label="Maximum Consume Time"
-          placeholder=""
-          rules={[
-            {
-              required: true,
-              message: "Maximum Consume Time is required",
-            },
-          ]}
-        />
-      </Col>
+
       <Form.Item shouldUpdate noStyle>
         {() => {
           const { leaveConsumeType } = form.getFieldsValue(true);
 
           return (
-            leaveConsumeType?.filter((i: any) => i?.value === 3).length > 0 && (
-              <>
-                <Col md={6} sm={24}>
+            <>
+              {/* {leaveConsumeType?.filter((i: any) => i?.value !== 1).length > */}
+              {leaveConsumeType?.value !== 1 && (
+                <>
+                  <Col md={5} sm={24}>
+                    <PInput
+                      type="number"
+                      name="minConsumeTime"
+                      label={
+                        <>
+                          Minimum Consume Hour
+                          <LightTooltip
+                            title={`Please input "Minutes" as percentage (%)!`}
+                            arrow
+                          >
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: failColor,
+                                width: 16,
+                                cursor: "pointer",
+                              }}
+                            />
+                          </LightTooltip>
+                        </>
+                      }
+                      placeholder=""
+                      rules={[
+                        {
+                          required:
+                            leaveConsumeType && leaveConsumeType?.value !== 1,
+                          message: "Minimum Consume Hour is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={5} sm={24}>
+                    <PInput
+                      type="number"
+                      name="maxConsumeTime"
+                      label={
+                        <>
+                          Maximum Consume Hour
+                          <LightTooltip
+                            title={`Please input "Minutes" as percentage (%)!`}
+                            arrow
+                          >
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: failColor,
+                                width: 16,
+                                cursor: "pointer",
+                              }}
+                            />
+                          </LightTooltip>
+                        </>
+                      }
+                      placeholder=""
+                      rules={[
+                        {
+                          required:
+                            leaveConsumeType && leaveConsumeType?.value !== 1,
+                          message: "Maximum Consume Hour is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                </>
+              )}
+              {leaveConsumeType?.value === 4 && (
+                <Col md={5} sm={24}>
                   <PInput
                     type="number"
                     name="standardWorkHour"
-                    label="Standard Working Hour"
+                    label={`Standard Working Hour`}
                     placeholder=""
                     rules={[
                       {
                         required:
-                          leaveConsumeType?.filter((i: any) => i?.value === 3)
-                            .length > 0,
+                          leaveConsumeType && leaveConsumeType?.value === 4,
+                        // leaveConsumeType?.filter((i: any) => i?.value === 4)
+                        //   .length > 0,
                         message: "Standard Working Hour is required",
                       },
                     ]}
                   />
                 </Col>
-              </>
-            )
+              )}
+            </>
           );
         }}
       </Form.Item>
+
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const {
+            leaveConsumeType,
+            maxConsumeTime,
+            minConsumeTime,
+            standardWorkHour,
+          } = form.getFieldsValue(true);
+
+          return (
+            <>
+              <Col
+                style={{
+                  marginTop: "23px",
+                }}
+              >
+                <PButton
+                  type="primary"
+                  action="button"
+                  content="Add"
+                  onClick={() => {
+                    if (leaveConsumeType === undefined) {
+                      return toast.warn("Please fill up the fields");
+                    }
+
+                    if (maxConsumeTime < minConsumeTime) {
+                      return toast.warn(
+                        "Max Consume Hour must be greater than Min Consume Hour Length"
+                      );
+                    }
+                    const fields = [
+                      "leaveConsumeType",
+                      "maxConsumeTime",
+                      "minConsumeTime",
+                      "standardWorkHour",
+                    ];
+                    form
+                      .validateFields(fields)
+                      .then(() => {
+                        setTableData((prev: any) => [
+                          ...prev,
+                          {
+                            consumeHr:
+                              leaveConsumeType?.value === 1
+                                ? "-"
+                                : `${minConsumeTime} to ${maxConsumeTime} Hr.`,
+                            leaveConsumeType: leaveConsumeType?.label,
+                            standardWorkHour,
+                          },
+                        ]);
+                        form.setFieldsValue({
+                          leaveConsumeType: undefined,
+                          standardWorkHour: undefined,
+                          maxConsumeTime: undefined,
+                          minConsumeTime: undefined,
+                        });
+                      })
+                      .catch((e: any) => {
+                        console.log({ e });
+                      });
+                  }}
+                />
+              </Col>
+            </>
+          );
+        }}
+      </Form.Item>
+      {tableData?.length > 0 && (
+        <Col>
+          <DataTable
+            bordered
+            data={tableData}
+            loading={false}
+            header={encashheader}
+          />
+        </Col>
+      )}
     </Row>
   );
 };

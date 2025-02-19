@@ -355,14 +355,14 @@ export const General = ({
           ]}
         />
       </Col>
-      <Col md={3} sm={24} style={{ marginTop: "1.5rem" }}>
+      {/* <Col md={3} sm={24} style={{ marginTop: "1.5rem" }}>
         <PInput
           label="Is Paid Leave"
           type="checkbox"
           layout="horizontal"
           name="isPaidLeave"
         />
-      </Col>
+      </Col> */}
       <Col md={6} style={{ marginTop: "1.5rem" }}>
         <div>
           <>
