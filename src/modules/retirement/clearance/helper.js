@@ -316,11 +316,10 @@ export const getClearanceLandingTableColumn = (
                                 <PrimaryButton
                                     type="button"
                                     icon={<EyeTwoTone twoToneColor="#34a853" />}
+                                    className={"iconButton"}
                                     customStyle={{
-                                        height: "30px",
-                                        fontSize: "16px",
-                                        padding: "0px 12px 0px 12px",
-                                        border: "none",
+                                        height: "25px",
+                                        width: "25px"
                                     }}
                                     onClick={() => {
                                         setId(data?.separationId)
@@ -335,11 +334,10 @@ export const getClearanceLandingTableColumn = (
                         {data?.approvalStatus?.includes("Approved") && (
                             <Tooltip placement="top" color={"#34a853"} title={"Clearance"}>
                                 <button
+                                    className={"iconButton"}
                                     style={{
-                                        height: "24px",
-                                        fontSize: "12px",
-                                        padding: "0px 12px 0px 12px",
-                                        border: "none"
+                                        height: "25px",
+                                        width: "25px"
                                     }}
                                     type="button"
                                     onClick={() => {
@@ -354,11 +352,10 @@ export const getClearanceLandingTableColumn = (
                         {data?.approvalStatus?.includes("Clearance") && (
                             <Tooltip placement="top" color={"#34a853"} title={"Release"}>
                                 <button
+                                    className={"iconButton"}
                                     style={{
-                                        height: "24px",
-                                        fontSize: "12px",
-                                        padding: "0px 12px 0px 12px",
-                                        border: "none"
+                                        height: "25px",
+                                        width: "25px"
                                     }}
                                     type="button"
                                     onClick={() => {
