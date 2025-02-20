@@ -8,6 +8,8 @@ export const column = {
   StrEmployeeName: "Employee Name",
   StrDesignation: "Designation",
   StrSupersvisorName: "Supersvisor",
+  StrLineManagerName: "Line Manager",
+  StrDottedSupersvisorName: "Dotted Supersvisor",
   StrLeaveTypeName: "Leave Type",
   StrAddressDuetoLeave: "Location",
   StartDate: "From Date",
