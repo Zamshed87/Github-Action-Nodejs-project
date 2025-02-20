@@ -1,4 +1,5 @@
-import { EyeTwoTone, HighlightTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import { EyeTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import QuizIcon from '@mui/icons-material/Quiz';
 import { Form, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
@@ -7,16 +8,18 @@ import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
-import QuizIcon from '@mui/icons-material/Quiz';
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
 
 export const statusDDL = [
-    { value: 0, label: "All" },
-    { value: 1, label: "Pending" },
-    { value: 2, label: "Approved" },
-    { value: 3, label: "Rejected" },
-    { value: 4, label: "Released" },
+    { value: "", label: "All" },
+    { value: "Pending", label: "Pending" },
+    { value: "Cancelled", label: "Cancelled" },
+    { value: "Approved", label: "Approved" },
+    { value: "Withdrawn", label: "Withdrawn" },
+    { value: "Clearance", label: "Clearance" },
+    { value: "Final Settlement Completed", label: "Final Settlement Completed" },
+    { value: "Released", label: "Released" },
 ];
 
 // SearchFilter Component
