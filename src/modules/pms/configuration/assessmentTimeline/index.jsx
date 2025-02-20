@@ -1,6 +1,15 @@
-import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
+import {
+  DataTable,
+  Flex,
+  PButton,
+  PCard,
+  PCardBody,
+  PCardHeader,
+  PForm,
+  PSelect,
+} from "Components";
 import { PModal } from "Components/Modal";
-import { Form, Tooltip } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -12,6 +21,8 @@ import ATCreateEdit from "./createEdit";
 
 const AssessmentTimeline = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
+  const [fiscalYear, GetFiscalYearDDL, fiscalYearLoader] = useAxiosGet();
+
   const [modal, setModal] = useState(false);
   const [form] = Form.useForm();
   const [rowData, setRowData] = useState({});
@@ -24,6 +35,7 @@ const AssessmentTimeline = () => {
     getCriteriaList(
       `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
     );
+    GetFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
   };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
@@ -93,33 +105,66 @@ const AssessmentTimeline = () => {
   return permission?.isView ? (
     <div>
       {criteriaListLoader && <Loading />}
+      <h1>Assesment Timeline Setup</h1>
       <PForm form={form}>
         <PCard>
-          <PCardHeader />
-          <div className="mt-2">
-            <DataTable
-              bordered
-              data={criteriaList || []}
-              header={evaluationCriteriaHeader}
-            />
-          </div>
-          <PModal
-            title="Assesment Timeline Setup Log Details"
-            open={modal}
-            onCancel={() => {
-              setModal(false);
-              landingApi();
-            }}
-            components={
-              <ATCreateEdit
-                modal={modal}
-                setModal={setModal}
-                data={rowData}
-                cb={landingApi}
+          <PCardBody>
+            <Row gutter={[10, 2]} style={{ marginBottom: "20px" }}>
+              <Col md={4} sm={12} xs={24}>
+                <PSelect
+                  options={fiscalYear || []}
+                  name="year"
+                  label="Year"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      year: op,
+                    });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Year is required",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PButton
+                  style={{ marginTop: "22px" }}
+                  type="primary"
+                  content="View"
+                  onClick={() => {
+                    const values = form.getFieldsValue(true);
+                    // addHandler(values);
+                  }}
+                />
+              </Col>
+            </Row>
+            <div className="mt-2">
+              <DataTable
+                bordered
+                data={criteriaList || []}
+                header={evaluationCriteriaHeader}
               />
-            }
-            width={1000}
-          />
+            </div>
+            <PModal
+              title="Assesment Timeline Setup Log Details"
+              open={modal}
+              onCancel={() => {
+                setModal(false);
+                landingApi();
+              }}
+              components={
+                <ATCreateEdit
+                  modal={modal}
+                  setModal={setModal}
+                  data={rowData}
+                  cb={landingApi}
+                />
+              }
+              width={1000}
+            />
+          </PCardBody>
         </PCard>
       </PForm>
     </div>
