@@ -1,4 +1,4 @@
-import { CloseCircleTwoTone, SettingTwoTone } from "@ant-design/icons";
+import { CloseCircleTwoTone, EditTwoTone, SettingTwoTone } from "@ant-design/icons";
 import { FilePresentOutlined, InfoOutlined } from "@mui/icons-material";
 import { Dropdown, Tooltip } from "antd";
 import axios from "axios";
@@ -436,9 +436,9 @@ export const separationApplicationLandingTableColumn = (
       fieldType: "string",
     },
     {
-      title: "",
+      title: "Actions",
       dataIndex: "approvalStatus",
-      render: (item, data) => (
+      render: (item) => (
         <div className="d-flex">
           <Tooltip placement="top" color={"#34a853"} title={"Manage"}>
             <Dropdown
@@ -481,6 +481,26 @@ export const separationApplicationLandingTableColumn = (
                 onClick={() => {
                   setAprovalStatus(item?.approvalStatus);
                   cancelConfirmPopup();
+                }}
+              />
+            </Tooltip>
+          )}
+          {item?.approvalStatus === "Pending" && (
+            <Tooltip placement="top" color={"#fa8c16"} title={"Edit"}>
+              <PrimaryButton
+                type="button"
+                icon={<EditTwoTone twoToneColor="#fa8c16" />}
+                customStyle={{
+                  height: "30px",
+                  fontSize: "16px",
+                  padding: "0px 12px 0px 12px",
+                  border: "none",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
+                  history.push(
+                    `/SelfService/separation/applicationV2/edit/${item?.separationId}`
+                  );
                 }}
               />
             </Tooltip>

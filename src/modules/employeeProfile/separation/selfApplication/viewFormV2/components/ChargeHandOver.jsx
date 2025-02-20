@@ -109,8 +109,8 @@ export default function ChargeHandOver({ separationId }) {
       strEmployeeName: values?.employeeName?.employeeName,
       intHandOverId: 0,
       intEmployeeId: values?.employeeId,
-      strDesignation: "",
-      strDepartment: "",
+      strDesignation: values?.employeeName?.strDesignation,
+      strDepartment: values?.employeeName?.strDepartment,
       comment: values?.comment,
     };
     setEmployeeList((prev) => [...prev, modifiedValues]);

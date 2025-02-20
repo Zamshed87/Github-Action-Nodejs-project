@@ -3288,6 +3288,10 @@ export const routingList = [
     component: SelfServiceSeparationForm,
   },
   {
+    path: "/SelfService/separation/applicationV2/edit/:id",
+    component: SelfServiceSeparationForm,
+  },
+  {
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
