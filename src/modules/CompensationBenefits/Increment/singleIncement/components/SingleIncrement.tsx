@@ -19,7 +19,6 @@ import { toast } from "react-toastify";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { getEmployeeProfileViewData } from "modules/employeeProfile/employeeFeature/helper";
 import moment from "moment";
-// import IConfirmModal from "common/IConfirmModal";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import Loading from "common/loading/Loading";
@@ -753,6 +752,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 ?.intEmployeeId,
               label: (location?.state as any)?.singleData?.incrementList?.[0]
                 ?.strEmployeeName,
+            },
+            salaryType: {
+              label: res?.isGradeBasedSalary ? "Grade" : "Non-Grade",
+              value: res?.isGradeBasedSalary ? "Grade" : "Non-Grade",
             },
           });
 

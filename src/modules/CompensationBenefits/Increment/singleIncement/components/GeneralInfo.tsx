@@ -3,6 +3,7 @@ import { PInput, PSelect } from "Components";
 import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
 import moment from "moment";
 import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 import { gray700 } from "utility/customColor";
 // import { attachment_action } from "common/api";
 // import { getTransferAndPromotionHistoryById } from "../helper";
@@ -382,6 +383,15 @@ export const GeneralInfo = ({
         setRowDto(modify);
         // basic_or_grade_calculation();
       },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message ||
+            error?.response?.data?.title ||
+            error?.message ||
+            error?.title ||
+            "Something went wrong"
+        );
+      },
     });
   };
 
@@ -541,7 +551,7 @@ export const GeneralInfo = ({
   useEffect(() => {
     getPayscale();
     getPayrollGroupDDL();
-    getEmployeeInfo();
+    !id && getEmployeeInfo();
     // getBU();
   }, [wgId, buId, wId, location.state]);
   return (
