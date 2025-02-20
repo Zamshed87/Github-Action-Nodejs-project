@@ -4,10 +4,10 @@ import { Col, Row, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
 
-const PerformanceAppraisalTable = ({ data, setStakeholderField }) => {
+const PerformanceAppraisalTable = ({ data, setData }) => {
   const deleteHandler = (idx) => {
     const updatedData = data.filter((item) => item.idx !== idx);
-    setStakeholderField(updatedData);
+    setData(updatedData);
   };
 
   const header = [
@@ -22,9 +22,12 @@ const PerformanceAppraisalTable = ({ data, setStakeholderField }) => {
       fixed: "left",
       align: "center",
     },
-    { title: "Stakeholder Type", dataIndex: "stakeholderTypeName" },
-    { title: "Stakeholder", dataIndex: "stakeholderName" },
-    { title: "Score Weight", dataIndex: "scoreWeight" },
+    { title: "Mark Start", dataIndex: "markStart" },
+    { title: "Mark End", dataIndex: "markEnd" },
+    { title: "Grade Name", dataIndex: "gradeName" },
+    { title: "Cola %", dataIndex: "cola" },
+    { title: "Appraisal (%)", dataIndex: "appraisal" },
+    { title: "comment", dataIndex: "comments" },
     {
       title: "Action",
       render: (_, rec) => (

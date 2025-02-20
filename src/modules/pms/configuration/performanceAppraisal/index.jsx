@@ -87,12 +87,13 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
     setPerformanceAppraisal([
       ...performanceAppraisal,
       {
-        idx: values?.scoreWeight + performanceAppraisal?.length,
-        stakeholderName: values?.stakeholder?.label,
-        stakeholderId: values?.stakeholder?.value,
-        stakeholderTypeName: values?.stakeholderType?.label,
-        stakeholderTypeId: values?.stakeholderType?.value,
-        scoreWeight: values?.scoreWeight,
+        idx: values?.markStart + performanceAppraisal?.length,
+        markStart: values?.markStart,
+        markEnd: values?.markEnd,
+        gradeName: values?.gradeName,
+        cola: values?.cola,
+        appraisal: values?.appraisal,
+        comments: values?.comments,
       },
     ]);
     // form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
@@ -206,7 +207,7 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
       {performanceAppraisal.length > 0 && (
         <PerformanceAppraisalTable
           data={performanceAppraisal}
-          setPerformanceAppraisal={setPerformanceAppraisal}
+          setData={setPerformanceAppraisal}
         />
       )}
     </div>
