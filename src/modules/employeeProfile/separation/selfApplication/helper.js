@@ -409,29 +409,26 @@ export const separationApplicationLandingTableColumn = (
             </div>
           </div>
           <div className="ml-2">
-            {item?.approvalStatus?.includes("Approved") && (
-              <Chips
-                label="Approved"
-                classess="success p-2"
-              />
+            {item?.approvalStatus === "Pending" && (
+              <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.approvalStatus === "Released" && (
-              <Chips
-                label="Released"
-                classess="indigo p-2 mr-2"
-              />
+            {item?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {item?.approvalStatus === "Clearance" && (
-              <Chips
-                label="Clearance"
-                classess="info p-2 mr-2"
-              />
+            {item?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
             )}
             {item?.approvalStatus === "Withdrawn" && (
-              <Chips
-                label="Withdrawn"
-                classess="danger p-2 mr-2"
-              />
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {item?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {item?.approvalStatus === "Final Settlement Completed" && (
+              <Chips label="Final Settlement Completed" classess="success p-2" />
+            )}
+            {item?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2" />
             )}
           </div>
         </div>
