@@ -139,52 +139,46 @@ export const getExitInterviewLandingTableColumn = (
             filter: false,
             render: (item) => (
                 <div className="d-flex justify-content-center">
-                    {item?.approvalStatus === "Approved" && (
-                        <Chips
-                            label="Approved"
-                            classess="success p-2"
-                        />
-                    )}
                     {item?.approvalStatus === "Pending" && (
                         <Chips
                             label="Pending"
                             classess="warning p-2"
                         />
                     )}
-                    {item?.approvalStatus === "Process" && (
-                        <Chips
-                            label="Process"
-                            classess="primary p-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Reject" && (
-                        <Chips
-                            label="Rejected"
-                            classess="danger p-2 mr-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Released" && (
-                        <Chips
-                            label="Released"
-                            classess="indigo p-2 mr-2"
-                        />
-                    )}
                     {item?.approvalStatus === "Cancelled" && (
                         <Chips
-                            label="Released"
-                            classess="danger p-2 mr-2"
+                            label="Cancelled"
+                            classess="danger p-2"
                         />
                     )}
-                    {item?.approvalStatus === "Clearance" && (
+                    {item?.approvalStatus === "Approved" && (
                         <Chips
-                            label="Clearance"
-                            classess="info p-2 mr-2"
+                            label="Approved"
+                            classess="success p-2"
                         />
                     )}
                     {item?.approvalStatus === "Withdrawn" && (
                         <Chips
                             label="Withdrawn"
-                            classess="danger p-2 mr-2"
+                            classess="danger p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Clearance" && (
+                        <Chips
+                            label="Clearance"
+                            classess="info p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Final Settlement Completed" && (
+                        <Chips
+                            label="Final Settlement Completed"
+                            classess="success p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Released" && (
+                        <Chips
+                            label="Released"
+                            classess="indigo p-2"
                         />
                     )}
                 </div>

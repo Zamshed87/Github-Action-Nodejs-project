@@ -331,26 +331,26 @@ export const separationApplicationLandingTableColumn = (
             </div>
           </div>
           <div className="ml-2">
-            {data?.approvalStatus === "Approved" && (
-              <Chips label="Approved" classess="success p-2" />
-            )}
             {data?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {data?.approvalStatus === "Process" && (
-              <Chips label="Process" classess="primary p-2" />
+            {data?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {data?.approvalStatus === "Reject" && (
-              <Chips label="Rejected" classess="danger p-2 mr-2" />
-            )}
-            {data?.approvalStatus === "Released" && (
-              <Chips label="Released" classess="indigo p-2 mr-2" />
-            )}
-            {data?.approvalStatus === "Clearance" && (
-              <Chips label="Clearance" classess="info p-2 mr-2" />
+            {data?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
             )}
             {data?.approvalStatus === "Withdrawn" && (
-              <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {data?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {data?.approvalStatus === "Final Settlement Completed" && (
+              <Chips label="Final Settlement Completed" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2" />
             )}
           </div>
         </div>

@@ -342,30 +342,35 @@ function SeparationHistoryview({ id, empId }) {
                     <span style={{ fontSize: "13.5px" }}>Status:</span>&nbsp;
                     {
                       <>
+                        {singleSeparationData?.approvalStatus === "Pending" && (
+                          <Chips label="Pending" classess="warning p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Cancelled" && (
+                          <Chips label="Cancelled" classess="danger p-2 mr-2" />
+                        )}
                         {singleSeparationData?.approvalStatus ===
                           "Approved" && (
                           <Chips label="Approved" classess="success p-2" />
                         )}
-                        {singleSeparationData?.approvalStatus === "Pending" && (
-                          <Chips label="Pending" classess="warning p-2" />
-                        )}
-                        {singleSeparationData?.approvalStatus === "Process" && (
-                          <Chips label="Process" classess="primary p-2" />
-                        )}
-                        {singleSeparationData?.approvalStatus === "Reject" && (
-                          <Chips label="Rejected" classess="danger p-2 mr-2" />
-                        )}
                         {singleSeparationData?.approvalStatus ===
-                          "Released" && (
-                          <Chips label="Released" classess="indigo p-2 mr-2" />
+                          "Withdrawn" && (
+                          <Chips label="Withdrawn" classess="danger p-2 mr-2" />
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Clearance" && (
                           <Chips label="Clearance" classess="info p-2 mr-2" />
                         )}
                         {singleSeparationData?.approvalStatus ===
-                          "Withdrawn" && (
-                          <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+                          "Final Settlement Completed" && (
+                          <Chips
+                            label="Final Settlement Completed"
+                            classess="success p-2 mr-2"
+                          />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Released" && (
+                          <Chips label="Released" classess="indigo p-2 mr-2" />
                         )}
                       </>
                     }
@@ -461,46 +466,46 @@ function SeparationHistoryview({ id, empId }) {
                               filter: false,
                               render: (item) => (
                                 <div className="d-flex justify-content-center">
-                                  {item === "Approved" && (
-                                    <Chips
-                                      label="Approved"
-                                      classess="success p-2"
-                                    />
-                                  )}
                                   {item === "Pending" && (
                                     <Chips
                                       label="Pending"
                                       classess="warning p-2"
                                     />
                                   )}
-                                  {item === "Process" && (
+                                  {item === "Cancelled" && (
                                     <Chips
-                                      label="Process"
-                                      classess="primary p-2"
+                                      label="Cancelled"
+                                      classess="danger p-2"
                                     />
                                   )}
-                                  {item === "Reject" && (
+                                  {item === "Approved" && (
                                     <Chips
-                                      label="Rejected"
-                                      classess="danger p-2 mr-2"
-                                    />
-                                  )}
-                                  {item === "Released" && (
-                                    <Chips
-                                      label="Released"
-                                      classess="indigo p-2 mr-2"
-                                    />
-                                  )}
-                                  {item === "Clearance" && (
-                                    <Chips
-                                      label="Clearance"
-                                      classess="info p-2 mr-2"
+                                      label="Approved"
+                                      classess="success p-2"
                                     />
                                   )}
                                   {item === "Withdrawn" && (
                                     <Chips
                                       label="Withdrawn"
-                                      classess="danger p-2 mr-2"
+                                      classess="danger p-2"
+                                    />
+                                  )}
+                                  {item === "Clearance" && (
+                                    <Chips
+                                      label="Clearance"
+                                      classess="info p-2"
+                                    />
+                                  )}
+                                  {item === "Final Settlement Completed" && (
+                                    <Chips
+                                      label="Final Settlement Completed"
+                                      classess="success p-2"
+                                    />
+                                  )}
+                                  {item === "Released" && (
+                                    <Chips
+                                      label="Released"
+                                      classess="indigo p-2"
                                     />
                                   )}
                                 </div>
