@@ -154,6 +154,21 @@ export const handleEvaluationPipelineSetting = async (
   }
   const payload = {
     evaluationHeaderId: 0, // This value is hardcoded if create
+    evaluationCriteriaId: values?.evaluationCriteria?.value,
+    remarks: values?.comments,
+    accountId: profileData?.intAccountId,
+    actionBy: profileData?.employeeId,
+    positionGroupId: values?.leadership?.map((item) => {
+      return { positionGroupId: item?.value };
+    }),
+    rowDto: stakeholderField?.map((item) => {
+      return {
+        rowId: 0, // This value is hardcoded if create
+        stakeholderTypeId: item?.stakeholderTypeId,
+        stakeholderId: item?.stakeholderId || 0,
+        scoreWeight: item?.scoreWeight,
+      };
+    }),
   };
   try {
     const res = await axios.post(`/PMS/EvaluationPipelineSetupCreate`, payload);
