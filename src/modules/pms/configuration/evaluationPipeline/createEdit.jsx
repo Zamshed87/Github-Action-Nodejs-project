@@ -1,6 +1,6 @@
-import { Col, Form, Tooltip } from "antd";
+import { Col, Form } from "antd";
 import Loading from "common/loading/Loading";
-import { DataTable, Flex, PButton, PForm } from "Components";
+import { PButton, PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -8,20 +8,16 @@ import { useParams } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { ModalFooter } from "Components/Modal";
+import { useApiRequest } from "Hooks";
 import CommonForm from "modules/pms/CommonForm/commonForm";
-import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import {
   EvaluationPipelineForm,
-  getTotalWeight,
   handleEvaluationPipelineSetting,
   StakeholderForm,
 } from "./helper";
-import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { useApiRequest } from "Hooks";
-import { DeleteOutlined } from "@ant-design/icons";
-import { getSerial } from "Utils";
-import { Row } from "react-bootstrap";
+import StakeholderTable from "./StakeholderTable";
 
 const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   // redux
@@ -81,59 +77,6 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
       },
     });
   };
-
-  const header = [
-    {
-      title: "SL",
-      render: (_, rec, index) =>
-        getSerial({
-          currentPage: 1,
-          pageSize: 1000,
-          index,
-        }),
-      fixed: "left",
-      align: "center",
-    },
-    {
-      title: "Stakeholder Type",
-      dataIndex: "stakeholderTypeName",
-    },
-    {
-      title: "Stakeholder",
-      dataIndex: "stakeholderName",
-    },
-
-    {
-      title: "Score Weight",
-      dataIndex: "scoreWeight",
-    },
-    {
-      title: "Action",
-      dataIndex: "status",
-      render: (_, rec) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Delete">
-            <DeleteOutlined
-              style={{
-                color: "red",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                const updatedstakeholderField = stakeholderField?.filter(
-                  (item) => !(item.idx === rec.idx)
-                );
-                setStakeholderField(updatedstakeholderField);
-              }}
-            />
-          </Tooltip>
-        </Flex>
-      ),
-      align: "center",
-      width: 40,
-    },
-  ];
 
   const addHandler = (values) => {
     // const isDuplicate = stakeholderField.some(
@@ -250,29 +193,11 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
           }}
         />
       </PForm>
-      {stakeholderField?.length > 0 && (
-        <div className="mb-3 mt-2">
-          <div className="ml-3">
-            <Row justify="space-between" align="right">
-              <Col>
-                <h1>Total Score Weight: {getTotalWeight(stakeholderField)} </h1>
-              </Col>{" "}
-              {getTotalWeight(stakeholderField) !== 100 && (
-                <Col>
-                  <h1 style={{ color: "red" }}>
-                    (Total Score Weight must be 100)
-                  </h1>
-                </Col>
-              )}
-            </Row>
-          </div>
-          <DataTable
-            bordered
-            data={stakeholderField || []}
-            loading={false}
-            header={header}
-          />
-        </div>
+      {stakeholderField.length > 0 && (
+        <StakeholderTable
+          data={stakeholderField}
+          setStakeholderField={setStakeholderField}
+        />
       )}
     </div>
   ) : (
