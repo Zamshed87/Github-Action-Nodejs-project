@@ -230,6 +230,8 @@ function Calendar() {
                                     fontSize: "12px",
                                   }}
                                   onClick={(e) => {
+                                    if (e.detail === 0) return; // Ignore Enter keypress
+                                    e.preventDefault();
                                     e.stopPropagation();
                                     if (!permission?.isCreate)
                                       return toast.warn(
