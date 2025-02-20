@@ -1,6 +1,6 @@
 import { Col, Form } from "antd";
 import Loading from "common/loading/Loading";
-import { PButton, PForm } from "Components";
+import { PButton, PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -12,14 +12,10 @@ import { useApiRequest } from "Hooks";
 import CommonForm from "modules/pms/CommonForm/commonForm";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
-import {
-  EvaluationPipelineForm,
-  handleEvaluationPipelineSetting,
-  StakeholderForm,
-} from "./helper";
-import StakeholderTable from "./StakeholderTable";
+import PerformanceAppraisalTable from "./PerformanceAppraisalTable";
+import { SaveOutlined } from "@ant-design/icons";
 
-const EPCreateEdit = ({ modal, setModal, data, cb }) => {
+const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
   // redux
   const { permissionList, profileData } = useSelector(
     (state) => state?.auth,
@@ -32,7 +28,7 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   const [loading, setLoading] = useState(false);
   const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
   const [userGrp, getUserGrp, loadingUserGrp, setUserGrp] = useAxiosGet([]);
-  const [stakeholderField, setStakeholderField] = useState([]);
+  const [performanceAppraisal, setPerformanceAppraisal] = useState([]);
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -79,7 +75,7 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   };
 
   const addHandler = (values) => {
-    // const isDuplicate = stakeholderField.some(
+    // const isDuplicate = performanceAppraisal.some(
     //   (org) => org.idx === values?.stakeholder?.label
     // );
 
@@ -88,25 +84,75 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
     //   return;
     // }
 
-    setStakeholderField([
-      ...stakeholderField,
+    setPerformanceAppraisal([
+      ...performanceAppraisal,
       {
-        idx: values?.scoreWeight + stakeholderField?.length,
-        stakeholderName: values?.stakeholder?.label,
-        stakeholderId: values?.stakeholder?.value,
-        stakeholderTypeName: values?.stakeholderType?.label,
-        stakeholderTypeId: values?.stakeholderType?.value,
-        scoreWeight: values?.scoreWeight,
+        idx: values?.markStart + performanceAppraisal?.length,
+        markStart: values?.markStart,
+        markEnd: values?.markEnd,
+        gradeName: values?.gradeName,
+        cola: values?.cola,
+        appraisal: values?.appraisal,
+        comments: values?.comments,
       },
     ]);
     // form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
   };
 
+  const formFields = [
+    {
+      type: "number",
+      label: "Mark Start",
+      varname: "markStart",
+      placeholder: "Mark Start",
+      rules: [{ required: true, message: "Mark Start is required!" }],
+      col: 3,
+    },
+    {
+      type: "number",
+      label: "Mark End",
+      varname: "markEnd",
+      placeholder: "Mark End",
+      rules: [{ required: true, message: "Mark End is required!" }],
+      col: 3,
+    },
+    {
+      type: "text",
+      label: "Grade Name",
+      varname: "gradeName",
+      placeholder: "Grade Name",
+      col: 3,
+      rules: [{ required: true, message: "Grade Name is required!" }],
+    },
+    {
+      type: "number",
+      label: "Cola (%)",
+      varname: "cola",
+      placeholder: "Cola (%)",
+      rules: [{ required: true, message: "Cola (%) is required!" }],
+      col: 3,
+    },
+    {
+      type: "number",
+      label: "Appraisal (%)",
+      varname: "appraisal",
+      placeholder: "Appraisal (%)",
+      rules: [{ required: true, message: "Appraisal (%) is required!" }],
+      col: 3,
+    },
+    {
+      type: "text",
+      label: "Comments",
+      varname: "comments",
+      placeholder: "Comments",
+      col: 3,
+    },
+  ];
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
     levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading, true); // Call the API
   }, []);
-  const st = Form.useWatch("stakeholderType", form);
 
   return permission?.isCreate ? (
     <div>
@@ -123,80 +169,45 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
           }
         }
       >
-        <CommonForm
-          formConfig={EvaluationPipelineForm(
-            levelofLeaderShip,
-            modal?.type,
-            form
-          )}
-          form={form}
-        />
-        {modal?.type !== "view" && (
-          <CommonForm
-            formConfig={StakeholderForm(
-              st,
-              modal?.type,
-              form,
-              getEmployee,
-              CommonEmployeeDDL,
-              doUserGrp,
-              userGrp
-            )}
-            form={form}
-          >
-            <Col md={6} sm={24}>
-              <PButton
-                style={{ marginTop: "22px" }}
-                type="primary"
-                content={"Add"}
-                onClick={() => {
-                  const values = form.getFieldsValue(true);
-                  form
-                    .validateFields()
-                    .then(() => {
-                      const values = form.getFieldsValue(true);
+        <PCard>
+          <PCardHeader
+            buttonList={[
+              {
+                type: "primary",
+                content: "Save",
+                icon: <SaveOutlined />,
+                onClick: () => {},
+              },
+            ]}
+          />
+          <PCardBody>
+            <CommonForm formConfig={formFields} form={form}>
+              <Col md={6} sm={24}>
+                <PButton
+                  style={{ marginTop: "22px" }}
+                  type="primary"
+                  content={"Add"}
+                  onClick={() => {
+                    const values = form.getFieldsValue(true);
+                    form
+                      .validateFields()
+                      .then(() => {
+                        const values = form.getFieldsValue(true);
 
-                      addHandler(values);
-                    })
-                    .catch(() => {});
-                }}
-              />
-            </Col>
-          </CommonForm>
-        )}
-
-        <ModalFooter
-          onCancel={() => {
-            setModal(() => ({ open: false, type: "" }));
-          }}
-          submitAction="submit"
-          onSubmit={() => {
-            const values = form.getFieldsValue(true);
-            form
-              .validateFields()
-              .then(() => {
-                console.log("values", values);
-                handleEvaluationPipelineSetting(
-                  form,
-                  profileData,
-                  stakeholderField,
-                  setLoading,
-                  () => {
-                    cb && cb();
-                    setModal(() => ({ open: false, type: "" }));
-                  }
-                );
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }}
-        />
+                        addHandler(values);
+                      })
+                      .catch(() => {});
+                  }}
+                />
+              </Col>
+            </CommonForm>
+          </PCardBody>
+        </PCard>
       </PForm>
-      {stakeholderField.length > 0 && (
-        <StakeholderTable
-          data={stakeholderField}
-          setStakeholderField={setStakeholderField}
+      {performanceAppraisal.length > 0 && (
+        <PerformanceAppraisalTable
+          data={performanceAppraisal}
+          setData={setPerformanceAppraisal}
         />
       )}
     </div>
@@ -205,4 +216,4 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   );
 };
 
-export default EPCreateEdit;
+export default PerformanceAppraisal;
