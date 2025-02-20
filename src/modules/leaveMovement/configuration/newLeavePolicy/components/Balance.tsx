@@ -1,6 +1,5 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
-import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {

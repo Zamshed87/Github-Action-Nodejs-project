@@ -84,22 +84,22 @@ export const PolicyCreateExtention = () => {
   const steps = [
     {
       title: "General",
-      status: "finish",
+      status: "process",
       icon: <CiGlobe />,
     },
     {
       title: "Paid Leave",
-      status: "finish",
+      status: "wait",
       icon: <GrConfigure />,
     },
     {
       title: "Expenditure",
-      status: "process",
+      status: "wait",
       icon: <GrDocumentConfig />,
     },
     {
       title: "Sandwitch",
-      status: "process",
+      status: "wait",
       icon: <LuSandwich />,
     },
     {
@@ -231,6 +231,13 @@ export const PolicyCreateExtention = () => {
             title={`Leave Policy`}
           />
           {loading && <Loading />}
+          <Steps
+            className="my-3"
+            size="small"
+            current={current}
+            style={{ fontSize: "12px" }}
+            items={items}
+          />
           <PCardBody className="mb-3">
             {current === 0 ? (
               <General
@@ -331,12 +338,6 @@ export const PolicyCreateExtention = () => {
               )}
             </Row>
           </PCardBody>
-          <Steps
-            size="small"
-            current={current}
-            style={{ fontSize: "12px" }}
-            items={items}
-          />
         </PCard>
       </PForm>
     </>
