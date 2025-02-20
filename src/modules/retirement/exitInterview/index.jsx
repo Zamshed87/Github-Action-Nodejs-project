@@ -11,7 +11,7 @@ import {
   SearchFilter,
   statusDDL,
 } from "../exitInterview/helper.js";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NoResult from "common/NoResult";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -19,6 +19,7 @@ import ExitInterviewAssign from "./components/ExitInterviewAssign.jsx";
 import { PModal } from "Components/Modal";
 import ExitInterviewDataView from "./components/ExitInterviewDataView.jsx";
 import { useHistory } from "react-router-dom";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions.js";
 
 export default function ExitInterviewLanding() {
   const {
@@ -57,6 +58,7 @@ export default function ExitInterviewLanding() {
     useState(false);
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
@@ -75,7 +77,7 @@ export default function ExitInterviewLanding() {
       wgId,
       fromDate,
       toDate,
-      values?.status || 0,
+      values?.status || "",
       searchText,
       setRowDto,
       setLoading,
@@ -118,13 +120,18 @@ export default function ExitInterviewLanding() {
   };
 
   useEffect(() => {
+    dispatch(setFirstLevelNameAction("Retirement"));
+    document.title = "Exit Interview";
+  }, [dispatch]);
+
+  useEffect(() => {
     getExitInterviewLanding(
       "ExitInterview",
       buId,
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
-      values?.status?.value || 0,
+      values?.status?.value || "",
       "",
       setRowDto,
       setLoading,
@@ -166,7 +173,7 @@ export default function ExitInterviewLanding() {
               initialValues={{
                 fromDate: defaultFromDate,
                 toDate: defaultToDate,
-                status: 0,
+                status: "",
               }}
             >
               <Row gutter={[10, 2]}>
@@ -183,12 +190,6 @@ export default function ExitInterviewLanding() {
                         status: value,
                       });
                     }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Status is required",
-                      },
-                    ]}
                   />
                 </Col>
                 <Col md={12} sm={24}>
@@ -293,7 +294,7 @@ export default function ExitInterviewLanding() {
                       wgId,
                       values?.filterFromDate || "",
                       values?.filterToDate || "",
-                      values?.status?.value || 0,
+                      values?.status?.value || "",
                       "",
                       setRowDto,
                       setLoading,
@@ -314,24 +315,6 @@ export default function ExitInterviewLanding() {
                   title="Exit Interview"
                   open={openExitInterviewDataViewModal}
                   onCancel={() => {
-                    getExitInterviewLanding(
-                      "ExitInterview",
-                      buId,
-                      wgId,
-                      values?.filterFromDate || "",
-                      values?.filterToDate || "",
-                      values?.status?.value || 0,
-                      "",
-                      setRowDto,
-                      setLoading,
-                      1,
-                      paginationSize,
-                      setPages,
-                      wId,
-                      "",
-                      decodedToken.workplaceGroupList || "",
-                      decodedToken.workplaceList || ""
-                    );
                     setOpenExitInterviewDataViewModal(false);
                   }}
                   components={

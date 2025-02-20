@@ -4,19 +4,15 @@ import {
   InfoOutlined,
   VisibilityOutlined,
 } from "@mui/icons-material";
+import { Tooltip, styled, tooltipClasses } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
 import { gray500, gray700, gray900 } from "../../../utility/customColor";
 import {
-  dateFormatter,
-  dateFormatterForInput,
+  dateFormatter
 } from "../../../utility/dateFormatter";
-import { todayDate } from "../../../utility/todayDate";
-import { Tooltip, styled, tooltipClasses } from "@mui/material";
-import { Steps } from "antd";
-import { DataTable } from "Components";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -335,26 +331,26 @@ export const separationApplicationLandingTableColumn = (
             </div>
           </div>
           <div className="ml-2">
-            {data?.approvalStatus === "Approved" && (
-              <Chips label="Approved" classess="success p-2" />
-            )}
             {data?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {data?.approvalStatus === "Process" && (
-              <Chips label="Process" classess="primary p-2" />
+            {data?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {data?.approvalStatus === "Reject" && (
-              <Chips label="Rejected" classess="danger p-2 mr-2" />
-            )}
-            {data?.approvalStatus === "Released" && (
-              <Chips label="Released" classess="indigo p-2 mr-2" />
-            )}
-            {data?.approvalStatus === "Clearance" && (
-              <Chips label="Clearance" classess="info p-2 mr-2" />
+            {data?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
             )}
             {data?.approvalStatus === "Withdrawn" && (
-              <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {data?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {data?.approvalStatus === "Final Settlement Completed" && (
+              <Chips label="Final Settlement Completed" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2" />
             )}
           </div>
         </div>

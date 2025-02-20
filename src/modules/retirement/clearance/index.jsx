@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Col, Drawer, Form, Row } from "antd";
 import PeopleDeskTable, { paginationSize } from "common/peopleDeskTable";
 import {
@@ -18,6 +18,7 @@ import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import SeparationHistoryview from "../separation/mgmApplication/viewForm/SeparationHistoryview";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 export default function ClearanceLanding() {
   const {
@@ -36,6 +37,8 @@ export default function ClearanceLanding() {
   const decodedToken = tokenData
     ? JSON.parse(atob(tokenData.split(".")[1]))
     : null;
+
+  const dispatch = useDispatch();
 
   const defaultFromDate = moment();
   const defaultToDate = moment().endOf("month");
@@ -70,7 +73,7 @@ export default function ClearanceLanding() {
       wgId,
       fromDate,
       toDate,
-      values?.status || 0,
+      values?.status || "",
       searchText,
       setRowDto,
       setLoading,
@@ -113,13 +116,18 @@ export default function ClearanceLanding() {
   };
 
   useEffect(() => {
+    dispatch(setFirstLevelNameAction("Retirement"));
+    document.title = "Clearance";
+  }, [dispatch]);
+
+  useEffect(() => {
     getClearanceLanding(
       "Clearance",
       buId,
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
-      values?.status?.value || 0,
+      values?.status?.value || "",
       "",
       setRowDto,
       setLoading,
@@ -161,7 +169,7 @@ export default function ClearanceLanding() {
               initialValues={{
                 fromDate: defaultFromDate,
                 toDate: defaultToDate,
-                status: 0,
+                status: "",
               }}
             >
               <Row gutter={[10, 2]}>
@@ -178,12 +186,6 @@ export default function ClearanceLanding() {
                         status: value,
                       });
                     }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Status is required",
-                      },
-                    ]}
                   />
                 </Col>
                 <Col md={12} sm={24}>
@@ -289,7 +291,7 @@ export default function ClearanceLanding() {
                       wgId,
                       values?.filterFromDate || "",
                       values?.filterToDate || "",
-                      values?.status?.value || 0,
+                      values?.status?.value || "",
                       "",
                       setRowDto,
                       setLoading,

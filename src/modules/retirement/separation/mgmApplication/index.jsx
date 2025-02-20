@@ -86,7 +86,7 @@ export default function ManagementSeparation() {
       wgId,
       fromDate,
       toDate,
-      values?.status || 0,
+      values?.status || "",
       searchText,
       setRowDto,
       setLoading,
@@ -141,7 +141,7 @@ export default function ManagementSeparation() {
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
-      values?.status?.value || 0,
+      values?.status?.value || "",
       "",
       setRowDto,
       setLoading,
@@ -227,7 +227,7 @@ export default function ManagementSeparation() {
                     initialValues={{
                       fromDate: defaultFromDate,
                       toDate: defaultToDate,
-                      status: 0,
+                      status: "",
                     }}
                   >
                     <Row gutter={[10, 2]}>
@@ -244,12 +244,6 @@ export default function ManagementSeparation() {
                               status: value,
                             });
                           }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Status is required",
-                            },
-                          ]}
                         />
                       </Col>
                       <Col md={12} sm={24}>
@@ -297,12 +291,9 @@ export default function ManagementSeparation() {
                           content={"Filter"}
                           onClick={() => {
                             const values = form.getFieldsValue(true);
-                            form
-                              .validateFields()
-                              .then(() => {
-                                getData(pages, values?.search);
-                              })
-                              .catch(() => {});
+                            form.validateFields().then(() => {
+                              getData(pages, values?.search);
+                            });
                           }}
                         />
                       </Col>

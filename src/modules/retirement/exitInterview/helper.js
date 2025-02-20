@@ -1,4 +1,5 @@
-import { EyeTwoTone, HighlightTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import { EyeTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import QuizIcon from '@mui/icons-material/Quiz';
 import { Form, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
@@ -7,16 +8,18 @@ import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
-import QuizIcon from '@mui/icons-material/Quiz';
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
 
 export const statusDDL = [
-    { value: 0, label: "All" },
-    { value: 1, label: "Pending" },
-    { value: 2, label: "Approved" },
-    { value: 3, label: "Rejected" },
-    { value: 4, label: "Released" },
+    { value: "", label: "All" },
+    { value: "Pending", label: "Pending" },
+    { value: "Cancelled", label: "Cancelled" },
+    { value: "Approved", label: "Approved" },
+    { value: "Withdrawn", label: "Withdrawn" },
+    { value: "Clearance", label: "Clearance" },
+    { value: "Final Settlement Completed", label: "Final Settlement Completed" },
+    { value: "Released", label: "Released" },
 ];
 
 // SearchFilter Component
@@ -136,52 +139,46 @@ export const getExitInterviewLandingTableColumn = (
             filter: false,
             render: (item) => (
                 <div className="d-flex justify-content-center">
-                    {item?.approvalStatus === "Approved" && (
-                        <Chips
-                            label="Approved"
-                            classess="success p-2"
-                        />
-                    )}
                     {item?.approvalStatus === "Pending" && (
                         <Chips
                             label="Pending"
                             classess="warning p-2"
                         />
                     )}
-                    {item?.approvalStatus === "Process" && (
-                        <Chips
-                            label="Process"
-                            classess="primary p-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Reject" && (
-                        <Chips
-                            label="Rejected"
-                            classess="danger p-2 mr-2"
-                        />
-                    )}
-                    {item?.approvalStatus === "Released" && (
-                        <Chips
-                            label="Released"
-                            classess="indigo p-2 mr-2"
-                        />
-                    )}
                     {item?.approvalStatus === "Cancelled" && (
                         <Chips
-                            label="Released"
-                            classess="danger p-2 mr-2"
+                            label="Cancelled"
+                            classess="danger p-2"
                         />
                     )}
-                    {item?.approvalStatus === "Clearance" && (
+                    {item?.approvalStatus === "Approved" && (
                         <Chips
-                            label="Clearance"
-                            classess="info p-2 mr-2"
+                            label="Approved"
+                            classess="success p-2"
                         />
                     )}
                     {item?.approvalStatus === "Withdrawn" && (
                         <Chips
                             label="Withdrawn"
-                            classess="danger p-2 mr-2"
+                            classess="danger p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Clearance" && (
+                        <Chips
+                            label="Clearance"
+                            classess="info p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Final Settlement Completed" && (
+                        <Chips
+                            label="Final Settlement Completed"
+                            classess="success p-2"
+                        />
+                    )}
+                    {item?.approvalStatus === "Released" && (
+                        <Chips
+                            label="Released"
+                            classess="indigo p-2"
                         />
                     )}
                 </div>

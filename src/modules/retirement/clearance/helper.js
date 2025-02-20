@@ -11,15 +11,19 @@ import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
 import { gray900 } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
+
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
 
 export const statusDDL = [
-    { value: 0, label: "All" },
-    { value: 1, label: "Pending" },
-    { value: 2, label: "Approved" },
-    { value: 3, label: "Rejected" },
-    { value: 4, label: "Released" },
+    { value: "", label: "All" },
+    { value: "Pending", label: "Pending" },
+    { value: "Cancelled", label: "Cancelled" },
+    { value: "Approved", label: "Approved" },
+    { value: "Withdrawn", label: "Withdrawn" },
+    { value: "Clearance", label: "Clearance" },
+    { value: "Final Settlement Completed", label: "Final Settlement Completed" },
+    { value: "Released", label: "Released" },
 ];
 
 // SearchFilter Component
@@ -278,26 +282,26 @@ export const getClearanceLandingTableColumn = (
                         </div>
                     </div>
                     <div className="ml-2">
-                        {data?.approvalStatus === "Approved" && (
-                            <Chips label="Approved" classess="success p-2" />
-                        )}
                         {data?.approvalStatus === "Pending" && (
                             <Chips label="Pending" classess="warning p-2" />
                         )}
-                        {data?.approvalStatus === "Process" && (
-                            <Chips label="Process" classess="primary p-2" />
+                        {data?.approvalStatus === "Cancelled" && (
+                            <Chips label="Cancelled" classess="danger p-2" />
                         )}
-                        {data?.approvalStatus === "Reject" && (
-                            <Chips label="Rejected" classess="danger p-2 mr-2" />
-                        )}
-                        {data?.approvalStatus === "Released" && (
-                            <Chips label="Released" classess="indigo p-2 mr-2" />
-                        )}
-                        {data?.approvalStatus === "Clearance" && (
-                            <Chips label="Clearance" classess="info p-2 mr-2" />
+                        {data?.approvalStatus === "Approved" && (
+                            <Chips label="Approved" classess="success p-2" />
                         )}
                         {data?.approvalStatus === "Withdrawn" && (
-                            <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+                            <Chips label="Withdrawn" classess="danger p-2" />
+                        )}
+                        {data?.approvalStatus === "Clearance" && (
+                            <Chips label="Clearance" classess="info p-2" />
+                        )}
+                        {data?.approvalStatus === "Final Settlement Completed" && (
+                            <Chips label="Final Settlement Completed" classess="success p-2" />
+                        )}
+                        {data?.approvalStatus === "Released" && (
+                            <Chips label="Released" classess="indigo p-2" />
                         )}
                     </div>
                 </div>
