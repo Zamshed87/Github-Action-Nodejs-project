@@ -137,6 +137,9 @@ const EvaluationPipeline = lazy(() =>
 const AssessmentTimeline = lazy(() =>
   import("../modules/pms/configuration/assessmentTimeline/index.jsx")
 );
+const PerformanceAppraisal = lazy(() =>
+  import("../modules/pms/configuration/performanceAppraisal/index.jsx")
+);
 const ObjectiveCreateAndEdit = lazy(() =>
   import("../modules/pms/configuration/objective/ObjectiveCreateAndEdit.jsx")
 );
@@ -3774,6 +3777,10 @@ export const routingList = [
   {
     path: "/pms/configuration/AssessmentTimeline",
     component: AssessmentTimeline,
+  },
+  {
+    path: "/pms/configuration/PerformanceAppraisal",
+    component: PerformanceAppraisal,
   },
   {
     path: "/pms/configuration/BehavioralFactor",
