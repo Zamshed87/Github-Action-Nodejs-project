@@ -1,10 +1,8 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
-import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-export const CalculativeDays = ({ form }: any) => {
-  const [policy, setPolicy] = useState<any>([]);
+export const CalculativeDays = ({ form, policy, setPolicy }: any) => {
   const encashheader: any = [
     {
       title: "SL",
@@ -142,7 +140,7 @@ export const CalculativeDays = ({ form }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[]}
+            options={[{ value: "1", label: "Paid Leave" }]}
             name="policy"
             label="Leave Policy"
             placeholder=""

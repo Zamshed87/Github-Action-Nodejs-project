@@ -2,13 +2,10 @@ import { InfoOutlined } from "@mui/icons-material";
 import { Col, Divider, Form, Row } from "antd";
 import { LightTooltip } from "common/LightTooltip";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
-import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { failColor } from "utility/customColor";
 
-export const Consumption = ({ form }: any) => {
-  const [tableData, setTableData] = useState<any>([]);
-
+export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
   const encashheader: any = [
     {
       title: "SL",
@@ -43,7 +40,7 @@ export const Consumption = ({ form }: any) => {
             {
               type: "delete",
               onClick: () => {
-                setTableData((prev: any) => {
+                setConsumeData((prev: any) => {
                   const filterArr = prev.filter(
                     (itm: any, idx: number) => idx !== index
                   );
@@ -97,7 +94,7 @@ export const Consumption = ({ form }: any) => {
           }}
           rules={[
             {
-              required: tableData?.length === 0,
+              required: consumeData?.length === 0,
               message: "Leave Consume Type is required",
             },
           ]}
@@ -242,7 +239,7 @@ export const Consumption = ({ form }: any) => {
                     form
                       .validateFields(fields)
                       .then(() => {
-                        setTableData((prev: any) => [
+                        setConsumeData((prev: any) => [
                           ...prev,
                           {
                             consumeHr:
@@ -270,11 +267,11 @@ export const Consumption = ({ form }: any) => {
           );
         }}
       </Form.Item>
-      {tableData?.length > 0 && (
+      {consumeData?.length > 0 && (
         <Col>
           <DataTable
             bordered
-            data={tableData}
+            data={consumeData}
             loading={false}
             header={encashheader}
           />

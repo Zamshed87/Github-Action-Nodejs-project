@@ -46,11 +46,15 @@ const SandwitchData = [
     count: 0,
   },
 ];
-export const Sandwitch = ({ form }: any) => {
+export const Sandwitch = ({
+  form,
+  selectedRow1,
+  setSelectedRow1,
+  selectedRow2,
+  setSelectedRow2,
+}: any) => {
   const [sandWitchLanding, setSandWitchLanding] =
     useState<any[]>(SandwitchData);
-  const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
-  const [selectedRow2, setSelectedRow2] = useState<any[]>([]);
 
   const sandWitchHeader: any = [
     {
@@ -115,7 +119,7 @@ export const Sandwitch = ({ form }: any) => {
           header={sandWitchHeader}
           rowSelection={{
             type: "checkbox",
-            selectedRowKeys: selectedRow1.map((item) => item?.key),
+            selectedRowKeys: selectedRow1.map((item: any) => item?.key),
             onChange: (selectedRowKeys, selectedRows) => {
               setSelectedRow1(selectedRows);
             },
@@ -130,7 +134,7 @@ export const Sandwitch = ({ form }: any) => {
           header={sandWitchHeader}
           rowSelection={{
             type: "checkbox",
-            selectedRowKeys: selectedRow2.map((item) => item?.key),
+            selectedRowKeys: selectedRow2.map((item: any) => item?.key),
             onChange: (selectedRowKeys, selectedRows) => {
               setSelectedRow2(selectedRows);
             },

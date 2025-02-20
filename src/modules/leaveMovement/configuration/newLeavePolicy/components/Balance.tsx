@@ -3,8 +3,7 @@ import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-export const Balance = ({ form }: any) => {
-  const [balanceTable, setBalanceTable] = useState<any>([]);
+export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
   const balanceHeader: any = [
     {
       title: "SL",

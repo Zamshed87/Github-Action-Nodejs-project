@@ -1,11 +1,8 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
-import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-export const Encashment = ({ form }: any) => {
-  const [tableData, setTableData] = useState<any>([]);
-
+export const Encashment = ({ form, tableData, setTableData }: any) => {
   const encashheader: any = [
     {
       title: "SL",
@@ -344,7 +341,7 @@ export const Encashment = ({ form }: any) => {
                           form.setFieldsValue({
                             serviceStartLength: undefined,
                             serviceEndLength: undefined,
-                            encashmentType: undefined,
+                            encashType: undefined,
                             maxEncashment: undefined,
                             encashBenefits: undefined,
                             paidAmount: undefined,
