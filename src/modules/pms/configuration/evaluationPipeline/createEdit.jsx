@@ -10,14 +10,20 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { ModalFooter } from "Components/Modal";
 import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
-import { EvaluationPipelineForm, StakeholderForm } from "./helper";
+import {
+  EvaluationPipelineForm,
+  getTotalWeight,
+  handleEvaluationPipelineSetting,
+  StakeholderForm,
+} from "./helper";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { useApiRequest } from "Hooks";
 import { DeleteOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
+import { Row } from "react-bootstrap";
 
-const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
+const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   // redux
   const { permissionList, profileData } = useSelector(
     (state) => state?.auth,
@@ -116,11 +122,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
               }}
               onClick={() => {
                 const updatedstakeholderField = stakeholderField?.filter(
-                  (item) =>
-                    !(
-                      item.stakeholderTypeId === rec.stakeholderTypeId &&
-                      item.stakeholderId === rec.stakeholderId
-                    )
+                  (item) => !(item.idx === rec.idx)
                 );
                 setStakeholderField(updatedstakeholderField);
               }}
@@ -134,18 +136,19 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
   ];
 
   const addHandler = (values) => {
-    const isDuplicate = stakeholderField.some(
-      (org) => org.stakeholderName === values?.stakeholder?.label
-    );
+    // const isDuplicate = stakeholderField.some(
+    //   (org) => org.idx === values?.stakeholder?.label
+    // );
 
-    if (isDuplicate) {
-      toast.error("Stakeholder already exists");
-      return;
-    }
+    // if (isDuplicate) {
+    //   toast.error("Stakeholder already exists");
+    //   return;
+    // }
 
     setStakeholderField([
       ...stakeholderField,
       {
+        idx: values?.scoreWeight + stakeholderField?.length,
         stakeholderName: values?.stakeholder?.label,
         stakeholderId: values?.stakeholder?.value,
         stakeholderTypeName: values?.stakeholderType?.label,
@@ -221,7 +224,7 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
 
         <ModalFooter
           onCancel={() => {
-            setmodal(() => ({ open: false, type: "" }));
+            setModal(() => ({ open: false, type: "" }));
           }}
           submitAction="submit"
           onSubmit={() => {
@@ -230,15 +233,16 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
               .validateFields()
               .then(() => {
                 console.log("values", values);
-                // handleEvaluationCriteriaScoreSetting(
-                //   form,
-                //   profileData,
-                //   setLoading,
-                //   () => {
-                //     cb && cb();
-                //     setmodal(() => ({ open: false, type: "" }));
-                //   }
-                // );
+                handleEvaluationPipelineSetting(
+                  form,
+                  profileData,
+                  stakeholderField,
+                  setLoading,
+                  () => {
+                    cb && cb();
+                    setModal(() => ({ open: false, type: "" }));
+                  }
+                );
               })
               .catch((error) => {
                 console.log(error);
@@ -248,6 +252,20 @@ const EPCreateEdit = ({ modal, setmodal, data, cb }) => {
       </PForm>
       {stakeholderField?.length > 0 && (
         <div className="mb-3 mt-2">
+          <div className="ml-3">
+            <Row justify="space-between" align="right">
+              <Col>
+                <h1>Total Score Weight: {getTotalWeight(stakeholderField)} </h1>
+              </Col>{" "}
+              {getTotalWeight(stakeholderField) !== 100 && (
+                <Col>
+                  <h1 style={{ color: "red" }}>
+                    (Total Score Weight must be 100)
+                  </h1>
+                </Col>
+              )}
+            </Row>
+          </div>
           <DataTable
             bordered
             data={stakeholderField || []}

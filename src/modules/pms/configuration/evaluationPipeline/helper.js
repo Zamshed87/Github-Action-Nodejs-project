@@ -1,3 +1,5 @@
+import axios from "axios";
+import { toast } from "react-toastify";
 import { setCustomFieldsValue } from "utility/filter/helper";
 
 export const EvaluationPipelineForm = (leadershipApi, type, form) => {
@@ -24,8 +26,8 @@ export const EvaluationPipelineForm = (leadershipApi, type, form) => {
       label: "Evaluation Criteria",
       varname: "evaluationCriteria",
       ddl: [
-        { label: "KPI", value: "KPI" },
-        { label: "BAR", value: "BAR" },
+        { label: "KPI", value: 1 },
+        { label: "BAR", value: 2 },
       ],
       placeholder: "Evaluation Criteria",
       rules: [{ required: true, message: "Evaluation Criteria is required!" }],
@@ -70,12 +72,12 @@ export const StakeholderForm = (
       label: "Stakeholder Type",
       varname: "stakeholderType",
       ddl: [
-        { label: "Self", value: "Self" },
-        { label: "Individual Employee", value: "Individual Employee" },
-        { label: "Supervisor", value: "Supervisor" },
-        { label: "Dotted Supervisor", value: "Dotted Supervisor" },
-        { label: "Line Manager", value: "Line Manager" },
-        { label: "User Group", value: "User Group" },
+        { label: "Self", value: 1 },
+        { label: "Individual Employee", value: 2 },
+        { label: "Supervisor", value: 3 },
+        { label: "Dotted Supervisor", value: 4 },
+        { label: "Line Manager", value: 5 },
+        { label: "User Group", value: 6 },
       ],
       placeholder: "Select the Stakeholder Type",
       rules: [{ required: true, message: "Stakeholder Type is required!" }],
@@ -132,4 +134,41 @@ export const StakeholderForm = (
   });
 
   return formConfig;
+};
+
+export const handleEvaluationPipelineSetting = async (
+  form,
+  profileData,
+  stakeholderField,
+  setLoading,
+  cb
+) => {
+  setLoading && setLoading(true);
+  const values = form.getFieldsValue(true);
+  console.log("values", values);
+  console.log("profileData", profileData);
+  console.log("stakeholderField", stakeholderField);
+  if (getTotalWeight(stakeholderField) !== 100) {
+    setLoading && setLoading(false);
+    return toast.error("Total weight should be 100");
+  }
+  const payload = {
+    evaluationHeaderId: 0, // This value is hardcoded if create
+  };
+  try {
+    const res = await axios.post(`/PMS/EvaluationPipelineSetupCreate`, payload);
+    cb && cb();
+    toast.success(res?.data?.message);
+    setLoading && setLoading(false);
+    form.resetFields();
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    setLoading && setLoading(false);
+  }
+};
+
+export const getTotalWeight = (stakeholderField) => {
+  return stakeholderField?.reduce((acc, curr) => {
+    return acc + curr.scoreWeight;
+  }, 0);
 };
