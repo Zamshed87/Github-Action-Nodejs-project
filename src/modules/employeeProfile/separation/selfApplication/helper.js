@@ -1,4 +1,4 @@
-import { CloseCircleTwoTone, SettingTwoTone } from "@ant-design/icons";
+import { CloseCircleTwoTone, EditTwoTone, SettingTwoTone } from "@ant-design/icons";
 import { FilePresentOutlined, InfoOutlined } from "@mui/icons-material";
 import { Dropdown, Tooltip } from "antd";
 import axios from "axios";
@@ -409,29 +409,26 @@ export const separationApplicationLandingTableColumn = (
             </div>
           </div>
           <div className="ml-2">
-            {item?.approvalStatus?.includes("Approved") && (
-              <Chips
-                label="Approved"
-                classess="success p-2"
-              />
+            {item?.approvalStatus === "Pending" && (
+              <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.approvalStatus === "Released" && (
-              <Chips
-                label="Released"
-                classess="indigo p-2 mr-2"
-              />
+            {item?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {item?.approvalStatus === "Clearance" && (
-              <Chips
-                label="Clearance"
-                classess="info p-2 mr-2"
-              />
+            {item?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
             )}
             {item?.approvalStatus === "Withdrawn" && (
-              <Chips
-                label="Withdrawn"
-                classess="danger p-2 mr-2"
-              />
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {item?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {item?.approvalStatus === "Final Settlement Completed" && (
+              <Chips label="Final Settlement Completed" classess="success p-2" />
+            )}
+            {item?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2" />
             )}
           </div>
         </div>
@@ -439,9 +436,9 @@ export const separationApplicationLandingTableColumn = (
       fieldType: "string",
     },
     {
-      title: "",
+      title: "Actions",
       dataIndex: "approvalStatus",
-      render: (item, data) => (
+      render: (item) => (
         <div className="d-flex">
           <Tooltip placement="top" color={"#34a853"} title={"Manage"}>
             <Dropdown
@@ -484,6 +481,26 @@ export const separationApplicationLandingTableColumn = (
                 onClick={() => {
                   setAprovalStatus(item?.approvalStatus);
                   cancelConfirmPopup();
+                }}
+              />
+            </Tooltip>
+          )}
+          {item?.approvalStatus === "Pending" && (
+            <Tooltip placement="top" color={"#fa8c16"} title={"Edit"}>
+              <PrimaryButton
+                type="button"
+                icon={<EditTwoTone twoToneColor="#fa8c16" />}
+                customStyle={{
+                  height: "30px",
+                  fontSize: "16px",
+                  padding: "0px 12px 0px 12px",
+                  border: "none",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
+                  history.push(
+                    `/SelfService/separation/applicationV2/edit/${item?.separationId}`
+                  );
                 }}
               />
             </Tooltip>
