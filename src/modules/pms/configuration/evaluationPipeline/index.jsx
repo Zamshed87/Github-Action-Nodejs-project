@@ -29,7 +29,7 @@ const EvaluationPipeline = () => {
 
   const landingApi = () => {
     getCriteriaList(
-      `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
+      `/PMS/GetEvaluationPipelineSetupLanding?accountId=${profileData?.intAccountId}`
     );
   };
   useEffect(() => {
