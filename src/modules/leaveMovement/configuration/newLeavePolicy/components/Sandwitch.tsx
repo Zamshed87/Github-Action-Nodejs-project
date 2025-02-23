@@ -114,7 +114,7 @@ export const Sandwitch = ({
       <Col md={12}>
         <DataTable
           bordered
-          data={sandWitchLanding.slice(0, 4)}
+          data={sandWitchLanding}
           loading={false}
           header={sandWitchHeader}
           rowSelection={{
@@ -126,7 +126,7 @@ export const Sandwitch = ({
           }}
         />
       </Col>
-      <Col md={12}>
+      {/* <Col md={12}>
         <DataTable
           bordered
           data={sandWitchLanding.slice(4)}
@@ -140,7 +140,7 @@ export const Sandwitch = ({
             },
           }}
         />
-      </Col>
+      </Col> */}
     </Row>
   );
 };

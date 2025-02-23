@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { DataTable, PCard, PCardHeader, PForm } from "Components";
 
 import { useApiRequest } from "Hooks";

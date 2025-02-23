@@ -137,7 +137,7 @@ export const General = ({
   }, []);
 
   return (
-    <Row gutter={[10, 2]}>
+    <>
       <Divider
         style={{
           marginBlock: "4px",
@@ -157,142 +157,149 @@ export const General = ({
           <span>General Configuration</span>
         </div>
       </Divider>
-      <Col md={6} sm={24}>
-        <PInput
-          type="text"
-          name="strPolicyName"
-          label="Policy Name"
-          placeholder="Policy Name"
-          rules={[
-            {
-              required: true,
-              message: "Policy Name is required",
-            },
-          ]}
-        />
-      </Col>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PInput
+            type="text"
+            name="strPolicyName"
+            label="Policy Name"
+            placeholder="Policy Name"
+            rules={[
+              {
+                required: true,
+                message: "Policy Name is required",
+              },
+            ]}
+          />
+        </Col>
 
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          options={leaveTypeApi?.data?.length > 0 ? leaveTypeApi?.data : []}
-          name="leaveType"
-          label=" Leave Type"
-          placeholder="  Leave Type"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              leaveType: op,
-            });
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            options={leaveTypeApi?.data?.length > 0 ? leaveTypeApi?.data : []}
+            name="leaveType"
+            label=" Leave Type"
+            placeholder="  Leave Type"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                leaveType: op,
+              });
 
-            // value && getWorkplace();
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Leave Type is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PInput
-          type="text"
-          name="strDisplayName"
-          label="Display Name"
-          placeholder="Display Name"
-          rules={[
-            {
-              required: true,
-              message: "Display Name is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PInput
-          type="text"
-          name="strDisplayCode"
-          label="Display Code"
-          placeholder="Display Code"
-          rules={[
-            {
-              required: true,
-              message: "Display Code is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          showSearch
-          allowClear
-          options={workplaceDDL?.data || []}
-          name="workplace"
-          label="Workplace"
-          placeholder="Workplace"
-          disabled={params?.id}
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              intEmploymentTypeList: undefined,
-              hrPositionListDTO: undefined,
-              designationListDTO: undefined,
-              workplace: op,
-            });
-            if (value) {
-              getEmploymentType();
-              getHRPosition();
-              getEmployeDesignation();
-            }
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Workplace is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          mode="multiple"
-          options={empDesignationDDL?.data || []}
-          name="designationListDTO"
-          label="Designation"
-          placeholder="Designation"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              designationListDTO: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Designation is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          mode="multiple"
-          options={EmploymentTypeDDL?.data || []}
-          name="intEmploymentTypeList"
-          label=" Employment Type"
-          placeholder="  Employment Type"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              intEmploymentTypeList: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Employment Type is required",
-            },
-          ]}
-        />
-      </Col>
-      {/* <Col md={6} sm={24}>
+              // value && getWorkplace();
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Leave Type is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PInput
+            type="text"
+            name="strDisplayName"
+            label="Display Name"
+            placeholder="Display Name"
+            rules={[
+              {
+                required: true,
+                message: "Display Name is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={6} sm={24}>
+          <PInput
+            type="text"
+            name="strDisplayCode"
+            label="Display Code"
+            placeholder="Display Code"
+            rules={[
+              {
+                required: true,
+                message: "Display Code is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PSelect
+            showSearch
+            allowClear
+            options={workplaceDDL?.data || []}
+            name="workplace"
+            label="Workplace"
+            placeholder="Workplace"
+            disabled={params?.id}
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                intEmploymentTypeList: undefined,
+                hrPositionListDTO: undefined,
+                designationListDTO: undefined,
+                workplace: op,
+              });
+              if (value) {
+                getEmploymentType();
+                getHRPosition();
+                getEmployeDesignation();
+              }
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Workplace is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={6} sm={24}>
+          <PSelect
+            mode="multiple"
+            options={empDesignationDDL?.data || []}
+            name="designationListDTO"
+            label="Designation"
+            placeholder="Designation"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                designationListDTO: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Designation is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PSelect
+            mode="multiple"
+            options={EmploymentTypeDDL?.data || []}
+            name="intEmploymentTypeList"
+            label=" Employment Type"
+            placeholder="  Employment Type"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                intEmploymentTypeList: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Employment Type is required",
+              },
+            ]}
+          />
+        </Col>
+        {/* <Col md={6} sm={24}>
     <PSelect
       //   mode="multiple"
       options={[
@@ -310,52 +317,54 @@ export const General = ({
       }}
     />
   </Col> */}
-      <Col md={6} sm={24}>
-        <PSelect
-          mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Male" },
-            { value: 2, label: "Female" },
-          ]}
-          name="intGender"
-          label="Gender"
-          placeholder="Gender"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              intGender: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Gender is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          mode="multiple"
-          allowClear
-          options={religionDDL?.data || []}
-          name="religionListDto"
-          label="Religion"
-          placeholder="Religion"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              religionListDto: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Religion is required",
-            },
-          ]}
-        />
-      </Col>
-      {/* <Col md={3} sm={24} style={{ marginTop: "1.5rem" }}>
+        <Col md={6} sm={24}>
+          <PSelect
+            mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Male" },
+              { value: 2, label: "Female" },
+            ]}
+            name="intGender"
+            label="Gender"
+            placeholder="Gender"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                intGender: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Gender is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PSelect
+            mode="multiple"
+            allowClear
+            options={religionDDL?.data || []}
+            name="religionListDto"
+            label="Religion"
+            placeholder="Religion"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                religionListDto: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Religion is required",
+              },
+            ]}
+          />
+        </Col>
+        {/* <Col md={3} sm={24} style={{ marginTop: "1.5rem" }}>
         <PInput
           label="Is Paid Leave"
           type="checkbox"
@@ -363,31 +372,32 @@ export const General = ({
           name="isPaidLeave"
         />
       </Col> */}
-      <Col md={6} style={{ marginTop: "1.5rem" }}>
-        <div>
-          <>
-            <FileUploadComponents
-              propsObj={{
-                isOpen,
-                setIsOpen,
-                destroyOnClose: false,
-                attachmentList,
-                setAttachmentList,
-                accountId: orgId,
-                tableReferrence: "LeaveAndMovement",
-                documentTypeId: 15,
-                userId: employeeId,
-                buId,
-                maxCount: 1,
-                isIcon: true,
-                isErrorInfo: true,
-                subText:
-                  "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
-              }}
-            />
-          </>
-        </div>
-      </Col>
+        <Col md={6} style={{ marginTop: "1.5rem" }}>
+          <div>
+            <>
+              <FileUploadComponents
+                propsObj={{
+                  isOpen,
+                  setIsOpen,
+                  destroyOnClose: false,
+                  attachmentList,
+                  setAttachmentList,
+                  accountId: orgId,
+                  tableReferrence: "LeaveAndMovement",
+                  documentTypeId: 15,
+                  userId: employeeId,
+                  buId,
+                  maxCount: 1,
+                  isIcon: true,
+                  isErrorInfo: true,
+                  subText:
+                    "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
+                }}
+              />
+            </>
+          </div>
+        </Col>
+      </Row>
 
       <Form.Item shouldUpdate noStyle>
         {() => {
@@ -424,6 +434,6 @@ export const General = ({
   >
     <PButton type="primary" action="submit" content="View" />
   </Col> */}
-    </Row>
+    </>
   );
 };
