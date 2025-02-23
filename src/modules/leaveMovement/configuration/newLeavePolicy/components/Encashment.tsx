@@ -61,7 +61,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
     },
   ];
   return (
-    <Row gutter={[10, 2]}>
+    <>
       <Divider
         style={{
           marginBlock: "4px",
@@ -106,56 +106,58 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           ]}
         />
       </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Date of Joining" },
-            { value: 2, label: "Date of Confirmation" },
-          ]}
-          name="enLengthDependOn"
-          label="Service Length Depend On"
-          placeholder="Service Length Depend On"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              enLengthDependOn: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Service Length Depend On is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "After Leave Lapse" },
-            { value: 2, label: "Final Settlement" },
-            { value: 2, label: "Anytime" },
-            // { value: 3, label: "Clock Time" },
-          ]}
-          name="encashmentTimeline"
-          label="Encashment Timeline"
-          placeholder="Encashment Timeline"
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              encashmentTimeline: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Encashment Timeline is required",
-            },
-          ]}
-        />
-      </Col>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Date of Joining" },
+              { value: 2, label: "Date of Confirmation" },
+            ]}
+            name="enLengthDependOn"
+            label="Service Length Depend On"
+            placeholder="Service Length Depend On"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                enLengthDependOn: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Service Length Depend On is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "After Leave Lapse" },
+              { value: 2, label: "Final Settlement" },
+              { value: 2, label: "Anytime" },
+              // { value: 3, label: "Clock Time" },
+            ]}
+            name="encashmentTimeline"
+            label="Encashment Timeline"
+            placeholder="Encashment Timeline"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                encashmentTimeline: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Encashment Timeline is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
       <Row gutter={[10, 2]}>
         <Col md={6} sm={24}>
           <PInput
@@ -368,6 +370,6 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           </Col>
         )}
       </Row>
-    </Row>
+    </>
   );
 };

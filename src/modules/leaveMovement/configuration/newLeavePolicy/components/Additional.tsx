@@ -4,7 +4,7 @@ import React from "react";
 
 export const Additional = ({ form }: any) => {
   return (
-    <Row gutter={[10, 2]}>
+    <>
       <Divider
         style={{
           marginBlock: "4px",
@@ -24,31 +24,32 @@ export const Additional = ({ form }: any) => {
           <span>Additional Configuration</span>
         </div>
       </Divider>
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Yes" },
-            { value: 0, label: "No" },
-          ]}
-          name="isEssShowBalance"
-          label="Show Balance From Self Service "
-          placeholder="Show Balance From Self Service "
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              isEssShowBalance: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Show Balance From Self Service  is required",
-            },
-          ]}
-        />
-      </Col>
-      {/* <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Yes" },
+              { value: 0, label: "No" },
+            ]}
+            name="isEssShowBalance"
+            label="Show Balance From Self Service "
+            placeholder="Show Balance From Self Service "
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                isEssShowBalance: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Show Balance From Self Service  is required",
+              },
+            ]}
+          />
+        </Col>
+        {/* <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
         <PInput
           label="Show Balance From Self Service"
           type="checkbox"
@@ -56,108 +57,111 @@ export const Additional = ({ form }: any) => {
           name="isEssShowBalance"
         />
       </Col> */}
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Yes" },
-            { value: 0, label: "No" },
-          ]}
-          name="isEssApply"
-          label="Apply From Self Service "
-          placeholder="Apply From Self Service "
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              isEssApply: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Apply From Self Service  is required",
-            },
-          ]}
-        />
-      </Col>
-
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "No Round" },
-            // { value: 2, label: "Round Up" },
-            { value: 3, label: "Round Down" },
-            // { value: 3, label: "Clock Time" },
-          ]}
-          name="leaveRoundingType"
-          label="Leave Rounding Type"
-          placeholder=""
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              leaveRoundingType: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Leave Rounding Type is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Before Leave" },
-            { value: 2, label: "After Leave" },
-            { value: 3, label: "Anytime" },
-            // { value: 3, label: "Clock Time" },
-          ]}
-          name="leaveApplicationTime"
-          label="Leave Application Time"
-          placeholder=""
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              leaveApplicationTime: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Leave Rounding Type is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={4} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Yes" },
-            { value: 0, label: "No" },
-          ]}
-          name="isAttachmentMandatory"
-          label="Attachment Mandatory "
-          placeholder="Attachment Mandatory "
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              isAttachmentMandatory: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "Attachment Mandatory  is required",
-            },
-          ]}
-        />
-      </Col>
-      {/* <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Yes" },
+              { value: 0, label: "No" },
+            ]}
+            name="isEssApply"
+            label="Apply From Self Service "
+            placeholder="Apply From Self Service "
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                isEssApply: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Apply From Self Service  is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "No Round" },
+              // { value: 2, label: "Round Up" },
+              { value: 3, label: "Round Down" },
+              // { value: 3, label: "Clock Time" },
+            ]}
+            name="leaveRoundingType"
+            label="Leave Rounding Type"
+            placeholder=""
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                leaveRoundingType: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Leave Rounding Type is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={6} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Before Leave" },
+              { value: 2, label: "After Leave" },
+              { value: 3, label: "Anytime" },
+              // { value: 3, label: "Clock Time" },
+            ]}
+            name="leaveApplicationTime"
+            label="Leave Application Time"
+            placeholder=""
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                leaveApplicationTime: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Leave Rounding Type is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={4} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Yes" },
+              { value: 0, label: "No" },
+            ]}
+            name="isAttachmentMandatory"
+            label="Attachment Mandatory "
+            placeholder="Attachment Mandatory "
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                isAttachmentMandatory: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Attachment Mandatory  is required",
+              },
+            ]}
+          />
+        </Col>
+        {/* <Col md={4} sm={24} style={{ marginTop: "1.2rem" }}>
         <PInput
           label="Attachment Mandatory"
           type="checkbox"
@@ -171,60 +175,63 @@ export const Additional = ({ form }: any) => {
           ]}
         />
       </Col> */}
-      <Form.Item shouldUpdate noStyle>
-        {() => {
-          const { isAttachmentMandatory } = form.getFieldsValue(true);
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { isAttachmentMandatory } = form.getFieldsValue(true);
 
-          return (
-            isAttachmentMandatory?.value === 1 && (
-              <>
-                <Col md={7} sm={24}>
-                  <PInput
-                    type="number"
-                    name="attachmentMandatoryAfter"
-                    label="Attachment Mandatory After consuming (Min Days)"
-                    placeholder=""
-                    rules={[
-                      {
-                        required: isAttachmentMandatory?.value === 1,
-                        message: "attachmentMandatoryAfter is required",
-                      },
-                    ]}
-                  />
-                </Col>
-              </>
-            )
-          );
-        }}
-      </Form.Item>
-      <Col md={6} sm={24}>
-        <PInput
-          type="number"
-          name="maxLeaveApplyMonthly"
-          label="Max. Leave Apply Days (Monthly)"
-          placeholder=""
-          rules={[
-            {
-              required: true,
-              message: "Max. Leave Apply Days (Monthly) is required",
-            },
-          ]}
-        />
-      </Col>
-      <Col md={6} sm={24}>
-        <PInput
-          type="number"
-          name="minLeaveApplyDays"
-          label="Min. Leave Apply Days (At a Time)"
-          placeholder=""
-          rules={[
-            {
-              required: true,
-              message: "Min. Leave Apply Days (At a Time) is required",
-            },
-          ]}
-        />
-      </Col>
-    </Row>
+            return (
+              isAttachmentMandatory?.value === 1 && (
+                <>
+                  <Col md={7} sm={24}>
+                    <PInput
+                      type="number"
+                      name="attachmentMandatoryAfter"
+                      label="Attachment Mandatory After consuming (Min Days)"
+                      placeholder=""
+                      rules={[
+                        {
+                          required: isAttachmentMandatory?.value === 1,
+                          message: "attachmentMandatoryAfter is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                </>
+              )
+            );
+          }}
+        </Form.Item>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PInput
+            type="number"
+            name="maxLeaveApplyMonthly"
+            label="Max. Leave Apply Days (Monthly)"
+            placeholder=""
+            rules={[
+              {
+                required: true,
+                message: "Max. Leave Apply Days (Monthly) is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={6} sm={24}>
+          <PInput
+            type="number"
+            name="minLeaveApplyDays"
+            label="Min. Leave Apply Days (At a Time)"
+            placeholder=""
+            rules={[
+              {
+                required: true,
+                message: "Min. Leave Apply Days (At a Time) is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+    </>
   );
 };
