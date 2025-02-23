@@ -14,10 +14,12 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import {
   EvaluationPipelineForm,
+  getLeadershipDDL,
   handleEvaluationPipelineSetting,
   StakeholderForm,
 } from "./helper";
 import StakeholderTable from "./StakeholderTable";
+import { getEnumData } from "common/api/commonApi";
 
 const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   // redux
@@ -33,6 +35,8 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
   const [userGrp, getUserGrp, loadingUserGrp, setUserGrp] = useAxiosGet([]);
   const [stakeholderField, setStakeholderField] = useState([]);
+  const [stakeholderTypeDDL, setStakeholderTypeDDL] = useState([]);
+  const [evaluationCriteriaDDL, setEvaluationCriteriaDDL] = useState([]);
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -111,6 +115,9 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
         setLoading,
         true
       ); // Call the API
+
+      getEnumData("StakeholderType", setStakeholderTypeDDL, setLoading);
+      getEnumData("EvaluationCriteria", setEvaluationCriteriaDDL, setLoading);
     }
     if (modal?.type === "edit" || modal?.type === "view") {
       setStakeholderField(data?.rowDto);
@@ -129,12 +136,15 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
                 comments: data?.remarks,
                 evaluationCriteria: data?.evaluationCriteriaName,
                 positionGroupId: data?.levelOfLeadershipId,
+                leadership: getLeadershipDDL(data?.positionGroupIdList),
+                evaluationHeaderId: data?.evaluationHeaderId,
               }
             : {}
         }
       >
         <CommonForm
           formConfig={EvaluationPipelineForm(
+            evaluationCriteriaDDL,
             levelofLeaderShip,
             modal?.type,
             form
@@ -150,7 +160,8 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
               getEmployee,
               CommonEmployeeDDL,
               doUserGrp,
-              userGrp
+              userGrp,
+              stakeholderTypeDDL
             )}
             form={form}
           >
@@ -174,34 +185,35 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
             </Col>
           </CommonForm>
         )}
-
-        <ModalFooter
-          onCancel={() => {
-            setModal(() => ({ open: false, type: "" }));
-          }}
-          submitAction="submit"
-          onSubmit={() => {
-            const values = form.getFieldsValue(true);
-            form
-              .validateFields()
-              .then(() => {
-                console.log("values", values);
-                handleEvaluationPipelineSetting(
-                  form,
-                  profileData,
-                  stakeholderField,
-                  setLoading,
-                  () => {
-                    cb && cb();
-                    setModal(() => ({ open: false, type: "" }));
-                  }
-                );
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }}
-        />
+        {modal?.type !== "view" && (
+          <ModalFooter
+            onCancel={() => {
+              setModal(() => ({ open: false, type: "" }));
+            }}
+            submitAction="submit"
+            onSubmit={() => {
+              const values = form.getFieldsValue(true);
+              form
+                .validateFields()
+                .then(() => {
+                  console.log("values", values);
+                  handleEvaluationPipelineSetting(
+                    form,
+                    profileData,
+                    stakeholderField,
+                    setLoading,
+                    () => {
+                      cb && cb();
+                      setModal(() => ({ open: false, type: "" }));
+                    }
+                  );
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }}
+          />
+        )}
       </PForm>
       {stakeholderField?.length > 0 && (
         <StakeholderTable

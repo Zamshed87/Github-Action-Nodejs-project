@@ -51,11 +51,11 @@ const EvaluationPipeline = () => {
     },
     {
       title: "Level of Leadership",
-      dataIndex: "levelOfLeadershipName",
+      dataIndex: "positionGroupName",
     },
     {
       title: "Evaluation Criteria",
-      dataIndex: "evaluationCriteria",
+      dataIndex: "evaluationCriteriaName",
     },
     {
       title: "Action",

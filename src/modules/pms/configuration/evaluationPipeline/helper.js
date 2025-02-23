@@ -2,7 +2,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { setCustomFieldsValue } from "utility/filter/helper";
 
-export const EvaluationPipelineForm = (leadershipApi, type, form) => {
+export const EvaluationPipelineForm = (
+  evaluationCriteriaDDL,
+  leadershipApi,
+  type,
+  form
+) => {
   return [
     {
       type: "ddl",
@@ -12,7 +17,7 @@ export const EvaluationPipelineForm = (leadershipApi, type, form) => {
       ddl: leadershipApi || [],
       placeholder: "Select the leadership",
       rules: [{ required: true, message: "Level of Leadership is required!" }],
-      disabled: type === "view" || (type === "edit" && true),
+      disabled: type === "view",
       col: 8,
       onChange: (value, op) => {
         form.setFieldsValue({
@@ -25,13 +30,10 @@ export const EvaluationPipelineForm = (leadershipApi, type, form) => {
       type: "ddl",
       label: "Evaluation Criteria",
       varname: "evaluationCriteria",
-      ddl: [
-        { label: "KPI", value: 1 },
-        { label: "BAR", value: 2 },
-      ],
+      ddl: evaluationCriteriaDDL,
       placeholder: "Evaluation Criteria",
       rules: [{ required: true, message: "Evaluation Criteria is required!" }],
-      disabled: type === "view" || (type === "edit" && true),
+      disabled: type === "view",
       col: 8,
     },
     {
@@ -39,7 +41,7 @@ export const EvaluationPipelineForm = (leadershipApi, type, form) => {
       label: "Comments",
       varname: "comments",
       placeholder: "Comments",
-      disabled: type === "view" || (type === "edit" && true),
+      disabled: type === "view",
       col: 8,
     },
   ];
@@ -52,7 +54,8 @@ export const StakeholderForm = (
   getEmployee,
   CommonEmployeeDDL,
   doUserGrp,
-  userGrp
+  userGrp,
+  stakeholderTypeDDL
 ) => {
   console.log(st);
 
@@ -71,14 +74,7 @@ export const StakeholderForm = (
       type: "ddl",
       label: "Stakeholder Type",
       varname: "stakeholderType",
-      ddl: [
-        { label: "Self", value: 1 },
-        { label: "Individual Employee", value: 2 },
-        { label: "Supervisor", value: 3 },
-        { label: "Dotted Supervisor", value: 4 },
-        { label: "Line Manager", value: 5 },
-        { label: "User Group", value: 6 },
-      ],
+      ddl: stakeholderTypeDDL,
       placeholder: "Select the Stakeholder Type",
       rules: [{ required: true, message: "Stakeholder Type is required!" }],
       col: 6,
@@ -153,7 +149,7 @@ export const handleEvaluationPipelineSetting = async (
     return toast.error("Total weight should be 100");
   }
   const payload = {
-    evaluationHeaderId: 0, // This value is hardcoded if create
+    evaluationHeaderId: values?.evaluationHeaderId || 0, // This value is hardcoded if create
     evaluationCriteriaId: values?.evaluationCriteria?.value,
     remarks: values?.comments,
     accountId: profileData?.intAccountId,
@@ -211,4 +207,15 @@ export const ViewEvaluationPipeline = async (
     setSingleData && setSingleData({});
     setLoading(false);
   }
+};
+
+export const getLeadershipDDL = (items) => {
+  const list = [];
+  items?.forEach((item, i) => {
+    list.push({
+      label: item?.positionGroupName,
+      value: item?.positionGroupId,
+    });
+  });
+  return list;
 };
