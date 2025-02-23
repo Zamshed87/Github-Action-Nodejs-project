@@ -131,6 +131,7 @@ const YearlyPerformanceReport = () => {
           <PCardBody className="mb-3">
             <ReportFilters
               form={form}
+              isAdmin={isOfficeAdmin}
               supervisorDDL={supervisorDDL}
               getSuperVisors={getSuperVisors}
               departmentDDL={departmentDDL}

@@ -3,6 +3,7 @@ import { PButton, PSelect } from "Components";
 
 const ReportFilters = ({
   form,
+  isAdmin,
   supervisorDDL,
   getSuperVisors,
   departmentDDL,
@@ -15,7 +16,7 @@ const ReportFilters = ({
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
         <PSelect
-          options={[{ value: 0, label: "All" }, ...supervisorDDL.data] || []}
+          options={[isAdmin && { value: 0, label: "All" }, ...supervisorDDL.data] || []}
           name="supervisor"
           label="Supervisor"
           placeholder="Search minimum 2 characters"

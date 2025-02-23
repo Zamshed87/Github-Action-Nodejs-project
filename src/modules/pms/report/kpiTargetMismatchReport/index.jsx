@@ -33,7 +33,7 @@ const KpiTargetMismatchReport = () => {
 
   const {
     // permissionList,
-    profileData: { orgId, buId, wgId, wId, employeeId },
+    profileData: { orgId, buId, wgId, wId, employeeId,isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
 
 
@@ -95,6 +95,7 @@ const KpiTargetMismatchReport = () => {
         <PCardBody className="mb-3">
           <ReportFilters
             form={form}
+            isAdmin={isOfficeAdmin}
             supervisorDDL={supervisorDDL}
             getSuperVisors={getSuperVisors}
             departmentDDL={departmentDDL}
