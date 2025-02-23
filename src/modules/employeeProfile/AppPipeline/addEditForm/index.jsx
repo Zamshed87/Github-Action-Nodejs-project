@@ -213,7 +213,7 @@ export default function AddEditForm({
           setIsSequence(data?.header?.isInSequence);
           setRandomCount(!data?.header?.isInSequence);
           setRandom(!data?.header?.isInSequence);
-          const rowData = data?.row?.map((item) => ({
+          const rowData = data?.row?.map((item,index) => ({
             approver: item?.approverType || "User Group",
             approverId: item?.approverTypeId || 0,
             userGroup: item?.userGroupOrEmployeeId || "",
@@ -224,7 +224,7 @@ export default function AddEditForm({
             isLineManager: item?.approverType === "Line Manager",
             intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
             userGroupOrEmployeeName: item?.userGroupOrEmployeeName || "",
-            intShortOrder: item?.sequenceId || 0,
+            intShortOrder: item?.sequenceId || index + 1,
             isCreate: false,
             isDelete: false,
             strStatusTitle: item?.afterApproveStatus || "",
