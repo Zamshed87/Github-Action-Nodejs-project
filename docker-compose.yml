@@ -4,5 +4,5 @@ services:
   peopledesk-v2-front:
     image: iboslimitedbd/#{Deployment}#:#{Build.BuildId}#
     ports:
-      - "85:80"
+      - "81:80"
     restart: always
