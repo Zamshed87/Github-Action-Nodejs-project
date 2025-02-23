@@ -35,7 +35,7 @@ export default function SelfServiceSeparation() {
   const [, postWithdrawSeperationData] = useAxiosPost();
   const [, postCancelSeperationData] = useAxiosPost();
   const [aprovalStatus, setAprovalStatus] = useState("");
-  const [separationId, setSeparationId] = useState("");
+  const [separationId, setSeparationId] = useState(null);
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -60,7 +60,6 @@ export default function SelfServiceSeparation() {
     setLoading(true);
     getSeperationData(`/Separation/GetSeparationByEmployee`, (res) => {
       setRowDto(res?.data);
-      setSeparationId(res?.data?.[0]?.separationId);
       setLoading(false);
     });
   };
@@ -109,6 +108,7 @@ export default function SelfServiceSeparation() {
                   aprovalStatus,
                   setAprovalStatus,
                   separationId,
+                  setSeparationId
                 )}
                 pages={pages}
                 rowDto={rowDto || []}

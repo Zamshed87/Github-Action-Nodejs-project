@@ -106,7 +106,8 @@ export const separationApplicationLandingTableColumn = (
   postCancelSeperationData,
   aprovalStatus,
   setAprovalStatus,
-  separationId
+  separationId,
+  setSeparationId
 ) => {
   const confirmPopup = () => {
     const confirmObject = {
@@ -462,6 +463,7 @@ export const separationApplicationLandingTableColumn = (
                   border: "none",
                 }}
                 onClick={() => {
+                  setSeparationId(item?.separationId);
                   setAprovalStatus(item?.approvalStatus);
                 }}
               />
@@ -480,6 +482,7 @@ export const separationApplicationLandingTableColumn = (
                 }}
                 onClick={() => {
                   setAprovalStatus(item?.approvalStatus);
+                  setSeparationId(item?.separationId);
                   cancelConfirmPopup();
                 }}
               />
@@ -498,6 +501,7 @@ export const separationApplicationLandingTableColumn = (
                 }}
                 onClick={() => {
                   setAprovalStatus(item?.approvalStatus);
+                  setSeparationId(item?.separationId);
                   history.push(
                     `/SelfService/separation/applicationV2/edit/${item?.separationId}`
                   );
