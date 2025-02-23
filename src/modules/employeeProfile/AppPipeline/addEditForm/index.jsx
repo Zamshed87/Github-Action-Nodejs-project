@@ -238,7 +238,10 @@ export default function AddEditForm({
     }
   }, [singleData]);
   const remover = (payload) => {
-    const filterArr = tableData.filter((itm, idx) => idx !== payload);
+    const filterArr = tableData.filter((itm, idx) => idx !== payload).map((item, index) => ({
+      ...item,
+      intShortOrder: index + 1, // Update sequence based on new position
+    }))
     setTableData(filterArr);
   };
   return (
