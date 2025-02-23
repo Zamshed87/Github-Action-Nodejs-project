@@ -104,7 +104,17 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading, true); // Call the API
+    if (modal?.type !== "view") {
+      levelOfLeaderApiCall(
+        intAccountId,
+        setLevelofLeaderShip,
+        setLoading,
+        true
+      ); // Call the API
+    }
+    if (modal?.type === "edit" || modal?.type === "view") {
+      setStakeholderField(data?.rowDto);
+    }
   }, []);
   const st = Form.useWatch("stakeholderType", form);
 
@@ -114,13 +124,13 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
       <PForm
         form={form}
         initialValues={
-          {
-            // leadership: data?.levelOfLeadershipName,
-            // positionGroupId: data?.levelOfLeadershipId,
-            // kpiScore: data?.percentageOfKPI,
-            // barScore: data?.percentageOfBAR,
-            // id: data?.scoreScaleId,
-          }
+          modal?.type === "edit" || modal?.type === "view"
+            ? {
+                comments: data?.remarks,
+                evaluationCriteria: data?.evaluationCriteriaName,
+                positionGroupId: data?.levelOfLeadershipId,
+              }
+            : {}
         }
       >
         <CommonForm
@@ -193,10 +203,11 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
           }}
         />
       </PForm>
-      {stakeholderField.length > 0 && (
+      {stakeholderField?.length > 0 && (
         <StakeholderTable
           data={stakeholderField}
           setStakeholderField={setStakeholderField}
+          type={modal?.type}
         />
       )}
     </div>

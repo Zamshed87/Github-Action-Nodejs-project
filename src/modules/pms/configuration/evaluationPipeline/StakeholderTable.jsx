@@ -5,7 +5,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { getTotalWeight } from "./helper";
 import { getSerial } from "Utils";
 
-const StakeholderTable = ({ data, setStakeholderField }) => {
+const StakeholderTable = ({ data, setStakeholderField, type }) => {
   const deleteHandler = (idx) => {
     const updatedData = data.filter((item) => item.idx !== idx);
     setStakeholderField(updatedData);
@@ -26,7 +26,11 @@ const StakeholderTable = ({ data, setStakeholderField }) => {
     { title: "Stakeholder Type", dataIndex: "stakeholderTypeName" },
     { title: "Stakeholder", dataIndex: "stakeholderName" },
     { title: "Score Weight", dataIndex: "scoreWeight" },
-    {
+  ];
+
+  // Conditionally add "Action" column
+  if (type !== "view") {
+    header.push({
       title: "Action",
       render: (_, rec) => (
         <Flex justify="center">
@@ -40,8 +44,8 @@ const StakeholderTable = ({ data, setStakeholderField }) => {
       ),
       align: "center",
       width: 40,
-    },
-  ];
+    });
+  }
 
   return (
     <div className="mb-3 mt-2">

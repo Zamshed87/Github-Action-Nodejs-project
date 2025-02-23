@@ -187,3 +187,28 @@ export const getTotalWeight = (stakeholderField) => {
     return acc + curr.scoreWeight;
   }, 0);
 };
+
+export const ViewEvaluationPipeline = async (
+  recordId,
+  setLoading,
+  setSingleData,
+  cb
+) => {
+  try {
+    setLoading(true);
+
+    const res = await axios.get(
+      `/PMS/GetEvaluationPipelineSetupById?evaluationHeaderId=${recordId}`
+    );
+    if (res?.data) {
+      cb && cb(res?.data);
+      setLoading(false);
+      setSingleData && setSingleData(res?.data);
+    }
+    setLoading(false);
+  } catch (error) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong");
+    setSingleData && setSingleData({});
+    setLoading(false);
+  }
+};
