@@ -213,7 +213,6 @@ export default function AddEditForm({
           setIsSequence(data?.header?.isInSequence);
           setRandomCount(!data?.header?.isInSequence);
           setRandom(!data?.header?.isInSequence);
-
           const rowData = data?.row?.map((item) => ({
             approver: item?.approverType || "User Group",
             approverId: item?.approverTypeId || 0,
@@ -242,7 +241,6 @@ export default function AddEditForm({
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
-
   return (
     <PForm
       form={form}
@@ -283,7 +281,6 @@ export default function AddEditForm({
               form.setFieldsValue({
                 pipelineName: op,
               });
-              console.log("op", op);
               getWorkplace();
             }}
             rules={[{ required: true, message: "Pipeline Name is required" }]}
@@ -400,7 +397,6 @@ export default function AddEditForm({
                     options={CommonEmployeeDDL?.data || []}
                     loading={CommonEmployeeDDL?.loading}
                     onChange={(value, op) => {
-                      console.log("op", op);
                       form.setFieldsValue({
                         employee: op,
                       });

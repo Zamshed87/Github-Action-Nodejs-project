@@ -52,9 +52,7 @@ const DraggableTable = ({ tableData, setTableData, header }) => {
                     >
                       {header.map((col, colIdx) => (
                         <td key={colIdx} style={{ textAlign: col.align }}>
-                          {col.dataIndex === "intShortOrder"
-                            ? index + 1 // Use the row index + 1 for the sequence
-                            : col.render
+                          {col.render
                             ? col.render(null, item, index)
                             : item[col.dataIndex]}
                         </td>
