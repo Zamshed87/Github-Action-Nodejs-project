@@ -183,7 +183,18 @@ function CommonAppPipeline() {
     },
   ];
 
-  const handleFilter = (values: any) => {};
+  const handleFilter = (values: any) => {
+    landingApi.action({
+      urlKey: "ApprovalPipeline",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        workplaceId: values?.workplace?.value,
+        workplaceGroupId: values?.workplaceGroup?.value,
+        businessUnitId: buId,
+      },
+    });
+  };
   // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
@@ -205,7 +216,7 @@ function CommonAppPipeline() {
                 visible={isFilterVisible}
                 onClose={(visible: any) => setIsFilterVisible(visible)}
                 onFilter={handleFilter}
-                isDate={true}
+                // isDate={true}
                 isWorkplaceGroup={true}
                 isWorkplace={true}
                 isAllValue={true}
