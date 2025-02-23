@@ -77,7 +77,7 @@ export default function AddEditForm({
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: values?.orgName?.intWorkplaceGroupId || wgId,
-        applicationTypeId: values?.pipelineName?.value || 0,
+        applicationTypeId: values?.pipelineName?.value || singleData?.applicationTypeId,
       },
       onSuccess: (res) => {
         // Add "All" option without status label
@@ -139,6 +139,7 @@ export default function AddEditForm({
     //     });
     //   },
     // });
+    getWorkplace();
 
     getUserGroupDDL.action({
       urlKey: "PeopleDeskAllDDL",
@@ -178,7 +179,6 @@ export default function AddEditForm({
         },
         onSuccess: (data) => {
           const isExtendType = singleData?.type === "extend";
-
           form.setFieldsValue({
             ...singleData,
             orgName: {
@@ -213,7 +213,6 @@ export default function AddEditForm({
           setIsSequence(data?.header?.isInSequence);
           setRandomCount(!data?.header?.isInSequence);
           setRandom(!data?.header?.isInSequence);
-
           const rowData = data?.row?.map((item) => ({
             approver: item?.approverType || "User Group",
             approverId: item?.approverTypeId || 0,
@@ -239,10 +238,12 @@ export default function AddEditForm({
     }
   }, [singleData]);
   const remover = (payload) => {
-    const filterArr = tableData.filter((itm, idx) => idx !== payload);
+    const filterArr = tableData.filter((itm, idx) => idx !== payload).map((item, index) => ({
+      ...item,
+      intShortOrder: index + 1, // Update sequence based on new position
+    }))
     setTableData(filterArr);
   };
-
   return (
     <PForm
       form={form}
@@ -283,7 +284,6 @@ export default function AddEditForm({
               form.setFieldsValue({
                 pipelineName: op,
               });
-              console.log("op", op);
               getWorkplace();
             }}
             rules={[{ required: true, message: "Pipeline Name is required" }]}
@@ -400,7 +400,6 @@ export default function AddEditForm({
                     options={CommonEmployeeDDL?.data || []}
                     loading={CommonEmployeeDDL?.loading}
                     onChange={(value, op) => {
-                      console.log("op", op);
                       form.setFieldsValue({
                         employee: op,
                       });
@@ -441,7 +440,7 @@ export default function AddEditForm({
             const { approver } = form.getFieldsValue();
             return (
               <>
-                {approver?.value === 3 ? (
+                {approver?.value == 3 ? (
                   <Col md={24} sm={24}>
                     <PSelect
                       options={
