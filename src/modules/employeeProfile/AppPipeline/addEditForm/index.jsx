@@ -77,7 +77,7 @@ export default function AddEditForm({
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: values?.orgName?.intWorkplaceGroupId || wgId,
-        applicationTypeId: values?.pipelineName?.value || 0,
+        applicationTypeId: values?.pipelineName?.value || singleData?.applicationTypeId,
       },
       onSuccess: (res) => {
         // Add "All" option without status label
@@ -139,6 +139,7 @@ export default function AddEditForm({
     //     });
     //   },
     // });
+    getWorkplace();
 
     getUserGroupDDL.action({
       urlKey: "PeopleDeskAllDDL",
@@ -178,7 +179,6 @@ export default function AddEditForm({
         },
         onSuccess: (data) => {
           const isExtendType = singleData?.type === "extend";
-
           form.setFieldsValue({
             ...singleData,
             orgName: {
@@ -438,7 +438,6 @@ export default function AddEditForm({
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver } = form.getFieldsValue();
-            console.log(approver)
             return (
               <>
                 {approver?.value == 3 ? (
