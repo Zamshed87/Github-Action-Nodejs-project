@@ -438,9 +438,10 @@ export default function AddEditForm({
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver } = form.getFieldsValue();
+            console.log(approver)
             return (
               <>
-                {approver?.value === 3 ? (
+                {approver?.value == 3 ? (
                   <Col md={24} sm={24}>
                     <PSelect
                       options={
