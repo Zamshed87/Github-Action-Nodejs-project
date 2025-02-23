@@ -83,7 +83,7 @@ const BehavioralFactorScale = () => {
   const columns = [
     {
       title: "Factor",
-      dataIndex: "factor",
+      dataIndex: "scaleName",
       width: "25%",
     },
     {

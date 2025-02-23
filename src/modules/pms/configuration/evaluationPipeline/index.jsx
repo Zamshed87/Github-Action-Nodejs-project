@@ -12,10 +12,12 @@ import { EyeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { EditOutlined } from "@mui/icons-material";
 import EPCreateEdit from "./createEdit";
+import { ViewEvaluationPipeline } from "./helper";
 // import CreateEdit from "./createEdit";
 
 const EvaluationPipeline = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({
     open: false,
     type: "",
@@ -64,8 +66,14 @@ const EvaluationPipeline = () => {
             <EyeOutlined
               style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
-                setRowData(rec);
-                setModal(() => ({ open: true, type: "view" }));
+                ViewEvaluationPipeline(
+                  rec?.evaluationHeaderId,
+                  setLoading,
+                  setRowData,
+                  () => {
+                    setModal(() => ({ open: true, type: "view" }));
+                  }
+                );
               }}
             />
           </Tooltip>
@@ -82,8 +90,14 @@ const EvaluationPipeline = () => {
                   toast.warning("You don't have permission to edit");
                   return;
                 }
-                setRowData(rec);
-                setModal(() => ({ open: true, type: "edit" }));
+                ViewEvaluationPipeline(
+                  rec?.evaluationHeaderId,
+                  setLoading,
+                  setRowData,
+                  () => {
+                    setModal(() => ({ open: true, type: "edit" }));
+                  }
+                );
               }}
             />
           </Tooltip>
@@ -95,7 +109,7 @@ const EvaluationPipeline = () => {
 
   return permission?.isView ? (
     <div>
-      {criteriaListLoader && <Loading />}
+      {(criteriaListLoader || loading) && <Loading />}
       <PForm form={form}>
         <PCard>
           <PCardHeader
