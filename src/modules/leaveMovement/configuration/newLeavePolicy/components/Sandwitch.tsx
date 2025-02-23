@@ -62,30 +62,30 @@ export const Sandwitch = ({
       dataIndex: "scenario",
       width: 100,
     },
-    {
-      title: "Leave Count",
-      width: 150,
+    // {
+    //   title: "Leave Count",
+    //   width: 150,
 
-      render: (_value: any, row: any, index: number) => (
-        <PInput
-          type="number"
-          value={+row?.count || 0}
-          placeholder=""
-          onChange={(e) => {
-            // if ((e as number) < 0) {
-            //   return toast.warn("number must be positive");
-            // }
-            // if ((e as number) > 100) {
-            //   return toast.warn("Percentage cant be greater than 100");
-            // }
+    //   render: (_value: any, row: any, index: number) => (
+    //     <PInput
+    //       type="number"
+    //       value={+row?.count || 0}
+    //       placeholder=""
+    //       onChange={(e) => {
+    //         // if ((e as number) < 0) {
+    //         //   return toast.warn("number must be positive");
+    //         // }
+    //         // if ((e as number) > 100) {
+    //         //   return toast.warn("Percentage cant be greater than 100");
+    //         // }
 
-            const temp = [...sandWitchLanding];
-            temp[row.index].count = e;
-            setSandWitchLanding(temp);
-          }}
-        />
-      ),
-    },
+    //         const temp = [...sandWitchLanding];
+    //         temp[row.index].count = e;
+    //         setSandWitchLanding(temp);
+    //       }}
+    //     />
+    //   ),
+    // },
   ];
   return (
     <Row gutter={[10, 2]}>
