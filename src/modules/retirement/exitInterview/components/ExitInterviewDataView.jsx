@@ -1,35 +1,31 @@
-import { Flex } from "Components";
-import React, { useEffect, useState } from "react";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Divider } from "antd";
+import {
+  KeyboardArrowDown as ArrowDownIcon,
+  CheckBoxOutlineBlank as BlankCheckboxIcon,
+  CheckBox as CheckedCheckboxIcon,
+  RadioButtonChecked as CheckedIcon,
+  RadioButtonUnchecked as UncheckedIcon,
+} from "@mui/icons-material";
+import { Descriptions, Divider, List, Space, Typography } from "antd";
 import moment from "moment";
+import { useEffect, useState } from "react";
 import { getQuestionaireById } from "../helper";
+
+const { Title, Text } = Typography;
 
 export default function ExitInterviewDataView({ id, empId, questionId }) {
   const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState({});
+
   useEffect(() => {
     getQuestionaireById(questionId, setSingleData, setLoading);
   }, [id, empId]);
 
-  const isExistForCheckbox = (op, opArr) => {
-    for (let i = 0; i < opArr?.length; i++) {
-      if (opArr[i] === op) {
-        return true;
-      }
-    }
-    return false;
-  };
+  const isExistForCheckbox = (op, opArr) => opArr?.includes(op);
 
   const QuesType = (qType) => {
     switch (qType) {
       case "Radio Button":
         return "Single Choice";
-
       case "Textbox":
         return "Short Answer";
       case "Checkbox":
@@ -42,146 +38,132 @@ export default function ExitInterviewDataView({ id, empId, questionId }) {
   };
 
   return (
-    <div>
-      <div style={{ fontSize: "12px" }}>
-        <div>
-          Interview Type :{" "}
-          <span style={{ fontWeight: "500" }}>{singleData?.typeName}</span>
-        </div>
-        <div>
-          Interview Title :{" "}
-          <span style={{ fontWeight: "500" }}>{singleData?.title}</span>
-        </div>
-        <div>
-          Description :{" "}
-          <span style={{ fontWeight: "500" }}>{singleData?.description}</span>
-        </div>
-        <div>
-          Start Time :{" "}
-          <span style={{ fontWeight: "500" }}>
-            {moment(singleData?.startDateTime).format("hh:mm:ss A")}
-          </span>
-        </div>
-        <div>
-          End Time :{" "}
-          <span style={{ fontWeight: "500" }}>
-            {moment(singleData?.endDateTime).format("hh:mm:ss A")}
-          </span>
-        </div>
-      </div>
-      <Divider style={{ margin: 0 }}>Answers</Divider>
-      <div className="mt-2 mx-3">
-        <ol>
-          {singleData?.questions?.map((ques, index) => (
-            <li className="mt-2" key={index}>
-              <p style={{ fontSize: "14px" }}>
-                {ques?.title}
-                {ques?.isRequired && <span style={{ color: "red" }}> *</span>}
-              </p>
-              <small className="mb-2" style={{ fontSize: "12px" }}>
-                {QuesType(ques?.typeName)}
-              </small>
+    <>
+      {/* Interview Details */}
+      <Descriptions column={2} bordered size="small">
+        <Descriptions.Item label="Interview Type">
+          {singleData?.typeName}
+        </Descriptions.Item>
+        <Descriptions.Item label="Interview Title">
+          {singleData?.title}
+        </Descriptions.Item>
+        <Descriptions.Item label="Description" span={3}>
+          {singleData?.description}
+        </Descriptions.Item>
+        <Descriptions.Item label="Start Time">
+          {moment(singleData?.startDateTime).format("hh:mm:ss A")}
+        </Descriptions.Item>
+        <Descriptions.Item label="End Time">
+          {moment(singleData?.endDateTime).format("hh:mm:ss A")}
+        </Descriptions.Item>
+      </Descriptions>
+
+      <Divider>Answers</Divider>
+
+      {/* Questions & Answers */}
+      <List
+        dataSource={singleData?.questions || []}
+        renderItem={(ques, index) => (
+          <List.Item key={index}>
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <Text strong>
+                {index + 1}. {ques?.title}{" "}
+                {ques?.isRequired && <Text type="danger"> *</Text>}
+              </Text>
+              <Text type="secondary">{QuesType(ques?.typeName)}</Text>
+
+              {/* Handle Different Question Types */}
               {ques?.typeName === "Radio Button" &&
-                ques?.options?.map((op, index) => (
-                  <Flex align="center" key={index}>
-                    <div>
-                      {ques?.responseAnswer[0] === op?.optionName ? (
-                        <RadioButtonCheckedIcon
-                          sx={{ fontSize: "12px", color: "green" }}
-                        />
-                      ) : (
-                        <RadioButtonUncheckedIcon
-                          sx={{ fontSize: "12px", color: "green" }}
-                        />
-                      )}
-                    </div>
-                    <div
+                ques?.options?.map((op, idx) => (
+                  <Space key={idx} align="center">
+                    {ques?.responseAnswer[0] === op?.optionName ? (
+                      <CheckedIcon style={{ color: "green" }} />
+                    ) : (
+                      <UncheckedIcon style={{ color: "gray" }} />
+                    )}
+                    <Text
                       style={{
                         fontWeight:
-                          ques?.responseAnswer[0] === op?.optionName ? 500 : "",
+                          ques?.responseAnswer[0] === op?.optionName
+                            ? 500
+                            : "normal",
                         color:
                           ques?.responseAnswer[0] === op?.optionName
                             ? "green"
-                            : "",
+                            : "black",
                       }}
-                      className="ml-2"
                     >
                       {op.optionName}
-                    </div>
-                  </Flex>
+                    </Text>
+                  </Space>
                 ))}
+
               {ques?.typeName === "Textbox" && (
-                <div className="mt-1">{ques?.responseAnswer[0]}</div>
+                <Text>{ques?.responseAnswer[0]}</Text>
               )}
+
               {ques?.typeName === "Checkbox" &&
-                ques?.options?.map((op, index) => (
-                  <Flex align="center" key={index}>
-                    <div>
-                      {isExistForCheckbox(
-                        op?.optionName,
-                        ques?.responseAnswer
-                      ) ? (
-                        <CheckBoxIcon
-                          sx={{ fontSize: "12px", color: "green" }}
-                        />
-                      ) : (
-                        <CheckBoxOutlineBlankIcon
-                          sx={{ fontSize: "14px", color: "green" }}
-                        />
-                      )}
-                    </div>
-                    <div
+                ques?.options?.map((op, idx) => (
+                  <Space key={idx} align="center">
+                    {isExistForCheckbox(
+                      op?.optionName,
+                      ques?.responseAnswer
+                    ) ? (
+                      <CheckedCheckboxIcon style={{ color: "green" }} />
+                    ) : (
+                      <BlankCheckboxIcon style={{ color: "gray" }} />
+                    )}
+                    <Text
                       style={{
                         fontWeight: isExistForCheckbox(
                           op?.optionName,
                           ques?.responseAnswer
                         )
                           ? 500
-                          : "",
+                          : "normal",
                         color: isExistForCheckbox(
                           op?.optionName,
                           ques?.responseAnswer
                         )
                           ? "green"
-                          : "",
+                          : "black",
                       }}
-                      className="ml-2"
                     >
                       {op.optionName}
-                    </div>
-                  </Flex>
+                    </Text>
+                  </Space>
                 ))}
+
               {ques?.typeName === "Drop-Down List" &&
-                ques?.options?.map((op, index) => (
-                  <Flex align="center" key={index}>
-                    <div>
-                      <KeyboardArrowDownIcon
-                        sx={{
-                          fontSize: "12px",
-                          color:
-                            ques?.responseAnswer[0] === op?.optionName
-                              ? "green"
-                              : "",
-                        }}
-                      />
-                    </div>
-                    <div
+                ques?.options?.map((op, idx) => (
+                  <Space key={idx} align="center">
+                    <ArrowDownIcon
                       style={{
-                        fontWeight:
-                          ques?.responseAnswer[0] === op?.optionName ? 500 : "",
                         color:
                           ques?.responseAnswer[0] === op?.optionName
                             ? "green"
-                            : "",
+                            : "gray",
                       }}
-                      className="ml-2"
+                    />
+                    <Text
+                      style={{
+                        fontWeight:
+                          ques?.responseAnswer[0] === op?.optionName
+                            ? 500
+                            : "normal",
+                        color:
+                          ques?.responseAnswer[0] === op?.optionName
+                            ? "green"
+                            : "black",
+                      }}
                     >
                       {op.optionName}
-                    </div>
-                  </Flex>
+                    </Text>
+                  </Space>
                 ))}
+
               {ques?.typeName === "Rich Textbox" && (
-                <div style={{ overflow: "scroll" }} className="mt-1 w-100">
+                <div style={{ overflow: "auto", width: "100%" }}>
                   <div
                     dangerouslySetInnerHTML={{
                       __html: ques?.responseAnswer[0],
@@ -189,10 +171,10 @@ export default function ExitInterviewDataView({ id, empId, questionId }) {
                   />
                 </div>
               )}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+            </Space>
+          </List.Item>
+        )}
+      />
+    </>
   );
 }
