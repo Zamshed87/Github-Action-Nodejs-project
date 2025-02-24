@@ -1,21 +1,30 @@
 import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
+import { shallowEqual, useSelector } from "react-redux";
+import useReportFilters from "./useReportFilters";
 
 const ReportFilters = ({
   form,
-  supervisorDDL,
-  getSuperVisors,
-  departmentDDL,
-  designationDDL,
-  yearDDL,
-  levelOfLeadershipDDL,
   showLevelOfLeadership = true,
 }) => {
+  const {
+        profileData: { employeeId,userName,isOfficeAdmin },
+      } = useSelector((store) => store?.auth, shallowEqual);
+      const {
+        supervisorDDL,
+        getSuperVisors,
+        departmentDDL,
+        designationDDL,
+        yearDDL,
+        levelOfLeadershipDDL
+      } = useReportFilters({
+        includeLeadership: showLevelOfLeadership,
+      });
   return (
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
         <PSelect
-          options={[{ value: 0, label: "All" }, ...supervisorDDL.data] || []}
+          options={isOfficeAdmin ? [ { value: 0, label: "All" }, ...supervisorDDL.data]:[{ value: employeeId, label: userName }] || []}
           name="supervisor"
           label="Supervisor"
           placeholder="Search minimum 2 characters"

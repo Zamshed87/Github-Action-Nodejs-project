@@ -3,8 +3,12 @@ import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { orgIdsForBn } from "utility/orgForBanglaField";
+import { shallowEqual, useSelector } from "react-redux";
 
-const useReportFilters = ({ orgId, buId, wgId, wId, employeeId, includeLeadership = false }) => {
+const useReportFilters = ({ includeLeadership = false }) => {
+  const {
+      profileData: { orgId, buId, wgId, wId, employeeId},
+    } = useSelector((store) => store?.auth, shallowEqual);
   const supervisorDDL = useApiRequest([]);
   const departmentDDL = useApiRequest([]);
   const designationDDL = useApiRequest([]);
