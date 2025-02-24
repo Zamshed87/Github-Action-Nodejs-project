@@ -26,6 +26,9 @@ import { gray900 } from "../../../../utility/customColor";
 import { generateCommonExcelAction } from "../../../../common/Excel/excelConvert";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import usePermissions from "Hooks/usePermissions";
+import FormikSelect from "common/FormikSelect";
+import { useFormik } from "formik";
+import { customStyles } from "utility/selectCustomStyle";
 
 const PMSObjective = () => {
   const [pages, setPages] = useState({
@@ -44,12 +47,51 @@ const PMSObjective = () => {
   } = usePermissions(30460);
 
   const [, getObjectiveLanding, loadingOnGetObjectiveLanding] = useAxiosGet();
+  const [
+    objectiveTypeDDL,
+    getObjectiveTypeDDL,
+    loadingOnGetObjectiveTypeDDL,
+    setObjectiveTypeDDL,
+  ] = useAxiosGet();
   const [objectiveTableData, setObjectiveTableData] = useState([]);
   const [, deletePMSObjective, loadingOnDelete] = useAxiosPost();
   const dispatch = useDispatch();
   const history = useHistory();
   const [search, setSearch] = useState("");
   const [, getExcelData, excelDataLoader] = useAxiosGet();
+  const initialValues = {
+    objectiveIndex: null,
+    pmType: null,
+    objectiveTypes: null,
+    objective: "",
+    description: "",
+  };
+  const {
+    errors,
+    touched,
+    handleSubmit,
+    resetForm,
+    setFieldValue,
+    setValues,
+    values,
+  } = useFormik({
+    initialValues,
+    onSubmit: (formValues) => {
+      getObjectiveLanding(
+        `/PMS/GetPMSObejctiveLanding?objectiveType=${formValues?.objectiveTypes?.value}&status=${formValues?.status?.value}&accountId=${orgId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&search=${search}`,
+        (data) => {
+          if (data) {
+            setPages((prev) => ({
+              ...prev,
+              total: data?.totalCount,
+            }));
+            setObjectiveTableData(data?.data);
+          }
+          return data?.data;
+        }
+      );
+    },
+  });
 
   const getData = (pages, search = "") => {
     getObjectiveLanding(
@@ -69,6 +111,7 @@ const PMSObjective = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
+    getObjectiveTypeDDL(`/PMS/ObjectiveTypeDDL?PMTypeId=1`);
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -206,6 +249,55 @@ const PMSObjective = () => {
             </li>
           </ul>
         </div>
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="input-field-main col-md-3">
+              <label>Objective Type</label>
+              <FormikSelect
+                classes="input-sm  form-control"
+                name="objectiveTypes"
+                options={objectiveTypeDDL || []}
+                value={values?.objectiveTypes}
+                onChange={(valueOption) => {
+                  setFieldValue("objectiveTypes", valueOption);
+                }}
+                styles={customStyles}
+                errors={errors}
+                touched={touched}
+              />
+            </div>
+            <div className="input-field-main col-md-3">
+              <label>Status</label>
+              <FormikSelect
+                classes="input-sm  form-control"
+                name="status"
+                options={
+                  [
+                    { label: "All", value: 0 },
+                    { label: "Active", value: 1 },
+                    { label: "Inactive", value: 2 },
+                  ] || []
+                }
+                value={values?.status}
+                onChange={(valueOption) => {
+                  setFieldValue("status", valueOption);
+                }}
+                styles={customStyles}
+                errors={errors}
+                touched={touched}
+              />
+            </div>
+            <div className="col-md-3 mt-4">
+              <PrimaryButton
+                onClick={() => handleSubmit()}
+                type="button"
+                className="btn btn-green flex-center"
+                label="View"
+              />
+            </div>
+          </div>
+        </form>
+
         {objectiveTableData?.length <= 0 ? (
           <NoResult />
         ) : (
