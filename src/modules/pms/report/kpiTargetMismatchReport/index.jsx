@@ -13,7 +13,6 @@ import { getHeader } from "./helper";
 import useKpiMismatchReport from "./hooks/useKpiMismatchReport";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import ReportFilters from "../common/ReportFilters";
-import useReportFilters from "../common/useReportFilters";
 import { useHistory } from "react-router-dom";
 
 const KpiTargetMismatchReport = () => {
@@ -33,24 +32,8 @@ const KpiTargetMismatchReport = () => {
 
   const {
     // permissionList,
-    profileData: { orgId, buId, wgId, wId, employeeId,isOfficeAdmin },
+    profileData: { buId, wgId, wId,employeeId,userName,isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
-
-
-  const {
-    supervisorDDL,
-    getSuperVisors,
-    departmentDDL,
-    designationDDL,
-    yearDDL,
-  } = useReportFilters({
-    orgId,
-    buId,
-    wgId,
-    wId,
-    employeeId,
-    includeLeadership: false,
-  });
 
   const { reportData, fetchKpiMismatchReport, loading } = useKpiMismatchReport({
     buId,
@@ -67,7 +50,7 @@ const KpiTargetMismatchReport = () => {
     <PForm
       form={form}
       initialValues={{
-        supervisor: { value: 0, label: "All" },
+        supervisor: isOfficeAdmin ? { value: 0, label: "All" }:{value:employeeId,label:userName},
         department: { value: 0, label: "All" },
         designation: { value: 0, label: "All" },
       }}
@@ -95,16 +78,9 @@ const KpiTargetMismatchReport = () => {
         <PCardBody className="mb-3">
           <ReportFilters
             form={form}
-            isAdmin={isOfficeAdmin}
-            supervisorDDL={supervisorDDL}
-            getSuperVisors={getSuperVisors}
-            departmentDDL={departmentDDL}
-            designationDDL={designationDDL}
-            yearDDL={yearDDL}
             showLevelOfLeadership={false}
           />
         </PCardBody>
-
         <DataTable
           header={getHeader(pages,history,year)}
           bordered

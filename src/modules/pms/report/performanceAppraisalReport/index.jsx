@@ -13,7 +13,6 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { downloadFile } from "utility/downloadFile";
 import { toast } from "react-toastify";
-import useReportFilters from "../common/useReportFilters";
 import ReportFilters from "../common/ReportFilters";
 import usePerformanceAppraisalReport from "./hooks/usePerformanceAppraisalReport";
 
@@ -35,25 +34,9 @@ const PerformanceAppraisalReport = () => {
 
   const {
     // permissionList,
-    profileData: { orgId, buId, wgId, wId, employeeId, isOfficeAdmin },
+    profileData: { buId, wgId, wId, employeeId,userName, isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
-
-  const {
-    supervisorDDL,
-    getSuperVisors,
-    departmentDDL,
-    designationDDL,
-    yearDDL,
-    levelOfLeadershipDDL,
-  } = useReportFilters({
-    orgId,
-    buId,
-    wgId,
-    wId,
-    employeeId,
-    includeLeadership: true,
-  });
 
   const { reportData, fetchPerformanceAppraisalReport, loading } =
     usePerformanceAppraisalReport({
@@ -72,7 +55,7 @@ const PerformanceAppraisalReport = () => {
       <PForm
         form={form}
         initialValues={{
-          supervisor: isOfficeAdmin ? { value: 0, label: "All" } : undefined,
+          supervisor: isOfficeAdmin ? { value: 0, label: "All" } : {value:employeeId,label:userName},
           department: { value: 0, label: "All" },
           designation: { value: 0, label: "All" },
           levelOfLeadershipId: { value: 0, label: "All" },
@@ -128,13 +111,6 @@ const PerformanceAppraisalReport = () => {
           <PCardBody className="mb-3">
             <ReportFilters
               form={form}
-              isAdmin={isOfficeAdmin}
-              supervisorDDL={supervisorDDL}
-              getSuperVisors={getSuperVisors}
-              departmentDDL={departmentDDL}
-              designationDDL={designationDDL}
-              yearDDL={yearDDL}
-              levelOfLeadershipDDL={levelOfLeadershipDDL}
               showLevelOfLeadership={true}
             />
           </PCardBody>
