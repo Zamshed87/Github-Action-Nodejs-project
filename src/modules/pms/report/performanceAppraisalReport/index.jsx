@@ -15,6 +15,7 @@ import { downloadFile } from "utility/downloadFile";
 import { toast } from "react-toastify";
 import ReportFilters from "../common/ReportFilters";
 import usePerformanceAppraisalReport from "./hooks/usePerformanceAppraisalReport";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const PerformanceAppraisalReport = () => {
   const [excelLoading, setExcelLoading] = useState(false);
@@ -33,7 +34,7 @@ const PerformanceAppraisalReport = () => {
   const levelOfLeadershipId = Form.useWatch("levelOfLeadershipId", form);
 
   const {
-    // permissionList,
+    permissionList,
     profileData: { buId, wgId, wId, employeeId,userName, isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
@@ -49,8 +50,13 @@ const PerformanceAppraisalReport = () => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  return (
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 30543) {
+      permission = item;
+    }
+  });
+  return permission?.isView ? (
     <>
       <PForm
         form={form}
@@ -142,7 +148,11 @@ const PerformanceAppraisalReport = () => {
         </PCard>
       </PForm>
     </>
-  );
+  )
+  :
+  (
+    <NotPermittedPage/>
+  )
 };
 
 export default PerformanceAppraisalReport;

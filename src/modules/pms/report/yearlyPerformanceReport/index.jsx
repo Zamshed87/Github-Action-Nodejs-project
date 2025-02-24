@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import DetailsYearlyPerformanceReport from "./YearlyPerformanceDetails/DetailsYearlyPerformanceReport";
 import ReportFilters from "../common/ReportFilters";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const YearlyPerformanceReport = () => {
   const [excelLoading, setExcelLoading] = useState(false);
@@ -36,7 +37,7 @@ const YearlyPerformanceReport = () => {
   const levelOfLeadershipId = Form.useWatch("levelOfLeadershipId", form);
 
   const {
-    // permissionList,
+    permissionList,
     profileData: { buId, wgId, wId,employeeId,userName, isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
@@ -52,8 +53,13 @@ const YearlyPerformanceReport = () => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  return (
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 30542) {
+      permission = item;
+    }
+  });
+  return permission?.isView ? (
     <>
       <PForm
         form={form}
@@ -154,7 +160,11 @@ const YearlyPerformanceReport = () => {
         width={1500}
       />
     </>
-  );
+  )
+  :
+  (
+    <NotPermittedPage/>
+  )
 };
 
 export default YearlyPerformanceReport;

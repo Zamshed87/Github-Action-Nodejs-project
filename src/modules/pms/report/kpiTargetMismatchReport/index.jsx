@@ -14,6 +14,7 @@ import useKpiMismatchReport from "./hooks/useKpiMismatchReport";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import ReportFilters from "../common/ReportFilters";
 import { useHistory } from "react-router-dom";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const KpiTargetMismatchReport = () => {
   const [pages, setPages] = useState({
@@ -31,7 +32,7 @@ const KpiTargetMismatchReport = () => {
   const year = Form.useWatch("year", form);
 
   const {
-    // permissionList,
+    permissionList,
     profileData: { buId, wgId, wId,employeeId,userName,isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
 
@@ -46,7 +47,14 @@ const KpiTargetMismatchReport = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 30541) {
+      permission = item;
+    }
+  });
+
+  return permission?.isView ? (
     <PForm
       form={form}
       initialValues={{
@@ -106,7 +114,11 @@ const KpiTargetMismatchReport = () => {
         />
       </PCard>
     </PForm>
-  );
+  )
+  :
+  (
+    <NotPermittedPage/>
+  )
 };
 
 export default KpiTargetMismatchReport;
