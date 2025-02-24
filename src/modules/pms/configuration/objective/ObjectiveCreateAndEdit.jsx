@@ -57,6 +57,7 @@ const ObjectiveCreateAndEdit = () => {
     []
   );
   useEffect(() => {
+    getObjectiveTypeDDL(`/PMS/ObjectiveTypeDDL?PMTypeId=1`);
     if (location?.state?.objectiveId) {
       setObjectiveToInitDataOnEditFromLanding({
         location,
@@ -166,7 +167,7 @@ const ObjectiveCreateAndEdit = () => {
                   }}
                 />
               </div>
-              <div className="input-field-main col-md-3">
+              {/* <div className="input-field-main col-md-3">
                 <label>PM Type</label>
                 <FormikSelect
                   isDisabled={location?.state?.objectiveId}
@@ -192,7 +193,7 @@ const ObjectiveCreateAndEdit = () => {
                   errors={errors}
                   touched={touched}
                 />
-              </div>
+              </div> */}
               <div className="input-field-main col-md-3">
                 <label>Objective Type</label>
                 <FormikSelect
@@ -215,7 +216,7 @@ const ObjectiveCreateAndEdit = () => {
               {location?.state?.objectiveId ? (
                 <></>
               ) : (
-                <div className="col-md-12">
+                <div className="col-md-3 mt-4">
                   <PrimaryButton
                     onClick={() => handleSubmit()}
                     type="button"

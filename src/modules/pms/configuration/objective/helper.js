@@ -156,13 +156,13 @@ export const pmsObjectiveTableColumn = ({
       title: () => <span style={{ color: gray600 }}>Description</span>,
       dataIndex: "description",
     },
-    {
-      title: "PM Type",
-      dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
-      sorter: true,
-      filter: true,
-      width: 100,
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
+    //   sorter: true,
+    //   filter: true,
+    //   width: 100,
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
@@ -286,16 +286,16 @@ export const setObjectiveToInitDataOnEditFromLanding = ({
 
 export const validationSchemaOfObjectiveCreate = () => {
   const validationSchema = Yup.object().shape({
-    pmType: Yup.object({
-      label: Yup.string()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-      value: Yup.number()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-    })
-      .required("PM type is required")
-      .typeError("PM type is required"),
+    // pmType: Yup.object({
+    //   label: Yup.string()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    //   value: Yup.number()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    // })
+    //   .required("PM type is required")
+    //   .typeError("PM type is required"),
     objective: Yup.string()
       .required("Objective is required")
       .typeError("Objective is required"),

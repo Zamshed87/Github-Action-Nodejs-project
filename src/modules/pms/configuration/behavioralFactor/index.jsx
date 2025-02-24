@@ -9,6 +9,7 @@ import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import Clone from "./Clone";
+import usePermissions from "Hooks/usePermissions";
 // import CreateEdit from "./createEdit";
 
 const BehavioralFactor = () => {
@@ -18,9 +19,10 @@ const BehavioralFactor = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const { permission, buId, wgId, wId, orgId, intAccountId, profileData } =
+    usePermissions(30469);
+
   // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
-  const { profileData } = useSelector((state) => state?.auth, shallowEqual);
-  const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
   const history = useHistory();
   useEffect(() => {
@@ -33,11 +35,6 @@ const BehavioralFactor = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30469),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
   const evaluationCriteriaHeader = [
     {
       title: "SL",
