@@ -31,31 +31,10 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
   permissionList.forEach((item) => {
     permission = item;
   });
-  const CommonEmployeeDDL = useApiRequest([]);
 
   const [form] = Form.useForm();
   const params = useParams();
   const { type } = params;
-
-  const getEmployee = (value) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        workplaceGroupId: profileData?.wgId,
-        searchText: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-        });
-      },
-    });
-  };
 
   const addHandler = (values) => {
     // const isDuplicate = performanceAppraisal.some(
