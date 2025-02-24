@@ -129,6 +129,7 @@ export const submitHandler = ({
   random,
   savePipeline,
 }) => {
+  console.log("values", values);
   const cb = () => {
     resetForm();
     setIsAddEditForm(false);
@@ -157,7 +158,7 @@ export const submitHandler = ({
       workplaceId: +values?.pipelineName?.value === 13 ? -1 : workplace?.value || -1,
       workplaceName: workplace?.customLabel || "",
       isInSequence: isSequence,
-      randomApproverCount: random ? tableData?.length || 0 : 0,
+      randomApproverCount: !values?.isSequence && values?.randomCountValue || 0,
       isActive: true,
       createdBy: employeeId,
       createdAt: todayDate(),
