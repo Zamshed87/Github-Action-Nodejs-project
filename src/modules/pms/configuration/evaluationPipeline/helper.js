@@ -132,10 +132,17 @@ export const StakeholderForm = (
   return formConfig;
 };
 
+const getLeadershipFormat = (data) => {
+  return data?.map((item) => {
+    return { positionGroupId: item?.value };
+  });
+};
+
 export const handleEvaluationPipelineSetting = async (
   form,
   profileData,
   stakeholderField,
+  levelofLeaderShip,
   setLoading,
   cb
 ) => {
@@ -144,6 +151,7 @@ export const handleEvaluationPipelineSetting = async (
   console.log("values", values);
   console.log("profileData", profileData);
   console.log("stakeholderField", stakeholderField);
+  console.log("levelofLeaderShip", levelofLeaderShip);
   if (getTotalWeight(stakeholderField) !== 100) {
     setLoading && setLoading(false);
     return toast.error("Total weight should be 100");
@@ -154,9 +162,10 @@ export const handleEvaluationPipelineSetting = async (
     remarks: values?.comments,
     accountId: profileData?.intAccountId,
     actionBy: profileData?.employeeId,
-    positionGroupIdList: values?.leadership?.map((item) => {
-      return { positionGroupId: item?.value };
-    }),
+    positionGroupIdList:
+      values?.leadership?.length === 1 && values?.leadership[0]?.value == 0
+        ? getLeadershipFormat(levelofLeaderShip)
+        : getLeadershipFormat(values?.leadership),
     rowDto: stakeholderField?.map((item) => {
       return {
         rowId: 0, // This value is hardcoded if create

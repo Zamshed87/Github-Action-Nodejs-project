@@ -199,11 +199,12 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
               form
                 .validateFields(["evaluationCriteria", "leadership"])
                 .then(() => {
-                  console.log("values", values);
+                  console.log("values", levelofLeaderShip);
                   handleEvaluationPipelineSetting(
                     form,
                     profileData,
                     stakeholderField,
+                    levelofLeaderShip,
                     setLoading,
                     () => {
                       cb && cb();
