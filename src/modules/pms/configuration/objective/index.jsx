@@ -25,6 +25,7 @@ import { Tooltip } from "@mui/material";
 import { gray900 } from "../../../../utility/customColor";
 import { generateCommonExcelAction } from "../../../../common/Excel/excelConvert";
 import AntScrollTable from "../../../../common/AntScrollTable";
+import usePermissions from "Hooks/usePermissions";
 
 const PMSObjective = () => {
   const [pages, setPages] = useState({
@@ -32,11 +33,16 @@ const PMSObjective = () => {
     pageSize: 30,
     total: 0,
   });
-
   const {
-    permissionList,
-    profileData: { orgId, employeeId, buName },
-  } = useSelector((store) => store?.auth, shallowEqual);
+    permission,
+    buId,
+    wgId,
+    wId,
+    orgId,
+    intAccountId,
+    profileData: { employeeId, buName },
+  } = usePermissions(30460);
+
   const [, getObjectiveLanding, loadingOnGetObjectiveLanding] = useAxiosGet();
   const [objectiveTableData, setObjectiveTableData] = useState([]);
   const [, deletePMSObjective, loadingOnDelete] = useAxiosPost();
@@ -66,12 +72,6 @@ const PMSObjective = () => {
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30460),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
 
   const handleTableChange = ({ pagination }) => {
     setPages((prev) => ({ ...prev, ...pagination }));
