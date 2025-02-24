@@ -77,7 +77,8 @@ export default function AddEditForm({
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: values?.orgName?.intWorkplaceGroupId || wgId,
-        applicationTypeId: values?.pipelineName?.value || singleData?.applicationTypeId,
+        applicationTypeId:
+          values?.pipelineName?.value || singleData?.applicationTypeId,
       },
       onSuccess: (res) => {
         // Add "All" option without status label
@@ -213,7 +214,7 @@ export default function AddEditForm({
           setIsSequence(data?.header?.isInSequence);
           setRandomCount(!data?.header?.isInSequence);
           setRandom(!data?.header?.isInSequence);
-          const rowData = data?.row?.map((item,index) => ({
+          const rowData = data?.row?.map((item, index) => ({
             approver: item?.approverType || "User Group",
             approverId: item?.approverTypeId || 0,
             userGroup: item?.userGroupOrEmployeeId || "",
@@ -238,10 +239,12 @@ export default function AddEditForm({
     }
   }, [singleData]);
   const remover = (payload) => {
-    const filterArr = tableData.filter((itm, idx) => idx !== payload).map((item, index) => ({
-      ...item,
-      intShortOrder: index + 1, // Update sequence based on new position
-    }))
+    const filterArr = tableData
+      .filter((itm, idx) => idx !== payload)
+      .map((item, index) => ({
+        ...item,
+        intShortOrder: index + 1, // Update sequence based on new position
+      }));
     setTableData(filterArr);
   };
   return (
@@ -291,6 +294,9 @@ export default function AddEditForm({
         </Col>
         <Col md={12} sm={24}>
           <PSelect
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
             options={getWgDDL?.data?.length > 0 ? getWgDDL?.data : []}
             name="orgName"
             label="Workplace Group"
