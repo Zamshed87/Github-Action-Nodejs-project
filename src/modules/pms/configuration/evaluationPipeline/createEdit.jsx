@@ -120,7 +120,14 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
       getEnumData("EvaluationCriteria", setEvaluationCriteriaDDL, setLoading);
     }
     if (modal?.type === "edit" || modal?.type === "view") {
-      setStakeholderField(data?.rowDto);
+      if (data?.rowDto) {
+        const updatedRowDto = data.rowDto.map((item) => ({
+          ...item,
+          idx: item.rowId,
+        }));
+
+        setStakeholderField(updatedRowDto);
+      }
     }
   }, []);
   const st = Form.useWatch("stakeholderType", form);
