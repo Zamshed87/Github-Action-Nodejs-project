@@ -134,7 +134,10 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
           modal?.type === "edit" || modal?.type === "view"
             ? {
                 comments: data?.remarks,
-                evaluationCriteria: data?.evaluationCriteriaName,
+                evaluationCriteria: {
+                  label: data?.evaluationCriteriaName,
+                  value: data?.evaluationCriteriaId,
+                },
                 positionGroupId: data?.levelOfLeadershipId,
                 leadership: getLeadershipDDL(data?.positionGroupIdList),
                 evaluationHeaderId: data?.evaluationHeaderId,
@@ -194,7 +197,7 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
             onSubmit={() => {
               const values = form.getFieldsValue(true);
               form
-                .validateFields()
+                .validateFields(["evaluationCriteria", "leadership"])
                 .then(() => {
                   console.log("values", values);
                   handleEvaluationPipelineSetting(

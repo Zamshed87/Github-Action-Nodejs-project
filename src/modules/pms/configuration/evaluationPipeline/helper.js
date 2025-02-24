@@ -17,7 +17,7 @@ export const EvaluationPipelineForm = (
       ddl: leadershipApi || [],
       placeholder: "Select the leadership",
       rules: [{ required: true, message: "Level of Leadership is required!" }],
-      disabled: type === "view",
+      disabled: type === "view" || type === "edit",
       col: 8,
       onChange: (value, op) => {
         form.setFieldsValue({
@@ -78,9 +78,9 @@ export const StakeholderForm = (
       placeholder: "Select the Stakeholder Type",
       rules: [{ required: true, message: "Stakeholder Type is required!" }],
       col: 6,
-      onChange: (label) => {
+      onChange: (value) => {
         form.setFieldsValue({ stakeholder: undefined });
-        if (label === "User Group") {
+        if (value == 6) {
           doUserGrp();
         }
       },
@@ -88,7 +88,7 @@ export const StakeholderForm = (
   ];
 
   // Add Stakeholder field based on the selected type
-  if (st?.label === "Individual Employee") {
+  if (st?.value == 2) {
     formConfig.push({
       ...commonStakeholderConfig,
       ddl: CommonEmployeeDDL?.data || [],
@@ -101,7 +101,7 @@ export const StakeholderForm = (
       loading: CommonEmployeeDDL?.loading,
       rules: [{ required: true, message: "Stakeholder is required!" }],
     });
-  } else if (st?.label === "User Group") {
+  } else if (st?.value == 6) {
     formConfig.push({
       ...commonStakeholderConfig,
       ddl: userGrp || [],
@@ -154,7 +154,7 @@ export const handleEvaluationPipelineSetting = async (
     remarks: values?.comments,
     accountId: profileData?.intAccountId,
     actionBy: profileData?.employeeId,
-    positionGroupId: values?.leadership?.map((item) => {
+    positionGroupIdList: values?.leadership?.map((item) => {
       return { positionGroupId: item?.value };
     }),
     rowDto: stakeholderField?.map((item) => {
