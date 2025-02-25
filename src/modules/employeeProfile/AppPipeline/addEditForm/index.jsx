@@ -82,11 +82,13 @@ export default function AddEditForm({
       },
       onSuccess: (res) => {
         // Add "All" option without status label
-        res.unshift({
-          label: "All",
-          value: -1,
-          customLabel: "All",
-        });
+        if (res.length > 1) {
+          res.unshift({
+            label: "All",
+            value: -1,
+            customLabel: "All",
+          });
+        }
 
         res.forEach((item, i) => {
           // Skip the "All" option when adding status labels
