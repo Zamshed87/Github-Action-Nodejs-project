@@ -1,0 +1,397 @@
+import { EyeTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
+import { EditOutlined } from "@mui/icons-material";
+import { Form, Tooltip } from "antd";
+import axios from "axios";
+import Chips from "common/Chips";
+import IConfirmModal from "common/IConfirmModal";
+import MasterFilter from "common/MasterFilter";
+import PrimaryButton from "common/PrimaryButton";
+import moment from "moment";
+import { dateFormatter } from "utility/dateFormatter";
+
+// Utility function to format dates
+export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
+
+export const statusDDL = [
+    { value: "", label: "All" },
+    { value: "Clearance", label: "Clearance" },
+    { value: "Final Settlement Completed", label: "Final Settlement Completed" },
+    { value: "Released", label: "Released" },
+];
+
+// SearchFilter Component
+export const SearchFilter = ({ form, pages, getData }) => {
+    const values = Form.useWatch([], form);
+
+    return (
+        <MasterFilter
+            inputWidth="200"
+            width="200px"
+            isHiddenFilter
+            value={values?.search}
+            setValue={(value) => {
+                form.setFieldValue("search", value);
+                getData(pages, value || "");
+            }}
+            cancelHandler={() => {
+                form.setFieldValue("search", "");
+                getData(pages, "");
+            }}
+        />
+    );
+};
+
+export const getFinalSettlementLanding = async (
+    partType = "",
+    buId,
+    wgId,
+    fromDate,
+    toDate,
+    status,
+    search,
+    setter,
+    setLoading,
+    pageNo,
+    pageSize,
+    setPages,
+    wId,
+    empId,
+    workplaceGroupList,
+    workplaceList
+) => {
+    try {
+        setLoading && setLoading(true);
+        const payload = {
+            pageSize,
+            pageNo,
+            businessUnitId: buId,
+            workplaceGroupId: wgId,
+            workplaceId: wId,
+            employeeId: empId,
+            fromDate,
+            toDate,
+            isForXl: false,
+            searchTxt: search,
+            status,
+            separationTypeIds: "",
+            departments: "",
+            designations: "",
+            workplaceGroupList,
+            workplaceList,
+        };
+
+        const res = await axios.get("FinalSettlement/GetEmployeeSeparations", {
+            params: payload,
+        });
+
+        if (res?.data) {
+            if (partType === "FinalSettlement") {
+                setter(res?.data?.data);
+                setPages({
+                    current: res?.data?.pageNo,
+                    pageSize: res?.data?.pageSize,
+                    total: res?.data?.totalCount,
+                });
+            }
+        }
+
+        setLoading && setLoading(false);
+    } catch (error) {
+        setLoading && setLoading(false);
+    }
+};
+
+export const getFinalSettlementLandingTableColumn = (
+    page,
+    paginationSize,
+    postClearanceData,
+    setOpenExitInterviewDataViewModal,
+    getData,
+    id,
+    setId,
+    empId,
+    setEmpId,
+) => {
+    const confirmClearancePopup = (sepId, employeeId) => {
+        const confirmObject = {
+            closeOnClickOutside: false,
+            message: "Are you sure you want to send this application for Clearance?",
+            yesAlertFunc: () => {
+                postClearanceData(
+                    `/Separation/StartSeparationClearance?id=${sepId}&employeeId=${employeeId}`,
+                    "",
+                    () => {
+                        getData();
+                    },
+                    true
+                );
+            },
+            noAlertFunc: () => {
+                getData();
+            },
+        };
+        IConfirmModal(confirmObject);
+    };
+
+    const confirmReleasePopup = (sepId, employeeId) => {
+        const confirmObject = {
+            closeOnClickOutside: false,
+            message: "Are you sure you want to release this application?",
+            yesAlertFunc: () => {
+                console.log("release", sepId, employeeId);
+            },
+            noAlertFunc: () => {
+                getData();
+            },
+        };
+        IConfirmModal(confirmObject);
+    };
+
+    return [
+        {
+            title: "SL",
+            render: (_, index) => (page - 1) * paginationSize + index + 1,
+            sort: false,
+            filter: false,
+        },
+        {
+            title: "Code",
+            dataIndex: "strEmployeeCode",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Employee Name",
+            dataIndex: "strEmployeeName",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Workplace",
+            dataIndex: "strWorkplaceName",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Department",
+            dataIndex: "strDepartment",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Designation",
+            dataIndex: "strDesignation",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Supervisor",
+            dataIndex: "strSupervisor",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Line Manager",
+            dataIndex: "strLineManager",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Employment Type",
+            dataIndex: "strEmploymentType",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Joining Date",
+            dataIndex: "dteJoiningDate",
+            render: (data) => (
+                <>
+                    {data?.dteCreatedAt
+                        ? dateFormatter(data?.dteCreatedAt)
+                        : "N/A"}
+                </>
+            ),
+            sort: true,
+            filter: false,
+            fieldType: "date",
+        },
+        {
+            title: "Service Length",
+            dataIndex: "serviceLength",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Separation Type",
+            dataIndex: "strSeparationTypeName",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
+            title: "Status",
+            dataIndex: "approvalStatus",
+            sort: true,
+            filter: false,
+            render: (data) => (
+                <div>
+                    {data?.approvalStatus === "Pending" && (
+                        <Chips label="Pending" classess="warning p-2" />
+                    )}
+                    {data?.approvalStatus === "Cancelled" && (
+                        <Chips label="Cancelled" classess="danger p-2" />
+                    )}
+                    {data?.approvalStatus === "Approved" && (
+                        <Chips label="Approved" classess="success p-2" />
+                    )}
+                    {data?.approvalStatus === "Withdrawn" && (
+                        <Chips label="Withdrawn" classess="danger p-2" />
+                    )}
+                    {data?.approvalStatus === "Clearance" && (
+                        <Chips label="Clearance" classess="info p-2" />
+                    )}
+                    {data?.approvalStatus === "Final Settlement Completed" && (
+                        <Chips label="Final Settlement Completed" classess="success p-2" />
+                    )}
+                    {data?.approvalStatus === "Released" && (
+                        <Chips label="Released" classess="indigo p-2" />
+                    )}
+                </div>
+            ),
+            fieldType: "string",
+        },
+        {
+            title: "Application Date",
+            dataIndex: "dteSeparationDate",
+            render: (data) => (
+                <>
+                    {data?.dteSeparationDate
+                        ? dateFormatter(data?.dteSeparationDate)
+                        : "N/A"}
+                </>
+            ),
+            sort: true,
+            filter: false,
+            fieldType: "date",
+        },
+        {
+            title: "Last Working Date",
+            dataIndex: "dteLastWorkingDate",
+            render: (data) => (
+                <>
+                    {data?.dteLastWorkingDate
+                        ? dateFormatter(data?.dteLastWorkingDate)
+                        : "N/A"}
+                </>
+            ),
+            sort: true,
+            filter: false,
+            fieldType: "date",
+        },
+        {
+            title: "Actions",
+            dataIndex: "",
+            render: (data) => (
+                <div className="d-flex justify-content-evenly align-items-center">
+                    <Tooltip placement="top" color={"#34a853"} title={"View"}>
+                        <PrimaryButton
+                            type="button"
+                            icon={<EyeTwoTone twoToneColor="#34a853" />}
+                            className={"iconButton"}
+                            customStyle={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip placement="top" color={"#34a853"} title={"Generate"}>
+                        <PrimaryButton
+                            type="button"
+                            icon={<ProfileTwoTone twoToneColor="#34a853" />}
+                            className={"iconButton"}
+                            customStyle={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
+                        <PrimaryButton
+                            type="button"
+                            icon={<EditOutlined sx={{ color: "#34a853" }} />}
+                            className={"iconButton"}
+                            customStyle={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
+                        <button
+                            className={"iconButton"}
+                            style={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            type="button"
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        ><SendTwoToneIcon color="success" />
+                        </button>
+                    </Tooltip>
+                </div>
+            ),
+        }
+    ]
+};
+
+export const getSeparationLandingById = async (id, setter, setLoading) => {
+    setLoading && setLoading(true);
+    try {
+        const res = await axios.get(
+            `/separation/GetSeparationById/${id}`
+        );
+
+        const modifyRes = [res?.data]?.map((itm) => {
+            return {
+                ...itm,
+                docArr:
+                    itm?.strDocumentId?.length > 0 ? itm?.strDocumentId?.split(",") : [],
+                halfReason:
+                    itm?.strReason?.length > 120
+                        ? itm?.strReason?.slice(0, 120)
+                        : `${itm?.strReason?.slice(0, 120)}...`,
+                fullReason: itm?.strReason,
+            };
+        });
+        setter(modifyRes[0]);
+        setLoading && setLoading(false);
+    } catch (error) {
+        setLoading && setLoading(false);
+    }
+};

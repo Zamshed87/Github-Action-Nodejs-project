@@ -1745,6 +1745,9 @@ const ExitInterviewLanding = lazy(() =>
 const ClearanceLanding = lazy(() =>
   import("../modules/retirement/clearance/index.jsx")
 );
+const FinalSettlementLandingv2 = lazy(() =>
+  import("../modules/retirement/finalsettlement/index.jsx")
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4201,6 +4204,10 @@ export const routingList = [
   {
     path: "/retirement/clearance",
     component: ClearanceLanding,
+  },
+  {
+    path: "/retirement/finalSettlement",
+    component: FinalSettlementLandingv2,
   }
 ];
 
