@@ -20,10 +20,11 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import ATCreateEdit from "./createEdit";
 
 const AssessmentTimeline = () => {
-  const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
+  const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet([]);
   const [fiscalYear, GetFiscalYearDDL, fiscalYearLoader] = useAxiosGet();
 
   const [modal, setModal] = useState(false);
+  const [createmodal, setCreateModal] = useState(false);
   const [form] = Form.useForm();
   const [rowData, setRowData] = useState({});
   const { profileData } = useSelector((state) => state?.auth, shallowEqual);
@@ -32,9 +33,7 @@ const AssessmentTimeline = () => {
   const history = useHistory();
 
   const landingApi = () => {
-    getCriteriaList(
-      `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
-    );
+    getCriteriaList(`/PMS/GetAllAssesmentTimelineSetup?accountId`);
     GetFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
   };
   useEffect(() => {
@@ -54,7 +53,11 @@ const AssessmentTimeline = () => {
     },
     {
       title: "Level of Leadership",
-      dataIndex: "levelOfLeadershipName",
+      dataIndex: "positionGroupName",
+    },
+    {
+      title: "Year",
+      dataIndex: "yearName",
     },
     {
       title: "Status",
@@ -105,9 +108,18 @@ const AssessmentTimeline = () => {
   return permission?.isView ? (
     <div>
       {criteriaListLoader && <Loading />}
-      <h1>Assesment Timeline Setup</h1>
       <PForm form={form}>
         <PCard>
+          <PCardHeader
+            buttonList={[
+              {
+                type: "primary",
+                content: "Create",
+                icon: "plus",
+                onClick: () => setCreateModal(true),
+              },
+            ]}
+          />
           <PCardBody>
             <Row gutter={[10, 2]} style={{ marginBottom: "20px" }}>
               <Col md={4} sm={12} xs={24}>
@@ -143,10 +155,28 @@ const AssessmentTimeline = () => {
             <div className="mt-2">
               <DataTable
                 bordered
-                data={criteriaList || []}
+                data={criteriaList?.data || []}
                 header={evaluationCriteriaHeader}
               />
             </div>
+            <PModal
+              title="Create Assesment Timeline"
+              open={createmodal}
+              onCancel={() => {
+                setCreateModal(false);
+                landingApi();
+              }}
+              components={
+                <ATCreateEdit
+                  modal={createmodal}
+                  setModal={setCreateModal}
+                  data={rowData}
+                  cb={landingApi}
+                  isDetails={false}
+                />
+              }
+              width={1000}
+            />
             <PModal
               title="Assesment Timeline Setup Log Details"
               open={modal}
@@ -160,6 +190,7 @@ const AssessmentTimeline = () => {
                   setModal={setModal}
                   data={rowData}
                   cb={landingApi}
+                  isDetails={true}
                 />
               }
               width={1000}

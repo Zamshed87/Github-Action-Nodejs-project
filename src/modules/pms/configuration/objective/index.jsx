@@ -273,9 +273,9 @@ const PMSObjective = () => {
                 name="status"
                 options={
                   [
-                    { label: "All", value: 0 },
-                    { label: "Active", value: 1 },
-                    { label: "Inactive", value: 2 },
+                    { label: "All", value: null },
+                    { label: "Active", value: true },
+                    { label: "Inactive", value: false },
                   ] || []
                 }
                 value={values?.status}
