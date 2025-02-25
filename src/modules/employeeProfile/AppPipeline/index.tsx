@@ -136,7 +136,7 @@ function CommonAppPipeline() {
         const workplaces = name.split(",").map((w: any) => w.trim());
         const firstWorkplace = workplaces[0] || "";
         const remainingCount = workplaces.length - 1;
-    
+
         return workplaces.length > 1 ? (
           <Tooltip title={name}>
             <span>
