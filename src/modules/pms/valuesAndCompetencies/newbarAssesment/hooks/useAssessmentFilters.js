@@ -23,10 +23,10 @@ const useAssessmentFilters = () => {
       label: "Quarterly",
     }],
     quarterDDL:[
-      { value: 1, label: "1st Quarter" },
-      { value: 2, label: "2nd Quarter" },
-      { value: 3, label: "3rd Quarter" },
-      { value: 4, label: "4th Quarter" },
+      { value: "1st Quarter", label: "1st Quarter" },
+      { value: "2nd Quarter", label: "2nd Quarter" },
+      { value: "3rd Quarter", label: "3rd Quarter" },
+      { value: "4th Quarter", label: "4th Quarter" },
     ]
   };
 };
