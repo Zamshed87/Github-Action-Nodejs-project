@@ -1,15 +1,13 @@
-import { CheckCircleTwoTone, EyeTwoTone } from "@ant-design/icons";
-import { InfoOutlined } from "@mui/icons-material";
+import { EyeTwoTone, ProfileTwoTone } from "@ant-design/icons";
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
+import { EditOutlined } from "@mui/icons-material";
 import { Form, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
 import IConfirmModal from "common/IConfirmModal";
-import { LightTooltip } from "common/LightTooltip";
 import MasterFilter from "common/MasterFilter";
 import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
-import { gray900 } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
 
 // Utility function to format dates
@@ -17,10 +15,6 @@ export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
 
 export const statusDDL = [
     { value: "", label: "All" },
-    { value: "Pending", label: "Pending" },
-    { value: "Cancelled", label: "Cancelled" },
-    { value: "Approved", label: "Approved" },
-    { value: "Withdrawn", label: "Withdrawn" },
     { value: "Clearance", label: "Clearance" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
@@ -176,6 +170,13 @@ export const getFinalSettlementLandingTableColumn = (
             fieldType: "string",
         },
         {
+            title: "Workplace",
+            dataIndex: "strWorkplaceName",
+            sort: true,
+            filter: false,
+            fieldType: "string",
+        },
+        {
             title: "Department",
             dataIndex: "strDepartment",
             sort: true,
@@ -301,6 +302,70 @@ export const getFinalSettlementLandingTableColumn = (
         {
             title: "Actions",
             dataIndex: "",
+            render: (data) => (
+                <div className="d-flex justify-content-evenly align-items-center">
+                    <Tooltip placement="top" color={"#34a853"} title={"View"}>
+                        <PrimaryButton
+                            type="button"
+                            icon={<EyeTwoTone twoToneColor="#34a853" />}
+                            className={"iconButton"}
+                            customStyle={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip placement="top" color={"#34a853"} title={"Generate"}>
+                        <PrimaryButton
+                            type="button"
+                            icon={<ProfileTwoTone twoToneColor="#34a853" />}
+                            className={"iconButton"}
+                            customStyle={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
+                        <PrimaryButton
+                            type="button"
+                            icon={<EditOutlined sx={{ color: "#34a853" }} />}
+                            className={"iconButton"}
+                            customStyle={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
+                        <button
+                            className={"iconButton"}
+                            style={{
+                                height: "25px",
+                                width: "25px"
+                            }}
+                            type="button"
+                            onClick={() => {
+                                setId(data?.separationId)
+                                setEmpId(data?.intEmployeeId)
+                            }}
+                        ><SendTwoToneIcon color="success" />
+                        </button>
+                    </Tooltip>
+                </div>
+            ),
         }
     ]
 };
