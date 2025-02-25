@@ -129,9 +129,10 @@ export const submitHandler = ({
   random,
   savePipeline,
 }) => {
-  if(values?.randomCount ? values?.randomCountValue <= 0 : false){
+  if (values?.randomCount ? values?.randomCountValue <= 0 : false) {
     return toast.warn("Please select random count value");
   }
+
   const cb = () => {
     resetForm();
     setIsAddEditForm(false);
@@ -155,12 +156,17 @@ export const submitHandler = ({
       applicationType: values?.pipelineName?.label || "",
       accountId: orgId,
       businessUnitId: buId,
-      workplaceGroupId: +values?.pipelineName?.value === 13 ? -1 : values?.orgName?.value || wgId,
+      workplaceGroupId:
+        +values?.pipelineName?.value === 13
+          ? -1
+          : values?.orgName?.value || wgId,
       workplaceGroupName: values?.orgName?.label || "",
-      workplaceId: +values?.pipelineName?.value === 13 ? -1 : workplace?.value || -1,
-      workplaceName: workplace?.customLabel || "",
+      workplaceId:
+        +values?.pipelineName?.value === 13 ? -1 : workplace?.value || -1,
+      workplaceName: workplace?.customLabel || "All",
       isInSequence: isSequence,
-      randomApproverCount: !values?.isSequence && values?.randomCountValue || 0,
+      randomApproverCount:
+        (!values?.isSequence && values?.randomCountValue) || 0,
       isActive: true,
       createdBy: employeeId,
       createdAt: todayDate(),
