@@ -564,7 +564,11 @@ const AnnouncementViewPage = lazy(() =>
 const AnnouncementCreateLanding = lazy(() =>
   import("../modules/announcement/index.jsx")
 );
-const ApprovalList = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApprovalList = lazy(() => import("../modules/approvalList/indexOld.jsx"));
+const ApprovalListNew = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApproverCommonLanding = lazy(() =>
+  import("../modules/approvalList/commonApproval/index.jsx")
+);
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
@@ -1583,6 +1587,9 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/AdvanceSalaryGenerateLanding";
+import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
+import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 
 // const TrainingApplicationCreate = lazy(() =>
@@ -2522,8 +2529,16 @@ export const routingList = [
     component: TrainingDetails,
   },
   {
-    path: "/approval",
+    path: "/approval/old",
     component: ApprovalList,
+  },
+  {
+    path: "/approval",
+    component: ApprovalListNew,
+  },
+  {
+    path: "/approval/:id",
+    component: ApproverCommonLanding,
   },
   // {
   //   path: "/approval",
@@ -2753,6 +2768,10 @@ export const routingList = [
     component: BonusGenerateView,
   },
   {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/:id",
+    component: AdvanceSalaryGenerateView,
+  },
+  {
     path: "/compensationAndBenefits/payrollProcess/bonusGenerate/create",
     component: BonusGenerateCreate,
   },
@@ -2775,6 +2794,20 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/payrollProcess/generateSalary",
     component: SalaryGenerateLanding,
+  },
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate",
+    component: AdvanceSalaryGenerateLanding,
+  },
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/create",
+    component: AdvanceSalaryGenerateCreate,
+  },
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/:id",
+    component: AdvanceSalaryGenerateCreate,
   },
   {
     path: "/compensationAndBenefits/payrollProcess/arearSalaryGenerate/view/:id",
