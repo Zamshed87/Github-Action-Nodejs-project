@@ -18,10 +18,12 @@ import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import ATCreateEdit from "./createEdit";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const AssessmentTimeline = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet([]);
   const [fiscalYear, GetFiscalYearDDL, fiscalYearLoader] = useAxiosGet();
+  const [, saveAssetStart, asseStartloading, setAssetStart] = useAxiosPost({});
 
   const [modal, setModal] = useState(false);
   const [createmodal, setCreateModal] = useState(false);
@@ -68,19 +70,33 @@ const AssessmentTimeline = () => {
       dataIndex: "letterGenerateId",
       render: (generateId, rec) => (
         <Flex justify="center" gap="10px">
-          <Tooltip placement="bottom" title={"View"}>
+          <Tooltip placement="bottom" title={"Status"}>
             <button
               style={{
                 height: "24px",
                 fontSize: "12px",
                 padding: "0px 12px 0px 12px",
-                backgroundColor: "var(--green)",
+                backgroundColor:
+                  rec?.status === "Running" ? "red" : "var(--green)",
                 color: "white",
               }}
               className="btn"
               type="button"
+              onClick={() => {
+                let payload = {
+                  assesmentTimelineSetupId: rec?.assesmentTimelineSetupId,
+                };
+                let url =
+                  rec?.status === "Running"
+                    ? `/PMS/Assessment/Stop`
+                    : `/PMS/Assessment/Start`;
+                ("");
+                saveAssetStart(url, payload, () => {
+                  landingApi();
+                });
+              }}
             >
-              Start
+              {rec?.status === "Running" ? "Stop" : "Start"}
             </button>
           </Tooltip>
           <Tooltip placement="bottom" title={"Details"}>
@@ -94,7 +110,10 @@ const AssessmentTimeline = () => {
               }}
               className="btn"
               type="button"
-              onClick={() => setModal(true)}
+              onClick={() => {
+                setRowData(rec);
+                setModal(true);
+              }} //
             >
               Log Details
             </button>
