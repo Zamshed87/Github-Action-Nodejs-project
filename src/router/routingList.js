@@ -14,7 +14,7 @@ const SupervisorAssessment = lazy(() =>
   import("../modules/pms/valuesAndCompetencies/supervisorAssessment/index.jsx")
 );
 const BarAssesment = lazy(() =>
-  import("../modules/pms/valuesAndCompetencies/barAssesment/index.jsx")
+  import("../modules/pms/valuesAndCompetencies/newbarAssesment/index.jsx")
 );
 const BarAssessmentEvaluationForSupervisor = lazy(() =>
   import(
