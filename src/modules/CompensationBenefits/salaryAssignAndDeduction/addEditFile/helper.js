@@ -46,6 +46,26 @@ export const validationSchema = Yup.object().shape({
   amount: Yup.number()
     .min(0, "Amount should be positive number")
     .required("Amount is required"),
+  intAllowanceAttendenceStatus: Yup.object()
+    .nullable()
+    .when("intAllowanceDuration.value", {
+      is: (value) => value === 1 || value === 2, // Required for both Per Day and Per Month
+      then: Yup.object()
+        .shape({
+          label: Yup.string().required("Attendance status is required"),
+          value: Yup.number().required("Attendance status is required"),
+        })
+        .typeError("Attendance status is required"),
+    }),
+  maxAmount: Yup.number()
+    .nullable()
+    .when("intAllowanceDuration.value", {
+      is: (value) => value === 1, // Required only for Per Day
+      then: Yup.number()
+        .min(0, "Max amount should be a positive number")
+        .required("Max amount is required"),
+      otherwise: Yup.number().nullable(), // Optional for other cases
+    }),
 });
 
 export const validationSchema2 = Yup.object().shape({
@@ -207,9 +227,13 @@ export const bulkAssignEmpListTableColumn = (pages) => {
   ];
 };
 
-
-export const bulkEmpInputHandler = (value, name, index, setBulkLanding,
-  bulkLandingRowDto) => {
+export const bulkEmpInputHandler = (
+  value,
+  name,
+  index,
+  setBulkLanding,
+  bulkLandingRowDto
+) => {
   const xData = [...bulkLandingRowDto];
   xData[index][name] = value;
   setBulkLanding(xData);
