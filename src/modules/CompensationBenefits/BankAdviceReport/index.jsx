@@ -46,6 +46,7 @@ import EFTNBankLetterHead from "./letterheadReports/EFTNBankLetterHead";
 import UpayBankLetterHead from "./letterheadReports/UpayBankLetterHead";
 import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
 import MBLBankLetterHead from "./letterheadReports/MBLBankLetterHead";
+import BFTNEBLBankLetterHead from "./letterheadReports/BFTNEBLBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -116,7 +117,7 @@ const BankAdviceReport = () => {
       permission = item;
     }
   });
-  
+
   const tenMsBankAdvice = useApiRequest([]);
   // Functions
   const tenMsBALanding = (partName, values) => {
@@ -1301,13 +1302,21 @@ const BankAdviceReport = () => {
                         signatureImage={signatureImage}
                       />
                     )}
-                    {values?.adviceType?.value === "BFTN" && (
-                      <BFTNBankLetterHead
-                        letterHeadImage={letterHeadImage}
-                        landingViewPdf={landingViewPdf}
-                        signatureImage={signatureImage}
-                      />
-                    )}
+                    {values?.adviceType?.value === "BFTN" ? (
+                      values?.bank?.value === 17 ? (
+                        <BFTNEBLBankLetterHead
+                          letterHeadImage={letterHeadImage}
+                          landingViewPdf={landingViewPdf}
+                          signatureImage={signatureImage}
+                        />
+                      ) : (
+                        <BFTNBankLetterHead
+                          letterHeadImage={letterHeadImage}
+                          landingViewPdf={landingViewPdf}
+                          signatureImage={signatureImage}
+                        />
+                      )
+                    ) : null}
                     {values?.adviceType?.value === "EFTN" && (
                       <EFTNBankLetterHead
                         letterHeadImage={letterHeadImage}
