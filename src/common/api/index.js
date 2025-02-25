@@ -164,6 +164,33 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
     cb && cb();
   } catch (error) {}
 };
+export const getPeopleDeskAllDDLModify = async (apiUrl, value, label, setter, cb) => {
+  try {
+    const res = await axios.get(apiUrl);
+    
+    const newDDL = res?.data?.map((itm) => {
+      let statusLabel = " 🔴 (Not Setup)";
+      if (itm.isIndividualSetup) {
+        statusLabel = " 🟢 (Individual Setup)";
+      } else if (itm.isAllSetup) {
+        statusLabel = " 🔵 (All Setup)";
+      }
+
+      return {
+        ...itm,
+        value: itm[value],
+        label: `${itm[label]} ${statusLabel}`,
+      };
+    });
+
+    setter && setter(newDDL);
+    cb && cb();
+  } catch (error) {
+    console.error("Error fetching DDL:", error);
+  }
+};
+
+
 
 export const getPeopleDeskAllDDLnew = async (
   apiUrl,

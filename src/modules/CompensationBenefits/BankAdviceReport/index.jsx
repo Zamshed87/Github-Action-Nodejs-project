@@ -116,6 +116,7 @@ const BankAdviceReport = () => {
       permission = item;
     }
   });
+  
   const tenMsBankAdvice = useApiRequest([]);
   // Functions
   const tenMsBALanding = (partName, values) => {

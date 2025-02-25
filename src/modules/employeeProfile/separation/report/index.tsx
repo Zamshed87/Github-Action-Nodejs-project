@@ -165,6 +165,7 @@ const SeparationReport = () => {
     pagination = { current: 1, pageSize: paginationSize },
     searchText = "",
   }: TLandingApi = {}) => {
+    console.log(form.getFieldsValue(true), "adnan");
     const values = form.getFieldsValue(true);
     landingApi.action({
       urlKey: "EmployeeSeparationListFilter",
