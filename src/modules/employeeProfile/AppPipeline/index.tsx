@@ -3,7 +3,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form } from "antd";
+import { Form, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
@@ -127,9 +127,41 @@ function CommonAppPipeline() {
       dataIndex: "workplaceGroupName",
       sorter: true,
     },
+
     {
       title: "Workplace/Concern",
       dataIndex: "workplaceName",
+      render: (_: any, rec: any) => {
+        const name = rec?.workplaceName || "";
+        const workplaces = name.split(",").map((w: any) => w.trim());
+        const firstWorkplace = workplaces[0] || "";
+        const remainingCount = workplaces.length - 1;
+
+        return workplaces.length > 1 ? (
+          <Tooltip title={name}>
+            <span>
+              {firstWorkplace},{" "}
+              <span
+                style={{
+                  backgroundColor: "rgb(20 184 54 / 57%)", // Custom green with transparency
+                  color: "white",
+                  padding: "2px 6px",
+                  borderRadius: "10px",
+                  fontWeight: 600,
+                  fontSize: "10px",
+                  display: "inline-block",
+                  minWidth: "7px",
+                  textAlign: "center",
+                }}
+              >
+                {remainingCount}+
+              </span>
+            </span>
+          </Tooltip>
+        ) : (
+          firstWorkplace
+        );
+      },
       sorter: true,
     },
     {
