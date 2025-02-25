@@ -81,7 +81,6 @@ export default function AddEditForm({
           values?.pipelineName?.value || singleData?.applicationTypeId,
       },
       onSuccess: (res) => {
-        // Add "All" option without status label
         if (res.length > 1) {
           res.unshift({
             label: "All",
@@ -91,7 +90,6 @@ export default function AddEditForm({
         }
 
         res.forEach((item, i) => {
-          // Skip the "All" option when adding status labels
           if (item.value !== -1) {
             res[i].isNotSetup = true;
 
@@ -279,6 +277,9 @@ export default function AddEditForm({
       <Row gutter={[10, 2]}>
         <Col md={12} sm={24}>
           <PSelect
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
             options={pipelineDDL || []}
             name="pipelineName"
             label="Pipeline Name"
@@ -323,7 +324,14 @@ export default function AddEditForm({
             }
             maxTagCount="responsive"
             mode="multiple"
-            options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+            options={
+              getWDDL?.data?.length > 0
+                ? getWDDL?.data.map((opt) => ({
+                    ...opt,
+                    disabled: opt.label.includes("🟢 (Individual Setup)"),
+                  }))
+                : []
+            }
             name="workplace"
             label="Workplace"
             showSearch
@@ -620,7 +628,19 @@ export default function AddEditForm({
                       if (userGroupExists?.length > 0)
                         return toast.warn("Already exists user group");
 
-                      // Dynamic Sequence (based on tableData length)
+                      if (
+                        approver?.label === "User Group" &&
+                        !userGroup?.value
+                      ) {
+                        return toast.warn("Please select user group");
+                      }
+                      if (
+                        approver?.label === "Individual Employee" &&
+                        !employee?.value
+                      ) {
+                        return toast.warn("Please select employee");
+                      }
+
                       const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
