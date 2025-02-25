@@ -5,6 +5,7 @@ import { gray600 } from "../../../../utility/customColor";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import * as Yup from "yup";
+import FormikToggle from "common/FormikToggle";
 
 export const onGetObjectiveLanding = ({
   getObjectiveLanding,
@@ -156,13 +157,13 @@ export const pmsObjectiveTableColumn = ({
       title: () => <span style={{ color: gray600 }}>Description</span>,
       dataIndex: "description",
     },
-    {
-      title: "PM Type",
-      dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
-      sorter: true,
-      filter: true,
-      width: 100,
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
+    //   sorter: true,
+    //   filter: true,
+    //   width: 100,
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
@@ -218,7 +219,7 @@ export const pmsObjectiveTableColumn = ({
               <EditOutlined sx={{ fontSize: "20px" }} />
             </button>
           </Tooltip>
-          <Tooltip title="Delete" arrow>
+          {/* <Tooltip title="Delete" arrow>
             <button
               type="button"
               className="iconButton mt-0 mt-md-2 mt-lg-0 mx-2"
@@ -255,7 +256,18 @@ export const pmsObjectiveTableColumn = ({
             >
               <DeleteOutlineOutlined />
             </button>
-          </Tooltip>
+          </Tooltip> */}
+
+          {/* <div className="col-12">
+            <FormikToggle
+              name="isActive"
+              color={values?.isActive ? greenColor : blackColor80}
+              checked={values?.isActive}
+              onChange={(e) => {
+                setFieldValue("isActive", e.target.checked);
+              }}
+            />
+          </div> */}
         </div>
       ),
       sorter: false,
@@ -286,16 +298,16 @@ export const setObjectiveToInitDataOnEditFromLanding = ({
 
 export const validationSchemaOfObjectiveCreate = () => {
   const validationSchema = Yup.object().shape({
-    pmType: Yup.object({
-      label: Yup.string()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-      value: Yup.number()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-    })
-      .required("PM type is required")
-      .typeError("PM type is required"),
+    // pmType: Yup.object({
+    //   label: Yup.string()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    //   value: Yup.number()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    // })
+    //   .required("PM type is required")
+    //   .typeError("PM type is required"),
     objective: Yup.string()
       .required("Objective is required")
       .typeError("Objective is required"),

@@ -24,55 +24,17 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
 
   const { buId, wgId, wId, orgId, intAccountId } = profileData;
   const dispatch = useDispatch();
-  const firstSegment = location.pathname.split("/")[1];
   const [loading, setLoading] = useState(false);
-  const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
-  const [userGrp, getUserGrp, loadingUserGrp, setUserGrp] = useAxiosGet([]);
   const [performanceAppraisal, setPerformanceAppraisal] = useState([]);
 
   let permission = {};
   permissionList.forEach((item) => {
     permission = item;
   });
-  const CommonEmployeeDDL = useApiRequest([]);
 
   const [form] = Form.useForm();
   const params = useParams();
   const { type } = params;
-
-  const doUserGrp = () => {
-    const api = `/Auth/GetAllUserGroupByAccountId?PageNo=1&PageSize=125&searchTxt=`;
-    getUserGrp(api, (res) => {
-      const list = [];
-      res?.data?.forEach((item, i) => {
-        list.push({
-          label: item?.strUserGroup,
-          value: item?.intUserGroupHeaderId,
-        });
-      });
-      setUserGrp(list);
-    });
-  };
-
-  const getEmployee = (value) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
-      params: {
-        businessUnitId: profileData?.buId,
-        workplaceGroupId: profileData?.wgId,
-        searchText: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-        });
-      },
-    });
-  };
 
   const addHandler = (values) => {
     // const isDuplicate = performanceAppraisal.some(
@@ -151,7 +113,7 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading, true); // Call the API
+    // levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading, true); // Call the API
   }, []);
 
   return permission?.isCreate ? (
