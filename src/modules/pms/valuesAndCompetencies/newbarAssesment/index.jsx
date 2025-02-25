@@ -6,8 +6,8 @@ import { getBarAssessmentColumn } from "./helper";
 import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { Form } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import ReportFilters from "./ReportFilters";
 import useBarAssessmentLanding from "./hooks/useBarAssessmentLanding";
+import AssessmentFilters from "./AssessmentFilters";
 
 const BarAssessmentLanding = () => {
   // 30496
@@ -25,9 +25,6 @@ const BarAssessmentLanding = () => {
 
   const [form] = Form.useForm();
 
-  const supervisor = Form.useWatch("supervisor", form);
-  const department = Form.useWatch("department", form);
-  const designation = Form.useWatch("designation", form);
   const year = Form.useWatch("year", form);
 
   const { data, getBarAssessmentLanding, loading } = useBarAssessmentLanding({
@@ -51,9 +48,6 @@ const BarAssessmentLanding = () => {
       }}
       onFinish={(values) => {
         getBarAssessmentLanding({
-          supervisorId: values?.supervisor?.value,
-          departmentId: values?.department?.value,
-          designationId: values?.designation?.value,
           year: values?.year?.value,
           pages,
         });
@@ -71,9 +65,8 @@ const BarAssessmentLanding = () => {
           // }}
         />
         <PCardBody className="mb-3">
-          <ReportFilters
+          <AssessmentFilters
             form={form}
-            showLevelOfLeadership={false}
           />
         </PCardBody>
         <DataTable
@@ -89,9 +82,6 @@ const BarAssessmentLanding = () => {
           onChange={(pagination, _, __, extra) => {
             if (extra.action === "paginate") {
               getBarAssessmentLanding({
-                supervisorId: supervisor?.value,
-                departmentId: department?.value,
-                designationId: designation?.value,
                 year: year?.value,
                 pages: pagination,
               });
