@@ -129,7 +129,9 @@ export const submitHandler = ({
   random,
   savePipeline,
 }) => {
-  console.log("values", values);
+  if(values?.randomCount ? values?.randomCountValue <= 0 : false){
+    return toast.warn("Please select random count value");
+  }
   const cb = () => {
     resetForm();
     setIsAddEditForm(false);
