@@ -798,6 +798,7 @@ const SalaryGenerateCreate = () => {
                         filterOption={true}
                         placeholder="Workplace"
                         onChange={(value, options) => {
+                          console.log("value", value);
                           let selectedValues = value;
                           let selectedOptions = options;
 
@@ -812,7 +813,7 @@ const SalaryGenerateCreate = () => {
 
                           setSelectedWorkplaces(selectedValues);
                           const valuesStr = selectedValues.join(",");
-                          setFieldValue("workplace", selectedOptions);
+                          setFieldValue("workplace", valuesStr);
 
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,
