@@ -194,7 +194,7 @@ export default function AddEditForm({
               : {
                   workplace: {
                     value: data?.header?.workplaceId,
-                    label: data?.header?.workplaceName,
+                    label: data?.header?.workplaceName || "All",
                   },
                 }),
             pipelineName: {

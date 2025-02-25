@@ -163,7 +163,7 @@ export const submitHandler = ({
       workplaceGroupName: values?.orgName?.label || "",
       workplaceId:
         +values?.pipelineName?.value === 13 ? -1 : workplace?.value || -1,
-      workplaceName: workplace?.customLabel || "",
+      workplaceName: workplace?.customLabel || "All",
       isInSequence: isSequence,
       randomApproverCount:
         (!values?.isSequence && values?.randomCountValue) || 0,
