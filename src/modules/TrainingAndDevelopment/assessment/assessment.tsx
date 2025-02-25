@@ -168,6 +168,35 @@ const TnDAssessment = () => {
           },
         ]
       : []),
+    {
+      title: "Assessment View",
+      dataIndex: "status",
+      render: (status: string, rec: any) => (
+        <Flex justify="center">
+          {rec?.privouslyAssessmentSubmittedCount > 0 && (
+            <button
+              style={{
+                padding: "0 4px",
+                fontSize: "10px",
+                border: 0,
+                backgroundColor: "green",
+                color: "white",
+                borderRadius: "3px",
+              }}
+              onClick={() => {
+                history.push("/profile/exitInterview/interview", {
+                  fromId: rec?.employeeId,
+                });
+              }}
+            >
+              View
+            </button>
+          )}
+        </Flex>
+      ),
+      align: "center",
+      width: 50,
+    },
   ];
 
   const [landingApi, getLandingApi, landingLoading, , landingError] =

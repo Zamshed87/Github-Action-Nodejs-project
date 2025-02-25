@@ -329,8 +329,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {((workplaceImage?.length > 0 ||
-                singleData?.intWorkplaceLogoId !== 0) && isEdit) && (
+              {(workplaceImage?.length > 0 ||
+                singleData?.intWorkplaceLogoId !== 0) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -377,8 +377,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {((letterHeadImage?.length > 0 ||
-                singleData?.intLetterHeadId !== 0) && isEdit) && (
+              {(letterHeadImage?.length > 0 ||
+                singleData?.intLetterHeadId !== 0) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -423,8 +423,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {((signatureImage?.length > 0 ||
-                singleData?.intSignatureId !== 0) && isEdit) && (
+              {(signatureImage?.length > 0 ||
+                singleData?.intSignatureId !== 0) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -469,8 +469,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {((letterBuilderImage?.length > 0 ||
-                singleData?.intLetterBuilderId !== 0) && isEdit) && (
+              {(letterBuilderImage?.length > 0 ||
+                singleData?.intLetterBuilderId !== 0) && (
                 <p
                   onClick={() => {
                     dispatch(

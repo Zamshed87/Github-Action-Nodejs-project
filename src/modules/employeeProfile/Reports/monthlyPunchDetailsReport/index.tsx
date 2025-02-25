@@ -1,44 +1,29 @@
-import {
-  Avatar,
-  DataTable,
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
-
+import { Avatar, DataTable, PCard, PCardHeader, PForm } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
-import { getWorkplaceDetails } from "common/api";
+import { Form } from "antd";
+import axios from "axios";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { debounce } from "lodash";
+import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
+import { fromToDateList } from "modules/timeSheet/reports/helper";
+import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { gray600 } from "utility/customColor";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import {
   dateFormatter,
   monthFirstDate,
   monthLastDate,
 } from "utility/dateFormatter";
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { gray600 } from "utility/customColor";
-import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
-import axios from "axios";
-import { fromToDateList } from "modules/timeSheet/reports/helper";
-import { column } from "./helper";
-import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
-import { formatFilterValue } from "utility/filter/helper";
 import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
+import { column } from "./helper";
 
 const MonthlyPunchReportDetails = () => {
   const dispatch = useDispatch();
@@ -71,15 +56,8 @@ const MonthlyPunchReportDetails = () => {
     pageSize: paginationSize,
     total: 0,
   });
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
-  //   api states
-  const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
-
-  const empDepartmentDDL = useApiRequest([]);
-  const empDesignationDDL = useApiRequest([]);
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -92,88 +70,6 @@ const MonthlyPunchReportDetails = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
-
-  const getEmployeDepartment = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    empDepartmentDDL?.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
-
-        accountId: orgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strDepartment;
-          res[i].value = item?.intDepartmentId;
-        });
-      },
-    });
-  };
-
-  const getEmployeDesignation = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    empDesignationDDL?.action({
-      urlKey: "DesignationIdAll",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.designationName;
-          res[i].value = item?.designationId;
-        });
-      },
-    });
-  };
   // data call
   type TLandingApi = {
     pagination?: {
@@ -191,10 +87,6 @@ const MonthlyPunchReportDetails = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    // const deptList = `${values?.department
-    //   ?.map((item: any) => item?.value)
-    //   .join(",")}`;
-    // const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
@@ -222,8 +114,6 @@ const MonthlyPunchReportDetails = () => {
           values?.workplace?.value == 0 || values?.workplace?.value == undefined
             ? decodedToken.workplaceList
             : values?.workplace?.value.toString(),
-        //departments: values?.department?.length > 0 ? deptList : "",
-        //designations: values?.designation?.length > 0 ? desigList : "",
       },
     });
   };
@@ -250,7 +140,7 @@ const MonthlyPunchReportDetails = () => {
           ) : (
             "-"
           ),
-        width: 150,
+        width: 120,
       }));
 
     return [
@@ -265,13 +155,13 @@ const MonthlyPunchReportDetails = () => {
       {
         title: "Work. Group/Location",
         dataIndex: "strWorkplaceGroup",
-        width: 120,
+        width: 80,
         fixed: "left",
       },
       {
         title: "Workplace/Concern",
         dataIndex: "strWorkplace",
-        width: 130,
+        width: 120,
         fixed: "left",
       },
       {
@@ -293,26 +183,20 @@ const MonthlyPunchReportDetails = () => {
           );
         },
         fixed: "left",
-        width: 200,
+        width: 150,
       },
 
       {
         title: "Designation",
         dataIndex: "strDesignation",
 
-        width: 100,
+        width: 80,
       },
-      //   {
-      //     title: "Section",
-      //     dataIndex: "strSectionName",
-
-      //     width: 100,
-      //   },
       {
         title: "Department",
         dataIndex: "strDepartment",
 
-        width: 100,
+        width: 80,
       },
       ...(d as any),
     ];
@@ -322,12 +206,6 @@ const MonthlyPunchReportDetails = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -455,132 +333,6 @@ const MonthlyPunchReportDetails = () => {
             }}
           />
           <PFilter form={form} landingApiCall={landingApiCall} />
-          {/* <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                      department: undefined,
-                      designation: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
-                      designation: undefined,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                    getEmployeDesignation();
-                    getEmployeDepartment();
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-              <Form.Item shouldUpdate noStyle>
-                {() => {
-                  const { workplace } = form.getFieldsValue(true);
-                  return (
-                    <>
-                      <Col md={5} sm={12} xs={24}>
-                        <PSelect
-                          options={empDepartmentDDL?.data || []}
-                          name="department"
-                          label="Department"
-                          placeholder="Department"
-                          mode="multiple"
-                          maxTagCount={"responsive"}
-                          disabled={workplace?.length > 1 ? true : false}
-                          onChange={(value, op) => {
-                            form.setFieldsValue({
-                              department: op,
-                            });
-                          }}
-                          // rules={[{ required: true, message: "Workplace is required" }]}
-                        />
-                      </Col>
-                      <Col md={5} sm={12} xs={24}>
-                        <PSelect
-                          options={empDesignationDDL?.data || []}
-                          name="designation"
-                          label="Designation"
-                          placeholder="Designation"
-                          mode="multiple"
-                          maxTagCount={"responsive"}
-                          disabled={workplace?.length > 1 ? true : false}
-                          onChange={(value, op) => {
-                            form.setFieldsValue({
-                              designation: op,
-                            });
-                          }}
-                          // rules={[{ required: true, message: "Workplace is required" }]}
-                        />
-                      </Col>
-                    </>
-                  );
-                }}
-              </Form.Item>
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody> */}
-
           <DataTable
             bordered
             data={landingApi?.data?.length > 0 ? landingApi?.data : []}
@@ -604,7 +356,7 @@ const MonthlyPunchReportDetails = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            // scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

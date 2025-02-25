@@ -86,6 +86,7 @@ const EssInterviewLanding = () => {
       resignStatusList: filters?.resignStatus || [],
       interviewCompletedByList: filters?.interviewCompletedBy || [],
       statusList: filters?.status || [],
+      interviewTypeList: filters?.questionnaireType || [],
     };
     landingApi?.action({
       urlKey: "GetInterviewLanding",
@@ -122,6 +123,11 @@ const EssInterviewLanding = () => {
       width: 100,
     },
     {
+      title: "Training Title",
+      dataIndex: "trainingTitle",
+      width: 80,
+    },
+    {
       title: "Length of Service",
       dataIndex: "lengthOfService",
     },
@@ -151,6 +157,9 @@ const EssInterviewLanding = () => {
     {
       title: "Interview Type",
       dataIndex: "questionnaireType",
+      filter: true,
+      filterKey: "interviewTypeList",
+      filterSearch: true,
       render: (_: any, rec: any) => rec?.questionnaireType?.label,
     },
     {

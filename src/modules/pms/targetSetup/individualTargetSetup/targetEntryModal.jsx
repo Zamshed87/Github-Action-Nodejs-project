@@ -109,7 +109,7 @@ export default function TargetEntryModal({
   const getData = () => {
     if (currentItem && currentItem?.isTargetAssigned && formikRef.current) {
       getPreviousData(
-        `/PMS/GetTargetVsAchievementById?BusinessUnit=${buId}&YearId=${currentItem?.intYearId}&KpiForId=1&KpiForReffId=${empInfo?.employeeId}&objectiveId=${currentItem?.intStrategicParticularsID}&kpiId=${currentItem?.kpiId}&accountId=${intAccountId}`,
+        `/PMS/GetTargetVsAchievementById?BusinessUnit=${buId}&YearId=14&KpiForId=1&KpiForReffId=${empInfo?.employeeId}&objectiveId=${currentItem?.intStrategicParticularsID}&kpiId=${currentItem?.kpiId}&accountId=${intAccountId}`,
         (data) => {
           formikRef.current.setValues({
             ...initData,
@@ -298,9 +298,9 @@ export default function TargetEntryModal({
                             <tr>
                               <th className="pl-2">KPI Name</th>
                               <th className="text-center">
-                                {values?.targetFrequency?.label === "Monthly"
+                                {values?.targetFrequency?.value === "Monthly"
                                   ? "Months"
-                                  : values?.targetFrequency?.label ===
+                                  : values?.targetFrequency?.value ===
                                     "Quarterly"
                                   ? "Quarters"
                                   : "Year"}
