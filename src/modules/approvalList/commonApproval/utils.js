@@ -4,6 +4,8 @@ import { dateFormatter } from "utility/dateFormatter";
 import { EyeOutlined } from "@ant-design/icons";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
+import { Tooltip } from "antd";
+import { formatTime12Hour } from "utility/formatTime12Hour";
 
 export const columnsDefault = [
   {
@@ -433,23 +435,19 @@ export const columnsMovement = [
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "To Date",
     dataIndex: ["applicationInformation", "toDate"],
     width: "50px",
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Total Days",
@@ -458,10 +456,12 @@ export const columnsMovement = [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "End Time",
     dataIndex: ["applicationInformation", "endTime"],
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "Remarks",
@@ -994,6 +994,18 @@ export const columnsRemoteAttendance = [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
+    render: (time) => {
+      if (!time) return "N/A";
+
+      const dateObj = new Date(`1970-01-01T${time}Z`);
+      const formattedTime = dateObj.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+
+      return formattedTime;
+    },
   },
   {
     title: "Place Name",
@@ -1002,6 +1014,20 @@ export const columnsRemoteAttendance = [
   {
     title: "Address",
     dataIndex: ["applicationInformation", "address"],
+    width: "60px",
+    render: (_, rec) => {
+      const address = rec?.applicationInformation?.address || "";
+      const addressParts = address.split(",").map((part) => part.trim());
+
+      if (addressParts.length > 1) {
+        return (
+          <Tooltip title={address}>
+            <span>{addressParts[0]}, ...</span>
+          </Tooltip>
+        );
+      }
+      return addressParts[0] || "N/A";
+    },
   },
   {
     title: "Waiting Stage",
@@ -1025,6 +1051,13 @@ export const columnsLocationDevice = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
+    title: "Location Or Device",
+    dataIndex: ["applicationInformation", "isLocationRegister"],
+    render: (isLocationRegister) => (
+      <div>{isLocationRegister ? "Location" : "Device"}</div>
+    ),
+  },
+  {
     title: "Longitude",
     dataIndex: ["applicationInformation", "strLongitude"],
   },
@@ -1039,14 +1072,6 @@ export const columnsLocationDevice = [
   {
     title: "Address",
     dataIndex: ["applicationInformation", "strAddress"],
-  },
-  {
-    title: "Created At",
-    dataIndex: ["applicationInformation", "dteCreatedAt"],
-  },
-  {
-    title: "Created By",
-    dataIndex: ["applicationInformation", "intCreatedBy"],
   },
   {
     title: "Device ID",
