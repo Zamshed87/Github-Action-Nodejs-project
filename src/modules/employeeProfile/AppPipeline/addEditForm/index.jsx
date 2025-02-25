@@ -326,10 +326,31 @@ export default function AddEditForm({
             mode="multiple"
             options={
               getWDDL?.data?.length > 0
-                ? getWDDL?.data.map((opt) => ({
-                    ...opt,
-                    disabled: opt.label.includes("🟢 (Individual Setup)"),
-                  }))
+                ? getWDDL?.data
+                    .filter((opt, index) => {
+                      const hasAllSetup = getWDDL?.data.some((o) =>
+                        o.label.includes("🔵 (All Setup)")
+                      );
+                      const hasNotSetup = getWDDL?.data.some((o) =>
+                        o.label.includes("Not Setup")
+                      );
+
+                      // Remove "All" if it's at the top AND "All Setup" exists, unless "Not Setup" is present
+                      if (
+                        index === 0 &&
+                        opt.label.includes("All") &&
+                        hasAllSetup &&
+                        !hasNotSetup
+                      ) {
+                        return false;
+                      }
+
+                      return true;
+                    })
+                    .map((opt) => ({
+                      ...opt,
+                      disabled: opt.label.includes("🟢 (Individual Setup)"),
+                    }))
                 : []
             }
             name="workplace"
@@ -380,6 +401,7 @@ export default function AddEditForm({
                 workplace: selectedOptions,
               });
             }}
+            rules={[{ required: true, message: "Workplace is required" }]}
           />
         </Col>
 
