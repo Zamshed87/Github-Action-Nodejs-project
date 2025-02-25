@@ -88,7 +88,7 @@ const HeaderTableForm = ({
             [
               {
                 value: 1,
-                label: "Addition",
+                label: "Allowance",
               },
               {
                 value: 2,

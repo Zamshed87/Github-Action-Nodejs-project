@@ -301,6 +301,8 @@ export const apiList = {
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
   CreateNUpdateShiftChangeRequest:"/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
+  EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
+  DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   GetWorkplaceWisePipelineStatusDdl: "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl"
 };
