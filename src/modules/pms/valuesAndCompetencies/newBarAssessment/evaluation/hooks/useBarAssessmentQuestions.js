@@ -72,6 +72,12 @@ const useBarAssessmentEvaluation = () => {
       return false;
     }
   }
+  function areAllQuestionsAnswered() {
+    const questionIds = new Set(questionData?.groups?.flatMap(g => g?.questions).map(q => q.id));
+    const answeredIds = new Set(answeredQuestions?.map(a => a.id));
+
+    return [...questionIds].every(id => answeredIds.has(id));
+}
 
   useEffect(() => {
     getBarAssessmentQuestions();
@@ -87,7 +93,8 @@ const useBarAssessmentEvaluation = () => {
     saveLoading,
     saveBARAssessmentData,
     handleAnswerQuestion,
-    getSelectedAnswer
+    getSelectedAnswer,
+    areAllQuestionsAnswered,
   };
 };
 

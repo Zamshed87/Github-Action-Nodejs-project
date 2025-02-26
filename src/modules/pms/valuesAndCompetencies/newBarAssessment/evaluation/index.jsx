@@ -10,9 +10,7 @@ import useAssessmentFilters from "../hooks/useAssessmentFilters";
 
 const BarAssessmentEvaluation = () => {
   const [form] = Form.useForm();
-
   const assessmentPeriod = Form.useWatch("assessmentPeriod", form);
-  const assessmentTime = Form.useWatch("assessmentTime", form);
 
   const {
     permission,
@@ -21,6 +19,7 @@ const BarAssessmentEvaluation = () => {
     saveBARAssessmentData,
     handleAnswerQuestion,
     getSelectedAnswer,
+    areAllQuestionsAnswered,
   } = useBarAssessmentEvaluation();
   const { assessmentPeriodDDL, quarterDDL } = useAssessmentFilters({});
 
@@ -29,8 +28,9 @@ const BarAssessmentEvaluation = () => {
       form={form}
       initialValues={{}}
       onFinish={(values) => {
+        console.log(values)
         saveBARAssessmentData({
-          assessmentPeriod: values?.assessmentTime?.value,
+          assessmentPeriod: values?.assessmentPeriod?.value,
           assessmentTime: values?.assessmentTime?.value,
         });
       }}
@@ -40,14 +40,13 @@ const BarAssessmentEvaluation = () => {
         <PCardHeader
           title={`BAR Assessment Evaluation`}
           backButton
+          buttonListRightLeft={false}
           buttonList={[
             {
               type: "primary",
               content: "Save",
-              onClick: () => {
-                // submitHandler();
-              },
-              // disabled: selectedRow?.length > 0 ? false : true,
+              action:"submit",
+              disabled: !areAllQuestionsAnswered(),
             },
           ]}
         />
