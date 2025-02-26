@@ -1714,6 +1714,9 @@ const ClearanceLanding = lazy(() =>
 const FinalSettlementLandingv2 = lazy(() =>
   import("../modules/retirement/finalsettlement/index.jsx")
 );
+const FinalSettlementGenerate = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
+);
 
 
 const AttendanceShiftChange = lazy(() =>
@@ -4124,6 +4127,10 @@ export const routingList = [
   {
     path: "/retirement/finalSettlement",
     component: FinalSettlementLandingv2,
+  },
+  {
+    path: "/retirement/finalSettlement/generate/:separationid/:empid",
+    component: FinalSettlementGenerate,
   }
 ];
 

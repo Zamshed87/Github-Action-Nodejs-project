@@ -106,6 +106,7 @@ export const getFinalSettlementLandingTableColumn = (
     page,
     paginationSize,
     postClearanceData,
+    history,
     setOpenExitInterviewDataViewModal,
     getData,
     id,
@@ -331,6 +332,7 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
+                                history.push(`/retirement/finalsettlement/generate/${data?.separationId}/${data?.intEmployeeId}`)
                             }}
                         />
                     </Tooltip>
