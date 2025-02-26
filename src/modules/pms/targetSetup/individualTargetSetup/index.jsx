@@ -19,10 +19,15 @@ import AntTable from "../../../../common/AntTable";
 // import { AddOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import AntScrollTable from "../../../../common/AntScrollTable";
-import { getAsyncEmployeeApi } from "../../../../common/api";
+import {
+  getAsyncEmployeeApi,
+  getPeopleDeskAllDDL,
+} from "../../../../common/api";
 import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import axios from "axios";
+import { Tooltip } from "antd";
+import { PModal } from "Components/Modal";
 const initData = {
   employee: "",
   year: "",
@@ -41,12 +46,13 @@ const IndividualTargetSetup = () => {
   const supervisorDDL = useApiRequest([]);
 
   const dispatch = useDispatch();
-  const [pmTypeDDL, getPMTypeDDL] = useAxiosGet();
+  const [modal, setModal] = useState(false);
+  const [departmentDDL, setDepartmentDDL] = useState([]);
   const [fiscalYearDDL, getFiscalYearDDL, fiscalYearDDLloader] = useAxiosGet();
   const [tableData, getTableData, tableDataLoader, setTableData] =
     useAxiosGet();
   const history = useHistory();
-  const { values, setFieldValue } = useFormik({
+  const { values, setFieldValue, errors, touched } = useFormik({
     initialValues: initData,
   });
 
@@ -117,6 +123,12 @@ const IndividualTargetSetup = () => {
       // call landing data api
       getData(values, pages);
     });
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
+      "DepartmentId",
+      "DepartmentName",
+      setDepartmentDDL
+    );
     dispatch(setFirstLevelNameAction("Performance Management System"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId]);
@@ -146,6 +158,46 @@ const IndividualTargetSetup = () => {
           </div>
           <ul className="d-flex flex-wrap">
             <li>
+              <div className="d-flex align-items-center justify-content-center">
+                <Tooltip title="Download target template" arrow>
+                  <button
+                    style={{
+                      height: "26px",
+                      fontSize: "13px",
+                      padding: "0px 12px 0px 12px",
+                      margin: "0px 5px 0px 5px",
+                      backgroundColor: "var(--green)",
+                      color: "white",
+                    }}
+                    className="btn"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }} //
+                  >
+                    Template Download
+                  </button>
+                </Tooltip>
+                <Tooltip title="Upload Bulk target setup" arrow>
+                  <button
+                    style={{
+                      height: "26px",
+                      fontSize: "13px",
+                      padding: "0px 12px 0px 12px",
+                      backgroundColor: "var(--green)",
+                      color: "white",
+                    }}
+                    className="btn"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModal(true);
+                    }} //
+                  >
+                    Bulk Upload
+                  </button>
+                </Tooltip>
+              </div>
               {/* <BtnActionMenu
                 className="btn btn-default flex-center btn-deafult-create-job"
                 icon={
@@ -269,6 +321,24 @@ const IndividualTargetSetup = () => {
               </div>
             </div>
             <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Department</label>
+              </div>
+              <FormikSelect
+                menuPosition="fixed"
+                name="department"
+                options={departmentDDL || []}
+                value={values?.department}
+                onChange={(valueOption) => {
+                  setFieldValue("department", valueOption);
+                }}
+                styles={customStyles}
+                errors={errors}
+                placeholder=""
+                touched={touched}
+              />
+            </div>
+            <div className="col-lg-3">
               <label>Type</label>
               <FormikSelect
                 classes="input-sm form-control"
@@ -294,8 +364,7 @@ const IndividualTargetSetup = () => {
             <div className="col-lg-3">
               <button
                 type="button"
-                className="btn btn-green mr-2"
-                style={{ marginTop: "10px" }}
+                className="btn btn-green mr-2 mt-3"
                 onClick={(e) => {
                   e.stopPropagation();
                   getTableData(
@@ -309,9 +378,7 @@ const IndividualTargetSetup = () => {
                       values?.targetType?.value === 1 ? true : false
                     }&pageNo=${pages?.current}&pageSize=${
                       pages?.pageSize
-                    }&accountId=${intAccountId}&from=1&to=12&pmTypeId=${
-                      values?.pmType?.value
-                    }`,
+                    }&accountId=${intAccountId}&from=1&to=12`,
                     (data) => {
                       if (data) {
                         setPages((prev) => ({
@@ -348,6 +415,30 @@ const IndividualTargetSetup = () => {
             </div>
           ) : null}
         </div>
+        <PModal
+          title="Bulk Upload"
+          open={modal}
+          onCancel={() => {
+            setModal(false);
+            // landingApi();
+          }}
+          components={
+            <>
+              <input
+                type="file"
+                accept=".xlsx"
+                onChange={(e) => {
+                  // !!e.target.files?.[0] && setLoading(true);
+                  // processData(e.target.files?.[0]);
+                }}
+                onClick={(e) => {
+                  e.target.value = null;
+                }}
+              />
+            </>
+          }
+          width={1000}
+        />
       </div>
     </>
   );

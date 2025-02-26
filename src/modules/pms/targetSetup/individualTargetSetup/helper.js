@@ -138,6 +138,7 @@ export const individualtargetSetupTableColumn = ({ values, history }) => {
       ),
       sorter: false,
       filter: false,
+      align: "center",
     },
   ];
 };
