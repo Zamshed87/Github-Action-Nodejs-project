@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getApprovalDashboardLanding = async (
+export const getApprovalDashboardLandingOld = async (
   accId,
   employeeId,
   isOfficeAdmin,
@@ -19,5 +19,28 @@ export const getApprovalDashboardLanding = async (
     setter(res?.data);
   } catch (err) {
     setIsLoading && setIsLoading(false);
+  }
+};
+
+export const getApprovalDashboardLanding = async (
+  accId,
+  employeeId,
+  isOfficeAdmin,
+  setter,
+  setIsLoading,
+  wId,
+  BusinessUnitId,
+  WorkplaceGroupId
+) => {
+  setIsLoading && setIsLoading(true);
+  try {
+    const res = await axios.get(
+      `/Approval/GetPendingApprovalDashboard?accountId=${accId}&businessUnitId=${BusinessUnitId}&workplaceGroupId=${WorkplaceGroupId}&workplaceId=${wId}&employeeId=${employeeId}`
+    );
+    setIsLoading && setIsLoading(false);
+    setter(res?.data || []);
+  } catch (err) {
+    setIsLoading && setIsLoading(false);
+    console.error("Error fetching pending approvals:", err);
   }
 };

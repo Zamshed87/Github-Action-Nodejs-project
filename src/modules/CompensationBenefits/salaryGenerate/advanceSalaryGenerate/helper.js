@@ -1,15 +1,12 @@
 import { isDevServer } from "App";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Cell } from "../../../utility/customExcel/createExcelHelper";
-import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
-import {
-  dateFormatter,
-  dateFormatterForInput,
-} from "../../../utility/dateFormatter";
-import { currentMonth } from "../../../utility/monthUtility";
-import { withDecimal } from "../../../utility/numberToWord";
-import { numberWithCommas } from "../../../utility/numberWithCommas";
+import { Cell } from "utility/customExcel/createExcelHelper";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
+import { currentMonth } from "utility/monthUtility";
+import { withDecimal } from "utility/numberToWord";
+import { numberWithCommas } from "utility/numberWithCommas";
 
 // salary generate request
 export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
@@ -17,15 +14,40 @@ export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
   try {
     const res = await axios.post(`/Payroll/SalaryCRUD`, payload);
     cb && cb();
+    toast.success(res.data?.[0].returnMessage || "Successfully");
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.warn(
+      error?.response?.data?.[0].returnMessage || "Something went wrong!"
+    );
+    setLoading && setLoading(false);
+  }
+};
+export const createAdvSalaryGenerateRequest = async (
+  payload,
+  setLoading,
+  cb,
+  isRegenerate = false
+) => {
+  setLoading && setLoading(true);
+  let api = `/AdvanceSalary/AdvanceSalaryGenerate`;
+  if (isRegenerate) {
+    api = `/AdvanceSalary/AdvanceSalaryReGenerate`;
+  }
+  try {
+    const res = await axios.post(api, payload);
+    cb && cb();
     toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    console.log("error", error);
+    console.log({ error });
+    toast.warn(
+      // error?.response?.data?.[0].returnMessage || "Something went wrong!"
+      error?.message || "Something went wrong!"
+    );
     setLoading && setLoading(false);
-    toast.warn(error?.response?.data?.message || "Something went wrong!");
   }
 };
-
 // salary generate landing
 const currentYear = new Date().getFullYear();
 
@@ -53,17 +75,17 @@ export const getSalaryGenerateRequestLanding = async (
   values
 ) => {
   setLoading && setLoading(true);
-  // const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+  const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
   // Joining the values into a string separated by commas
-  const workplaceListFromValues = values?.workplace;
+  const workplaceListFromValues = valueArray.join(",");
   const valueArrayHRPosition = values?.hrPosition?.map((obj) => obj.value);
   const intBankOrWalletType = `&intBankOrWalletType=${
     values?.walletType?.value || 0
   }`;
   // const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
-  const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
-  const toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
+  const fromDateParams = fromDate ? `&generateFromDate=${fromDate}` : "";
+  const toDateParams = toDate ? `&generateToDate=${toDate}` : "";
 
   // DDL
   const wingParams = wing ? `&WingId=${wing}` : "";
@@ -82,7 +104,10 @@ export const getSalaryGenerateRequestLanding = async (
     pages?.current
   }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
 
-  if (partName === `EmployeeListForSalaryGenerateRequest`) {
+  if (
+    partName === `EmployeeListForSalaryGenerateRequest` ||
+    partName === `EmployeeListForAdvanceSalaryGenerateRequest`
+  ) {
     api += `&strWorkplaceIdList=${
       workplaceListFromValues || wId
     }&strHrPositionIdList=${valueArrayHRPosition || 0}${intBankOrWalletType}`;
@@ -249,13 +274,13 @@ export const getSalaryGenerateRequestLandingById = async (
       // new employee load
       if (isMarge) {
         setLoading && setLoading(true);
-        // const valueArray =
-        //   values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+        const valueArray =
+          values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
         const valueArrayHRPosition = values?.hrPosition?.map(
           (obj) => obj.value
         );
         // Joining the values into a string separated by commas
-        const workplaceListFromValues = values?.workplace;
+        const workplaceListFromValues = valueArray.join(",");
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
