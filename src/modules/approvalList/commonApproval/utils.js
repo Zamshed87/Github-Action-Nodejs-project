@@ -56,6 +56,10 @@ export const columnsLeave = (dispatch) => [
     render: (_, __, index) => index + 1,
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
   },
@@ -422,6 +426,10 @@ export const columnsMovement = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Employee Name",
