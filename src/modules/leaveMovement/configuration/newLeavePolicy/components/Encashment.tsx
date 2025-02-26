@@ -60,6 +60,19 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
       ),
     },
   ];
+  const isMonthExists = (start: number, end: number) => {
+    let isExists = false;
+    tableData?.forEach((item: any) => {
+      const [startLength, endLength] = item.serviceLength.split(" - ");
+      if (
+        (start >= parseInt(startLength) && start <= parseInt(endLength) - 1) ||
+        (end >= parseInt(startLength) && end <= parseInt(endLength) - 1)
+      ) {
+        isExists = true;
+      }
+    });
+    return isExists;
+  };
   return (
     <>
       <Divider
@@ -197,8 +210,8 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
               // { value: 3, label: "Clock Time" },
             ]}
             name="encashType"
-            label="Leave Encashment Type *"
-            placeholder="Leave Encashment Type *"
+            label="Leave Encashment Type"
+            placeholder="Leave Encashment Type"
             onChange={(value, op) => {
               form.setFieldsValue({
                 encashType: op,
@@ -330,24 +343,30 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
                       form
                         .validateFields(fields)
                         .then(() => {
-                          setTableData((prev: any) => [
-                            ...prev,
-                            {
-                              serviceLength: `${serviceStartLength} - ${serviceEndLength}`,
-                              encashmentType: encashType?.label,
-                              maxEncashment,
-                              encashBenefits: encashBenefits?.label,
-                              paidAmount,
-                            },
-                          ]);
-                          form.setFieldsValue({
-                            serviceStartLength: undefined,
-                            serviceEndLength: undefined,
-                            encashType: undefined,
-                            maxEncashment: undefined,
-                            encashBenefits: undefined,
-                            paidAmount: undefined,
-                          });
+                          if (
+                            isMonthExists(serviceStartLength, serviceEndLength)
+                          ) {
+                            return toast.warn("Service Length already exists");
+                          } else {
+                            setTableData((prev: any) => [
+                              ...prev,
+                              {
+                                serviceLength: `${serviceStartLength} - ${serviceEndLength}`,
+                                encashmentType: encashType?.label,
+                                maxEncashment,
+                                encashBenefits: encashBenefits?.label,
+                                paidAmount,
+                              },
+                            ]);
+                            form.setFieldsValue({
+                              serviceStartLength: undefined,
+                              serviceEndLength: undefined,
+                              encashType: undefined,
+                              maxEncashment: undefined,
+                              encashBenefits: undefined,
+                              paidAmount: undefined,
+                            });
+                          }
                         })
                         .catch((e: any) => {
                           console.log({ e });

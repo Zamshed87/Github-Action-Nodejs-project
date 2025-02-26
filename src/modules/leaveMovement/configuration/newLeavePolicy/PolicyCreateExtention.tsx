@@ -87,26 +87,26 @@ export const PolicyCreateExtention = () => {
       status: "process",
       icon: <CiGlobe />,
     },
-    {
-      title: "Paid Leave",
-      status: "wait",
-      icon: <GrConfigure />,
-    },
-    {
-      title: "Expenditure",
-      status: "wait",
-      icon: <GrDocumentConfig />,
-    },
+    // {
+    //   title: "Paid Leave",
+    //   status: "wait",
+    //   icon: <GrConfigure />,
+    // },
+    // {
+    //   title: "Expenditure",
+    //   status: "wait",
+    //   icon: <GrDocumentConfig />,
+    // },
     {
       title: "Sandwitch",
       status: "wait",
       icon: <LuSandwich />,
     },
-    {
-      title: "Lapse",
-      status: "wait",
-      icon: <MdTimelapse />,
-    },
+    // {
+    //   title: "Lapse",
+    //   status: "wait",
+    //   icon: <MdTimelapse />,
+    // },
     {
       title: "Carry",
       status: "wait",
@@ -117,21 +117,21 @@ export const PolicyCreateExtention = () => {
       status: "wait",
       icon: <BsCashCoin />,
     },
-    {
-      title: "Pro Rata",
-      status: "wait",
-      icon: <FcDataConfiguration />,
-    },
-    {
-      title: "Balance",
-      status: "wait",
-      icon: <SiNewbalance />,
-    },
-    {
-      title: "Calculative",
-      status: "wait",
-      icon: <MdCalculate />,
-    },
+    // {
+    //   title: "Pro Rata",
+    //   status: "wait",
+    //   icon: <FcDataConfiguration />,
+    // },
+    // {
+    //   title: "Balance",
+    //   status: "wait",
+    //   icon: <SiNewbalance />,
+    // },
+    // {
+    //   title: "Calculative",
+    //   status: "wait",
+    //   icon: <MdCalculate />,
+    // },
     {
       title: "Additional",
       status: "wait",
@@ -153,16 +153,40 @@ export const PolicyCreateExtention = () => {
       "intEmploymentTypeList",
       "religionListDto",
       "intGender",
-    ],
-    ["payValue", "payDependsOn", "paidType"],
-    [
+      "payValue",
+      "payDependsOn",
+      "paidType",
       "leaveConsumeType",
       "maxConsumeTime",
       "minConsumeTime",
       "standardWorkHour",
+      "leavelapse",
+      "afterLeaveCompleted",
+      "isProRata",
+      "proRataCount",
+      "proRataBasis",
+      "dependsOn",
+      "serviceStartLengthBalance",
+      "serviceEndLengthBalance",
+      "leaveDependsOn",
+      "calculativeDays",
+      "bridgeLeaveFor",
+      "expireAfterAvailable",
+      "minWorkHr",
+      "leaveDaysFor",
+      "policy",
     ],
-    [],
-    ["leavelapse", "afterLeaveCompleted"],
+    // ["payValue", "payDependsOn", "paidType"],
+    // [
+    //   "leaveConsumeType",
+    //   "maxConsumeTime",
+    //   "minConsumeTime",
+    //   "standardWorkHour",
+    // ],
+    // [],
+    // ["leavelapse", "afterLeaveCompleted"],
+    ["isSandwitch"],
+
     [
       "addPrevCarry",
       "maxCarryForwardBalance",
@@ -182,19 +206,19 @@ export const PolicyCreateExtention = () => {
       "encashBenefits",
       "paidAmount",
     ],
-    ["isProRata", "proRataCount", "proRataBasis"],
-    [
-      "dependsOn",
-      "serviceStartLengthBalance",
-      "serviceEndLengthBalance",
-      "leaveDependsOn",
-      "calculativeDays",
-      "bridgeLeaveFor",
-      "expireAfterAvailable",
-      "minWorkHr",
-      "leaveDaysFor",
-    ],
-    ["policy"],
+    // ["isProRata", "proRataCount", "proRataBasis"],
+    // [
+    //   "dependsOn",
+    //   "serviceStartLengthBalance",
+    //   "serviceEndLengthBalance",
+    //   "leaveDependsOn",
+    //   "calculativeDays",
+    //   "bridgeLeaveFor",
+    //   "expireAfterAvailable",
+    //   "minWorkHr",
+    //   "leaveDaysFor",
+    // ],
+    // ["policy"],
   ];
   return (
     <>
@@ -240,23 +264,36 @@ export const PolicyCreateExtention = () => {
           />
           <PCardBody className="mb-3">
             {current === 0 ? (
-              <General
-                form={form}
-                params={params}
-                buId={buId}
-                orgId={orgId}
-                employeeId={employeeId}
-                wgId={wgId}
-              />
+              <>
+                <General
+                  form={form}
+                  params={params}
+                  buId={buId}
+                  orgId={orgId}
+                  employeeId={employeeId}
+                  wgId={wgId}
+                />
+                <PaidLeave form={form} />
+                <Consumption
+                  form={form}
+                  consumeData={consumeData}
+                  setConsumeData={setConsumeData}
+                />
+                <Lapse form={form} />
+                <ProRata form={form} />
+                <Balance
+                  form={form}
+                  balanceTable={balanceTable}
+                  setBalanceTable={setBalanceTable}
+                />
+                <CalculativeDays
+                  form={form}
+                  policy={policy}
+                  setPolicy={setPolicy}
+                />
+              </>
             ) : current === 1 ? (
-              <PaidLeave form={form} />
-            ) : current === 2 ? (
-              <Consumption
-                form={form}
-                consumeData={consumeData}
-                setConsumeData={setConsumeData}
-              />
-            ) : current === 3 ? (
+              // <PaidLeave form={form} />
               <Sandwitch
                 form={form}
                 selectedRow2={selectedRow2}
@@ -264,33 +301,55 @@ export const PolicyCreateExtention = () => {
                 selectedRow1={selectedRow1}
                 setSelectedRow1={setSelectedRow1}
               />
-            ) : current === 4 ? (
-              <Lapse form={form} />
-            ) : current === 5 ? (
+            ) : current === 2 ? (
+              // <Consumption
+              //   form={form}
+              //   consumeData={consumeData}
+              //   setConsumeData={setConsumeData}
+              // />
               <CarryForward form={form} />
-            ) : current === 6 ? (
+            ) : current === 3 ? (
+              // <Sandwitch
+              //   form={form}
+              //   selectedRow2={selectedRow2}
+              //   setSelectedRow2={setSelectedRow2}
+              //   selectedRow1={selectedRow1}
+              //   setSelectedRow1={setSelectedRow1}
+              // />
               <Encashment
                 form={form}
                 tableData={tableData}
                 setTableData={setTableData}
               />
-            ) : current === 7 ? (
-              <ProRata form={form} />
-            ) : current === 8 ? (
-              <Balance
-                form={form}
-                balanceTable={balanceTable}
-                setBalanceTable={setBalanceTable}
-              />
-            ) : current === 9 ? (
-              <CalculativeDays
-                form={form}
-                policy={policy}
-                setPolicy={setPolicy}
-              />
-            ) : current === 10 ? (
+            ) : current === 4 ? (
+              // <Lapse form={form} />
               <Additional form={form} />
             ) : (
+              // : current === 5 ? (
+              //   // <CarryForward form={form} />
+              // ) : current === 6 ? (
+              //   // <Encashment
+              //   //   form={form}
+              //   //   tableData={tableData}
+              //   //   setTableData={setTableData}
+              //   // />
+              // ) : current === 7 ? (
+              //   // <ProRata form={form} />
+              // ) : current === 8 ? (
+              //   // <Balance
+              //   //   form={form}
+              //   //   balanceTable={balanceTable}
+              //   //   setBalanceTable={setBalanceTable}
+              //   // />
+              // ) : current === 9 ? (
+              //   // <CalculativeDays
+              //   //   form={form}
+              //   //   policy={policy}
+              //   //   setPolicy={setPolicy}
+              //   // />
+              // ) : current === 10 ? (
+              //   // <Additional form={form} />
+              // )
               ""
             )}
 
@@ -301,10 +360,10 @@ export const PolicyCreateExtention = () => {
                   action="button"
                   content="Next"
                   onClick={() => {
-                    const cond1 = current === 2 && consumeData.length === 0;
-                    const cond2 = current === 6 && tableData.length === 0;
-                    const cond3 = current === 8 && balanceTable.length === 0;
-                    const cond4 = current === 9 && policy.length === 0;
+                    const cond1 = current === 0 && consumeData.length === 0;
+                    const cond2 = current === 3 && tableData.length === 0;
+                    const cond3 = current === 0 && balanceTable.length === 0;
+                    const cond4 = current === 0 && policy.length === 0;
                     form
                       .validateFields(fields[current])
                       .then(() => {

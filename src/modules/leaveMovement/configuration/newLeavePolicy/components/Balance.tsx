@@ -70,6 +70,19 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
       ),
     },
   ];
+  const isMonthExists = (start: number, end: number) => {
+    let isExists = false;
+    balanceTable?.forEach((item: any) => {
+      const [startLength, endLength] = item.serviceLength.split(" - ");
+      if (
+        (start >= parseInt(startLength) && start <= parseInt(endLength) - 1) ||
+        (end >= parseInt(startLength) && end <= parseInt(endLength) - 1)
+      ) {
+        isExists = true;
+      }
+    });
+    return isExists;
+  };
   return (
     <>
       <Row gutter={[10, 2]}>
@@ -342,30 +355,47 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                         form
                           .validateFields(fields)
                           .then(() => {
-                            setBalanceTable((prev: any) => [
-                              ...prev,
-                              {
-                                serviceLength: `${serviceStartLengthBalance} - ${serviceEndLengthBalance}`,
-                                leaveDaysFor,
-                                leaveDependsOn: leaveDependsOn?.label,
-                                calculativeDays: calculativeDays || "-",
-                                minWorkHr: minWorkHr || "-",
-                                expireAfterAvailable:
-                                  expireAfterAvailable || "-",
+                            console.log(
+                              isMonthExists(
+                                serviceStartLengthBalance,
+                                serviceEndLengthBalance
+                              )
+                            );
+                            if (
+                              isMonthExists(
+                                serviceStartLengthBalance,
+                                serviceEndLengthBalance
+                              )
+                            ) {
+                              return toast.warn(
+                                "Service Length already exists"
+                              );
+                            } else {
+                              setBalanceTable((prev: any) => [
+                                ...prev,
+                                {
+                                  serviceLength: `${serviceStartLengthBalance} - ${serviceEndLengthBalance}`,
+                                  leaveDaysFor,
+                                  leaveDependsOn: leaveDependsOn?.label,
+                                  calculativeDays: calculativeDays || "-",
+                                  minWorkHr: minWorkHr || "-",
+                                  expireAfterAvailable:
+                                    expireAfterAvailable || "-",
 
-                                bridgeLeaveFor: bridgeLeaveFor?.label || "-",
-                              },
-                            ]);
-                            form.setFieldsValue({
-                              serviceStartLengthBalance: undefined,
-                              serviceEndLengthBalance: undefined,
-                              leaveDaysFor: undefined,
-                              expireAfterAvailable: undefined,
-                              minWorkHr: undefined,
-                              bridgeLeaveFor: undefined,
-                              leaveDependsOn: undefined,
-                              calculativeDays: undefined,
-                            });
+                                  bridgeLeaveFor: bridgeLeaveFor?.label || "-",
+                                },
+                              ]);
+                              form.setFieldsValue({
+                                serviceStartLengthBalance: undefined,
+                                serviceEndLengthBalance: undefined,
+                                leaveDaysFor: undefined,
+                                expireAfterAvailable: undefined,
+                                minWorkHr: undefined,
+                                bridgeLeaveFor: undefined,
+                                leaveDependsOn: undefined,
+                                calculativeDays: undefined,
+                              });
+                            }
                           })
                           .catch((e: any) => {
                             console.log({ e });

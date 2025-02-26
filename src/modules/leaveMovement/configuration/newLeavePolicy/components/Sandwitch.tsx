@@ -1,5 +1,5 @@
-import { Col, Divider, Row } from "antd";
-import { DataTable, PInput } from "Components";
+import { Col, Divider, Form, Row } from "antd";
+import { DataTable, PInput, PSelect } from "Components";
 import React, { useState } from "react";
 
 const SandwitchData = [
@@ -111,21 +111,60 @@ export const Sandwitch = ({
           </span>
         </div>
       </Divider>
-      <Col md={12}>
-        <DataTable
-          bordered
-          data={sandWitchLanding}
-          loading={false}
-          header={sandWitchHeader}
-          rowSelection={{
-            type: "checkbox",
-            selectedRowKeys: selectedRow1.map((item: any) => item?.key),
-            onChange: (selectedRowKeys, selectedRows) => {
-              setSelectedRow1(selectedRows);
-            },
+      <Col md={6} sm={24}>
+        <PSelect
+          // mode="multiple"
+          allowClear
+          options={[
+            { value: 1, label: "Yes" },
+            { value: 0, label: "No" },
+          ]}
+          name="isSandwitch"
+          label="Sandwitch Leave"
+          placeholder=" "
+          onChange={(value, op) => {
+            form.setFieldsValue({
+              isSandwitch: op,
+            });
           }}
+          rules={[
+            {
+              required: true,
+              message: "Sandwitch Leave  is required",
+            },
+          ]}
         />
       </Col>
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const { isSandwitch } = form.getFieldsValue(true);
+
+          return (
+            isSandwitch?.value === 1 && (
+              <>
+                <Col md={24}>
+                  <DataTable
+                    bordered
+                    data={sandWitchLanding}
+                    loading={false}
+                    header={sandWitchHeader}
+                    rowSelection={{
+                      type: "checkbox",
+                      selectedRowKeys: selectedRow1.map(
+                        (item: any) => item?.key
+                      ),
+                      onChange: (selectedRowKeys, selectedRows) => {
+                        setSelectedRow1(selectedRows);
+                      },
+                    }}
+                  />
+                </Col>
+              </>
+            )
+          );
+        }}
+      </Form.Item>
+
       {/* <Col md={12}>
         <DataTable
           bordered

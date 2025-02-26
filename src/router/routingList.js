@@ -1680,7 +1680,9 @@ const Test = lazy(() =>
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
 
 const SelfServiceSeparation = lazy(() =>
-  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
+  import(
+    "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
+  )
 );
 
 // Retirement Module
@@ -1688,16 +1690,19 @@ const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
 );
 
 const RetirementViewSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
 );
-
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -2126,7 +2131,7 @@ export const routingList = [
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy",
-    component: YearlyLeavePolicy,
+    component: NewLeavePolicy,
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",

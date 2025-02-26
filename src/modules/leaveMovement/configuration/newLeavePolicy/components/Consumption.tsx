@@ -244,7 +244,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                           {
                             consumeHr:
                               leaveConsumeType?.value === 1
-                                ? "-"
+                                ? "Not Applicable"
                                 : `${minConsumeTime} to ${maxConsumeTime} Hr.`,
                             leaveConsumeType: leaveConsumeType?.label,
                             standardWorkHour,

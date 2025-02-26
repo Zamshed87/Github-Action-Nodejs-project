@@ -454,7 +454,7 @@ export const NewLeavePolicy = () => {
                 onClick: () => {
                   if (employeeFeature?.isCreate) {
                     history.push(
-                      "/compensationAndBenefits/securityDeposit/create"
+                      "/administration/leaveandmovement/yearlyLeavePolicy/create"
                     );
                   } else {
                     toast.warn("You don't have permission");
