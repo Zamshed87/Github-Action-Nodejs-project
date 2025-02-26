@@ -2,7 +2,7 @@ import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import PBadge from "Components/Badge";
 
-export const getBarAssessmentColumn = ({ pages, history, yearId, quarterId, assessmentType }) => {
+export const getBarAssessmentColumn = ({ pages, history, yearId }) => {
   return [
     {
       title: () => <span>SL</span>,
@@ -91,8 +91,8 @@ export const getBarAssessmentColumn = ({ pages, history, yearId, quarterId, asse
               className="iconButton mx-2"
               onClick={() => {
                 history.push({
-                  pathname: `/pms/performanceAssessment/BARAssessment/evaluation/${data?.employeeId}/${yearId}/${quarterId || 0}`,
-                  state: { data, assessmentType },
+                  pathname: `/pms/performanceAssessment/BARAssessment/evaluation/${data?.employeeId}/${yearId}`,
+                  state: { data },
                 });
               }}
             >

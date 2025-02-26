@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import Loading from "../../../../common/loading/Loading";
 import { getBarAssessmentColumn } from "./helper";
@@ -8,18 +8,21 @@ import { Form } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import useBarAssessmentLanding from "./hooks/useBarAssessmentLanding";
 import AssessmentFilters from "./AssessmentFilters";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const BarAssessmentLanding = () => {
   // 30496
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
     total: 0,
   });
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const {
     permissionList,
-    profileData: { buId, wgId, wId, employeeId, userName, isOfficeAdmin },
+    profileData: { buId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const [form] = Form.useForm();
@@ -33,7 +36,13 @@ const BarAssessmentLanding = () => {
     wgId,
     wId,
   });
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Performance Management System"));
+  }, []);
+
   let permission = null;
+
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 30496) {
       permission = item;
@@ -42,13 +51,7 @@ const BarAssessmentLanding = () => {
   return permission?.isView ? (
     <PForm
       form={form}
-      initialValues={{
-        supervisor: isOfficeAdmin
-          ? { value: 0, label: "All" }
-          : { value: employeeId, label: userName },
-        department: { value: 0, label: "All" },
-        designation: { value: 0, label: "All" },
-      }}
+      initialValues={{}}
       onFinish={(values) => {
         getBarAssessmentLanding({
           year: values?.year?.value,
@@ -61,13 +64,13 @@ const BarAssessmentLanding = () => {
       {loading && <Loading />}
       <PCard>
         <PCardHeader
-        title={`Total Bar Assessment ${data?.totalCount || 0}`}
-        // onSearch={(e) => {
-        //   form.setFieldsValue({
-        //     search: e?.target?.value,
-        //   });
-        //   fetchKpiMismatchReport({ pages, search: e.target.value });
-        // }}
+          title={`Total Bar Assessment ${data?.totalCount || 0}`}
+          // onSearch={(e) => {
+          //   form.setFieldsValue({
+          //     search: e?.target?.value,
+          //   });
+          //   fetchKpiMismatchReport({ pages, search: e.target.value });
+          // }}
         />
         <PCardBody className="mb-3">
           <AssessmentFilters form={form} />

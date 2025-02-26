@@ -13,17 +13,17 @@ const SupervisorAssessmentNew = lazy(() =>
 const SupervisorAssessment = lazy(() =>
   import("../modules/pms/valuesAndCompetencies/supervisorAssessment/index.jsx")
 );
-const BarAssesment = lazy(() =>
-  import("../modules/pms/valuesAndCompetencies/newbarAssesment/index.jsx")
+const BarAssessment = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/newBarAssessment/index.jsx")
 );
 const BarAssessmentEvaluationForSupervisor = lazy(() =>
   import(
     "../modules/pms/performanceAssessment/supervisorAssessment/barAssessmentEvaluationForSupervisor.jsx"
   )
 );
-const BarAssesmentEvaluation = lazy(() =>
+const BarAssessmentEvaluation = lazy(() =>
   import(
-    "../modules/pms/valuesAndCompetencies/barAssesment/evaluation/index.jsx"
+    "../modules/pms/valuesAndCompetencies/newBarAssessment/evaluation/index.jsx"
   )
 );
 const SelfAssessmentNew = lazy(() =>
@@ -3923,12 +3923,12 @@ export const routingList = [
     component: BarAssessmentEvaluationForSupervisor,
   },
   {
-    path: "/pms/performanceAssessment/BARAssessment/evaluation/:id/:yearId/:quarterId",
-    component: BarAssesmentEvaluation,
+    path: "/pms/performanceAssessment/BARAssessment/evaluation/:id/:yearId",
+    component: BarAssessmentEvaluation,
   },
   {
     path: "/pms/performanceAssessment/BARAssessment",
-    component: BarAssesment,
+    component: BarAssessment,
   },
   // {
   //   path: "/pms/valuesAndCompetencies/supervisorAssessment",
