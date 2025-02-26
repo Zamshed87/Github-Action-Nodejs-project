@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import IConfirmModal from "../../../../common/IConfirmModal";
+import { Switch } from "antd";
 
 export const kpiMeasurementDDL = [
   {
@@ -94,12 +95,19 @@ export const getKPIsLanding = async (
   setRowDto,
   setLoading,
   pages,
-  setPages
+  setPages,
+  formValues
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/PMS/GetKPISPagination?AccountId=${orgId}&BusinessUnitId=${buId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`
+      `/PMS/GetKPISPagination?AccountId=${orgId}&BusinessUnitId=${buId}&pageNo=${
+        pages?.current
+      }&pageSize=${pages?.pageSize}&objectiveType=${
+        formValues?.objectiveType?.value ? formValues?.objectiveType?.value : ""
+      }&objective=${
+        formValues?.objective?.value ? formValues?.objective?.value : ""
+      }&status=${formValues?.status?.value ? formValues?.status?.value : ""}`
     );
     if (res?.data) {
       setPages((prev) => ({
@@ -186,12 +194,12 @@ export const kpisCreateColumn = (
       render: (data) => <div>{data?.label}</div>,
       sorter: true,
     },
-    {
-      title: "PM Type",
-      dataIndex: "pmType",
-      render: (data) => <div>{data?.label}</div>,
-      sorter: true,
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: "pmType",
+    //   render: (data) => <div>{data?.label}</div>,
+    //   sorter: true,
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveType",
@@ -310,13 +318,13 @@ export const kpisLandingColumn = (
       ),
       sorter: true,
     },
-    {
-      title: "PM Type",
-      dataIndex: "strPmtype",
-      render: (data) => <div>{data}</div>,
-      filter: true,
-      sorter: true,
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: "strPmtype",
+    //   render: (data) => <div>{data}</div>,
+    //   filter: true,
+    //   sorter: true,
+    // },
     {
       title: "Objective Type",
       dataIndex: "strObjectiveType",
@@ -376,7 +384,20 @@ export const kpisLandingColumn = (
               </button>
             </Tooltip>
             <Tooltip title="Delete" arrow>
-              <button
+              <Switch
+                size="small"
+                checked={record?.isActive}
+                onChange={() => {
+                  deleteKPIs(
+                    orgId,
+                    record.intKpisId,
+                    employeeId,
+                    setLoading,
+                    getData
+                  );
+                }}
+              />
+              {/* <button
                 type="button"
                 className="iconButton mt-0 mt-md-2 mt-lg-0"
                 onClick={() => {
@@ -400,7 +421,7 @@ export const kpisLandingColumn = (
                 }}
               >
                 <DeleteOutlined />
-              </button>
+              </button> */}
             </Tooltip>
           </div>
         </>
