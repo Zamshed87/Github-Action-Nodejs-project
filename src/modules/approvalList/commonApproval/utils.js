@@ -56,6 +56,10 @@ export const columnsLeave = (dispatch) => [
     render: (_, __, index) => index + 1,
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
   },
@@ -86,22 +90,22 @@ export const columnsLeave = (dispatch) => [
   },
   {
     title: "Attachment",
-    dataIndex: "documentId",
+    dataIndex: "attachmentId",
     render: (_, record) => (
       <div className="leave-application-document ml-1">
         <span
           onClick={(e) => {
             e.stopPropagation();
-            if (record?.applicationInformation?.documentId !== 0) {
+            if (record?.applicationInformation?.attachmentId !== 0) {
               dispatch(
                 getDownlloadFileView_Action(
-                  record?.applicationInformation?.documentId
+                  record?.applicationInformation?.attachmentId
                 )
               );
             }
           }}
         >
-          {record?.applicationInformation?.documentId !== 0 && (
+          {record?.applicationInformation?.attachmentId !== 0 && (
             <div style={{ color: "green", cursor: "pointer" }}>
               <Attachment /> attachment
             </div>
@@ -422,6 +426,10 @@ export const columnsMovement = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Employee Name",
