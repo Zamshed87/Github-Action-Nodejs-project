@@ -14,6 +14,8 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import PerformanceAppraisalTable from "./PerformanceAppraisalTable";
 import { SaveOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
   // redux
@@ -26,6 +28,7 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [performanceAppraisal, setPerformanceAppraisal] = useState([]);
+  const [landingData, setLandingData] = useState([]);
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -49,13 +52,13 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
     setPerformanceAppraisal([
       ...performanceAppraisal,
       {
-        idx: values?.markStart + performanceAppraisal?.length,
+        idx: crypto.randomUUID(),
         markStart: values?.markStart,
         markEnd: values?.markEnd,
         gradeName: values?.gradeName,
         cola: values?.cola,
         appraisal: values?.appraisal,
-        comments: values?.comments,
+        comment: values?.comment,
       },
     ]);
     // form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
@@ -105,15 +108,55 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
     {
       type: "text",
       label: "Comments",
-      varname: "comments",
+      varname: "comment",
       placeholder: "Comments",
       col: 3,
     },
   ];
 
+  const handlePerformanceAppraisal = async () => {
+    setLoading && setLoading(true);
+    const payload = performanceAppraisal?.map((item) => ({
+      performanceAppraisalConfigId: item?.performanceAppraisalConfigId || 0,
+      markStart: item?.markStart,
+      markEnd: item?.markEnd,
+      gradeName: item?.gradeName,
+      cola: item?.cola,
+      appraisal: item?.appraisal,
+      comment: item?.comment,
+    }));
+    try {
+      const res = await axios.put(`/PMS/PerformanceAppraisalConfig`, payload);
+      cb && cb();
+      toast.success(res?.data?.message);
+      setLoading && setLoading(false);
+      // form.resetFields();
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+      setLoading && setLoading(false);
+    }
+  };
+
+  const landingApi = async (
+    pagination = {
+      current: 1,
+      pageSize: 25,
+    }
+  ) => {
+    const res = await axios.get(
+      `/PMS/GetAllPerformanceAppraisalConfig?pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`
+    );
+    setLandingData(res?.data);
+    const updatedData = res?.data?.data?.map((item) => ({
+      ...item,
+      idx: item.performanceAppraisalConfigId,
+    }));
+    setPerformanceAppraisal(updatedData || []);
+  };
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    // levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading, true); // Call the API
+    landingApi();
   }, []);
 
   return permission?.isCreate ? (
@@ -136,9 +179,10 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
             buttonList={[
               {
                 type: "primary",
+                disabled: performanceAppraisal?.length <= 0,
                 content: "Save",
                 icon: <SaveOutlined />,
-                onClick: () => {},
+                onClick: () => handlePerformanceAppraisal(),
               },
             ]}
           />
@@ -170,6 +214,8 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
         <PerformanceAppraisalTable
           data={performanceAppraisal}
           setData={setPerformanceAppraisal}
+          landingApiCall={landingApi}
+          landingApi={landingData}
         />
       )}
     </div>

@@ -1,11 +1,16 @@
 import { Tooltip } from "@mui/material";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { toast } from "react-toastify";
-import { gray600 } from "../../../../utility/customColor";
+import {
+  blackColor80,
+  gray600,
+  greenColor,
+} from "../../../../utility/customColor";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import * as Yup from "yup";
 import FormikToggle from "common/FormikToggle";
+import { Switch } from "antd";
 
 export const onGetObjectiveLanding = ({
   getObjectiveLanding,
@@ -257,17 +262,26 @@ export const pmsObjectiveTableColumn = ({
               <DeleteOutlineOutlined />
             </button>
           </Tooltip> */}
-
-          {/* <div className="col-12">
-            <FormikToggle
-              name="isActive"
-              color={values?.isActive ? greenColor : blackColor80}
-              checked={values?.isActive}
-              onChange={(e) => {
-                setFieldValue("isActive", e.target.checked);
-              }}
-            />
-          </div> */}
+          <Switch
+            size="small"
+            checked={record?.isActive}
+            onChange={() => {
+              deletePMSObjective?.(
+                `/PMS/DeletePMSObjective?AccountId=${record?.accountId}&ObjectiveId=${record?.objectiveId}&UserId=${employeeId}`,
+                null,
+                () => {
+                  onGetObjectiveLanding?.({
+                    getObjectiveLanding,
+                    orgId,
+                    setObjectiveTableData,
+                    pages,
+                    // setPages,
+                  });
+                },
+                true
+              );
+            }}
+          />
         </div>
       ),
       sorter: false,

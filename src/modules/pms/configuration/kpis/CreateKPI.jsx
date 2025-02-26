@@ -189,7 +189,13 @@ const CreateKPI = () => {
   };
 
   useEffect(() => {
-    getPeopleDeskAllDDL(`/PMS/PMTypeDDL`, "value", "label", setPmTypeDDL);
+    // getPeopleDeskAllDDL(`/PMS/PMTypeDDL`, "value", "label", setPmTypeDDL);
+    getPeopleDeskAllDDL(
+      `/PMS/ObjectiveTypeDDL?PMTypeId=1`,
+      "value",
+      "label",
+      setObjectiveTypeDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -310,7 +316,7 @@ const CreateKPI = () => {
                     />
                   </div>
                 </div> */}
-                <div className="col-md-3">
+                {/* <div className="col-md-3">
                   <div className="input-field-main">
                     <label>PM Type</label>
                     <FormikSelect
@@ -344,36 +350,34 @@ const CreateKPI = () => {
                       isDisabled={params?.id && true}
                     />
                   </div>
-                </div>
+                </div> */}
 
-                {values?.pmType?.value === 1 ? (
-                  <div className="col-md-3">
-                    <div className="input-field-main">
-                      <label>Objective Type</label>
-                      <FormikSelect
-                        name="objectiveType"
-                        placeholder=""
-                        options={objectiveTypeDDL || []}
-                        value={values?.objectiveType}
-                        onChange={(valueOption) => {
-                          setFieldValue("objectiveType", valueOption);
-                          getPeopleDeskAllDDL(
-                            `/PMS/ObjectiveDDL?PMTypeId=${
-                              values.pmType?.value
-                            }&ObjectiveTypeId=${valueOption?.value || 0}`,
-                            "value",
-                            "label",
-                            setObjectiveDDL
-                          );
-                        }}
-                        styles={customStyles}
-                        errors={errors}
-                        touched={touched}
-                        isDisabled={params?.id && true}
-                      />
-                    </div>
+                <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Objective Type</label>
+                    <FormikSelect
+                      name="objectiveType"
+                      placeholder=""
+                      options={objectiveTypeDDL || []}
+                      value={values?.objectiveType}
+                      onChange={(valueOption) => {
+                        setFieldValue("objectiveType", valueOption);
+                        getPeopleDeskAllDDL(
+                          `/PMS/ObjectiveDDL?PMTypeId=${
+                            values.pmType?.value
+                          }&ObjectiveTypeId=${valueOption?.value || 0}`,
+                          "value",
+                          "label",
+                          setObjectiveDDL
+                        );
+                      }}
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isDisabled={params?.id && true}
+                    />
                   </div>
-                ) : null}
+                </div>
                 <div className="col-md-3">
                   <div className="input-field-main">
                     <label>Objective</label>
