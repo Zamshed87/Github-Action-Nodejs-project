@@ -81,7 +81,6 @@ export default function AddEditForm({
           values?.pipelineName?.value || singleData?.applicationTypeId,
       },
       onSuccess: (res) => {
-        // Add "All" option without status label
         if (res.length > 1) {
           res.unshift({
             label: "All",
@@ -91,7 +90,6 @@ export default function AddEditForm({
         }
 
         res.forEach((item, i) => {
-          // Skip the "All" option when adding status labels
           if (item.value !== -1) {
             res[i].isNotSetup = true;
 
@@ -196,7 +194,7 @@ export default function AddEditForm({
               : {
                   workplace: {
                     value: data?.header?.workplaceId,
-                    label: data?.header?.workplaceName,
+                    label: data?.header?.workplaceName || "All",
                   },
                 }),
             pipelineName: {
@@ -279,6 +277,9 @@ export default function AddEditForm({
       <Row gutter={[10, 2]}>
         <Col md={12} sm={24}>
           <PSelect
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
             options={pipelineDDL || []}
             name="pipelineName"
             label="Pipeline Name"
@@ -323,7 +324,35 @@ export default function AddEditForm({
             }
             maxTagCount="responsive"
             mode="multiple"
-            options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+            options={
+              getWDDL?.data?.length > 0
+                ? getWDDL?.data
+                    .filter((opt, index) => {
+                      const hasAllSetup = getWDDL?.data.some((o) =>
+                        o.label.includes("🔵 (All Setup)")
+                      );
+                      const hasNotSetup = getWDDL?.data.some((o) =>
+                        o.label.includes("Not Setup")
+                      );
+
+                      // Remove "All" if it's at the top AND "All Setup" exists, unless "Not Setup" is present
+                      if (
+                        index === 0 &&
+                        opt.label.includes("All") &&
+                        hasAllSetup &&
+                        !hasNotSetup
+                      ) {
+                        return false;
+                      }
+
+                      return true;
+                    })
+                    .map((opt) => ({
+                      ...opt,
+                      disabled: opt.label.includes("🟢 (Individual Setup)"),
+                    }))
+                : []
+            }
             name="workplace"
             label="Workplace"
             showSearch
@@ -372,6 +401,7 @@ export default function AddEditForm({
                 workplace: selectedOptions,
               });
             }}
+            rules={[{ required: true, message: "Workplace is required" }]}
           />
         </Col>
 
@@ -620,7 +650,19 @@ export default function AddEditForm({
                       if (userGroupExists?.length > 0)
                         return toast.warn("Already exists user group");
 
-                      // Dynamic Sequence (based on tableData length)
+                      if (
+                        approver?.label === "User Group" &&
+                        !userGroup?.value
+                      ) {
+                        return toast.warn("Please select user group");
+                      }
+                      if (
+                        approver?.label === "Individual Employee" &&
+                        !employee?.value
+                      ) {
+                        return toast.warn("Please select employee");
+                      }
+
                       const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
