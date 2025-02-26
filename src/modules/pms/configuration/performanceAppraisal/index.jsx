@@ -146,7 +146,7 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
     const res = await axios.get(
       `/PMS/GetAllPerformanceAppraisalConfig?pageNumber=${pagination?.current}&pageSize=${pagination?.pageSize}`
     );
-    setLandingData(res?.data?.data);
+    setLandingData(res?.data);
     const updatedData = res?.data?.data?.map((item) => ({
       ...item,
       idx: item.performanceAppraisalConfigId,

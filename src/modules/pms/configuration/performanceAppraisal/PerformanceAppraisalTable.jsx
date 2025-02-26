@@ -14,13 +14,13 @@ const PerformanceAppraisalTable = ({
     const updatedData = data.filter((item) => item.idx !== idx);
     setData(updatedData);
   };
-
+  console.log(landingApi, "landingApi");
   const header = [
     {
       title: "SL",
       render: (_, rec, index) =>
         getSerial({
-          currentPage: landingApi?.currentPage,
+          currentPage: landingApi?.pageNo,
           pageSize: landingApi?.pageSize,
           index,
         }),
