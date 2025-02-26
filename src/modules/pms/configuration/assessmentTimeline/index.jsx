@@ -19,6 +19,7 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import ATCreateEdit from "./createEdit";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
+import Chips from "common/Chips";
 
 const AssessmentTimeline = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet([]);
@@ -35,7 +36,7 @@ const AssessmentTimeline = () => {
   const history = useHistory();
 
   const landingApi = () => {
-    getCriteriaList(`/PMS/GetAllAssesmentTimelineSetup?accountId`);
+    getCriteriaList(`/PMS/GetAllAssesmentTimelineSetup`);
     GetFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
   };
   useEffect(() => {
@@ -64,6 +65,23 @@ const AssessmentTimeline = () => {
     {
       title: "Status",
       dataIndex: "status",
+      render: (status) => {
+        let statusClass = "secondary p-2 rounded-5"; // Default class
+
+        if (status === "Running") {
+          statusClass = "success p-2 rounded-5";
+        } else if (status === "Assigned") {
+          statusClass = "secondary p-2 rounded-5";
+        } else if (status === "Stop") {
+          statusClass = "warning p-2 rounded-5";
+        }
+
+        return (
+          <div>
+            <Chips label={status} classess={statusClass} />
+          </div>
+        );
+      },
     },
     {
       title: "Action",

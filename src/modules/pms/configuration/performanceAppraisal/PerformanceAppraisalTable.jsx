@@ -4,7 +4,12 @@ import { Col, Row, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { getSerial } from "Utils";
 
-const PerformanceAppraisalTable = ({ data, setData }) => {
+const PerformanceAppraisalTable = ({
+  data,
+  setData,
+  landingApi,
+  landingApiCall,
+}) => {
   const deleteHandler = (idx) => {
     const updatedData = data.filter((item) => item.idx !== idx);
     setData(updatedData);
@@ -15,8 +20,8 @@ const PerformanceAppraisalTable = ({ data, setData }) => {
       title: "SL",
       render: (_, rec, index) =>
         getSerial({
-          currentPage: 1,
-          pageSize: 1000,
+          currentPage: landingApi?.currentPage,
+          pageSize: landingApi?.pageSize,
           index,
         }),
       fixed: "left",
@@ -27,7 +32,7 @@ const PerformanceAppraisalTable = ({ data, setData }) => {
     { title: "Grade Name", dataIndex: "gradeName" },
     { title: "Cola %", dataIndex: "cola" },
     { title: "Appraisal (%)", dataIndex: "appraisal" },
-    { title: "comment", dataIndex: "comments" },
+    { title: "comment", dataIndex: "comment" },
     {
       title: "Action",
       render: (_, rec) => (
@@ -47,7 +52,20 @@ const PerformanceAppraisalTable = ({ data, setData }) => {
 
   return (
     <div className="mb-3 mt-2">
-      <DataTable bordered data={data || []} loading={false} header={header} />
+      <DataTable
+        bordered
+        data={data || []}
+        loading={false}
+        header={header}
+        pagination={{
+          pageSize: landingApi?.pageSize,
+          total: landingApi?.totalCount,
+        }}
+        // filterData={landingApi?.data?.filters}
+        onChange={(pagination, filters) => {
+          landingApiCall(pagination);
+        }}
+      />
     </div>
   );
 };
