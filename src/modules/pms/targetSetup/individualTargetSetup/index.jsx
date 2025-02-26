@@ -20,6 +20,9 @@ import AntTable from "../../../../common/AntTable";
 import { useState } from "react";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { getAsyncEmployeeApi } from "../../../../common/api";
+import { useApiRequest } from "Hooks";
+import { debounce } from "lodash";
+import axios from "axios";
 const initData = {
   employee: "",
   year: "",
@@ -35,6 +38,7 @@ const IndividualTargetSetup = () => {
     pageSize: 20,
     total: 0,
   });
+  const supervisorDDL = useApiRequest([]);
 
   const dispatch = useDispatch();
   const [pmTypeDDL, getPMTypeDDL] = useAxiosGet();
@@ -47,7 +51,7 @@ const IndividualTargetSetup = () => {
   });
 
   const {
-    profileData: { orgId, buId, intAccountId },
+    profileData: { orgId, buId, intAccountId, employeeId, wId, wgId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const getData = (values, pages) => {
@@ -77,6 +81,32 @@ const IndividualTargetSetup = () => {
       }
     );
   };
+  const getSuperVisorDDL = async ({ value, minSearchLength = 3 }) => {
+    if (value?.length < minSearchLength) return;
+    try {
+      const response = await axios.get("/PeopleDeskDDL/PeopleDeskAllDDL", {
+        params: {
+          DDLType: "EmployeeBasicInfoForEmpMgmt",
+          AccountId: orgId,
+          BusinessUnitId: buId,
+          intId: employeeId,
+          workplaceGroupId: wgId,
+          strWorkplaceIdList: wId,
+          searchTxt: value || "",
+        },
+      });
+
+      const formattedData =
+        response?.data?.map((item) => ({
+          label: item?.EmployeeOnlyName,
+          value: item?.EmployeeId,
+        })) || [];
+      return formattedData;
+    } catch (error) {
+      console.error("Failed to fetch supervisor data:", error);
+      supervisorDDL?.reset();
+    }
+  };
 
   useEffect(() => {
     getFiscalYearDDL(`/PMS/GetFiscalYearDDL`, (data) => {
@@ -102,7 +132,7 @@ const IndividualTargetSetup = () => {
     }
   };
   useEffect(() => {
-    getPMTypeDDL("/PMS/PMTypeDDL");
+    // getPMTypeDDL("/PMS/PMTypeDDL");
     // eslint-disable-next-line
   }, []);
 
@@ -156,7 +186,7 @@ const IndividualTargetSetup = () => {
         </div>
         <div className="card-style pb-0 mb-2">
           <div className="row">
-            <div className="col-lg-3">
+            {/* <div className="col-lg-3">
               <label>PM Type</label>
               <FormikSelect
                 classes="input-sm form-control"
@@ -168,7 +198,7 @@ const IndividualTargetSetup = () => {
                 }}
                 styles={customStyles}
               />
-            </div>
+            </div> */}
 
             <div className="col-lg-3">
               <div className="input-field-main">
@@ -212,6 +242,31 @@ const IndividualTargetSetup = () => {
                 }}
                 styles={customStyles}
               />
+            </div>
+            <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Supervisor Name</label>
+                <AsyncFormikSelect
+                  isClear={true}
+                  selectedValue={values?.supervisorName}
+                  styles={{
+                    control: (provided) => ({
+                      ...customStyles?.control(provided),
+                      width: "100%",
+                    }),
+                  }}
+                  isSearchIcon={true}
+                  handleChange={(valueOption) => {
+                    setFieldValue("supervisorName", valueOption);
+                    setTableData([]);
+                  }}
+                  loadOptions={async (value) => {
+                    return getSuperVisorDDL({
+                      value,
+                    });
+                  }}
+                />
+              </div>
             </div>
             <div className="col-lg-3">
               <label>Type</label>
@@ -268,9 +323,7 @@ const IndividualTargetSetup = () => {
                     }
                   );
                 }}
-                disabled={
-                  !values?.year || !values?.targetType || !values?.pmType
-                }
+                disabled={!values?.year || !values?.targetType}
               >
                 View
               </button>
