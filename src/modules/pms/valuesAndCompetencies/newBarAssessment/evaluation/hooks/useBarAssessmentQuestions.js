@@ -36,7 +36,8 @@ const useBarAssessmentEvaluation = () => {
       }
     );
   };
-  const saveBARAssessmentData = ({assessmentPeriod,assessmentTime}) => {
+  
+  const saveBARAssessmentData = ({ assessmentPeriod, assessmentTime }) => {
     saveBarAssessmentData(
       `/PMS/BARAssessment`,
       {
@@ -56,28 +57,35 @@ const useBarAssessmentEvaluation = () => {
   };
 
   const handleAnswerQuestion = (answer) => {
-    const answerExists = answeredQuestions?.find(aq => aq?.id == answer?.id);
-    if(answerExists){
-      const filteredAnswer = answeredQuestions?.filter(aq => aq?.id != answer?.id);
-      setAnsweredQuestions([...filteredAnswer,answer]);
-    }else{
-      setAnsweredQuestions([...answeredQuestions,answer]);
+    const answerExists = answeredQuestions?.find((aq) => aq?.id == answer?.id);
+    if (answerExists) {
+      const filteredAnswer = answeredQuestions?.filter(
+        (aq) => aq?.id != answer?.id
+      );
+      setAnsweredQuestions([...filteredAnswer, answer]);
+    } else {
+      setAnsweredQuestions([...answeredQuestions, answer]);
     }
-  }
+  };
+
   const getSelectedAnswer = (question) => {
-    const answerExists = answeredQuestions?.find(aq => aq?.id == question?.id);
-    if(answerExists){
+    const answerExists = answeredQuestions?.find(
+      (aq) => aq?.id == question?.id
+    );
+    if (answerExists) {
       return answerExists;
-    }else{
+    } else {
       return false;
     }
-  }
-  function areAllQuestionsAnswered() {
-    const questionIds = new Set(questionData?.groups?.flatMap(g => g?.questions).map(q => q.id));
-    const answeredIds = new Set(answeredQuestions?.map(a => a.id));
+  };
 
-    return [...questionIds].every(id => answeredIds.has(id));
-}
+  function areAllQuestionsAnswered() {
+    const questionIds = new Set(
+      questionData?.groups?.flatMap((g) => g?.questions).map((q) => q.id)
+    );
+    const answeredIds = new Set(answeredQuestions?.map((a) => a.id));
+    return [...questionIds].every((id) => answeredIds.has(id));
+  }
 
   useEffect(() => {
     getBarAssessmentQuestions();

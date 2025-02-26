@@ -17,6 +17,7 @@ const BarAssessmentEvaluation = () => {
     questionData,
     questionsLoading,
     saveBARAssessmentData,
+    saveLoading,
     handleAnswerQuestion,
     getSelectedAnswer,
     areAllQuestionsAnswered,
@@ -35,7 +36,7 @@ const BarAssessmentEvaluation = () => {
         });
       }}
     >
-      {questionsLoading && <Loading />}
+      {questionsLoading || saveLoading && <Loading />}
       <PCard>
         <PCardHeader
           title={`BAR Assessment Evaluation`}
