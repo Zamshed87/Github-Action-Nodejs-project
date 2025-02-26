@@ -3923,7 +3923,7 @@ export const routingList = [
     component: BarAssessmentEvaluationForSupervisor,
   },
   {
-    path: "/pms/performanceAssessment/BARAssessment/evaluation/:id/:yearId",
+    path: "/pms/performanceAssessment/BARAssessment/evaluation/:employeeId/:yearId",
     component: BarAssessmentEvaluation,
   },
   {

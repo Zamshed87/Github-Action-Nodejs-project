@@ -2,14 +2,16 @@ import { useEffect } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { shallowEqual, useSelector } from "react-redux";
 
-const useAssessmentFilters = () => {
+const useAssessmentFilters = ({showYear=true}) => {
   const {
       profileData: { orgId, buId, wgId, wId},
     } = useSelector((store) => store?.auth, shallowEqual);
   const [fiscalYearDDL, getFiscalYearDDL] = useAxiosGet();
 
   useEffect(() => {
-    getFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
+    if(showYear){
+      getFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
+    }
   }, [orgId, buId, wgId, wId]);
 
   return {

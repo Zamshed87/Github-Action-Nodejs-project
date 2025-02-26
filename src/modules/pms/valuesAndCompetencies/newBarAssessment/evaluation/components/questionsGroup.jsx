@@ -1,19 +1,17 @@
 import Title from "antd/lib/typography/Title";
-import React from "react";
 import Question from "./question";
 
 const QuestionsGroup = ({
   group,
-  options,
-  groupNo,
+  scales,
   handleSelectOption,
-  disabled,
+  getSelectedAnswer
 }) => {
-  const { groupName, questions } = group;
+  const { name, questions } = group;
 
   return (
     <div className=" mb-4">
-      <Title level={5}>{groupName}</Title>
+      <Title level={5}>{name}</Title>
       <div className="container overflow-hidden ml-4">
         <div className="row mx-auto">
           {questions?.length > 0 &&
@@ -21,10 +19,10 @@ const QuestionsGroup = ({
               <Question
                 key={quesIdx + 1}
                 question={question}
-                options={options}
+                scales={scales}
                 questionNo={quesIdx + 1}
                 handleSelectOption={handleSelectOption}
-                disabled={disabled}
+                getSelectedAnswer={getSelectedAnswer}
               />
             ))}
         </div>
