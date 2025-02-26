@@ -1,7 +1,7 @@
 import { Attachment, InfoOutlined } from "@mui/icons-material";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { dateFormatter } from "utility/dateFormatter";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
 import { Tooltip } from "antd";
@@ -58,6 +58,18 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Leave Type",
+    dataIndex: ["applicationInformation", "leaveType"],
+    render: (text, record) => (
+      <>
+        {text}{" "}
+        <Tooltip title={`Reason: ${record?.applicationInformation?.strRemarks}`} arrow>
+          <InfoCircleOutlined style={{ color: "green", cursor: "pointer" }} />
+        </Tooltip>
+      </>
+    ),
   },
   {
     title: "Designation",
@@ -428,15 +440,22 @@ export const columnsMovement = [
     dataIndex: ["applicationInformation", "department"],
   },
   {
-    title: "Leave Type",
+    title: "Movement Type",
     dataIndex: ["applicationInformation", "leaveType"],
+    render: (text, record) => (
+      <>
+        {text}{" "}
+        <Tooltip title={`Reason: ${record?.applicationInformation?.strRemarks}`} arrow>
+          <InfoCircleOutlined style={{ color: "green", cursor: "pointer" }} />
+        </Tooltip>
+      </>
+    ),
+    width: "80px",
   },
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "From Date",
