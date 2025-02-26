@@ -77,8 +77,14 @@ const PMSObjective = () => {
   } = useFormik({
     initialValues,
     onSubmit: (formValues) => {
+      const objectiveTypes = formValues?.objectiveTypes?.value
+        ? `objectiveType=${formValues?.objectiveTypes?.value}`
+        : "";
+      const status = formValues?.status?.value
+        ? `&status=${formValues?.status?.value}`
+        : "";
       getObjectiveLanding(
-        `/PMS/GetPMSObejctiveLanding?objectiveType=${formValues?.objectiveTypes?.value}&status=${formValues?.status?.value}&accountId=${orgId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&search=${search}`,
+        `/PMS/GetPMSObejctiveLanding?${objectiveTypes}${status}&accountId=${orgId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&search=${search}`,
         (data) => {
           if (data) {
             setPages((prev) => ({
