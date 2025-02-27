@@ -13,7 +13,10 @@ import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import NoResult from "../../../../common/NoResult";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import {
+  getPeopleDeskAllDDL,
+  getPeopleDeskAllDDLModify,
+} from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -34,6 +37,7 @@ import {
   salaryGenerateInitialValues,
   salaryGenerateValidationSchema,
 } from "./helper";
+import { PSelect } from "Components";
 
 const SalaryGenerateCreate = () => {
   // hooks
@@ -63,6 +67,7 @@ const SalaryGenerateCreate = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [hrPositionDDL, setHrPositionDDL] = useState([]);
+  const [selectedWorkplaces, setSelectedWorkplaces] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 5000,
@@ -70,12 +75,6 @@ const SalaryGenerateCreate = () => {
   });
   const [allEmployeeString, setAllEmployeeString] = useState("");
   const [, setAllAssign] = useState(false);
-  // DDL
-  // const [wingDDL, setWingDDL] = useState([]);
-  // const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  // const [regionDDL, setRegionDDL] = useState([]);
-  // const [areaDDL, setAreaDDL] = useState([]);
-  // const [territoryDDL, setTerritoryDDL] = useState([]);
 
   // for create state
   const [open, setOpen] = useState(false);
@@ -83,24 +82,9 @@ const SalaryGenerateCreate = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  // DDl section
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
 
   //get landing data
   const getLandingData = (pages = pages) => {
-    // getSalaryGenerateRequestLanding(
-    //   "EmployeeListForSalaryGenerateRequest",
-    //   orgId,
-    //   buId,
-    //   wgId,
-    //   wId,
-    //   setRowDto,
-    //   setAllData,
-    //   setLoading,
-    //   pages,
-    //   setPages,
-    //   setAllEmployeeString
-    // );
     getSalaryGenerateRequestLanding(
       "EmployeeListForSalaryGenerateRequest",
       orgId,
@@ -128,19 +112,12 @@ const SalaryGenerateCreate = () => {
 
   // for initial
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      `/PeopleDeskDdl/WorkplaceIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}`,
-      "intWorkplaceId",
-      "strWorkplace",
+    getPeopleDeskAllDDLModify(
+      `/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&applicationTypeId=20`,
+      "value",
+      "label",
       setWorkplaceDDL
     );
-    // getPeopleDeskAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-    //   "intBusinessUnitId",
-    //   "strBusinessUnit",
-    //   setBusinessUnitDDL
-    // );
   }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
@@ -628,7 +605,6 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-
                   {values?.salaryTpe?.value === "PartialSalary" && (
                     <>
                       <div className="col-lg-3">
@@ -796,19 +772,48 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div> */}
-                  <div className="col-md-3">
+
+                  <div className="col-md-4">
                     <div className="input-field-main">
                       <label>Workplace</label>
-                      <MultiCheckedSelect
+                      <PSelect
+                        maxTagCount="responsive"
+                        mode="multiple"
+                        value={selectedWorkplaces}
+                        options={
+                          workplaceDDL?.map((opt) => ({
+                            ...opt,
+                            disabled:
+                              (selectedWorkplaces.some(
+                                (sel) => sel.isIndividualSetup
+                              ) &&
+                                !opt.isIndividualSetup) ||
+                              (selectedWorkplaces.length > 0 &&
+                                opt.isIndividualSetup &&
+                                !selectedWorkplaces.includes(opt.value)),
+                          })) || []
+                        }
                         name="workplace"
-                        options={workplaceDDL || []}
-                        value={values?.workplace}
-                        onChange={(valueOption) => {
-                          setFieldValue("workplace", valueOption);
-                          const values = valueOption?.map(
-                            (item) => item?.value
+                        showSearch
+                        filterOption={true}
+                        placeholder="Workplace"
+                        onChange={(value, options) => {
+                          console.log("value", value);
+                          let selectedValues = value;
+                          let selectedOptions = options;
+
+                          const individualOption = selectedOptions.find(
+                            (opt) => opt.isIndividualSetup
                           );
-                          const valuesStr = values?.join(",");
+
+                          if (individualOption) {
+                            selectedValues = [individualOption.value];
+                            selectedOptions = [individualOption];
+                          }
+
+                          setSelectedWorkplaces(selectedValues);
+                          const valuesStr = selectedValues.join(",");
+                          setFieldValue("workplace", valuesStr);
 
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,
@@ -817,11 +822,6 @@ const SalaryGenerateCreate = () => {
                             setHrPositionDDL
                           );
                         }}
-                        isShowAllSelectedItem={false}
-                        errors={errors}
-                        placeholder="Workplace"
-                        touched={touched}
-                        setFieldValue={setFieldValue}
                       />
                     </div>
                   </div>
@@ -892,7 +892,6 @@ const SalaryGenerateCreate = () => {
                       /> */}
                     </div>
                   </div>
-
                   <div className="col-md-3 d-flex mt-4">
                     {values?.salaryTpe?.value === "PartialSalary" ? (
                       <button

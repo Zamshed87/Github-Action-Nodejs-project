@@ -40,7 +40,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       format,
       disabledDate,
       addOnBefore,
-      iconRender
+      iconRender,
     } = property;
 
     const Components =
@@ -54,6 +54,19 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           style={{ width: "100%" }}
           format={format || "DD/MM/YYYY"}
           // showTime={{ use12Hours: true }}
+          allowClear={allowClear}
+          disabledDate={disabledDate}
+          picker={picker as "date" | "week" | "month" | "year"}
+        />
+      ) : type === "dateRange" ? (
+        <DatePicker.RangePicker
+          placeholder={(placeholder as unknown as [string, string]) || ["From Date", "To Date"]}
+          onChange={onChange as (values: any, formatString: [string, string]) => void}
+          disabled={disabled}
+          suffixIcon={suffix}
+          value={value}
+          style={{ width: "100%" }}
+          format={format || "DD/MM/YYYY"}
           allowClear={allowClear}
           disabledDate={disabledDate}
           picker={picker as "date" | "week" | "month" | "year"}

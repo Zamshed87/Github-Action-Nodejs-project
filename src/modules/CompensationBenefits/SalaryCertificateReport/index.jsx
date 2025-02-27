@@ -489,7 +489,11 @@ const SalaryPayslipReport = () => {
                             <th style={{ textAlign: "right" }}>
                               <p style={thStyles}>
                                 {numberWithCommas(
-                                  numTotal(viewPaySlipData, "numAmount", 1)
+                                  numTotal(
+                                    viewPaySlipData,
+                                    "numAmount",
+                                    1
+                                  ).toFixed(2)
                                 )}
                               </p>
                             </th>
@@ -573,14 +577,28 @@ const SalaryPayslipReport = () => {
                             <th style={{ textAlign: "right" }}>
                               <p style={thStyles}>
                                 {numberWithCommas(
-                                  (numTotal(viewPaySlipData, "numTotal", 1) +
-                                    salaryHeaderData[0]?.numOverTimeAmount ||
-                                    0) -
-                                    (numTotal(viewPaySlipData, "numAmount", 0) +
-                                      (salaryHeaderData[0]?.numTaxAmount || 0) +
-                                      (salaryHeaderData[0]?.numLoanAmount ||
-                                        0) +
-                                      (salaryHeaderData[0]?.numPFAmount || 0))
+                                  (
+                                    parseFloat(
+                                      numTotal(viewPaySlipData, "numTotal", 1)
+                                    ) +
+                                    parseFloat(
+                                      salaryHeaderData?.[0]
+                                        ?.numOverTimeAmount || 0
+                                    ) -
+                                    (parseFloat(
+                                      numTotal(viewPaySlipData, "numAmount", 0)
+                                    ) +
+                                      parseFloat(
+                                        salaryHeaderData?.[0]?.numTaxAmount || 0
+                                      ) +
+                                      parseFloat(
+                                        salaryHeaderData?.[0]?.numLoanAmount ||
+                                          0
+                                      ) +
+                                      parseFloat(
+                                        salaryHeaderData?.[0]?.numPFAmount || 0
+                                      ))
+                                  ).toFixed(2)
                                 )}
                               </p>
                             </th>
