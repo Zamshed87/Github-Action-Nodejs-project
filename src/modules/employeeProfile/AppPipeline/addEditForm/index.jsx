@@ -161,7 +161,6 @@ export default function AddEditForm({
   }, [orgId, buId, wgId]);
   useEffect(() => {
     fetchPipelineData(setPipelineDDL);
-    fetchApproverData(setApproverDDL);
   }, [orgId, buId]);
 
   // Form Instance
@@ -289,8 +288,10 @@ export default function AddEditForm({
             onChange={(value, op) => {
               form.setFieldsValue({
                 pipelineName: op,
+                approver: undefined,
               });
               getWorkplace();
+              fetchApproverData(setApproverDDL, op);
             }}
             rules={[{ required: true, message: "Pipeline Name is required" }]}
           />
