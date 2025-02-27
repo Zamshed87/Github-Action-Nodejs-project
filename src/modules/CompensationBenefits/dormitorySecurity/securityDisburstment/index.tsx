@@ -39,7 +39,7 @@ export const SecurityDisbursementLanding = () => {
   const [modalData, setModalData] = useState<any[]>([]);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30532),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30553),
     []
   );
   // menu permission
