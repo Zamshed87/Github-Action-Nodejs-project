@@ -22,14 +22,13 @@ const BarAssessmentEvaluation = () => {
     getSelectedAnswer,
     areAllQuestionsAnswered,
   } = useBarAssessmentEvaluation();
-  const { assessmentPeriodDDL, quarterDDL } = useAssessmentFilters({});
+  const { assessmentPeriodDDL, quarterDDL } = useAssessmentFilters({showYear:false});
 
   return permission?.isView ? (
     <PForm
       form={form}
       initialValues={{}}
       onFinish={(values) => {
-        console.log(values)
         saveBARAssessmentData({
           assessmentPeriod: values?.assessmentPeriod?.value,
           assessmentTime: values?.assessmentTime?.value,
