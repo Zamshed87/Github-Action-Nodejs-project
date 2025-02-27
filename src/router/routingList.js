@@ -4208,7 +4208,7 @@ export const routingList = [
   {
     path: "/retirement/finalSettlement",
     component: FinalSettlementLandingv2,
-  }
+  },
 ];
 
 // Those hidden menu just use for develper
