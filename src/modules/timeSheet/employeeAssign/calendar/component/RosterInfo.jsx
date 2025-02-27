@@ -18,6 +18,7 @@ export default function RoasterInfo({ item }) {
   return (
     <div className="d-flex justify-content-between">
       <InfoOutlined
+        sx={{ fontSize: 15 }}
         onClick={(e) => {
           setSingleData(item);
           handleClick(e);

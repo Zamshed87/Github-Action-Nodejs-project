@@ -15,7 +15,9 @@ import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
+import RoasterInfo from "./component/RosterInfo";
 // import AddEditForm from "./component";
 
 export const CalendarAssign = () => {
@@ -69,24 +71,20 @@ export const CalendarAssign = () => {
       workplaceGroupId: wgId,
       workplaceId: wId,
       isNotAssign:
-        values?.isAssigned === 1
-          ? false
-          : values?.isAssigned === 2
-          ? true
-          : null,
+        values?.assigned === 2 ? false : values?.assigned === 1 ? true : null,
       pageNo: pagination?.current || 1,
       pageSize: pagination?.pageSize || 100,
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
 
-      designationList: filerList?.designationList || [],
-      employmentTypeList: filerList?.employmentTypeList || [],
-      departmentList: filerList?.departmentList || [],
-      hrPositionList: filerList?.hrPositionList || [],
-      sectionList: filerList?.sectionList || [],
+      designationList: filerList?.designation || [],
+      employmentTypeList: filerList?.employmentType || [],
+      departmentList: filerList?.department || [],
+      hrPositionList: filerList?.hrPosition || [],
+      sectionList: filerList?.section || [],
 
-      supervisorNameList: filerList?.supervisorNameList || [],
+      supervisorNameList: filerList?.supervisorName || [],
       //   wingNameList: [],
       //   soleDepoNameList: [],
       //   regionNameList: [],
@@ -139,7 +137,7 @@ export const CalendarAssign = () => {
           index,
         }),
       fixed: "left",
-      width: 15,
+      width: 30,
       align: "center",
     },
 
@@ -177,16 +175,34 @@ export const CalendarAssign = () => {
       },
       sorter: true,
       fixed: "left",
-      width: 50,
+      width: 75,
     },
     {
       title: "Employee ID",
       dataIndex: "employeeCode",
       sorter: true,
       fixed: "left",
-      width: 40,
+      width: 70,
     },
 
+    {
+      title: "Department",
+      dataIndex: "department",
+      sorter: true,
+      filter: true,
+      filterKey: "departmentList",
+      filterSearch: true,
+      width: 95,
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sorter: true,
+      filter: true,
+      filterKey: "sectionList",
+      filterSearch: true,
+      width: 90,
+    },
     {
       title: "Designation",
       dataIndex: "designation",
@@ -194,25 +210,7 @@ export const CalendarAssign = () => {
       filter: true,
       filterKey: "designationList",
       filterSearch: true,
-      width: 50,
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: true,
-      filter: true,
-      filterKey: "departmentList",
-      filterSearch: true,
-      width: 50,
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: true,
-      filter: true,
-      filterKey: "departmentList",
-      filterSearch: true,
-      width: 50,
+      width: 90,
     },
     {
       title: "HR Position",
@@ -221,7 +219,16 @@ export const CalendarAssign = () => {
       filter: true,
       filterKey: "hrPositionList",
       filterSearch: true,
-      width: 50,
+      width: 90,
+    },
+    {
+      title: "Supervisor",
+      dataIndex: "supervisorName",
+      sorter: true,
+      filter: true,
+      filterKey: "supervisorNameList",
+      filterSearch: true,
+      width: 95,
     },
 
     {
@@ -231,13 +238,41 @@ export const CalendarAssign = () => {
       filter: true,
       filterSearch: true,
       filterKey: "employmentTypeList",
-      width: 45,
+      width: 75,
     },
     {
-      title: "Policy Name",
-      dataIndex: "latePunishmentPolicyName",
+      title: "Generate Date",
+      dataIndex: "generateDate",
+      render: (record: any) => dateFormatter(record),
+      width: 75,
+    },
+    {
+      title: "Joining Date",
+      dataIndex: "joiningDate",
+      render: (record: any) => dateFormatter(record),
+      width: 75,
+    },
+    {
+      title: "Roster Name",
+      dataIndex: "rosterGroupName",
+      width: 75,
+    },
+    {
+      width: 130,
 
-      width: 150,
+      title: "Calender Name",
+      render: (_: any, item: any) => (
+        <>
+          {item?.calendarName !== "N/A" ? (
+            <div className="d-flex align-items-center">
+              <RoasterInfo item={item} />
+              <div className="pl-2">{item?.calendarName} </div>
+            </div>
+          ) : (
+            ""
+          )}
+        </>
+      ),
     },
   ];
   return employeeFeature?.isView ? (
@@ -312,16 +347,16 @@ export const CalendarAssign = () => {
             <PSelect
               options={[
                 { value: 1, label: "Not Assigned" },
-                { value: 0, label: "Assigned" },
+                { value: 2, label: "Assigned" },
               ]}
               name="assigned"
               placeholder=""
               style={{ width: "200px" }}
               onSelect={(value: any, op: any) => {
                 form.setFieldsValue({
-                  assigned: op,
+                  assigned: value,
                 });
-                landingApiCall({ isNotAssign: value === 1 ? true : false });
+                landingApiCall({ isNotAssign: value === 2 ? false : true });
               }}
             />
           </PCardHeader>
@@ -329,7 +364,7 @@ export const CalendarAssign = () => {
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={landingApi?.data?.loaderDataList || []}
+            data={landingApi?.data?.data || []}
             loading={landingApi?.loading}
             header={header}
             pagination={{
@@ -342,7 +377,6 @@ export const CalendarAssign = () => {
               if (extra.action === "sort") return;
               const { search } = form.getFieldsValue(true);
               setFilterList(filters);
-              console.log("filters", filters);
               landingApiCall({
                 pagination,
                 filerList: filters,
@@ -363,7 +397,7 @@ export const CalendarAssign = () => {
               // },
             }}
             // checkBoxColWidth={50}
-            // scroll={{ x: 2000 }}
+            scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
