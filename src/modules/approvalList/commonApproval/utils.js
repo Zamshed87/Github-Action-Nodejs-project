@@ -436,10 +436,6 @@ export const columnsMovement = [
     dataIndex: ["applicationInformation", "employeeName"],
   },
   {
-    title: "Employee Code",
-    dataIndex: ["applicationInformation", "employeeCode"],
-  },
-  {
     title: "Designation",
     dataIndex: ["applicationInformation", "designation"],
   },
@@ -1017,6 +1013,7 @@ export const columnsRemoteAttendance = [
   {
     title: "Attendance Date",
     dataIndex: ["applicationInformation", "dteAttendanceDate"],
+    render: (date) => <div>{ dateFormatter(date)}</div>,
   },
   {
     title: "Start Time",
