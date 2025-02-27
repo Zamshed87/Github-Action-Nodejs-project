@@ -234,13 +234,13 @@ export default function MgtIOUApplicationView() {
       intWorkplaceGroupId: params?.id ? singleData?.workplaceGroupId : wgId,
       dteFromDate: dateFormatterForInput(singleData?.dteFromDate),
       dteToDate: dateFormatterForInput(singleData?.dteToDate),
-      numIOUAmount: singleData?.numIOUAmount,
+      numIOUAmount: singleData?.numIouAmount,
       numAdjustedAmount: values?.adjustedAmount,
       numPayableAmount: values?.payableAmount,
       numReceivableAmount: values?.receivableAmount,
       strDiscription: singleData?.discription,
       isAdjustment: true,
-      intIOUAdjustmentId: singleData?.intIOUAdjustmentId || 0,
+      intIOUAdjustmentId: singleData?.intIouAdjustmentId || 0,
       isActive: true,
       urlIdViewModelList: modifyImageArray,
     };
@@ -250,7 +250,7 @@ export default function MgtIOUApplicationView() {
 
   // pending amount
   pendingAmount =
-    +singleData?.numIOUAmount -
+    +singleData?.numIouAmount -
     (+singleData?.numAdjustedAmount + +singleData?.numReceivableAmount);
 
   return (
@@ -358,7 +358,7 @@ export default function MgtIOUApplicationView() {
                       <CircleButton
                         icon={<img src={moneyIcon} alt="iBOS" />}
                         title={
-                          numberWithCommas(singleData?.numIOUAmount) || "-"
+                          numberWithCommas(singleData?.numIouAmount) || "-"
                         }
                         subTitle="IOU Amount"
                       />
@@ -449,10 +449,13 @@ export default function MgtIOUApplicationView() {
                                   onChange={(e) => {
                                     // pending amount
                                     pendingAmount =
-                                      +singleData?.numIOUAmount -
+                                      +singleData?.numIouAmount -
                                       (+e.target.value +
                                         +values?.receivableAmount);
-
+                                    console.log(
+                                      { pendingAmount },
+                                      { singleData }
+                                    );
                                     // payable  amount
                                     if (pendingAmount > 0) {
                                       payableAmount = 0;
@@ -468,7 +471,7 @@ export default function MgtIOUApplicationView() {
 
                                     if (
                                       +e.target.value >
-                                      +singleData?.numIOUAmount
+                                      +singleData?.numIouAmount
                                     ) {
                                       setFieldValue("receivableAmount", 0);
                                     }
@@ -500,7 +503,7 @@ export default function MgtIOUApplicationView() {
                                   onChange={(e) => {
                                     // pending amount
                                     pendingAmount =
-                                      +singleData?.numIOUAmount -
+                                      +singleData?.numIouAmount -
                                       (+values?.adjustedAmount +
                                         +e.target.value);
 
@@ -557,7 +560,7 @@ export default function MgtIOUApplicationView() {
                                   placeholder=" "
                                   classes="input-sm"
                                   name="payableAmount"
-                                  value={values?.payableAmount || "0"}
+                                  value={values?.payableAmount || 0}
                                   type="number"
                                   onChange={(e) => {
                                     return;

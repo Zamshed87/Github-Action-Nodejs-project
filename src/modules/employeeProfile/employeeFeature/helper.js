@@ -129,6 +129,7 @@ export const createEditEmpAction = async (
       intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
       nid: values?.nid || "",
+      jobApplicationId: values?.jobApplicationId,
       tinNo: values?.tinNo || "",
       strOTbasedon: values?.strOTbasedon?.value || "",
       intOTFixedHour: +values?.intOTFixedHour || 0,
@@ -1200,6 +1201,7 @@ export const columnForHeadOffice = {
   strEmploymentType: "Employment Type",
   contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strBloodGroup: "Blood Group",
   strEmployeeStatus: "Status",
 };
 export const columnForFinish = {
@@ -1219,6 +1221,7 @@ export const columnForFinish = {
   strEmploymentType: "Employment Type",
   contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strBloodGroup: "Blood Group",
   strEmployeeStatus: "Status",
 };
 

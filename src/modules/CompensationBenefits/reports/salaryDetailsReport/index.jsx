@@ -17,11 +17,8 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray500, gray600, success500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/newSelectCustomStyle";
 import { getMonthName } from "./../../../../utility/monthIdToMonthName";
-import { getSalaryDetailsReportRDLC, getSalaryReport } from "./helper";
-import { createSalaryDetailsReportExcelHandeler } from "../../salaryGenerate/helper";
+import { getSalaryDetailsReportRDLC } from "./helper";
 import { downloadFile, getPDFAction } from "../../../../utility/downloadFile";
-// import SalaryTableReport from "./SalaryTableReport";
-import SalaryDetailsReportTable from "./SalaryDetailsReportTable";
 import axios from "axios";
 import { isDevServer } from "App";
 
@@ -43,8 +40,6 @@ export default function SalaryDetailsReport() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));

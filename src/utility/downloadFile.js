@@ -6,13 +6,15 @@ export const downloadFile = (
   fileName,
   extension,
   setLoading,
-  method = "GET"
+  method = "GET",
+  payload = {}
 ) => {
   setLoading && setLoading(true);
   axios({
     url: url,
     method: method,
     responseType: "blob", // important
+    data: payload,
   })
     .then((response) => {
       const urlTwo = window.URL.createObjectURL(new Blob([response.data]));
@@ -30,13 +32,21 @@ export const downloadFile = (
     });
 };
 
-export const getPDFAction = async (url, setLoading, fileName = "") => {
+export const getPDFAction = (
+  url,
+  setLoading,
+  fileName = "",
+  method = "GET",
+  payload = {}
+) => {
   try {
     setLoading(true);
-    await axios
-      .get(url, {
-        responseType: "blob",
-      })
+    axios({
+      url: url,
+      method: method,
+      responseType: "blob",
+      data: payload,
+    })
       .then((response) => {
         setLoading(false);
         //Create a Blob from the PDF Stream

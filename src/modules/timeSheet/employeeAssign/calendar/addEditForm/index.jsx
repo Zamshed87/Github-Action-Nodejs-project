@@ -20,6 +20,7 @@ import { Tag } from "antd";
 import { useApiRequest } from "Hooks";
 import IConfirmModal from "common/IConfirmModal";
 import { is } from "date-fns/locale";
+import moment from "moment";
 
 const ifPrevousDateSelected = (date) => {
   const selectedDate = new Date(date);
@@ -317,6 +318,12 @@ Are you sure ? You want to assign Calendar again?
                                   setIsPrevousDate(false);
                                 }
                                 setFieldValue("generateDate", e.target.value);
+                                setFieldValue(
+                                  "generateEndDate",
+                                  moment(e.target.value)
+                                    .endOf("month")
+                                    .format("YYYY-MM-DD")
+                                );
                               }}
                               errors={errors}
                               touched={touched}

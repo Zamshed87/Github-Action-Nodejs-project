@@ -168,8 +168,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=7609"
-                                  : "/document/downloadfile?id=2635"
+                                  ? "/document/downloadfile?id=8465"
+                                  : "/document/downloadfile?id=10106"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -272,6 +272,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th className="text-center">
                                 <div>Intern Close Date</div>
+                              </th>
+                              <th className="text-center">
+                                <div>Probation Period</div>
                               </th>
                               <th className="text-center">
                                 <div>Probationary Close Date</div>
@@ -448,6 +451,13 @@ export default function BulkEmployeeCreate() {
                                   <div className="tableBody-title">
                                     {data?.dteInternCloseDate
                                       ? dateFormatter(data?.dteInternCloseDate)
+                                      : "-"}
+                                  </div>
+                                </td>
+                                <td className="text-center">
+                                  <div className="tableBody-title">
+                                    {data?.ProbationaryEndInDays
+                                      ? data?.ProbationaryEndInDays
                                       : "-"}
                                   </div>
                                 </td>

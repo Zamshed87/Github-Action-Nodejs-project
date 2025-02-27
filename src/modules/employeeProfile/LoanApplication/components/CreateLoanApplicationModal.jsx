@@ -96,6 +96,7 @@ const CreateLoanApplicationModal = ({
   fileId,
   setFileId,
   setSingleData,
+  isSelf,
 }) => {
   const [loanType, setLoanType] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -105,7 +106,7 @@ const CreateLoanApplicationModal = ({
   const [grossSalary, setGrossSalary] = useState();
   const [isLoan, setIsloan] = useState(false);
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, userName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -240,16 +241,61 @@ const CreateLoanApplicationModal = ({
   return (
     <Formik
       enableReinitialize={true}
-      initialValues={singleData?.loanApplicationId ? singleData : initData}
+      initialValues={
+        singleData?.loanApplicationId
+          ? singleData
+          : isSelf
+          ? { ...initData, employee: { value: employeeId, label: userName } }
+          : initData
+      }
       validationSchema={validationSchema}
       onSubmit={(values, { resetForm }) => {
-        saveHandler(values, () => {
-          getData();
-          resetForm(initData);
-          setFileId("");
-          setSingleData(null);
-          setFileId("");
-          setShow(false);
+        saveHandler(values, (res) => {
+          if (isSelf) {
+            getData();
+            resetForm(initData);
+            setFileId("");
+            setSingleData(null);
+            setFileId("");
+            setShow(false);
+          }
+          if (!isSelf && tableData?.length !== 0) {
+            getData();
+            resetForm(initData);
+            setFileId("");
+            setSingleData(null);
+            setFileId("");
+            setShow(false);
+          }
+          if (!isSelf && tableData?.length === 0) {
+            getForView(
+              `/Employee/LoanInstallmentRowGetById?loanId=${res?.autoId}`,
+              (data) => {
+                const effectiveDate = moment(values?.effectiveDate); // Parse effective date
+                const modifyData = {
+                  row: data?.map((item, index) => {
+                    const repaymentDate = effectiveDate
+                      .clone()
+                      .add(index, "months"); // Start from effective date month
+                    return {
+                      isHold: item?.isHold || false,
+                      date: repaymentDate.format("YYYY-MM"), // Format as "YYYY-MM"
+                      paymentYear: repaymentDate.year() || 0,
+                      paymentMonth: repaymentDate.month() + 1,
+                      strRemarks: item?.strRemarks || "",
+                      loanApplicationId: item?.loanApplicationId || 0,
+                      intInterest: +item?.intInterest || 0,
+                      totalLoanAmount: +item?.totalLoanAmount || 0,
+                      intInstallmentNumber: +item?.intInstallmentNumber || 0,
+                      intInstallmentAmount: +item?.intInstallmentAmount || 0,
+                      strApplicantName: item?.strApplicantName || "",
+                    };
+                  }),
+                };
+                setTableData(modifyData?.row);
+              }
+            );
+          }
         });
       }}
     >
@@ -272,7 +318,7 @@ const CreateLoanApplicationModal = ({
                       Employee <Required />
                     </label>
                     <AsyncFormikSelect
-                      isDisabled={singleData?.loanApplicationId}
+                      isDisabled={singleData?.loanApplicationId || isSelf}
                       selectedValue={values?.employee}
                       isSearchIcon={true}
                       handleChange={(valueOption) => {
@@ -379,56 +425,61 @@ const CreateLoanApplicationModal = ({
                       disabled={singleData?.loanApplicationId}
                     />
                   </div>
-                  <div className="col-4">
-                    <label>Interest (%)</label>
-                    <FormikInput
-                      classes="input-sm"
-                      value={values?.interest}
-                      name="interest"
-                      type="number"
-                      onChange={(e) => {
-                        setFieldValue("interest", e.target.value);
-                        if (values?.loanAmount || e.target.value) {
-                          const totalAmountwithInterest = (
-                            +values?.loanAmount +
-                            +values?.loanAmount * (e.target.value / 100)
-                          ).toFixed(2);
+                  {!isSelf && (
+                    <div className="col-4">
+                      <label>Interest (%)</label>
+                      <FormikInput
+                        classes="input-sm"
+                        value={values?.interest}
+                        name="interest"
+                        type="number"
+                        onChange={(e) => {
+                          setFieldValue("interest", e.target.value);
+                          if (values?.loanAmount || e.target.value) {
+                            const totalAmountwithInterest = (
+                              +values?.loanAmount +
+                              +values?.loanAmount * (e.target.value / 100)
+                            ).toFixed(2);
 
-                          if (orgId === 4 || orgId === 5) {
-                            if (totalAmountwithInterest > grossSalary) {
-                              toast.warn(
-                                "Total amount with interest cannot exceed gross salary",
-                                { toastId: "toastId" }
-                              );
-                              setFieldValue("totalwithinterest", +grossSalary);
+                            if (orgId === 4 || orgId === 5) {
+                              if (totalAmountwithInterest > grossSalary) {
+                                toast.warn(
+                                  "Total amount with interest cannot exceed gross salary",
+                                  { toastId: "toastId" }
+                                );
+                                setFieldValue(
+                                  "totalwithinterest",
+                                  +grossSalary
+                                );
+                              } else {
+                                setFieldValue(
+                                  "totalwithinterest",
+                                  +totalAmountwithInterest
+                                );
+                              }
                             } else {
                               setFieldValue(
                                 "totalwithinterest",
                                 +totalAmountwithInterest
                               );
                             }
-                          } else {
-                            setFieldValue(
-                              "totalwithinterest",
-                              +totalAmountwithInterest
-                            );
                           }
+                          setFieldValue("amountPerInstallment", "");
+                          setFieldValue("installmentNumber", "");
+                        }}
+                        max={100}
+                        min={0}
+                        step="0.01" // Accepts fractional values
+                        className="form-control"
+                        placeholder=""
+                        errors={errors}
+                        touched={touched}
+                        disabled={
+                          !values?.loanAmount || singleData?.loanApplicationId
                         }
-                        setFieldValue("amountPerInstallment", "");
-                        setFieldValue("installmentNumber", "");
-                      }}
-                      max={100}
-                      min={0}
-                      step="0.01" // Accepts fractional values
-                      className="form-control"
-                      placeholder=""
-                      errors={errors}
-                      touched={touched}
-                      disabled={
-                        !values?.loanAmount || singleData?.loanApplicationId
-                      }
-                    />
-                  </div>
+                      />
+                    </div>
+                  )}
                   <div className="col-4">
                     <div className="d-flex justify-content-between">
                       <label>Total Loan Amount with interest</label>
@@ -467,7 +518,6 @@ const CreateLoanApplicationModal = ({
                         </span>
                       )}
                     </div>
-                    {console.log(values)}
                     <FormikInput
                       classes="input-sm"
                       value={values?.totalwithinterest}
@@ -876,7 +926,7 @@ const CreateLoanApplicationModal = ({
                   </div>
                 </div>
               </div>
-              {singleData?.loanApplicationId && (
+              {(singleData?.loanApplicationId || tableData?.length > 0) && (
                 <div style={{ textAlign: "right", marginRight: "10px" }}>
                   <span
                     style={{
@@ -893,7 +943,7 @@ const CreateLoanApplicationModal = ({
               )}
 
               {/* row table start */}
-              {singleData?.loanApplicationId && (
+              {(singleData?.loanApplicationId || tableData?.length > 0) && (
                 <div className="table-card-body pt-3">
                   <div
                     className=" table-card-styled tableOne"

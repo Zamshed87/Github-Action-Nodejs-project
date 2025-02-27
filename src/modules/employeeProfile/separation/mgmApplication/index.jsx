@@ -45,10 +45,14 @@ export default function ManagementSeparation() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, wId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { buId, wgId, wId },
+    tokenData,
+  } = useSelector((state) => state?.auth, shallowEqual);
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -88,7 +92,10 @@ export default function ManagementSeparation() {
       pagination?.current,
       pagination?.pageSize,
       setPages,
-      wId
+      wId,
+      "",
+      decodedToken.workplaceGroupList || "",
+      decodedToken.workplaceList || ""
     );
   };
 
@@ -148,7 +155,10 @@ export default function ManagementSeparation() {
       1,
       paginationSize,
       setPages,
-      wId
+      wId,
+      "",
+      decodedToken.workplaceGroupList || "",
+      decodedToken.workplaceList || ""
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -193,7 +203,10 @@ export default function ManagementSeparation() {
                           1,
                           paginationSize,
                           setPages,
-                          wId
+                          wId,
+                          "",
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       }}
                     />
@@ -221,7 +234,10 @@ export default function ManagementSeparation() {
                           1,
                           paginationSize,
                           setPages,
-                          wId
+                          wId,
+                          "",
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       } else {
                         getSeparationLanding(
@@ -237,7 +253,10 @@ export default function ManagementSeparation() {
                           1,
                           paginationSize,
                           setPages,
-                          wId
+                          wId,
+                          "",
+                          decodedToken.workplaceGroupList || "",
+                          decodedToken.workplaceList || ""
                         );
                       }
                     }}
@@ -256,7 +275,10 @@ export default function ManagementSeparation() {
                         1,
                         paginationSize,
                         setPages,
-                        wId
+                        wId,
+                        "",
+                        decodedToken.workplaceGroupList || "",
+                        decodedToken.workplaceList || ""
                       );
                     }}
                   />
