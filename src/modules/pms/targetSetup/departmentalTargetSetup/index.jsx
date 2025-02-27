@@ -57,7 +57,13 @@ const DepartmentaltargetSetupLanding = () => {
 
   const getLandingData = () => {
     getTableData(
-      `/PMS/GetKpiChartReport?PartName=MappedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=2&KpiForReffId=${values?.department?.value}&accountId=${intAccountId}&from=1&to=12&pmTypeId=${values?.pmType?.value}`
+      `/PMS/GetKpiChartReport?PartName=MappedKPI&BusinessUnit=${buId}&YearId=${
+        values?.year?.value
+      }&KpiForId=2&KpiForReffId=${
+        values?.department?.value
+      }&accountId=${intAccountId}&from=1&to=12&pmTypeId=${
+        values?.pmType?.value || 1
+      }`
     );
   };
   useEffect(() => {

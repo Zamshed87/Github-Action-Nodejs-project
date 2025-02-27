@@ -51,7 +51,6 @@ export const onAddObjective = ({
     let foundedList = objectiveList?.filter(
       (item, index) =>
         index !== formValues?.objectiveIndex &&
-        item?.pmtypeId === formValues?.pmType?.value &&
         item?.objectiveTypeId === formValues?.objectiveType?.value &&
         item?.objective === formValues?.objective
     );
@@ -61,7 +60,6 @@ export const onAddObjective = ({
   } else {
     found = objectiveList?.some(
       (item) =>
-        item?.pmtypeId === formValues?.pmType?.value &&
         item?.objectiveTypeId === formValues?.objectiveType?.value &&
         item?.objective === formValues?.objective
     );
@@ -76,7 +74,7 @@ export const onAddObjective = ({
       : "",
     objective: formValues?.objective,
     pMTypeName: formValues?.pmType?.label,
-    pmtypeId: formValues?.pmType?.value,
+    pmtypeId: formValues?.pmType?.value || 1,
     objectiveTypeName: formValues?.objectiveType?.label,
     objectiveTypeId: formValues?.objectiveType?.value,
     description: formValues?.description,
