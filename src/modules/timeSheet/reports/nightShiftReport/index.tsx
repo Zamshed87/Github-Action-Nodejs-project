@@ -324,6 +324,18 @@ const NightShiftReport = () => {
 
         width: 100,
       },
+      {
+        title: "Line Manager",
+        dataIndex: "StrLineManagerName",
+
+        width: 100,
+      },
+      {
+        title: "Dotted Supervisor",
+        dataIndex: "StrDottedSupersvisorName",
+
+        width: 100,
+      },
       // {
       //   title: "Calendar",
       //   dataIndex: "StrCalendarName",

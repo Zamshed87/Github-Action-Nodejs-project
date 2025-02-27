@@ -9,6 +9,7 @@ import {
   DollarOutlined,
   ReloadOutlined,
   PrinterFilled,
+  CopyOutlined,
 } from "@ant-design/icons";
 import React from "react";
 import { TableButtonType, buttonList, buttonType } from "./types";
@@ -27,6 +28,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     reload: <ReloadOutlined />,
     dollar: <DollarOutlined />,
     print: <PrinterFilled />,
+    extend: <CopyOutlined/>
   };
 
   const renderButton = (type: buttonType) => {

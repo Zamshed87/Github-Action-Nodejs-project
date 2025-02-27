@@ -260,7 +260,7 @@ const EmployeeReportBuilder = () => {
                             ref={queDropProvided.innerRef}
                             {...queDropProvided.droppableProps}
                           >
-                            {showingData?.slice(0, -5)?.map((item, index) => {
+                            {showingData?.map((item, index) => {
                               return (
                                 <Draggable
                                   key={index}

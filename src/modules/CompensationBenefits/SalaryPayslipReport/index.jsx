@@ -496,7 +496,7 @@ const SalaryPayslipReport = () => {
                             <th style={{ textAlign: "right" }}>
                               <p style={thStyles}>
                                 {numberWithCommas(
-                                  numTotal(viewPaySlipData, "numAmount", 1) +
+                                  numTotal(viewPaySlipData, "numAmount", 1).toFixed(1) +
                                     salaryHeaderData[0]?.numOverTimeAmount || 0
                                 )}
                               </p>
@@ -511,7 +511,7 @@ const SalaryPayslipReport = () => {
                             <th style={{ textAlign: "right" }}>
                               <p style={thStyles}>
                                 {numberWithCommas(
-                                  numTotal(viewPaySlipData, "numTotal", 1) +
+                                  numTotal(viewPaySlipData, "numTotal", 1).toFixed(1) +
                                     salaryHeaderData[0]?.numOverTimeAmount || 0
                                 )}
                               </p>

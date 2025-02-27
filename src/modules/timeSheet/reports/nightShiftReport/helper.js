@@ -8,6 +8,8 @@ export const column = {
   StrEmployeeName: "Employee Name",
   StrDesignation: "Designation",
   StrSupersvisorName: "Supersvisor",
+  StrLineManagerName: "Line Manager",
+  StrDottedSupersvisorName: "Dotted Supersvisor",
   // StrCalendarName: "Calendar",
   TotalNightShiftCount: "Total Night Shift",
 };

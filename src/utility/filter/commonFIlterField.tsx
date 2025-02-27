@@ -202,6 +202,7 @@ const CommonFilterField = ({
               form.setFieldsValue({
                 workplace: op,
                 workplaceId: value,
+                workplaceGroupId: undefined
               });
             }
             if (isDepartment) {
