@@ -19,12 +19,28 @@ export const individualKpiMappingTableColumn = ({
       dataIndex: "employeeName",
     },
     {
+      title: "workplace Group",
+      dataIndex: "workplaceGroupName",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplaceName",
+    },
+    {
       title: "Department",
       dataIndex: "departmentName",
     },
     {
       title: "Designation",
       dataIndex: "designationName",
+    },
+    {
+      title: "Supervisor",
+      dataIndex: "supervisorName",
+    },
+    {
+      title: "KPI Assigned Type",
+      dataIndex: "supervisorName",
     },
     {
       title: "Total KPIs",
@@ -89,6 +105,7 @@ export const individualKpiMappingTableColumn = ({
       ),
       sorter: false,
       filter: false,
+      align: "center",
     },
   ];
 };

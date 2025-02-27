@@ -147,11 +147,11 @@ const IndividualKpiMapping = () => {
                 <Tooltip title="Departmental KPIs Setup(Superadmin)" arrow>
                   <button
                     style={{
-                      height: "26px",
-                      fontSize: "13px",
+                      height: "27px",
+                      fontSize: "14px",
                       padding: "0px 12px 0px 12px",
                       margin: "0px 5px 0px 5px",
-                      backgroundColor: "var(--green)",
+                      backgroundColor: "var(--success800)",
                       color: "white",
                     }}
                     className="btn"
@@ -177,7 +177,7 @@ const IndividualKpiMapping = () => {
             </li>
           </ul>
         </div>
-        <div className="card-style pb-0 mb-2">
+        <div className="card-style pb-2 mb-2">
           <div className="row">
             {/* <div className="col-lg-3">
               <div className="input-field-main">
