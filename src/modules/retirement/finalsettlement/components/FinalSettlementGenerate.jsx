@@ -18,6 +18,7 @@ export default function FinalSettlementGenerate() {
   const dispatch = useDispatch();
   const params = useParams();
   const [, getSingleEmployeeData, getSingleEmployeeLoading] = useAxiosGet();
+  const [, getFinalSettlementData, getFinalSettlementLoading] = useAxiosGet();
 
   const [empBasic, setEmpBasic] = useState({});
 
@@ -31,6 +32,12 @@ export default function FinalSettlementGenerate() {
       `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${params?.separationid}`,
       (res) => {
         setEmpBasic(res);
+      }
+    );
+    getFinalSettlementData(
+      `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
+      (res) => {
+        console.log(res, "res");
       }
     );
   }, [params?.separationid]);
@@ -155,7 +162,6 @@ export default function FinalSettlementGenerate() {
             </Divider>
             <DataTable
               showHeader={false}
-              bordered
               pagination={false}
               data={[
                 {
