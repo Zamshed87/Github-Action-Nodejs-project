@@ -12,6 +12,7 @@ import CommonForm from "modules/pms/CommonForm/commonForm";
 import { AssesmentTimelineSetup, handleAssesmentTimelineSetup } from "./helper";
 import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { dateFormatter } from "utility/dateFormatter";
 const valueStyle = { fontSize: "14px", fontWeight: "550" };
 const labelStyle = { fontSize: "12px" };
 const ATLogDetails = ({ modal, setModal, data, cb, isDetails }) => {
@@ -45,10 +46,12 @@ const ATLogDetails = ({ modal, setModal, data, cb, isDetails }) => {
     {
       title: "Assesment Start Date-Time",
       dataIndex: "assesmentStartTime",
+      render: (data) => dateFormatter(data),
     },
     {
       title: "Assesment End Date-Time",
       dataIndex: "assesmentEndTime",
+      render: (data) => dateFormatter(data),
     },
     {
       title: "Period",
