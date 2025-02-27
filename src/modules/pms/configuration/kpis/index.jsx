@@ -24,9 +24,15 @@ import {
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { generateCommonExcelAction } from "../../../../common/Excel/excelConvert";
 import AntScrollTable from "../../../../common/AntScrollTable";
+import FormikSelect from "common/FormikSelect";
+import { getPeopleDeskAllDDL } from "common/api";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   search: "",
+  objectiveType: "",
+  objective: "",
+  status: "",
 };
 
 const Kpis = () => {
@@ -35,7 +41,8 @@ const Kpis = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  const [objectiveTypeDDL, setObjectiveTypeDDL] = useState([]);
+  const [objectiveDDL, setObjectiveDDL] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
@@ -84,11 +91,22 @@ const Kpis = () => {
     total: 0,
   });
 
-  const { values, setFieldValue } = useFormik({
+  const {
+    values,
+    setFieldValue,
+    handleSubmit,
+    errors,
+    touched,
+    resetForm,
+    setValues,
+  } = useFormik({
     initialValues: initData,
+    onSubmit: (formValues) => {
+      getData(formValues);
+    },
   });
 
-  const getData = () => {
+  const getData = (formValues) => {
     getKPIsLanding(
       buId,
       orgId,
@@ -96,7 +114,8 @@ const Kpis = () => {
       setRowDto,
       setLoading,
       pages,
-      setPages
+      setPages,
+      formValues
     );
   };
 
@@ -122,6 +141,12 @@ const Kpis = () => {
 
   useEffect(() => {
     getData();
+    getPeopleDeskAllDDL(
+      `/PMS/ObjectiveTypeDDL?PMTypeId=1`,
+      "value",
+      "label",
+      setObjectiveTypeDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
 
@@ -231,6 +256,79 @@ const Kpis = () => {
                     />
                   </li>
                 </ul>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-3">
+                <div className="input-field-main">
+                  <label>Objective Type</label>
+                  <FormikSelect
+                    name="objectiveType"
+                    placeholder=""
+                    options={objectiveTypeDDL || []}
+                    value={values?.objectiveType}
+                    onChange={(valueOption) => {
+                      setFieldValue("objectiveType", valueOption);
+                      getPeopleDeskAllDDL(
+                        `/PMS/ObjectiveDDL?PMTypeId=1&ObjectiveTypeId=${
+                          valueOption?.value || 0
+                        }`,
+                        "value",
+                        "label",
+                        setObjectiveDDL
+                      );
+                    }}
+                    styles={customStyles}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="input-field-main">
+                  <label>Objective</label>
+                  <FormikSelect
+                    name="objective"
+                    placeholder=""
+                    options={objectiveDDL || []}
+                    value={values?.objective}
+                    onChange={(valueOption) => {
+                      setFieldValue("objective", valueOption);
+                    }}
+                    styles={customStyles}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
+              <div className="input-field-main col-md-3">
+                <label>Status</label>
+                <FormikSelect
+                  classes="input-sm  form-control"
+                  name="status"
+                  options={
+                    [
+                      { label: "All", value: null },
+                      { label: "Active", value: true },
+                      { label: "Inactive", value: false },
+                    ] || []
+                  }
+                  value={values?.status}
+                  onChange={(valueOption) => {
+                    setFieldValue("status", valueOption);
+                  }}
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+              <div className="col-md-3 mt-4">
+                <PrimaryButton
+                  onClick={() => handleSubmit()}
+                  type="button"
+                  className="btn btn-green flex-center"
+                  label="View"
+                />
               </div>
             </div>
             <div>

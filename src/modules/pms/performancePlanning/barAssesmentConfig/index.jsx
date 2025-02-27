@@ -159,7 +159,7 @@ const BarAssesmentCongig = () => {
                   }
                 }}
                 styles={customStyles}
-                isDisabled={values?.autoId > 0}
+                // isDisabled={values?.autoId > 0}
               />
             </div>
           </div>

@@ -109,7 +109,7 @@ export default function TargetEntryModal({
   const getData = () => {
     if (currentItem && currentItem?.isTargetAssigned && formikRef.current) {
       getPreviousData(
-        `/PMS/GetTargetVsAchievementById?BusinessUnit=${buId}&YearId=14&KpiForId=1&KpiForReffId=${empInfo?.employeeId}&objectiveId=${currentItem?.intStrategicParticularsID}&kpiId=${currentItem?.kpiId}&accountId=${intAccountId}`,
+        `/PMS/GetTargetVsAchievementById?BusinessUnit=${buId}&YearId=${currentItem?.intYearId}&KpiForId=1&KpiForReffId=${empInfo?.employeeId}&objectiveId=${currentItem?.intStrategicParticularsID}&kpiId=${currentItem?.kpiId}&accountId=${intAccountId}`,
         (data) => {
           formikRef.current.setValues({
             ...initData,
@@ -219,13 +219,15 @@ export default function TargetEntryModal({
                       type="number"
                       className="form-control"
                       onChange={(e) => {
-                        if (+e.target.value > values?.weightage?.value) {
-                          toast.warn(
-                            "Benchmark can't be greater than weightage"
-                          );
-                        } else {
-                          setFieldValue("benchmark", e.target.value);
-                        }
+                        setFieldValue("benchmark", e.target.value);
+
+                        // if (+e.target.value > values?.weightage?.value) {
+                        //   toast.warn(
+                        //     "Benchmark can't be greater than weightage"
+                        //   );
+                        // } else {
+                        //   setFieldValue("benchmark", e.target.value);
+                        // }
                       }}
                       errors={errors}
                       touched={touched}
@@ -298,9 +300,9 @@ export default function TargetEntryModal({
                             <tr>
                               <th className="pl-2">KPI Name</th>
                               <th className="text-center">
-                                {values?.targetFrequency?.value === "Monthly"
+                                {values?.targetFrequency?.label === "Monthly"
                                   ? "Months"
-                                  : values?.targetFrequency?.value ===
+                                  : values?.targetFrequency?.label ===
                                     "Quarterly"
                                   ? "Quarters"
                                   : "Year"}

@@ -216,13 +216,15 @@ const SbuTargetEntryModal = ({
                       type="number"
                       className="form-control"
                       onChange={(e) => {
-                        if (+e.target.value > values?.weightage?.value) {
-                          toast.warn(
-                            "Benchmark can't be greater than weightage"
-                          );
-                        } else {
-                          setFieldValue("benchmark", e.target.value);
-                        }
+                        setFieldValue("benchmark", e.target.value);
+
+                        // if (+e.target.value > values?.weightage?.value) {
+                        //   toast.warn(
+                        //     "Benchmark can't be greater than weightage"
+                        //   );
+                        // } else {
+                        //   setFieldValue("benchmark", e.target.value);
+                        // }
                       }}
                       errors={errors}
                       touched={touched}

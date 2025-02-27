@@ -449,7 +449,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   },
                 ]}
                 min={0}
-                max={100}
+                // max={100}
               />
             </Col>
 

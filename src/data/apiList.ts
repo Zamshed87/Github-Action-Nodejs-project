@@ -299,11 +299,21 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
-  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
-  CreateNUpdateShiftChangeRequest:"/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  DepositType: "DepositType",
+  Deposit: "Deposit",
+  DepositDetails: "Deposit/GetDetails",
+  DepartmentByAccount: "PeopleDeskDdl/DepartmentByAccount",
+  DepositMasterReport: "/Deposit/DepositMasterReport",
+  DepositDisbursement: "/DepositDisbursement",
+  DepositDetailReportByEmployee: "Deposit/DepositDetailReportByEmployee",
+  GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
+  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
+  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
+  CreateNUpdateShiftChangeRequest:
+    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   GetWorkplaceWisePipelineStatusDdl: "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl"
 };
