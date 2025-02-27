@@ -1578,6 +1578,7 @@ import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGen
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import TurnOver from "modules/timeSheet/reports/turnOverReport";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1987,6 +1988,10 @@ export const routingList = [
   {
     path: "/profile/reports/attendanceLogs",
     component: AttendanceLog,
+  },
+  {
+    path: "/profile/reports/turnover",
+    component: TurnOver,
   },
   {
     path: "/profile/reports/foodAllowenceReport",
