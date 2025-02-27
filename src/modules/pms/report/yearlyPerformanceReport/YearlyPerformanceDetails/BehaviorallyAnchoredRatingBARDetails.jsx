@@ -5,7 +5,16 @@ import { useHistory } from "react-router-dom";
 
 const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
   const history = useHistory();
-
+  const dataRows = [];
+  if (details != null && details.barDetails != null) {
+    details.barDetails.forEach((item) => {
+      details.barScoreHeaders.forEach((header, index) => {
+        const found = item.scores.find((x) => x.title === header);
+        item["barScore." + index] = found ? found.score : "";
+      });
+      dataRows.push(item);
+    });
+  }
   return (
     <div>
       <h3 className="pb-3 pt-3">Behaviorally Anchored Rating (BAR) Details</h3>
@@ -13,7 +22,8 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
         header={getBarHeader(
           details?.barDetails?.length,
           details?.totalBARScoreByScale,
-          history
+          history,
+          details
         )}
         bordered
         data={details?.barDetails || []}
@@ -25,15 +35,16 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
             <Table.Summary.Cell align="center">
               {details?.barTotal?.desiredValue}
             </Table.Summary.Cell>
-            <Table.Summary.Cell align="center">
-              {details?.barTotal?.selfScore}
-            </Table.Summary.Cell>
-            <Table.Summary.Cell align="center">
-              {details?.barTotal?.supervisorScore}
-            </Table.Summary.Cell>
-            <Table.Summary.Cell align="center">
-              {details?.barTotal?.crossFuncationalScore}
-            </Table.Summary.Cell>
+            {details?.barScoreHeaders?.map((header) => {
+              const found = details?.barTotal?.scores?.find(
+                (x) => x.title === header
+              );
+              return (
+                <Table.Summary.Cell align="center">
+                  {found ? found.score : ""}
+                </Table.Summary.Cell>
+              );
+            })}
             <Table.Summary.Cell align="center">
               {details?.barTotal?.avgBARScore}
             </Table.Summary.Cell>

@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
-import {
-  DataTable,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-} from "Components";
+import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { Form } from "antd";
 import { getHeader } from "./helper";
 import useYearlyPerformanceReport from "./hooks/useYearlyPerformanceReport";
@@ -38,7 +32,7 @@ const YearlyPerformanceReport = () => {
 
   const {
     permissionList,
-    profileData: { buId, wgId, wId,employeeId,userName, isOfficeAdmin },
+    profileData: { buId, wgId, wId, employeeId, userName, isOfficeAdmin },
   } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
 
@@ -59,12 +53,28 @@ const YearlyPerformanceReport = () => {
       permission = item;
     }
   });
+  const dataRows = [];
+  if (reportData != null && reportData.data != null) {
+    reportData?.data.forEach((item) => {
+      reportData.kpiScoreHeaders.forEach((header, index) => {
+        const found = item.kpiScores.find((x) => x.title === header);
+        item["kpiScore." + index] = found ? found.score : "";
+      });
+      reportData.barScoreHeaders.forEach((header, index) => {
+        const found = item.barScores.find((x) => x.title === header);
+        item["barScore." + index] = found ? found.score : "";
+      });
+      dataRows.push(item);
+    });
+  }
   return permission?.isView ? (
     <>
       <PForm
         form={form}
         initialValues={{
-          supervisor: isOfficeAdmin ? { value: 0, label: "All" }:{value:employeeId,label:userName},
+          supervisor: isOfficeAdmin
+            ? { value: 0, label: "All" }
+            : { value: employeeId, label: userName },
           department: { value: 0, label: "All" },
           designation: { value: 0, label: "All" },
           levelOfLeadershipId: { value: 0, label: "All" },
@@ -118,15 +128,12 @@ const YearlyPerformanceReport = () => {
             }}
           />
           <PCardBody className="mb-3">
-            <ReportFilters
-              form={form}
-              showLevelOfLeadership={true}
-            />
+            <ReportFilters form={form} showLevelOfLeadership={true} />
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setModal)}
+            header={getHeader(pages, setModal, reportData)}
             bordered
-            data={reportData?.data || []}
+            data={dataRows}
             loading={loading}
             pagination={{
               pageSize: reportData?.pageSize,
@@ -156,15 +163,18 @@ const YearlyPerformanceReport = () => {
         onCancel={() => {
           setModal({ open: false, data: {} });
         }}
-        components={<DetailsYearlyPerformanceReport employeeId={modal?.data?.employeeId} year={year?.value}/>}
+        components={
+          <DetailsYearlyPerformanceReport
+            employeeId={modal?.data?.employeeId}
+            year={year?.value}
+          />
+        }
         width={1500}
       />
     </>
-  )
-  :
-  (
-    <NotPermittedPage/>
-  )
+  ) : (
+    <NotPermittedPage />
+  );
 };
 
 export default YearlyPerformanceReport;
