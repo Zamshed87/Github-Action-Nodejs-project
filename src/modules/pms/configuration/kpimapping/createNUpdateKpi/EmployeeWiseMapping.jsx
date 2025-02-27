@@ -141,7 +141,7 @@ const EmployeeWiseMapping = () => {
               {params?.id == 1 ? (
                 <h1 className="mb-2">Department Wise KPI List</h1>
               ) : (
-                <h1 className="mb-2">Employee Wise KPI List</h1>
+                <h1 className="mb-2">Employee Wise KPI List222</h1>
               )}
               {rowDto?.length > 0 ? (
                 <div className="table-card-styled employee-table-card tableOne table-responsive">

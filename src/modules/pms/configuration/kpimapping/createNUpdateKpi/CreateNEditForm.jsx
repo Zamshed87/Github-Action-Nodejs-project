@@ -56,12 +56,12 @@ const CreateNEditForm = ({ propsObj }) => {
     //   "DesignationName",
     //   setDesignationDDL
     // );
-    getPeopleDeskAllDDL(
-      `/PMS/PMTypeDDL?EmployeeId=${location?.state?.employeeId}`,
-      "value",
-      "label",
-      setPmTypeDDL
-    );
+    // getPeopleDeskAllDDL(
+    //   `/PMS/PMTypeDDL?EmployeeId=${location?.state?.employeeId}`,
+    //   "value",
+    //   "label",
+    //   setPmTypeDDL
+    // );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location?.state?.employeeId]);
 
@@ -93,6 +93,12 @@ const CreateNEditForm = ({ propsObj }) => {
   };
 
   useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PMS/ObjectiveTypeDDL?PMTypeId=${1}`,
+      "value",
+      "label",
+      setObjectiveTypeDDL
+    );
     params?.id === "1" && getData(location?.state?.deptId, 0, 0, 1);
     params?.id === "2" &&
       getData(location?.state?.deptId, 0, location?.state?.designationId, 2);
@@ -198,7 +204,7 @@ const CreateNEditForm = ({ propsObj }) => {
             </div>
           )} */}
 
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <div className="input-field-main">
               <label>PM Type</label>
               <FormikSelect
@@ -231,7 +237,7 @@ const CreateNEditForm = ({ propsObj }) => {
                 touched={touched}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-md-3">
             <div className="input-field-main">
               <label>Objective Type</label>
@@ -243,7 +249,9 @@ const CreateNEditForm = ({ propsObj }) => {
                 onChange={(valueOption) => {
                   setFieldValue("objectiveType", valueOption);
                   getPeopleDeskAllDDL(
-                    `/PMS/ObjectiveDDL?PMTypeId=${values.pmType?.value}&ObjectiveTypeId=${valueOption?.value}`,
+                    `/PMS/ObjectiveDDL?PMTypeId=${1}&ObjectiveTypeId=${
+                      valueOption?.value
+                    }`,
                     "value",
                     "label",
                     setObjectiveDDL
@@ -254,7 +262,6 @@ const CreateNEditForm = ({ propsObj }) => {
                 styles={customStyles}
                 errors={errors}
                 touched={touched}
-                isDisabled={values?.pmType?.value !== 1 ? true : false}
               />
             </div>
           </div>

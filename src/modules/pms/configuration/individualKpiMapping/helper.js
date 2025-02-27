@@ -92,3 +92,15 @@ export const individualKpiMappingTableColumn = ({
     },
   ];
 };
+
+// history.push(
+//   `/pms/configuration/kpimapping/departmentWise/edit/1`,
+//   {
+//     deptName: record?.departmentName,
+//     deptId: record?.departmentId,
+//     designationName: record?.designationName,
+//     designationId: record?.designationId,
+//     employeeName: record?.employeeName,
+//     employeeId: record?.employeeId,
+//   }
+// );

@@ -36,6 +36,8 @@ const IndividualKpiMapping = () => {
     },
     department: "",
     employee: "",
+    targetType: "",
+    supervisorName: "",
   };
 
   const history = useHistory();

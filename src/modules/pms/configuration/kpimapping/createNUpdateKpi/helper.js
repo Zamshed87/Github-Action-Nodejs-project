@@ -184,10 +184,10 @@ export const kpiMappingColumns = (page, paginationSize, rowDto, setRowDto) => {
       className: "text-center",
       fixed: "left",
     },
-    {
-      title: "PM Type",
-      dataIndex: "pmTypeName",
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: "pmTypeName",
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
