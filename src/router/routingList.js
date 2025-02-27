@@ -1578,7 +1578,6 @@ import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGen
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
-import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1717,6 +1716,7 @@ const FinalSettlementLandingv2 = lazy(() =>
 const FinalSettlementGenerate = lazy(() =>
   import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
 );
+import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 
 const AttendanceShiftChange = lazy(() =>
