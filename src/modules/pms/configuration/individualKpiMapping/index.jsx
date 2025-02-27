@@ -17,6 +17,7 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { individualKpiMappingTableColumn } from "./helper";
 import IndividualKpiViewModal from "./individualKpiViewModal";
 import AntScrollTable from "../../../../common/AntScrollTable";
+import axios from "axios";
 
 const IndividualKpiMapping = () => {
   // 30462
@@ -71,6 +72,33 @@ const IndividualKpiMapping = () => {
   const { values, setFieldValue } = useFormik({
     initialValues: initData,
   });
+
+  const getSuperVisorDDL = async ({ value, minSearchLength = 3 }) => {
+    if (value?.length < minSearchLength) return;
+    try {
+      const response = await axios.get("/PeopleDeskDDL/PeopleDeskAllDDL", {
+        params: {
+          DDLType: "EmployeeBasicInfoForEmpMgmt",
+          AccountId: orgId,
+          BusinessUnitId: buId,
+          intId: employeeId,
+          workplaceGroupId: wgId,
+          strWorkplaceIdList: wId,
+          searchTxt: value || "",
+        },
+      });
+
+      const formattedData =
+        response?.data?.map((item) => ({
+          label: item?.EmployeeOnlyName,
+          value: item?.EmployeeId,
+        })) || [];
+      return formattedData;
+    } catch (error) {
+      console.error("Failed to fetch supervisor data:", error);
+      // supervisorDDL?.reset();
+    }
+  };
 
   const getData = (values, pages) => {
     getTableData(
@@ -142,7 +170,31 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-
+            <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Supervisor Name</label>
+                <AsyncFormikSelect
+                  isClear={true}
+                  selectedValue={values?.supervisorName}
+                  styles={{
+                    control: (provided) => ({
+                      ...customStyles?.control(provided),
+                      width: "100%",
+                    }),
+                  }}
+                  isSearchIcon={true}
+                  handleChange={(valueOption) => {
+                    setFieldValue("supervisorName", valueOption);
+                    setTableData([]);
+                  }}
+                  loadOptions={async (value) => {
+                    return getSuperVisorDDL({
+                      value,
+                    });
+                  }}
+                />
+              </div>
+            </div>
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>
@@ -188,7 +240,33 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div>
-
+            <div className="col-lg-3">
+              <label>Type</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="targetType"
+                options={[
+                  {
+                    value: 0,
+                    label: "All",
+                  },
+                  {
+                    value: 1,
+                    label: "Target Assigned",
+                  },
+                  {
+                    value: 2,
+                    label: "Target Not Assigned",
+                  },
+                ]}
+                value={values?.targetType}
+                onChange={(valueOption) => {
+                  setFieldValue("targetType", valueOption);
+                  setTableData([]);
+                }}
+                styles={customStyles}
+              />
+            </div>
             <div className="col-lg-3">
               <button
                 type="button"
