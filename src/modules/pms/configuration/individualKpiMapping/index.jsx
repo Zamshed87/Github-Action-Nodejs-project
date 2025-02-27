@@ -18,6 +18,7 @@ import { individualKpiMappingTableColumn } from "./helper";
 import IndividualKpiViewModal from "./individualKpiViewModal";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import axios from "axios";
+import { Tooltip } from "antd";
 
 const IndividualKpiMapping = () => {
   // 30462
@@ -138,8 +139,43 @@ const IndividualKpiMapping = () => {
       <div className="table-card">
         <div className="table-card-heading" style={{ marginBottom: "12px" }}>
           <div>
-            <h2 style={{ color: "#344054" }}>Individual Kpi Mapping</h2>
+            <h2 style={{ color: "#344054" }}>KPI Mapping</h2>
           </div>
+          <ul className="d-flex flex-wrap">
+            <li>
+              <div className="d-flex align-items-center justify-content-center">
+                <Tooltip title="Departmental KPIs Setup(Superadmin)" arrow>
+                  <button
+                    style={{
+                      height: "26px",
+                      fontSize: "13px",
+                      padding: "0px 12px 0px 12px",
+                      margin: "0px 5px 0px 5px",
+                      backgroundColor: "var(--green)",
+                      color: "white",
+                    }}
+                    className="btn"
+                    type="button"
+                    onClick={(e) => {
+                      history.push(
+                        `/pms/configuration/kpimapping/departmentWise/edit/1`
+                        // {
+                        //   deptName: record?.departmentName,
+                        //   deptId: record?.departmentId,
+                        //   designationName: record?.designationName,
+                        //   designationId: record?.designationId,
+                        //   employeeName: record?.employeeName,
+                        //   employeeId: record?.employeeId,
+                        // }
+                      );
+                    }} //
+                  >
+                    Departmental KPIs Setup
+                  </button>
+                </Tooltip>
+              </div>
+            </li>
+          </ul>
         </div>
         <div className="card-style pb-0 mb-2">
           <div className="row">

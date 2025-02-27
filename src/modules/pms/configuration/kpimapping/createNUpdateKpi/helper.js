@@ -88,7 +88,7 @@ export const saveHandler = (
 ) => {
   const found = rowDto?.some((item) => {
     return (
-      item?.pmTypeId === values?.pmType?.value &&
+      // item?.pmTypeId === values?.pmType?.value &&
       item?.objectiveTypeId === values?.objectiveType?.value &&
       item?.objectiveId === values?.objective?.value &&
       item?.kpisId === values?.kpiName?.value
@@ -111,8 +111,8 @@ export const saveHandler = (
         designationId: values?.designation?.value,
         designationName: values?.designation?.label,
         employeeId: values?.employee?.value,
-        pmTypeId: values?.pmType?.value,
-        pmTypeName: values?.pmType?.label,
+        // pmTypeId: values?.pmType?.value,
+        // pmTypeName: values?.pmType?.label,
         objectiveTypeId: values?.objectiveType?.value,
         objectiveTypeName: values?.objectiveType?.label,
         objectiveId: values?.objective?.value,

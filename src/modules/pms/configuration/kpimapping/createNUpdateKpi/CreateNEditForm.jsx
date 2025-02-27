@@ -29,7 +29,7 @@ const CreateNEditForm = ({ propsObj }) => {
   } = propsObj;
 
   const location = useLocation();
-  const { wId, wgId } = useSelector(
+  const { wId, wgId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -42,6 +42,14 @@ const CreateNEditForm = ({ propsObj }) => {
   const [objectiveDDL, setObjectiveDDL] = useState([]);
   const [kpiNameDDL, setKpiNameDDL] = useState([]);
   const [employeeBasicId, setEmployeeBasicId] = useState(undefined);
+
+  const checkSuperAdmin = (ddl) => {
+    if (ddl?.length === 1 || ddl?.length === 0) {
+      return ddl;
+    } else {
+      return isOfficeAdmin ? [{ value: 0, label: "ALL" }, ...ddl] : ddl;
+    }
+  };
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -162,17 +170,17 @@ const CreateNEditForm = ({ propsObj }) => {
                 <FormikSelect
                   name="department"
                   placeholder=""
-                  options={departmentDDL || []}
+                  options={checkSuperAdmin(departmentDDL) || []}
                   value={values?.department}
                   onChange={(valueOption) => {
                     setFieldValue("department", valueOption);
-                    component === "dept" && getData(valueOption?.value, 0, 0);
-                    component === "designation" &&
-                      getData(
-                        valueOption?.value,
-                        0,
-                        values?.designation?.value || 0
-                      );
+                    // component === "dept" && getData(valueOption?.value, 0, 0);
+                    // component === "designation" &&
+                    //   getData(
+                    //     valueOption?.value,
+                    //     0,
+                    //     values?.designation?.value || 0
+                    //   );
                   }}
                   styles={customStyles}
                   errors={errors}
