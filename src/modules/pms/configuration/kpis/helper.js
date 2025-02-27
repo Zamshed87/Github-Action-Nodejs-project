@@ -36,18 +36,18 @@ export const kpiFormatDDL = [
 ];
 
 export const validationSchema = Yup.object().shape({
-  pmType: Yup.object()
-    .shape({
-      label: Yup.string().required("PM Type is required"),
-      value: Yup.string().required("PM Type is required"),
-    })
-    .typeError("PM Type is required"),
-  // objectiveType: Yup.object()
+  // pmType: Yup.object()
   //   .shape({
-  //     label: Yup.string().required("Objective Type is required"),
-  //     value: Yup.string().required("Objective Type is required"),
+  //     label: Yup.string().required("PM Type is required"),
+  //     value: Yup.string().required("PM Type is required"),
   //   })
-  //   .typeError("Objective Type is required"),
+  //   .typeError("PM Type is required"),
+  objectiveType: Yup.object()
+    .shape({
+      label: Yup.string().required("Objective Type is required"),
+      value: Yup.string().required("Objective Type is required"),
+    })
+    .typeError("Objective Type is required"),
   objective: Yup.object()
     .shape({
       label: Yup.string().required("Objective is required"),
