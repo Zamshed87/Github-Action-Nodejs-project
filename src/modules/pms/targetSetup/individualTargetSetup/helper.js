@@ -70,6 +70,34 @@ export const individualtargetSetupTableColumn = ({ values, history }) => {
       dataIndex: "designationName",
     },
     {
+      title: "workplace Group",
+      dataIndex: "workplaceGroupName",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplaceName",
+    },
+    {
+      title: "Department",
+      dataIndex: "departmentName",
+    },
+    {
+      title: "Designation",
+      dataIndex: "designationName",
+    },
+    {
+      title: "Supervisor",
+      dataIndex: "supervisorName",
+    },
+    {
+      title: "Target Setup Type",
+      dataIndex: "targetSetupType",
+    },
+    {
+      title: "KPI Count",
+      dataIndex: "totalKpiCount",
+    },
+    {
       title: "Action",
       render: (_, record, index) => (
         <div className="d-flex align-items-center justify-content-center">

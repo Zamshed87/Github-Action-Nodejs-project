@@ -17,6 +17,8 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { individualKpiMappingTableColumn } from "./helper";
 import IndividualKpiViewModal from "./individualKpiViewModal";
 import AntScrollTable from "../../../../common/AntScrollTable";
+import axios from "axios";
+import { Tooltip } from "antd";
 
 const IndividualKpiMapping = () => {
   // 30462
@@ -35,6 +37,8 @@ const IndividualKpiMapping = () => {
     },
     department: "",
     employee: "",
+    targetType: "",
+    supervisorName: "",
   };
 
   const history = useHistory();
@@ -58,6 +62,7 @@ const IndividualKpiMapping = () => {
       "strBusinessUnit",
       setBusinessUnitDDL
     );
+    getData(initData, pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId]);
 
@@ -70,6 +75,33 @@ const IndividualKpiMapping = () => {
   const { values, setFieldValue } = useFormik({
     initialValues: initData,
   });
+
+  const getSuperVisorDDL = async ({ value, minSearchLength = 3 }) => {
+    if (value?.length < minSearchLength) return;
+    try {
+      const response = await axios.get("/PeopleDeskDDL/PeopleDeskAllDDL", {
+        params: {
+          DDLType: "EmployeeBasicInfoForEmpMgmt",
+          AccountId: orgId,
+          BusinessUnitId: buId,
+          intId: employeeId,
+          workplaceGroupId: wgId,
+          strWorkplaceIdList: wId,
+          searchTxt: value || "",
+        },
+      });
+
+      const formattedData =
+        response?.data?.map((item) => ({
+          label: item?.EmployeeOnlyName,
+          value: item?.EmployeeId,
+        })) || [];
+      return formattedData;
+    } catch (error) {
+      console.error("Failed to fetch supervisor data:", error);
+      // supervisorDDL?.reset();
+    }
+  };
 
   const getData = (values, pages) => {
     getTableData(
@@ -107,10 +139,45 @@ const IndividualKpiMapping = () => {
       <div className="table-card">
         <div className="table-card-heading" style={{ marginBottom: "12px" }}>
           <div>
-            <h2 style={{ color: "#344054" }}>Individual Kpi Mapping</h2>
+            <h2 style={{ color: "#344054" }}>KPI Mapping</h2>
           </div>
+          <ul className="d-flex flex-wrap">
+            <li>
+              <div className="d-flex align-items-center justify-content-center">
+                <Tooltip title="Departmental KPIs Setup(Superadmin)" arrow>
+                  <button
+                    style={{
+                      height: "27px",
+                      fontSize: "14px",
+                      padding: "0px 12px 0px 12px",
+                      margin: "0px 5px 0px 5px",
+                      backgroundColor: "var(--success800)",
+                      color: "white",
+                    }}
+                    className="btn"
+                    type="button"
+                    onClick={(e) => {
+                      history.push(
+                        `/pms/configuration/kpimapping/departmentWise/edit/1`
+                        // {
+                        //   deptName: record?.departmentName,
+                        //   deptId: record?.departmentId,
+                        //   designationName: record?.designationName,
+                        //   designationId: record?.designationId,
+                        //   employeeName: record?.employeeName,
+                        //   employeeId: record?.employeeId,
+                        // }
+                      );
+                    }} //
+                  >
+                    Departmental KPIs Setup
+                  </button>
+                </Tooltip>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div className="card-style pb-0 mb-2">
+        <div className="card-style pb-2 mb-2">
           <div className="row">
             {/* <div className="col-lg-3">
               <div className="input-field-main">
@@ -141,7 +208,31 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-
+            <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Supervisor Name</label>
+                <AsyncFormikSelect
+                  isClear={true}
+                  selectedValue={values?.supervisorName}
+                  styles={{
+                    control: (provided) => ({
+                      ...customStyles?.control(provided),
+                      width: "100%",
+                    }),
+                  }}
+                  isSearchIcon={true}
+                  handleChange={(valueOption) => {
+                    setFieldValue("supervisorName", valueOption);
+                    setTableData([]);
+                  }}
+                  loadOptions={async (value) => {
+                    return getSuperVisorDDL({
+                      value,
+                    });
+                  }}
+                />
+              </div>
+            </div>
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>
@@ -187,7 +278,33 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div>
-
+            <div className="col-lg-3">
+              <label>Type</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="targetType"
+                options={[
+                  {
+                    value: 0,
+                    label: "All",
+                  },
+                  {
+                    value: 1,
+                    label: "Target Assigned",
+                  },
+                  {
+                    value: 2,
+                    label: "Target Not Assigned",
+                  },
+                ]}
+                value={values?.targetType}
+                onChange={(valueOption) => {
+                  setFieldValue("targetType", valueOption);
+                  setTableData([]);
+                }}
+                styles={customStyles}
+              />
+            </div>
             <div className="col-lg-3">
               <button
                 type="button"

@@ -98,6 +98,7 @@ export const StakeholderForm = (
       showSearch: true,
       filterOption: false,
       allowClear: true,
+      placeholder: "Search the employee",
       loading: CommonEmployeeDDL?.loading,
       rules: [{ required: true, message: "Stakeholder is required!" }],
     });

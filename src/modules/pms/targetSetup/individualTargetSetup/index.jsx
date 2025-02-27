@@ -378,7 +378,9 @@ const IndividualTargetSetup = () => {
                       values?.targetType?.value === 1 ? true : false
                     }&pageNo=${pages?.current}&pageSize=${
                       pages?.pageSize
-                    }&accountId=${intAccountId}&from=1&to=12`,
+                    }&accountId=${intAccountId}&from=1&to=12&departmentId=${
+                      values?.department?.value || 0
+                    }&supervisorId=${values?.supervisorName?.value || 0}`,
                     (data) => {
                       if (data) {
                         setPages((prev) => ({
