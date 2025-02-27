@@ -19,18 +19,10 @@ import {
 } from "commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "utility/customColor";
 import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
-import { getMonthName } from "utility/monthUtility";
-import { numberWithCommas } from "utility/numberWithCommas";
 import { customStyles } from "utility/selectCustomStyle";
-import {
-  createSalaryGenerateRequest,
-  getSalaryGenerateRequestLanding,
-} from "./helper";
-import { Popover, Tag, Tooltip } from "antd";
-import { downloadFile } from "utility/downloadFile";
-import { DataTable, Flex } from "Components";
+import { Popover } from "antd";
+import { DataTable } from "Components";
 import { getSerial } from "Utils";
-import { DownloadOutlined } from "@ant-design/icons";
 import useDebounce from "utility/customHooks/useDebounce";
 import MasterFilter from "common/MasterFilter";
 import DefaultInput from "common/DefaultInput";
@@ -81,17 +73,15 @@ const AdvanceSalaryGenerateLanding = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const debounce = useDebounce();
-  const [loading, setLoading] = useState(false);
-  const [singleData] = useState(null);
+  const [loading] = useState(false);
   // const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
+  const [allData] = useState([]);
 
   const [paginationSize] = useState(15);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
-    []
-  );
+  const [, , , setSalaryCodeDDL] = useAxiosPost([]);
   const [rowDto, getLanding, , setRowDto] = useAxiosGet([]);
+  const [, sendApprovalRequest, loadingRequest] = useAxiosPost();
 
   // for create state
   const [pages, setPages] = useState({
@@ -110,32 +100,11 @@ const AdvanceSalaryGenerateLanding = () => {
   }, shallowEqual);
 
   //get landing data
-  const getLandingData = (values, pagination = pages) => {
-    // getSalaryGenerateRequestLanding(
-    //   "SalaryGenerateRequestLanding",
-    //   orgId,
-    //   buId,
-    //   wgId,
-    //   wId,
-    //   "",
-    //   "",
-    //   values?.filterFromDate,
-    //   values?.filterToDate,
-    //   setRowDto,
-    //   setAllData,
-    //   setLoading,
-    //   pagination,
-    //   setPages,
-    //   undefined,
-    //   "",
-    //   "",
-    //   "",
-    //   "",
-    //   "",
-    //   values
-    // );
+  const getLandingData = (values) => {
     getLanding(
-      `AdvanceSalary/AdvanceSalary?fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}`
+      `AdvanceSalary/AdvanceSalary?fromDate=${values?.filterFromDate}&toDate=${
+        values?.filterToDate
+      }&workPlaceId=${values?.workplace?.value || wId}`
     );
   };
 
@@ -203,23 +172,33 @@ const AdvanceSalaryGenerateLanding = () => {
 
   // send for approval
   const sendForApprovalHandler = (data) => {
-    const payload = {
-      strPartName: "GeneratedSalarySendForApproval",
-      intSalaryGenerateRequestId: data?.intSalaryGenerateRequestId,
-      strSalaryCode: data?.strSalaryCode,
-      intAccountId: data?.intAccountId,
-      intBusinessUnitId: data?.intBusinessUnitId,
-      strBusinessUnit: data?.strBusinessUnit,
-      intWorkplaceGroupId: wgId,
-      intMonthId: data?.intMonth,
-      intYearId: data?.intYear,
-      strDescription: data?.strDescription,
-      intCreatedBy: employeeId,
-    };
+    // const payload = {
+    //   strPartName: "GeneratedSalarySendForApproval",
+    //   intSalaryGenerateRequestId: data?.intSalaryGenerateRequestId,
+    //   strSalaryCode: data?.strSalaryCode,
+    //   intAccountId: data?.intAccountId,
+    //   intBusinessUnitId: data?.intBusinessUnitId,
+    //   strBusinessUnit: data?.strBusinessUnit,
+    //   intWorkplaceGroupId: wgId,
+    //   intMonthId: data?.intMonth,
+    //   intYearId: data?.intYear,
+    //   strDescription: data?.strDescription,
+    //   intCreatedBy: employeeId,
+    // };
     const callback = () => {
       getLandingData(values);
     };
-    createSalaryGenerateRequest(payload, setLoading, callback);
+    // createSalaryGenerateRequest(payload, setLoading, callback);
+    sendApprovalRequest(
+      `/AdvanceSalary/AdvanceSalaryApproval?advanceSalaryId=${data?.advanceSalaryId}`,
+      {
+        advanceSalaryId: data?.advanceSalaryId,
+      },
+      () => {
+        callback();
+      },
+      true
+    );
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -330,153 +309,49 @@ const AdvanceSalaryGenerateLanding = () => {
 
         width: 100,
       },
-      // {
-      //   title: "Payroll Period",
-      //   dataIndex: "strDepartment",
-      //   sorter: false,
-      //   filter: false,
-      //   render: (_, item) => {
-      //     return (
-      //       <>
-      //         {item?.dteSalaryGenerateFrom
-      //           ? dateFormatter(item?.dteSalaryGenerateFrom)
-      //           : "-"}{" "}
-      //         -{" "}
-      //         {item?.dteSalaryGenerateTo
-      //           ? dateFormatter(item?.dteSalaryGenerateTo)
-      //           : "-"}
-      //       </>
-      //     );
-      //   },
-      //   width: 200,
-      // },
-      // {
-      //   title: "Net Amount",
-      //   dataIndex: "netAmount",
-      //   // render: (_, record) => (
-      //   //   <>
-      //   //     {record?.numNetPayableSalary
-      //   //       ? numberWithCommas(record?.numNetPayableSalary)
-      //   //       : "0"}
-      //   //   </>
-      //   // ),
-      //   width: 100,
-      //   className: "text-right",
-      // },
-      // {
-      //   title: "Processing Status",
-      //   dataIndex: "ProcessionStatus",
-      //   className: "text-center",
-      //   render: (_, item) => {
-      //     return (
-      //       <Flex align="center" gap="8px">
-      //         <Tooltip title="Download as Excel" arrow>
-      //           <button
-      //             className="btn-save ml-2"
-      //             type="button"
-      //             onClick={(e) => {
-      //               e.stopPropagation();
-      //               const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
 
-      //               downloadFile(
-      //                 url,
-      //                 "Salary Details Report",
-      //                 "xlsx",
-      //                 setLoading
-      //               );
-      //             }}
-      //             style={{
-      //               border: "transparent",
-      //               width: "30px",
-      //               height: "30px",
-      //               background: "#f2f2f7",
-      //               borderRadius: "100px",
-      //             }}
-      //           >
-      //             <DownloadOutlined />
-      //           </button>
-      //         </Tooltip>
-      //         <div>
-      //           {item?.ProcessionStatus === "Success" && (
-      //             <Tag style={{ borderRadius: "50px" }} color="green">
-      //               {item?.ProcessionStatus}
-      //             </Tag>
-      //           )}
-      //           {item?.ProcessionStatus === "Processing" && (
-      //             <Tag style={{ borderRadius: "50px" }} color="gold">
-      //               {item?.ProcessionStatus}
-      //             </Tag>
-      //           )}
-      //         </div>
-      //       </Flex>
-      //     );
-      //   },
-      //   width: 130,
-      // },
-      // {
-      //   title: "Approval Status",
-      //   dataIndex: "ApprovalStatus",
-      //   sorter: true,
-      //   filter: false,
-      //   width: 140,
-      //   render: (_, item) => {
-      //     return (
-      //       <>
-      //         {item?.ApprovalStatus === "Approved" && (
-      //           <p
-      //             style={{
-      //               fontSize: "12px",
-      //               color: gray500,
-      //               fontWeight: "400",
-      //             }}
-      //           >
-      //             {item?.ApprovalStatus}
-      //           </p>
-      //         )}
-      //         {item?.ApprovalStatus === "Send for Approval" && (
-      //           <button
-      //             style={{
-      //               height: "24px",
-      //               fontSize: "10px",
-      //               padding: "0px 12px 0px 12px",
-      //               backgroundColor: "#0BA5EC",
-      //             }}
-      //             className="btn btn-default"
-      //             type="button"
-      //             onClick={(e) => {
-      //               e.stopPropagation();
-      //               sendForApprovalHandler(item);
-      //             }}
-      //           >
-      //             Send for Approval
-      //           </button>
-      //         )}
-      //         {item?.ApprovalStatus === "Waiting for Approval" && (
-      //           <p
-      //             style={{
-      //               fontSize: "12px",
-      //               color: gray500,
-      //               fontWeight: "400",
-      //             }}
-      //           >
-      //             {item?.ApprovalStatus}
-      //           </p>
-      //         )}
-      //         {item?.ApprovalStatus === "Rejected" && (
-      //           <p
-      //             style={{
-      //               fontSize: "12px",
-      //               color: gray500,
-      //               fontWeight: "400",
-      //             }}
-      //           >
-      //             {item?.ApprovalStatus}
-      //           </p>
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
+      {
+        title: "Approval Status",
+        dataIndex: "strStatus",
+        sorter: true,
+        filter: false,
+        width: 140,
+        render: (_, item) => {
+          return (
+            <>
+              {item?.strStatus === "Generated" ||
+              item?.strStatus === "ReGenerated" ? (
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "10px",
+                    padding: "0px 12px 0px 12px",
+                    backgroundColor: "#0BA5EC",
+                  }}
+                  className="btn btn-default"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    sendForApprovalHandler(item);
+                  }}
+                >
+                  Send for Approval
+                </button>
+              ) : (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: gray500,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item?.strStatus}
+                </p>
+              )}
+            </>
+          );
+        },
+      },
       {
         title: "",
         dataIndex: "",
@@ -485,8 +360,7 @@ const AdvanceSalaryGenerateLanding = () => {
         width: 125,
         render: (data, item) => (
           <>
-            {/* {!!item?.isReGenerate && ( */}
-            {!!true && (
+            {!item?.isPipelineClosed && item?.strStatus !== "Pending" && (
               <div>
                 <button
                   style={{
@@ -513,26 +387,15 @@ const AdvanceSalaryGenerateLanding = () => {
       },
     ];
   };
-  // const getSalaryCodeByFromDateAndWId = (fromDate, toDate) => {
-  //   getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
-  //     fromDate: fromDate,
-  //     toDate: toDate,
-  //     workPlaceId: (workplaceDDL || []).map((w) => w?.intWorkplaceId),
-  //   });
-  // };
   useEffect(() => {
     if (workplaceDDL?.length > 0) {
-      // getSalaryCodeByFromDateAndWId(
-      //   values?.filterFromDate,
-      //   values?.filterToDate
-      // );
     }
   }, [workplaceDDL]);
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {loading && <Loading />}
+        {(loading || loadingRequest) && <Loading />}
         {permission?.isView ? (
           <div className="table-card">
             <div className="table-card-heading justify-content-between align-items-center">
@@ -675,6 +538,26 @@ const AdvanceSalaryGenerateLanding = () => {
                     />
                   </div>
                 </div>
+                <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+
+                    <FormikSelect
+                      name="workplace"
+                      options={workplaceDDL || []}
+                      value={values?.workplace}
+                      // isDisabled={singleData}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      // isDisabled={singleData}
+                    />
+                  </div>
+                </div>
                 {/* <div className="col-md-4">
                   <div className="input-field-main">
                     <label>Salary Code</label>
@@ -782,7 +665,7 @@ const AdvanceSalaryGenerateLanding = () => {
                     onClick: () => {
                       if (true) {
                         history.push({
-                          pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/${item?.advanceSalaryCode}`,
+                          pathname: `/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/${item?.advanceSalaryId}`,
                           state: item,
                         });
                       } else {

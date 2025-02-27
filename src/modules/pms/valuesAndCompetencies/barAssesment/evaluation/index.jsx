@@ -24,7 +24,9 @@ const BarAssessmentEvaluation = () => {
   const { id, yearId, quarterId } = useParams();
   const location = useLocation();
   const { assessmentType } = location.state;
-  const { employeeId, orgId } = useSelector((state) => state.auth.profileData);
+  const { employeeId, orgId, buId, wgId } = useSelector(
+    (state) => state.auth.profileData
+  );
   const [, getEvaluationData, evaluationDataLoader] = useAxiosGet();
   const [, saveData, saveDataLoader] = useAxiosPost();
   const [
@@ -51,10 +53,15 @@ const BarAssessmentEvaluation = () => {
   useEffect(() => {
     if (id) {
       getEmployeeInfo(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoSearchDDL&AccountId=1&BusinessUnitId=0&intId=0&searchText=${id}`,
+        `/Employee/EmployeeProfileView?employeeId=${id}&businessUnitId=${buId}&workplaceGroupId=${wgId}`,
         (data) => {
-          if (data?.length > 0) {
-            setEmployeeInfo(data[0]);
+          if (data) {
+            setEmployeeInfo({
+              EmployeeId: id,
+              DesignationName: data?.employeeProfileLandingView?.strDesignation,
+              EmployeeOnlyName:
+                data?.employeeProfileLandingView?.strEmployeeName,
+            });
           }
         }
       );

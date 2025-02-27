@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatterForInput } from "utility/dateFormatter";
 import { customStyles } from "utility/selectCustomStyle";
@@ -57,6 +57,7 @@ export default function SelfServiceSeparationForm() {
   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
     useAxiosGet();
+  const history = useHistory();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -144,7 +145,9 @@ export default function SelfServiceSeparationForm() {
       ? imageFile?.map((image) => image?.globalFileUrlId)
       : [];
 
-    const modifyAttachmentList = imgRow?.map((image) => +image);
+    const modifyAttachmentList = editImageRow?.map(
+      (image) => +image?.globalFileUrlId
+    );
 
     let payload = {
       intEmployeeId: employeeId,
@@ -216,6 +219,7 @@ export default function SelfServiceSeparationForm() {
         } else {
           resetForm(initData);
         }
+        history.push("/SelfService/separation/applicationV2");
       });
     },
   });
@@ -340,7 +344,7 @@ export default function SelfServiceSeparationForm() {
                               .then((data) => {
                                 setImageFile(data);
                               })
-                              .catch((error) => {
+                              .catch(() => {
                                 setImageFile([]);
                               });
                           }

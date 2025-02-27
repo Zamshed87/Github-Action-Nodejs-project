@@ -6,12 +6,14 @@ import ValuesForSelfAssessment from "./valuesData";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import BarAssessmentForSelf from "./barAssessmentForSelf";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const SelfAssessmentNew = () => {
+  const [evaluationCriteriaOfPms, getEvaluationCriteriaOfPms] = useAxiosGet();
   const [value, setValue] = useState("2");
   const {
     permissionList,
-    profileData: { evaluationCriteriaOfPms },
+    profileData: { intEmployeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
   const permission = useMemo(
     () => permissionList.find((item) => item?.menuReferenceId === 30493),
@@ -20,11 +22,16 @@ const SelfAssessmentNew = () => {
   );
 
   useEffect(() => {
-    if (!evaluationCriteriaOfPms) {
-      toast.warn("Evaluation Criteria of PMS is nullable");
-    } else if (evaluationCriteriaOfPms === "360") {
-      setValue("4");
-    }
+    getEvaluationCriteriaOfPms(
+      `/PMS/EvaluationCriteriaOfPms?EmployeeID=${intEmployeeId}`,
+      (data) => {
+        if (!data) {
+          toast.warn("Evaluation Criteria of PMS is nullable");
+        } else if (data === "360") {
+          setValue("4");
+        }
+      }
+    );
   }, [evaluationCriteriaOfPms]);
 
   return (
