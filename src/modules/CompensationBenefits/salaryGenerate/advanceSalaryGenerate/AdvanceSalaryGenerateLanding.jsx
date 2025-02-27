@@ -19,18 +19,10 @@ import {
 } from "commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "utility/customColor";
 import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
-import { getMonthName } from "utility/monthUtility";
-import { numberWithCommas } from "utility/numberWithCommas";
 import { customStyles } from "utility/selectCustomStyle";
-import {
-  createSalaryGenerateRequest,
-  getSalaryGenerateRequestLanding,
-} from "./helper";
-import { Popover, Tag, Tooltip } from "antd";
-import { downloadFile } from "utility/downloadFile";
-import { DataTable, Flex } from "Components";
+import { Popover } from "antd";
+import { DataTable } from "Components";
 import { getSerial } from "Utils";
-import { DownloadOutlined } from "@ant-design/icons";
 import useDebounce from "utility/customHooks/useDebounce";
 import MasterFilter from "common/MasterFilter";
 import DefaultInput from "common/DefaultInput";
@@ -81,16 +73,13 @@ const AdvanceSalaryGenerateLanding = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const debounce = useDebounce();
-  const [loading, setLoading] = useState(false);
-  const [singleData] = useState(null);
+  const [loading] = useState(false);
   // const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
+  const [allData] = useState([]);
 
   const [paginationSize] = useState(15);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
-    []
-  );
+  const [, , , setSalaryCodeDDL] = useAxiosPost([]);
   const [rowDto, getLanding, , setRowDto] = useAxiosGet([]);
   const [, sendApprovalRequest, loadingRequest] = useAxiosPost();
 
@@ -111,7 +100,7 @@ const AdvanceSalaryGenerateLanding = () => {
   }, shallowEqual);
 
   //get landing data
-  const getLandingData = (values, pagination = pages) => {
+  const getLandingData = (values) => {
     getLanding(
       `AdvanceSalary/AdvanceSalary?fromDate=${values?.filterFromDate}&toDate=${
         values?.filterToDate
@@ -320,89 +309,7 @@ const AdvanceSalaryGenerateLanding = () => {
 
         width: 100,
       },
-      // {
-      //   title: "Payroll Period",
-      //   dataIndex: "strDepartment",
-      //   sorter: false,
-      //   filter: false,
-      //   render: (_, item) => {
-      //     return (
-      //       <>
-      //         {item?.dteSalaryGenerateFrom
-      //           ? dateFormatter(item?.dteSalaryGenerateFrom)
-      //           : "-"}{" "}
-      //         -{" "}
-      //         {item?.dteSalaryGenerateTo
-      //           ? dateFormatter(item?.dteSalaryGenerateTo)
-      //           : "-"}
-      //       </>
-      //     );
-      //   },
-      //   width: 200,
-      // },
-      // {
-      //   title: "Net Amount",
-      //   dataIndex: "netAmount",
-      //   // render: (_, record) => (
-      //   //   <>
-      //   //     {record?.numNetPayableSalary
-      //   //       ? numberWithCommas(record?.numNetPayableSalary)
-      //   //       : "0"}
-      //   //   </>
-      //   // ),
-      //   width: 100,
-      //   className: "text-right",
-      // },
-      // {
-      //   title: "Processing Status",
-      //   dataIndex: "ProcessionStatus",
-      //   className: "text-center",
-      //   render: (_, item) => {
-      //     return (
-      //       <Flex align="center" gap="8px">
-      //         <Tooltip title="Download as Excel" arrow>
-      //           <button
-      //             className="btn-save ml-2"
-      //             type="button"
-      //             onClick={(e) => {
-      //               e.stopPropagation();
-      //               const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${item?.intMonth}&intYearId=${item?.intYear}&strSalaryCode=${item?.strSalaryCode}&strHrPositionList=&intPaymentMethod=`;
 
-      //               downloadFile(
-      //                 url,
-      //                 "Salary Details Report",
-      //                 "xlsx",
-      //                 setLoading
-      //               );
-      //             }}
-      //             style={{
-      //               border: "transparent",
-      //               width: "30px",
-      //               height: "30px",
-      //               background: "#f2f2f7",
-      //               borderRadius: "100px",
-      //             }}
-      //           >
-      //             <DownloadOutlined />
-      //           </button>
-      //         </Tooltip>
-      //         <div>
-      //           {item?.ProcessionStatus === "Success" && (
-      //             <Tag style={{ borderRadius: "50px" }} color="green">
-      //               {item?.ProcessionStatus}
-      //             </Tag>
-      //           )}
-      //           {item?.ProcessionStatus === "Processing" && (
-      //             <Tag style={{ borderRadius: "50px" }} color="gold">
-      //               {item?.ProcessionStatus}
-      //             </Tag>
-      //           )}
-      //         </div>
-      //       </Flex>
-      //     );
-      //   },
-      //   width: 130,
-      // },
       {
         title: "Approval Status",
         dataIndex: "strStatus",
@@ -441,69 +348,6 @@ const AdvanceSalaryGenerateLanding = () => {
                   {item?.strStatus}
                 </p>
               )}
-              {/* {item?.strStatus === "Approved" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.strStatus}
-                </p>
-              )}
-              {item?.strStatus === "Pending" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.strStatus}
-                </p>
-              )}
-
-              {item?.strStatus === "Waiting for Approval" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.strStatus}
-                </p>
-              )}
-              {item?.strStatus === "Rejected" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.strStatus}
-                </p>
-              )}
-              {item?.strStatus === undefined && (
-                <button
-                  style={{
-                    height: "24px",
-                    fontSize: "10px",
-                    padding: "0px 12px 0px 12px",
-                    backgroundColor: "#0BA5EC",
-                  }}
-                  className="btn btn-default"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    sendForApprovalHandler(item);
-                  }}
-                >
-                  Send for Approval
-                </button>
-              )} */}
             </>
           );
         },
@@ -516,7 +360,7 @@ const AdvanceSalaryGenerateLanding = () => {
         width: 125,
         render: (data, item) => (
           <>
-            {!item?.isPipelineClosed && (
+            {!item?.isPipelineClosed && item?.strStatus !== "Pending" && (
               <div>
                 <button
                   style={{
@@ -543,19 +387,8 @@ const AdvanceSalaryGenerateLanding = () => {
       },
     ];
   };
-  // const getSalaryCodeByFromDateAndWId = (fromDate, toDate) => {
-  //   getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
-  //     fromDate: fromDate,
-  //     toDate: toDate,
-  //     workPlaceId: (workplaceDDL || []).map((w) => w?.intWorkplaceId),
-  //   });
-  // };
   useEffect(() => {
     if (workplaceDDL?.length > 0) {
-      // getSalaryCodeByFromDateAndWId(
-      //   values?.filterFromDate,
-      //   values?.filterToDate
-      // );
     }
   }, [workplaceDDL]);
 
