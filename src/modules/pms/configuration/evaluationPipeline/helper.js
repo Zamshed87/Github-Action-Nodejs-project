@@ -13,7 +13,7 @@ export const EvaluationPipelineForm = (
       type: "ddl",
       label: "Level of Leadership",
       varname: "leadership",
-      mode: "multiple",
+      // mode: "multiple",
       ddl: leadershipApi || [],
       placeholder: "Select the leadership",
       rules: [{ required: true, message: "Level of Leadership is required!" }],
@@ -23,7 +23,7 @@ export const EvaluationPipelineForm = (
         form.setFieldsValue({
           leadership: op,
         });
-        setCustomFieldsValue(form, "leadership", op);
+        // setCustomFieldsValue(form, "leadership", op);
       },
     },
     {
@@ -158,15 +158,17 @@ export const handleEvaluationPipelineSetting = async (
     return toast.error("Total weight should be 100");
   }
   const payload = {
-    evaluationHeaderId: values?.evaluationHeaderId || 0, // This value is hardcoded if create
+    evaluationHeaderId: values?.evaluationHeaderId || 0,
     evaluationCriteriaId: values?.evaluationCriteria?.value,
     remarks: values?.comments,
     accountId: profileData?.intAccountId,
     actionBy: profileData?.employeeId,
-    positionGroupIdList:
-      values?.leadership?.length === 1 && values?.leadership[0]?.value == 0
-        ? getLeadershipFormat(levelofLeaderShip)
-        : getLeadershipFormat(values?.leadership),
+    // confirmed by PARASH vai
+    // positionGroupIdList:
+    //   values?.leadership?.length === 1 && values?.leadership[0]?.value == 0
+    //     ? getLeadershipFormat(levelofLeaderShip)
+    //     : getLeadershipFormat(values?.leadership),
+    positionGroupIdList: [{ positionGroupId: values?.leadership?.value }],
     rowDto: stakeholderField?.map((item) => {
       return {
         rowId: 0, // This value is hardcoded if create

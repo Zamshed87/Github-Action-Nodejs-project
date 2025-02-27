@@ -44,7 +44,7 @@ const IndividualKpiEntry = () => {
         values?.employee?.value
       }&accountId=${intAccountId}&from=${values?.fromMonth?.value || 1}&to=${
         values?.toMonth?.value || 12
-      }&pmTypeId=${values?.pmType?.value}`
+      }&pmTypeId=${values?.pmType?.value || 1}`
     );
   };
 
@@ -70,15 +70,9 @@ const IndividualKpiEntry = () => {
     <>
       <>
         {(tableDataLoader || fiscalYearDDLloader) && <Loading />}
-        <div className="table-card">
-          <div className="table-card-heading" style={{ marginBottom: "12px" }}>
-            <div>
-              <h2 style={{ color: "#344054" }}>Individual KPI Entry</h2>
-            </div>
-          </div>
-          <div className="card-style pb-0 mb-2">
-            <div className="row">
-              <div className="col-lg-3">
+        <div className="card-style pb-0 mb-2">
+          <div className="row">
+            {/* <div className="col-lg-3">
                 <label>PM Type</label>
                 <FormikSelect
                   classes="input-sm form-control"
@@ -90,252 +84,249 @@ const IndividualKpiEntry = () => {
                   }}
                   styles={customStyles}
                 />
-              </div>
+              </div> */}
 
-              <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Employee</label>
-                  <AsyncFormikSelect
-                    isClear={true}
-                    selectedValue={values?.employee}
-                    styles={{
-                      control: (provided) => ({
-                        ...customStyles?.control(provided),
-                        width: "100%",
-                      }),
-                    }}
-                    isSearchIcon={true}
-                    handleChange={(valueOption) => {
-                      setFieldValue("employee", valueOption);
-                      setTableData([]);
-                    }}
-                    loadOptions={async (value) => {
-                      return getAsyncEmployeeApi({
-                        orgId,
-                        buId: buId,
-                        intId: 0,
-                        value,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="col-lg-3">
-                <label>Year</label>
-                <FormikSelect
-                  classes="input-sm form-control"
-                  name="year"
-                  placeholder="Select Year"
-                  options={fiscalYearDDL || []}
-                  value={values?.year}
-                  onChange={(valueOption) => {
-                    setFieldValue("year", valueOption);
+            <div className="col-lg-3">
+              <div className="input-field-main">
+                <label>Employee</label>
+                <AsyncFormikSelect
+                  isClear={true}
+                  selectedValue={values?.employee}
+                  styles={{
+                    control: (provided) => ({
+                      ...customStyles?.control(provided),
+                      width: "100%",
+                    }),
+                  }}
+                  isSearchIcon={true}
+                  handleChange={(valueOption) => {
+                    setFieldValue("employee", valueOption);
                     setTableData([]);
                   }}
-                  styles={customStyles}
-                />
-              </div>
-              <div className="col-lg-3">
-                <label>From Month</label>
-                <FormikSelect
-                  classes="input-sm form-control"
-                  name="fromMonth"
-                  placeholder="Select Month"
-                  options={fiscalMonthDDLForKpi || []}
-                  value={values?.fromMonth}
-                  onChange={(valueOption) => {
-                    setFieldValue("fromMonth", valueOption);
-                    setTableData([]);
+                  loadOptions={async (value) => {
+                    return getAsyncEmployeeApi({
+                      orgId,
+                      buId: buId,
+                      intId: 0,
+                      value,
+                    });
                   }}
-                  styles={customStyles}
                 />
               </div>
-              <div className="col-lg-3">
-                <label>To Month</label>
-                <FormikSelect
-                  classes="input-sm form-control"
-                  name="toMonth"
-                  placeholder="Select Month"
-                  options={fiscalMonthDDLForKpi || []}
-                  value={values?.toMonth}
-                  onChange={(valueOption) => {
-                    setFieldValue("toMonth", valueOption);
-                    setTableData([]);
-                  }}
-                  styles={customStyles}
-                />
-              </div>
+            </div>
+            <div className="col-lg-3">
+              <label>Year</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="year"
+                placeholder="Select Year"
+                options={fiscalYearDDL || []}
+                value={values?.year}
+                onChange={(valueOption) => {
+                  setFieldValue("year", valueOption);
+                  setTableData([]);
+                }}
+                styles={customStyles}
+              />
+            </div>
+            <div className="col-lg-3">
+              <label>From Month</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="fromMonth"
+                placeholder="Select Month"
+                options={fiscalMonthDDLForKpi || []}
+                value={values?.fromMonth}
+                onChange={(valueOption) => {
+                  setFieldValue("fromMonth", valueOption);
+                  setTableData([]);
+                }}
+                styles={customStyles}
+              />
+            </div>
+            <div className="col-lg-3">
+              <label>To Month</label>
+              <FormikSelect
+                classes="input-sm form-control"
+                name="toMonth"
+                placeholder="Select Month"
+                options={fiscalMonthDDLForKpi || []}
+                value={values?.toMonth}
+                onChange={(valueOption) => {
+                  setFieldValue("toMonth", valueOption);
+                  setTableData([]);
+                }}
+                styles={customStyles}
+              />
+            </div>
 
-              <div className="col-lg-3">
-                <button
-                  type="button"
-                  className="btn btn-green mr-2"
-                  style={{ marginTop: "22px" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    getData(values);
-                  }}
-                  disabled={
-                    !values?.employee || !values?.year || !values?.pmType
-                  }
-                >
-                  View
-                </button>
+            <div className="col-lg-3">
+              <button
+                type="button"
+                className="btn btn-green mr-2 mb-3"
+                style={{ marginTop: "22px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  getData(values);
+                }}
+                disabled={!values?.employee || !values?.year}
+              >
+                View
+              </button>
+            </div>
+          </div>
+        </div>
+        {/* user infos */}
+
+        {values?.employee ? (
+          <div className="card-style pb-0 mb-2">
+            <div className="row">
+              <div className="col-lg-12 pt-2 pb-2">
+                <h6 className="mb-2">
+                  <strong>Name: </strong> {values?.employee?.EmployeeOnlyName}{" "}
+                  <strong className="ml-1">Enroll: </strong>{" "}
+                  {values?.employee?.EmployeeId}{" "}
+                  <strong className="ml-1">Designation: </strong>{" "}
+                  {values?.employee?.DesignationName}
+                </h6>
               </div>
             </div>
           </div>
-          {/* user infos */}
+        ) : null}
 
-          {values?.employee ? (
-            <div className="card-style pb-0 mb-2">
-              <div className="row">
-                <div className="col-lg-12 pt-2 pb-2">
-                  <h6 className="mb-2">
-                    <strong>Name: </strong> {values?.employee?.EmployeeOnlyName}{" "}
-                    <strong className="ml-1">Enroll: </strong>{" "}
-                    {values?.employee?.EmployeeId}{" "}
-                    <strong className="ml-1">Designation: </strong>{" "}
-                    {values?.employee?.DesignationName}
-                  </h6>
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="achievement resKpi">
-            <PmsCentralTable
-              header={[
-                { name: "BSC" },
-                { name: "Objective" },
-                { name: "KPI" },
-                { name: "SRF" },
-                { name: "Weight" },
-                { name: "Benchmark" },
-                { name: "Target" },
-                { name: "Ach." },
-                { name: "Progress" },
-                { name: "Score" },
-              ]}
-            >
-              {tableData?.infoList?.map((itm, indx) => (
-                <>
-                  {itm.dynamicList.map((item, index) => (
-                    <tr
-                      key={item?.kpiId}
+        <div className="achievement resKpi">
+          <PmsCentralTable
+            header={[
+              { name: "BSC" },
+              { name: "Objective" },
+              { name: "KPI" },
+              { name: "SRF" },
+              { name: "Weight" },
+              { name: "Benchmark" },
+              { name: "Target" },
+              { name: "Ach." },
+              { name: "Progress" },
+              { name: "Score" },
+            ]}
+          >
+            {tableData?.infoList?.map((itm, indx) => (
+              <>
+                {itm.dynamicList.map((item, index) => (
+                  <tr
+                    key={item?.kpiId}
+                    style={{
+                      backgroundColor:
+                        item?.isTargetAssigned || item?.parentName === "Total"
+                          ? "white"
+                          : "#e6e6e6",
+                    }}
+                  >
+                    {index === 0 && (
+                      <td
+                        className={`bsc bsc${indx}`}
+                        rowSpan={itm.dynamicList.length}
+                      >
+                        <div>{itm?.bsc}</div>
+                      </td>
+                    )}
+                    {item?.isParent && (
+                      <td className="obj" rowSpan={item?.numberOfChild}>
+                        {" "}
+                        {item?.parentName}{" "}
+                      </td>
+                    )}
+                    <td
                       style={{
-                        backgroundColor:
-                          item?.isTargetAssigned || item?.parentName === "Total"
-                            ? "white"
-                            : "#e6e6e6",
+                        width: "250px",
                       }}
                     >
-                      {index === 0 && (
-                        <td
-                          className={`bsc bsc${indx}`}
-                          rowSpan={itm.dynamicList.length}
-                        >
-                          <div>{itm?.bsc}</div>
-                        </td>
-                      )}
-                      {item?.isParent && (
-                        <td className="obj" rowSpan={item?.numberOfChild}>
-                          {" "}
-                          {item?.parentName}{" "}
-                        </td>
-                      )}
+                      {" "}
+                      {item?.label}{" "}
+                    </td>
+                    <td> {item?.strFrequency} </td>
+                    <td className="text-center">
+                      {" "}
+                      {item?.numWeight === 0 ? "" : item?.numWeight}{" "}
+                    </td>
+                    <td className="text-center">
+                      {" "}
+                      {item?.benchmark === 0 ? "" : item?.benchmark}{" "}
+                    </td>
+                    <td className="text-center">
+                      {" "}
+                      {item?.numTarget === 0 ? "" : item?.numTarget}{" "}
+                    </td>
+                    {item?.parentName !== "Total" ? (
+                      <td className="text-center">
+                        <span>
+                          <OverlayTrigger
+                            overlay={
+                              <Tooltip
+                                id="tooltip-disabled"
+                                style={{
+                                  fontSize: "11px",
+                                }}
+                              >
+                                Achievement Entry
+                              </Tooltip>
+                            }
+                          >
+                            <span
+                              style={{
+                                cursor: "pointer",
+                                color: "blue",
+                                textDecoration: "underline",
+                              }}
+                              onClick={() => {
+                                setCurrentItem({ ...item });
+                                setIsShowModal(true);
+                              }}
+                            >
+                              {item?.numAchivement}
+                            </span>
+                          </OverlayTrigger>
+                        </span>
+                      </td>
+                    ) : (
+                      <td></td>
+                    )}
+                    {item?.parentName !== "Total" ? (
                       <td
                         style={{
-                          width: "250px",
+                          minWidth: "90px",
+                          textAlign: "center",
                         }}
                       >
                         {" "}
-                        {item?.label}{" "}
-                      </td>
-                      <td> {item?.strFrequency} </td>
-                      <td className="text-center">
-                        {" "}
-                        {item?.numWeight === 0 ? "" : item?.numWeight}{" "}
-                      </td>
-                      <td className="text-center">
-                        {" "}
-                        {item?.benchmark === 0 ? "" : item?.benchmark}{" "}
-                      </td>
-                      <td className="text-center">
-                        {" "}
-                        {item?.numTarget === 0 ? "" : item?.numTarget}{" "}
-                      </td>
-                      {item?.parentName !== "Total" ? (
-                        <td className="text-center">
-                          <span>
-                            <OverlayTrigger
-                              overlay={
-                                <Tooltip
-                                  id="tooltip-disabled"
-                                  style={{
-                                    fontSize: "11px",
-                                  }}
-                                >
-                                  Achievement Entry
-                                </Tooltip>
-                              }
-                            >
-                              <span
-                                style={{
-                                  cursor: "pointer",
-                                  color: "blue",
-                                  textDecoration: "underline",
-                                }}
-                                onClick={() => {
-                                  setCurrentItem({ ...item });
-                                  setIsShowModal(true);
-                                }}
-                              >
-                                {item?.numAchivement}
-                              </span>
-                            </OverlayTrigger>
-                          </span>
-                        </td>
-                      ) : (
-                        <td></td>
-                      )}
-                      {item?.parentName !== "Total" ? (
-                        <td
-                          style={{
-                            minWidth: "90px",
-                            textAlign: "center",
-                          }}
-                        >
-                          {" "}
-                          <span>{item?.progress} % </span>
-                          {/* <i
+                        <span>{item?.progress} % </span>
+                        {/* <i
                             className={`fas fa-arrow-alt-${item?.arrowText}`}
                           ></i> */}
-                          {item?.arrowText === "up" ? (
-                            <ArrowCircleUpIcon
-                              style={{
-                                color: "green",
-                                fontSize: "20px",
-                              }}
-                            />
-                          ) : item?.arrowText === "down" ? (
-                            <ArrowCircleDownIcon
-                              style={{
-                                color: "red",
-                                fontSize: "20px",
-                              }}
-                            />
-                          ) : null}
-                        </td>
-                      ) : (
-                        <td></td>
-                      )}
-                      <td className="text-center"> {item?.score}</td>
-                    </tr>
-                  ))}
-                </>
-              ))}
-            </PmsCentralTable>
-          </div>
+                        {item?.arrowText === "up" ? (
+                          <ArrowCircleUpIcon
+                            style={{
+                              color: "green",
+                              fontSize: "20px",
+                            }}
+                          />
+                        ) : item?.arrowText === "down" ? (
+                          <ArrowCircleDownIcon
+                            style={{
+                              color: "red",
+                              fontSize: "20px",
+                            }}
+                          />
+                        ) : null}
+                      </td>
+                    ) : (
+                      <td></td>
+                    )}
+                    <td className="text-center"> {item?.score}</td>
+                  </tr>
+                ))}
+              </>
+            ))}
+          </PmsCentralTable>
         </div>
       </>
       {/* add modal here */}
