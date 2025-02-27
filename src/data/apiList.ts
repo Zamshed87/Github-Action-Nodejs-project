@@ -315,5 +315,6 @@ export const apiList = {
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
   CreateNUpdateShiftChangeRequest:
     "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
-  GetWorkplaceWisePipelineStatusDdl: "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl"
+  GetWorkplaceWisePipelineStatusDdl:
+    "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
 };
