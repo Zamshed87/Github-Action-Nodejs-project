@@ -25,7 +25,7 @@ export const getRoleAssigneToUser = async (buId, wgId, id, setter) => {
     if (res?.data) {
       setter && setter(res?.data);
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // self separation create
@@ -60,11 +60,13 @@ export const getSeparationLanding = async (
   setPages,
   wId,
   empId,
+  workplaceGroupList,
+  workplaceList
 ) => {
   try {
     setLoading && setLoading(true);
 
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}`;
+    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
 
     search && (apiUrl += `&searchTxt=${search}`);
     empId && (apiUrl += `&EmployeeId=${empId}`);
@@ -173,29 +175,29 @@ export const separationApplicationLandingTableColumn = (
                   />
                   {item?.docArr?.length && item?.docArr?.[0] !== ""
                     ? item?.docArr.map((image, i) => (
-                        <p
-                          style={{
-                            margin: "6px 0 0",
-                            fontWeight: "400",
-                            fontSize: "12px",
-                            lineHeight: "18px",
-                            color: "#009cde",
-                            cursor: "pointer",
+                      <p
+                        style={{
+                          margin: "6px 0 0",
+                          fontWeight: "400",
+                          fontSize: "12px",
+                          lineHeight: "18px",
+                          color: "#009cde",
+                          cursor: "pointer",
+                        }}
+                        key={i}
+                      >
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(getDownlloadFileView_Action(image));
                           }}
-                          key={i}
                         >
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              dispatch(getDownlloadFileView_Action(image));
-                            }}
-                          >
-                            <>
-                              <FilePresentOutlined /> {`Attachment_${i + 1}`}
-                            </>
-                          </span>
-                        </p>
-                      ))
+                          <>
+                            <FilePresentOutlined /> {`Attachment_${i + 1}`}
+                          </>
+                        </span>
+                      </p>
+                    ))
                     : ""}
                 </div>
               </div>
@@ -317,7 +319,7 @@ export const separationApplicationLandingTableColumn = (
                 e.stopPropagation();
                 if (
                   dateFormatterForInput(item?.dteLastWorkingDate) +
-                    "T00:00:00" >
+                  "T00:00:00" >
                   todayDate() + "T00:00:00"
                 ) {
                   return toast.warn(
@@ -459,12 +461,14 @@ export const getEmployeeSeparationLanding = async (
   setLoading,
   pageNo,
   pageSize,
-  setPages
+  setPages,
+  workplaceGroupList,
+  workplaceList
 ) => {
   setLoading && setLoading(true);
 
   try {
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}`;
+    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}&WorkplaceGroupList=${workplaceGroupList}&WorkplaceList=${workplaceList}`;
 
     search = search && (apiUrl += `&searchTxt=${search}`);
 

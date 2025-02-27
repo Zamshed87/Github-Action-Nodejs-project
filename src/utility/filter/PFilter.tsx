@@ -12,7 +12,7 @@ const PFilter = ({
   const [openFilter, setOpenFilter] = React.useState(false);
 
   return (
-    <div style={{ float: "left" }}>
+    <div style={{ float: "right", marginRight: "10px" }}>
       <PButton
         style={{ marginBottom: "15px" }}
         size="small"

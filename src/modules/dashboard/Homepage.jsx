@@ -10,6 +10,7 @@ import administration from "../../assets/images/administration.svg";
 import analystics from "../../assets/images/analystics.svg";
 import approval from "../../assets/images/approval.svg";
 import assetManagement from "../../assets/images/assetManagement.svg";
+import assetRetirement from "../../assets/images/retirement.png";
 import calander from "../../assets/images/calander.svg";
 import employeeSelfService from "../../assets/images/employee-self-service.svg";
 import employeeManagement from "../../assets/images/employeeManagement.svg";
@@ -78,7 +79,7 @@ const Homepage = () => {
   //     to = "/performancemanagementsystem";
   //     image = performance;
   //   } else if (label === "Recruitment") {
-  //     to = "https://devhire.peopledesk.io/";
+  //     to = "https://hiredesk.work/";
   //     image = requirment;
   //   } else if (label === "Manning") {
   //     to = "/manning";
@@ -135,7 +136,7 @@ const Homepage = () => {
       to = "/pms/configuration/EvaluationCriteria";
       image = performance;
     } else if (label === "Recruitment") {
-      to = "https://devhire.peopledesk.io/";
+      to = "https://hiredesk.work/";
       image = requirment;
     } else if (label === "Manning") {
       to = "/manning";
@@ -146,6 +147,9 @@ const Homepage = () => {
     } else if (label === "Asset Management") {
       to = "/assetManagement/assetControlPanel/itemProfile";
       image = assetManagement;
+    } else if (label === "Retirement") {
+      to = "/retirement/separation";
+      image = assetRetirement;
     }
     return { to, image };
   };
@@ -161,7 +165,7 @@ const Homepage = () => {
     ) {
       dispatch(handleMostClickedMenuListAction(childMenu?.[0]));
     }
-    if (to === "https://devhire.peopledesk.io/") {
+    if (to === "https://hiredesk.work/") {
       window.open(to, "_blank");
     } else {
       history.push(to);
@@ -188,7 +192,6 @@ const Homepage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);
-
   return (
     <>
       <Formik

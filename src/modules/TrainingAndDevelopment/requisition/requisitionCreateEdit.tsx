@@ -21,6 +21,7 @@ import {
 } from "./helper";
 import { getEnumData } from "common/api/commonApi";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 const TnDRequisitionCreateEdit = () => {
   interface LocationState {
@@ -38,6 +39,16 @@ const TnDRequisitionCreateEdit = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
+
+  let permission: any = {};
+  permissionList.forEach((item: any) => {
+    if (firstSegment !== "SelfService" && item?.menuReferenceId === 30512) {
+      permission = item;
+    }
+    if (firstSegment === "SelfService" && item?.menuReferenceId === 30522) {
+      permission = item;
+    }
+  });
 
   const [form] = Form.useForm();
   const params = useParams<{ type: string }>();
@@ -100,12 +111,12 @@ const TnDRequisitionCreateEdit = () => {
       `/TrainingRequisition/Training/TrainingRequisition/UpComming?status=0,1&fromDate=${fromDate}&toDate=${toDate}`
     );
     getEnumData("RequisitionStatus", setReqStatus);
-    if (type === "edit" && data?.status?.value == 2) {
+    if (type === "edit" && data?.status?.value == 1) {
       setUpcommi(true);
     }
   }, [profileData?.buId, profileData?.wgId]);
 
-  return (
+  return permission?.isCreate ? (
     <div>
       {(loading || loadingTrainingType) && <Loading />}
       <PForm
@@ -283,7 +294,7 @@ const TnDRequisitionCreateEdit = () => {
                   <PSelect
                     options={reqStatusDDL || []}
                     name="requisitionStatus"
-                    disabled={false}
+                    disabled={firstSegment === "SelfService" && type === "edit"}
                     label="Requisition Status"
                     placeholder="Requisition Status"
                     onChange={(value, op) => {
@@ -308,6 +319,7 @@ const TnDRequisitionCreateEdit = () => {
               {type === "edit" && upcommi && (
                 <Col md={6} sm={24}>
                   <PSelect
+                    disabled={firstSegment === "SelfService" && type === "edit"}
                     options={upcommingTrainingDDL || []}
                     name="upcommingTraining"
                     label="Upcomming Training"
@@ -341,6 +353,8 @@ const TnDRequisitionCreateEdit = () => {
         </PCard>
       </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

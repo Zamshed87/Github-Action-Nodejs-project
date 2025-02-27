@@ -164,8 +164,8 @@ const MgmtInOutReport = () => {
     },
 
     {
-      title: "Employee Code",
-      dataIndex: "employeeCode",
+      title: "Employee Id",
+      dataIndex: "employeeId",
       width: 30,
       fixed: "left",
     },

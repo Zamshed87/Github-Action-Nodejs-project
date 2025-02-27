@@ -183,6 +183,9 @@ const PerformanceMarkingView = lazy(() =>
 const PerformanceMarking = lazy(() =>
   import("../modules/pms/report/performanceMarking/index.jsx")
 );
+const KpiTargetMismatchReport = lazy(() =>
+  import("../modules/pms/report/kpiTargetMismatchReport/index.jsx")
+);
 const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
 const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
 const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
@@ -327,6 +330,9 @@ const ShiftManagementLog = lazy(() =>
 );
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
+);
+const HiredeskOnboarding = lazy(() =>
+  import("../modules/onboarding/index.js")
 );
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
@@ -545,7 +551,11 @@ const AnnouncementViewPage = lazy(() =>
 const AnnouncementCreateLanding = lazy(() =>
   import("../modules/announcement/index.jsx")
 );
-const ApprovalList = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApprovalList = lazy(() => import("../modules/approvalList/indexOld.jsx"));
+const ApprovalListNew = lazy(() => import("../modules/approvalList/index.jsx"));
+const ApproverCommonLanding = lazy(() =>
+  import("../modules/approvalList/commonApproval/index.jsx")
+);
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
@@ -1110,6 +1120,11 @@ const SelfApplicationSeparationForm = lazy(() =>
     "../modules/employeeProfile/separation/selfApplication/addEditForm/index.jsx"
   )
 );
+const SelfServiceSeparationForm = lazy(() =>
+  import(
+    "../modules/employeeProfile/separation/selfApplication/addEditFormV2/index.jsx"
+  )
+);
 const SelfSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/selfApplication/index.jsx")
 );
@@ -1559,6 +1574,9 @@ import TrainingTitle from "modules/TrainingAndDevelopment/masterData/trainingTit
 import TrainingCost from "modules/TrainingAndDevelopment/masterData/trainingCost";
 import TnDDashboard from "modules/TrainingAndDevelopment/dashboard";
 import MarketVisitReport from "modules/timeSheet/reports/marketVisitReport";
+import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/AdvanceSalaryGenerateLanding";
+import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
+import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 
@@ -1669,6 +1687,31 @@ const Test = lazy(() =>
 );
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
 
+const SelfServiceSeparation = lazy(() =>
+  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
+);
+
+// Retirement Module
+const Separation = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/index.jsx")
+);
+const SeparationApplicationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+);
+
+const RetirementViewSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
+);
+const RetirementReleaseSeparationForm = lazy(() =>
+  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+);
+
+
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
+);
+
+
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -1776,6 +1819,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/shiftManagement",
     component: ShiftManagement,
+  },
+  {
+    path: "/administration/thirdPartyIntegration/hireDesk",
+    component: HiredeskOnboarding,
   },
   {
     path: "/administration/timeManagement/fixedRosterSetup",
@@ -2385,6 +2432,10 @@ export const routingList = [
     component: SelfAttendenceAdjust,
   },
   {
+    path: "/SelfService/timeManagement/shiftChangeRequest",
+    component: AttendanceShiftChange,
+  },
+  {
     path: "/SelfService/timeManagement/overTimeRequisition",
     component: OverTimeRequisition,
   },
@@ -2474,8 +2525,16 @@ export const routingList = [
     component: TrainingDetails,
   },
   {
-    path: "/approval",
+    path: "/approval/old",
     component: ApprovalList,
+  },
+  {
+    path: "/approval",
+    component: ApprovalListNew,
+  },
+  {
+    path: "/approval/:id",
+    component: ApproverCommonLanding,
   },
   // {
   //   path: "/approval",
@@ -2584,7 +2643,7 @@ export const routingList = [
   },
   {
     path: "/SelfService/loanFinancialAid/loanRequest",
-    component: Application,
+    component: EmLoanApplication,
   },
   {
     path: "/SelfService/loanFinancialAid/loanReschedule",
@@ -2705,6 +2764,10 @@ export const routingList = [
     component: BonusGenerateView,
   },
   {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerateView/:id",
+    component: AdvanceSalaryGenerateView,
+  },
+  {
     path: "/compensationAndBenefits/payrollProcess/bonusGenerate/create",
     component: BonusGenerateCreate,
   },
@@ -2727,6 +2790,20 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/payrollProcess/generateSalary",
     component: SalaryGenerateLanding,
+  },
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate",
+    component: AdvanceSalaryGenerateLanding,
+  },
+
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/create",
+    component: AdvanceSalaryGenerateCreate,
+  },
+  {
+    path: "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate/edit/:id",
+    component: AdvanceSalaryGenerateCreate,
   },
   {
     path: "/compensationAndBenefits/payrollProcess/arearSalaryGenerate/view/:id",
@@ -3247,10 +3324,17 @@ export const routingList = [
     component: SelfApplicationSeparationForm,
   },
   {
+    path: "/SelfService/separation/applicationV2/create",
+    component: SelfServiceSeparationForm,
+  },
+  {
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
-
+  {
+    path: "/SelfService/separation/applicationV2",
+    component: SelfServiceSeparation,
+  },
   // Asset Management Start
   {
     path: "/SelfService/asset/assetRequisition",
@@ -3780,6 +3864,10 @@ export const routingList = [
     component: PerformanceMarking,
   },
   {
+    path: "/pms/report/KPITargetMismatchReport",
+    component: KpiTargetMismatchReport,
+  },
+  {
     path: "/performancemanagementsystem/pms/strategicplan",
     component: StrPlan,
   },
@@ -3989,6 +4077,28 @@ export const routingList = [
   {
     path: "/administration/timeManagement/flexibleTimesheet",
     component: FlexibleTimeSheet,
+  },
+
+  // Retirement Routes
+  {
+    path: "/retirement/separation",
+    component: Separation,
+  },
+  {
+    path: "/retirement/separation/create",
+    component: SeparationApplicationForm,
+  },
+  {
+    path: "/retirement/separation/edit/:id",
+    component: SeparationApplicationForm,
+  },
+  {
+    path: "/retirement/separation/view/:id",
+    component: RetirementViewSeparationForm,
+  },
+  {
+    path: "/retirement/separation/release/:id",
+    component: RetirementReleaseSeparationForm,
   },
 ];
 

@@ -27,6 +27,17 @@ import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import { fromDateToDateDiff } from "../../../../../../utility/fromDateToDateDiff";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { updateEmployeeProfile } from "../../helper";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { DataTable } from "Components";
+import { Divider, Dropdown } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
+import {
+  ViewTrainingPlan,
+  ViewTrainingPlanDetails,
+  ViewTrainingSchedule,
+} from "modules/TrainingAndDevelopment/planning/helper";
+import { PModal } from "Components/Modal";
+import PlanningView from "modules/TrainingAndDevelopment/planning/planningView";
 
 const initData = {
   trainingTitle: "",
@@ -46,6 +57,8 @@ const validationSchema = Yup.object().shape({
 });
 
 function TrainingDevelopment({
+  tabIndex,
+  index,
   empId,
   wgId: workplaceGroup,
   buId: businessUnit,
@@ -57,6 +70,13 @@ function TrainingDevelopment({
   const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState("");
   const [imageFile, setImageFile] = useState("");
+  const [
+    landingTNDApi,
+    getLandingTNDApi,
+    landingTNDLoading,
+    ,
+    landingTNDError,
+  ] = useAxiosGet();
 
   // image
   const inputFile = useRef(null);
@@ -73,6 +93,9 @@ function TrainingDevelopment({
       setLoading,
       businessUnit,
       workplaceGroup
+    );
+    getLandingTNDApi(
+      `/TrainingReport/TrainingInventoryDetailReport/0?employeeId=${employeeId}`
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -329,455 +352,638 @@ function TrainingDevelopment({
   };
 
   return (
-    <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={{
-          ...initData,
-          trainingTitle: singleData ? singleData?.trainingTitle : "",
-          issuingOrganization: singleData
-            ? singleData?.issuingOrganization
-            : "",
-          fromDate: singleData
-            ? dateFormatterForInput(singleData?.fromDate)
-            : todayDate(),
-          toDate: singleData
-            ? dateFormatterForInput(singleData?.toDate)
-            : todayDate(),
-          expirationDate: singleData
-            ? dateFormatterForInput(singleData?.expirationDate)
-            : todayDate(),
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+    index === tabIndex && (
+      <div className="common-overview-part">
+        <div className="common-overview-content">
           <>
-            <Form onSubmit={handleSubmit} className="form-add-experience">
-              {loading && <Loading />}
-              <div>
-                <h5>Training</h5>
-                {1 && (
-                  <div
-                    className="d-flex align-items-center"
-                    style={{ marginBottom: "25px", cursor: "pointer" }}
-                    onClick={() => {
-                      setStatus("input");
-                      setIsCreateForm(true);
-                    }}
-                  >
-                    <div
-                      className="item"
-                      style={{ position: "relative", top: "-3px" }}
-                    >
-                      <ControlPoint
-                        sx={{ color: success500, fontSize: "16px" }}
-                      />
-                    </div>
-                    <div className="item">
-                      <p>Add your training</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {isCreateForm ? (
+            <Formik
+              enableReinitialize={true}
+              initialValues={{
+                ...initData,
+                trainingTitle: singleData ? singleData?.trainingTitle : "",
+                issuingOrganization: singleData
+                  ? singleData?.issuingOrganization
+                  : "",
+                fromDate: singleData
+                  ? dateFormatterForInput(singleData?.fromDate)
+                  : todayDate(),
+                toDate: singleData
+                  ? dateFormatterForInput(singleData?.toDate)
+                  : todayDate(),
+                expirationDate: singleData
+                  ? dateFormatterForInput(singleData?.expirationDate)
+                  : todayDate(),
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values, { setSubmitting, resetForm }) => {
+                saveHandler(values, () => {
+                  resetForm(initData);
+                });
+              }}
+            >
+              {({
+                handleSubmit,
+                resetForm,
+                values,
+                errors,
+                touched,
+                setFieldValue,
+                isValid,
+              }) => (
                 <>
-                  {/* addEdit form */}
-                  {status === "input" && (
-                    <>
-                      <div
-                        className="attachment-upload"
-                        style={{ marginBottom: "25px" }}
-                      >
-                        <FormikInput
-                          value={values?.trainingTitle}
-                          onChange={(e) =>
-                            setFieldValue("trainingTitle", e.target.value)
-                          }
-                          name="trainingTitle"
-                          type="text"
-                          className="form-control"
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Training Title"
-                          classes="input-sm"
-                        />
-                        <FormikInput
-                          value={values?.issuingOrganization}
-                          onChange={(e) =>
-                            setFieldValue("issuingOrganization", e.target.value)
-                          }
-                          name="issuingOrganization"
-                          type="text"
-                          className="form-control"
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Issuing Organization"
-                          classes="input-sm"
-                        />
-                        <FormikInput
-                          label="Start Date"
-                          value={values?.fromDate}
-                          onChange={(e) =>
-                            setFieldValue("fromDate", e.target.value)
-                          }
-                          name="fromDate"
-                          type="date"
-                          className="form-control"
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Start Date"
-                        />
-                        <FormikInput
-                          label="Finish Date"
-                          value={values?.toDate}
-                          onChange={(e) =>
-                            setFieldValue("toDate", e.target.value)
-                          }
-                          name="toDate"
-                          type="date"
-                          className="form-control"
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Finish Date"
-                          min={values?.fromDate}
-                        />
-                        <FormikInput
-                          label="Expiration Date"
-                          value={values?.expirationDate}
-                          onChange={(e) =>
-                            setFieldValue("expirationDate", e.target.value)
-                          }
-                          name="expirationDate"
-                          type="date"
-                          className="form-control"
-                          errors={errors}
-                          touched={touched}
-                          placeholder="Expiration Date"
-                          min={values?.fromDate}
-                        />
-
-                        <div className="input-main position-group-select my-2">
-                          <label className="lebel-bold mr-2">
-                            Upload Files
-                          </label>
-                          {imageFile && (
-                            <VisibilityOutlined
-                              sx={{ color: gray900, fontSize: "18px" }}
-                              onClick={() => {
-                                dispatch(
-                                  getDownlloadFileView_Action(
-                                    imageFile?.globalFileUrlId
-                                  )
-                                );
-                              }}
-                            />
-                          )}
-                        </div>
-                        <div
-                          className={
-                            imageFile
-                              ? "image-upload-box with-img d-inline-block"
-                              : "image-upload-box"
-                          }
-                          onClick={onButtonClick}
-                          style={{
-                            cursor: "pointer",
-                            position: "relative",
-                            height: "40px",
-                          }}
-                        >
-                          <input
-                            onChange={(e) => {
-                              if (e.target.files?.[0]) {
-                                attachment_action(
-                                  orgId,
-                                  "EmployeeTraining",
-                                  10,
-                                  buId,
-                                  employeeId,
-                                  e.target.files,
-                                  setLoading
-                                )
-                                  .then((data) => {
-                                    setImageFile(data?.[0]);
-                                  })
-                                  .catch((error) => {
-                                    setImageFile("");
-                                  });
-                              }
+                  <Form onSubmit={handleSubmit} className="form-add-experience">
+                    {loading && <Loading />}
+                    <div className="mb-3">
+                      <h3 className="pb-2">Company Training</h3>
+                      <table className="table table-bordered mt-3">
+                        <thead>
+                          <tr
+                            style={{
+                              backgroundColor: "rgba(247, 247, 247, 1)",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                              color: "rgba(95, 99, 104, 1)!important",
                             }}
-                            type="file"
-                            id="file"
-                            ref={inputFile}
-                            style={{ display: "none" }}
-                          />
-                          <div>
-                            {!imageFile && (
-                              <img
-                                style={{
-                                  maxWidth: "40px",
-                                  objectFit: "contain",
-                                }}
-                                src={placeholderImg}
-                                className="img-fluid"
-                                alt="Drag or browse"
-                              />
-                            )}
-                          </div>
-                          {imageFile && (
-                            <div
-                              className="d-flex align-items-center"
-                              onClick={() => {
-                                // dispatch(getDownlloadFileView_Action(imageFile?.id));
+                          >
+                            <th
+                              className="text-center"
+                              rowSpan="1"
+                              style={{
+                                verticalAlign: "top",
                               }}
                             >
-                              <AttachmentOutlined
-                                sx={{ marginRight: "5px", color: "#0072E5" }}
+                              SL
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Training Type</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Training Title</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Training Mode</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Objectives</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Date & Time</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">
+                                Training Organization & Trainer
+                              </div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Duration</div>
+                            </th>
+                            <th
+                              style={{
+                                border: "1px solid rgba(0, 0, 0, 0.12)",
+                              }}
+                            >
+                              <div className="text-center">Cost</div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {landingTNDApi?.map((item, index) => (
+                            <tr
+                              style={{
+                                color: "rgba(95, 99, 104, 1)",
+                                fontSize: "14px",
+                              }}
+                              key={index}
+                            >
+                              <td className="text-center">
+                                <div>{index + 1}</div>
+                              </td>
+
+                              <td>
+                                <div>{item?.trainingTypeName}</div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingTitleName}</div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingMode?.label}</div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingObjectives}</div>
+                              </td>
+                              <td>
+                                <div>
+                                  {dateFormatter(item?.trainingDateTime)}
+                                </div>
+                              </td>
+                              <td>
+                                <div>
+                                  {item?.trainingOrganization +
+                                    ", " +
+                                    item?.trainerName}
+                                </div>
+                              </td>
+                              <td>
+                                <div>{item?.trainingDuration}</div>
+                              </td>
+                              <td>
+                                <div>{item?.costPerPerson.toFixed(2)}</div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <Divider />
+                    <div>
+                      <h3 className="pb-2">External Training</h3>
+                      {1 && (
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ marginBottom: "25px", cursor: "pointer" }}
+                          onClick={() => {
+                            setStatus("input");
+                            setIsCreateForm(true);
+                          }}
+                        >
+                          <div
+                            className="item"
+                            style={{ position: "relative", top: "-3px" }}
+                          >
+                            <ControlPoint
+                              sx={{ color: success500, fontSize: "16px" }}
+                            />
+                          </div>
+                          <div className="item">
+                            <p>Add your training</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {isCreateForm ? (
+                      <>
+                        {/* addEdit form */}
+                        {status === "input" && (
+                          <>
+                            <div
+                              className="attachment-upload"
+                              style={{ marginBottom: "25px" }}
+                            >
+                              <FormikInput
+                                value={values?.trainingTitle}
+                                onChange={(e) =>
+                                  setFieldValue("trainingTitle", e.target.value)
+                                }
+                                name="trainingTitle"
+                                type="text"
+                                className="form-control"
+                                errors={errors}
+                                touched={touched}
+                                placeholder="Training Title"
+                                classes="input-sm"
                               />
-                              <p
+                              <FormikInput
+                                value={values?.issuingOrganization}
+                                onChange={(e) =>
+                                  setFieldValue(
+                                    "issuingOrganization",
+                                    e.target.value
+                                  )
+                                }
+                                name="issuingOrganization"
+                                type="text"
+                                className="form-control"
+                                errors={errors}
+                                touched={touched}
+                                placeholder="Issuing Organization"
+                                classes="input-sm"
+                              />
+                              <FormikInput
+                                label="Start Date"
+                                value={values?.fromDate}
+                                onChange={(e) =>
+                                  setFieldValue("fromDate", e.target.value)
+                                }
+                                name="fromDate"
+                                type="date"
+                                className="form-control"
+                                errors={errors}
+                                touched={touched}
+                                placeholder="Start Date"
+                              />
+                              <FormikInput
+                                label="Finish Date"
+                                value={values?.toDate}
+                                onChange={(e) =>
+                                  setFieldValue("toDate", e.target.value)
+                                }
+                                name="toDate"
+                                type="date"
+                                className="form-control"
+                                errors={errors}
+                                touched={touched}
+                                placeholder="Finish Date"
+                                min={values?.fromDate}
+                              />
+                              <FormikInput
+                                label="Expiration Date"
+                                value={values?.expirationDate}
+                                onChange={(e) =>
+                                  setFieldValue(
+                                    "expirationDate",
+                                    e.target.value
+                                  )
+                                }
+                                name="expirationDate"
+                                type="date"
+                                className="form-control"
+                                errors={errors}
+                                touched={touched}
+                                placeholder="Expiration Date"
+                                min={values?.fromDate}
+                              />
+
+                              <div className="input-main position-group-select my-2">
+                                <label className="lebel-bold mr-2">
+                                  Upload Files
+                                </label>
+                                {imageFile && (
+                                  <VisibilityOutlined
+                                    sx={{ color: gray900, fontSize: "18px" }}
+                                    onClick={() => {
+                                      dispatch(
+                                        getDownlloadFileView_Action(
+                                          imageFile?.globalFileUrlId
+                                        )
+                                      );
+                                    }}
+                                  />
+                                )}
+                              </div>
+                              <div
+                                className={
+                                  imageFile
+                                    ? "image-upload-box with-img d-inline-block"
+                                    : "image-upload-box"
+                                }
+                                onClick={onButtonClick}
                                 style={{
-                                  fontSize: "12px",
-                                  fontWeight: "500",
-                                  color: "#0072E5",
                                   cursor: "pointer",
+                                  position: "relative",
+                                  height: "40px",
                                 }}
                               >
-                                {imageFile?.fileName || "Attachment"}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        <div
-                          className="d-flex align-items-center justify-content-end"
-                          style={{ marginTop: "24px" }}
-                        >
-                          <button
-                            type="button"
-                            variant="text"
-                            className="btn btn-cancel"
-                            style={{ marginRight: "16px" }}
-                            onClick={() => {
-                              setStatus("empty");
-                              setSingleData("");
-                              setIsCreateForm(false);
-                              setFieldValue("trainingTitle", "");
-                              setFieldValue("issuingOrganization", "");
-                              setImageFile("");
-                            }}
-                          >
-                            Cancel
-                          </button>
-
-                          <button
-                            variant="text"
-                            type="submit"
-                            className="btn btn-green btn-green-disable"
-                            disabled={
-                              !values.trainingTitle ||
-                              !values.issuingOrganization ||
-                              !values?.fromDate ||
-                              !values?.toDate ||
-                              !values?.expirationDate
-                            }
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {/* landing */}
-                  {rowDto?.empEmployeeTraining?.length > 0 && !singleData && (
-                    <>
-                      {rowDto?.empEmployeeTraining?.map((item, index) => {
-                        return (
-                          <>
-                            <div className="view" key={index}>
-                              <div className="row row-exp-details">
-                                <div className="col-lg-1">
-                                  <Avatar className="overviewAvatar">
-                                    <EmojiEvents
-                                      sx={{
-                                        color: gray900,
-                                        fontSize: "18px",
+                                <input
+                                  onChange={(e) => {
+                                    if (e.target.files?.[0]) {
+                                      attachment_action(
+                                        orgId,
+                                        "EmployeeTraining",
+                                        10,
+                                        buId,
+                                        employeeId,
+                                        e.target.files,
+                                        setLoading
+                                      )
+                                        .then((data) => {
+                                          setImageFile(data?.[0]);
+                                        })
+                                        .catch((error) => {
+                                          setImageFile("");
+                                        });
+                                    }
+                                  }}
+                                  type="file"
+                                  id="file"
+                                  ref={inputFile}
+                                  style={{ display: "none" }}
+                                />
+                                <div>
+                                  {!imageFile && (
+                                    <img
+                                      style={{
+                                        maxWidth: "40px",
+                                        objectFit: "contain",
                                       }}
+                                      src={placeholderImg}
+                                      className="img-fluid"
+                                      alt="Drag or browse"
                                     />
-                                  </Avatar>
-                                </div>
-                                <div className="col-lg-10 exp-info">
-                                  <h4>
-                                    {item?.strTrainingTitle} at{" "}
-                                    {item?.strInstituteName}
-                                  </h4>
-                                  <div className="row m-0 row-exp-time">
-                                    <div className="col-8 exp-date">
-                                      {dateFormatter(item?.dteStartDate)} -{" "}
-                                      {dateFormatter(item?.dteEndDate)}
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <small>
-                                      {fromDateToDateDiff(
-                                        item?.dteStartDate,
-                                        item?.dteEndDate
-                                      ) && (
-                                        <>
-                                          Duration -{" "}
-                                          {fromDateToDateDiff(
-                                            item?.dteStartDate,
-                                            item?.dteEndDate
-                                          )}
-                                        </>
-                                      )}
-                                    </small>
-                                  </div>
-                                  <small>
-                                    Expiration date -{" "}
-                                    {dateFormatter(item?.dteExpiryDate)}
-                                  </small>
-                                  {item?.intTrainingFileUrlId > 0 && (
-                                    <div className="common-slider">
-                                      <div
-                                        className="slider-main"
-                                        style={{ height: "auto" }}
-                                      >
-                                        <NocSlider item={item} />
-                                      </div>
-                                    </div>
                                   )}
                                 </div>
+                                {imageFile && (
+                                  <div
+                                    className="d-flex align-items-center"
+                                    onClick={() => {
+                                      // dispatch(getDownlloadFileView_Action(imageFile?.id));
+                                    }}
+                                  >
+                                    <AttachmentOutlined
+                                      sx={{
+                                        marginRight: "5px",
+                                        color: "#0072E5",
+                                      }}
+                                    />
+                                    <p
+                                      style={{
+                                        fontSize: "12px",
+                                        fontWeight: "500",
+                                        color: "#0072E5",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      {imageFile?.fileName || "Attachment"}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
 
-                                <div className="col-lg-1">
-                                  <ActionMenu
-                                    color={gray900}
-                                    fontSize={"18px"}
-                                    options={[
-                                      ...(intAccountId === 5
-                                        ? !rowDto.isMarkCompleted || isOfficeAdmin
-                                          ? [
-                                              {
-                                                value: 1,
-                                                label: "Edit",
-                                                icon: (
-                                                  <ModeEditOutlined
-                                                    sx={{
-                                                      marginRight: "10px",
-                                                      fontSize: "16px",
-                                                    }}
-                                                  />
-                                                ),
-                                                onClick: () => {
-                                                  setStatus("input");
-                                                  setIsCreateForm(true);
-                                                  setSingleData({
-                                                    trainingTitle: item?.strTrainingTitle,
-                                                    issuingOrganization: item?.strInstituteName,
-                                                    fromDate: item?.dteStartDate,
-                                                    toDate: item?.dteEndDate,
-                                                    expirationDate: item?.dteExpiryDate,
-                                                    intTrainingId: item?.intTrainingId,
-                                                  });
-                                                  setImageFile({
-                                                    globalFileUrlId: item?.intTrainingFileUrlId,
-                                                  });
-                                                },
-                                              },
-                                              {
-                                                value: 2,
-                                                label: "Delete",
-                                                icon: (
-                                                  <DeleteOutline
-                                                    sx={{
-                                                      marginRight: "10px",
-                                                      fontSize: "16px",
-                                                    }}
-                                                  />
-                                                ),
-                                                onClick: () => {
-                                                  deleteHandler(item?.intTrainingId, item);
-                                                },
-                                              },
-                                            ]
-                                          : []
-                                        : [
-                                            {
-                                              value: 1,
-                                              label: "Edit",
-                                              icon: (
-                                                <ModeEditOutlined
-                                                  sx={{
-                                                    marginRight: "10px",
-                                                    fontSize: "16px",
-                                                  }}
-                                                />
-                                              ),
-                                              onClick: () => {
-                                                setStatus("input");
-                                                setIsCreateForm(true);
-                                                setSingleData({
-                                                  trainingTitle: item?.strTrainingTitle,
-                                                  issuingOrganization: item?.strInstituteName,
-                                                  fromDate: item?.dteStartDate,
-                                                  toDate: item?.dteEndDate,
-                                                  expirationDate: item?.dteExpiryDate,
-                                                  intTrainingId: item?.intTrainingId,
-                                                });
-                                                setImageFile({
-                                                  globalFileUrlId: item?.intTrainingFileUrlId,
-                                                });
-                                              },
-                                            },
-                                            {
-                                              value: 2,
-                                              label: "Delete",
-                                              icon: (
-                                                <DeleteOutline
-                                                  sx={{
-                                                    marginRight: "10px",
-                                                    fontSize: "16px",
-                                                  }}
-                                                />
-                                              ),
-                                              onClick: () => {
-                                                deleteHandler(item?.intTrainingId, item);
-                                              },
-                                            },
-                                          ]),
-                                    ]}
-                                    
-                                  />
-                                </div>
+                              <div
+                                className="d-flex align-items-center justify-content-end"
+                                style={{ marginTop: "24px" }}
+                              >
+                                <button
+                                  type="button"
+                                  variant="text"
+                                  className="btn btn-cancel"
+                                  style={{ marginRight: "16px" }}
+                                  onClick={() => {
+                                    setStatus("empty");
+                                    setSingleData("");
+                                    setIsCreateForm(false);
+                                    setFieldValue("trainingTitle", "");
+                                    setFieldValue("issuingOrganization", "");
+                                    setImageFile("");
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+
+                                <button
+                                  variant="text"
+                                  type="submit"
+                                  className="btn btn-green btn-green-disable"
+                                  disabled={
+                                    !values.trainingTitle ||
+                                    !values.issuingOrganization ||
+                                    !values?.fromDate ||
+                                    !values?.toDate ||
+                                    !values?.expirationDate
+                                  }
+                                >
+                                  Save
+                                </button>
                               </div>
                             </div>
                           </>
-                        );
-                      })}
-                    </>
-                  )}
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {/* landing */}
+                        {rowDto?.empEmployeeTraining?.length > 0 &&
+                          !singleData && (
+                            <>
+                              {rowDto?.empEmployeeTraining?.map(
+                                (item, index) => {
+                                  return (
+                                    <>
+                                      <div className="view" key={index}>
+                                        <div className="row row-exp-details">
+                                          <div className="col-lg-1">
+                                            <Avatar className="overviewAvatar">
+                                              <EmojiEvents
+                                                sx={{
+                                                  color: gray900,
+                                                  fontSize: "18px",
+                                                }}
+                                              />
+                                            </Avatar>
+                                          </div>
+                                          <div className="col-lg-10 exp-info">
+                                            <h4>
+                                              {item?.strTrainingTitle} at{" "}
+                                              {item?.strInstituteName}
+                                            </h4>
+                                            <div className="row m-0 row-exp-time">
+                                              <div className="col-8 exp-date">
+                                                {dateFormatter(
+                                                  item?.dteStartDate
+                                                )}{" "}
+                                                -{" "}
+                                                {dateFormatter(
+                                                  item?.dteEndDate
+                                                )}
+                                              </div>
+                                            </div>
+                                            <div>
+                                              <small>
+                                                {fromDateToDateDiff(
+                                                  item?.dteStartDate,
+                                                  item?.dteEndDate
+                                                ) && (
+                                                  <>
+                                                    Duration -{" "}
+                                                    {fromDateToDateDiff(
+                                                      item?.dteStartDate,
+                                                      item?.dteEndDate
+                                                    )}
+                                                  </>
+                                                )}
+                                              </small>
+                                            </div>
+                                            <small>
+                                              Expiration date -{" "}
+                                              {dateFormatter(
+                                                item?.dteExpiryDate
+                                              )}
+                                            </small>
+                                            {item?.intTrainingFileUrlId > 0 && (
+                                              <div className="common-slider">
+                                                <div
+                                                  className="slider-main"
+                                                  style={{ height: "auto" }}
+                                                >
+                                                  <NocSlider item={item} />
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+
+                                          <div className="col-lg-1">
+                                            <ActionMenu
+                                              color={gray900}
+                                              fontSize={"18px"}
+                                              options={[
+                                                ...(intAccountId === 5
+                                                  ? !rowDto.isMarkCompleted ||
+                                                    isOfficeAdmin
+                                                    ? [
+                                                        {
+                                                          value: 1,
+                                                          label: "Edit",
+                                                          icon: (
+                                                            <ModeEditOutlined
+                                                              sx={{
+                                                                marginRight:
+                                                                  "10px",
+                                                                fontSize:
+                                                                  "16px",
+                                                              }}
+                                                            />
+                                                          ),
+                                                          onClick: () => {
+                                                            setStatus("input");
+                                                            setIsCreateForm(
+                                                              true
+                                                            );
+                                                            setSingleData({
+                                                              trainingTitle:
+                                                                item?.strTrainingTitle,
+                                                              issuingOrganization:
+                                                                item?.strInstituteName,
+                                                              fromDate:
+                                                                item?.dteStartDate,
+                                                              toDate:
+                                                                item?.dteEndDate,
+                                                              expirationDate:
+                                                                item?.dteExpiryDate,
+                                                              intTrainingId:
+                                                                item?.intTrainingId,
+                                                            });
+                                                            setImageFile({
+                                                              globalFileUrlId:
+                                                                item?.intTrainingFileUrlId,
+                                                            });
+                                                          },
+                                                        },
+                                                        {
+                                                          value: 2,
+                                                          label: "Delete",
+                                                          icon: (
+                                                            <DeleteOutline
+                                                              sx={{
+                                                                marginRight:
+                                                                  "10px",
+                                                                fontSize:
+                                                                  "16px",
+                                                              }}
+                                                            />
+                                                          ),
+                                                          onClick: () => {
+                                                            deleteHandler(
+                                                              item?.intTrainingId,
+                                                              item
+                                                            );
+                                                          },
+                                                        },
+                                                      ]
+                                                    : []
+                                                  : [
+                                                      {
+                                                        value: 1,
+                                                        label: "Edit",
+                                                        icon: (
+                                                          <ModeEditOutlined
+                                                            sx={{
+                                                              marginRight:
+                                                                "10px",
+                                                              fontSize: "16px",
+                                                            }}
+                                                          />
+                                                        ),
+                                                        onClick: () => {
+                                                          setStatus("input");
+                                                          setIsCreateForm(true);
+                                                          setSingleData({
+                                                            trainingTitle:
+                                                              item?.strTrainingTitle,
+                                                            issuingOrganization:
+                                                              item?.strInstituteName,
+                                                            fromDate:
+                                                              item?.dteStartDate,
+                                                            toDate:
+                                                              item?.dteEndDate,
+                                                            expirationDate:
+                                                              item?.dteExpiryDate,
+                                                            intTrainingId:
+                                                              item?.intTrainingId,
+                                                          });
+                                                          setImageFile({
+                                                            globalFileUrlId:
+                                                              item?.intTrainingFileUrlId,
+                                                          });
+                                                        },
+                                                      },
+                                                      {
+                                                        value: 2,
+                                                        label: "Delete",
+                                                        icon: (
+                                                          <DeleteOutline
+                                                            sx={{
+                                                              marginRight:
+                                                                "10px",
+                                                              fontSize: "16px",
+                                                            }}
+                                                          />
+                                                        ),
+                                                        onClick: () => {
+                                                          deleteHandler(
+                                                            item?.intTrainingId,
+                                                            item
+                                                          );
+                                                        },
+                                                      },
+                                                    ]),
+                                              ]}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  );
+                                }
+                              )}
+                            </>
+                          )}
+                      </>
+                    )}
+                  </Form>
                 </>
               )}
-            </Form>
-          </>
-        )}
-      </Formik>
-    </>
+            </Formik>
+          </>{" "}
+        </div>
+      </div>
+    )
   );
 }
 

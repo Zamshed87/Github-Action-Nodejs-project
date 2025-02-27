@@ -17,13 +17,12 @@ export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
   try {
     const res = await axios.post(`/Payroll/SalaryCRUD`, payload);
     cb && cb();
-    toast.success(res.data?.[0].returnMessage || "Successfully");
+    toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    toast.warn(
-      error?.response?.data?.[0].returnMessage || "Something went wrong!"
-    );
+    console.log("error", error);
     setLoading && setLoading(false);
+    toast.warn(error?.response?.data?.message || "Something went wrong!");
   }
 };
 
@@ -54,9 +53,9 @@ export const getSalaryGenerateRequestLanding = async (
   values
 ) => {
   setLoading && setLoading(true);
-  const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+  // const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
   // Joining the values into a string separated by commas
-  const workplaceListFromValues = valueArray.join(",");
+  const workplaceListFromValues = values?.workplace;
   const valueArrayHRPosition = values?.hrPosition?.map((obj) => obj.value);
   const intBankOrWalletType = `&intBankOrWalletType=${
     values?.walletType?.value || 0
@@ -250,13 +249,13 @@ export const getSalaryGenerateRequestLandingById = async (
       // new employee load
       if (isMarge) {
         setLoading && setLoading(true);
-        const valueArray =
-          values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+        // const valueArray =
+        //   values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
         const valueArrayHRPosition = values?.hrPosition?.map(
           (obj) => obj.value
         );
         // Joining the values into a string separated by commas
-        const workplaceListFromValues = valueArray.join(",");
+        const workplaceListFromValues = values?.workplace;
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
