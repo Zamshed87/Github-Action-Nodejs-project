@@ -6,40 +6,57 @@ import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import moneyIcon from "../../../../assets/images/moneyIcon.png";
 import CircleButton from "../../../../common/CircleButton";
-import { getMonthName } from "../../../../utility/monthUtility";
+// import { getMonthName } from "../../../../utility/monthUtility";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
-import { createSalaryGenerateRequest } from "../helper";
+// import { createSalaryGenerateRequest } from "../helper";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const HeaderInfoBar = ({ data, setLoading }) => {
-  const month = getMonthName(data?.intMonth);
+  // const month = getMonthName(data?.intMonth);
   const history = useHistory();
-  const year = data?.intYear;
-  const monthYear = `${month}, ${year}`;
+  // const year = data?.intYear;
+  // const monthYear = `${month}, ${year}`;
+  const [, sendApprovalRequest] = useAxiosPost();
 
-  const { employeeId, wgId, buName } = useSelector(
+  const { buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
   // send for approval
   const sendForApprovalHandler = (values) => {
-    const payload = {
-      strPartName: "GeneratedSalarySendForApproval",
-      intSalaryGenerateRequestId: values?.intSalaryGenerateRequestId,
-      strSalaryCode: values?.strSalaryCode,
-      intAccountId: values?.intAccountId,
-      intBusinessUnitId: values?.intBusinessUnitId,
-      strBusinessUnit: values?.strBusinessUnit,
-      intMonthId: values?.intMonth,
-      intYearId: values?.intYear,
-      strDescription: values?.strDescription,
-      intWorkplaceGroupId: wgId,
-      intCreatedBy: employeeId,
-    };
+    setLoading(true);
+    // const payload = {
+    //   strPartName: "GeneratedSalarySendForApproval",
+    //   intSalaryGenerateRequestId: values?.intSalaryGenerateRequestId,
+    //   strSalaryCode: values?.strSalaryCode,
+    //   intAccountId: values?.intAccountId,
+    //   intBusinessUnitId: values?.intBusinessUnitId,
+    //   strBusinessUnit: values?.strBusinessUnit,
+    //   intMonthId: values?.intMonth,
+    //   intYearId: values?.intYear,
+    //   strDescription: values?.strDescription,
+    //   intWorkplaceGroupId: wgId,
+    //   intCreatedBy: employeeId,
+    // };
     const callback = () => {
-      history.push("/compensationAndBenefits/payrollProcess/generateSalary");
+      setLoading(false);
+      history.push(
+        "/compensationAndBenefits/payrollProcess/advanceSalaryGenerate"
+      );
     };
-    createSalaryGenerateRequest(payload, setLoading, callback);
+    // createSalaryGenerateRequest(payload, setLoading, callback);
+
+    // createSalaryGenerateRequest(payload, setLoading, callback);
+    sendApprovalRequest(
+      `/AdvanceSalary/AdvanceSalaryApproval?advanceSalaryId=${data?.advanceSalaryId}`,
+      {
+        advanceSalaryId: data?.advanceSalaryId,
+      },
+      () => {
+        callback();
+      },
+      true
+    );
   };
 
   return (
@@ -76,7 +93,8 @@ const HeaderInfoBar = ({ data, setLoading }) => {
         <CircleButton
           icon={<BatchPredictionIcon style={{ fontSize: "24px" }} />}
           title={
-            data?.ApprovalStatus === "Send for Approval" ? (
+            data?.strStatus === "Generated" ||
+            data?.strStatus === "ReGenerated" ? (
               <div className="d-flex align-items-center justify-content-start">
                 <button
                   style={{
@@ -96,7 +114,7 @@ const HeaderInfoBar = ({ data, setLoading }) => {
                 </button>
               </div>
             ) : (
-              data?.ApprovalStatus || data?.status
+              data?.strStatus
             )
           }
           subTitle="Status"
