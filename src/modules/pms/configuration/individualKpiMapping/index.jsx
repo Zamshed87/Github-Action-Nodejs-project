@@ -58,6 +58,7 @@ const IndividualKpiMapping = () => {
       "strBusinessUnit",
       setBusinessUnitDDL
     );
+    getData(initData, pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId]);
 
