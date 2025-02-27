@@ -6,7 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import BackButton from "common/BackButton";
-import { Card, Col, Row, Table, Typography } from "antd";
+import { Card, Col, Divider, Row, Table, Typography } from "antd";
 import { DataTable } from "Components";
 
 export default function FinalSettlementGenerate() {
@@ -49,15 +49,20 @@ export default function FinalSettlementGenerate() {
         />
       </div>
       <EmployeeDetails loading={getSingleEmployeeLoading} employee={empBasic} />
-      <Row gutter={[48, 16]} style={{ marginTop: "20px" }}>
-        <Col span={8}>
+      <Row gutter={[8, 8]} style={{ marginTop: "20px" }}>
+        <Col span={9}>
           <Card
-            title="Final Settlement Due Summary"
             style={{
               boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
             }}
             loading={getSingleEmployeeLoading}
           >
+            <Divider
+              orientation="left"
+              style={{ borderColor: "#34a853", fontWeight: "600" }}
+            >
+              Final Settlement Due Summary
+            </Divider>
             <DataTable
               showHeader={false}
               bordered
@@ -106,16 +111,97 @@ export default function FinalSettlementGenerate() {
                 },
               ]}
             />
+            <Divider
+              orientation="left"
+              style={{
+                borderColor: "#34a853",
+                marginTop: "20px",
+                fontWeight: "600",
+              }}
+            >
+              Due Salary
+            </Divider>
+            <DataTable
+              showHeader={false}
+              bordered
+              pagination={false}
+              data={[
+                {
+                  name: <b>Due Salary as Salary Generate</b>,
+                  info: <b>32,000</b>,
+                },
+              ]}
+              header={[
+                {
+                  title: "name",
+                  dataIndex: "name",
+                },
+                {
+                  title: "info",
+                  dataIndex: "info",
+                  align: "right",
+                },
+              ]}
+            />
+            <Divider
+              orientation="left"
+              style={{
+                borderColor: "#34a853",
+                marginTop: "20px",
+                fontWeight: "600",
+              }}
+            >
+              Others Due
+            </Divider>
+            <DataTable
+              showHeader={false}
+              bordered
+              pagination={false}
+              data={[
+                {
+                  name: "Provident Fund (PF)",
+                  info: "1,15,000",
+                },
+                {
+                  name: "Gratuity",
+                  info: "2,00,000",
+                },
+                {
+                  name: "Leave Encashment",
+                  info: "1,50,000",
+                },
+                {
+                  name: <b>Total Others Due</b>,
+                  info: <b>4,65,000</b>,
+                },
+              ]}
+              header={[
+                {
+                  title: "name",
+                  dataIndex: "name",
+                },
+                {
+                  title: "info",
+                  dataIndex: "info",
+                  align: "right",
+                },
+              ]}
+            />
           </Card>
         </Col>
-        <Col span={13} offset={1}>
+        <Col span={12} offset={2}>
           <Card
-            title="Approval History Details"
             style={{
               boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
             }}
             loading={getSingleEmployeeLoading}
           >
+            <Divider
+              orientation="left"
+              style={{ borderColor: "#34a853", fontWeight: "600" }}
+            >
+              Approval History Details
+            </Divider>
             <DataTable
               bordered
               pagination={false}
@@ -165,93 +251,16 @@ export default function FinalSettlementGenerate() {
                 },
               ]}
             />
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={[48, 16]} style={{ marginTop: "20px" }}>
-        <Col span={8}>
-          <Card
-            title="Due Salary"
-            style={{
-              boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-            }}
-            loading={getSingleEmployeeLoading}
-          >
-            <DataTable
-              showHeader={false}
-              bordered
-              pagination={false}
-              data={[
-                {
-                  name: <b>Due Salary as Salary Generate</b>,
-                  info: <b>32,000</b>,
-                },
-              ]}
-              header={[
-                {
-                  title: "name",
-                  dataIndex: "name",
-                },
-                {
-                  title: "info",
-                  dataIndex: "info",
-                  align: "right",
-                },
-              ]}
-            />
-          </Card>
-          <Card
-            title="Others Due"
-            style={{
-              boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-              marginTop: "20px",
-            }}
-            loading={getSingleEmployeeLoading}
-          >
-            <DataTable
-              showHeader={false}
-              bordered
-              pagination={false}
-              data={[
-                {
-                  name: "Provident Fund (PF)",
-                  info: "1,15,000",
-                },
-                {
-                  name: "Gratuity",
-                  info: "2,00,000",
-                },
-                {
-                  name: "Leave Encashment",
-                  info: "1,50,000",
-                },
-                {
-                  name: <b>Total Others Due</b>,
-                  info: <b>4,65,000</b>,
-                },
-              ]}
-              header={[
-                {
-                  title: "name",
-                  dataIndex: "name",
-                },
-                {
-                  title: "info",
-                  dataIndex: "info",
-                  align: "right",
-                },
-              ]}
-            />
-          </Card>
-        </Col>
-        <Col span={13} offset={1}>
-          <Card
-            title="Assets History Details"
-            style={{
-              boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-            }}
-            loading={getSingleEmployeeLoading}
-          >
+            <Divider
+              orientation="left"
+              style={{
+                borderColor: "#34a853",
+                marginTop: "20px",
+                fontWeight: "600",
+              }}
+            >
+              Assets History Details
+            </Divider>
             <DataTable
               bordered
               pagination={false}
