@@ -1583,6 +1583,7 @@ import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormit
 import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
+import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2215,7 +2216,7 @@ export const routingList = [
   },
   {
     path: "/administration/timeManagement/holidayAndExceptionOffdayAssign",
-    component: HolidayException,
+    component: HolidayAssignPage,
   },
   {
     path: "/administration/timeManagement/calendarAssign",

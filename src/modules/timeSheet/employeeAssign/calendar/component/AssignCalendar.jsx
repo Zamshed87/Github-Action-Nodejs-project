@@ -43,7 +43,7 @@ export const AssignModal = ({
     shallowEqual
   );
   const [tableData, setTableData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const [isPrevousDate, setIsPrevousDate] = useState(false);
   const setter = (payload) => {

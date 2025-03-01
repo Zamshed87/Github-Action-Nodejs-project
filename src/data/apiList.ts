@@ -317,4 +317,5 @@ export const apiList = {
   GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
+  HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
 };
