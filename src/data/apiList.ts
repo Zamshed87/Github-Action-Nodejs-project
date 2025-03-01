@@ -303,6 +303,7 @@ export const apiList = {
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  CalendarAssignFilter: "/Employee/CalendarAssignFilter",
   DepositType: "DepositType",
   Deposit: "Deposit",
   DepositDetails: "Deposit/GetDetails",
@@ -317,4 +318,5 @@ export const apiList = {
     "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
+  HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
 };

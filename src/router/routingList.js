@@ -428,12 +428,12 @@ const SubmissionDetails = lazy(() =>
     "../modules/trainingDevelopment/assessment/assessmentFormDetails/submission/index.jsx"
   )
 );
-const AttendanceView = lazy(() =>
-  import("../modules/trainingDevelopment/attendance/attendanceView/index.jsx")
-);
-const TrainingAttendanceLanding = lazy(() =>
-  import("../modules/trainingDevelopment/attendance/index.jsx")
-);
+// const AttendanceView = lazy(() =>
+//   import("../modules/trainingDevelopment/attendance/attendanceView/index.jsx")
+// );
+// const TrainingAttendanceLanding = lazy(() =>
+//   import("../modules/trainingDevelopment/attendance/index.jsx")
+// );
 const RequisitionLanding = lazy(() =>
   import("../modules/trainingDevelopment/requisition/index.jsx")
 );
@@ -1310,9 +1310,9 @@ const LeaveEncashmentApproval = lazy(() =>
 const MovementApproval = lazy(() =>
   import("../modules/leaveMovement/movement/movementApproval/index.jsx")
 );
-const Application = lazy(() =>
-  import("../modules/loanManagement/loan/application")
-);
+// const Application = lazy(() =>
+//   import("../modules/loanManagement/loan/application")
+// );
 const LoanApproval = lazy(() =>
   import("../modules/loanManagement/loan/approval/index.jsx")
 );
@@ -1498,15 +1498,15 @@ const UnderCreateRosterSetup = lazy(() =>
     "../modules/timeSheet/configuration/rosterSetup/UnderCreateRosterSetup/index.jsx"
   )
 );
-const Calendar = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
-);
+// const Calendar = lazy(() =>
+//   import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
+// );
 const LeavePolicyAssign = lazy(() =>
   import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
-const HolidayException = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
-);
+// const HolidayException = lazy(() =>
+//   import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
+// );
 const OffDay = lazy(() =>
   import("../modules/timeSheet/employeeAssign/offDay/index.jsx")
 );
@@ -1603,6 +1603,8 @@ import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecur
 import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
 import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
+import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
+import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 // const TrainingApplicationCreate = lazy(() =>
@@ -2244,11 +2246,11 @@ export const routingList = [
   },
   {
     path: "/administration/timeManagement/holidayAndExceptionOffdayAssign",
-    component: HolidayException,
+    component: HolidayAssignPage,
   },
   {
     path: "/administration/timeManagement/calendarAssign",
-    component: Calendar,
+    component: CalendarAssign,
   },
   {
     path: "/administration/timeManagement/leavePolicyAssign",

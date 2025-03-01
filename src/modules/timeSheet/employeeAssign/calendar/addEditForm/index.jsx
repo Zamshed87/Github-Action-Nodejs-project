@@ -23,6 +23,7 @@ import { is } from "date-fns/locale";
 import moment from "moment";
 
 const ifPrevousDateSelected = (date) => {
+  console.log({ date });
   const selectedDate = new Date(date);
   const currentDate = new Date();
   const selectedMonth = selectedDate.getMonth(); // getMonth() returns month index (0-11)
