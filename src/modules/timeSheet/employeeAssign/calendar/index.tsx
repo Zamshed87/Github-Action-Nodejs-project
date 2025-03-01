@@ -5,6 +5,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import {
   Avatar,
   DataTable,
+  PButton,
   PCard,
   PCardHeader,
   PForm,
@@ -18,6 +19,12 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "utility/dateFormatter";
 import { getSerial } from "Utils";
 import RoasterInfo from "./component/RosterInfo";
+import { InfoOutlined } from "@mui/icons-material";
+import { bgColors, colors, getShiftInfo } from "./helper";
+
+import { EmpWiseShiftInfo } from "./component/EmpWiseShiftInfo";
+import { toast } from "react-toastify";
+import { AssignModal } from "./component/AssignCalendar";
 // import AddEditForm from "./component";
 
 export const CalendarAssign = () => {
@@ -44,6 +51,20 @@ export const CalendarAssign = () => {
   const [empIDString, setEmpIDString] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
+  const [singleData, setSingleData] = useState<any>([]);
+  const [isAssignAll, setIsAssignAll] = useState(false);
+
+  // shift info
+  const [singleShiftData, setSingleShiftData] = useState<any>([]);
+  const [uniqueShift, setUniqueShift] = useState<any>([]);
+
+  // colors
+  const [uniqueShiftColor, setUniqueShiftColor] = useState<any>({});
+  const [uniqueShiftBg, setUniqueShiftBg] = useState<any>({});
+
+  const [anchorEl2, setAnchorEl2] = useState<any>(null);
+  const open2 = Boolean(anchorEl2);
+  const id2 = open2 ? "simple-popover" : undefined;
 
   // Form Instance
   const [form] = Form.useForm();
@@ -141,27 +162,6 @@ export const CalendarAssign = () => {
       align: "center",
     },
 
-    // {
-    //   title: "Work. Group/Location",
-    //   dataIndex: "strWorkplaceGroup",
-    //   sorter: true,
-    //   filter: true,
-    //   filterKey: "strWorkplaceGroupList",
-    //   filterSearch: true,
-    //   width: 60,
-    //   fixed: "left",
-    // },
-    // {
-    //   title: "Workplace/Concern",
-    //   dataIndex: "strWorkplace",
-    //   sorter: true,
-    //   filter: true,
-    //   filterKey: "strWorkplaceList",
-    //   filterSearch: true,
-    //   width: 55,
-    //   fixed: "left",
-    // },
-
     {
       title: "Employee Name",
       dataIndex: "employeeName",
@@ -170,6 +170,16 @@ export const CalendarAssign = () => {
           <div className="d-flex align-items-center">
             <Avatar title={rec?.employeeName} />
             <span className="ml-2">{rec?.employeeName}</span>
+            <InfoOutlined
+              style={{ cursor: "pointer", fontSize: "15px" }}
+              className="ml-2"
+              onClick={(e: any) => {
+                e.stopPropagation();
+                setSingleShiftData([]);
+                getShiftInfo(rec?.employeeId, setSingleShiftData);
+                setAnchorEl2(e.currentTarget);
+              }}
+            />
           </div>
         );
       },
@@ -274,7 +284,57 @@ export const CalendarAssign = () => {
         </>
       ),
     },
+    {
+      title: "Action",
+      width: 100,
+      className: "text-center",
+      render: (_: any, record: any) => (
+        <div>
+          {!(record?.calendarAssignId || record?.isSelected) && (
+            <PButton
+              type="primary"
+              action="button"
+              content={"Assign"}
+              // icon={<PlusOutlined />}
+              onClick={() => {
+                if (!employeeFeature?.isCreate)
+                  return toast.warn("You don't have permission");
+                if (!employeeFeature?.isCreate)
+                  return toast.warn("You don't have permission");
+                setSingleData([record]);
+                setOpen(true);
+                // rowDtoHandler(record);
+                setIsAssignAll(false);
+              }}
+              disabled={selectedRow.length > 1}
+            />
+          )}
+        </div>
+      ),
+    },
   ];
+  useEffect(() => {
+    setUniqueShift([]);
+    if (singleShiftData?.length > 0) {
+      const data = [
+        ...(new Set(
+          singleShiftData.map((item: any) => item.strCalendarName)
+        ) as any),
+      ];
+      const colorData: any = {};
+      const colorDataBg: any = {};
+      data.forEach((status, index) => {
+        colorData[status] = colors[index % colors.length] as any;
+      });
+      setUniqueShiftColor(colorData);
+      data.forEach((status, index) => {
+        colorDataBg[status] = bgColors[index % bgColors.length] as any;
+      });
+      setUniqueShiftBg(colorDataBg);
+      setUniqueShift(data);
+    }
+    // eslint-disable-next-line
+  }, [singleShiftData]);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -313,12 +373,9 @@ export const CalendarAssign = () => {
                 type: "primary",
                 content: `Assign ${landingApi?.data?.totalCount}`,
                 onClick: () => {
-                  //   if (employeeFeature?.isCreate) {
-
-                  //   } else {
-                  //     // toast.warn("You don't have permission");
-                  //   }
                   setEmpIDString(landingApi?.data?.employeeIdList);
+                  setIsAssignAll(true);
+
                   setOpen(true);
                 },
               },
@@ -336,6 +393,7 @@ export const CalendarAssign = () => {
                   const payload: any = selectedRow?.map(
                     (i: any) => i?.employeeId
                   );
+                  setIsAssignAll(false);
 
                   setEmpIDString(payload);
 
@@ -401,9 +459,25 @@ export const CalendarAssign = () => {
           />
         </PCard>
       </PForm>
+      {/* i button calendar view */}
+      {singleShiftData.length > 0 ? (
+        <EmpWiseShiftInfo
+          id2={id2}
+          open2={open2}
+          anchorEl2={anchorEl2}
+          setAnchorEl2={setAnchorEl2}
+          setSingleShiftData={setSingleShiftData}
+          singleShiftData={singleShiftData}
+          uniqueShiftColor={uniqueShiftColor}
+          uniqueShiftBg={uniqueShiftBg}
+          uniqueShift={uniqueShift}
+        />
+      ) : (
+        ""
+      )}
       <PModal
         open={open}
-        title={"Assign Late Punishment Policy"}
+        title={"Assign Calendar"}
         width=""
         onCancel={() => {
           setSelectedRow([]);
@@ -412,17 +486,16 @@ export const CalendarAssign = () => {
         maskClosable={false}
         components={
           <>
-            {/* <AddEditForm
-              getData={() => {
-                const values = form.getFieldsValue(true);
-                landingApiCall({
-                  isNotAssign: values?.assigned?.value === 1 ? true : false,
-                });
-              }}
+            <AssignModal
               empIDString={empIDString}
               setIsAddEditForm={setOpen}
               setCheckedList={setSelectedRow}
-            /> */}
+              checked={selectedRow}
+              singleData={singleData}
+              setSingleData={setSingleData}
+              getData={() => landingApiCall({})}
+              isAssignAll={isAssignAll}
+            />
           </>
         }
       />
