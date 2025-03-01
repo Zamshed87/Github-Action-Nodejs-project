@@ -193,7 +193,9 @@ export default function SeparationApplicationForm() {
       ? imageFile?.map((image) => image?.globalFileUrlId)
       : [];
 
-    const modifyAttachmentList = imgRow?.map((image) => +image);
+    const modifyAttachmentList = editImageRow?.map(
+      (image) => +image?.globalFileUrlId
+    );
 
     if (!values?.employeeName) {
       return toast.warning("Employee Name is required!!!");
@@ -269,6 +271,7 @@ export default function SeparationApplicationForm() {
         } else {
           resetForm(initData);
         }
+        history.push("/retirement/separation");
       });
     },
   });

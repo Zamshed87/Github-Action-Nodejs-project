@@ -13,17 +13,17 @@ const SupervisorAssessmentNew = lazy(() =>
 const SupervisorAssessment = lazy(() =>
   import("../modules/pms/valuesAndCompetencies/supervisorAssessment/index.jsx")
 );
-const BarAssesment = lazy(() =>
-  import("../modules/pms/valuesAndCompetencies/barAssesment/index.jsx")
+const BarAssessment = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/newBarAssessment/index.jsx")
 );
 const BarAssessmentEvaluationForSupervisor = lazy(() =>
   import(
     "../modules/pms/performanceAssessment/supervisorAssessment/barAssessmentEvaluationForSupervisor.jsx"
   )
 );
-const BarAssesmentEvaluation = lazy(() =>
+const BarAssessmentEvaluation = lazy(() =>
   import(
-    "../modules/pms/valuesAndCompetencies/barAssesment/evaluation/index.jsx"
+    "../modules/pms/valuesAndCompetencies/newBarAssessment/evaluation/index.jsx"
   )
 );
 const SelfAssessmentNew = lazy(() =>
@@ -122,8 +122,23 @@ const EvaluationCriteria = lazy(() =>
 const BehavioralFactor = lazy(() =>
   import("../modules/pms/configuration/behavioralFactor/index.jsx")
 );
+const Questionaires = lazy(() =>
+  import("../modules/pms/configuration/behavioralFactor/questionaires")
+);
+const BehavioralFactorScale = lazy(() =>
+  import("../modules/pms/configuration/behavioralFactorScale/index.jsx")
+);
 const EvaluationCriteriaCreateEdit = lazy(() =>
   import("../modules/pms/configuration/evaluationCriteria/createEdit.jsx")
+);
+const EvaluationPipeline = lazy(() =>
+  import("../modules/pms/configuration/evaluationPipeline/index.jsx")
+);
+const AssessmentTimeline = lazy(() =>
+  import("../modules/pms/configuration/assessmentTimeline/index.jsx")
+);
+const PerformanceAppraisal = lazy(() =>
+  import("../modules/pms/configuration/performanceAppraisal/index.jsx")
 );
 const ObjectiveCreateAndEdit = lazy(() =>
   import("../modules/pms/configuration/objective/ObjectiveCreateAndEdit.jsx")
@@ -185,6 +200,12 @@ const PerformanceMarking = lazy(() =>
 );
 const KpiTargetMismatchReport = lazy(() =>
   import("../modules/pms/report/kpiTargetMismatchReport/index.jsx")
+);
+const YearlyPerformanceReport = lazy(() =>
+  import("../modules/pms/report/yearlyPerformanceReport/index.jsx")
+);
+const PerformanceAppraisalReport = lazy(() =>
+  import("../modules/pms/report/performanceAppraisalReport/index.jsx")
 );
 const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
 const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
@@ -407,12 +428,12 @@ const SubmissionDetails = lazy(() =>
     "../modules/trainingDevelopment/assessment/assessmentFormDetails/submission/index.jsx"
   )
 );
-const AttendanceView = lazy(() =>
-  import("../modules/trainingDevelopment/attendance/attendanceView/index.jsx")
-);
-const TrainingAttendanceLanding = lazy(() =>
-  import("../modules/trainingDevelopment/attendance/index.jsx")
-);
+// const AttendanceView = lazy(() =>
+//   import("../modules/trainingDevelopment/attendance/attendanceView/index.jsx")
+// );
+// const TrainingAttendanceLanding = lazy(() =>
+//   import("../modules/trainingDevelopment/attendance/index.jsx")
+// );
 const RequisitionLanding = lazy(() =>
   import("../modules/trainingDevelopment/requisition/index.jsx")
 );
@@ -1289,9 +1310,9 @@ const LeaveEncashmentApproval = lazy(() =>
 const MovementApproval = lazy(() =>
   import("../modules/leaveMovement/movement/movementApproval/index.jsx")
 );
-const Application = lazy(() =>
-  import("../modules/loanManagement/loan/application")
-);
+// const Application = lazy(() =>
+//   import("../modules/loanManagement/loan/application")
+// );
 const LoanApproval = lazy(() =>
   import("../modules/loanManagement/loan/approval/index.jsx")
 );
@@ -1477,15 +1498,15 @@ const UnderCreateRosterSetup = lazy(() =>
     "../modules/timeSheet/configuration/rosterSetup/UnderCreateRosterSetup/index.jsx"
   )
 );
-const Calendar = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
-);
+// const Calendar = lazy(() =>
+//   import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
+// );
 const LeavePolicyAssign = lazy(() =>
   import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
-const HolidayException = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
-);
+// const HolidayException = lazy(() =>
+//   import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
+// );
 const OffDay = lazy(() =>
   import("../modules/timeSheet/employeeAssign/offDay/index.jsx")
 );
@@ -1584,6 +1605,7 @@ import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormito
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
 import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
+import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1697,6 +1719,9 @@ const SelfServiceSeparation = lazy(() =>
     "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
   )
 );
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
+);
 
 // Retirement Module
 const Separation = lazy(() =>
@@ -1716,9 +1741,14 @@ const RetirementReleaseSeparationForm = lazy(() =>
     "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
   )
 );
-
-const AttendanceShiftChange = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
+const ExitInterviewLanding = lazy(() =>
+  import("../modules/retirement/exitInterview/index.jsx")
+);
+const ClearanceLanding = lazy(() =>
+  import("../modules/retirement/clearance/index.jsx")
+);
+const FinalSettlementLandingv2 = lazy(() =>
+  import("../modules/retirement/finalsettlement/index.jsx")
 );
 
 export const routingList = [
@@ -3361,12 +3391,20 @@ export const routingList = [
     component: SelfServiceSeparationForm,
   },
   {
+    path: "/SelfService/separation/applicationV2/edit/:id",
+    component: SelfServiceSeparationForm,
+  },
+  {
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
   {
     path: "/SelfService/separation/applicationV2",
     component: SelfServiceSeparation,
+  },
+  {
+    path: "/SelfService/separation/applicationV2/interView",
+    component: InterViewModal,
   },
   // Asset Management Start
   {
@@ -3833,8 +3871,28 @@ export const routingList = [
     component: EvaluationCriteria,
   },
   {
+    path: "/pms/configuration/EvaluationPipeline",
+    component: EvaluationPipeline,
+  },
+  {
+    path: "/pms/configuration/AssessmentTimeline",
+    component: AssessmentTimeline,
+  },
+  {
+    path: "/pms/configuration/PerformanceAppraisal",
+    component: PerformanceAppraisal,
+  },
+  {
     path: "/pms/configuration/BehavioralFactor",
     component: BehavioralFactor,
+  },
+  {
+    path: "/pms/configuration/BehavioralFactor/create",
+    component: Questionaires,
+  },
+  {
+    path: "/pms/configuration/behavioralFactorScale",
+    component: BehavioralFactorScale,
   },
   {
     path: "/pms/configuration/objective",
@@ -3899,6 +3957,14 @@ export const routingList = [
   {
     path: "/pms/report/KPITargetMismatchReport",
     component: KpiTargetMismatchReport,
+  },
+  {
+    path: "/pms/reports/YearlyPerformanceReport",
+    component: YearlyPerformanceReport,
+  },
+  {
+    path: "/pms/reports/PerformanceAppraisalReport",
+    component: PerformanceAppraisalReport,
   },
   {
     path: "/performancemanagementsystem/pms/strategicplan",
@@ -3989,12 +4055,12 @@ export const routingList = [
     component: BarAssessmentEvaluationForSupervisor,
   },
   {
-    path: "/pms/performanceAssessment/BARAssessment/evaluation/:id/:yearId/:quarterId",
-    component: BarAssesmentEvaluation,
+    path: "/pms/performanceAssessment/BARAssessment/evaluation/:employeeId/:yearId",
+    component: BarAssessmentEvaluation,
   },
   {
     path: "/pms/performanceAssessment/BARAssessment",
-    component: BarAssesment,
+    component: BarAssessment,
   },
   // {
   //   path: "/pms/valuesAndCompetencies/supervisorAssessment",
@@ -4132,6 +4198,18 @@ export const routingList = [
   {
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
+  },
+  {
+    path: "/retirement/exitInterview",
+    component: ExitInterviewLanding,
+  },
+  {
+    path: "/retirement/clearance",
+    component: ClearanceLanding,
+  },
+  {
+    path: "/retirement/finalSettlement",
+    component: FinalSettlementLandingv2,
   },
 ];
 

@@ -14,6 +14,8 @@ type CommonFilterProps = {
   isWorkplace?: boolean;
   isDepartment?: boolean;
   isDesignation?: boolean;
+  isStatus?: boolean;
+  statusDDL?: any;
   isAllValue?: boolean;
 };
 
@@ -38,6 +40,8 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   isWorkplace,
   isDepartment,
   isDesignation,
+  isStatus,
+  statusDDL,
   isAllValue,
 }) => {
   // Form Instance
@@ -187,6 +191,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           width: "30px",
           height: "30px",
           background: "#27b327",
+          border: "none",
         }}
       />
       <Drawer
@@ -214,6 +219,23 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           }}
         >
           <Row gutter={[10, 10]}>
+            {isStatus && (
+              <Col md={24} sm={12} xs={24}>
+                <PSelect
+                  style={{ marginBottom: "5px" }}
+                  options={statusDDL || []}
+                  name="status"
+                  label={"Status"}
+                  showSearch
+                  placeholder="Status"
+                  onChange={(value) => {
+                    form.setFieldsValue({
+                      status: value,
+                    });
+                  }}
+                />
+              </Col>
+            )}
             {isDate && (
               <Col md={24} sm={24}>
                 <PInput
@@ -222,7 +244,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   name="dateRange"
                   onChange={(value) => {
                     if (Array.isArray(value) && value.length === 2) {
-                      const [fromDate, toDate] = value?.map((date:any) =>
+                      const [fromDate, toDate] = value?.map((date: any) =>
                         date ? date.format("DD/MM/YYYY") : null
                       );
                       form.setFieldsValue({
@@ -235,7 +257,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                         toDate: null,
                       });
                     }
-                  }}                  
+                  }}
                 />
               </Col>
             )}

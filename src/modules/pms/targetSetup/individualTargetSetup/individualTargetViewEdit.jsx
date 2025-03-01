@@ -43,7 +43,7 @@ const IndividualTargetViewEdit = () => {
         <div className="table-card-heading" style={{ marginBottom: "12px" }}>
           <div className="d-flex align-items-center">
             <BackButton />
-            <h2>{isEdit ? "Edit Target Setup" : "Target Setup Details"}</h2>
+            <h2>{isEdit ? "Target Setup" : "Target Setup Details"}</h2>
           </div>
         </div>
         <div className="card-style pb-0 mb-2">

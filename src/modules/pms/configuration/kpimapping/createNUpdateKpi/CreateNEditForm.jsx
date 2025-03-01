@@ -10,6 +10,7 @@ import { customStyles } from "../../../../../utility/selectCustomStyle";
 import EmployeeShortDetails from "./EmployeeShortDetails";
 import { getKPIsCreateMappingData } from "./helper";
 import { getPeopleDeskAllDDL } from "../../../../../common/api";
+import { shallowEqual, useSelector } from "react-redux";
 
 const CreateNEditForm = ({ propsObj }) => {
   const {
@@ -28,6 +29,10 @@ const CreateNEditForm = ({ propsObj }) => {
   } = propsObj;
 
   const location = useLocation();
+  const { wId, wgId, isOfficeAdmin } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // ddls
   const [departmentDDL, setDepartmentDDL] = useState([]);
@@ -38,9 +43,17 @@ const CreateNEditForm = ({ propsObj }) => {
   const [kpiNameDDL, setKpiNameDDL] = useState([]);
   const [employeeBasicId, setEmployeeBasicId] = useState(undefined);
 
+  const checkSuperAdmin = (ddl) => {
+    if (ddl?.length === 1 || ddl?.length === 0) {
+      return ddl;
+    } else {
+      return isOfficeAdmin ? [{ value: 0, label: "ALL" }, ...ddl] : ddl;
+    }
+  };
+
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&workplaceGroupId=${wgId}&intWorkplaceId=${wId}&intId=0`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
@@ -51,12 +64,12 @@ const CreateNEditForm = ({ propsObj }) => {
     //   "DesignationName",
     //   setDesignationDDL
     // );
-    getPeopleDeskAllDDL(
-      `/PMS/PMTypeDDL?EmployeeId=${location?.state?.employeeId}`,
-      "value",
-      "label",
-      setPmTypeDDL
-    );
+    // getPeopleDeskAllDDL(
+    //   `/PMS/PMTypeDDL?EmployeeId=${location?.state?.employeeId}`,
+    //   "value",
+    //   "label",
+    //   setPmTypeDDL
+    // );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location?.state?.employeeId]);
 
@@ -88,6 +101,12 @@ const CreateNEditForm = ({ propsObj }) => {
   };
 
   useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PMS/ObjectiveTypeDDL?PMTypeId=${1}`,
+      "value",
+      "label",
+      setObjectiveTypeDDL
+    );
     params?.id === "1" && getData(location?.state?.deptId, 0, 0, 1);
     params?.id === "2" &&
       getData(location?.state?.deptId, 0, location?.state?.designationId, 2);
@@ -151,17 +170,17 @@ const CreateNEditForm = ({ propsObj }) => {
                 <FormikSelect
                   name="department"
                   placeholder=""
-                  options={departmentDDL || []}
+                  options={checkSuperAdmin(departmentDDL) || []}
                   value={values?.department}
                   onChange={(valueOption) => {
                     setFieldValue("department", valueOption);
-                    component === "dept" && getData(valueOption?.value, 0, 0);
-                    component === "designation" &&
-                      getData(
-                        valueOption?.value,
-                        0,
-                        values?.designation?.value || 0
-                      );
+                    // component === "dept" && getData(valueOption?.value, 0, 0);
+                    // component === "designation" &&
+                    //   getData(
+                    //     valueOption?.value,
+                    //     0,
+                    //     values?.designation?.value || 0
+                    //   );
                   }}
                   styles={customStyles}
                   errors={errors}
@@ -193,7 +212,7 @@ const CreateNEditForm = ({ propsObj }) => {
             </div>
           )} */}
 
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <div className="input-field-main">
               <label>PM Type</label>
               <FormikSelect
@@ -226,7 +245,7 @@ const CreateNEditForm = ({ propsObj }) => {
                 touched={touched}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-md-3">
             <div className="input-field-main">
               <label>Objective Type</label>
@@ -238,7 +257,9 @@ const CreateNEditForm = ({ propsObj }) => {
                 onChange={(valueOption) => {
                   setFieldValue("objectiveType", valueOption);
                   getPeopleDeskAllDDL(
-                    `/PMS/ObjectiveDDL?PMTypeId=${values.pmType?.value}&ObjectiveTypeId=${valueOption?.value}`,
+                    `/PMS/ObjectiveDDL?PMTypeId=${1}&ObjectiveTypeId=${
+                      valueOption?.value
+                    }`,
                     "value",
                     "label",
                     setObjectiveDDL
@@ -249,7 +270,6 @@ const CreateNEditForm = ({ propsObj }) => {
                 styles={customStyles}
                 errors={errors}
                 touched={touched}
-                isDisabled={values?.pmType?.value !== 1 ? true : false}
               />
             </div>
           </div>
