@@ -1576,6 +1576,11 @@ import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGen
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import DepositeType from "modules/configuration/depositeType";
+import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
+import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
+import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
+import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
 
@@ -2258,6 +2263,10 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  {
+    path: "/administration/configuration/depositType",
+    component: DepositeType,
+  },
   { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/jobLocation", component: JobLocation },
   {
@@ -3273,6 +3282,26 @@ export const routingList = [
   },
 
   // Salary assign & deduction
+  {
+    path: "/compensationAndBenefits/securitydeposit/securityDeposits",
+    component: SecurityDepositLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/edit/:id",
+    component: SecurityDepositCRUD,
+  },
+  {
+    path: "/compensationAndBenefits/securitydeposit/disbursement",
+    component: SecurityDisbursementLanding,
+  },
+  {
+    path: "/compensationAndBenefits/reports/securitymoneyreport",
+    component: SecurityMoneyReportLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/create",
+    component: SecurityDepositCRUD,
+  },
   {
     path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction",
     component: SalaryAssignAndDeduction,

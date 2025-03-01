@@ -98,6 +98,7 @@ export type buttonType =
   | "calender"
   | "reload"
   | "dollar"
+  | "disbursement"
   | "print"
   | "extend";
 export type buttonList = {

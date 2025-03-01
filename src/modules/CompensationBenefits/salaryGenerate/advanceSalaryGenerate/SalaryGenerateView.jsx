@@ -101,7 +101,7 @@ const AdvanceSalaryGenerateView = () => {
     //   wgId
     // );
     getDetails(
-      `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`
+      `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryId}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`
     );
   };
 
@@ -259,7 +259,20 @@ const AdvanceSalaryGenerateView = () => {
         <div className="table-card-body" style={{ overflow: "hidden" }}>
           <div className="table-card-styled">
             <HeaderInfoBar data={state} setLoading={setLoading} />
-
+            {state?.description && (
+              <p className="my-2">
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#344054",
+                  }}
+                >
+                  Description:{" "}
+                </span>{" "}
+                {state?.description}
+              </p>
+            )}
             <div className="d-flex justify-content-between align-items-center mb-2">
               <div
                 className="d-flex justify-content-between align-items-center"
@@ -405,8 +418,8 @@ const AdvanceSalaryGenerateView = () => {
                           if (rowDto?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
-                            const url = `/PdfAndExcelReport/AdvanceSalaryReport?advanceSalaryCode=${
-                              state?.advanceSalaryCode
+                            const url = `/PdfAndExcelReport/AdvanceSalaryReport?advanceSalaryId=${
+                              state?.advanceSalaryId
                             }&fromDate=${moment(state?.fromDate).format(
                               "YYYY-MM-DD"
                             )}&toDate=${moment(state?.todate).format(

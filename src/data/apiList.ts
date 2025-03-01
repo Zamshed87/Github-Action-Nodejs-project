@@ -306,7 +306,15 @@ export const apiList = {
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  CalendarAssignFilter: "/Employee/CalendarAssignFilter",
+  DepositType: "DepositType",
+  Deposit: "Deposit",
+  DepositDetails: "Deposit/GetDetails",
+  DepartmentByAccount: "PeopleDeskDdl/DepartmentByAccount",
+  DepositMasterReport: "/Deposit/DepositMasterReport",
+  DepositDisbursement: "/DepositDisbursement",
+  DepositDetailReportByEmployee: "Deposit/DepositDetailReportByEmployee",
+  GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
-  CalendarAssignFilter: "/Employee/CalendarAssignFilter",
 };
