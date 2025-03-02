@@ -57,6 +57,10 @@ const ATLogDetails = ({ modal, setModal, data, cb, isDetails }) => {
       title: "Period",
       dataIndex: "period",
     },
+    {
+      title: "Created by",
+      dataIndex: "createdAndUpdatedBy",
+    },
   ];
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
