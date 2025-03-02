@@ -230,11 +230,24 @@ export const fetchPipelineData = async (setPipelineDDL) => {
   }
 };
 
-export const fetchApproverData = async (setApproverDDL) => {
+export const fetchApproverData = async (setApproverDDL, value) => {
   try {
     const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
-    setApproverDDL(res?.data?.ApproverType);
+    let approvers = res?.data?.ApproverType || [];
+
+    const restrictedActions = ["20", "2", "26", "1"]; 
+    const restrictedApprovers = ["3", "4"];
+
+    if (restrictedActions.includes(value)) {
+      approvers = approvers.map(approver => ({
+        ...approver,
+        disabled: !restrictedApprovers.includes(approver.value),
+      }));
+    }
+
+    setApproverDDL(approvers);
   } catch (error) {
-    console.log("error", error);
+    console.log("Error fetching approvers:", error);
   }
 };
+
