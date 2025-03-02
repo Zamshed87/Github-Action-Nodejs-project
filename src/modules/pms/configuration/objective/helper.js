@@ -1,10 +1,16 @@
 import { Tooltip } from "@mui/material";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { toast } from "react-toastify";
-import { gray600 } from "../../../../utility/customColor";
+import {
+  blackColor80,
+  gray600,
+  greenColor,
+} from "../../../../utility/customColor";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import * as Yup from "yup";
+import FormikToggle from "common/FormikToggle";
+import { Switch } from "antd";
 
 export const onGetObjectiveLanding = ({
   getObjectiveLanding,
@@ -144,6 +150,7 @@ export const pmsObjectiveTableColumn = ({
       dataIndex: "sl",
       sorter: false,
       className: "text-center",
+      render: (_, __, idx) => idx + 1,
     },
     {
       title: "Objective",
@@ -155,17 +162,18 @@ export const pmsObjectiveTableColumn = ({
       title: () => <span style={{ color: gray600 }}>Description</span>,
       dataIndex: "description",
     },
-    {
-      title: "PM Type",
-      dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
-      sorter: true,
-      filter: true,
-      width: 100,
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
+    //   sorter: true,
+    //   filter: true,
+    //   width: 100,
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
       sorter: true,
+      filter: true,
       width: 150,
     },
     fromLanding
@@ -216,7 +224,7 @@ export const pmsObjectiveTableColumn = ({
               <EditOutlined sx={{ fontSize: "20px" }} />
             </button>
           </Tooltip>
-          <Tooltip title="Delete" arrow>
+          {/* <Tooltip title="Delete" arrow>
             <button
               type="button"
               className="iconButton mt-0 mt-md-2 mt-lg-0 mx-2"
@@ -253,7 +261,27 @@ export const pmsObjectiveTableColumn = ({
             >
               <DeleteOutlineOutlined />
             </button>
-          </Tooltip>
+          </Tooltip> */}
+          <Switch
+            size="small"
+            checked={record?.isActive}
+            onChange={() => {
+              deletePMSObjective?.(
+                `/PMS/DeletePMSObjective?AccountId=${record?.accountId}&ObjectiveId=${record?.objectiveId}&UserId=${employeeId}`,
+                null,
+                () => {
+                  onGetObjectiveLanding?.({
+                    getObjectiveLanding,
+                    orgId,
+                    setObjectiveTableData,
+                    pages,
+                    // setPages,
+                  });
+                },
+                true
+              );
+            }}
+          />
         </div>
       ),
       sorter: false,
@@ -284,16 +312,16 @@ export const setObjectiveToInitDataOnEditFromLanding = ({
 
 export const validationSchemaOfObjectiveCreate = () => {
   const validationSchema = Yup.object().shape({
-    pmType: Yup.object({
-      label: Yup.string()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-      value: Yup.number()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-    })
-      .required("PM type is required")
-      .typeError("PM type is required"),
+    // pmType: Yup.object({
+    //   label: Yup.string()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    //   value: Yup.number()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    // })
+    //   .required("PM type is required")
+    //   .typeError("PM type is required"),
     objective: Yup.string()
       .required("Objective is required")
       .typeError("Objective is required"),

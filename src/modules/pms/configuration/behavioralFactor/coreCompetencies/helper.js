@@ -188,6 +188,11 @@ export const demonstrateBehaviourTableColumn = ({
       width: "60%",
     },
     {
+      title: () => <div style={{ color: gray600 }}>Level of Leadership</div>,
+      dataIndex: "employeeLabel",
+      width: "60%",
+    },
+    {
       title: () => <div style={{ color: gray600 }}>Type</div>,
       render: (_, row) => (row?.isPositive ? "Positive" : "Negative"),
       width: "20%",

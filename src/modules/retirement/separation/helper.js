@@ -4,17 +4,15 @@ import {
   InfoOutlined,
   VisibilityOutlined,
 } from "@mui/icons-material";
+import { Tooltip, styled, tooltipClasses } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
 import { gray500, gray700, gray900 } from "../../../utility/customColor";
 import {
-  dateFormatter,
-  dateFormatterForInput,
+  dateFormatter
 } from "../../../utility/dateFormatter";
-import { todayDate } from "../../../utility/todayDate";
-import { Tooltip, styled, tooltipClasses } from "@mui/material";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -303,35 +301,74 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       sort: true,
       filter: false,
-      render: (item) => (
-        <>
-          {item?.approvalStatus === "Approve" && (
-            <Chips label="Approved" classess="success p-2" />
-          )}
-          {item?.approvalStatus === "Pending" && (
-            <Chips label="Pending" classess="warning p-2" />
-          )}
-          {item?.approvalStatus === "Process" && (
-            <Chips label="Process" classess="primary p-2" />
-          )}
-          {item?.approvalStatus === "Reject" && (
-            <Chips label="Rejected" classess="danger p-2 mr-2" />
-          )}
-          {item?.approvalStatus === "Released" && (
-            <Chips label="Released" classess="indigo p-2 mr-2" />
-          )}
-        </>
+      render: (data) => (
+        <div className="d-flex align-items-center">
+          <div>
+            <div className="content tableBody-title d-flex align-items-center">
+              <LightTooltip
+                title={
+                  <div className="p-1">
+                    <div className="mb-1">
+                      <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                        <tr>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                }
+                arrow
+              >
+                <InfoOutlined
+                  sx={{
+                    color: gray900,
+                  }}
+                />
+              </LightTooltip>
+            </div>
+          </div>
+          <div className="ml-2">
+            {data?.approvalStatus === "Pending" && (
+              <Chips label="Pending" classess="warning p-2" />
+            )}
+            {data?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
+            )}
+            {data?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Withdrawn" && (
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {data?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {data?.approvalStatus === "Final Settlement Completed" && (
+              <Chips label="Final Settlement Completed" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2" />
+            )}
+          </div>
+        </div>
       ),
       fieldType: "string",
     },
     {
-      title: "",
+      title: "Actions",
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
           <Tooltip title="View" arrow>
-            <button className="iconButton" type="button">
+            <button className="iconButton" type="button" style={{
+              height: "25px",
+              width: "25px"
+            }}>
               <VisibilityOutlined
+                sx={{ color: "#34a853" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setId(item?.separationId);
@@ -343,8 +380,12 @@ export const separationApplicationLandingTableColumn = (
           </Tooltip>
           {item?.approvalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
+              <button className="iconButton" type="button" style={{
+                height: "25px",
+                width: "25px"
+              }}>
                 <EditOutlined
+                  sx={{ color: "#34a853" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!permission?.isEdit)
@@ -357,41 +398,12 @@ export const separationApplicationLandingTableColumn = (
               </button>
             </Tooltip>
           )}
-          {item?.approvalStatus === "Approve" && (
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-              }}
-              className="btn btn-default btn-assign"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (
-                  dateFormatterForInput(item?.dteLastWorkingDate) +
-                  "T00:00:00" >
-                  todayDate() + "T00:00:00"
-                ) {
-                  return toast.warn(
-                    `Can not release due to the employee having some working days left`
-                  );
-                }
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
-                history.push(
-                  `/retirement/separation/release/${item?.separationId}`
-                );
-              }}
-            >
-              Release
-            </button>
-          )}
         </div>
       ),
       sort: false,
       filter: false,
       fieldType: "string",
+      width: 60,
     },
   ];
 };
