@@ -846,15 +846,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 // Filter out rows where ApplicationStatus is "Pending" or "Approved"
                 const validRows = selectedRows.filter(
                   (row: any) =>
-                    row.ApplicationStatus !== "Pending" &&
-                    row.ApplicationStatus !== "Approved"
+                    row.ApplicationStatus !== "Pending"
                 );
 
                 // Find any invalid rows that were attempted to be selected
                 const invalidRows = selectedRows.filter(
                   (row: any) =>
-                    row.ApplicationStatus === "Pending" ||
-                    row.ApplicationStatus === "Approved"
+                    row.ApplicationStatus === "Pending"
                 );
 
                 if (invalidRows.length > 0) {
