@@ -4,7 +4,7 @@ import { IconButton } from "@mui/material";
 import BackButton from "common/BackButton";
 import DefaultInput from "common/DefaultInput";
 import FormikSelect from "common/FormikSelect";
-import { getPeopleDeskAllDDL, multiple_attachment_actions } from "common/api";
+import { multiple_attachment_actions } from "common/api";
 import Loading from "common/loading/Loading";
 import FormikError from "common/login/FormikError";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
@@ -57,6 +57,7 @@ export default function SelfServiceSeparationForm() {
   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
     useAxiosGet();
+  const [, getseparationTypeDDL] = useAxiosGet();
   const history = useHistory();
   // images
   const [imgRow, setImgRow] = useState([]);
@@ -68,12 +69,13 @@ export default function SelfServiceSeparationForm() {
   };
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
-      "SeparationTypeId",
-      "SeparationType",
-      setSeparationTypeDDL
-    );
+    getseparationTypeDDL(`/SeparationType/GetSeparationTypeForESS`, (res) => {
+      const newDDL = res?.data?.map((itm) => ({
+        value: itm.value,
+        label: itm.text,
+      }));
+      setSeparationTypeDDL(newDDL);
+    });
   }, [wgId, buId, wId]);
 
   const getEmpSeparationDataHandlerById = () => {
