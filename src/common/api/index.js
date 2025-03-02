@@ -169,11 +169,11 @@ export const getPeopleDeskAllDDLModify = async (apiUrl, value, label, setter, cb
     const res = await axios.get(apiUrl);
     
     const newDDL = res?.data?.map((itm) => {
-      let statusLabel = " 🔴 (Not Setup)";
+      let statusLabel = " 🔴 (Pipeline Not Setup)";
       if (itm.isIndividualSetup) {
-        statusLabel = " 🟢 (Individual Setup)";
+        statusLabel = " 🟢 (Pipeline Individual Setup)";
       } else if (itm.isAllSetup) {
-        statusLabel = " 🔵 (All Setup)";
+        statusLabel = " 🔵 (Pipeline All Setup)";
       }
 
       return {
