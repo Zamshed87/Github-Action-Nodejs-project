@@ -10,6 +10,7 @@ type CommonFilterProps = {
   onClose: (visible: boolean) => void;
   onFilter: (values: any) => void;
   isDate?: boolean;
+  isDateSeparate?: boolean;
   isWorkplaceGroup?: boolean;
   isWorkplace?: boolean;
   isDepartment?: boolean;
@@ -36,6 +37,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   onClose,
   onFilter,
   isDate,
+  isDateSeparate,
   isWorkplaceGroup,
   isWorkplace,
   isDepartment,
@@ -260,6 +262,37 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   }}
                 />
               </Col>
+            )}
+
+            {isDateSeparate && (
+              <>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="fromDate"
+                    label="From Date"
+                    placeholder="From Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        fromDate: value,
+                      });
+                    }}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="toDate"
+                    label="To Date"
+                    placeholder="To Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        toDate: value,
+                      });
+                    }}
+                  />
+                </Col>
+              </>
             )}
 
             {isWorkplaceGroup && (

@@ -173,7 +173,7 @@ export default function FinalSettlementLanding() {
               visible={openFilter}
               onClose={(visible) => setOpenFilter(visible)}
               onFilter={handleFilter}
-              isDate={true}
+              isDateSeparate={true}
               isWorkplaceGroup={true}
               isWorkplace={true}
               isStatus={true}

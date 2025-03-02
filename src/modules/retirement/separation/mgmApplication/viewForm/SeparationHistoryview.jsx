@@ -1,5 +1,5 @@
 import { FilePresentOutlined } from "@mui/icons-material";
-import { Popover } from "antd";
+import { Card, Popover } from "antd";
 import { APIUrl } from "App";
 import Chips from "common/Chips";
 import Loading from "common/loading/Loading";
@@ -23,7 +23,7 @@ function SeparationHistoryview({ id, empId }) {
   const dispatch = useDispatch();
 
   //Api Hooks
-  const [, getApprovalListData] = useAxiosGet();
+  const [, getApprovalListData, approvalloading] = useAxiosGet();
   const [handoverData, getHandoverData, handoverloading] = useAxiosGet();
   const [exitInterviewData, getExitInterviewData, exitInterviewDataloading] =
     useAxiosGet();
@@ -31,7 +31,6 @@ function SeparationHistoryview({ id, empId }) {
   //States
   const [empBasic, setEmpBasic] = useState({});
   const [singleSeparationData, setSingleSeparationData] = useState({});
-  const [loading, setLoading] = useState(false);
 
   //Table Header
   const header = [
@@ -92,20 +91,17 @@ function SeparationHistoryview({ id, empId }) {
 
   useEffect(() => {
     if (id) {
-      setLoading(true);
       getApprovalListData(
         `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
         (res) => {
           setEmpBasic(res);
-          setLoading(false);
         }
       );
-      getSeparationLandingById(id, setSingleSeparationData, setLoading);
+      getSeparationLandingById(id, setSingleSeparationData);
     }
   }, [id]);
   return (
     <>
-      {loading && <Loading />}
       {empBasic && (
         <div>
           <div
@@ -118,7 +114,7 @@ function SeparationHistoryview({ id, empId }) {
           >
             Employee Details
           </div>
-          <div className="card-about-info-main about-info-card">
+          <Card loading={approvalloading} style={{ marginBottom: "10px" }}>
             <div className="d-flex justify-content-between">
               <div className="d-flex justify-content-between">
                 <div>
@@ -328,7 +324,9 @@ function SeparationHistoryview({ id, empId }) {
                           >
                             Notice Period -
                           </small>{" "}
-                          {`${empBasic?.noticePeriod} Days` || "N/A"}
+                          {empBasic?.noticePeriod !== null
+                            ? `${empBasic?.noticePeriod} Days`
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -423,10 +421,7 @@ function SeparationHistoryview({ id, empId }) {
                         onClick={() => {
                           if (id) {
                             getHandoverData(
-                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`,
-                              () => {
-                                setLoading(false);
-                              }
+                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`
                             );
                           }
                         }}
@@ -547,10 +542,7 @@ function SeparationHistoryview({ id, empId }) {
                         onClick={() => {
                           if (id) {
                             getExitInterviewData(
-                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`,
-                              () => {
-                                setLoading(false);
-                              }
+                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`
                             );
                           }
                         }}
@@ -560,7 +552,7 @@ function SeparationHistoryview({ id, empId }) {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
           <DataTable
             bordered
             data={singleSeparationData ? [singleSeparationData] : []}
