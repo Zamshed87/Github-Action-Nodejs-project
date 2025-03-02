@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import { Switch } from "antd";
+import Chips from "common/Chips";
 
 export const kpiMeasurementDDL = [
   {
@@ -309,14 +310,12 @@ export const kpisLandingColumn = (
       className: "text-center",
     },
     {
-      title: "KPI Name (Code)",
+      title: "KPI Code",
+      dataIndex: "strCode",
+    },
+    {
+      title: "KPI Name",
       dataIndex: "strKpis",
-      render: (data, record) => (
-        <div>
-          {data} ({record.strCode})
-        </div>
-      ),
-      sorter: true,
     },
     // {
     //   title: "PM Type",
@@ -345,23 +344,28 @@ export const kpisLandingColumn = (
       sorter: true,
     },
     {
-      title: "Measurement",
+      title: "KPI Measurement",
       dataIndex: "strMinMax",
       render: (data) => <div>{data}</div>,
       sorter: true,
     },
     {
-      title: "Format",
+      title: "KPI Format",
       dataIndex: "kpiformat",
       render: (data) => <div>{data}</div>,
       sorter: true,
     },
-    // {
-    //   title: "Chart Type",
-    //   dataIndex: "chartName",
-    //   render: (data) => <div>{data}</div>,
-    //   sorter: true,
-    // },
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      render: (data) =>
+        data ? (
+          <Chips label="active" classess="success" />
+        ) : (
+          <Chips label="inactive" classess="danger" />
+        ),
+      sorter: true,
+    },
     {
       title: "Action",
       dataIndex: "",

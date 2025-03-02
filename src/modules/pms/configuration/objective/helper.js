@@ -151,7 +151,7 @@ export const pmsObjectiveTableColumn = ({
       render: (_, __, idx) => idx + 1,
     },
     {
-      title: "Objective",
+      title: "Objectives/ KRA Code",
       dataIndex: "objective",
       sorter: true,
       filter: true,
@@ -168,7 +168,7 @@ export const pmsObjectiveTableColumn = ({
     //   width: 100,
     // },
     {
-      title: "Objective Type",
+      title: "Objectives/ KRA Type",
       dataIndex: "objectiveTypeName",
       sorter: true,
       filter: true,
