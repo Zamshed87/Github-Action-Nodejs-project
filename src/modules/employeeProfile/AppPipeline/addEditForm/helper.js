@@ -230,11 +230,27 @@ export const fetchPipelineData = async (setPipelineDDL) => {
   }
 };
 
-export const fetchApproverData = async (setApproverDDL) => {
+export const fetchApproverData = async (setApproverDDL, value) => {
+  console.log("value", value);
   try {
     const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
-    setApproverDDL(res?.data?.ApproverType);
+    let approvers = res?.data?.ApproverType || [];
+    console.log("approvers", approvers);
+
+    // Define restricted action values
+    const restrictedActions = ["20", "2", "26", "1"]; // Salary Generate, Bonus Generate, etc.
+    const restrictedApprovers = ["1", "2"]; // Supervisor & Line Manager
+
+    if (restrictedActions.includes(value)) {
+      approvers = approvers.map(approver => ({
+        ...approver,
+        disabled: restrictedApprovers.includes(approver.value),
+      }));
+    }
+
+    setApproverDDL(approvers);
   } catch (error) {
-    console.log("error", error);
+    console.log("Error fetching approvers:", error);
   }
 };
+
