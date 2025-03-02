@@ -78,6 +78,12 @@ const validationSchema = Yup.object({
       value: Yup.string().required("Allowance and deduction type is required"),
     })
     .typeError("Allowance and deduction type is required"),
+  intAllowanceDuration: Yup.object()
+    .shape({
+      label: Yup.string().required("Allowance Duration  is required"),
+      value: Yup.string().required("Allowance Duration  is required"),
+    })
+    .typeError("Allowance Duration  is required"),
   amountDimension: Yup.object()
     .shape({
       label: Yup.string().required("Amount dimension is required"),
@@ -335,6 +341,9 @@ function AddEditForm() {
   const isDisabled = (values) => {
     const isFromMonthMissing = !values?.fromMonth;
     const isSalaryTypeMissing = !values?.salaryType;
+    const isAllowanceAttendenceStatusMissing =
+      !values?.intAllowanceAttendenceStatus;
+    const isAllowanceDurationMissing = !values?.intAllowanceDuration;
     const isAllowanceAndDeductionMissing = !values?.allowanceAndDeduction;
     const isAmountDimensionMissing = !values?.amountDimension;
     const isAmountMissing = !values?.amount;
@@ -354,6 +363,8 @@ function AddEditForm() {
       isAmountDimensionMissing ||
       isAmountMissing ||
       isShortDurationInvalid ||
+      isAllowanceAttendenceStatusMissing ||
+      isAllowanceDurationMissing ||
       isLongDurationInvalid;
 
     return isDisabled;

@@ -37,6 +37,12 @@ export const validationSchema = Yup.object().shape({
       value: Yup.string().required("Allowance and deduction type is required"),
     })
     .typeError("Allowance and deduction type is required"),
+  intAllowanceDuration: Yup.object()
+    .shape({
+      label: Yup.string().required("Allowance Duration  is required"),
+      value: Yup.string().required("Allowance Duration  is required"),
+    })
+    .typeError("Allowance Duration  is required"),
   amountDimension: Yup.object()
     .shape({
       label: Yup.string().required("Amount dimension is required"),
