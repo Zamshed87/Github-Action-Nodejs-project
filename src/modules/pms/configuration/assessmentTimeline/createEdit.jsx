@@ -65,7 +65,7 @@ const ATLogDetails = ({ modal, setModal, data, cb, isDetails }) => {
       levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading);
     } else {
       getlogDetailsData(
-        `/PMS/Assessment/LogDetails?yearId=2&positionGroupId=${data?.positionGroupId}&pageNumber=1&pageSize=125`
+        `/PMS/Assessment/LogDetails?yearId=${data?.yearId}&positionGroupId=${data?.positionGroupId}&pageNumber=1&pageSize=125`
       );
     }
   }, []);
@@ -122,7 +122,7 @@ const ATLogDetails = ({ modal, setModal, data, cb, isDetails }) => {
           {!isDetails && (
             <ModalFooter
               onCancel={() => {
-                setModal(() => ({ open: false, type: "" }));
+                setModal(false);
               }}
               submitAction="submit"
               onSubmit={() => {

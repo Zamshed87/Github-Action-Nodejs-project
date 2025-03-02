@@ -35,8 +35,10 @@ const AssessmentTimeline = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const landingApi = () => {
-    getCriteriaList(`/PMS/GetAllAssesmentTimelineSetup`);
+  const landingApi = (values) => {
+    getCriteriaList(
+      `/PMS/GetAllAssesmentTimelineSetup?yearId=${values?.year?.value || 0}`
+    );
     GetFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
   };
   useEffect(() => {
@@ -164,6 +166,8 @@ const AssessmentTimeline = () => {
                   options={fiscalYear || []}
                   name="year"
                   label="Year"
+                  allowClear
+                  placeholder="Select Year"
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       year: op,
@@ -184,6 +188,7 @@ const AssessmentTimeline = () => {
                   content="View"
                   onClick={() => {
                     const values = form.getFieldsValue(true);
+                    landingApi(values);
                     // addHandler(values);
                   }}
                 />
