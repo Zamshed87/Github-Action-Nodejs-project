@@ -124,7 +124,6 @@ const CreateKPI = () => {
           : rowDto
       )?.some((item) => {
         return (
-          item?.pmType?.value === values?.pmType?.value &&
           item?.objectiveType?.value === values?.objectiveType?.value &&
           item?.objective?.value === values?.objective?.value &&
           item?.kpiName === values?.kpiName
@@ -363,9 +362,9 @@ const CreateKPI = () => {
                       onChange={(valueOption) => {
                         setFieldValue("objectiveType", valueOption);
                         getPeopleDeskAllDDL(
-                          `/PMS/ObjectiveDDL?PMTypeId=${
-                            values.pmType?.value
-                          }&ObjectiveTypeId=${valueOption?.value || 0}`,
+                          `/PMS/ObjectiveDDL?PMTypeId=${1}&ObjectiveTypeId=${
+                            valueOption?.value || 0
+                          }`,
                           "value",
                           "label",
                           setObjectiveDDL

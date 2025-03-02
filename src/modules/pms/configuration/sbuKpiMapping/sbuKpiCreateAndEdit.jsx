@@ -239,7 +239,9 @@ const SbuKpiCreateAndEdit = () => {
                       onChange={(valueOption) => {
                         setFieldValue("objectiveType", valueOption);
                         getPeopleDeskAllDDL(
-                          `/PMS/ObjectiveDDL?PMTypeId=${values.pmType?.value}&ObjectiveTypeId=${valueOption?.value}`,
+                          `/PMS/ObjectiveDDL?PMTypeId=${1}&ObjectiveTypeId=${
+                            valueOption?.value
+                          }`,
                           "value",
                           "label",
                           setObjectiveDDL

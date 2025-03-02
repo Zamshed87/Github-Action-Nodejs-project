@@ -61,7 +61,7 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
         comment: values?.comment,
       },
     ]);
-    // form.resetFields(["stakeholder", "stakeholderType", "scoreWeight"]);
+    form.resetFields();
   };
 
   const formFields = [

@@ -65,7 +65,7 @@ const Questionaires = () => {
         <PCard>
           <PCardHeader
             backButton
-            title="Create Questionnaires"
+            title={`Create Questionnaires - ${data?.label}`}
             buttonList={[
               {
                 type: "primary",
@@ -170,6 +170,7 @@ const Questionaires = () => {
             }}
           >
             <EditQuestionnaires
+              data={data}
               orgId={orgId}
               buId={buId}
               employeeId={employeeId}
