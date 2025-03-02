@@ -192,7 +192,9 @@ const HeaderTableForm = ({
         />
       </div>
       <div className="col-lg-3">
-        <label>Allowance Duration</label>
+        <label>
+          Allowance Duration <span className="text-danger fs-3">*</span>
+        </label>
         <FormikSelect
           classes="input-sm"
           styles={customStyles}
