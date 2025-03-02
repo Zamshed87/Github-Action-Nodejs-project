@@ -16,6 +16,7 @@ import {
   SearchFilter,
   statusDDL,
 } from "./helper";
+import { useHistory } from "react-router-dom";
 
 export default function FinalSettlementLanding() {
   const {
@@ -30,6 +31,8 @@ export default function FinalSettlementLanding() {
       permission = item;
     }
   });
+
+  const history = useHistory();
 
   const decodedToken = tokenData
     ? JSON.parse(atob(tokenData.split(".")[1]))
@@ -170,7 +173,7 @@ export default function FinalSettlementLanding() {
               visible={openFilter}
               onClose={(visible) => setOpenFilter(visible)}
               onFilter={handleFilter}
-              isDate={true}
+              isDateSeparate={true}
               isWorkplaceGroup={true}
               isWorkplace={true}
               isStatus={true}
@@ -187,6 +190,7 @@ export default function FinalSettlementLanding() {
                     pages?.current,
                     pages?.pageSize,
                     postClearanceData,
+                    history,
                     setOpenExitInterviewDataViewModal,
                     getData,
                     id,

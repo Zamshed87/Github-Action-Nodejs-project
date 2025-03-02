@@ -1751,6 +1751,9 @@ const ClearanceLanding = lazy(() =>
 const FinalSettlementLandingv2 = lazy(() =>
   import("../modules/retirement/finalsettlement/index.jsx")
 );
+const FinalSettlementGenerate = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
+);
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4212,6 +4215,10 @@ export const routingList = [
     path: "/retirement/finalSettlement",
     component: FinalSettlementLandingv2,
   },
+  {
+    path: "/retirement/finalSettlement/generate/:separationid/:empid",
+    component: FinalSettlementGenerate,
+  }
 ];
 
 // Those hidden menu just use for develper

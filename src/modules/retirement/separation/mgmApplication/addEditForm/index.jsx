@@ -15,7 +15,6 @@ import FormikError from "../../../../../common/login/FormikError";
 import { customStyles } from "../../../../../utility/newSelectCustomStyle";
 import { AttachmentOutlined, Close, FileUpload } from "@mui/icons-material";
 import {
-  getPeopleDeskAllDDL,
   // getSearchEmployeeList,
   getSearchEmployeeListWithWarning,
   multiple_attachment_actions,
@@ -38,7 +37,7 @@ const initData = {
   employeeName: "",
   separationType: "",
   applicationDate: todayDate(),
-  lastWorkingDay: "",
+  lastWorkingDay: todayDate(),
   applicationBody: "",
 };
 
@@ -85,6 +84,7 @@ export default function SeparationApplicationForm() {
   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
     useAxiosGet();
+  const [, getseparationTypeDDL] = useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -116,11 +116,15 @@ export default function SeparationApplicationForm() {
   }, [dispatch]);
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
-      "SeparationTypeId",
-      "SeparationType",
-      setSeparationTypeDDL
+    getseparationTypeDDL(
+      `/SeparationType/GetSeparationTypeForAdmin?workPlaceId=${wId}`,
+      (res) => {
+        const newDDL = res?.data?.map((itm) => ({
+          value: itm.value,
+          label: itm.text,
+        }));
+        setSeparationTypeDDL(newDDL);
+      }
     );
   }, [wgId, buId, wId]);
 
@@ -411,11 +415,6 @@ export default function SeparationApplicationForm() {
                           className="form-control"
                           errors={errors}
                           touched={touched}
-                          disabled={
-                            !values?.applicationDate ||
-                            !values?.employeeName ||
-                            !values?.separationType
-                          }
                         />
                       </div>
                     </div>
@@ -440,7 +439,7 @@ export default function SeparationApplicationForm() {
                                 .then((data) => {
                                   setImageFile(data);
                                 })
-                                .catch((error) => {
+                                .catch(() => {
                                   setImageFile([]);
                                 });
                             }

@@ -113,7 +113,7 @@ export default function ManagementApplicationSeparationForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
+      `/SeparationType/GetSeparationTypeForESS`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
