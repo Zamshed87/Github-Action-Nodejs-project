@@ -331,9 +331,7 @@ const ShiftManagementLog = lazy(() =>
 const ShiftManagement = lazy(() =>
   import("../modules/timeSheet/employeeAssign/shiftManagement/index.js")
 );
-const HiredeskOnboarding = lazy(() =>
-  import("../modules/onboarding/index.js")
-);
+const HiredeskOnboarding = lazy(() => import("../modules/onboarding/index.js"));
 const ManagementViewTask = lazy(() =>
   import("../modules/employeeProfile/taskManagement/mgmApplication/viewTask.js")
 );
@@ -1578,6 +1576,11 @@ import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGen
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import DepositeType from "modules/configuration/depositeType";
+import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
+import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
+import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
+import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 
 // const TrainingApplicationCreate = lazy(() =>
@@ -1688,7 +1691,9 @@ const Test = lazy(() =>
 const Homepage = lazy(() => import("../modules/dashboard/Homepage.jsx"));
 
 const SelfServiceSeparation = lazy(() =>
-  import("../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx")
+  import(
+    "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
+  )
 );
 
 // Retirement Module
@@ -1696,21 +1701,23 @@ const Separation = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/index.jsx")
 );
 const SeparationApplicationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/addEditForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/addEditForm/index.jsx"
+  )
 );
 
 const RetirementViewSeparationForm = lazy(() =>
   import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
 );
 const RetirementReleaseSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/releaseForm/index.jsx")
+  import(
+    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
+  )
 );
-
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
-
 
 export const routingList = [
   { path: "/", component: Homepage },
@@ -2255,6 +2262,10 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  {
+    path: "/administration/configuration/depositType",
+    component: DepositeType,
+  },
   { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/jobLocation", component: JobLocation },
   {
@@ -3270,6 +3281,26 @@ export const routingList = [
   },
 
   // Salary assign & deduction
+  {
+    path: "/compensationAndBenefits/securitydeposit/securityDeposits",
+    component: SecurityDepositLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/edit/:id",
+    component: SecurityDepositCRUD,
+  },
+  {
+    path: "/compensationAndBenefits/securitydeposit/disbursement",
+    component: SecurityDisbursementLanding,
+  },
+  {
+    path: "/compensationAndBenefits/reports/securitymoneyreport",
+    component: SecurityMoneyReportLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/create",
+    component: SecurityDepositCRUD,
+  },
   {
     path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction",
     component: SalaryAssignAndDeduction,
