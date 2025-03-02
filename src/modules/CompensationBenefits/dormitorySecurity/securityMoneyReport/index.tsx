@@ -36,7 +36,7 @@ export const SecurityMoneyReportLanding = () => {
   const [modalData, setModalData] = useState<any[]>([]);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30531),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30555),
     []
   );
   // menu permission

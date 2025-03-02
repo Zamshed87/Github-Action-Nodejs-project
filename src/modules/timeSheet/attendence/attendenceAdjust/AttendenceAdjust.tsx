@@ -12,7 +12,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tooltip } from "antd";
+import { Col, Form, message, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -836,17 +836,34 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             rowSelection={{
               type: "checkbox",
               selectedRowKeys: selectedRow.map((item) => item?.key),
-              onChange: (selectedRowKeys, selectedRows) => {
-                setSelectedRow(selectedRows);
-              },
-
-              // getCheckboxProps: (rec) => {
-              //   return {
-              //     disabled: moment(rec?.AttendanceDate, "YYYY-MM-DD").isAfter(
-              //       moment().format("YYYY-MM-DD")
-              //     ),
-              //   };
+              // onChange: (selectedRowKeys, selectedRows) => {
+              //   console.log("selectedRowKeys", selectedRowKeys);
+              //   console.log("selectedRows", selectedRows);
+              //   setSelectedRow(selectedRows);
               // },
+              //    }}
+              onChange: (selectedRowKeys, selectedRows) => {
+                // Filter out rows where ApplicationStatus is "Pending" or "Approved"
+                const validRows = selectedRows.filter(
+                  (row: any) =>
+                    row.ApplicationStatus !== "Pending" &&
+                    row.ApplicationStatus !== "Approved"
+                );
+
+                // Find any invalid rows that were attempted to be selected
+                const invalidRows = selectedRows.filter(
+                  (row: any) =>
+                    row.ApplicationStatus === "Pending" ||
+                    row.ApplicationStatus === "Approved"
+                );
+
+                if (invalidRows.length > 0) {
+                  message.warning(
+                    "You cannot select rows with Pending or Approved status."
+                  );
+                }
+                setSelectedRow(validRows);
+              },
             }}
             checkBoxColWidth={50}
           />
