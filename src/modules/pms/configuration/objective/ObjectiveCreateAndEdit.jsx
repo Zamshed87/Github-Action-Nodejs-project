@@ -103,7 +103,8 @@ const ObjectiveCreateAndEdit = () => {
           <div className="d-flex align-items-center">
             <BackButton />
             <h2>
-              {location?.state?.objectiveId ? "Edit" : "Create"} Objective
+              {location?.state?.objectiveId ? "Edit" : "Create"} Create
+              Objectives/ Key Result Areas (KRA)
             </h2>
           </div>
           <ul className="d-flex flex-wrap">

@@ -80,9 +80,10 @@ const PMSObjective = () => {
       const objectiveTypes = formValues?.objectiveTypes?.value
         ? `objectiveType=${formValues?.objectiveTypes?.value}`
         : "";
-      const status = formValues?.status?.value
-        ? `&status=${formValues?.status?.value}`
-        : "";
+      const status =
+        formValues?.status?.value !== null
+          ? `&status=${formValues?.status?.value}`
+          : "";
       getObjectiveLanding(
         `/PMS/GetPMSObejctiveLanding?${objectiveTypes}${status}&accountId=${orgId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&search=${search}`,
         (data) => {
