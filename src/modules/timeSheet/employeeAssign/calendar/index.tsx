@@ -42,7 +42,7 @@ export const CalendarAssign = () => {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30432) {
+    if (item?.menuReferenceId === 44) {
       employeeFeature = item;
     }
   });
