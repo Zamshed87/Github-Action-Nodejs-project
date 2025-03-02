@@ -106,6 +106,7 @@ export const getFinalSettlementLandingTableColumn = (
     page,
     paginationSize,
     postClearanceData,
+    history,
     setOpenExitInterviewDataViewModal,
     getData,
     id,
@@ -113,33 +114,13 @@ export const getFinalSettlementLandingTableColumn = (
     empId,
     setEmpId,
 ) => {
-    const confirmClearancePopup = (sepId, employeeId) => {
-        const confirmObject = {
-            closeOnClickOutside: false,
-            message: "Are you sure you want to send this application for Clearance?",
-            yesAlertFunc: () => {
-                postClearanceData(
-                    `/Separation/StartSeparationClearance?id=${sepId}&employeeId=${employeeId}`,
-                    "",
-                    () => {
-                        getData();
-                    },
-                    true
-                );
-            },
-            noAlertFunc: () => {
-                getData();
-            },
-        };
-        IConfirmModal(confirmObject);
-    };
 
-    const confirmReleasePopup = (sepId, employeeId) => {
+    const confirmSendForApprovalPopup = (sepId, employeeId) => {
         const confirmObject = {
             closeOnClickOutside: false,
-            message: "Are you sure you want to release this application?",
+            message: "Are you sure you want to send this application for Approval?",
             yesAlertFunc: () => {
-                console.log("release", sepId, employeeId);
+                console.log("Send for Approval", sepId, employeeId);
             },
             noAlertFunc: () => {
                 getData();
@@ -331,6 +312,7 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
+                                history.push(`/retirement/finalsettlement/generate/${data?.separationId}/${data?.intEmployeeId}`)
                             }}
                         />
                     </Tooltip>
@@ -360,6 +342,7 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
+                                confirmSendForApprovalPopup(data?.separationId, data?.intEmployeeId)
                             }}
                         ><SendTwoToneIcon color="success" />
                         </button>
@@ -368,30 +351,4 @@ export const getFinalSettlementLandingTableColumn = (
             ),
         }
     ]
-};
-
-export const getSeparationLandingById = async (id, setter, setLoading) => {
-    setLoading && setLoading(true);
-    try {
-        const res = await axios.get(
-            `/separation/GetSeparationById/${id}`
-        );
-
-        const modifyRes = [res?.data]?.map((itm) => {
-            return {
-                ...itm,
-                docArr:
-                    itm?.strDocumentId?.length > 0 ? itm?.strDocumentId?.split(",") : [],
-                halfReason:
-                    itm?.strReason?.length > 120
-                        ? itm?.strReason?.slice(0, 120)
-                        : `${itm?.strReason?.slice(0, 120)}...`,
-                fullReason: itm?.strReason,
-            };
-        });
-        setter(modifyRes[0]);
-        setLoading && setLoading(false);
-    } catch (error) {
-        setLoading && setLoading(false);
-    }
 };

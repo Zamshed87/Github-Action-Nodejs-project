@@ -27,7 +27,7 @@ import {
 const initData = {
   separationType: "",
   applicationDate: todayDate(),
-  lastWorkingDay: "",
+  lastWorkingDay: todayDate(),
   applicationBody: "",
 };
 
@@ -290,11 +290,11 @@ export default function SelfServiceSeparationForm() {
                         type="date"
                         className="form-control"
                         onChange={(e) => {
-                          setFieldValue("lastWorkingDay", "");
                           setFieldValue("applicationDate", e.target.value);
                         }}
                         errors={errors}
                         touched={touched}
+                        disabled={true}
                       />
                     </div>
                   </div>
@@ -317,9 +317,6 @@ export default function SelfServiceSeparationForm() {
                         className="form-control"
                         errors={errors}
                         touched={touched}
-                        disabled={
-                          !values?.applicationDate || !values?.separationType
-                        }
                       />
                     </div>
                   </div>
