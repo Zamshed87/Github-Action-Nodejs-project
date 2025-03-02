@@ -1584,6 +1584,7 @@ import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormito
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
 import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
 import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
+import { SelfExpenseApplicationLanding } from "../modules/expense/updatedExpanseApp/index.tsx";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2465,21 +2466,21 @@ export const routingList = [
     // component: MovementApplication,
     component: EmMovementApplication, // this component is used in management and self service 🔥
   },
-  {
-    path: "/SelfService/expense/expenseApplication/create",
-    component: SelfExpanseApplicationAddForm,
-  },
-  {
-    path: "/SelfService/expense/expenseApplication/edit/:id",
-    component: SelfExpanseApplicationAddForm,
-  },
-  {
-    path: "/SelfService/expense/expenseApplication/view/:id",
-    component: SelfExpenseApplicationView,
-  },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/create",
+  //   component: SelfExpanseApplicationAddForm,
+  // },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/edit/:id",
+  //   component: SelfExpanseApplicationAddForm,
+  // },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/view/:id",
+  //   component: SelfExpenseApplicationView,
+  // },
   {
     path: "/SelfService/expense/expenseApplication",
-    component: UpdateExpanseApplication,
+    component: SelfExpenseApplicationLanding,
   },
   {
     path: "/SelfService/iOU/application/create",
