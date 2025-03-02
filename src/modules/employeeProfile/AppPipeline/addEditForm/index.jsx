@@ -93,11 +93,11 @@ export default function AddEditForm({
           if (item.value !== -1) {
             res[i].isNotSetup = true;
 
-            let statusLabel = " 🔴 (Not Setup)";
+            let statusLabel = " 🔴 (Pipeline Not Setup)";
             if (item.isIndividualSetup) {
-              statusLabel = " 🟢 (Individual Setup)";
+              statusLabel = " 🟢 (Pipeline Individual Setup)";
             } else if (item.isAllSetup) {
-              statusLabel = " 🔵 (All Setup)";
+              statusLabel = " 🔵 (Pipeline All Setup)";
             }
 
             res[i].label = `${item?.label} ${statusLabel}`;
@@ -336,10 +336,10 @@ export default function AddEditForm({
                 ? getWDDL?.data
                     .filter((opt, index) => {
                       const hasAllSetup = getWDDL?.data.some((o) =>
-                        o.label.includes("🔵 (All Setup)")
+                        o.label.includes("🔵 (Pipeline All Setup)")
                       );
                       const hasNotSetup = getWDDL?.data.some((o) =>
-                        o.label.includes("Not Setup")
+                        o.label.includes("Pipeline Not Setup")
                       );
 
                       // Remove "All" if it's at the top AND "All Setup" exists, unless "Not Setup" is present
@@ -356,7 +356,7 @@ export default function AddEditForm({
                     })
                     .map((opt) => ({
                       ...opt,
-                      disabled: opt.label.includes("🟢 (Individual Setup)"),
+                      disabled: opt.label.includes("🟢 (Pipeline Individual Setup)"),
                     }))
                 : []
             }
@@ -371,10 +371,10 @@ export default function AddEditForm({
 
               const isSelectingAll = selectedValues.includes(-1);
               const isSelectingIndividual = selectedOptions.some((opt) =>
-                opt.label.includes("🟢 (Individual Setup)")
+                opt.label.includes("🟢 (Pipeline Individual Setup)")
               );
               const isSelectingAllSetup = selectedOptions.some((opt) =>
-                opt.label.includes("🔵 (All Setup)")
+                opt.label.includes("🔵 (Pipeline All Setup)")
               );
 
               if (isSelectingAll) {
@@ -383,12 +383,12 @@ export default function AddEditForm({
               } else if (isSelectingIndividual) {
                 selectedValues = [
                   selectedOptions.find((opt) =>
-                    opt.label.includes("🟢 (Individual Setup)")
+                    opt.label.includes("🟢 (Pipeline Individual Setup)")
                   )?.value,
                 ];
                 selectedOptions = [
                   selectedOptions.find((opt) =>
-                    opt.label.includes("🟢 (Individual Setup)")
+                    opt.label.includes("🟢 (Pipeline Individual Setup)")
                   ),
                 ];
               } else {
