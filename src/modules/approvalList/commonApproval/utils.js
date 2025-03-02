@@ -14,6 +14,10 @@ export const columnsDefault = [
     render: (_, __, index) => index + 1, // Automatically adding a serial number
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
   },
@@ -151,6 +155,10 @@ export const columnOvertime = [
     render: (_, __, index) => index + 1,
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
   },
@@ -161,10 +169,6 @@ export const columnOvertime = [
   {
     title: "Workplace",
     dataIndex: ["applicationInformation", "workplaceName"],
-  },
-  {
-    title: "Employee ID",
-    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Designation",
@@ -216,7 +220,7 @@ export const columnIncrement = [
     render: (_, __, index) => index + 1,
   },
   {
-    title: "Employee ID",
+    title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
@@ -255,15 +259,6 @@ export const columnIncrement = [
     title: "Depend On",
     dataIndex: ["applicationInformation", "strDependOn"],
   },
-  /**
-   * 
-numIncrementAmount
-: 
-0
-numIncrementPercentage
-: 
-0
-   */
   {
     title: "Amount",
     dataIndex: ["applicationInformation", "totalAmount"],
@@ -298,6 +293,10 @@ export const columnsManual = [
   {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Designation",
@@ -605,6 +604,10 @@ export const columnsAdvancedSalary = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Workplace Group",
@@ -958,6 +961,10 @@ export const columnsMasterLocation = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Longitude",
     dataIndex: ["applicationInformation", "longitude"],
   },
@@ -1073,6 +1080,10 @@ export const columnsLocationDevice = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1, // Serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Location Or Device",
@@ -1304,7 +1315,7 @@ export const columnsIOUAdjustment = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
-    title: "Code",
+    title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
   },
   {

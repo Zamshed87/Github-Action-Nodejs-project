@@ -161,7 +161,6 @@ export default function AddEditForm({
   }, [orgId, buId, wgId]);
   useEffect(() => {
     fetchPipelineData(setPipelineDDL);
-    fetchApproverData(setApproverDDL);
   }, [orgId, buId]);
 
   // Form Instance
@@ -179,6 +178,9 @@ export default function AddEditForm({
           workplaceId: wId,
         },
         onSuccess: (data) => {
+          const applicationTypeId =
+            data?.header?.applicationTypeId || singleData?.applicationTypeId;
+
           const isExtendType = singleData?.type === "extend";
           form.setFieldsValue({
             ...singleData,
@@ -234,10 +236,13 @@ export default function AddEditForm({
           }));
 
           setTableData(rowData);
+          if (applicationTypeId) {
+            fetchApproverData(setApproverDDL, applicationTypeId);
+          }
         },
       });
     }
-  }, [singleData]);
+  }, [singleData, singleData?.applicationTypeId]);
   const remover = (payload) => {
     const filterArr = tableData
       .filter((itm, idx) => idx !== payload)
@@ -289,8 +294,10 @@ export default function AddEditForm({
             onChange={(value, op) => {
               form.setFieldsValue({
                 pipelineName: op,
+                approver: undefined,
               });
               getWorkplace();
+              fetchApproverData(setApproverDDL, value);
             }}
             rules={[{ required: true, message: "Pipeline Name is required" }]}
           />
