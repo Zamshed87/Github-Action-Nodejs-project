@@ -178,6 +178,9 @@ export default function AddEditForm({
           workplaceId: wId,
         },
         onSuccess: (data) => {
+          const applicationTypeId =
+            data?.header?.applicationTypeId || singleData?.applicationTypeId;
+
           const isExtendType = singleData?.type === "extend";
           form.setFieldsValue({
             ...singleData,
@@ -233,10 +236,13 @@ export default function AddEditForm({
           }));
 
           setTableData(rowData);
+          if (applicationTypeId) {
+            fetchApproverData(setApproverDDL, applicationTypeId);
+          }
         },
       });
     }
-  }, [singleData]);
+  }, [singleData, singleData?.applicationTypeId]);
   const remover = (payload) => {
     const filterArr = tableData
       .filter((itm, idx) => idx !== payload)
@@ -291,7 +297,7 @@ export default function AddEditForm({
                 approver: undefined,
               });
               getWorkplace();
-              fetchApproverData(setApproverDDL, op);
+              fetchApproverData(setApproverDDL, value);
             }}
             rules={[{ required: true, message: "Pipeline Name is required" }]}
           />
