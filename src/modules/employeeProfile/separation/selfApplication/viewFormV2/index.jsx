@@ -39,7 +39,7 @@ export default function SelfServiceSeparation() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30535) {
+    if (item?.menuReferenceId === 30554) {
       permission = item;
     }
   });
