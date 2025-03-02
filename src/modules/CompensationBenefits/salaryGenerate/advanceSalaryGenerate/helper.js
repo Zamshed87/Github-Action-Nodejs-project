@@ -40,10 +40,11 @@ export const createAdvSalaryGenerateRequest = async (
     toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    console.log({ error });
+    isDevServer && console.log({ error });
     toast.warn(
-      // error?.response?.data?.[0].returnMessage || "Something went wrong!"
-      error?.message || "Something went wrong!"
+      error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong!"
     );
     setLoading && setLoading(false);
   }
