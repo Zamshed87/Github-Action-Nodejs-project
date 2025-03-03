@@ -305,6 +305,13 @@ const CommonApprovalComponent = () => {
           }
           bordered
           data={data.map((item) => ({ ...item, key: item.id }))}
+          pagination={{
+            pageSize: 25, // Default number of items per page
+            showSizeChanger: true, // Allow user to change page size
+            pageSizeOptions: ["5", "10", "25", "50", "100"], // Available options for page size
+            showTotal: (total, range) =>
+              `Showing ${range[0]}-${range[1]} of ${total} items`, // Display total items info
+          }}
         />
       )}
 
