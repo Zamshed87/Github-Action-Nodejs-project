@@ -10,6 +10,9 @@ export const fetchPendingApprovals = async ({
   wId,
   employeeId,
   setData,
+  departmentId,
+  designationId,
+  searchText,
 }) => {
   setLoading(true);
   try {
@@ -23,6 +26,10 @@ export const fetchPendingApprovals = async ({
           workplaceId: wId,
           applicationTypeId: id,
           employeeId: employeeId,
+          search: searchText,
+          designationId: designationId,
+          departmentId: departmentId,
+          employeeCode: "",
         },
       }
     );
