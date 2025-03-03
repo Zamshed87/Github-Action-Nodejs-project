@@ -32,6 +32,11 @@ type ProfileData = {
   orgId: number;
 };
 
+type FilterData = {
+  workplaceGroup?: { value: number };
+  [key: string]: any;
+};
+
 const CommonFilter: React.FC<CommonFilterProps> = ({
   visible,
   onClose,
@@ -71,9 +76,12 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   const designationApi = useApiRequest([]);
   const [saveFilter, setSaveFilter] = useState(false);
 
+  const [filterData, setFilterData] = useState<FilterData>({});
+
   useEffect(() => {
     if (visible) {
       const savedFilters = localStorage.getItem("commonFilterData");
+      setFilterData(savedFilters ? JSON.parse(savedFilters) : {});
       if (savedFilters) {
         const parsedFilters = JSON.parse(savedFilters);
         form.setFieldsValue(parsedFilters);
@@ -81,16 +89,6 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
       }
     }
   }, [visible]);
-
-  const handleSaveToggle = (checked: boolean) => {
-    setSaveFilter(checked);
-    if (checked) {
-      const values = form.getFieldsValue();
-      localStorage.setItem("commonFilterData", JSON.stringify(values));
-    } else {
-      localStorage.removeItem("commonFilterData");
-    }
-  };
 
   // workplace Group
   const getWorkplaceGroup = () => {
@@ -192,14 +190,17 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   useEffect(() => {
     if (isWorkplaceGroup) {
       getWorkplaceGroup();
-    } else if (isWorkplace) {
+    }
+    if (isWorkplace) {
       getWorkplace();
-    } else if (isDepartment) {
+    }
+    if (isDepartment) {
       getEmployeDepartment();
-    } else if (isDesignation) {
+    }
+    if (isDesignation) {
       getDesignation();
     }
-  }, []);
+  }, [visible]);
 
   return (
     <>
@@ -243,14 +244,6 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           }}
         >
           <Row gutter={[10, 10]}>
-            <Col md={24} sm={24}>
-              <Checkbox
-                checked={saveFilter}
-                onChange={(e) => handleSaveToggle(e.target.checked)}
-              >
-                Save Filters
-              </Checkbox>
-            </Col>
             {isStatus && (
               <Col md={24} sm={12} xs={24}>
                 <PSelect
@@ -375,6 +368,12 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   name="department"
                   label="Department"
                   placeholder="Select Department"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      department: op,
+                      designation: undefined,
+                    });
+                  }}
                 />
               </Col>
             )}
@@ -387,6 +386,11 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   name="designation"
                   label="Designation"
                   placeholder="Select Designation"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      designation: op,
+                    });
+                  }}
                 />
               </Col>
             )}
@@ -398,8 +402,17 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 type="primary"
                 content={"View"}
                 style={{ marginRight: "10px" }}
-                onClick={() => form.submit()}
+                onClick={() => {
+                  const values = form.getFieldsValue();
+
+                  localStorage.setItem(
+                    "commonFilterData",
+                    JSON.stringify(values)
+                  );
+                  onFilter(values);
+                }}
               />
+
               <PButton
                 type="secondary"
                 content={"Reset"}
