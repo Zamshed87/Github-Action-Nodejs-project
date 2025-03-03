@@ -26,10 +26,6 @@ export const fetchPendingApprovals = async ({
           workplaceId: wId,
           applicationTypeId: id,
           employeeId: employeeId,
-          search: searchText,
-          designationId: designationId,
-          departmentId: departmentId,
-          employeeCode: "",
         },
       }
     );
