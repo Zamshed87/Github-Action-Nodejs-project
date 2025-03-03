@@ -35,6 +35,7 @@ import {
   columnsSalaryIncrement,
   columnsSeparation,
   columnsShiftChange,
+  columnTransferPromotion,
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
@@ -64,6 +65,8 @@ const CommonApprovalComponent = () => {
   const [selectedRow, setSelectedRow] = useState([]);
   const [viewModal, setViewModal] = useState(false);
   const [filterData, setFilterData] = useState({});
+  const [page, setpage] = useState({ pageSize: 25, pageNo: 1 });
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const [filteredWId, setFilteredWId] = useState(wId);
   const [filteredWgId, setFilteredWgId] = useState(wgId);
@@ -85,11 +88,13 @@ const CommonApprovalComponent = () => {
       wId: filteredWId,
       employeeId,
       setData,
+      setTotalRecords,
       departmentId: filterData?.department?.value || 0,
       designationId: filterData?.designation?.value || 0,
       searchText: searchTerm,
+      page,
     });
-  }, [id, filteredWgId, filteredWId]);
+  }, [filteredWgId, filteredWId, page]);
 
   // Handle filter logic
   const handleFilter = (values) => {
@@ -107,6 +112,7 @@ const CommonApprovalComponent = () => {
       wId: workplace,
       employeeId,
       setData,
+      setTotalRecords,
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
       searchText: searchTerm,
@@ -188,6 +194,7 @@ const CommonApprovalComponent = () => {
       wId: filteredWId,
       employeeId,
       setData,
+      setTotalRecords,
       departmentId: filterData?.department?.value || 0,
       designationId: filterData?.designation?.value,
       searchText: value,
@@ -301,16 +308,22 @@ const CommonApprovalComponent = () => {
               ? columnDeposit
               : id == 18
               ? columnAdditionDeduction
+              : id == 24
+              ? columnTransferPromotion
               : columnsDefault
           }
           bordered
           data={data.map((item) => ({ ...item, key: item.id }))}
           pagination={{
-            pageSize: 25, // Default number of items per page
-            showSizeChanger: true, // Allow user to change page size
-            pageSizeOptions: ["5", "10", "25", "50", "100"], // Available options for page size
+            pageSize: page.pageSize,
+            current: page.pageNo,
+            total: totalRecords,
+            showSizeChanger: true,
+            onChange: (pageNo, pageSize) => {
+              setpage({ pageNo, pageSize });
+            },
             showTotal: (total, range) =>
-              `Showing ${range[0]}-${range[1]} of ${total} items`, // Display total items info
+              `Showing ${range[0]}-${range[1]} of ${total} items`,
           }}
         />
       )}
