@@ -11,7 +11,7 @@ const useBarAssessmentLanding = ({ buId, wId, wgId }) => {
     search = "",
   }) => {
     getData(
-      `/PMS/BARAssessmentLanding?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&Year=${year}&AssesmentPeriod=${assessmentPeriod}&AssesmentTime=${assessmentTime}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${search}`,
+      `/PMS/BARAssessmentLanding?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&Year=${year}&AssesmentPeriod=${assessmentPeriod ?? ""}&AssesmentTime=${assessmentTime ?? ""}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${search}`,
       (res) => {
         setData(res);
       }

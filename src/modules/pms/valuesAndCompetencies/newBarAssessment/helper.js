@@ -22,6 +22,9 @@ export const getBarAssessmentColumn = ({
     {
       title: "Stakeholder Type",
       dataIndex: "stakeholderType",
+      render:(data) => {
+        return data ?? "-";
+      },
       width: "100px",
       sorter: true,
       align: "center",
@@ -64,6 +67,9 @@ export const getBarAssessmentColumn = ({
     {
       title: "Assessment Time",
       dataIndex: "assesmentTime",
+      render:(data) => {
+        return data ?? "-";
+      },
       width: "100px",
       sorter: true,
       align: "center",
@@ -76,7 +82,7 @@ export const getBarAssessmentColumn = ({
       align: "center",
       render: (data) => {
         switch (data) {
-          case "Completed":
+          case "Complete":
             return <PBadge text={data} type="success" />;
           case "Pending":
             return <PBadge text={data} type="secondary" />;
@@ -91,6 +97,9 @@ export const getBarAssessmentColumn = ({
       width: "50px",
       align: "center",
       render: (_, data) => {
+        if(data?.assesmentStatus == "Complete") {
+          return "-";
+        }
         return (
           <Tooltip title="Start Evaluation" arrow>
             <button
