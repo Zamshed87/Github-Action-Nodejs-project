@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Spin } from "antd";
+import { Input, Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
@@ -39,6 +39,8 @@ import {
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
 import { getFilteredValues } from "./filterValues";
+import { SearchOutlined } from "@mui/icons-material";
+import { debounce } from "lodash";
 
 const CommonApprovalComponent = () => {
   // redux
@@ -51,7 +53,7 @@ const CommonApprovalComponent = () => {
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
-
+  const [searchTerm, setSearchTerm] = useState("");
   // state
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
@@ -61,6 +63,7 @@ const CommonApprovalComponent = () => {
   const [modalAction, setModalAction] = useState(null);
   const [selectedRow, setSelectedRow] = useState([]);
   const [viewModal, setViewModal] = useState(false);
+  const [filterData, setFilterData] = useState({});
 
   const [filteredWId, setFilteredWId] = useState(wId);
   const [filteredWgId, setFilteredWgId] = useState(wgId);
@@ -82,11 +85,15 @@ const CommonApprovalComponent = () => {
       wId: filteredWId,
       employeeId,
       setData,
+      departmentId: filterData?.department?.value || 0,
+      designationId: filterData?.designation?.value || 0,
+      searchText: searchTerm,
     });
   }, [id, filteredWgId, filteredWId]);
 
   // Handle filter logic
   const handleFilter = (values) => {
+    setFilterData(values);
     const { workplaceGroup, workplace } = getFilteredValues(values, wId, wgId);
     setFilteredWId(workplace);
     setFilteredWgId(workplaceGroup);
@@ -100,6 +107,9 @@ const CommonApprovalComponent = () => {
       wId: workplace,
       employeeId,
       setData,
+      departmentId: values?.department?.value || 0,
+      designationId: values?.designation?.value || 0,
+      searchText: searchTerm,
     });
   };
 
@@ -168,6 +178,21 @@ const CommonApprovalComponent = () => {
 
   // for view Modal
   const handleViewClose = () => setViewModal(false);
+  const handleSearch = debounce((value) => {
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId: filteredWgId,
+      wId: filteredWId,
+      employeeId,
+      setData,
+      departmentId: filterData?.department?.value || 0,
+      designationId: filterData?.designation?.value,
+      searchText: value,
+    });
+  }, 300);
 
   // render
   return (
@@ -175,29 +200,47 @@ const CommonApprovalComponent = () => {
       <div className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center">
           <BackButton title={`${state?.state?.applicationType} Approval`} />
-          {selectedRow?.length > 0 ? (
+          {selectedRow?.length > 0 && (
             <ApproveRejectComp
               props={{
                 className: "ml-3",
-                onApprove: () => {
-                  showConfirmationModal("approve");
-                },
-                onReject: () => {
-                  showConfirmationModal("reject");
-                },
+                onApprove: () => showConfirmationModal("approve"),
+                onReject: () => showConfirmationModal("reject"),
               }}
             />
-          ) : null}
+          )}
         </div>
-        <CommonFilter
-          visible={isFilterVisible}
-          onClose={(visible) => setIsFilterVisible(visible)}
-          onFilter={handleFilter}
-          isDate={true}
-          isWorkplaceGroup={true}
-          isWorkplace={true}
-          isAllValue={true}
-        />
+
+        <div className="d-flex align-items-center gap-3">
+          <Input
+            placeholder="Search..."
+            prefix={<SearchOutlined />}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }}
+            style={{
+              width: 300,
+              marginRight: 10,
+              borderRadius: 5,
+              marginBottom: 5,
+            }}
+          />
+
+          <CommonFilter
+            visible={isFilterVisible}
+            onClose={(visible) => setIsFilterVisible(visible)}
+            onFilter={handleFilter}
+            isDate={false}
+            isWorkplaceGroup={true}
+            isWorkplace={true}
+            isDepartment={true}
+            isDesignation={true}
+            isEmployee={true}
+            isAllValue={true}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -262,6 +305,13 @@ const CommonApprovalComponent = () => {
           }
           bordered
           data={data.map((item) => ({ ...item, key: item.id }))}
+          pagination={{
+            pageSize: 25, // Default number of items per page
+            showSizeChanger: true, // Allow user to change page size
+            pageSizeOptions: ["5", "10", "25", "50", "100"], // Available options for page size
+            showTotal: (total, range) =>
+              `Showing ${range[0]}-${range[1]} of ${total} items`, // Display total items info
+          }}
         />
       )}
 
