@@ -288,7 +288,7 @@ export const SelfExpenseApplicationLanding = () => {
         <PCard>
           {landingApi?.loading || (loading && <Loading />)}
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            // title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             buttonList={[
               {
                 type: "primary",
