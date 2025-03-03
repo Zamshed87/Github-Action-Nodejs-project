@@ -35,6 +35,7 @@ import {
   columnsSalaryIncrement,
   columnsSeparation,
   columnsShiftChange,
+  columnTransferPromotion,
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
@@ -307,6 +308,8 @@ const CommonApprovalComponent = () => {
               ? columnDeposit
               : id == 18
               ? columnAdditionDeduction
+              : id == 24
+              ? columnTransferPromotion
               : columnsDefault
           }
           bordered
