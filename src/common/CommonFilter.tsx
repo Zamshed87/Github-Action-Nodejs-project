@@ -186,21 +186,23 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
     });
   };
 
-  // Fetch Data
+  // Fetch Data Only When Drawer Opens
   useEffect(() => {
-    if (isWorkplaceGroup) {
-      getWorkplaceGroup();
+    if (visible) {
+      if (isWorkplaceGroup) {
+        getWorkplaceGroup();
+      }
+      if (isWorkplace) {
+        getWorkplace();
+      }
+      if (isDepartment) {
+        getEmployeDepartment();
+      }
+      if (isDesignation) {
+        getDesignation();
+      }
     }
-    if (isWorkplace) {
-      getWorkplace();
-    }
-    if (isDepartment) {
-      getEmployeDepartment();
-    }
-    if (isDesignation) {
-      getDesignation();
-    }
-  }, [visible]);
+  }, [visible]); // Runs only when 'visible' changes
 
   return (
     <>
