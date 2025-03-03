@@ -122,7 +122,8 @@ export const AssignModal = ({
   const startingCalendarApi = useApiRequest({});
 
   const getDDL = () => {
-    const values = form.getFieldValue(true);
+    const values = form.getFieldsValue(true);
+    console.log({ values });
     ddlApi.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
