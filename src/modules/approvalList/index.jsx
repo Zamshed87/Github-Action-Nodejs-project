@@ -21,6 +21,7 @@ import {
 } from "@ant-design/icons";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import CommonFilter from "common/CommonFilter";
+import { toast } from "react-toastify";
 
 const initData = {
   search: "",
@@ -39,29 +40,47 @@ export default function ApprovalList() {
   const dispatch = useDispatch();
 
   const landingApiCall = () => {
-    const values = form.getFieldsValue(true);
+    try {
+      const values = form.getFieldsValue(true);
+      const savedFilters = localStorage.getItem("commonFilterData");
+      let parsedFilters;
 
-    getApprovalDashboardLanding(
-      orgId,
-      employeeId,
-      false,
-      setApprovalData,
-      setLoading,
-      values?.workplace?.value || wId,
-      buId,
-      values?.workplaceGroup?.value || wgId,
-      values
-    );
+      if (savedFilters) {
+        try {
+          parsedFilters = JSON.parse(savedFilters);
+        } catch (error) {
+          parsedFilters = values;
+        }
+      } else {
+        parsedFilters = values;
+      }
+
+      getApprovalDashboardLanding(
+        orgId,
+        employeeId,
+        false,
+        setApprovalData,
+        setLoading,
+        parsedFilters?.workplace?.value || values?.workplace?.value || wId,
+        buId,
+        parsedFilters?.workplaceGroup?.value ||
+          values?.workplaceGroup?.value ||
+          wgId,
+        values
+      );
+    } catch (error) {
+      toast.warn("Failed to fetch data");
+    }
   };
 
-  useEffect(() => {
-    if (wId && wgId) {
-      landingApiCall();
-    }
-  }, [wId, wgId]);
-
   const handleFilter = (values) => {
-    const { workplace, workplaceGroup } = values;
+    const savedFilters = localStorage.getItem("commonFilterData");
+    const parsedFilters = savedFilters ? JSON.parse(savedFilters) : values;
+
+    const { workplace, workplaceGroup } = parsedFilters;
+
+    console.log("parsedFilters", parsedFilters);
+
     getApprovalDashboardLanding(
       orgId,
       employeeId,
@@ -71,9 +90,17 @@ export default function ApprovalList() {
       workplace?.value || wId,
       buId,
       workplaceGroup?.value || wgId,
-      values
+      parsedFilters
     );
   };
+
+  useEffect(() => {
+    if (wId && wgId) {
+      landingApiCall();
+    }
+  }, [wId, wgId]);
+
+ 
 
   useEffect(() => {
     if (approvalData.length > 0) {
@@ -112,7 +139,6 @@ export default function ApprovalList() {
   }, []);
 
   const [form] = Form.useForm();
-
 
   return (
     <>
@@ -182,7 +208,6 @@ export default function ApprovalList() {
                           visible={isFilterVisible}
                           onClose={(visible) => setIsFilterVisible(visible)}
                           onFilter={handleFilter}
-                          isDate={true}
                           isWorkplaceGroup={true}
                           isWorkplace={true}
                           isAllValue={true}
