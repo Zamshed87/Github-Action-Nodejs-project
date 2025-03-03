@@ -630,12 +630,6 @@ export const saveBulkUploadAction = async (
     );
   }
   const bulkSalaryAdditionNDeductions = bulkLandingRowDto?.map((item) => {
-    console.log({ item });
-    console.log(
-      `${item?.intYear}-${moment([item?.intYear, item?.intMonth - 1, 1]).format(
-        "MM"
-      )}-01`
-    );
     return {
       intSalaryAdditionAndDeductionId:
         item?.intSalaryAdditionAndDeductionId || 0,
