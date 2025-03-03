@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Drawer, Row, Col, Form, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Drawer, Row, Col, Form, Button, Checkbox } from "antd";
 import { PButton, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
@@ -63,6 +63,28 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
+  const [saveFilter, setSaveFilter] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      const savedFilters = localStorage.getItem("commonFilterData");
+      if (savedFilters) {
+        const parsedFilters = JSON.parse(savedFilters);
+        form.setFieldsValue(parsedFilters);
+        setSaveFilter(true);
+      }
+    }
+  }, [visible]);
+
+  const handleSaveToggle = (checked: boolean) => {
+    setSaveFilter(checked);
+    if (checked) {
+      const values = form.getFieldsValue();
+      localStorage.setItem("commonFilterData", JSON.stringify(values));
+    } else {
+      localStorage.removeItem("commonFilterData");
+    }
+  };
 
   // workplace Group
   const getWorkplaceGroup = () => {
@@ -200,7 +222,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           form={form}
           onFinish={(values) => {
             onFilter(values);
-            onClose(false);
+            // onClose(false);
           }}
           initialValues={{
             workplaceGroup: {
@@ -214,6 +236,14 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           }}
         >
           <Row gutter={[10, 10]}>
+            <Col md={24} sm={24}>
+              <Checkbox
+                checked={saveFilter}
+                onChange={(e) => handleSaveToggle(e.target.checked)}
+              >
+                Save Filters
+              </Checkbox>
+            </Col>
             {isDate && (
               <Col md={24} sm={24}>
                 <PInput
@@ -222,7 +252,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   name="dateRange"
                   onChange={(value) => {
                     if (Array.isArray(value) && value.length === 2) {
-                      const [fromDate, toDate] = value?.map((date:any) =>
+                      const [fromDate, toDate] = value?.map((date: any) =>
                         date ? date.format("DD/MM/YYYY") : null
                       );
                       form.setFieldsValue({
@@ -235,7 +265,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                         toDate: null,
                       });
                     }
-                  }}                  
+                  }}
                 />
               </Col>
             )}
@@ -305,26 +335,19 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           </Row>
 
           <Col md={12} sm={24}>
-            <div
-              style={{
-                display: "flex",
-                marginTop: "20px",
-              }}
-            >
+            <div style={{ display: "flex", marginTop: "20px" }}>
               <PButton
                 type="primary"
                 content={"View"}
                 style={{ marginRight: "10px" }}
-                onClick={() => {
-                  const values = form.getFieldsValue(true);
-                  onFilter(values);
-                }}
+                onClick={() => form.submit()}
               />
               <PButton
                 type="secondary"
                 content={"Reset"}
                 onClick={() => {
                   form.resetFields();
+                  localStorage.removeItem("commonFilterData");
                 }}
               />
             </div>
