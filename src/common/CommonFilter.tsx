@@ -243,6 +243,14 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           }}
         >
           <Row gutter={[10, 10]}>
+            <Col md={24} sm={24}>
+              <Checkbox
+                checked={saveFilter}
+                onChange={(e) => handleSaveToggle(e.target.checked)}
+              >
+                Save Filters
+              </Checkbox>
+            </Col>
             {isStatus && (
               <Col md={24} sm={12} xs={24}>
                 <PSelect
@@ -260,14 +268,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 />
               </Col>
             )}
-            <Col md={24} sm={24}>
-              <Checkbox
-                checked={saveFilter}
-                onChange={(e) => handleSaveToggle(e.target.checked)}
-              >
-                Save Filters
-              </Checkbox>
-            </Col>
+
             {isDate && (
               <Col md={24} sm={24}>
                 <PInput
