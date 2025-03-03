@@ -238,10 +238,10 @@ export const fetchApproverData = async (setApproverDDL, value) => {
     const restrictedActions = ["20", "2", "26", "1"]; 
     const restrictedApprovers = ["3", "4"];
 
-    if (restrictedActions.includes(value)) {
+    if (restrictedActions.includes(value.toString())) {
       approvers = approvers.map(approver => ({
         ...approver,
-        disabled: !restrictedApprovers.includes(approver.value),
+        disabled: !restrictedApprovers.includes(approver.value.toString()),
       }));
     }
 

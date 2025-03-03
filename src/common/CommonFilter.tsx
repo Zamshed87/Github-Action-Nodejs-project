@@ -223,7 +223,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
         placement="right"
         onClose={() => onClose(false)}
         open={visible}
-        width={400}
+        width={450}
       >
         <PForm
           form={form}
@@ -327,7 +327,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isWorkplaceGroup && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
@@ -347,7 +347,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isWorkplace && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   options={workplaceDDL?.data || []}
                   name="workplace"
@@ -360,13 +360,15 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                       department: undefined,
                       designation: undefined,
                     });
+                    getEmployeDepartment();
+                    getDesignation();
                   }}
                 />
               </Col>
             )}
 
             {isDepartment && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   allowClear
                   options={empDepartmentDDL?.data || []}
@@ -378,7 +380,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isDesignation && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   allowClear
                   options={designationApi?.data || []}

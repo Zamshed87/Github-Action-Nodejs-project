@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Spin } from "antd";
+import { Input, Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
@@ -39,6 +39,7 @@ import {
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
 import { getFilteredValues } from "./filterValues";
+import { SearchOutlined } from "@mui/icons-material";
 
 const CommonApprovalComponent = () => {
   // redux
@@ -51,7 +52,7 @@ const CommonApprovalComponent = () => {
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
-
+  const [searchTerm, setSearchTerm] = useState("");
   // state
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
@@ -189,6 +190,15 @@ const CommonApprovalComponent = () => {
             />
           ) : null}
         </div>
+        <div className="mr-3">
+      <Input
+        placeholder="Search..."
+        prefix={<SearchOutlined />}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ width: 200 }} // Adjust width as needed
+      />
+    </div>
         <CommonFilter
           visible={isFilterVisible}
           onClose={(visible) => setIsFilterVisible(visible)}
@@ -196,6 +206,9 @@ const CommonApprovalComponent = () => {
           isDate={true}
           isWorkplaceGroup={true}
           isWorkplace={true}
+          isDepartment={true}
+          isDesignation={true}
+          isEmployee={true}
           isAllValue={true}
         />
       </div>
