@@ -55,7 +55,7 @@ export const getHeader = (length, totalKPIScoreByScale, history, data) => {
                       fontSize: "11px",
                     }}
                   >
-                    Achievement Entry
+                    (KPI) Assessment
                   </Tooltip>
                 }
               >
@@ -67,7 +67,7 @@ export const getHeader = (length, totalKPIScoreByScale, history, data) => {
                   }}
                   onClick={() => {
                     history?.push({
-                      pathname: `/pms/performanceAssessment/BARAssessment`,
+                      pathname: `/pms/performancePlanning/individualKpiResult`,
                     });
                   }}
                 >
@@ -148,7 +148,7 @@ export const getBarHeader = (length, totalBARScoreByScale, history, data) => {
                       fontSize: "11px",
                     }}
                   >
-                    Achievement Entry
+                    BAR Assessment
                   </Tooltip>
                 }
               >

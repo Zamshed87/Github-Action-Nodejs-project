@@ -1,13 +1,14 @@
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const useBarAssessmentEvaluation = () => {
   const { employeeId, yearId } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
   const {state:{assessmentPeriod, assessmentTime}} = useLocation();
   
   const {
@@ -53,7 +54,12 @@ const useBarAssessmentEvaluation = () => {
       },
       (res) => {
         setSaveData(res);
-      }
+        history.push({
+          pathname: `/pms/performanceAssessment/BARAssessment`,
+        });
+      },
+      true,
+      "BARAssessment Saved Successfully."
     );
   };
 
