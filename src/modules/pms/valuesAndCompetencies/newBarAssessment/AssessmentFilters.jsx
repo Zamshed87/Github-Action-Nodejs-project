@@ -31,8 +31,8 @@ const AssessmentFilters = ({ form }) => {
               form.resetFields(["assessmentTime"]);
             }
           }}
-          // rules={[{ required: true, message: "Assessment Period is required" }]}
-        />
+          rules={[{ required: true, message: "Assessment Period is required" }]}
+          />
       </Col>
       <Col md={5} sm={12} xs={24}>
         <PSelect
@@ -42,7 +42,7 @@ const AssessmentFilters = ({ form }) => {
           showSearch
           placeholder="Assessment Time"
           onChange={(value, op) => form.setFieldsValue({ assessmentTime: op })}
-          // rules={[{ required: true, message: "Assessment Time is required" }]}
+          rules={assessmentPeriod?.value == "Quarterly" ? [{ required: true, message: "Assessment Time is required" }]:[]}
           disabled={assessmentPeriod?.value == "Yearly"}
         />
       </Col>
