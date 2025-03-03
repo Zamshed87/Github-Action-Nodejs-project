@@ -38,8 +38,14 @@ import {
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
+import { getFilteredValues } from "./filterValues";
 
 const CommonApprovalComponent = () => {
+  // redux
+  const { orgId, employeeId, wId, buId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   // props
   const location = useLocation();
   const state = location.state;
@@ -56,11 +62,14 @@ const CommonApprovalComponent = () => {
   const [selectedRow, setSelectedRow] = useState([]);
   const [viewModal, setViewModal] = useState(false);
 
-  // redux
-  const { orgId, employeeId, wId, buId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const [filteredWId, setFilteredWId] = useState(wId);
+  const [filteredWgId, setFilteredWgId] = useState(wgId);
+
+  useEffect(() => {
+    const { workplace, workplaceGroup } = getFilteredValues({}, wId, wgId);
+    setFilteredWId(workplace);
+    setFilteredWgId(workplaceGroup);
+  }, []);
 
   // fetch data
   useEffect(() => {
@@ -69,12 +78,30 @@ const CommonApprovalComponent = () => {
       setLoading,
       orgId,
       buId,
-      wgId,
-      wId,
+      wgId: filteredWgId,
+      wId: filteredWId,
       employeeId,
       setData,
     });
-  }, [id, wgId, wId]);
+  }, [id, filteredWgId, filteredWId]);
+
+  // Handle filter logic
+  const handleFilter = (values) => {
+    const { workplaceGroup, workplace } = getFilteredValues(values, wId, wgId);
+    setFilteredWId(workplace);
+    setFilteredWgId(workplaceGroup);
+
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId: workplaceGroup,
+      wId: workplace,
+      employeeId,
+      setData,
+    });
+  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
@@ -83,21 +110,6 @@ const CommonApprovalComponent = () => {
       document.title = "";
     };
   }, []);
-
-  // handle filter
-  const handleFilter = (values) => {
-    const { workplace, workplaceGroup } = values;
-    fetchPendingApprovals({
-      id,
-      setLoading,
-      orgId,
-      buId,
-      wgId: workplaceGroup?.value || wgId,
-      wId: workplace?.value || wId,
-      employeeId,
-      setData,
-    });
-  };
 
   // handle approve or reject
   const handleApproveReject = async (isApprove) => {
@@ -270,7 +282,7 @@ const CommonApprovalComponent = () => {
           classes: "default-modal",
           handleOpen,
           viewData,
-          setViewData
+          setViewData,
         }}
       />
     </div>
