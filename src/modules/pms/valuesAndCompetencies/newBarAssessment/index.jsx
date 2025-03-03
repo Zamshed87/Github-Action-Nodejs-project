@@ -80,8 +80,8 @@ const BarAssessmentLanding = () => {
             pages,
             history,
             yearId: year?.value,
-            quarterId: "",
-            assessmentType: "",
+            assessmentPeriod,
+            assessmentTime
           })}
           bordered
           data={data?.data || []}

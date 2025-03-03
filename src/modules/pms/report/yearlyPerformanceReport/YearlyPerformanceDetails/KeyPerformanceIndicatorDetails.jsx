@@ -5,38 +5,57 @@ import { useHistory } from "react-router-dom";
 
 const KeyPerformanceIndicatorDetails = ({ details }) => {
   const history = useHistory();
+  const dataRows = [];
+  if (details != null && details.kpiDetails != null) {
+    details.kpiDetails.forEach((item) => {
+      details.kpiScoreHeaders.forEach((header, index) => {
+        const found = item.achivements.find((x) => x.title === header);
+        item["kpiScore." + index] = found ? found.score : "";
+      });
+      dataRows.push(item);
+    });
+  }
   return (
     <div>
-    <h3 className="pb-3 pt-3">Key Performance Indicator (KPI) Details</h3>
-      <DataTable 
-      header={getHeader(details?.kpiDetails?.length,details?.totalKPIScoreByScale,history)} 
-      bordered
-      data={details?.kpiDetails || []} 
-      summary={() => (
-        <Table.Summary.Row>
-          <Table.Summary.Cell colSpan={4} align="end">
-            Total
-          </Table.Summary.Cell>
-          <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.weight}
-          </Table.Summary.Cell>
-          <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.target}
-          </Table.Summary.Cell>
-          <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.selfAchivement}
-          </Table.Summary.Cell>
-          <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.supervisorAchivement}
-          </Table.Summary.Cell>
-          <Table.Summary.Cell  align="center">
-            {details?.kpiTotal?.avgKPIScore}
-          </Table.Summary.Cell>
-          <Table.Summary.Cell  align="center">
-            {details?.totalKPIScoreByScale}
-          </Table.Summary.Cell>
-        </Table.Summary.Row>
-      )}
+      <h3 className="pb-3 pt-3">Key Performance Indicator (KPI) Details</h3>
+      <DataTable
+        header={getHeader(
+          details?.kpiDetails?.length,
+          details?.totalKPIScoreByScale,
+          history,
+          details
+        )}
+        bordered
+        data={details?.kpiDetails || []}
+        summary={() => (
+          <Table.Summary.Row>
+            <Table.Summary.Cell colSpan={4} align="end">
+              Total
+            </Table.Summary.Cell>
+            <Table.Summary.Cell align="center">
+              {details?.kpiTotal?.weight}
+            </Table.Summary.Cell>
+            <Table.Summary.Cell align="center">
+              {details?.kpiTotal?.target}
+            </Table.Summary.Cell>
+            {details?.kpiScoreHeaders?.map((header,index) => {
+              const found = details?.kpiTotal?.achivements?.find(
+                (x) => x.title === header
+              );
+              return (
+                <Table.Summary.Cell align="center" key={index + 1}>
+                  {found ? found.score : ""}
+                </Table.Summary.Cell>
+              );
+            })}
+            <Table.Summary.Cell align="center">
+              {details?.kpiTotal?.avgKPIScore}
+            </Table.Summary.Cell>
+            <Table.Summary.Cell align="center">
+              {details?.totalKPIScoreByScale}
+            </Table.Summary.Cell>
+          </Table.Summary.Row>
+        )}
       />
     </div>
   );

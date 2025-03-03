@@ -1,14 +1,15 @@
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const useBarAssessmentEvaluation = () => {
   const { employeeId, yearId } = useParams();
   const dispatch = useDispatch();
-
+  const {state:{assessmentPeriod, assessmentTime}} = useLocation();
+  
   const {
     permissionList,
     profileData: { buId, wgId, wId },
@@ -103,6 +104,7 @@ const useBarAssessmentEvaluation = () => {
     handleAnswerQuestion,
     getSelectedAnswer,
     areAllQuestionsAnswered,
+    assessmentPeriod, assessmentTime
   };
 };
 

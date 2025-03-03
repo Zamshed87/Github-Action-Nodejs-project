@@ -7,6 +7,7 @@ import { Col, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import useBarAssessmentEvaluation from "./hooks/useBarAssessmentQuestions";
 import useAssessmentFilters from "../hooks/useAssessmentFilters";
+import { useEffect } from "react";
 
 const BarAssessmentEvaluation = () => {
   const [form] = Form.useForm();
@@ -21,22 +22,30 @@ const BarAssessmentEvaluation = () => {
     handleAnswerQuestion,
     getSelectedAnswer,
     areAllQuestionsAnswered,
+    assessmentPeriod: defaultAssessmentPeriod,
+    assessmentTime,
   } = useBarAssessmentEvaluation();
-  const { assessmentPeriodDDL, quarterDDL } = useAssessmentFilters({});
+  const { assessmentPeriodDDL, quarterDDL } = useAssessmentFilters({
+    showYear: false,
+  });
+
+  useEffect(() => {
+    form.setFieldsValue({ assessmentPeriod: defaultAssessmentPeriod });
+    form.setFieldsValue({ assessmentTime: assessmentTime });
+  }, [defaultAssessmentPeriod, assessmentTime]);
 
   return permission?.isView ? (
     <PForm
       form={form}
       initialValues={{}}
       onFinish={(values) => {
-        console.log(values)
         saveBARAssessmentData({
           assessmentPeriod: values?.assessmentPeriod?.value,
           assessmentTime: values?.assessmentTime?.value,
         });
       }}
     >
-      {questionsLoading || saveLoading && <Loading />}
+      {questionsLoading || (saveLoading && <Loading />)}
       <PCard>
         <PCardHeader
           title={`BAR Assessment Evaluation`}
@@ -46,7 +55,7 @@ const BarAssessmentEvaluation = () => {
             {
               type: "primary",
               content: "Save",
-              action:"submit",
+              action: "submit",
               disabled: !areAllQuestionsAnswered(),
             },
           ]}
@@ -69,12 +78,16 @@ const BarAssessmentEvaluation = () => {
                     form.resetFields(["assessmentTime"]);
                   }
                 }}
-                rules={[{ required: true, message: "Assessment Period is required" }]}
+                rules={[
+                  { required: true, message: "Assessment Period is required" },
+                ]}
               />
             </Col>
             <Col md={5} sm={12} xs={24}>
               <PSelect
-                options={assessmentPeriod?.value == "Quarterly" ? quarterDDL : []}
+                options={
+                  assessmentPeriod?.value == "Quarterly" ? quarterDDL : []
+                }
                 name="assessmentTime"
                 label="Assessment Time"
                 showSearch
@@ -82,7 +95,16 @@ const BarAssessmentEvaluation = () => {
                 onChange={(value, op) =>
                   form.setFieldsValue({ assessmentTime: op })
                 }
-                rules={assessmentPeriod?.value == "Quarterly" ? [{ required: true, message: "Assessment Time is required" }]:[]}
+                rules={
+                  assessmentPeriod?.value == "Quarterly"
+                    ? [
+                        {
+                          required: true,
+                          message: "Assessment Time is required",
+                        },
+                      ]
+                    : []
+                }
                 disabled={assessmentPeriod?.value == "Yearly"}
               />
             </Col>
