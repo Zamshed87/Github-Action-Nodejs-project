@@ -231,7 +231,6 @@ export const fetchPipelineData = async (setPipelineDDL) => {
 };
 
 export const fetchApproverData = async (setApproverDDL, value) => {
-  console.log("value", value);
   try {
     const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
     let approvers = res?.data?.ApproverType || [];
