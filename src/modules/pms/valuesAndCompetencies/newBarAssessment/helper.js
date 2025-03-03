@@ -2,7 +2,13 @@ import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import PBadge from "Components/Badge";
 
-export const getBarAssessmentColumn = ({ pages, history, yearId }) => {
+export const getBarAssessmentColumn = ({
+  pages,
+  history,
+  yearId,
+  assessmentPeriod,
+  assessmentTime,
+}) => {
   return [
     {
       title: () => <span>SL</span>,
@@ -92,7 +98,7 @@ export const getBarAssessmentColumn = ({ pages, history, yearId }) => {
               onClick={() => {
                 history.push({
                   pathname: `/pms/performanceAssessment/BARAssessment/evaluation/${data?.employeeId}/${yearId}`,
-                  state: { data },
+                  state: { data, assessmentPeriod, assessmentTime },
                 });
               }}
             >

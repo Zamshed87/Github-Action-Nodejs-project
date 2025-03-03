@@ -38,12 +38,12 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
             <Table.Summary.Cell align="center">
               {details?.kpiTotal?.target}
             </Table.Summary.Cell>
-            {details?.kpiScoreHeaders?.map((header) => {
+            {details?.kpiScoreHeaders?.map((header,index) => {
               const found = details?.kpiTotal?.achivements?.find(
                 (x) => x.title === header
               );
               return (
-                <Table.Summary.Cell align="center">
+                <Table.Summary.Cell align="center" key={index + 1}>
                   {found ? found.score : ""}
                 </Table.Summary.Cell>
               );

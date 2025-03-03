@@ -35,12 +35,12 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
             <Table.Summary.Cell align="center">
               {details?.barTotal?.desiredValue}
             </Table.Summary.Cell>
-            {details?.barScoreHeaders?.map((header) => {
+            {details?.barScoreHeaders?.map((header,index) => {
               const found = details?.barTotal?.scores?.find(
                 (x) => x.title === header
               );
               return (
-                <Table.Summary.Cell align="center">
+                <Table.Summary.Cell align="center" key={index + 1}>
                   {found ? found.score : ""}
                 </Table.Summary.Cell>
               );
