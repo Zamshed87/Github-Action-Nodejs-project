@@ -381,6 +381,7 @@ function BulkAddEditForm() {
       allowanceAndDeduction: "Allowance/Deduction type is required",
       amountDimension: "Amount Dimension is required",
       amount: "Amount is required",
+      intAllowanceDuration: "Allowance Duration is required",
     };
     // throw error 🔥
     const remainingError = Object.keys(errorMessages).some((fieldName) => {
@@ -390,11 +391,20 @@ function BulkAddEditForm() {
       }
       return false;
     });
-    if(values?.intAllowanceDuration?.value == 2 && !values?.intAllowanceAttendenceStatus){
+    if (
+      values?.intAllowanceDuration?.value == 2 &&
+      !values?.intAllowanceAttendenceStatus
+    ) {
       toast.warn("Allowance Attendance Status Field is Required.");
       return;
-    }else if(values?.intAllowanceDuration?.value == 1 && !values?.intAllowanceAttendenceStatus && !values?.maxAmount){
-      toast.warn("Allowance Attendance Status & Max Amount [ for a month ] Field is Required.");
+    } else if (
+      values?.intAllowanceDuration?.value == 1 &&
+      !values?.intAllowanceAttendenceStatus &&
+      !values?.maxAmount
+    ) {
+      toast.warn(
+        "Allowance Attendance Status & Max Amount [ for a month ] Field is Required."
+      );
       return;
     }
     if (!remainingError) {

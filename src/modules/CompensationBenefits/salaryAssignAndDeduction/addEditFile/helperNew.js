@@ -636,7 +636,7 @@ export const saveBulkUploadAction = async (
       accountId: item?.intAccountId,
       businessUnitId: item?.intBusinessUnitId,
       workplaceGroupId: item?.intWorkplaceGroupId,
-      // workplaceId: item?.intWorkplaceGroupId,
+      // workplaceId: item?.workplaceId,
       employeeCode: `${item?.employeeCode}` || 0,
       isAutoRenew: item?.IsAutoRenew,
       isAddition: item?.isAddition,
@@ -650,15 +650,21 @@ export const saveBulkUploadAction = async (
 
       fromDate:
         item?.intYear && item?.intMonth
-          ? `${item?.intYear}-${moment(item?.intMonth).format("MM")}-01`
+          ? `${item?.intYear}-${moment([
+              item?.intYear,
+              item?.intMonth - 1,
+              1,
+            ]).format("MM")}-01`
           : todayDate(),
       toDate:
         item?.intToMonth && item?.intToYear
           ? moment(
-              `${item?.intToYear}-${moment(item?.intToMonth).format("MM")}`
-            )
-              .endOf("month")
-              .format("YYYY-MM-DD")
+              `${item?.intToYear}-${moment([
+                item?.intToYear,
+                item?.intToMonth - 1,
+                1,
+              ]).format("MM")}`
+            ).endOf("month")
           : todayDate(),
 
       // intYear: item?.intYear || 0,
