@@ -1,60 +1,33 @@
-import { useParams } from "react-router-dom";
-import EmployeeDetails from "./EmployeeDetails";
-import PrimaryButton from "common/PrimaryButton";
-import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import BackButton from "common/BackButton";
-import { Card, Col, Divider, Row, Table, Typography } from "antd";
+import EmployeeDetails from "./EmployeeDetails";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import { DataTable } from "Components";
+import { Card, Col, Divider, Row } from "antd";
 
-export default function FinalSettlementGenerate() {
+export default function FinalSettlementViewModal({ id, empId }) {
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const dispatch = useDispatch();
-  const params = useParams();
   const [, getSingleEmployeeData, getSingleEmployeeLoading] = useAxiosGet();
-  const [, getFinalSettlementData, getFinalSettlementLoading] = useAxiosGet();
-
   const [empBasic, setEmpBasic] = useState({});
-
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Retirement"));
-    document.title = "Final Settlement Generate";
-  }, [dispatch]);
-
   useEffect(() => {
     getSingleEmployeeData(
-      `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${params?.separationid}`,
+      `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
       (res) => {
         setEmpBasic(res);
       }
     );
-    getFinalSettlementData(
-      `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
-      (res) => {
-        console.log(res, "res");
-      }
-    );
-  }, [params?.separationid]);
-
+    // getFinalSettlementData(
+    //   `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
+    //   (res) => {
+    //     console.log(res, "res");
+    //   }
+    // );
+  }, [id]);
   return (
-    <div className="table-card businessUnit-wrapper dashboard-scroll">
-      <div className="d-flex  justify-content-between">
-        <div className="d-flex align-items-center">
-          <BackButton />
-          <h2>Final Settlement Generate</h2>
-        </div>
-        <PrimaryButton
-          className="btn btn-green btn-green-disable mb-2 mr-2"
-          type="submit"
-          label="Save"
-        />
-      </div>
+    <>
       <EmployeeDetails loading={getSingleEmployeeLoading} employee={empBasic} />
       <Row gutter={[8, 8]} style={{ marginTop: "20px" }}>
         <Col span={9}>
@@ -195,7 +168,7 @@ export default function FinalSettlementGenerate() {
             />
           </Card>
         </Col>
-        <Col span={12} offset={2}>
+        <Col span={14} offset={1}>
           <Card
             style={{
               boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
@@ -216,7 +189,7 @@ export default function FinalSettlementGenerate() {
                   SL: 1,
                   Approver: "Admin",
                   "Approver Name": "John Doe",
-                  "Approval Date": "2022-01-01 12:00:00",
+                  "Approval Date": "2022-01-01",
                   Status: "Approved",
                   Comments: "no comments",
                 },
@@ -224,7 +197,7 @@ export default function FinalSettlementGenerate() {
                   SL: 2,
                   Approver: "Finance",
                   "Approver Name": "Jane Doe",
-                  "Approval Date": "2022-01-02 12:00:00",
+                  "Approval Date": "2022-01-02",
                   Status: "Rejected",
                   Comments: "Need More Information",
                 },
@@ -233,6 +206,7 @@ export default function FinalSettlementGenerate() {
                 {
                   title: "SL",
                   dataIndex: "SL",
+                  width: 20,
                 },
                 {
                   title: "Approver",
@@ -275,21 +249,21 @@ export default function FinalSettlementGenerate() {
                   SL: 1,
                   "Asset Name": "Laptop",
                   UoM: "Pcs",
-                  "Last Assign Date": "2022-01-01 12:00:00",
+                  "Last Assign Date": "2022-01-01",
                   Status: "Assigned",
                 },
                 {
                   SL: 2,
                   "Asset Name": "Mouse",
                   UoM: "Pcs",
-                  "Last Assign Date": "2022-01-02 12:00:00",
+                  "Last Assign Date": "2022-01-02",
                   Status: "Assigned",
                 },
                 {
                   SL: 3,
                   "Asset Name": "Keyboard",
                   UoM: "Pcs",
-                  "Last Assign Date": "2022-01-03 12:00:00",
+                  "Last Assign Date": "2022-01-03",
                   Status: "Assigned",
                 },
               ]}
@@ -297,6 +271,7 @@ export default function FinalSettlementGenerate() {
                 {
                   title: "SL",
                   dataIndex: "SL",
+                  width: 20,
                 },
                 {
                   title: "Asset Name",
@@ -319,6 +294,6 @@ export default function FinalSettlementGenerate() {
           </Card>
         </Col>
       </Row>
-    </div>
+    </>
   );
 }

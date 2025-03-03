@@ -9,7 +9,6 @@ import { PModal } from "Components/Modal";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
 import {
   getFinalSettlementLanding,
   getFinalSettlementLandingTableColumn,
@@ -17,6 +16,7 @@ import {
   statusDDL,
 } from "./helper";
 import { useHistory } from "react-router-dom";
+import FinalSettlementViewModal from "./components/FinalSettlementViewModal";
 
 export default function FinalSettlementLanding() {
   const {
@@ -50,9 +50,8 @@ export default function FinalSettlementLanding() {
   });
 
   const [openFilter, setOpenFilter] = useState(false);
-  const [openExitInterviewDataViewModal, setOpenExitInterviewDataViewModal] =
+  const [openFinalSettlementViewModal, setOpenFinalSettlementViewModal] =
     useState(false);
-  const [, postClearanceData] = useAxiosPost();
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
@@ -189,9 +188,8 @@ export default function FinalSettlementLanding() {
                   columnData={getFinalSettlementLandingTableColumn(
                     pages?.current,
                     pages?.pageSize,
-                    postClearanceData,
                     history,
-                    setOpenExitInterviewDataViewModal,
+                    setOpenFinalSettlementViewModal,
                     getData,
                     id,
                     setId,
@@ -212,8 +210,8 @@ export default function FinalSettlementLanding() {
                   isScrollAble={true}
                 />
                 <PModal
-                  title="Exit Interview"
-                  open={openExitInterviewDataViewModal}
+                  title="Final Settlement"
+                  open={openFinalSettlementViewModal}
                   onCancel={() => {
                     getFinalSettlementLanding(
                       "FinalSettlement",
@@ -233,9 +231,13 @@ export default function FinalSettlementLanding() {
                       decodedToken.workplaceGroupList || "",
                       decodedToken.workplaceList || ""
                     );
-                    setOpenExitInterviewDataViewModal(false);
+                    setOpenFinalSettlementViewModal(false);
                   }}
-                  components={<></>}
+                  components={
+                    <>
+                      <FinalSettlementViewModal id={id} empId={empId} />
+                    </>
+                  }
                   width={1000}
                 />
               </>
