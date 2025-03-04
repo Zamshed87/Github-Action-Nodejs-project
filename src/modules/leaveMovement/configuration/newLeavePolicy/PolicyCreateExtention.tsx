@@ -27,17 +27,17 @@ import { Additional } from "./components/Additional";
 import { Balance } from "./components/Balance";
 import { CalculativeDays } from "./components/CalculativeDays";
 import { PaidLeave } from "./components/PaidLeave";
-import { FcDataConfiguration } from "react-icons/fc";
-import { GrConfigure } from "react-icons/gr";
-import { GrDocumentConfig } from "react-icons/gr";
+// import { FcDataConfiguration } from "react-icons/fc";
+// import { GrConfigure } from "react-icons/gr";
+// import { GrDocumentConfig } from "react-icons/gr";
 import { CiGlobe } from "react-icons/ci";
-import { MdCalculate, MdOutlineMoreTime } from "react-icons/md";
-import { MdTimelapse } from "react-icons/md";
-import { SiNewbalance } from "react-icons/si";
+// import { MdCalculate, MdOutlineMoreTime } from "react-icons/md";
+// import { MdTimelapse } from "react-icons/md";
+// import { SiNewbalance } from "react-icons/si";
 import { BsCashCoin } from "react-icons/bs";
 import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
-import { ModalFooter } from "Components/Modal";
+// import { ModalFooter } from "Components/Modal";
 
 export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
@@ -50,6 +50,7 @@ export const PolicyCreateExtention = () => {
   const [tableData, setTableData] = useState<any>([]);
   const [balanceTable, setBalanceTable] = useState<any>([]);
   const [policy, setPolicy] = useState<any>([]);
+  const [attachmentList, setAttachmentList] = useState<any>([]);
 
   const {
     permissionList,
@@ -67,6 +68,7 @@ export const PolicyCreateExtention = () => {
     };
   }, []);
 
+  const createApi = useApiRequest({});
   // ddls
 
   const onFinish = () => {
@@ -135,7 +137,7 @@ export const PolicyCreateExtention = () => {
     {
       title: "Additional",
       status: "wait",
-      icon: <MdOutlineMoreTime />,
+      // icon: <MdOutlineMoreTime />,
     },
   ];
   const items = steps.map((item) => ({
@@ -220,6 +222,187 @@ export const PolicyCreateExtention = () => {
     // ],
     // ["policy"],
   ];
+
+  const generatePayload = (step: number) => {
+    const values = form.getFieldsValue(true);
+    switch (step) {
+      case 0:
+        return {
+          generalPayload: {
+            businessUnitId: buId,
+            workplaceGroupId: wgId,
+            stepperId: 1,
+            policyName: values?.strPolicyName,
+            leaveTypeId: values?.leaveType?.value,
+            displayName: values?.strDisplayName,
+            displayCode: values?.strDisplayCode,
+            workplaceId: values?.workplace?.value || 0,
+            designationIdList: values?.designationListDTO
+              ?.map((item: any) => item.value)
+              .join(","),
+            employmentTypeIdList: values?.intEmploymentTypeList
+              ?.map((item: any) => item.value)
+              .join(","),
+            genderIdList: values?.intGender
+              ?.map((item: any) => item.value)
+              .join(","),
+            religionIdList: values?.religionListDto
+              ?.map((item: any) => item.value)
+              .join(","),
+            description: values?.applicationBody,
+            documentId: attachmentList[0]?.documentId || 0,
+            isPaidLeave: values?.paidType?.label?.includes("Paid") || false,
+            payDependOnId: values?.payDependsOn?.value || 0,
+            payDependOn: values?.payDependsOn?.label,
+            payDependOnValue: values?.payValue || 0,
+            leaveConsumeTypes:
+              consumeData?.map((item: any) => ({
+                leaveConsumeTypeId:
+                  item.leaveConsumeType === "Full Day"
+                    ? 1
+                    : item.leaveConsumeType === "1st Half Day"
+                    ? 2
+                    : item.leaveConsumeType === "2nd Half Day"
+                    ? 3
+                    : item.leaveConsumeType === "Clock Time"
+                    ? 4
+                    : 0,
+                minimumConsumeHour:
+                  item.leaveConsumeType === "Full Day"
+                    ? 0
+                    : item.consumeHr?.split(" to ")[0] || 0,
+                maximumConsumeHour:
+                  item.leaveConsumeType === "Full Day"
+                    ? 0
+                    : item.consumeHr?.split(" to ")[1]?.split(" Hr.")[0] || 0,
+                standardWorkingHour: item.standardWorkHour || 0,
+              })) || [],
+            leaveLapseId: values?.leavelapse?.value || 0,
+            lapseAfterDayCompleted: values?.afterLeaveCompleted || 0,
+            isProRata: values?.isProRata?.value === 1,
+            proRataLastStartDays: values?.proRataCount || 0,
+            proRataBasisId: values?.proRataBasis?.value || 0,
+            serviceLengthDependOnId: values?.dependsOn?.value || 0,
+            leaveBalances:
+              balanceTable?.map((item: any) => ({
+                fromServiceLength:
+                  parseInt(item.serviceLength.split(" - ")[0]) || 0,
+                toServiceLength:
+                  parseInt(item.serviceLength.split(" - ")[1]) || 0,
+                balanceDependOn:
+                  item.leaveDependsOn === "Fixed Days"
+                    ? 1
+                    : item.leaveDependsOn === "Calculative"
+                    ? 4
+                    : item.leaveDependsOn === "Bridge Leave"
+                    ? 5
+                    : 0,
+                calculativeDays: parseInt(item.calculativeDays) || 0,
+                bridgeLeaveFor:
+                  item.bridgeLeaveFor === "Off Days"
+                    ? 1
+                    : item.bridgeLeaveFor === "HoliDays"
+                    ? 2
+                    : item.bridgeLeaveFor === "Both"
+                    ? 3
+                    : 0,
+                minimumWorkingHour: parseInt(item.minWorkHr) || 0,
+                leaveDays: parseInt(item.leaveDaysFor) || 0,
+                expiresDays: parseInt(item.expireAfterAvailable) || 0,
+              })) || [],
+            calculativeDays: {
+              isIncluePresent: values?.isPresent || false, // Bind from isPresent
+              isInclueMovement: values?.isMovement || false, // Bind from isMovement
+              isInclueLate: values?.isLate || false, // Bind from isLate
+              isInclueLeave: values?.isLeave || false, // Bind from isLeave
+              isInclueOffDay: values?.isOffday || false, // Bind from isOffday
+              isInclueHoliday: values?.isHoliday || false, // Bind from isHoliday
+              isInclueAbsent: values?.isAbsent || false, // Bind from isAbsent
+            },
+            calculativePolicies:
+              policy?.map((item: any) => ({
+                policyId: 1, // Since we only have one option, hardcoded to 1. Replace with actual policy ID if needed.
+              })) || [],
+          },
+        };
+      case 1:
+        return {
+          sandwichPayload: {
+            stepperId: 2,
+            isSandwichLeave: values?.isSandwitch?.value === 1,
+            sandwichLeaveScenarioId: selectedRow1
+              ?.map((row: any) => row.index)
+              ?.join(","),
+          },
+        };
+      case 2:
+        return {
+          carryPayload: {
+            stepperId: 3, // Assuming stepperId is managed elsewhere or not directly bound here
+            isCarryForward: values?.isCarryForward?.value === 1,
+            carryForwardTypeId: values?.leaveCarryForwardType?.value || 0,
+            maxCarryAfterLapse: values?.minConsumeTime || 0,
+            isAddPreviouscarry: values?.addPrevCarry?.value === 1,
+            maxCarryDays: values?.maxCarryForwardBalance || 0,
+            isCarryExpire: values?.isCarryExpired?.value === 1,
+            carryExpireDays: values?.expiryCarryForwardDaysAfterLapse || 0,
+          },
+        };
+      case 3:
+        return {
+          encashmentPayload: {
+            stepperId: 4,
+            isEncashment: values?.isEncashment?.value === 1,
+            serviceLengthDependOnId: values?.enLengthDependOn?.value,
+            encashmentTimelineId: values?.encashmentTimeline?.value,
+            encashmentRows: tableData?.map((item: any) => {
+              const [fromLength, toLength] = item?.serviceLength.split(" - ");
+              const encashTypeLabel = item.encashmentType;
+              const encashBenefitsLabel = item.encashBenefits;
+
+              let maxEncashmentTypeId = 0;
+              if (encashTypeLabel === "Percentage of Days") {
+                maxEncashmentTypeId = 1;
+              } else if (encashTypeLabel === "Fixed Days") {
+                maxEncashmentTypeId = 2;
+              }
+
+              let encashmentDependOnId = 0;
+              if (encashBenefitsLabel === "Basic") {
+                encashmentDependOnId = 1;
+              } else if (encashBenefitsLabel === "Gross") {
+                encashmentDependOnId = 2;
+              } else if (encashBenefitsLabel === "Fixed Amount") {
+                encashmentDependOnId = 3;
+              }
+
+              return {
+                fromServiceLength: parseInt(fromLength),
+                toServiceLength: parseInt(toLength),
+                maxEncashmentTypeId: maxEncashmentTypeId,
+                maxEncashmentDays: item.maxEncashment,
+                encashmentDependOnId: encashmentDependOnId,
+                encashmentAmount: item.paidAmount,
+              };
+            }),
+          },
+        };
+      case 4:
+        return {
+          additionalPayload: {
+            stepperId: 4,
+            isBalanceShowESS: values?.isEssShowBalance?.value === 1,
+            isApplyFromESS: values?.isEssApply?.value === 1,
+            roundingTypeId: values?.leaveRoundingType?.value,
+            applicationTimeId: values?.leaveApplicationTime?.value,
+            isAttachmentMandatory: values?.isAttachmentMandatory?.value === 1,
+            minLeaveForAttachment: values?.attachmentMandatoryAfter,
+            maxLeaveInMonth: values?.maxLeaveApplyMonthly,
+            maxLeaveInDays: values?.minLeaveApplyDays,
+          },
+        };
+    }
+  };
   return (
     <>
       <PForm
@@ -272,6 +455,8 @@ export const PolicyCreateExtention = () => {
                   orgId={orgId}
                   employeeId={employeeId}
                   wgId={wgId}
+                  attachmentList={attachmentList}
+                  setAttachmentList={setAttachmentList}
                 />
                 <PaidLeave form={form} />
                 <Consumption
@@ -371,6 +556,15 @@ export const PolicyCreateExtention = () => {
                           return toast.warn("Please add data");
                         }
                         next();
+
+                        createApi.action({
+                          urlKey: "CreateLeavePolicy",
+                          method: "post",
+                          payload: generatePayload(current),
+                          onSuccess: (data: any) => {
+                            next();
+                          },
+                        });
                       })
                       .catch((e: any) => {
                         console.log({ e });

@@ -41,7 +41,7 @@ export const NewLeavePolicy = () => {
   const [typeId, setTypeId] = useState<any>({});
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30530),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 38),
     []
   );
   // menu permission

@@ -14,9 +14,10 @@ export const General = ({
   orgId,
   employeeId,
   wgId,
+  setAttachmentList,
+  attachmentList,
 }: any) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [attachmentList, setAttachmentList] = useState([]);
 
   // api
   const leaveTypeApi = useApiRequest({});

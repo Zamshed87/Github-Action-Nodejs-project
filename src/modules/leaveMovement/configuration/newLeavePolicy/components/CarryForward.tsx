@@ -98,6 +98,8 @@ export const CarryForward = ({ form }: any) => {
                       ]}
                     />
                   </Col>
+                </Row>
+                <Row gutter={[10, 2]}>
                   <Col md={6} sm={24}>
                     <PSelect
                       // mode="multiple"
@@ -122,25 +124,24 @@ export const CarryForward = ({ form }: any) => {
                       ]}
                     />
                   </Col>
+                  {isCarryExpired?.value === 1 && (
+                    <Col md={6} sm={24}>
+                      <PInput
+                        type="number"
+                        name="expiryCarryForwardDaysAfterLapse"
+                        label="Expiry of Carry Forward Days After Lapse"
+                        placeholder=""
+                        rules={[
+                          {
+                            required: isCarryExpired?.value,
+                            message:
+                              "Expiry of Carry Forward Days After Lapse is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                  )}
                 </Row>
-
-                {isCarryExpired?.value === 1 && (
-                  <Col md={6} sm={24}>
-                    <PInput
-                      type="number"
-                      name="expiryCarryForwardDaysAfterLapse"
-                      label="Expiry of Carry Forward Days After Lapse"
-                      placeholder=""
-                      rules={[
-                        {
-                          required: isCarryExpired?.value,
-                          message:
-                            "Expiry of Carry Forward Days After Lapse is required",
-                        },
-                      ]}
-                    />
-                  </Col>
-                )}
               </>
             )
           );
@@ -153,7 +154,8 @@ export const CarryForward = ({ form }: any) => {
             const { leavelapse } = form.getFieldsValue(true);
 
             return (
-              leavelapse?.value === 5 && (
+              // leavelapse?.value === 5 && (
+              true && (
                 <>
                   <Col md={5} sm={24}>
                     <PInput
@@ -163,7 +165,7 @@ export const CarryForward = ({ form }: any) => {
                       placeholder=""
                       rules={[
                         {
-                          required: leavelapse?.value === 5,
+                          required: true,
                           message:
                             "Max Carry Forward Balance (Days) is required",
                         },
