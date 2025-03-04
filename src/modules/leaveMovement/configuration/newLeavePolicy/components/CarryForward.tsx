@@ -24,7 +24,7 @@ export const CarryForward = ({ form }: any) => {
           <span>Leave Carry Forward</span>
         </div>
       </Divider>
-      <Col md={4} sm={24}>
+      <Col md={6} sm={24}>
         <PSelect
           // mode="multiple"
           allowClear
@@ -50,14 +50,14 @@ export const CarryForward = ({ form }: any) => {
       </Col>
       <Form.Item shouldUpdate noStyle>
         {() => {
-          const { isCarryForward, leaveCarryForwardType } =
+          const { isCarryForward, leaveCarryForwardType, isCarryExpired } =
             form.getFieldsValue(true);
 
           return (
             isCarryForward?.value === 1 && (
               <>
                 <Row gutter={[10, 2]}>
-                  <Col md={4} sm={24}>
+                  <Col md={6} sm={24}>
                     <PSelect
                       // mode="multiple"
                       allowClear
@@ -75,13 +75,13 @@ export const CarryForward = ({ form }: any) => {
                       }}
                       rules={[
                         {
-                          required: isCarryForward,
+                          required: isCarryForward?.value,
                           message: "Leave Carry Forward Type is required",
                         },
                       ]}
                     />
                   </Col>
-                  <Col md={5} sm={24}>
+                  <Col md={6} sm={24}>
                     <PInput
                       type="number"
                       name="minConsumeTime"
@@ -98,23 +98,49 @@ export const CarryForward = ({ form }: any) => {
                       ]}
                     />
                   </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={[
+                        { value: 1, label: "Yes" },
+                        { value: 0, label: "No" },
+                      ]}
+                      name="isCarryExpired"
+                      label="Carry Expire "
+                      placeholder="Carry Expire"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          isCarryExpired: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: isCarryForward?.value,
+                          message: "Carry Expire  is required",
+                        },
+                      ]}
+                    />
+                  </Col>
                 </Row>
 
-                <Col md={6} sm={24}>
-                  <PInput
-                    type="number"
-                    name="expiryCarryForwardDaysAfterLapse"
-                    label="Expiry of Carry Forward Days After Lapse"
-                    placeholder=""
-                    rules={[
-                      {
-                        required: isCarryForward?.value,
-                        message:
-                          "Expiry of Carry Forward Days After Lapse is required",
-                      },
-                    ]}
-                  />
-                </Col>
+                {isCarryExpired?.value === 1 && (
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="number"
+                      name="expiryCarryForwardDaysAfterLapse"
+                      label="Expiry of Carry Forward Days After Lapse"
+                      placeholder=""
+                      rules={[
+                        {
+                          required: isCarryExpired?.value,
+                          message:
+                            "Expiry of Carry Forward Days After Lapse is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                )}
               </>
             )
           );
