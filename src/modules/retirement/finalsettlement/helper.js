@@ -105,9 +105,8 @@ export const getFinalSettlementLanding = async (
 export const getFinalSettlementLandingTableColumn = (
     page,
     paginationSize,
-    postClearanceData,
     history,
-    setOpenExitInterviewDataViewModal,
+    setOpenFinalSettlementViewModal,
     getData,
     id,
     setId,
@@ -297,6 +296,7 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
+                                setOpenFinalSettlementViewModal(true)
                             }}
                         />
                     </Tooltip>
@@ -316,10 +316,10 @@ export const getFinalSettlementLandingTableColumn = (
                             }}
                         />
                     </Tooltip>
-                    <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
+                    {false && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
                         <PrimaryButton
                             type="button"
-                            icon={<EditOutlined sx={{ color: "#34a853" }} />}
+                            icon={<ProfileTwoTone sx={{ color: "#34a853" }} />}
                             className={"iconButton"}
                             customStyle={{
                                 height: "25px",
@@ -330,7 +330,7 @@ export const getFinalSettlementLandingTableColumn = (
                                 setEmpId(data?.intEmployeeId)
                             }}
                         />
-                    </Tooltip>
+                    </Tooltip>)}
                     <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
                         <button
                             className={"iconButton"}
