@@ -78,6 +78,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           disabled={disabled}
           suffixIcon={suffix}
           value={value}
+          disabledDate={disabledDate}
           style={{ width: "100%" }}
           format={format || "MM-YYYY"}
           allowClear={allowClear}

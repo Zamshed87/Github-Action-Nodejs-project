@@ -10,6 +10,9 @@ export const fetchPendingApprovals = async ({
   wId,
   employeeId,
   setData,
+  departmentId,
+  designationId,
+  searchText,
 }) => {
   setLoading(true);
   try {

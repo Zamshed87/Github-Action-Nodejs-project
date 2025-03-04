@@ -78,6 +78,12 @@ const validationSchema = Yup.object({
       value: Yup.string().required("Allowance and deduction type is required"),
     })
     .typeError("Allowance and deduction type is required"),
+  intAllowanceDuration: Yup.object()
+    .shape({
+      label: Yup.string().required("Allowance Duration  is required"),
+      value: Yup.string().required("Allowance Duration  is required"),
+    })
+    .typeError("Allowance Duration  is required"),
   amountDimension: Yup.object()
     .shape({
       label: Yup.string().required("Amount dimension is required"),
@@ -186,36 +192,6 @@ function AddEditForm() {
         EmployeeId: empId,
       },
       onSuccess: (res) => {
-        // const modify = res.map((allowance) => ({
-        //   intSalaryAdditionAndDeductionId: allowance.allowanceId,
-        //   intAccountId: orgId,
-        //   intBusinessUnitId: buId,
-        //   intWorkplaceGroupId: wgId,
-        //   intEmployeeId: empId,
-        //   isAutoRenew: allowance.autoRenew === "No" ? false : true,
-        //   intYear: null,
-        //   intMonth: null,
-        //   strMonth: null,
-        //   intToYear: null,
-        //   intToMonth: null,
-        //   strToMonth: null,
-        //   isAddition: false,
-        //   strAdditionNDeduction: allowance.allowanceName,
-        //   intAdditionNDeductionTypeId: allowance.allowanceNameId,
-        //   intAmountWillBeId: 1,
-        //   numAmount: allowance.basedOnAmount,
-        //   isActive: true,
-        //   isProcessed: true,
-        //   strCreatedBy: "1",
-        //   dteCreatedAt: "2025-01-16T06:25:24.3",
-        //   intAllowanceDuration: 2,
-        //   intMaxLimit: 0,
-        //   intAllowanceAttendenceStatus: 0,
-        //   intAmountWillBeId1: 1,
-        //   strAmountWillBe: allowance.basedOn,
-        //   strStatus: allowance.status,
-        //   strEmployeeName: "Rubyet Mohsina",
-        // }));
         setRowDto(res);
       },
     });
@@ -334,41 +310,6 @@ function AddEditForm() {
   };
 
   const demoPopup = (values) => {
-    // const payload = {
-    //   strEntryType:
-    //     isView && !isEdit ? "DeleteEmpSalaryAdditionNDeductionById" : "",
-    //   intSalaryAdditionAndDeductionId: values
-    //     ? values?.intSalaryAdditionAndDeductionId
-    //     : 0,
-    //   intAccountId: orgId,
-    //   intBusinessUnitId:
-    //     empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
-    //   intWorkplaceGroupId:
-    //     empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
-    //   intWorkplaceId:
-    //     empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
-    //   intEmployeeId: values?.intEmployeeId,
-    //   isAutoRenew: values?.isAutoRenew ? true : false,
-    //   intYear: values?.intYear,
-    //   intMonth: values?.intMonth,
-    //   strMonth: values?.strMonth,
-    //   isAddition: values?.isAddition,
-    //   strAdditionNDeduction: values?.strAdditionNDeduction,
-    //   intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
-    //   intAmountWillBeId: values?.intAmountWillBeId,
-    //   strAmountWillBe: values?.strAmountWillBe,
-    //   numAmount: values?.numAmount,
-    //   isActive: true,
-    //   isReject: false,
-    //   intActionBy: employeeId,
-    //   intToYear: values?.intToYear,
-    //   intToMonth: values?.intToMonth,
-    //   strToMonth: values?.strToMonth,
-    // };
-
-    // const callback = () => {
-    //   getAdditionAndDeductionById();
-    // };
     const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you want to sure you delete allowance & deduction?",
@@ -400,6 +341,9 @@ function AddEditForm() {
   const isDisabled = (values) => {
     const isFromMonthMissing = !values?.fromMonth;
     const isSalaryTypeMissing = !values?.salaryType;
+    const isAllowanceAttendenceStatusMissing =
+      !values?.intAllowanceAttendenceStatus;
+    const isAllowanceDurationMissing = !values?.intAllowanceDuration;
     const isAllowanceAndDeductionMissing = !values?.allowanceAndDeduction;
     const isAmountDimensionMissing = !values?.amountDimension;
     const isAmountMissing = !values?.amount;
@@ -419,6 +363,8 @@ function AddEditForm() {
       isAmountDimensionMissing ||
       isAmountMissing ||
       isShortDurationInvalid ||
+      isAllowanceAttendenceStatusMissing ||
+      isAllowanceDurationMissing ||
       isLongDurationInvalid;
 
     return isDisabled;
@@ -1082,7 +1028,7 @@ function AddEditForm() {
                                         classess="warning"
                                       />
                                     )}
-                                    {item?.status === "Rejected" && (
+                                    {item?.status === "Reject" && (
                                       <Chips
                                         label={item?.status}
                                         classess="danger"

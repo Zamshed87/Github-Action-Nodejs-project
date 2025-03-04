@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Spin } from "antd";
+import { Input, Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
@@ -38,14 +38,22 @@ import {
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
+import { getFilteredValues } from "./filterValues";
+import { SearchOutlined } from "@mui/icons-material";
+import { debounce } from "lodash";
 
 const CommonApprovalComponent = () => {
+  // redux
+  const { orgId, employeeId, wId, buId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
-
+  const [searchTerm, setSearchTerm] = useState("");
   // state
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
@@ -55,12 +63,16 @@ const CommonApprovalComponent = () => {
   const [modalAction, setModalAction] = useState(null);
   const [selectedRow, setSelectedRow] = useState([]);
   const [viewModal, setViewModal] = useState(false);
+  const [filterData, setFilterData] = useState({});
 
-  // redux
-  const { orgId, employeeId, wId, buId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const [filteredWId, setFilteredWId] = useState(wId);
+  const [filteredWgId, setFilteredWgId] = useState(wgId);
+
+  useEffect(() => {
+    const { workplace, workplaceGroup } = getFilteredValues({}, wId, wgId);
+    setFilteredWId(workplace);
+    setFilteredWgId(workplaceGroup);
+  }, []);
 
   // fetch data
   useEffect(() => {
@@ -69,12 +81,37 @@ const CommonApprovalComponent = () => {
       setLoading,
       orgId,
       buId,
-      wgId,
-      wId,
+      wgId: filteredWgId,
+      wId: filteredWId,
       employeeId,
       setData,
+      departmentId: filterData?.department?.value || 0,
+      designationId: filterData?.designation?.value || 0,
+      searchText: searchTerm,
     });
-  }, [id, wgId, wId]);
+  }, [id, filteredWgId, filteredWId]);
+
+  // Handle filter logic
+  const handleFilter = (values) => {
+    setFilterData(values);
+    const { workplaceGroup, workplace } = getFilteredValues(values, wId, wgId);
+    setFilteredWId(workplace);
+    setFilteredWgId(workplaceGroup);
+
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId: workplaceGroup,
+      wId: workplace,
+      employeeId,
+      setData,
+      departmentId: values?.department?.value || 0,
+      designationId: values?.designation?.value || 0,
+      searchText: searchTerm,
+    });
+  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
@@ -83,21 +120,6 @@ const CommonApprovalComponent = () => {
       document.title = "";
     };
   }, []);
-
-  // handle filter
-  const handleFilter = (values) => {
-    const { workplace, workplaceGroup } = values;
-    fetchPendingApprovals({
-      id,
-      setLoading,
-      orgId,
-      buId,
-      wgId: workplaceGroup?.value || wgId,
-      wId: workplace?.value || wId,
-      employeeId,
-      setData,
-    });
-  };
 
   // handle approve or reject
   const handleApproveReject = async (isApprove) => {
@@ -156,6 +178,21 @@ const CommonApprovalComponent = () => {
 
   // for view Modal
   const handleViewClose = () => setViewModal(false);
+  const handleSearch = debounce((value) => {
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId: filteredWgId,
+      wId: filteredWId,
+      employeeId,
+      setData,
+      departmentId: filterData?.department?.value || 0,
+      designationId: filterData?.designation?.value,
+      searchText: value,
+    });
+  }, 300);
 
   // render
   return (
@@ -163,29 +200,47 @@ const CommonApprovalComponent = () => {
       <div className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center">
           <BackButton title={`${state?.state?.applicationType} Approval`} />
-          {selectedRow?.length > 0 ? (
+          {selectedRow?.length > 0 && (
             <ApproveRejectComp
               props={{
                 className: "ml-3",
-                onApprove: () => {
-                  showConfirmationModal("approve");
-                },
-                onReject: () => {
-                  showConfirmationModal("reject");
-                },
+                onApprove: () => showConfirmationModal("approve"),
+                onReject: () => showConfirmationModal("reject"),
               }}
             />
-          ) : null}
+          )}
         </div>
-        <CommonFilter
-          visible={isFilterVisible}
-          onClose={(visible) => setIsFilterVisible(visible)}
-          onFilter={handleFilter}
-          isDate={true}
-          isWorkplaceGroup={true}
-          isWorkplace={true}
-          isAllValue={true}
-        />
+
+        <div className="d-flex align-items-center gap-3">
+          <Input
+            placeholder="Search..."
+            prefix={<SearchOutlined />}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }}
+            style={{
+              width: 300,
+              marginRight: 10,
+              borderRadius: 5,
+              marginBottom: 5,
+            }}
+          />
+
+          <CommonFilter
+            visible={isFilterVisible}
+            onClose={(visible) => setIsFilterVisible(visible)}
+            onFilter={handleFilter}
+            isDate={false}
+            isWorkplaceGroup={true}
+            isWorkplace={true}
+            isDepartment={true}
+            isDesignation={true}
+            isEmployee={true}
+            isAllValue={true}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -270,7 +325,7 @@ const CommonApprovalComponent = () => {
           classes: "default-modal",
           handleOpen,
           viewData,
-          setViewData
+          setViewData,
         }}
       />
     </div>
