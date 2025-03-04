@@ -2,7 +2,8 @@ import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { useEffect } from "react";
+import { levelOfLeaderApiCall } from "modules/pms/configuration/evaluationCriteria/helper";
+import { useEffect, useState } from "react";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { orgIdsForBn } from "utility/orgForBanglaField";
@@ -19,11 +20,11 @@ export default function AddEditForm({
 }) {
   const saveHRPostion = useApiRequest({});
   const getBUnitDDL = useApiRequest({});
+  const [loading, setLoading] = useState(false);
+  const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
 
-  const { orgId, buId, employeeId, wgId, wId, strWorkplace } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, wgId, wId, strWorkplace, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   // ddls
   useEffect(() => {
@@ -80,6 +81,7 @@ export default function AddEditForm({
       intWorkplaceId: wId,
       intRankingId: 0,
       intBusinessUnitId: buId,
+      positionGroupId: values?.levelOfLeader?.value || null,
     };
     const payload = {
       designation: values?.strDesignation,
@@ -94,6 +96,7 @@ export default function AddEditForm({
       businessUnitId: buId,
       accountId: orgId,
       actionBy: employeeId,
+      positionGroupId: values?.levelOfLeader?.value || null,
     };
     saveHRPostion.action({
       urlKey: singleData?.intDesignationId
@@ -109,6 +112,7 @@ export default function AddEditForm({
   };
   const getWDDL = useApiRequest({});
   useEffect(() => {
+    levelOfLeaderApiCall(intAccountId, setLevelofLeaderShip, setLoading);
     getWDDL.action({
       urlKey: "WorkplaceIdAll",
       method: "GET",
@@ -134,6 +138,12 @@ export default function AddEditForm({
           label: singleData?.strPayscaleGradeName,
         },
       });
+      form.setFieldValue("levelOfLeader", [
+        {
+          label: singleData?.srtPositionGroup,
+          value: singleData?.intPositionGroupId,
+        },
+      ]);
     }
   }, [singleData]);
   return (
@@ -224,6 +234,22 @@ export default function AddEditForm({
               />
             </Col>
           )}
+          <Col md={12} sm={24}>
+            <PSelect
+              options={levelofLeaderShip.length > 0 ? levelofLeaderShip : []}
+              name="levelOfLeader"
+              label="Level of Leadership"
+              placeholder="Level of Leadership"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  levelOfLeader: op,
+                });
+              }}
+              rules={[
+                { required: true, message: "Level of Leadership is required" },
+              ]}
+            />
+          </Col>
         </Row>
         <ModalFooter
           onCancel={() => {
