@@ -160,10 +160,15 @@ const CommonApprovalComponent = () => {
         setLoading,
         orgId,
         buId,
-        wgId,
-        wId,
+        wgId: filteredWgId,
+        wId: filteredWId,
         employeeId,
         setData,
+        setTotalRecords,
+        departmentId: filterData?.department?.value || 0,
+        designationId: filterData?.designation?.value || 0,
+        searchText: searchTerm,
+        page,
       });
       setSelectedRow([]);
     } catch (error) {
