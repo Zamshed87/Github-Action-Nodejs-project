@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const makerFormConfig = () => {
+export const makerFormConfig = (form) => {
   return [
     {
       type: "text",
@@ -19,6 +19,10 @@ export const makerFormConfig = () => {
       placeholder: "KPI Score",
       col: 12,
       rules: [{ required: true, message: "KPI Score is required!" }],
+      onChange: (value) => {
+        if (value > 100) return toast.error("Sum of KPI and BAR must be 100");
+        form.setFieldsValue({ barScore: 100 - value });
+      },
     },
     {
       type: "number",
@@ -27,6 +31,10 @@ export const makerFormConfig = () => {
       placeholder: "BAR Score",
       col: 12,
       rules: [{ required: true, message: "BAR Score is required!" }],
+      onChange: (value) => {
+        if (value > 100) return toast.error("Sum of KPI and BAR must be 100");
+        form.setFieldsValue({ kpiScore: 100 - value });
+      },
     },
   ];
 };

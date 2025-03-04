@@ -7,7 +7,6 @@ import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import FormikSelect from "../../../../common/FormikSelect";
 import ViewModal from "../../../../common/ViewModal";
 import {
-  getAsyncEmployeeApi,
   getAsyncEmployeeCommonApi,
   getPeopleDeskAllDDL,
 } from "../../../../common/api";
@@ -50,7 +49,7 @@ const IndividualKpiMapping = () => {
   useEffect(() => {
     if (initData?.businessUnit?.value) {
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${initData?.businessUnit?.value}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
+        `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
         "DepartmentId",
         "DepartmentName",
         setDepartmentDDL
@@ -100,6 +99,27 @@ const IndividualKpiMapping = () => {
     } catch (error) {
       console.error("Failed to fetch supervisor data:", error);
       // supervisorDDL?.reset();
+    }
+  };
+
+  const getAsyncEmployeeApi = async ({
+    orgId,
+    buId,
+    intId,
+    value,
+    minSearchLength = 3,
+  }) => {
+    if (value?.length < minSearchLength) return;
+    try {
+      const response = await axios.get(
+        `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}&type=Employee&search=${
+          value || ""
+        }`
+      );
+
+      return response?.data;
+    } catch (_) {
+      return [];
     }
   };
 
@@ -208,7 +228,7 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-            <div className="col-lg-3">
+            {/* <div className="col-lg-3">
               <div className="input-field-main">
                 <label>Supervisor Name</label>
                 <AsyncFormikSelect
@@ -232,7 +252,7 @@ const IndividualKpiMapping = () => {
                   }}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>
