@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Drawer, Row, Col, Form, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Drawer, Row, Col, Form, Button, Checkbox } from "antd";
 import { PButton, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
@@ -30,6 +30,11 @@ type ProfileData = {
   wgId: number;
   employeeId: number;
   orgId: number;
+};
+
+type FilterData = {
+  workplaceGroup?: { value: number };
+  [key: string]: any;
 };
 
 const CommonFilter: React.FC<CommonFilterProps> = ({
@@ -69,6 +74,21 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
+  const [saveFilter, setSaveFilter] = useState(false);
+
+  const [filterData, setFilterData] = useState<FilterData>({});
+
+  useEffect(() => {
+    if (visible) {
+      const savedFilters = localStorage.getItem("commonFilterData");
+      setFilterData(savedFilters ? JSON.parse(savedFilters) : {});
+      if (savedFilters) {
+        const parsedFilters = JSON.parse(savedFilters);
+        form.setFieldsValue(parsedFilters);
+        setSaveFilter(true);
+      }
+    }
+  }, [visible]);
 
   // workplace Group
   const getWorkplaceGroup = () => {
@@ -170,14 +190,17 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   useEffect(() => {
     if (isWorkplaceGroup) {
       getWorkplaceGroup();
-    } else if (isWorkplace) {
+    }
+    if (isWorkplace) {
       getWorkplace();
-    } else if (isDepartment) {
+    }
+    if (isDepartment) {
       getEmployeDepartment();
-    } else if (isDesignation) {
+    }
+    if (isDesignation) {
       getDesignation();
     }
-  }, []);
+  }, [visible]);
 
   return (
     <>
@@ -201,13 +224,13 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
         placement="right"
         onClose={() => onClose(false)}
         open={visible}
-        width={400}
+        width={450}
       >
         <PForm
           form={form}
           onFinish={(values) => {
             onFilter(values);
-            onClose(false);
+            // onClose(false);
           }}
           initialValues={{
             workplaceGroup: {
@@ -296,7 +319,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isWorkplaceGroup && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
@@ -316,7 +339,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isWorkplace && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   options={workplaceDDL?.data || []}
                   name="workplace"
@@ -329,57 +352,72 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                       department: undefined,
                       designation: undefined,
                     });
+                    getEmployeDepartment();
+                    getDesignation();
                   }}
                 />
               </Col>
             )}
 
             {isDepartment && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   allowClear
                   options={empDepartmentDDL?.data || []}
                   name="department"
                   label="Department"
                   placeholder="Select Department"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      department: op,
+                      designation: undefined,
+                    });
+                  }}
                 />
               </Col>
             )}
 
             {isDesignation && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   allowClear
                   options={designationApi?.data || []}
                   name="designation"
                   label="Designation"
                   placeholder="Select Designation"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      designation: op,
+                    });
+                  }}
                 />
               </Col>
             )}
           </Row>
 
           <Col md={12} sm={24}>
-            <div
-              style={{
-                display: "flex",
-                marginTop: "20px",
-              }}
-            >
+            <div style={{ display: "flex", marginTop: "20px" }}>
               <PButton
                 type="primary"
                 content={"View"}
                 style={{ marginRight: "10px" }}
                 onClick={() => {
-                  const values = form.getFieldsValue(true);
+                  const values = form.getFieldsValue();
+
+                  localStorage.setItem(
+                    "commonFilterData",
+                    JSON.stringify(values)
+                  );
                   onFilter(values);
                 }}
               />
+
               <PButton
                 type="secondary"
                 content={"Reset"}
                 onClick={() => {
                   form.resetFields();
+                  localStorage.removeItem("commonFilterData");
                 }}
               />
             </div>
