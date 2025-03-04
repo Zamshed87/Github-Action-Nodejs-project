@@ -13,7 +13,7 @@ const StakeholderTable = ({ data, setStakeholderField, type }) => {
 
   const header = [
     {
-      title: "SL",
+      title: "Sequence Order",
       render: (_, rec, index) =>
         getSerial({
           currentPage: 1,
@@ -21,7 +21,7 @@ const StakeholderTable = ({ data, setStakeholderField, type }) => {
           index,
         }),
       fixed: "left",
-      align: "center",
+      align: "left",
     },
     { title: "Stakeholder Type", dataIndex: "stakeholderTypeName" },
     { title: "Stakeholder", dataIndex: "stakeholderName" },

@@ -50,8 +50,8 @@ const IndividualKpiMapping = () => {
     if (initData?.businessUnit?.value) {
       getPeopleDeskAllDDL(
         `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
-        "DepartmentId",
-        "DepartmentName",
+        "value",
+        "label",
         setDepartmentDDL
       );
     }
@@ -228,7 +228,7 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-            {/* <div className="col-lg-3">
+            <div className="col-lg-3">
               <div className="input-field-main">
                 <label>Supervisor Name</label>
                 <AsyncFormikSelect
@@ -252,7 +252,7 @@ const IndividualKpiMapping = () => {
                   }}
                 />
               </div>
-            </div> */}
+            </div>
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>
