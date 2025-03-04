@@ -283,12 +283,12 @@ export const columnIncrement = [
   },
 ];
 
-export const columnsManual = [
+export const columnsManual = (page) => [
   {
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1,
+    render: (text, record, index) => (page?.pageNo - 1) * page?.pageSize + index + 1,
   },
   {
     title: "Employee Name",
@@ -419,12 +419,12 @@ export const columnsManual = [
   },
 ];
 
-export const columnsMovement = [
+export const columnsMovement = (page) => [
   {
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1,
+    render: (text, record, index) => (page?.pageNo - 1) * page?.pageSize + index + 1,
   },
   {
     title: "Employee Code",

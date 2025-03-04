@@ -125,6 +125,7 @@ const CommonApprovalComponent = () => {
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
       searchText: searchTerm,
+      page
     });
   };
 
@@ -285,9 +286,9 @@ const CommonApprovalComponent = () => {
               : id == 4
               ? columnIncrement
               : id == 11
-              ? columnsManual
+              ? columnsManual(page)
               : id == 14
-              ? columnsMovement
+              ? columnsMovement(page)
               : id == 21
               ? columnsSeparation(setViewData, setViewModal)
               : id == 26
