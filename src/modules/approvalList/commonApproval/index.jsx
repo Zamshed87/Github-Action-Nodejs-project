@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Input, Spin } from "antd";
@@ -49,6 +49,7 @@ const CommonApprovalComponent = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const isFirstRun = useRef(true);
   // props
   const location = useLocation();
   const state = location.state;
@@ -73,27 +74,35 @@ const CommonApprovalComponent = () => {
 
   useEffect(() => {
     const { workplace, workplaceGroup } = getFilteredValues({}, wId, wgId);
-    setFilteredWId(workplace);
-    setFilteredWgId(workplaceGroup);
-  }, []);
 
-  // fetch data
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      setFilteredWId(workplace);
+      setFilteredWgId(workplaceGroup);
+    }
+  }, [wId, wgId]);
+
   useEffect(() => {
-    fetchPendingApprovals({
-      id,
-      setLoading,
-      orgId,
-      buId,
-      wgId: filteredWgId,
-      wId: filteredWId,
-      employeeId,
-      setData,
-      setTotalRecords,
-      departmentId: filterData?.department?.value || 0,
-      designationId: filterData?.designation?.value || 0,
-      searchText: searchTerm,
-      page,
-    });
+    const fetchData = debounce(() => {
+      fetchPendingApprovals({
+        id,
+        setLoading,
+        orgId,
+        buId,
+        wgId: filteredWgId,
+        wId: filteredWId,
+        employeeId,
+        setData,
+        setTotalRecords,
+        departmentId: filterData?.department?.value || 0,
+        designationId: filterData?.designation?.value || 0,
+        searchText: searchTerm,
+        page,
+      });
+    }, 300);
+
+    fetchData();
+    return () => fetchData.cancel(); // Cleanup on unmount
   }, [filteredWgId, filteredWId, page]);
 
   // Handle filter logic
