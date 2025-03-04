@@ -159,7 +159,7 @@ export default function ExpiredToken() {
                               <PrimaryButton
                                 type="button"
                                 className="btn btn-green"
-                                label="Log Out"
+                                label="Log Out1"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   history.push("/");

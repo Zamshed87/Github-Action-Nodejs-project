@@ -144,6 +144,16 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   // Employee Department
   const getEmployeDepartment = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    const workplaceIds = workplace?.value
+      ? workplace?.value.toString().split(",")
+      : [];
+
+    if (!workplaceGroup?.value || workplaceIds.length > 1) {
+      console.warn(
+        "Skipping Department API call: Multiple workplaces selected."
+      );
+      return;
+    }
 
     empDepartmentDDL?.action({
       urlKey: "DepartmentIdAll",
@@ -167,6 +177,18 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   // Designation
   const getDesignation = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    const workplaceIds = workplace?.value
+      ? workplace?.value.toString().split(",")
+      : [];
+
+    if (!workplaceGroup?.value || workplaceIds.length > 1) {
+      console.warn(
+        "Skipping Designation API call: Multiple workplaces selected."
+      );
+      return;
+    }
+
     designationApi?.action({
       urlKey: "DesignationIdAll",
       method: "GET",
@@ -350,13 +372,22 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   allowClear
                   placeholder="Select Workplace"
                   onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
-                      designation: undefined,
-                    });
-                    getEmployeDepartment();
-                    getDesignation();
+                    const workplaceIds = value
+                      ? value.toString().split(",")
+                      : [];
+                    if (workplaceIds.length > 1) {
+                      form.setFieldsValue({
+                        workplace: op,
+                        department: undefined,
+                        designation: undefined,
+                      });
+                    } else {
+                      form.setFieldsValue({ workplace: op });
+                    }
+                    if (workplaceIds.length === 1) {
+                      getEmployeDepartment();
+                      getDesignation();
+                    }
                   }}
                 />
               </Col>
