@@ -1,25 +1,23 @@
-import { FilterAltOutlined } from "@mui/icons-material";
-import { Col, Drawer, Form, Row } from "antd";
+import { Form } from "antd";
+import CommonFilter from "common/CommonFilter";
+import Loading from "common/loading/Loading";
+import NoResult from "common/NoResult";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import PeopleDeskTable, { paginationSize } from "common/peopleDeskTable";
-import { PButton, PForm, PInput, PSelect } from "Components";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions.js";
+import { PModal } from "Components/Modal";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
-  formatDate,
   getExitInterviewLanding,
   getExitInterviewLandingTableColumn,
   SearchFilter,
   statusDDL,
 } from "../exitInterview/helper.js";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import NoResult from "common/NoResult";
-import Loading from "common/loading/Loading";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import ExitInterviewAssign from "./components/ExitInterviewAssign.jsx";
-import { PModal } from "Components/Modal";
 import ExitInterviewDataView from "./components/ExitInterviewDataView.jsx";
-import { useHistory } from "react-router-dom";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions.js";
 
 export default function ExitInterviewLanding() {
   const {
@@ -38,9 +36,6 @@ export default function ExitInterviewLanding() {
   const decodedToken = tokenData
     ? JSON.parse(atob(tokenData.split(".")[1]))
     : null;
-
-  const defaultFromDate = moment();
-  const defaultToDate = moment().endOf("month");
 
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -67,16 +62,12 @@ export default function ExitInterviewLanding() {
   const [loading, setLoading] = useState(false);
 
   const getData = (pagination, searchText) => {
-    const fromDate = formatDate(
-      form.getFieldValue("fromDate") || defaultFromDate
-    );
-    const toDate = formatDate(form.getFieldValue("toDate") || defaultToDate);
     getExitInterviewLanding(
       "ExitInterview",
       buId,
       wgId,
-      fromDate,
-      toDate,
+      "",
+      "",
       values?.status || "",
       searchText,
       setRowDto,
@@ -88,6 +79,34 @@ export default function ExitInterviewLanding() {
       "",
       decodedToken.workplaceGroupList || "",
       decodedToken.workplaceList || ""
+    );
+  };
+
+  const handleFilter = (values, searchText = "", pagination = pages) => {
+    const { workplace, workplaceGroup } = values;
+    const fromDate = values?.fromDate
+      ? moment(values?.fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : null;
+    const toDate = values?.toDate
+      ? moment(values?.toDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : null;
+    getExitInterviewLanding(
+      "ExitInterview",
+      buId,
+      wgId,
+      fromDate || "",
+      toDate || "",
+      values?.status || "",
+      searchText,
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      wId,
+      "",
+      workplaceGroup?.value || wgId,
+      workplace?.value || wId
     );
   };
 
@@ -151,111 +170,17 @@ export default function ExitInterviewLanding() {
       {loading && <Loading />}
       {permission?.isView ? (
         <div className="table-card businessUnit-wrapper dashboard-scroll">
-          <div className="d-flex justify-content-between">
-            <PButton
-              size="small"
-              type="primary"
-              icon={<FilterAltOutlined />}
-              content={"Filter"}
-              onClick={() => {
-                setOpenFilter(true);
-              }}
-            />
+          <div className="d-flex justify-content-end mr-2">
             <SearchFilter form={form} pages={pages} getData={getData} />
+            <CommonFilter
+              visible={openFilter}
+              onClose={(visible) => setOpenFilter(visible)}
+              onFilter={handleFilter}
+              isDateSeparate={true}
+              isStatus={true}
+              statusDDL={statusDDL}
+            />
           </div>
-          <Drawer
-            title="Filter"
-            onClose={() => setOpenFilter(false)}
-            open={openFilter}
-          >
-            <PForm
-              form={form}
-              initialValues={{
-                fromDate: defaultFromDate,
-                toDate: defaultToDate,
-                status: "",
-              }}
-            >
-              <Row gutter={[10, 2]}>
-                <Col md={24} sm={12} xs={24}>
-                  <PSelect
-                    style={{ marginBottom: "5px" }}
-                    options={statusDDL || []}
-                    name="status"
-                    label={"Status"}
-                    showSearch
-                    placeholder="Status"
-                    onChange={(value) => {
-                      form.setFieldValue({
-                        status: value,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={12} sm={24}>
-                  <PInput
-                    type="date"
-                    name="fromDate"
-                    label="From Date"
-                    placeholder="From Date"
-                    onChange={(value) => {
-                      form.setFieldsValue({
-                        fromDate: value,
-                      });
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "From Date is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={12} sm={24}>
-                  <PInput
-                    type="date"
-                    name="toDate"
-                    label="To Date"
-                    placeholder="To Date"
-                    onChange={(value) => {
-                      form.setFieldsValue({
-                        toDate: value,
-                      });
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "To Date is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col md={6} sm={24}>
-                  <PButton
-                    style={{ marginTop: "15px" }}
-                    type="primary"
-                    content={"Filter"}
-                    onClick={() => {
-                      const values = form.getFieldsValue(true);
-                      form.validateFields().then(() => {
-                        getData(pages, values?.search);
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={6} sm={24}>
-                  <PButton
-                    style={{ marginTop: "15px" }}
-                    type="secondary"
-                    content="Reset"
-                    onClick={() => {
-                      form.resetFields();
-                    }}
-                  />
-                </Col>
-              </Row>
-            </PForm>
-          </Drawer>
           <div className="mt-3">
             {rowDto?.length > 0 ? (
               <>

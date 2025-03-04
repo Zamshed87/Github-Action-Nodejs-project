@@ -14,7 +14,7 @@ export default function EmployeeDetails({ employee, loading }) {
       }}
       loading={loading}
     >
-      <div style={{ width: "100%", maxWidth: "60vw" }}>
+      <div>
         <div
           style={{
             display: "flex",
@@ -43,7 +43,7 @@ export default function EmployeeDetails({ employee, loading }) {
         </div>
 
         <Descriptions
-          column={{ xs: 1, sm: 2, md: 2, lg: 2, xl: 3 }}
+          column={4}
           bordered
           size="small"
           labelStyle={{ fontSize: "12px" }}
@@ -99,7 +99,9 @@ export default function EmployeeDetails({ employee, loading }) {
           </Descriptions.Item>
           <Descriptions.Item label="Notice Period">
             <Typography.Text>
-              {employee.noticePeriod || "N/A"} Days
+              {employee?.noticePeriod
+                ? `${employee?.noticePeriod} Days`
+                : "N/A"}
             </Typography.Text>
           </Descriptions.Item>
         </Descriptions>

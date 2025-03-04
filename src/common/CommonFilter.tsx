@@ -285,7 +285,6 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 />
               </Col>
             )}
-
             {isDate && (
               <Col md={24} sm={24}>
                 <PInput
