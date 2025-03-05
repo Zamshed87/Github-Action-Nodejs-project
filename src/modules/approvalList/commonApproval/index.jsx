@@ -18,6 +18,7 @@ import {
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
+  columnSalaryGenerate,
   columnsBonusGenerate,
   columnsDefault,
   columnsExpense,
@@ -325,6 +326,8 @@ const CommonApprovalComponent = () => {
               ? columnAdditionDeduction
               : id == 24
               ? columnTransferPromotion
+              : id == 20
+              ? columnSalaryGenerate
               : columnsDefault
           }
           bordered
