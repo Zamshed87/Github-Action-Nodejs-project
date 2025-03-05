@@ -9,6 +9,7 @@ import {
 } from "../../../../common/peopleDeskTable/helper";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import RoasterInfo from "./component/RosterInfo";
+import { fi } from "date-fns/locale";
 
 export const getShiftInfo = async (id, setter) => {
   try {
@@ -103,7 +104,8 @@ export const columns = (
       sort: true,
       filter: false,
       fieldType: "string",
-      width: 150,
+      // width: 150,
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -128,6 +130,7 @@ export const columns = (
       sort: true,
       filter: false,
       fieldType: "string",
+      fixed: "left",
     },
 
     {
