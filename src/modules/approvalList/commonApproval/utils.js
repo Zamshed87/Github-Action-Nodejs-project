@@ -6,6 +6,8 @@ import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
 import { Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
+import { gray900 } from "utility/customColor";
+import { getMonthName } from "utility/monthUtility";
 
 export const columnsDefault = [
   {
@@ -52,6 +54,86 @@ export const columnsDefault = [
     ),
   },
 ];
+
+export const columnSalaryGenerate = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Salary Code",
+    dataIndex: ["applicationInformation", "salaryCode"],
+  },
+  {
+    title: "Salary Type",
+    dataIndex: ["applicationInformation", "salaryType"],
+  },
+  {
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+  },
+  {
+    title: "Net Payable Salary",
+    dataIndex: ["applicationInformation", "netPayableSalary"],
+  },
+  {
+    title: "Month",
+    render: (_, record) => (
+      <div className="d-flex align-items-center">
+        <LightTooltip
+          title={
+            <div className="movement-tooltip p-1">
+              <div className="border-bottom">
+                <p
+                  className="tooltip-title"
+                  style={{ fontSize: "12px", fontWeight: "600" }}
+                >
+                  Reason
+                </p>
+                <p
+                  className="tooltip-subTitle"
+                  style={{ fontSize: "12px", fontWeight: "500" }}
+                >
+                  {record?.applicationInformation?.strRemarks}
+                </p>
+              </div>
+            </div>
+          }
+          arrow
+        >
+          <InfoOutlined sx={{ color: gray900 }} />
+        </LightTooltip>
+        <div className="ml-2">
+          {getMonthName(record?.applicationInformation?.monthId)},
+          {record?.applicationInformation?.yearId}
+        </div>
+      </div>
+    ),
+    width: "60px",
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+]
 
 export const columnsLeave = (dispatch) => [
   {
@@ -283,12 +365,12 @@ export const columnIncrement = [
   },
 ];
 
-export const columnsManual = [
+export const columnsManual = (page) => [
   {
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1,
+    render: (text, record, index) => (page?.pageNo - 1) * page?.pageSize + index + 1,
   },
   {
     title: "Employee Name",
@@ -419,12 +501,12 @@ export const columnsManual = [
   },
 ];
 
-export const columnsMovement = [
+export const columnsMovement = (page) => [
   {
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1,
+    render: (text, record, index) => (page?.pageNo - 1) * page?.pageSize + index + 1,
   },
   {
     title: "Employee Code",
