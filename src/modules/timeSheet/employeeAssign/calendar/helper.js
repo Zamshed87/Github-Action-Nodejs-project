@@ -104,8 +104,8 @@ export const columns = (
       sort: true,
       filter: false,
       fieldType: "string",
-      // width: 150,
       fixed: "left",
+      width: 150,
     },
     {
       title: "Employee Name",
