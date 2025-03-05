@@ -250,7 +250,7 @@ const PMSObjective = () => {
                   if (!permission?.isCreate) {
                     return toast.warn("You don't have permission to create");
                   }
-                  history.push("/pms/configuration/objective/create");
+                  history.push("/pms/kpiSettings/objective/create");
                 }}
               />
             </li>

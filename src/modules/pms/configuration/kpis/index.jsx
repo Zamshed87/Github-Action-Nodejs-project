@@ -251,7 +251,7 @@ const Kpis = () => {
                       onClick={() => {
                         if (!permission?.isCreate)
                           return toast.warn("You don't have permission");
-                        history.push(`/pms/configuration/kpis/create`);
+                        history.push(`/pms/kpiSettings/kpis/create`);
                       }}
                     />
                   </li>

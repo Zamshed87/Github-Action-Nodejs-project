@@ -56,7 +56,7 @@ const CreateEdit = ({ isScoreSettings, setIsScoreSettings, data, cb }) => {
           id: data?.scoreScaleId,
         }}
       >
-        <CommonForm formConfig={makerFormConfig()} form={form} />
+        <CommonForm formConfig={makerFormConfig(form)} form={form} />
 
         <ModalFooter
           onCancel={() => {

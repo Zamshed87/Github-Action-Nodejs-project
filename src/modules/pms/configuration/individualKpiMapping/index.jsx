@@ -7,7 +7,6 @@ import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import FormikSelect from "../../../../common/FormikSelect";
 import ViewModal from "../../../../common/ViewModal";
 import {
-  getAsyncEmployeeApi,
   getAsyncEmployeeCommonApi,
   getPeopleDeskAllDDL,
 } from "../../../../common/api";
@@ -50,9 +49,9 @@ const IndividualKpiMapping = () => {
   useEffect(() => {
     if (initData?.businessUnit?.value) {
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${initData?.businessUnit?.value}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
-        "DepartmentId",
-        "DepartmentName",
+        `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
+        "value",
+        "label",
         setDepartmentDDL
       );
     }
@@ -100,6 +99,27 @@ const IndividualKpiMapping = () => {
     } catch (error) {
       console.error("Failed to fetch supervisor data:", error);
       // supervisorDDL?.reset();
+    }
+  };
+
+  const getAsyncEmployeeApi = async ({
+    orgId,
+    buId,
+    intId,
+    value,
+    minSearchLength = 3,
+  }) => {
+    if (value?.length < minSearchLength) return;
+    try {
+      const response = await axios.get(
+        `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}&type=Employee&search=${
+          value || ""
+        }`
+      );
+
+      return response?.data;
+    } catch (_) {
+      return [];
     }
   };
 
@@ -158,7 +178,7 @@ const IndividualKpiMapping = () => {
                     type="button"
                     onClick={(e) => {
                       history.push(
-                        `/pms/configuration/kpimapping/departmentWise/edit/1`
+                        `/pms/targetsetup/kpimapping/departmentWise/edit/1`
                         // {
                         //   deptName: record?.departmentName,
                         //   deptId: record?.departmentId,

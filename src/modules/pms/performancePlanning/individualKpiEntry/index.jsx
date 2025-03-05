@@ -70,7 +70,7 @@ const IndividualKpiEntry = () => {
     <>
       <>
         {(tableDataLoader || fiscalYearDDLloader) && <Loading />}
-        <div className="card-style pb-0 mb-2">
+        <div className="card-style pb-0 mb-2 mt-5">
           <div className="row">
             {/* <div className="col-lg-3">
                 <label>PM Type</label>

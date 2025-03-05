@@ -174,13 +174,13 @@ const CreateNEditForm = ({ propsObj }) => {
                   value={values?.department}
                   onChange={(valueOption) => {
                     setFieldValue("department", valueOption);
-                    // component === "dept" && getData(valueOption?.value, 0, 0);
-                    // component === "designation" &&
-                    //   getData(
-                    //     valueOption?.value,
-                    //     0,
-                    //     values?.designation?.value || 0
-                    //   );
+                    component === "dept" && getData(valueOption?.value, 0, 0);
+                    component === "designation" &&
+                      getData(
+                        valueOption?.value,
+                        0,
+                        values?.designation?.value || 0
+                      );
                   }}
                   styles={customStyles}
                   errors={errors}

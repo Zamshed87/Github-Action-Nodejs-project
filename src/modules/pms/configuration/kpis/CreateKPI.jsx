@@ -158,7 +158,7 @@ const CreateKPI = () => {
         // chartName: values?.chartType?.label,
       };
       updateKPIs(payload, setLoading, () => {
-        history.push(`/pms/configuration/kpis`);
+        history.push(`/pms/kpiSettings/kpis`);
       });
     }
     resetForm();
@@ -180,7 +180,7 @@ const CreateKPI = () => {
       };
     });
     const callback = () => {
-      history.push(`/pms/configuration/kpis`);
+      history.push(`/pms/kpiSettings/kpis`);
     };
     payload?.length > 0
       ? createNEditKPIs(payload, setLoading, callback)

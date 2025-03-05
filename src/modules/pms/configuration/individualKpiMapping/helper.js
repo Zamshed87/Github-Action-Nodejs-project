@@ -86,7 +86,7 @@ export const individualKpiMappingTableColumn = ({
               onClick={(e) => {
                 e.stopPropagation();
                 history.push(
-                  `/pms/configuration/kpimapping/employeeWise/edit/3`,
+                  `/pms/targetsetup/kpimapping/employeeWise/edit/3`,
                   {
                     deptName: record?.departmentName,
                     deptId: record?.departmentId,
