@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { LightTooltip } from "../../../../common/LightTooltip";
 import { dateFormatterForInput } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
+import moment from "moment";
 
 // search
 export const filterData = (
@@ -185,12 +186,11 @@ export const holidayMakePayload = (array, profileData, values) => {
   const empIds = array.map((data) => {
     return data?.employeeId;
   });
-
   const payloadObj = {
     employeeList: isAssignAll ? empIDString : empIds.join(","),
     holidayGroupId: holidayGroup?.value || 0,
     holidayGroupName: holidayGroup?.label || "",
-    effectiveDate: holidayEffectiveDate || null,
+    effectiveDate: moment(holidayEffectiveDate).format("YYYY-MM-DD") || null,
     accountId: orgId,
     businessUnitId: buId,
     workplaceGroupId: wgId,
