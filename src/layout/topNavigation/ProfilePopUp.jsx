@@ -73,6 +73,7 @@ const ProfilePopUp = ({ propsObj }) => {
               history.push("/");
               dispatch(setLogoutAction());
               dispatch(setFirstLevelNameAction(""));
+              localStorage.removeItem("commonFilterData");
             }}
           >
             <div className="single-profile-popup-list-icon">
