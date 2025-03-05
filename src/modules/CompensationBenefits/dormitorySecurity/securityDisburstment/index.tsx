@@ -278,11 +278,11 @@ export const SecurityDisbursementLanding = () => {
                     employeeId: item?.employeeId,
                   },
                   onSuccess: (res: any) => {
-                    res?.data?.forEach((row: any, index: any) => {
-                      if (row?.type === "Deposit") {
-                        res?.data?.splice(index, 1);
-                      }
-                    });
+                    // res?.data?.forEach((row: any, index: any) => {
+                    //   if (row?.type === "Deposit") {
+                    //     res?.data?.splice(index, 1);
+                    //   }
+                    // });
                     setModalData([item]);
                     setView(true);
                   },
