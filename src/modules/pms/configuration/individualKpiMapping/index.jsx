@@ -24,10 +24,8 @@ const IndividualKpiMapping = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [showKpiViewModal, setShowKpiViewModal] = useState(false);
 
-  const { employeeId, orgId, buId, buName, wId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, orgId, buId, buName, wId, wgId, isOfficeAdmin } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const initData = {
     businessUnit: {
@@ -74,6 +72,26 @@ const IndividualKpiMapping = () => {
   const { values, setFieldValue } = useFormik({
     initialValues: initData,
   });
+
+  const getSupervisorForAdmin = async (supervisorType) => {
+    try {
+      const response = await axios.get(`/PMS/GetSuporvisorsBySupervisorType`, {
+        params: {
+          supervisorType: supervisorType?.value || 0,
+          accountId: employeeId || "",
+        },
+      });
+      const formattedData =
+        response?.data?.map((item) => ({
+          label: item?.EmployeeOnlyName,
+          value: item?.EmployeeId,
+        })) || [];
+      return formattedData;
+    } catch (error) {
+      console.error("Failed to fetch supervisor data:", error);
+      // supervisorDDL?.reset();
+    }
+  };
 
   const getSuperVisorDDL = async ({ value, minSearchLength = 3 }) => {
     if (value?.length < minSearchLength) return;
@@ -228,7 +246,54 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-            <div className="col-lg-3">
+            {isOfficeAdmin && (
+              <>
+                <div className="col-lg-3">
+                  <label>Supervisor Type</label>
+                  <FormikSelect
+                    classes="input-sm form-control"
+                    name="targetType"
+                    options={[
+                      {
+                        value: 0,
+                        label: "Supervisor",
+                      },
+                      {
+                        value: 1,
+                        label: "Line Manager",
+                      },
+                      {
+                        value: 2,
+                        label: "Dotted Supervisor",
+                      },
+                    ]}
+                    value={values?.supervisorType}
+                    onChange={(valueOption) => {
+                      setFieldValue("supervisorType", valueOption);
+                      getSupervisorForAdmin(valueOption?.value);
+                    }}
+                    styles={customStyles}
+                  />
+                </div>
+                <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Supervisor Name</label>
+                    <FormikSelect
+                      name="supervisorName"
+                      placeholder=""
+                      options={departmentDDL || []}
+                      value={values?.supervisorName}
+                      onChange={(valueOption) => {
+                        setTableData([]);
+                        setFieldValue("supervisorName", valueOption);
+                      }}
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {/* <div className="col-lg-3">
               <div className="input-field-main">
                 <label>Supervisor Name</label>
                 <AsyncFormikSelect
@@ -243,16 +308,22 @@ const IndividualKpiMapping = () => {
                   isSearchIcon={true}
                   handleChange={(valueOption) => {
                     setFieldValue("supervisorName", valueOption);
+                    getPeopleDeskAllDDL(
+                      `/PMS/GetSupervisorDepartmentsAndEmployeesDdl?employeeId=${valueOption?.value}`,
+                      "value",
+                      "label",
+                      setDepartmentDDL
+                    );
                     setTableData([]);
                   }}
                   loadOptions={async (value) => {
                     return getSuperVisorDDL({
-                      value,
-                    });
+                          value,
+                        });
                   }}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>
