@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Input, Spin } from "antd";
@@ -18,6 +18,7 @@ import {
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
+  columnSalaryGenerate,
   columnsBonusGenerate,
   columnsDefault,
   columnsExpense,
@@ -35,6 +36,7 @@ import {
   columnsSalaryIncrement,
   columnsSeparation,
   columnsShiftChange,
+  columnTransferPromotion,
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
@@ -48,6 +50,7 @@ const CommonApprovalComponent = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const isFirstRun = useRef(true);
   // props
   const location = useLocation();
   const state = location.state;
@@ -64,32 +67,44 @@ const CommonApprovalComponent = () => {
   const [selectedRow, setSelectedRow] = useState([]);
   const [viewModal, setViewModal] = useState(false);
   const [filterData, setFilterData] = useState({});
+  const [page, setpage] = useState({ pageSize: 25, pageNo: 1 });
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const [filteredWId, setFilteredWId] = useState(wId);
   const [filteredWgId, setFilteredWgId] = useState(wgId);
 
   useEffect(() => {
     const { workplace, workplaceGroup } = getFilteredValues({}, wId, wgId);
-    setFilteredWId(workplace);
-    setFilteredWgId(workplaceGroup);
-  }, []);
 
-  // fetch data
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      setFilteredWId(workplace);
+      setFilteredWgId(workplaceGroup);
+    }
+  }, [wId, wgId]);
+
   useEffect(() => {
-    fetchPendingApprovals({
-      id,
-      setLoading,
-      orgId,
-      buId,
-      wgId: filteredWgId,
-      wId: filteredWId,
-      employeeId,
-      setData,
-      departmentId: filterData?.department?.value || 0,
-      designationId: filterData?.designation?.value || 0,
-      searchText: searchTerm,
-    });
-  }, [id, filteredWgId, filteredWId]);
+    const fetchData = debounce(() => {
+      fetchPendingApprovals({
+        id,
+        setLoading,
+        orgId,
+        buId,
+        wgId: filteredWgId,
+        wId: filteredWId,
+        employeeId,
+        setData,
+        setTotalRecords,
+        departmentId: filterData?.department?.value || 0,
+        designationId: filterData?.designation?.value || 0,
+        searchText: searchTerm,
+        page,
+      });
+    }, 300);
+
+    fetchData();
+    return () => fetchData.cancel(); // Cleanup on unmount
+  }, [filteredWgId, filteredWId, page]);
 
   // Handle filter logic
   const handleFilter = (values) => {
@@ -107,9 +122,11 @@ const CommonApprovalComponent = () => {
       wId: workplace,
       employeeId,
       setData,
+      setTotalRecords,
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
       searchText: searchTerm,
+      page
     });
   };
 
@@ -145,10 +162,15 @@ const CommonApprovalComponent = () => {
         setLoading,
         orgId,
         buId,
-        wgId,
-        wId,
+        wgId: filteredWgId,
+        wId: filteredWId,
         employeeId,
         setData,
+        setTotalRecords,
+        departmentId: filterData?.department?.value || 0,
+        designationId: filterData?.designation?.value || 0,
+        searchText: searchTerm,
+        page,
       });
       setSelectedRow([]);
     } catch (error) {
@@ -188,6 +210,7 @@ const CommonApprovalComponent = () => {
       wId: filteredWId,
       employeeId,
       setData,
+      setTotalRecords,
       departmentId: filterData?.department?.value || 0,
       designationId: filterData?.designation?.value,
       searchText: value,
@@ -264,9 +287,9 @@ const CommonApprovalComponent = () => {
               : id == 4
               ? columnIncrement
               : id == 11
-              ? columnsManual
+              ? columnsManual(page)
               : id == 14
-              ? columnsMovement
+              ? columnsMovement(page)
               : id == 21
               ? columnsSeparation(setViewData, setViewModal)
               : id == 26
@@ -301,10 +324,25 @@ const CommonApprovalComponent = () => {
               ? columnDeposit
               : id == 18
               ? columnAdditionDeduction
+              : id == 24
+              ? columnTransferPromotion
+              : id == 20
+              ? columnSalaryGenerate
               : columnsDefault
           }
           bordered
           data={data.map((item) => ({ ...item, key: item.id }))}
+          pagination={{
+            pageSize: page.pageSize,
+            current: page.pageNo,
+            total: totalRecords,
+            showSizeChanger: true,
+            onChange: (pageNo, pageSize) => {
+              setpage({ pageNo, pageSize });
+            },
+            showTotal: (total, range) =>
+              `Showing ${range[0]}-${range[1]} of ${total} items`,
+          }}
         />
       )}
 
