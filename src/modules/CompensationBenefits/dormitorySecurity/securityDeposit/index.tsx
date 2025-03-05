@@ -325,27 +325,27 @@ export const SecurityDepositLanding = () => {
       dataIndex: "comment",
       width: 100,
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (_: any, rec: any) => {
-        return (
-          <div>
-            {rec?.status === "Approved" ? (
-              <Tag color="green">{rec?.status}</Tag>
-            ) : // ) : rec?.status === "Inactive" ? (
-            //   <Tag color="red">{rec?.status}</Tag>
-            rec?.status === "Pending" ? (
-              <Tag color="orange">{rec?.status}</Tag>
-            ) : (
-              <Tag color="red">{rec?.status}</Tag>
-              // <Tag color="gold">{rec?.status}</Tag>
-            )}
-          </div>
-        );
-      },
-      width: 100,
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   render: (_: any, rec: any) => {
+    //     return (
+    //       <div>
+    //         {rec?.status === "Approved" ? (
+    //           <Tag color="green">{rec?.status}</Tag>
+    //         ) : // ) : rec?.status === "Inactive" ? (
+    //         //   <Tag color="red">{rec?.status}</Tag>
+    //         rec?.status === "Pending" ? (
+    //           <Tag color="orange">{rec?.status}</Tag>
+    //         ) : (
+    //           <Tag color="red">{rec?.status}</Tag>
+    //           // <Tag color="gold">{rec?.status}</Tag>
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    //   width: 100,
+    // },
 
     {
       title: "",

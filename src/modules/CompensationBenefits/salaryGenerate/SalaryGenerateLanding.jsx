@@ -438,62 +438,68 @@ const SalaryGenerateLanding = () => {
         dataIndex: "ApprovalStatus",
         sorter: true,
         filter: false,
-        width: 140,
+        width: 150,
         render: (_, item) => {
           return (
             <>
-              {item?.ApprovalStatus === "Approved" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-              {item?.ApprovalStatus === "Send for Approval" && (
-                <button
-                  style={{
-                    height: "24px",
-                    fontSize: "10px",
-                    padding: "0px 12px 0px 12px",
-                    backgroundColor: "#0BA5EC",
-                  }}
-                  className="btn btn-default"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    sendForApprovalHandler(item);
-                  }}
-                >
-                  Send for Approval
-                </button>
-              )}
-              {item?.ApprovalStatus === "Waiting for Approval" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-              {item?.ApprovalStatus === "Rejected" && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: gray500,
-                    fontWeight: "400",
-                  }}
-                >
-                  {item?.ApprovalStatus}
-                </p>
-              )}
-            </>
+            {item?.ApprovalStatus === "Approved" && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "#22C55E", // Green
+                  fontWeight: "600",
+                }}
+              >
+                {item?.ApprovalStatus}
+              </p>
+            )}
+            {item?.ApprovalStatus === "Send for Approval" && (
+              <button
+                style={{
+                  height: "24px",
+                  fontSize: "10px",
+                  padding: "0px 12px",
+                  backgroundColor: "#0BA5EC", // Blue
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                }}
+                className="btn btn-default"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sendForApprovalHandler(item);
+                }}
+              >
+                Send for Approval
+              </button>
+            )}
+            {item?.ApprovalStatus === "Waiting for Approval" && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "gray",
+                  fontWeight: "600",
+                }}
+              >
+                {item?.ApprovalStatus}
+              </p>
+            )}
+            {item?.ApprovalStatus === "Rejected" && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "#EF4444", // Red
+                  fontWeight: "600",
+                }}
+              >
+                {item?.ApprovalStatus}
+              </p>
+            )}
+          </>
+          
           );
         },
       },

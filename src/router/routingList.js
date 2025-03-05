@@ -1584,6 +1584,9 @@ import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecur
 import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
 import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
 import TurnOver from "modules/timeSheet/reports/turnOverReport";
+import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
+import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
+import { SelfExpenseApplicationLanding } from "../modules/expense/updatedExpanseApp/index.tsx";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2220,11 +2223,11 @@ export const routingList = [
   },
   {
     path: "/administration/timeManagement/holidayAndExceptionOffdayAssign",
-    component: HolidayException,
+    component: HolidayAssignPage,
   },
   {
     path: "/administration/timeManagement/calendarAssign",
-    component: Calendar,
+    component: CalendarAssign,
   },
   {
     path: "/administration/timeManagement/leavePolicyAssign",
@@ -2469,21 +2472,21 @@ export const routingList = [
     // component: MovementApplication,
     component: EmMovementApplication, // this component is used in management and self service 🔥
   },
-  {
-    path: "/SelfService/expense/expenseApplication/create",
-    component: SelfExpanseApplicationAddForm,
-  },
-  {
-    path: "/SelfService/expense/expenseApplication/edit/:id",
-    component: SelfExpanseApplicationAddForm,
-  },
-  {
-    path: "/SelfService/expense/expenseApplication/view/:id",
-    component: SelfExpenseApplicationView,
-  },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/create",
+  //   component: SelfExpanseApplicationAddForm,
+  // },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/edit/:id",
+  //   component: SelfExpanseApplicationAddForm,
+  // },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/view/:id",
+  //   component: SelfExpenseApplicationView,
+  // },
   {
     path: "/SelfService/expense/expenseApplication",
-    component: UpdateExpanseApplication,
+    component: SelfExpenseApplicationLanding,
   },
   {
     path: "/SelfService/iOU/application/create",
