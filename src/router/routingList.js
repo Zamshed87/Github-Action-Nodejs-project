@@ -3828,15 +3828,15 @@ export const routingList = [
     component: BehavioralFactorScale,
   },
   {
-    path: "/pms/configuration/objective",
+    path: "/pms/kpiSettings/objective",
     component: PMSObjective,
   },
   {
-    path: "/pms/configuration/objective/create",
+    path: "/pms/kpiSettings/objective/create",
     component: ObjectiveCreateAndEdit,
   },
   {
-    path: "/pms/configuration/objective/edit",
+    path: "/pms/kpiSettings/objective/edit",
     component: ObjectiveCreateAndEdit,
   },
   {
@@ -3912,11 +3912,11 @@ export const routingList = [
   //   component: KpiMapping,
   // },
   {
-    path: "/pms/configuration/kpimapping",
+    path: "/pms/targetsetup/kpimapping",
     component: IndividualKpiMapping,
   },
   {
-    path: "/pms/configuration/kpis",
+    path: "/pms/kpiSettings/kpis",
     component: Kpis,
   },
   {
@@ -3924,35 +3924,35 @@ export const routingList = [
     component: RoleWiseJDandSpecification,
   },
   {
-    path: "/pms/configuration/kpimapping/employeeWise/create",
+    path: "/pms/targetsetup/kpimapping/employeeWise/create",
     component: EmployeeWiseMapping,
   },
   {
-    path: "/pms/configuration/kpimapping/employeeWise/edit/:id",
+    path: "/pms/targetsetup/kpimapping/employeeWise/edit/:id",
     component: EmployeeWiseMapping,
   },
   {
-    path: "/pms/configuration/kpimapping/departmentWise/create",
+    path: "/pms/targetsetup/kpimapping/departmentWise/create",
     component: DepartmentWiseMapping,
   },
   {
-    path: "/pms/configuration/kpimapping/departmentWise/edit/:id",
+    path: "/pms/targetsetup/kpimapping/departmentWise/edit/:id",
     component: DepartmentWiseMapping,
   },
   {
-    path: "/pms/configuration/kpimapping/designationWise/create",
+    path: "/pms/targetsetup/kpimapping/designationWise/create",
     component: DesignationWiseMapping,
   },
   {
-    path: "/pms/configuration/kpimapping/designationWise/edit/:id",
+    path: "/pms/targetsetup/kpimapping/designationWise/edit/:id",
     component: DesignationWiseMapping,
   },
   {
-    path: "/pms/configuration/kpis/create",
+    path: "/pms/kpiSettings/kpis/create",
     component: CreateKPI,
   },
   {
-    path: "/pms/configuration/kpis/edit/:id",
+    path: "/pms/kpiSettings/kpis/edit/:id",
     component: CreateKPI,
   },
   {

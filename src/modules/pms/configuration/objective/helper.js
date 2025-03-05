@@ -196,7 +196,7 @@ export const pmsObjectiveTableColumn = ({
                   if (!permission?.isEdit)
                     return toast.warn("You don't have permission");
                   history?.push({
-                    pathname: "/pms/configuration/objective/edit",
+                    pathname: "/pms/kpiSettings/objective/edit",
                     state: {
                       objectiveId: record?.objectiveId,
                       objectiveRow: record,

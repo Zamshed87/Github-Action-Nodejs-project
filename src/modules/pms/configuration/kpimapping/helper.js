@@ -173,7 +173,7 @@ export const employeeeKpiMappingTable = (
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpimapping/employeeWise/edit/3`,
+                    `/pms/targetsetup/kpimapping/employeeWise/edit/3`,
                     {
                       deptName: record?.departmentName,
                       deptId: record?.departmentId,
@@ -237,7 +237,7 @@ export const deptKpiMappingTable = (page, paginationSize, history) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpimapping/departmentWise/edit/1`,
+                    `/pms/targetsetup/kpimapping/departmentWise/edit/1`,
                     {
                       deptName: record?.departmentName,
                       deptId: record?.departmentId,
@@ -288,7 +288,7 @@ export const designationKpiMappingTable = (page, paginationSize, history) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpimapping/designationWise/edit/2`,
+                    `/pms/targetsetup/kpimapping/designationWise/edit/2`,
                     {
                       deptName: record?.departmentName,
                       deptId: record?.departmentId,

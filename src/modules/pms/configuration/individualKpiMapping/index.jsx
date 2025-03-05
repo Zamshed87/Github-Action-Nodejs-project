@@ -178,7 +178,7 @@ const IndividualKpiMapping = () => {
                     type="button"
                     onClick={(e) => {
                       history.push(
-                        `/pms/configuration/kpimapping/departmentWise/edit/1`
+                        `/pms/targetsetup/kpimapping/departmentWise/edit/1`
                         // {
                         //   deptName: record?.departmentName,
                         //   deptId: record?.departmentId,

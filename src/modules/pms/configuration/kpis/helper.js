@@ -379,7 +379,7 @@ export const kpisLandingColumn = (
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpis/edit/${record.intKpisId}`,
+                    `/pms/kpiSettings/kpis/edit/${record.intKpisId}`,
                     { toEditData: record }
                   );
                 }}
