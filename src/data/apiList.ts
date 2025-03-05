@@ -318,4 +318,5 @@ export const apiList = {
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
   newLanding: "",
   CreateLeavePolicy: "/LeavePolicy/CreateLeavePolicy",
+  GetLeavePolicy: "/LeavePolicy/GetLeavePolicy",
 };

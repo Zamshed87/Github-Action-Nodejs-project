@@ -1,8 +1,16 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
+import { id } from "date-fns/locale";
+import { useApiRequest } from "Hooks";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-export const CalculativeDays = ({ form, policy, setPolicy }: any) => {
+export const CalculativeDays = ({
+  form,
+  policy,
+  setPolicy,
+  policyApi,
+}: any) => {
   const encashheader: any = [
     {
       title: "SL",
@@ -50,6 +58,7 @@ export const CalculativeDays = ({ form, policy, setPolicy }: any) => {
       ),
     },
   ];
+
   return (
     <>
       <Row gutter={[10, 2]}>
@@ -140,7 +149,7 @@ export const CalculativeDays = ({ form, policy, setPolicy }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[{ value: "1", label: "Paid Leave" }]}
+            options={policyApi?.data?.length > 0 ? policyApi?.data : []}
             name="policy"
             label="Leave Policy"
             placeholder=""
@@ -183,9 +192,10 @@ export const CalculativeDays = ({ form, policy, setPolicy }: any) => {
                         setPolicy((prev: any) => [
                           ...prev,
                           {
-                            name: policy?.label,
-                            type: policy?.type,
-                            codeName: policy?.code,
+                            name: policy?.policyName,
+                            type: policy?.policyDisplayName,
+                            codeName: policy?.leaveType,
+                            id: policy?.policyId,
                           },
                         ]);
                         form.setFieldsValue({

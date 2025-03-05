@@ -6,6 +6,7 @@ import ReactQuill from "react-quill";
 import { useApiRequest } from "Hooks";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { orgIdsForBn } from "utility/orgForBanglaField";
+import { toast } from "react-toastify";
 
 export const General = ({
   form,
@@ -16,6 +17,7 @@ export const General = ({
   wgId,
   setAttachmentList,
   attachmentList,
+  policyApi,
 }: any) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -131,6 +133,26 @@ export const General = ({
       },
     });
   };
+  const getDDL = () => {
+    const values = form.getFieldsValue(true);
+    policyApi.action({
+      urlKey: "GetLeavePolicy",
+      method: "GET",
+      params: {
+        WorkplaceId: values?.workplace?.value,
+      },
+      onSuccess: (res: any) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.policyName;
+          res[i].value = item?.policyId;
+        });
+      },
+      onError: (e: any) => {
+        toast.error(e?.response?.data);
+      },
+    });
+  };
+
   useEffect(() => {
     getLeaveTypes();
     getWorkplaceDDL({ workplaceDDL, orgId, buId, wgId });
@@ -248,6 +270,7 @@ export const General = ({
                 getEmploymentType();
                 getHRPosition();
                 getEmployeDesignation();
+                getDDL();
               }
             }}
             rules={[

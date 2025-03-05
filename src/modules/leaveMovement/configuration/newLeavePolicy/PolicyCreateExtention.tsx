@@ -69,6 +69,8 @@ export const PolicyCreateExtention = () => {
   }, []);
 
   const createApi = useApiRequest({});
+  const policyApi = useApiRequest({});
+
   // ddls
 
   const onFinish = () => {
@@ -321,7 +323,7 @@ export const PolicyCreateExtention = () => {
             },
             calculativePolicies:
               policy?.map((item: any) => ({
-                policyId: 1, // Since we only have one option, hardcoded to 1. Replace with actual policy ID if needed.
+                policyId: item?.id,
               })) || [],
           },
         };
@@ -457,6 +459,7 @@ export const PolicyCreateExtention = () => {
                   wgId={wgId}
                   attachmentList={attachmentList}
                   setAttachmentList={setAttachmentList}
+                  policyApi={policyApi}
                 />
                 <PaidLeave form={form} />
                 <Consumption
@@ -475,6 +478,7 @@ export const PolicyCreateExtention = () => {
                   form={form}
                   policy={policy}
                   setPolicy={setPolicy}
+                  policyApi={policyApi}
                 />
               </>
             ) : current === 1 ? (
