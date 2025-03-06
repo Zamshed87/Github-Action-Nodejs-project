@@ -1,6 +1,5 @@
 import { Avatar, DataTable, PCard, PCardHeader, PForm } from "Components";
 import type { RangePickerProps } from "antd/es/date-picker";
-import { useApiRequest } from "Hooks";
 import { Form } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -20,15 +19,52 @@ import { debounce } from "lodash";
 import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import { gray600 } from "utility/customColor";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import PFilter from "utility/filter/PFilter";
 import { formatFilterValue } from "utility/filter/helper";
 import { column, getTimeSheetReport } from "./helper";
 import { getTableDataMonthlyAttendance } from "../joineeAttendanceReport/helper";
 import { fromToDateList } from "../helper";
 import CommonFilter from "common/CommonFilter";
+import { getFilteredValues } from "modules/approvalList/commonApproval/filterValues";
+
+interface ValuesType {
+  fromDate?: string;
+  toDate?: string;
+  [key: string]: any;
+}
+
+interface EmployeeData {
+  intEmployeeId: number;
+  strEmployeeCode: string;
+  strEmployeeName: string;
+  strDepartmentName: string;
+  strDesignationName: string;
+  strWorkplaceGroupName: string;
+  strWorkplaceName: string;
+  lstAttendanceDate: AttendanceDate[];
+}
+
+interface AttendanceDate {
+  dteAttendenceDate: string;
+  strCalenderName: string;
+}
+
+interface FormattedEmployee {
+  EmployeeCode: string;
+  strEmployeeName: string;
+  strDepartment: string;
+  strDesignation: string;
+  strWorkplaceGroup: string;
+  strWorkplace: string;
+  strSectionName: string;
+  [key: string]: any;
+}
 
 const RosterReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [values, setValues] = useState<ValuesType>({});
+  const [data, setData] = useState([]);
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -68,30 +104,28 @@ const RosterReport = () => {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
+  const { fromDate, toDate } = getFilteredValues(values, wId, wgId);
   //   table column
   const header: any = () => {
-    const values = form.getFieldsValue(true);
-    const dateList = fromToDateList(
-      moment(values?.fromDate).format("YYYY-MM-DD"),
-      moment(values?.toDate).format("YYYY-MM-DD")
-    );
-    const d =
-      dateList?.length > 0 &&
-      dateList.map((item: any) => ({
-        title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
-        render: (_: any, record: any) =>
-          record?.[item?.date] ? (
-            <span style={getChipStyle(record?.[item?.date])}>
-              {record?.[item?.date]}
-            </span>
-          ) : (
-            "-"
-          ),
-        width: 150,
-      }));
+    // Generate list of dates between fromDate and toDate
+    const dateList = fromToDateList(fromDate, toDate);
 
+    // Create dynamic date columns
+    const dateColumns = dateList.map((item: any) => ({
+      title: () => <span style={{ color: gray600 }}>{item.level}</span>,
+      dataIndex: item.date, // Use the date as the key
+      render: (_: any, record: any) =>
+        record?.[item.date] ? (
+          <span style={getChipStyle(record?.[item.date])}>
+            {record?.[item.date]}
+          </span>
+        ) : (
+          "-"
+        ),
+      width: 150,
+    }));
+
+    // Return the static headers + dynamically generated date columns
     return [
       {
         title: "SL",
@@ -101,7 +135,6 @@ const RosterReport = () => {
         width: 35,
         align: "center",
       },
-
       {
         title: "Work. Group/Location",
         dataIndex: "strWorkplaceGroup",
@@ -120,43 +153,37 @@ const RosterReport = () => {
         width: 80,
         fixed: "left",
       },
-
       {
         title: "Employee Name",
         dataIndex: "strEmployeeName",
-        render: (_: any, rec: any) => {
-          return (
-            <div className="d-flex align-items-center">
-              <Avatar title={rec?.strEmployeeName} />
-              <span className="ml-2">{rec?.strEmployeeName}</span>
-            </div>
-          );
-        },
+        render: (_: any, rec: any) => (
+          <div className="d-flex align-items-center">
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
+          </div>
+        ),
         fixed: "left",
         width: 120,
       },
-
       {
         title: "Designation",
         dataIndex: "strDesignation",
-
         width: 100,
       },
       {
         title: "Section",
         dataIndex: "strSectionName",
-
         width: 100,
       },
       {
         title: "Department",
         dataIndex: "strDepartment",
-
         width: 100,
       },
-      ...(d as any),
+      ...dateColumns, // Append the dynamic date columns
     ];
   };
+
   const searchFunc = debounce((value) => {}, 500);
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
@@ -169,9 +196,11 @@ const RosterReport = () => {
     getTimeSheetReport({
       wId,
       pages,
-      fromDate: monthFirstDate(),
-      toDate: monthLastDate(),
+      fromDate: values?.fromDate || fromDate,
+      toDate: values?.toDate || toDate,
       accountId: intAccountId,
+      setter: setData,
+      setLoading,
     });
   }, []);
 
@@ -180,13 +209,23 @@ const RosterReport = () => {
   }
 
   const handleFilter = (values: FilterValues): void => {
-    console.log("values", values);
+    setValues(values);
+    const fromDate = values.fromDate
+      ? moment(values.fromDate).format("YYYY-MM-DD")
+      : moment(monthFirstDate()).format("YYYY-MM-DD");
+
+    const toDate = values.toDate
+      ? moment(values.toDate).format("YYYY-MM-DD")
+      : moment(monthLastDate()).format("YYYY-MM-DD");
+
     getTimeSheetReport({
       wId,
       pages,
-      fromDate: monthFirstDate(),
-      toDate: monthLastDate(),
+      fromDate,
+      toDate,
       accountId: intAccountId,
+      setter: setData,
+      setLoading,
     });
   };
 
@@ -194,10 +233,7 @@ const RosterReport = () => {
     <>
       <PForm
         form={form}
-        initialValues={{
-          fromDate: moment(monthFirstDate()),
-          toDate: moment(monthLastDate()),
-        }}
+        initialValues={{}}
         onFinish={() => {
           // landingApiCall({
           //   pagination: {
@@ -208,10 +244,10 @@ const RosterReport = () => {
         }}
       >
         <PCard>
-          {excelLoading && <Loading />}
+          {(excelLoading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
-            // title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
+            // title={`Total ${data?.length || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
@@ -222,50 +258,45 @@ const RosterReport = () => {
               const excelLanding = async () => {
                 setExcelLoading(true);
                 try {
-                  const values = form.getFieldsValue(true);
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
-                      values?.fromDate
-                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
-                      values?.toDate
-                    ).format(
-                      "YYYY-MM-DD"
-                    )}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
-                      formatFilterValue(values?.department) || 0
-                    }&designations=${formatFilterValue(
-                      values?.designation || 0
-                    )}&SearchTxt=${
-                      values?.search || ""
-                    }&PageSize=1000&IsPaginated=false&WorkplaceGroupList=${
-                      values?.workplaceGroup?.value == 0 ||
-                      values?.workplaceGroup?.value == undefined
-                        ? decodedToken.workplaceGroupList
-                        : values?.workplaceGroup?.value.toString()
-                    }&WorkplaceList=${
-                      values?.workplace?.value == 0 ||
-                      values?.workplace?.value == undefined
-                        ? decodedToken.workplaceList
-                        : values?.workplace?.value.toString()
-                    }`
+                    `/TimeSheet/GetFlexibleTimesheetReport?WorkplaceId=${wId}&AccountId=${intAccountId}&FromDate=${fromDate}&ToDate=${toDate}`
                   );
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
                       setExcelLoading(false);
-                      return toast.error("No Attendance Data Found");
+                      return toast.error("No Data Found");
                     }
 
-                    const newData = res?.data?.map((item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    });
+                    const transformedData = res?.data?.map(
+                      (employee: EmployeeData, index: any) => {
+                        let formattedEmployee: FormattedEmployee = {
+                          sl: index + 1,
+                          EmployeeCode: employee.strEmployeeCode,
+                          strEmployeeName: employee.strEmployeeName,
+                          strDepartment: employee.strDepartmentName,
+                          strDesignation: employee.strDesignationName,
+                          strWorkplaceGroup: employee.strWorkplaceGroupName,
+                          strWorkplace: employee.strWorkplaceName,
+                          strSectionName: employee.strDesignationName,
+                        };
+
+                        employee.lstAttendanceDate.forEach(
+                          (attendance: AttendanceDate) => {
+                            formattedEmployee[
+                              attendance.dteAttendenceDate.split("T")[0]
+                            ] = attendance.strCalenderName;
+                          }
+                        );
+
+                        return formattedEmployee;
+                      }
+                    );
                     createCommonExcelFile({
-                      titleWithDate: `Roster Report - ${dateFormatter(
-                        moment(values?.fromDate).format("YYYY-MM-DD")
+                      titleWithDate: `Time Sheet Report - ${dateFormatter(
+                        moment(fromDate).format("YYYY-MM-DD")
                       )} to ${dateFormatter(
-                        moment(values?.toDate).format("YYYY-MM-DD")
+                        moment(toDate).format("YYYY-MM-DD")
                       )}`,
                       fromDate: "",
                       toDate: "",
@@ -274,16 +305,16 @@ const RosterReport = () => {
                         ? (buDetails as any)?.strWorkplace
                         : buName,
                       tableHeader: column(
-                        moment(values?.fromDate).format("YYYY-MM-DD"),
-                        moment(values?.toDate).format("YYYY-MM-DD")
+                        moment(fromDate).format("YYYY-MM-DD"),
+                        moment(toDate).format("YYYY-MM-DD")
                       ),
                       getTableData: () =>
                         getTableDataMonthlyAttendance(
-                          newData,
+                          transformedData,
                           Object.keys(
                             column(
-                              moment(values?.fromDate).format("YYYY-MM-DD"),
-                              moment(values?.toDate).format("YYYY-MM-DD")
+                              moment(fromDate).format("YYYY-MM-DD"),
+                              moment(toDate).format("YYYY-MM-DD")
                             )
                           )
                         ),
@@ -314,7 +345,6 @@ const RosterReport = () => {
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
-                  // console.log(error?.message);
                 }
               };
               excelLanding();
@@ -325,18 +355,18 @@ const RosterReport = () => {
                 onClose={(visible) => setIsFilterVisible(visible)}
                 onFilter={handleFilter}
                 isDate={true}
-                isWorkplaceGroup={true}
-                isWorkplace={true}
-                isDepartment={true}
-                isDesignation={true}
-                isAllValue={true}
+                isWorkplaceGroup={false}
+                isWorkplace={false}
+                isDepartment={false}
+                isDesignation={false}
+                isAllValue={false}
               />
             }
           />
 
           <DataTable
             bordered
-            data={[]}
+            data={data || []}
             header={header()}
             pagination={{
               pageSize: pages?.pageSize,
