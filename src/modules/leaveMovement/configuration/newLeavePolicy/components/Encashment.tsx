@@ -1,5 +1,7 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
+import { useApiRequest } from "Hooks";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export const Encashment = ({ form, tableData, setTableData }: any) => {
@@ -73,6 +75,57 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
     });
     return isExists;
   };
+
+  const enumApi2 = useApiRequest({});
+
+  const getDependTypes2 = () => {
+    enumApi2?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "DateDependsOnEnum",
+      },
+    });
+  };
+  const enumApi4 = useApiRequest({});
+
+  const getDependTypes4 = () => {
+    enumApi4?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "DaysTypeEnum",
+      },
+    });
+  };
+  const enumApi3 = useApiRequest({});
+
+  const getDependTypes3 = () => {
+    enumApi3?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeavePolicyDependOnEnum",
+      },
+    });
+  };
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "EncashableTimelineEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes2();
+    getDependTypes4();
+    getDependTypes3();
+    getDependTypes();
+  }, []);
   return (
     <>
       <Divider
@@ -95,7 +148,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
         </div>
       </Divider>
 
-      <Col md={4} sm={24}>
+      <Col md={6} sm={24}>
         <PSelect
           // mode="multiple"
           allowClear
@@ -124,10 +177,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              { value: 1, label: "Date of Joining" },
-              { value: 2, label: "Date of Confirmation" },
-            ]}
+            options={enumApi2?.data?.DateDependsOnEnum || []}
             name="enLengthDependOn"
             label="Service Length Depend On"
             placeholder="Service Length Depend On"
@@ -148,12 +198,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              { value: 1, label: "After Leave Lapse" },
-              { value: 2, label: "Final Settlement" },
-              { value: 2, label: "Anytime" },
-              // { value: 3, label: "Clock Time" },
-            ]}
+            options={enumApi?.data?.EncashableTimelineEnum || []}
             name="encashmentTimeline"
             label="Encashment Timeline"
             placeholder="Encashment Timeline"
@@ -204,11 +249,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              { value: 1, label: "Percentage of Days" },
-              { value: 2, label: "Fixed Days" },
-              // { value: 3, label: "Clock Time" },
-            ]}
+            options={enumApi4?.data?.DaysTypeEnum || []}
             name="encashType"
             label="Leave Encashment Type"
             placeholder="Leave Encashment Type"
@@ -236,7 +277,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
                     type="number"
                     name="maxEncashment"
                     label={`Max Leave Encashment (${
-                      encashType?.value === 1 ? "% of Days" : "Fixed Days"
+                      encashType?.value == 2 ? "% of Days" : "Fixed Days"
                     })`}
                     placeholder=""
                     rules={[
@@ -256,11 +297,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              { value: 1, label: "Basic" },
-              { value: 2, label: "Gross" },
-              { value: 3, label: "Fixed Amount" },
-            ]}
+            options={enumApi3?.data?.LeavePolicyDependOnEnum || []}
             name="encashBenefits"
             label="Encashment Benefits"
             placeholder=""
@@ -295,7 +332,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
                     type="number"
                     name="paidAmount"
                     label={`Paid (${
-                      encashBenefits?.value !== 3 ? "% " : "Amount"
+                      encashBenefits?.value != 3 ? "% " : "Amount"
                     })`}
                     placeholder=""
                     rules={[

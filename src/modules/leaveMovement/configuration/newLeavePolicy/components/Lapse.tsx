@@ -1,8 +1,23 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import React from "react";
+import { useApiRequest } from "Hooks";
+import React, { useEffect } from "react";
 
 export const Lapse = ({ form }: any) => {
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeaveLapseEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
   return (
     <Row gutter={[10, 2]}>
       <Divider
@@ -28,19 +43,14 @@ export const Lapse = ({ form }: any) => {
         <PSelect
           // mode="multiple"
           allowClear
-          options={[
-            { value: 1, label: "Calendar Year" },
-            { value: 2, label: "Fiscal Year" },
-            { value: 3, label: "Date of Joining" },
-            { value: 4, label: "Date of Confirmation" },
-            { value: 5, label: "Leaves Completed" },
-          ]}
+          options={enumApi?.data?.LeaveLapseEnum || []}
           name="leavelapse"
           label="Leave Lapse After"
           placeholder=""
           onChange={(value, op) => {
             form.setFieldsValue({
               leavelapse: op,
+              afterLeaveCompleted: undefined,
             });
           }}
           rules={[
@@ -57,7 +67,7 @@ export const Lapse = ({ form }: any) => {
           const { leavelapse } = form.getFieldsValue(true);
 
           return (
-            leavelapse?.value === 5 && (
+            leavelapse?.value == 5 && (
               <>
                 <Col md={6} sm={24}>
                   <PInput
@@ -67,7 +77,7 @@ export const Lapse = ({ form }: any) => {
                     placeholder=""
                     rules={[
                       {
-                        required: leavelapse?.value === 5,
+                        required: leavelapse?.value == 5,
                         message: "After Leaves Completed is required",
                       },
                     ]}

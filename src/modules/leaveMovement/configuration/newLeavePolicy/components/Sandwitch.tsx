@@ -1,60 +1,10 @@
 import { Col, Divider, Form, Row } from "antd";
-import { DataTable, PInput, PSelect } from "Components";
-import React, { useState } from "react";
+import { DataTable, PSelect } from "Components";
+import { useApiRequest } from "Hooks";
+import React, { useEffect, useState } from "react";
 
-const SandwitchData = [
-  {
-    index: 0,
-    scenario: "Leave + Offday + Leave",
-    count: 0,
-  },
-  {
-    index: 1,
-
-    scenario: "Leave + Holiday + Leave",
-    count: 0,
-  },
-  {
-    index: 2,
-
-    scenario: "Leave + Offday + Holiday + Leave",
-    count: 0,
-  },
-  {
-    index: 3,
-
-    scenario: "Offday + Leave + Offday",
-    count: 0,
-  },
-  {
-    index: 4,
-
-    scenario: "Holiday + Leave + Holiday",
-    count: 0,
-  },
-  {
-    index: 5,
-
-    scenario: "Offday + Leave + Holiday",
-    count: 0,
-  },
-
-  {
-    index: 6,
-
-    scenario: "Holiday + Leave + Offday",
-    count: 0,
-  },
-];
-export const Sandwitch = ({
-  form,
-  selectedRow1,
-  setSelectedRow1,
-  selectedRow2,
-  setSelectedRow2,
-}: any) => {
-  const [sandWitchLanding, setSandWitchLanding] =
-    useState<any[]>(SandwitchData);
+export const Sandwitch = ({ form, selectedRow1, setSelectedRow1 }: any) => {
+  const [sandWitchLanding, setSandWitchLanding] = useState<any[]>([]);
 
   const sandWitchHeader: any = [
     {
@@ -87,6 +37,28 @@ export const Sandwitch = ({
     //   ),
     // },
   ];
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "SandwichLeaveEnum",
+      },
+      onSuccess: (data: any) => {
+        data?.SandwichLeaveEnum?.forEach((item: any, id: any) => {
+          data.SandwichLeaveEnum[id].index = item.value;
+          data.SandwichLeaveEnum[id].scenario = item.label;
+        });
+        setSandWitchLanding(data?.SandwichLeaveEnum);
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
+
   return (
     <Row gutter={[10, 2]}>
       <Divider

@@ -1,8 +1,23 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import React from "react";
+import { useApiRequest } from "Hooks";
+import React, { useEffect } from "react";
 
 export const Additional = ({ form }: any) => {
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeaveApplicationTimeEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
   return (
     <>
       <Divider
@@ -113,12 +128,7 @@ export const Additional = ({ form }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              { value: 1, label: "Before Leave" },
-              { value: 2, label: "After Leave" },
-              { value: 3, label: "Anytime" },
-              // { value: 3, label: "Clock Time" },
-            ]}
+            options={enumApi?.data?.LeaveApplicationTimeEnum || []}
             name="leaveApplicationTime"
             label="Leave Application Time"
             placeholder=""

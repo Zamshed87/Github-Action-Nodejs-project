@@ -2,6 +2,8 @@ import { InfoOutlined } from "@mui/icons-material";
 import { Col, Divider, Form, Row } from "antd";
 import { LightTooltip } from "common/LightTooltip";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
+import { useApiRequest } from "Hooks";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { failColor } from "utility/customColor";
 
@@ -53,6 +55,20 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
       ),
     },
   ];
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeaveConsumeTypeEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
   return (
     <Row gutter={[10, 2]}>
       <Divider
@@ -78,18 +94,16 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
         <PSelect
           // mode="multiple"
           allowClear
-          options={[
-            { value: 1, label: "Full Day" },
-            { value: 2, label: "1st Half Day" },
-            { value: 3, label: "2nd Half Day" },
-            { value: 4, label: "Clock Time" },
-          ]}
+          options={enumApi?.data?.LeaveConsumeTypeEnum || []}
           name="leaveConsumeType"
           label="Leave Consume Type"
           placeholder="Leave Consume Type"
           onChange={(value, op) => {
             form.setFieldsValue({
               leaveConsumeType: op,
+              minConsumeTime: undefined,
+              maxConsumeTime: undefined,
+              standardWorkHour: undefined,
             });
           }}
           rules={[
@@ -108,7 +122,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
           return (
             <>
               {/* {leaveConsumeType?.filter((i: any) => i?.value !== 1).length > */}
-              {leaveConsumeType?.value !== 1 && (
+              {leaveConsumeType?.value != 1 && (
                 <>
                   <Col md={5} sm={24}>
                     <PInput
@@ -136,7 +150,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                       rules={[
                         {
                           required:
-                            leaveConsumeType && leaveConsumeType?.value !== 1,
+                            leaveConsumeType && leaveConsumeType?.value != 1,
                           message: "Minimum Consume Hour is required",
                         },
                       ]}
@@ -168,7 +182,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                       rules={[
                         {
                           required:
-                            leaveConsumeType && leaveConsumeType?.value !== 1,
+                            leaveConsumeType && leaveConsumeType?.value != 1,
                           message: "Maximum Consume Hour is required",
                         },
                       ]}
@@ -176,7 +190,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                   </Col>
                 </>
               )}
-              {leaveConsumeType?.value === 4 && (
+              {leaveConsumeType?.value == 4 && (
                 <Col md={5} sm={24}>
                   <PInput
                     type="number"
@@ -186,7 +200,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                     rules={[
                       {
                         required:
-                          leaveConsumeType && leaveConsumeType?.value === 4,
+                          leaveConsumeType && leaveConsumeType?.value == 4,
                         // leaveConsumeType?.filter((i: any) => i?.value === 4)
                         //   .length > 0,
                         message: "Standard Working Hour is required",
@@ -243,7 +257,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                           ...prev,
                           {
                             consumeHr:
-                              leaveConsumeType?.value === 1
+                              leaveConsumeType?.value == 1
                                 ? "Not Applicable"
                                 : `${minConsumeTime} to ${maxConsumeTime} Hr.`,
                             leaveConsumeType: leaveConsumeType?.label,

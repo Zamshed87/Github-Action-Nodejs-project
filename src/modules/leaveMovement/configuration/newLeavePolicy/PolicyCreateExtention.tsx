@@ -46,7 +46,6 @@ export const PolicyCreateExtention = () => {
   const [current, setCurrent] = useState(0);
   const [consumeData, setConsumeData] = useState<any>([]);
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
-  const [selectedRow2, setSelectedRow2] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
   const [balanceTable, setBalanceTable] = useState<any>([]);
   const [policy, setPolicy] = useState<any>([]);
@@ -263,10 +262,12 @@ export const PolicyCreateExtention = () => {
               .join(","),
             description: values?.applicationBody,
             documentId: attachmentList[0]?.documentId || 0,
+            // ---------Paid Leave-----------------
             isPaidLeave: values?.paidType?.label?.includes("Paid") || false,
-            payDependOnId: values?.payDependsOn?.value || 0,
+            payDependOnId: +values?.payDependsOn?.value || 0,
             payDependOn: values?.payDependsOn?.label,
             payDependOnValue: values?.payValue || 0,
+            // ---------Leave Consume-----------------
             leaveConsumeTypes:
               consumeData?.map((item: any) => ({
                 leaveConsumeTypeId:
@@ -289,12 +290,15 @@ export const PolicyCreateExtention = () => {
                     : item.consumeHr?.split(" to ")[1]?.split(" Hr.")[0] || 0,
                 standardWorkingHour: item.standardWorkHour || 0,
               })) || [],
-            leaveLapseId: values?.leavelapse?.value || 0,
+            // ---------Leave Lapse-----------------
+            leaveLapseId: +values?.leavelapse?.value || 0,
             lapseAfterDayCompleted: values?.afterLeaveCompleted || 0,
+            // ---------Pro Rata-----------------
             isProRata: values?.isProRata?.value === 1,
             proRataLastStartDays: values?.proRataCount || 0,
-            proRataBasisId: values?.proRataBasis?.value || 0,
-            serviceLengthDependOnId: values?.dependsOn?.value || 0,
+            proRataBasisId: +values?.proRataBasis?.value || 0,
+            // --------- Balance-----------------
+            serviceLengthDependOnId: +values?.dependsOn?.value || 0,
             leaveBalances:
               balanceTable?.map((item: any) => ({
                 fromServiceLength:
@@ -304,24 +308,25 @@ export const PolicyCreateExtention = () => {
                 balanceDependOn:
                   item.leaveDependsOn === "Fixed Days"
                     ? 1
-                    : item.leaveDependsOn === "Calculative"
-                    ? 4
+                    : item.leaveDependsOn === "Calculative Days"
+                    ? 2
                     : item.leaveDependsOn === "Bridge Leave"
-                    ? 5
+                    ? 3
                     : 0,
                 calculativeDays: parseInt(item.calculativeDays) || 0,
                 bridgeLeaveFor:
                   item.bridgeLeaveFor === "Off Days"
-                    ? 1
-                    : item.bridgeLeaveFor === "HoliDays"
+                    ? 3
+                    : item.bridgeLeaveFor === "Holiday"
                     ? 2
                     : item.bridgeLeaveFor === "Both"
-                    ? 3
+                    ? 1
                     : 0,
                 minimumWorkingHour: parseInt(item.minWorkHr) || 0,
                 leaveDays: parseInt(item.leaveDaysFor) || 0,
                 expiresDays: parseInt(item.expireAfterAvailable) || 0,
               })) || [],
+            // --------- Calculative Days-----------------
             calculativeDays: {
               isIncluePresent: values?.isPresent || false, // Bind from isPresent
               isInclueMovement: values?.isMovement || false, // Bind from isMovement
@@ -359,7 +364,7 @@ export const PolicyCreateExtention = () => {
 
             stepperId: 3, // Assuming stepperId is managed elsewhere or not directly bound here
             isCarryForward: values?.isCarryForward?.value === 1,
-            carryForwardTypeId: values?.leaveCarryForwardType?.value || 0,
+            carryForwardTypeId: +values?.leaveCarryForwardType?.value || 0,
             maxCarryAfterLapse: values?.minConsumeTime || 0,
             isAddPreviouscarry: values?.addPrevCarry?.value === 1,
             maxCarryDays: values?.maxCarryForwardBalance || 0,
@@ -376,24 +381,24 @@ export const PolicyCreateExtention = () => {
             policyId: id,
 
             isEncashment: values?.isEncashment?.value === 1,
-            serviceLengthDependOnId: values?.enLengthDependOn?.value,
-            encashmentTimelineId: values?.encashmentTimeline?.value,
+            serviceLengthDependOnId: +values?.enLengthDependOn?.value,
+            encashmentTimelineId: +values?.encashmentTimeline?.value,
             encashmentRows: tableData?.map((item: any) => {
               const [fromLength, toLength] = item?.serviceLength.split(" - ");
               const encashTypeLabel = item.encashmentType;
               const encashBenefitsLabel = item.encashBenefits;
 
               let maxEncashmentTypeId = 0;
-              if (encashTypeLabel === "Percentage of Days") {
-                maxEncashmentTypeId = 1;
-              } else if (encashTypeLabel === "Fixed Days") {
+              if (encashTypeLabel === "% of Days") {
                 maxEncashmentTypeId = 2;
+              } else if (encashTypeLabel === "Fixed Days") {
+                maxEncashmentTypeId = 1;
               }
 
               let encashmentDependOnId = 0;
-              if (encashBenefitsLabel === "Basic") {
+              if (encashBenefitsLabel === "Basic Salary") {
                 encashmentDependOnId = 1;
-              } else if (encashBenefitsLabel === "Gross") {
+              } else if (encashBenefitsLabel === "Gross Salary") {
                 encashmentDependOnId = 2;
               } else if (encashBenefitsLabel === "Fixed Amount") {
                 encashmentDependOnId = 3;
@@ -421,7 +426,7 @@ export const PolicyCreateExtention = () => {
             isBalanceShowESS: values?.isEssShowBalance?.value === 1,
             isApplyFromESS: values?.isEssApply?.value === 1,
             roundingTypeId: values?.leaveRoundingType?.value,
-            applicationTimeId: values?.leaveApplicationTime?.value,
+            applicationTimeId: +values?.leaveApplicationTime?.value,
             isAttachmentMandatory: values?.isAttachmentMandatory?.value === 1,
             minLeaveForAttachment: values?.attachmentMandatoryAfter,
             maxLeaveInMonth: values?.maxLeaveApplyMonthly,
@@ -510,8 +515,6 @@ export const PolicyCreateExtention = () => {
               // <PaidLeave form={form} />
               <Sandwitch
                 form={form}
-                selectedRow2={selectedRow2}
-                setSelectedRow2={setSelectedRow2}
                 selectedRow1={selectedRow1}
                 setSelectedRow1={setSelectedRow1}
               />

@@ -1,8 +1,23 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import React from "react";
+import { useApiRequest } from "Hooks";
+import React, { useEffect } from "react";
 
 export const CarryForward = ({ form }: any) => {
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "DaysTypeEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
   return (
     <>
       <Divider
@@ -61,10 +76,7 @@ export const CarryForward = ({ form }: any) => {
                     <PSelect
                       // mode="multiple"
                       allowClear
-                      options={[
-                        { value: 1, label: "Percentage of Days" },
-                        { value: 2, label: "Fixed Days" },
-                      ]}
+                      options={enumApi?.data?.DaysTypeEnum || []}
                       name="leaveCarryForwardType"
                       label="Leave Carry Forward Type"
                       placeholder="Leave Carry Forward Type"
@@ -86,7 +98,7 @@ export const CarryForward = ({ form }: any) => {
                       type="number"
                       name="minConsumeTime"
                       label={`Max Carry Forward After Lapse (${
-                        leaveCarryForwardType?.value === 1 ? "%" : "Days"
+                        leaveCarryForwardType?.value == 2 ? "%" : "Days"
                       })`}
                       placeholder=""
                       rules={[

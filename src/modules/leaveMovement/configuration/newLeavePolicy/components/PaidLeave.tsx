@@ -53,6 +53,8 @@ export const PaidLeave = ({ form }: any) => {
           onChange={(value, op) => {
             form.setFieldsValue({
               paidType: op,
+              payValue: undefined,
+              payDependsOn: undefined,
             });
           }}
           rules={[
@@ -82,6 +84,7 @@ export const PaidLeave = ({ form }: any) => {
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           payDependsOn: op,
+                          payValue: undefined,
                         });
                       }}
                       rules={[

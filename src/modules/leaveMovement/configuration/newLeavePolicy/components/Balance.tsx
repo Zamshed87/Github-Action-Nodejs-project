@@ -1,5 +1,7 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PButton, PInput, PSelect, TableButton } from "Components";
+import { useApiRequest } from "Hooks";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
@@ -83,6 +85,45 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
     });
     return isExists;
   };
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeaveBalanceEnum",
+      },
+    });
+  };
+
+  const enumApi2 = useApiRequest({});
+
+  const getDependTypes2 = () => {
+    enumApi2?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "DateDependsOnEnum",
+      },
+    });
+  };
+  const enumApi3 = useApiRequest({});
+
+  const getDependTypes3 = () => {
+    enumApi2?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "BridgeLeaveForEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+    getDependTypes2();
+    getDependTypes3();
+  }, []);
   return (
     <>
       <Row gutter={[10, 2]}>
@@ -109,14 +150,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              // { value: 1, label: "Fixed Days" },
-              { value: 2, label: "Date of Joining" },
-              { value: 3, label: "Date of Confirmation" },
-              // { value: 4, label: "Calculative" },
-              // { value: 5, label: "Bridge Leave" },
-              // { value: 3, label: "Clock Time" },
-            ]}
+            options={enumApi2?.data?.DateDependsOnEnum || []}
             name="dependsOn"
             label="Service Length Depend On"
             placeholder=""
@@ -181,18 +215,17 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={[
-              { value: 1, label: "Fixed Days" },
-              { value: 4, label: "Calculative" },
-              { value: 5, label: "Bridge Leave" },
-              // { value: 3, label: "Clock Time" },
-            ]}
+            options={enumApi?.data?.LeaveBalanceEnum || []}
             name="leaveDependsOn"
             label="Leave Balance Depend On"
             placeholder=""
             onChange={(value, op) => {
               form.setFieldsValue({
                 leaveDependsOn: op,
+                calculativeDays: undefined,
+                bridgeLeaveFor: undefined,
+                minWorkHr: undefined,
+                expireAfterAvailable: undefined,
               });
             }}
             rules={[
@@ -207,7 +240,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
           {() => {
             const { leaveDependsOn } = form.getFieldsValue(true);
 
-            return leaveDependsOn?.value === 4 ? (
+            return leaveDependsOn?.value == 2 ? (
               <>
                 <Col md={6} sm={24}>
                   <PInput
@@ -217,7 +250,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                     placeholder=""
                     rules={[
                       {
-                        required: leaveDependsOn?.value === 4,
+                        required: leaveDependsOn?.value == 2,
                         message: "Calculative Days is required",
                       },
                     ]}
@@ -225,17 +258,13 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                 </Col>
               </>
             ) : (
-              leaveDependsOn?.value === 5 && (
+              leaveDependsOn?.value == 3 && (
                 <>
                   <Col md={6} sm={24}>
                     <PSelect
                       // mode="multiple"
                       allowClear
-                      options={[
-                        { value: 1, label: "Off Days" },
-                        { value: 2, label: "HoliDays" },
-                        { value: 3, label: "Both" },
-                      ]}
+                      options={enumApi3?.data?.BridgeLeaveForEnum || []}
                       name="bridgeLeaveFor"
                       label="Bridge Leave For"
                       placeholder=""
@@ -246,7 +275,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                       }}
                       rules={[
                         {
-                          required: leaveDependsOn?.value === 5,
+                          required: leaveDependsOn?.value == 3,
                           message: "Bridge Leave For is required",
                         },
                       ]}
@@ -260,7 +289,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                       placeholder=""
                       rules={[
                         {
-                          required: leaveDependsOn?.value === 5,
+                          required: leaveDependsOn?.value == 3,
                           message: "Expire After Available (Days) is required",
                         },
                       ]}
@@ -274,7 +303,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                       placeholder=""
                       rules={[
                         {
-                          required: leaveDependsOn?.value === 5,
+                          required: leaveDependsOn?.value == 3,
                           message: "Minumum Working Hour is required",
                         },
                       ]}
