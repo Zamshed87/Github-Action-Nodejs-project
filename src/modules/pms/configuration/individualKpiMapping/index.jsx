@@ -320,37 +320,7 @@ const IndividualKpiMapping = () => {
                 </div>
               </>
             )}
-            {/* <div className="col-lg-3">
-              <div className="input-field-main">
-                <label>Supervisor Name</label>
-                <AsyncFormikSelect
-                  isClear={true}
-                  selectedValue={values?.supervisorName}
-                  styles={{
-                    control: (provided) => ({
-                      ...customStyles?.control(provided),
-                      width: "100%",
-                    }),
-                  }}
-                  isSearchIcon={true}
-                  handleChange={(valueOption) => {
-                    setFieldValue("supervisorName", valueOption);
-                    getPeopleDeskAllDDL(
-                      `/PMS/GetSupervisorDepartmentsAndEmployeesDdl?employeeId=${valueOption?.value}`,
-                      "value",
-                      "label",
-                      setDepartmentDDL
-                    );
-                    setTableData([]);
-                  }}
-                  loadOptions={async (value) => {
-                    return getSuperVisorDDL({
-                          value,
-                        });
-                  }}
-                />
-              </div>
-            </div> */}
+
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>

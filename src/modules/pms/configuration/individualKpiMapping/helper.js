@@ -45,7 +45,7 @@ export const individualKpiMappingTableColumn = ({
     },
     {
       title: "Total KPIs",
-      dataIndex: "totalKpiNew",
+      dataIndex: "employeeWiseKpi",
     },
     {
       title: "Action",
