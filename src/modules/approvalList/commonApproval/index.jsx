@@ -255,7 +255,7 @@ const CommonApprovalComponent = () => {
             visible={isFilterVisible}
             onClose={(visible) => setIsFilterVisible(visible)}
             onFilter={handleFilter}
-            isDate={false}
+            isDate={true}
             isWorkplaceGroup={true}
             isWorkplace={true}
             isDepartment={true}
