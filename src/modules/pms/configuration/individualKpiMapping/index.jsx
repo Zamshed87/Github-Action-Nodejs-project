@@ -60,21 +60,13 @@ const IndividualKpiMapping = () => {
     useAxiosGet();
 
   useEffect(() => {
-    if (initData?.businessUnit?.value) {
-      // getPeopleDeskAllDDL(
-      //   `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
-      //   "value",
-      //   "label",
-      //   setDepartmentDDL
-      // );
-    }
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
     );
-    getData(initData, pages);
+    // getData(initData, pages);
     if (!isOfficeAdmin) {
       GetSupervisorDepartmentsAndEmployeesDdl(
         employeeId,
@@ -149,7 +141,9 @@ const IndividualKpiMapping = () => {
         values?.businessUnit?.value
       }&departmentId=${values?.department?.value || 0}&employeeId=${
         values?.employee?.value || 0
-      }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`,
+      }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&targetType=${
+        values?.targetType?.value || 0
+      }&supOrLineOrDottedSupId=${values?.supervisorName?.value || 0}`,
       (data) => {
         if (data) {
           setPages((prev) => ({
@@ -254,7 +248,7 @@ const IndividualKpiMapping = () => {
                   <label>Supervisor Type</label>
                   <FormikSelect
                     classes="input-sm form-control"
-                    name="targetType"
+                    name="supervisorType"
                     options={[
                       {
                         value: 0,
