@@ -1,8 +1,23 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import React from "react";
+import { useApiRequest } from "Hooks";
+import React, { useEffect } from "react";
 
 export const ProRata = ({ form }: any) => {
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "ProRataBasisEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
   return (
     <>
       <Divider
@@ -76,12 +91,7 @@ export const ProRata = ({ form }: any) => {
                     <PSelect
                       // mode="multiple"
                       allowClear
-                      options={[
-                        { value: 1, label: "Monthly Increment" },
-                        { value: 2, label: "Update From Start" },
-                        { value: 3, label: "Update After End" },
-                        // { value: 3, label: "Clock Time" },
-                      ]}
+                      options={enumApi?.data?.ProRataBasisEnum || []}
                       name="proRataBasis"
                       label="Pro Rata Basis"
                       placeholder=""

@@ -1,6 +1,23 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
+import { useApiRequest } from "Hooks";
+import { useEffect } from "react";
 export const PaidLeave = ({ form }: any) => {
+  const enumApi = useApiRequest({});
+
+  const getDependTypes = () => {
+    enumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeavePolicyDependOnEnum",
+      },
+    });
+  };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
+
   return (
     <>
       <Divider
@@ -58,11 +75,7 @@ export const PaidLeave = ({ form }: any) => {
                   <Col md={6} sm={24}>
                     <PSelect
                       // mode="multiple"
-                      options={[
-                        { value: 2, label: "Gross Salary" },
-                        { value: 1, label: "Basic Salary" },
-                        { value: 3, label: "Fixed Amount" },
-                      ]}
+                      options={enumApi?.data?.LeavePolicyDependOnEnum || []}
                       name="payDependsOn"
                       label="Pay Depend On"
                       placeholder="Pay Depend On"

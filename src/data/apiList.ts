@@ -321,4 +321,5 @@ export const apiList = {
   CreateLeavePolicy: "/LeavePolicy/CreateLeavePolicy",
   GetLeavePolicy: "/LeavePolicy/GetLeavePolicy",
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
+  GetEnums: "/Enum/GetEnums",
 };

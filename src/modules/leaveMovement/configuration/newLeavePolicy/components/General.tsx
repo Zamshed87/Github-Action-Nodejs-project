@@ -47,6 +47,7 @@ export const General = ({
       },
     });
   };
+
   const getReligion = () => {
     religionDDL?.action({
       urlKey: "PeopleDeskAllDDL",

@@ -75,7 +75,16 @@ export const PolicyCreateExtention = () => {
   // ddls
 
   const onFinish = () => {
-    console.log("first");
+    createApi.action({
+      urlKey: "CreateLeavePolicy",
+      method: "post",
+      payload: generatePayload(current),
+      toast: true,
+      onSuccess: (data: any) => {
+        // setId(data?.data);
+        // next();
+      },
+    });
   };
 
   const next = () => {
@@ -334,6 +343,7 @@ export const PolicyCreateExtention = () => {
           workplaceGroupId: wgId,
           sandwichPayload: {
             stepperId: 2,
+            policyId: id,
             isSandwichLeave: values?.isSandwitch?.value === 1,
             sandwichLeaveScenarioId: selectedRow1
               ?.map((row: any) => row.index)
@@ -342,7 +352,11 @@ export const PolicyCreateExtention = () => {
         };
       case 2:
         return {
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
           carryPayload: {
+            policyId: id,
+
             stepperId: 3, // Assuming stepperId is managed elsewhere or not directly bound here
             isCarryForward: values?.isCarryForward?.value === 1,
             carryForwardTypeId: values?.leaveCarryForwardType?.value || 0,
@@ -355,8 +369,12 @@ export const PolicyCreateExtention = () => {
         };
       case 3:
         return {
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
           encashmentPayload: {
             stepperId: 4,
+            policyId: id,
+
             isEncashment: values?.isEncashment?.value === 1,
             serviceLengthDependOnId: values?.enLengthDependOn?.value,
             encashmentTimelineId: values?.encashmentTimeline?.value,
@@ -394,8 +412,12 @@ export const PolicyCreateExtention = () => {
         };
       case 4:
         return {
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
           additionalPayload: {
-            stepperId: 4,
+            stepperId: 5,
+            policyId: id,
+
             isBalanceShowESS: values?.isEssShowBalance?.value === 1,
             isApplyFromESS: values?.isEssApply?.value === 1,
             roundingTypeId: values?.leaveRoundingType?.value,
@@ -421,7 +443,7 @@ export const PolicyCreateExtention = () => {
       >
         <PCard>
           <PCardHeader
-            submitText="Save"
+            submitText={current === 4 ? "Save" : undefined}
             // buttonList={[
             //   {
             //     type: "primary",
