@@ -13,19 +13,31 @@ import {
 import Loading from "../../../../common/loading/Loading";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { customStyles } from "../../../../utility/selectCustomStyle";
-import { individualKpiMappingTableColumn } from "./helper";
+import {
+  GetSupervisorDepartmentsAndEmployeesDdl,
+  individualKpiMappingTableColumn,
+} from "./helper";
 import IndividualKpiViewModal from "./individualKpiViewModal";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import axios from "axios";
 import { Tooltip } from "antd";
+import { set } from "lodash";
 
 const IndividualKpiMapping = () => {
   // 30462
   const [selectedData, setSelectedData] = useState(null);
   const [showKpiViewModal, setShowKpiViewModal] = useState(false);
 
-  const { employeeId, orgId, buId, buName, wId, wgId, isOfficeAdmin } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const {
+    employeeId,
+    orgId,
+    buId,
+    buName,
+    wId,
+    wgId,
+    isOfficeAdmin,
+    intAccountId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const initData = {
     businessUnit: {
@@ -41,17 +53,19 @@ const IndividualKpiMapping = () => {
   const history = useHistory();
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
   const [departmentDDL, setDepartmentDDL] = useState([]);
+  const [supervisorDDL, setSupervisorDDL] = useState([]);
+  const [employeeDDL, setEmployeeDDL] = useState([]);
   const [tableData, getTableData, tableDataLoader, setTableData] =
     useAxiosGet();
 
   useEffect(() => {
     if (initData?.businessUnit?.value) {
-      getPeopleDeskAllDDL(
-        `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
-        "value",
-        "label",
-        setDepartmentDDL
-      );
+      // getPeopleDeskAllDDL(
+      //   `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
+      //   "value",
+      //   "label",
+      //   setDepartmentDDL
+      // );
     }
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`,
@@ -60,6 +74,13 @@ const IndividualKpiMapping = () => {
       setBusinessUnitDDL
     );
     getData(initData, pages);
+    if (!isOfficeAdmin) {
+      GetSupervisorDepartmentsAndEmployeesDdl(
+        employeeId,
+        setDepartmentDDL,
+        setEmployeeDDL
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId]);
 
@@ -77,16 +98,13 @@ const IndividualKpiMapping = () => {
     try {
       const response = await axios.get(`/PMS/GetSuporvisorsBySupervisorType`, {
         params: {
-          supervisorType: supervisorType?.value || 0,
-          accountId: employeeId || "",
+          supervisorType: supervisorType || 0,
+          accountId: intAccountId || "",
         },
       });
-      const formattedData =
-        response?.data?.map((item) => ({
-          label: item?.EmployeeOnlyName,
-          value: item?.EmployeeId,
-        })) || [];
-      return formattedData;
+
+      setSupervisorDDL(response?.data);
+      return response?.data;
     } catch (error) {
       console.error("Failed to fetch supervisor data:", error);
       // supervisorDDL?.reset();
@@ -269,6 +287,8 @@ const IndividualKpiMapping = () => {
                     ]}
                     value={values?.supervisorType}
                     onChange={(valueOption) => {
+                      setEmployeeDDL([]);
+                      setDepartmentDDL([]);
                       setFieldValue("supervisorType", valueOption);
                       getSupervisorForAdmin(valueOption?.value);
                     }}
@@ -281,11 +301,18 @@ const IndividualKpiMapping = () => {
                     <FormikSelect
                       name="supervisorName"
                       placeholder=""
-                      options={departmentDDL || []}
+                      options={supervisorDDL || []}
                       value={values?.supervisorName}
                       onChange={(valueOption) => {
                         setTableData([]);
                         setFieldValue("supervisorName", valueOption);
+                        setEmployeeDDL([]);
+                        setDepartmentDDL([]);
+                        GetSupervisorDepartmentsAndEmployeesDdl(
+                          valueOption?.value,
+                          setDepartmentDDL,
+                          setEmployeeDDL
+                        );
                       }}
                       styles={customStyles}
                     />
@@ -340,35 +367,23 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div>
-
-            <div className="col-lg-3">
+            <div className="col-md-3">
               <div className="input-field-main">
                 <label>Employee</label>
-                <AsyncFormikSelect
-                  isClear={true}
-                  selectedValue={values?.employee}
-                  styles={{
-                    control: (provided) => ({
-                      ...customStyles?.control(provided),
-                      width: "100%",
-                    }),
-                  }}
-                  isSearchIcon={true}
-                  handleChange={(valueOption) => {
+                <FormikSelect
+                  name="employee"
+                  placeholder=""
+                  options={employeeDDL || []}
+                  value={values?.employee}
+                  onChange={(valueOption) => {
                     setTableData([]);
                     setFieldValue("employee", valueOption);
                   }}
-                  loadOptions={async (value) => {
-                    return getAsyncEmployeeApi({
-                      orgId,
-                      buId: values?.businessUnit?.value,
-                      intId: 0,
-                      value,
-                    });
-                  }}
+                  styles={customStyles}
                 />
               </div>
             </div>
+
             <div className="col-lg-3">
               <label>Type</label>
               <FormikSelect
