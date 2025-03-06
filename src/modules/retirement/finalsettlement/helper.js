@@ -1,6 +1,5 @@
 import { EyeTwoTone, ProfileTwoTone } from "@ant-design/icons";
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
-import { EditOutlined } from "@mui/icons-material";
 import { Form, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
@@ -352,3 +351,13 @@ export const getFinalSettlementLandingTableColumn = (
         }
     ]
 };
+
+
+export const dataFormatter = (data) => {
+    if (data === null || data === 0 || data === undefined || data === "") {
+        return 0
+    }
+    else {
+        return `${data}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+}
