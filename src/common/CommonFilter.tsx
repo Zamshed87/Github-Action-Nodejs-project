@@ -4,6 +4,7 @@ import { PButton, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { FilterOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 type CommonFilterProps = {
   visible: boolean;
@@ -81,10 +82,24 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   useEffect(() => {
     if (visible) {
       const savedFilters = localStorage.getItem("commonFilterData");
-      setFilterData(savedFilters ? JSON.parse(savedFilters) : {});
+
       if (savedFilters) {
         const parsedFilters = JSON.parse(savedFilters);
-        form.setFieldsValue(parsedFilters);
+
+        const fromDate = parsedFilters.fromDate
+          ? moment(parsedFilters.fromDate)
+          : null;
+        const toDate = parsedFilters.toDate
+          ? moment(parsedFilters.toDate)
+          : null;
+
+        form.setFieldsValue({
+          ...parsedFilters,
+          fromDate,
+          toDate,
+        });
+
+        setFilterData(parsedFilters);
         setSaveFilter(true);
       }
     }
@@ -286,32 +301,6 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
               </Col>
             )}
             {isDate && (
-              <Col md={24} sm={24}>
-                <PInput
-                  label="Date Range"
-                  type="dateRange"
-                  name="dateRange"
-                  onChange={(value) => {
-                    if (Array.isArray(value) && value.length === 2) {
-                      const [fromDate, toDate] = value?.map((date: any) =>
-                        date ? date.format("DD/MM/YYYY") : null
-                      );
-                      form.setFieldsValue({
-                        fromDate,
-                        toDate,
-                      });
-                    } else {
-                      form.setFieldsValue({
-                        fromDate: null,
-                        toDate: null,
-                      });
-                    }
-                  }}
-                />
-              </Col>
-            )}
-
-            {isDateSeparate && (
               <>
                 <Col md={12} sm={24}>
                   <PInput
@@ -436,6 +425,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 style={{ marginRight: "10px" }}
                 onClick={() => {
                   const values = form.getFieldsValue();
+                  console.log("values", values);
 
                   localStorage.setItem(
                     "commonFilterData",
