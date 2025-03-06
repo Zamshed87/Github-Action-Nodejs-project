@@ -15,6 +15,7 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import {
   GetSupervisorDepartmentsAndEmployeesDdl,
+  getSupervisorForAdmin,
   individualKpiMappingTableColumn,
 } from "./helper";
 import IndividualKpiViewModal from "./individualKpiViewModal";
@@ -93,23 +94,6 @@ const IndividualKpiMapping = () => {
   const { values, setFieldValue } = useFormik({
     initialValues: initData,
   });
-
-  const getSupervisorForAdmin = async (supervisorType) => {
-    try {
-      const response = await axios.get(`/PMS/GetSuporvisorsBySupervisorType`, {
-        params: {
-          supervisorType: supervisorType || 0,
-          accountId: intAccountId || "",
-        },
-      });
-
-      setSupervisorDDL(response?.data);
-      return response?.data;
-    } catch (error) {
-      console.error("Failed to fetch supervisor data:", error);
-      // supervisorDDL?.reset();
-    }
-  };
 
   const getSuperVisorDDL = async ({ value, minSearchLength = 3 }) => {
     if (value?.length < minSearchLength) return;
@@ -290,7 +274,11 @@ const IndividualKpiMapping = () => {
                       setEmployeeDDL([]);
                       setDepartmentDDL([]);
                       setFieldValue("supervisorType", valueOption);
-                      getSupervisorForAdmin(valueOption?.value);
+                      getSupervisorForAdmin(
+                        valueOption?.value,
+                        intAccountId,
+                        setSupervisorDDL
+                      );
                     }}
                     styles={customStyles}
                   />

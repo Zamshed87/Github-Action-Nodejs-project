@@ -141,3 +141,24 @@ export const GetSupervisorDepartmentsAndEmployeesDdl = async (
     // supervisorDDL?.reset();
   }
 };
+
+export const getSupervisorForAdmin = async (
+  supervisorType,
+  intAccountId,
+  setSupervisorDDL
+) => {
+  try {
+    const response = await axios.get(`/PMS/GetSuporvisorsBySupervisorType`, {
+      params: {
+        supervisorType: supervisorType || 0,
+        accountId: intAccountId || "",
+      },
+    });
+
+    setSupervisorDDL(response?.data);
+    return response?.data;
+  } catch (error) {
+    console.error("Failed to fetch supervisor data:", error);
+    // supervisorDDL?.reset();
+  }
+};
