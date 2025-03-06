@@ -50,6 +50,7 @@ export const PolicyCreateExtention = () => {
   const [tableData, setTableData] = useState<any>([]);
   const [balanceTable, setBalanceTable] = useState<any>([]);
   const [policy, setPolicy] = useState<any>([]);
+  const [id, setId] = useState<any>();
   const [attachmentList, setAttachmentList] = useState<any>([]);
 
   const {
@@ -329,6 +330,8 @@ export const PolicyCreateExtention = () => {
         };
       case 1:
         return {
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
           sandwichPayload: {
             stepperId: 2,
             isSandwichLeave: values?.isSandwitch?.value === 1,
@@ -559,13 +562,14 @@ export const PolicyCreateExtention = () => {
                         if (cond1 || cond2 || cond3 || cond4) {
                           return toast.warn("Please add data");
                         }
-                        next();
+                        // next();
 
                         createApi.action({
                           urlKey: "CreateLeavePolicy",
                           method: "post",
                           payload: generatePayload(current),
                           onSuccess: (data: any) => {
+                            setId(data?.data);
                             next();
                           },
                         });

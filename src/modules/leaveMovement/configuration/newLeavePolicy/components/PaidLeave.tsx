@@ -59,9 +59,9 @@ export const PaidLeave = ({ form }: any) => {
                     <PSelect
                       // mode="multiple"
                       options={[
-                        { value: "Gross Salary", label: "Gross Salary" },
-                        { value: "Basic Salary", label: "Basic Salary" },
-                        { value: "Fixed Amount", label: "Fixed Amount" },
+                        { value: 2, label: "Gross Salary" },
+                        { value: 1, label: "Basic Salary" },
+                        { value: 3, label: "Fixed Amount" },
                       ]}
                       name="payDependsOn"
                       label="Pay Depend On"

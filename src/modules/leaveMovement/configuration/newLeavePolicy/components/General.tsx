@@ -142,9 +142,9 @@ export const General = ({
         WorkplaceId: values?.workplace?.value,
       },
       onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.policyName;
-          res[i].value = item?.policyId;
+        res?.data?.forEach((item: any, i: any) => {
+          res.data[i].label = item?.policyName;
+          res.data[i].value = item?.policyId;
         });
       },
       onError: (e: any) => {

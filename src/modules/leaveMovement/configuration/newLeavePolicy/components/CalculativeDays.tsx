@@ -149,7 +149,9 @@ export const CalculativeDays = ({
           <PSelect
             // mode="multiple"
             allowClear
-            options={policyApi?.data?.length > 0 ? policyApi?.data : []}
+            options={
+              policyApi?.data?.data?.length > 0 ? policyApi?.data?.data : []
+            }
             name="policy"
             label="Leave Policy"
             placeholder=""
@@ -193,8 +195,8 @@ export const CalculativeDays = ({
                           ...prev,
                           {
                             name: policy?.policyName,
-                            type: policy?.policyDisplayName,
-                            codeName: policy?.leaveType,
+                            type: policy?.leaveType,
+                            codeName: policy?.policyDisplayName,
                             id: policy?.policyId,
                           },
                         ]);
