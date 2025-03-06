@@ -750,7 +750,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             value={row?.numAmount}
             placeholder="Amount"
             onChange={(e: any) => {
-              console.log({ e });
               if (isNaN(e)) {
                 return toast.warn("Only numeric value allowed");
               }
