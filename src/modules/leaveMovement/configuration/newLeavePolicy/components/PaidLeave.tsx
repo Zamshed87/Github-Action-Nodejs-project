@@ -1,23 +1,6 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import { useApiRequest } from "Hooks";
-import { useEffect } from "react";
-export const PaidLeave = ({ form }: any) => {
-  const enumApi = useApiRequest({});
-
-  const getDependTypes = () => {
-    enumApi?.action({
-      urlKey: "GetEnums",
-      method: "GET",
-      params: {
-        types: "LeavePolicyDependOnEnum",
-      },
-    });
-  };
-  useEffect(() => {
-    getDependTypes();
-  }, []);
-
+export const PaidLeave = ({ form, grossBasicEnum }: any) => {
   return (
     <>
       <Divider
@@ -77,7 +60,9 @@ export const PaidLeave = ({ form }: any) => {
                   <Col md={6} sm={24}>
                     <PSelect
                       // mode="multiple"
-                      options={enumApi?.data?.LeavePolicyDependOnEnum || []}
+                      options={
+                        grossBasicEnum?.data?.LeavePolicyDependOnEnum || []
+                      }
                       name="payDependsOn"
                       label="Pay Depend On"
                       placeholder="Pay Depend On"
@@ -102,6 +87,10 @@ export const PaidLeave = ({ form }: any) => {
                       label="Pay Depend On Value"
                       placeholder="Pay Depend On Value"
                       rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
                         {
                           required: paidType?.label?.includes("Paid"),
                           message: "Pay Depend On Value is required",

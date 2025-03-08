@@ -77,6 +77,10 @@ export const Lapse = ({ form }: any) => {
                     placeholder=""
                     rules={[
                       {
+                        message: "Number must be positive",
+                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                      },
+                      {
                         required: leavelapse?.value == 5,
                         message: "After Leaves Completed is required",
                       },

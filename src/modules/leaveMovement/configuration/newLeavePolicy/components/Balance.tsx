@@ -4,7 +4,12 @@ import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
+export const Balance = ({
+  form,
+  balanceTable,
+  setBalanceTable,
+  JoinOrConfirmEnum,
+}: any) => {
   const balanceHeader: any = [
     {
       title: "SL",
@@ -97,21 +102,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
     });
   };
 
-  const enumApi2 = useApiRequest({});
-
-  const getDependTypes2 = () => {
-    enumApi2?.action({
-      urlKey: "GetEnums",
-      method: "GET",
-      params: {
-        types: "DateDependsOnEnum",
-      },
-    });
-  };
   const enumApi3 = useApiRequest({});
 
   const getDependTypes3 = () => {
-    enumApi2?.action({
+    enumApi3?.action({
       urlKey: "GetEnums",
       method: "GET",
       params: {
@@ -121,7 +115,6 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
   };
   useEffect(() => {
     getDependTypes();
-    getDependTypes2();
     getDependTypes3();
   }, []);
   return (
@@ -150,7 +143,7 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={enumApi2?.data?.DateDependsOnEnum || []}
+            options={JoinOrConfirmEnum?.data?.DateDependsOnEnum || []}
             name="dependsOn"
             label="Service Length Depend On"
             placeholder=""
@@ -191,6 +184,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
             placeholder=""
             rules={[
               {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
+              {
                 required: balanceTable?.length === 0,
                 message: "From Service Length (Month) is required",
               },
@@ -204,6 +201,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
             label="To Service Length (Month)"
             placeholder=""
             rules={[
+              {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
               {
                 required: balanceTable?.length === 0,
                 message: "To Service Length (Month) is required",
@@ -250,6 +251,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                     placeholder=""
                     rules={[
                       {
+                        message: "Number must be positive",
+                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                      },
+                      {
                         required: leaveDependsOn?.value == 2,
                         message: "Calculative Days is required",
                       },
@@ -289,6 +294,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                       placeholder=""
                       rules={[
                         {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
                           required: leaveDependsOn?.value == 3,
                           message: "Expire After Available (Days) is required",
                         },
@@ -302,6 +311,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
                       label="Minumum Working Hour"
                       placeholder=""
                       rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
                         {
                           required: leaveDependsOn?.value == 3,
                           message: "Minumum Working Hour is required",
@@ -322,6 +335,10 @@ export const Balance = ({ form, balanceTable, setBalanceTable }: any) => {
             label="Leave Days"
             placeholder=""
             rules={[
+              {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
               {
                 required: balanceTable?.length === 0,
                 message: "Leave Days is required",

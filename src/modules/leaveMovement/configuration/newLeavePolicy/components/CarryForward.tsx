@@ -1,23 +1,8 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import { useApiRequest } from "Hooks";
-import React, { useEffect } from "react";
+import React from "react";
 
-export const CarryForward = ({ form }: any) => {
-  const enumApi = useApiRequest({});
-
-  const getDependTypes = () => {
-    enumApi?.action({
-      urlKey: "GetEnums",
-      method: "GET",
-      params: {
-        types: "DaysTypeEnum",
-      },
-    });
-  };
-  useEffect(() => {
-    getDependTypes();
-  }, []);
+export const CarryForward = ({ form, PercentOrFixedEnum }: any) => {
   return (
     <>
       <Divider
@@ -76,7 +61,7 @@ export const CarryForward = ({ form }: any) => {
                     <PSelect
                       // mode="multiple"
                       allowClear
-                      options={enumApi?.data?.DaysTypeEnum || []}
+                      options={PercentOrFixedEnum?.data?.DaysTypeEnum || []}
                       name="leaveCarryForwardType"
                       label="Leave Carry Forward Type"
                       placeholder="Leave Carry Forward Type"
@@ -102,6 +87,10 @@ export const CarryForward = ({ form }: any) => {
                       })`}
                       placeholder=""
                       rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
                         {
                           required: isCarryForward?.value,
                           message:
@@ -145,6 +134,10 @@ export const CarryForward = ({ form }: any) => {
                         placeholder=""
                         rules={[
                           {
+                            message: "Number must be positive",
+                            pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                          },
+                          {
                             required: isCarryExpired?.value,
                             message:
                               "Expiry of Carry Forward Days After Lapse is required",
@@ -169,13 +162,17 @@ export const CarryForward = ({ form }: any) => {
               // leavelapse?.value === 5 && (
               true && (
                 <>
-                  <Col md={5} sm={24}>
+                  <Col md={6} sm={24}>
                     <PInput
                       type="number"
                       name="maxCarryForwardBalance"
                       label="Max Carry Forward Balance (Days)"
                       placeholder=""
                       rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
                         {
                           required: true,
                           message:
@@ -189,7 +186,7 @@ export const CarryForward = ({ form }: any) => {
             );
           }}
         </Form.Item>
-        <Col md={5} sm={24}>
+        <Col md={6} sm={24}>
           <PSelect
             // mode="multiple"
             allowClear

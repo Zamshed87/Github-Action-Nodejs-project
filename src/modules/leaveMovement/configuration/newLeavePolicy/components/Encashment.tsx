@@ -4,7 +4,14 @@ import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-export const Encashment = ({ form, tableData, setTableData }: any) => {
+export const Encashment = ({
+  form,
+  tableData,
+  setTableData,
+  grossBasicEnum,
+  JoinOrConfirmEnum,
+  PercentOrFixedEnum,
+}: any) => {
   const encashheader: any = [
     {
       title: "SL",
@@ -76,39 +83,6 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
     return isExists;
   };
 
-  const enumApi2 = useApiRequest({});
-
-  const getDependTypes2 = () => {
-    enumApi2?.action({
-      urlKey: "GetEnums",
-      method: "GET",
-      params: {
-        types: "DateDependsOnEnum",
-      },
-    });
-  };
-  const enumApi4 = useApiRequest({});
-
-  const getDependTypes4 = () => {
-    enumApi4?.action({
-      urlKey: "GetEnums",
-      method: "GET",
-      params: {
-        types: "DaysTypeEnum",
-      },
-    });
-  };
-  const enumApi3 = useApiRequest({});
-
-  const getDependTypes3 = () => {
-    enumApi3?.action({
-      urlKey: "GetEnums",
-      method: "GET",
-      params: {
-        types: "LeavePolicyDependOnEnum",
-      },
-    });
-  };
   const enumApi = useApiRequest({});
 
   const getDependTypes = () => {
@@ -121,9 +95,6 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
     });
   };
   useEffect(() => {
-    getDependTypes2();
-    getDependTypes4();
-    getDependTypes3();
     getDependTypes();
   }, []);
   return (
@@ -177,7 +148,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={enumApi2?.data?.DateDependsOnEnum || []}
+            options={JoinOrConfirmEnum?.data?.DateDependsOnEnum || []}
             name="enLengthDependOn"
             label="Service Length Depend On"
             placeholder="Service Length Depend On"
@@ -225,6 +196,10 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
             placeholder=""
             rules={[
               {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
+              {
                 required: tableData?.length === 0,
                 message: "From Service Length (Month) is required",
               },
@@ -239,6 +214,10 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
             placeholder=""
             rules={[
               {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
+              {
                 required: tableData?.length === 0,
                 message: "To Service Length (Month) is required",
               },
@@ -249,7 +228,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={enumApi4?.data?.DaysTypeEnum || []}
+            options={PercentOrFixedEnum?.data?.DaysTypeEnum || []}
             name="encashType"
             label="Leave Encashment Type"
             placeholder="Leave Encashment Type"
@@ -282,6 +261,10 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
                     placeholder=""
                     rules={[
                       {
+                        message: "Number must be positive",
+                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                      },
+                      {
                         required: tableData?.length === 0,
                         message:
                           "Max Carry Forward After Lapse (%, Days) is required",
@@ -297,7 +280,7 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
           <PSelect
             // mode="multiple"
             allowClear
-            options={enumApi3?.data?.LeavePolicyDependOnEnum || []}
+            options={grossBasicEnum?.data?.LeavePolicyDependOnEnum || []}
             name="encashBenefits"
             label="Encashment Benefits"
             placeholder=""
@@ -336,6 +319,10 @@ export const Encashment = ({ form, tableData, setTableData }: any) => {
                     })`}
                     placeholder=""
                     rules={[
+                      {
+                        message: "Number must be positive",
+                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                      },
                       {
                         required: tableData?.length === 0,
                         message:

@@ -147,7 +147,7 @@ export const Additional = ({ form }: any) => {
         </Col>
       </Row>
       <Row gutter={[10, 2]}>
-        <Col md={4} sm={24}>
+        <Col md={6} sm={24}>
           <PSelect
             // mode="multiple"
             allowClear
@@ -203,6 +203,10 @@ export const Additional = ({ form }: any) => {
                           required: isAttachmentMandatory?.value === 1,
                           message: "attachmentMandatoryAfter is required",
                         },
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
                       ]}
                     />
                   </Col>
@@ -221,6 +225,10 @@ export const Additional = ({ form }: any) => {
             placeholder=""
             rules={[
               {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
+              {
                 required: true,
                 message: "Max. Leave Apply Days (Monthly) is required",
               },
@@ -234,6 +242,10 @@ export const Additional = ({ form }: any) => {
             label="Min. Leave Apply Days (At a Time)"
             placeholder=""
             rules={[
+              {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
               {
                 required: true,
                 message: "Min. Leave Apply Days (At a Time) is required",

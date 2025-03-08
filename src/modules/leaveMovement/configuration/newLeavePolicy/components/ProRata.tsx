@@ -40,7 +40,7 @@ export const ProRata = ({ form }: any) => {
         </div>
       </Divider>
 
-      <Col md={4} sm={24}>
+      <Col md={6} sm={24}>
         <PSelect
           // mode="multiple"
           allowClear
@@ -79,6 +79,10 @@ export const ProRata = ({ form }: any) => {
                       label="Pro Rata Count Last Start Days (As Calander Date)"
                       placeholder=""
                       rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
                         {
                           required: isProRata?.value === 1,
                           message:

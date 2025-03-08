@@ -149,6 +149,10 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                       placeholder=""
                       rules={[
                         {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
                           required:
                             leaveConsumeType && leaveConsumeType?.value != 1,
                           message: "Minimum Consume Hour is required",
@@ -181,6 +185,10 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                       placeholder=""
                       rules={[
                         {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
                           required:
                             leaveConsumeType && leaveConsumeType?.value != 1,
                           message: "Maximum Consume Hour is required",
@@ -198,6 +206,10 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                     label={`Standard Working Hour`}
                     placeholder=""
                     rules={[
+                      {
+                        message: "Number must be positive",
+                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                      },
                       {
                         required:
                           leaveConsumeType && leaveConsumeType?.value == 4,

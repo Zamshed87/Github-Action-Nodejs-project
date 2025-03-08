@@ -32,6 +32,10 @@ export const LeaveCalculation = ({ form }: any) => {
           placeholder=""
           rules={[
             {
+              message: "Number must be positive",
+              pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+            },
+            {
               required: true,
               message: "Max. Leave Apply Days (Monthly) is required",
             },
@@ -59,6 +63,10 @@ export const LeaveCalculation = ({ form }: any) => {
           label="Min. Leave Apply Days (At a Time)"
           placeholder=""
           rules={[
+            {
+              message: "Number must be positive",
+              pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+            },
             {
               required: true,
               message: "Min. Leave Apply Days (At a Time) is required",

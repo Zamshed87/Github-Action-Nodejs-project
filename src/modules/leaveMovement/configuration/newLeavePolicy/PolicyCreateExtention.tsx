@@ -70,6 +70,32 @@ export const PolicyCreateExtention = () => {
 
   const createApi = useApiRequest({});
   const policyApi = useApiRequest({});
+  const grossBasicEnum = useApiRequest({});
+  const JoinOrConfirmEnum = useApiRequest({});
+  const PercentOrFixedEnum = useApiRequest({});
+  const getDependTypes = () => {
+    grossBasicEnum?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "LeavePolicyDependOnEnum",
+      },
+    });
+    JoinOrConfirmEnum?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "DateDependsOnEnum",
+      },
+    });
+    PercentOrFixedEnum?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "DaysTypeEnum",
+      },
+    });
+  };
 
   // ddls
 
@@ -350,9 +376,10 @@ export const PolicyCreateExtention = () => {
             stepperId: 2,
             policyId: id,
             isSandwichLeave: values?.isSandwitch?.value === 1,
-            sandwichLeaveScenarioId: selectedRow1
-              ?.map((row: any) => row.index)
-              ?.join(","),
+            sandwichLeaveScenarioId:
+              selectedRow1?.length > 0
+                ? selectedRow1?.map((row: any) => row.index)?.join(",")
+                : null,
           },
         };
       case 2:
@@ -435,6 +462,9 @@ export const PolicyCreateExtention = () => {
         };
     }
   };
+  useEffect(() => {
+    getDependTypes();
+  }, []);
   return (
     <>
       <PForm
@@ -491,7 +521,7 @@ export const PolicyCreateExtention = () => {
                   setAttachmentList={setAttachmentList}
                   policyApi={policyApi}
                 />
-                <PaidLeave form={form} />
+                <PaidLeave form={form} grossBasicEnum={grossBasicEnum} />
                 <Consumption
                   form={form}
                   consumeData={consumeData}
@@ -503,6 +533,7 @@ export const PolicyCreateExtention = () => {
                   form={form}
                   balanceTable={balanceTable}
                   setBalanceTable={setBalanceTable}
+                  JoinOrConfirmEnum={JoinOrConfirmEnum}
                 />
                 <CalculativeDays
                   form={form}
@@ -524,7 +555,10 @@ export const PolicyCreateExtention = () => {
               //   consumeData={consumeData}
               //   setConsumeData={setConsumeData}
               // />
-              <CarryForward form={form} />
+              <CarryForward
+                form={form}
+                PercentOrFixedEnum={PercentOrFixedEnum}
+              />
             ) : current === 3 ? (
               // <Sandwitch
               //   form={form}
@@ -537,6 +571,9 @@ export const PolicyCreateExtention = () => {
                 form={form}
                 tableData={tableData}
                 setTableData={setTableData}
+                grossBasicEnum={grossBasicEnum}
+                JoinOrConfirmEnum={JoinOrConfirmEnum}
+                PercentOrFixedEnum={PercentOrFixedEnum}
               />
             ) : current === 4 ? (
               // <Lapse form={form} />
@@ -596,6 +633,17 @@ export const PolicyCreateExtention = () => {
                           onSuccess: (data: any) => {
                             setId(data?.data);
                             next();
+                          },
+                          onError: (error: any) => {
+                            console.log({ error });
+                            toast.error(
+                              error?.response?.data?.message ||
+                                error?.response?.data?.Message ||
+                                error?.response?.data?.title ||
+                                error?.response?.title ||
+                                error?.response?.message ||
+                                error?.response?.Message
+                            );
                           },
                         });
                       })
