@@ -4,6 +4,7 @@ import { PButton, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { FilterOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 type CommonFilterProps = {
   visible: boolean;
@@ -81,10 +82,24 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   useEffect(() => {
     if (visible) {
       const savedFilters = localStorage.getItem("commonFilterData");
-      setFilterData(savedFilters ? JSON.parse(savedFilters) : {});
+
       if (savedFilters) {
         const parsedFilters = JSON.parse(savedFilters);
-        form.setFieldsValue(parsedFilters);
+
+        const fromDate = parsedFilters.fromDate
+          ? moment(parsedFilters.fromDate)
+          : null;
+        const toDate = parsedFilters.toDate
+          ? moment(parsedFilters.toDate)
+          : null;
+
+        form.setFieldsValue({
+          ...parsedFilters,
+          fromDate,
+          toDate,
+        });
+
+        setFilterData(parsedFilters);
         setSaveFilter(true);
       }
     }
@@ -144,6 +159,16 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   // Employee Department
   const getEmployeDepartment = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    const workplaceIds = workplace?.value
+      ? workplace?.value.toString().split(",")
+      : [];
+
+    if (!workplaceGroup?.value || workplaceIds.length > 1) {
+      console.warn(
+        "Skipping Department API call: Multiple workplaces selected."
+      );
+      return;
+    }
 
     empDepartmentDDL?.action({
       urlKey: "DepartmentIdAll",
@@ -167,6 +192,18 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   // Designation
   const getDesignation = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    const workplaceIds = workplace?.value
+      ? workplace?.value.toString().split(",")
+      : [];
+
+    if (!workplaceGroup?.value || workplaceIds.length > 1) {
+      console.warn(
+        "Skipping Designation API call: Multiple workplaces selected."
+      );
+      return;
+    }
+
     designationApi?.action({
       urlKey: "DesignationIdAll",
       method: "GET",
@@ -186,21 +223,23 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
     });
   };
 
-  // Fetch Data
+  // Fetch Data Only When Drawer Opens
   useEffect(() => {
-    if (isWorkplaceGroup) {
-      getWorkplaceGroup();
+    if (visible) {
+      if (isWorkplaceGroup) {
+        getWorkplaceGroup();
+      }
+      if (isWorkplace) {
+        getWorkplace();
+      }
+      if (isDepartment) {
+        getEmployeDepartment();
+      }
+      if (isDesignation) {
+        getDesignation();
+      }
     }
-    if (isWorkplace) {
-      getWorkplace();
-    }
-    if (isDepartment) {
-      getEmployeDepartment();
-    }
-    if (isDesignation) {
-      getDesignation();
-    }
-  }, [visible]);
+  }, [visible]); // Runs only when 'visible' changes
 
   return (
     <>
@@ -263,32 +302,6 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isDate && (
-              <Col md={24} sm={24}>
-                <PInput
-                  label="Date Range"
-                  type="dateRange"
-                  name="dateRange"
-                  onChange={(value) => {
-                    if (Array.isArray(value) && value.length === 2) {
-                      const [fromDate, toDate] = value?.map((date: any) =>
-                        date ? date.format("DD/MM/YYYY") : null
-                      );
-                      form.setFieldsValue({
-                        fromDate,
-                        toDate,
-                      });
-                    } else {
-                      form.setFieldsValue({
-                        fromDate: null,
-                        toDate: null,
-                      });
-                    }
-                  }}
-                />
-              </Col>
-            )}
-
-            {isDateSeparate && (
               <>
                 <Col md={12} sm={24}>
                   <PInput
@@ -348,13 +361,22 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   allowClear
                   placeholder="Select Workplace"
                   onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
-                      designation: undefined,
-                    });
-                    getEmployeDepartment();
-                    getDesignation();
+                    const workplaceIds = value
+                      ? value.toString().split(",")
+                      : [];
+                    if (workplaceIds.length > 1) {
+                      form.setFieldsValue({
+                        workplace: op,
+                        department: undefined,
+                        designation: undefined,
+                      });
+                    } else {
+                      form.setFieldsValue({ workplace: op });
+                    }
+                    if (workplaceIds.length === 1) {
+                      getEmployeDepartment();
+                      getDesignation();
+                    }
                   }}
                 />
               </Col>
@@ -404,6 +426,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 style={{ marginRight: "10px" }}
                 onClick={() => {
                   const values = form.getFieldsValue();
+                  console.log("values", values);
 
                   localStorage.setItem(
                     "commonFilterData",

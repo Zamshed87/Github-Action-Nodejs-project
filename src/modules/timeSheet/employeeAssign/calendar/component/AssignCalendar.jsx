@@ -123,7 +123,6 @@ export const AssignModal = ({
 
   const getDDL = () => {
     const values = form.getFieldsValue(true);
-    console.log({ values });
     ddlApi.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -253,7 +252,7 @@ Are you sure ? You want to assign Calendar again?
                 ]}
                 onChange={(value) => {
                   form.setFieldsValue({
-                    generateEndDate: moment(value).format("YYYY-MM-DD"),
+                    generateEndDate: value,
                   });
                 }}
               />
