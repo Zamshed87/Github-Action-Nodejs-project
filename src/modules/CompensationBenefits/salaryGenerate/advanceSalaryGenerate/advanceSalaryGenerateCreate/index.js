@@ -1095,7 +1095,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         !values?.fromDate ||
                         !values?.toDate ||
                         !values?.workplace?.value ||
-                        !values?.walletType?.value ||
+                        // !values?.walletType?.value ||
                         !values?.advanceBasedOn?.value ||
                         !values?.advanceBasedOnPercentage ||
                         !values?.minimumPresentDays
