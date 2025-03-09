@@ -2,6 +2,7 @@ import { Col, Divider, Form, message, Row, Steps } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
+  DataTable,
   PButton,
   PCard,
   PCardBody,
@@ -37,6 +38,7 @@ import { CiGlobe } from "react-icons/ci";
 import { BsCashCoin } from "react-icons/bs";
 import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
+import { PModal } from "Components/Modal";
 // import { ModalFooter } from "Components/Modal";
 
 export const PolicyCreateExtention = () => {
@@ -47,10 +49,12 @@ export const PolicyCreateExtention = () => {
   const [consumeData, setConsumeData] = useState<any>([]);
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
+  const [errorData, setErrorData] = useState<any>([]);
   const [balanceTable, setBalanceTable] = useState<any>([]);
   const [policy, setPolicy] = useState<any>([]);
   const [id, setId] = useState<any>();
   const [attachmentList, setAttachmentList] = useState<any>([]);
+  const [open, setOpen] = useState(false);
 
   const {
     permissionList,
@@ -465,6 +469,23 @@ export const PolicyCreateExtention = () => {
   useEffect(() => {
     getDependTypes();
   }, []);
+  const header = [
+    {
+      title: "SL",
+      render: (_: any, rec: any, index: number) => index + 1,
+
+      width: 30,
+      align: "center",
+    },
+
+    {
+      title: "Error",
+      // dataIndex: "employeeCode",
+      render: (_: any, rec: any) => rec,
+
+      width: 120,
+    },
+  ];
   return (
     <>
       <PForm
@@ -649,15 +670,35 @@ export const PolicyCreateExtention = () => {
                             next();
                           },
                           onError: (error: any) => {
-                            console.log({ error });
-                            toast.error(
-                              error?.response?.data?.message ||
-                                error?.response?.data?.Message ||
-                                error?.response?.data?.title ||
-                                error?.response?.title ||
-                                error?.response?.message ||
-                                error?.response?.Message
+                            console.log(
+                              error?.response?.data?.errors?.[
+                                "GeneralPayload.Description"
+                              ]
                             );
+                            if (
+                              error?.response?.data?.errors?.[
+                                "GeneralPayload.Description"
+                              ]?.length > 1
+                            ) {
+                              setErrorData(
+                                error?.response?.data?.errors?.[
+                                  "GeneralPayload.Description"
+                                ]
+                              );
+                              setOpen(true);
+                            } else {
+                              toast.error(
+                                error?.response?.data?.message ||
+                                  error?.response?.data?.errors?.[
+                                    "GeneralPayload.Description"
+                                  ][0] ||
+                                  error?.response?.data?.Message ||
+                                  error?.response?.data?.title ||
+                                  error?.response?.title ||
+                                  error?.response?.message ||
+                                  error?.response?.Message
+                              );
+                            }
                           },
                         });
                       })
@@ -677,6 +718,23 @@ export const PolicyCreateExtention = () => {
               )} */}
             </Row>
           </PCardBody>
+          <PModal
+            open={open}
+            title={"Error List"}
+            width=""
+            onCancel={() => {
+              setOpen(false);
+            }}
+            maskClosable={false}
+            components={
+              <DataTable
+                bordered
+                data={errorData || []}
+                loading={false}
+                header={header}
+              />
+            }
+          />
         </PCard>
       </PForm>
     </>
