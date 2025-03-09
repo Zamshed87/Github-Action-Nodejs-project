@@ -1,9 +1,10 @@
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import EmployeeDetails from "./EmployeeDetails";
+import { DataTable } from "Components";
+import { Card, Col, Collapse, Divider, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { DataTable } from "Components";
-import { Card, Col, Divider, Row } from "antd";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { dataFormatter } from "../helper";
+import EmployeeDetails from "./EmployeeDetails";
 
 export default function FinalSettlementViewModal({ id, empId }) {
   const { orgId } = useSelector(
@@ -11,7 +12,12 @@ export default function FinalSettlementViewModal({ id, empId }) {
     shallowEqual
   );
   const [, getSingleEmployeeData, getSingleEmployeeLoading] = useAxiosGet();
+  const [, getFinalSettlementData, getFinalSettlementLoading] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState({});
+  const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(
+    {}
+  );
+
   useEffect(() => {
     getSingleEmployeeData(
       `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
@@ -19,12 +25,12 @@ export default function FinalSettlementViewModal({ id, empId }) {
         setEmpBasic(res);
       }
     );
-    // getFinalSettlementData(
-    //   `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
-    //   (res) => {
-    //     console.log(res, "res");
-    //   }
-    // );
+    getFinalSettlementData(
+      `/FinalSettlement/GetFinalSettlement?separationId=${id}&employeeId=${empId}`,
+      (res) => {
+        setSingleFinalSettlementData(res?.data);
+      }
+    );
   }, [id]);
   return (
     <>
@@ -35,7 +41,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
             style={{
               boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
             }}
-            loading={getSingleEmployeeLoading}
+            loading={getFinalSettlementLoading}
           >
             <Divider
               orientation="left"
@@ -50,44 +56,49 @@ export default function FinalSettlementViewModal({ id, empId }) {
               data={[
                 {
                   name: "Total Due Salary",
-                  info: "Info.",
-                  value: 100,
+                  value:
+                    singleFinalSettlementData?.summary?.totalDueSalary || 0,
                 },
                 {
                   name: "Total Others Due",
-                  info: "Info.",
-                  value: 100,
+                  value:
+                    singleFinalSettlementData?.summary?.totalOthersDue || 0,
                 },
                 {
                   name: "Others Deduction",
-                  info: "Number",
-                  value: 10,
+                  value:
+                    singleFinalSettlementData?.summary?.otherDeduction || 0,
                 },
                 {
                   name: "Others Addition",
-                  info: "Number",
-                  value: 20,
+                  value: singleFinalSettlementData?.summary?.otherAddition || 0,
                 },
                 {
-                  name: <b>Total Payable Amount</b>,
-                  info: <b>info</b>,
-                  value: <b>210</b>,
+                  name: "Total Payable Amount",
+                  value: singleFinalSettlementData?.netPayableAmount || 0,
                 },
               ]}
               header={[
                 {
                   title: "name",
                   dataIndex: "name",
-                },
-                {
-                  title: "info",
-                  dataIndex: "info",
-                  align: "right",
+                  render: (data) => {
+                    if (data === "Total Payable Amount") {
+                      return <b>{data}</b>;
+                    }
+                    return data;
+                  },
                 },
                 {
                   title: "value",
                   dataIndex: "value",
                   align: "right",
+                  render: (data) => {
+                    if (data === "Total Payable Amount") {
+                      return <b>{dataFormatter(data)}</b>;
+                    }
+                    return dataFormatter(data);
+                  },
                 },
               ]}
             />
@@ -101,28 +112,69 @@ export default function FinalSettlementViewModal({ id, empId }) {
             >
               Due Salary
             </Divider>
-            <DataTable
-              showHeader={false}
-              bordered
-              pagination={false}
-              data={[
-                {
-                  name: <b>Due Salary as Salary Generate</b>,
-                  info: <b>32,000</b>,
-                },
-              ]}
-              header={[
-                {
-                  title: "name",
-                  dataIndex: "name",
-                },
-                {
-                  title: "info",
-                  dataIndex: "info",
-                  align: "right",
-                },
-              ]}
-            />
+            <Collapse
+              bordered={false}
+              ghost={true}
+              accordion={true}
+              defaultActiveKey={["0"]}
+            >
+              <Collapse.Panel
+                header={
+                  <DataTable
+                    showHeader={false}
+                    bordered
+                    pagination={false}
+                    header={[
+                      {
+                        title: "name",
+                        dataIndex: "name",
+                      },
+                      {
+                        title: "info",
+                        dataIndex: "info",
+                        align: "right",
+                      },
+                    ]}
+                    data={[
+                      {
+                        name: <b>Due Salary as Salary Generate</b>,
+                        info: (
+                          <b>
+                            {dataFormatter(
+                              singleFinalSettlementData?.earnings?.reduce(
+                                (a, b) => a + b.actualAmount,
+                                0
+                              )
+                            )}
+                          </b>
+                        ),
+                      },
+                    ]}
+                  />
+                }
+                key="1"
+                style={{ padding: 0 }}
+              >
+                <DataTable
+                  showHeader={false}
+                  bordered
+                  pagination={false}
+                  data={singleFinalSettlementData?.earnings || []}
+                  header={[
+                    {
+                      title: "name",
+                      dataIndex: "strElementName",
+                    },
+                    {
+                      title: "info",
+                      dataIndex: "actualAmount",
+                      align: "right",
+                      render: (data) => dataFormatter(data),
+                    },
+                  ]}
+                />
+              </Collapse.Panel>
+            </Collapse>
             <Divider
               orientation="left"
               style={{
@@ -136,44 +188,35 @@ export default function FinalSettlementViewModal({ id, empId }) {
             <DataTable
               showHeader={false}
               pagination={false}
-              data={[
-                {
-                  name: "Provident Fund (PF)",
-                  info: "1,15,000",
-                },
-                {
-                  name: "Gratuity",
-                  info: "2,00,000",
-                },
-                {
-                  name: "Leave Encashment",
-                  info: "1,50,000",
-                },
-                {
-                  name: <b>Total Others Due</b>,
-                  info: <b>4,65,000</b>,
-                },
-              ]}
+              data={singleFinalSettlementData?.othersDues || []}
               header={[
                 {
                   title: "name",
-                  dataIndex: "name",
+                  dataIndex: "strElementName",
+                  render: (data) =>
+                    data === "Total Others Due" ? <b>{data}</b> : data,
                 },
                 {
                   title: "info",
-                  dataIndex: "info",
+                  dataIndex: "amount",
                   align: "right",
+                  render: (data, record) =>
+                    record.strElementName === "Total Others Due" ? (
+                      <b>{dataFormatter(data)}</b>
+                    ) : (
+                      dataFormatter(data)
+                    ),
                 },
               ]}
             />
           </Card>
         </Col>
-        <Col span={14} offset={1}>
+        <Col span={12} offset={2}>
           <Card
             style={{
               boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
             }}
-            loading={getSingleEmployeeLoading}
+            loading={getFinalSettlementLoading}
           >
             <Divider
               orientation="left"
@@ -189,7 +232,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
                   SL: 1,
                   Approver: "Admin",
                   "Approver Name": "John Doe",
-                  "Approval Date": "2022-01-01",
+                  "Approval Date": "2022-01-01 12:00:00",
                   Status: "Approved",
                   Comments: "no comments",
                 },
@@ -197,7 +240,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
                   SL: 2,
                   Approver: "Finance",
                   "Approver Name": "Jane Doe",
-                  "Approval Date": "2022-01-02",
+                  "Approval Date": "2022-01-02 12:00:00",
                   Status: "Rejected",
                   Comments: "Need More Information",
                 },
@@ -206,7 +249,6 @@ export default function FinalSettlementViewModal({ id, empId }) {
                 {
                   title: "SL",
                   dataIndex: "SL",
-                  width: 20,
                 },
                 {
                   title: "Approver",
@@ -249,21 +291,21 @@ export default function FinalSettlementViewModal({ id, empId }) {
                   SL: 1,
                   "Asset Name": "Laptop",
                   UoM: "Pcs",
-                  "Last Assign Date": "2022-01-01",
+                  "Last Assign Date": "2022-01-01 12:00:00",
                   Status: "Assigned",
                 },
                 {
                   SL: 2,
                   "Asset Name": "Mouse",
                   UoM: "Pcs",
-                  "Last Assign Date": "2022-01-02",
+                  "Last Assign Date": "2022-01-02 12:00:00",
                   Status: "Assigned",
                 },
                 {
                   SL: 3,
                   "Asset Name": "Keyboard",
                   UoM: "Pcs",
-                  "Last Assign Date": "2022-01-03",
+                  "Last Assign Date": "2022-01-03 12:00:00",
                   Status: "Assigned",
                 },
               ]}
@@ -271,7 +313,6 @@ export default function FinalSettlementViewModal({ id, empId }) {
                 {
                   title: "SL",
                   dataIndex: "SL",
-                  width: 20,
                 },
                 {
                   title: "Asset Name",

@@ -1,4 +1,4 @@
-import { EyeTwoTone, ProfileTwoTone } from "@ant-design/icons";
+import { EditTwoTone, EyeTwoTone, ProfileFilled, ProfileTwoTone } from "@ant-design/icons";
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import { Form, Tooltip } from "antd";
 import axios from "axios";
@@ -131,62 +131,54 @@ export const getFinalSettlementLandingTableColumn = (
         {
             title: "SL",
             render: (_, index) => (page - 1) * paginationSize + index + 1,
-            sort: false,
+
             filter: false,
         },
         {
             title: "Code",
             dataIndex: "strEmployeeCode",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Employee Name",
             dataIndex: "strEmployeeName",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Workplace",
             dataIndex: "strWorkplaceName",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Department",
             dataIndex: "strDepartment",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Designation",
             dataIndex: "strDesignation",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Supervisor",
             dataIndex: "strSupervisor",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Line Manager",
             dataIndex: "strLineManager",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Employment Type",
             dataIndex: "strEmploymentType",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
@@ -200,28 +192,24 @@ export const getFinalSettlementLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            sort: true,
             filter: false,
             fieldType: "date",
         },
         {
             title: "Service Length",
             dataIndex: "serviceLength",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Separation Type",
             dataIndex: "strSeparationTypeName",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Status",
             dataIndex: "approvalStatus",
-            sort: true,
             filter: false,
             render: (data) => (
                 <div>
@@ -260,7 +248,6 @@ export const getFinalSettlementLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            sort: true,
             filter: false,
             fieldType: "date",
         },
@@ -274,7 +261,6 @@ export const getFinalSettlementLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            sort: true,
             filter: false,
             fieldType: "date",
         },
@@ -283,10 +269,47 @@ export const getFinalSettlementLandingTableColumn = (
             dataIndex: "",
             render: (data) => (
                 <div className="d-flex justify-content-evenly align-items-center">
-                    <Tooltip placement="top" color={"#34a853"} title={"View"}>
+                    {data?.intFinalSettlementId !== null && (
+                        <Tooltip placement="top" color={"#34a853"} title={"View"}>
+                            <PrimaryButton
+                                type="button"
+                                icon={<EyeTwoTone twoToneColor="#34a853" />}
+                                className={"iconButton"}
+                                customStyle={{
+                                    height: "25px",
+                                    width: "25px"
+                                }}
+                                onClick={() => {
+                                    setId(data?.separationId)
+                                    setEmpId(data?.intEmployeeId)
+                                    setOpenFinalSettlementViewModal(true)
+                                }}
+                            />
+                        </Tooltip>
+                    )}
+                    {data?.intFinalSettlementId === null && (
+                        <Tooltip placement="top" color={"#34a853"} title={"Generate"}>
+                            <PrimaryButton
+                                type="button"
+                                icon={<ProfileTwoTone twoToneColor="#34a853" />}
+                                className={"iconButton"}
+                                customStyle={{
+                                    height: "25px",
+                                    width: "25px"
+                                }}
+                                onClick={() => {
+                                    setId(data?.separationId)
+                                    setEmpId(data?.intEmployeeId)
+                                    history.push(`/retirement/finalsettlement/generate/${data?.separationId}/${data?.intEmployeeId}`)
+                                }}
+                            />
+                        </Tooltip>
+
+                    )}
+                    {data?.intFinalSettlementId !== null && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
                         <PrimaryButton
                             type="button"
-                            icon={<EyeTwoTone twoToneColor="#34a853" />}
+                            icon={<ProfileFilled style={{ color: "#34a853" }} />}
                             className={"iconButton"}
                             customStyle={{
                                 height: "25px",
@@ -295,30 +318,31 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
-                                setOpenFinalSettlementViewModal(true)
                             }}
                         />
-                    </Tooltip>
-                    <Tooltip placement="top" color={"#34a853"} title={"Generate"}>
+                    </Tooltip>)}
+                    {data?.intFinalSettlementId !== null && (
+                        <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
+                            <PrimaryButton
+                                type="button"
+                                icon={<EditTwoTone style={{ color: "#34a853" }} />}
+                                className={"iconButton"}
+                                customStyle={{
+                                    height: "25px",
+                                    width: "25px"
+                                }}
+                                onClick={() => {
+                                    setId(data?.separationId)
+                                    setEmpId(data?.intEmployeeId)
+                                    history.push(`/retirement/finalsettlement/edit/${data?.intFinalSettlementId}`)
+                                }}
+                            />
+                        </Tooltip>
+                    )}
+                    {data?.intFinalSettlementId !== null && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
                         <PrimaryButton
                             type="button"
-                            icon={<ProfileTwoTone twoToneColor="#34a853" />}
-                            className={"iconButton"}
-                            customStyle={{
-                                height: "25px",
-                                width: "25px"
-                            }}
-                            onClick={() => {
-                                setId(data?.separationId)
-                                setEmpId(data?.intEmployeeId)
-                                history.push(`/retirement/finalsettlement/generate/${data?.separationId}/${data?.intEmployeeId}`)
-                            }}
-                        />
-                    </Tooltip>
-                    {false && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
-                        <PrimaryButton
-                            type="button"
-                            icon={<ProfileTwoTone sx={{ color: "#34a853" }} />}
+                            icon={<ProfileFilled style={{ color: "#34a853" }} />}
                             className={"iconButton"}
                             customStyle={{
                                 height: "25px",
