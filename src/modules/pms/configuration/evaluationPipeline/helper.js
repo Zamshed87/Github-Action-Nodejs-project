@@ -181,7 +181,12 @@ export const handleEvaluationPipelineSetting = async (
   try {
     const res = await axios.post(`/PMS/EvaluationPipelineSetupCreate`, payload);
     cb && cb();
-    toast.success(res?.data?.message);
+    if (res?.data?.statusCode === 500) {
+      toast.error(res?.data?.message);
+    } else {
+      toast.success(res?.data?.message);
+    }
+
     setLoading && setLoading(false);
     form.resetFields();
   } catch (error) {
