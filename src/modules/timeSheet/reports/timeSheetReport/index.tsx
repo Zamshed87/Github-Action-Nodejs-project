@@ -19,7 +19,6 @@ import { debounce } from "lodash";
 import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import { gray600 } from "utility/customColor";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { formatFilterValue } from "utility/filter/helper";
 import { column, getTimeSheetReport } from "./helper";
 import { getTableDataMonthlyAttendance } from "../joineeAttendanceReport/helper";
 import { fromToDateList } from "../helper";
@@ -98,7 +97,7 @@ const RosterReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Roster Report";
+    document.title = "Flexible TimeSheet Report";
     () => {
       document.title = "PeopleDesk";
     };
