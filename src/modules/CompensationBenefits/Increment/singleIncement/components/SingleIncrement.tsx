@@ -594,12 +594,12 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       render: (value: any, row: any, index: number) => (
         <>
           <PInput
-            type="text"
+            type="number"
             // name={`numAmount_${index}`}
             value={row?.numAmount}
             placeholder="Amount"
             onChange={(e: any) => {
-              if (isNaN(e?.target?.value)) {
+              if (isNaN(e)) {
                 return toast.warn("Only numeric value allowed");
               }
               const values = form.getFieldsValue(true);
@@ -609,7 +609,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                 index === 0
               ) {
                 form.setFieldsValue({
-                  basicAmount: +e?.target?.value,
+                  basicAmount: +e,
                 });
               }
               // if (values?.salaryType?.value == "Grade") {
@@ -623,7 +623,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               //       getById?.data?.payScaleElements[0]?.netAmount;
               //   }
               // }
-              updateRowDtoHandler(+e?.target?.value, row, index);
+              updateRowDtoHandler(+e, row, index);
             }}
             disabled={
               (location?.state as any)?.viewOnly ||
