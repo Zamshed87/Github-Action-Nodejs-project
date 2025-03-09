@@ -2,6 +2,7 @@ import { gray600 } from "../../../../utility/customColor";
 import { Tooltip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconActionMenuForTable from "../../../../common/IconActionMenuForTable";
+import axios from "axios";
 
 export const individualKpiMappingTableColumn = ({
   values,
@@ -44,7 +45,7 @@ export const individualKpiMappingTableColumn = ({
     },
     {
       title: "Total KPIs",
-      dataIndex: "totalKpiNew",
+      dataIndex: "employeeWiseKpi",
     },
     {
       title: "Action",
@@ -121,3 +122,43 @@ export const individualKpiMappingTableColumn = ({
 //     employeeId: record?.employeeId,
 //   }
 // );
+
+export const GetSupervisorDepartmentsAndEmployeesDdl = async (
+  empId,
+  setDeptDDL,
+  setEmpDDL
+) => {
+  try {
+    const response = await axios.get(
+      `/PMS/GetSupervisorDepartmentsAndEmployeesDdl?employeeId=${empId}`
+    );
+
+    setDeptDDL(response?.data?.departments);
+    setEmpDDL(response?.data?.employees);
+    return response?.data;
+  } catch (error) {
+    console.error("Failed to fetch supervisor data:", error);
+    // supervisorDDL?.reset();
+  }
+};
+
+export const getSupervisorForAdmin = async (
+  supervisorType,
+  intAccountId,
+  setSupervisorDDL
+) => {
+  try {
+    const response = await axios.get(`/PMS/GetSuporvisorsBySupervisorType`, {
+      params: {
+        supervisorType: supervisorType || 0,
+        accountId: intAccountId || "",
+      },
+    });
+
+    setSupervisorDDL(response?.data);
+    return response?.data;
+  } catch (error) {
+    console.error("Failed to fetch supervisor data:", error);
+    // supervisorDDL?.reset();
+  }
+};

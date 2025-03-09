@@ -13,21 +13,32 @@ import {
 import Loading from "../../../../common/loading/Loading";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { customStyles } from "../../../../utility/selectCustomStyle";
-import { individualKpiMappingTableColumn } from "./helper";
+import {
+  GetSupervisorDepartmentsAndEmployeesDdl,
+  getSupervisorForAdmin,
+  individualKpiMappingTableColumn,
+} from "./helper";
 import IndividualKpiViewModal from "./individualKpiViewModal";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import axios from "axios";
 import { Tooltip } from "antd";
+import { set } from "lodash";
 
 const IndividualKpiMapping = () => {
   // 30462
   const [selectedData, setSelectedData] = useState(null);
   const [showKpiViewModal, setShowKpiViewModal] = useState(false);
 
-  const { employeeId, orgId, buId, buName, wId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    employeeId,
+    orgId,
+    buId,
+    buName,
+    wId,
+    wgId,
+    isOfficeAdmin,
+    intAccountId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const initData = {
     businessUnit: {
@@ -43,25 +54,26 @@ const IndividualKpiMapping = () => {
   const history = useHistory();
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
   const [departmentDDL, setDepartmentDDL] = useState([]);
+  const [supervisorDDL, setSupervisorDDL] = useState([]);
+  const [employeeDDL, setEmployeeDDL] = useState([]);
   const [tableData, getTableData, tableDataLoader, setTableData] =
     useAxiosGet();
 
   useEffect(() => {
-    if (initData?.businessUnit?.value) {
-      getPeopleDeskAllDDL(
-        `/PMS/GetUserWiseDepartmentAndEmployeeListDDL?userId=${employeeId}`,
-        "value",
-        "label",
-        setDepartmentDDL
-      );
-    }
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
     );
-    getData(initData, pages);
+    // getData(initData, pages);
+    if (!isOfficeAdmin) {
+      GetSupervisorDepartmentsAndEmployeesDdl(
+        employeeId,
+        setDepartmentDDL,
+        setEmployeeDDL
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId]);
 
@@ -129,7 +141,9 @@ const IndividualKpiMapping = () => {
         values?.businessUnit?.value
       }&departmentId=${values?.department?.value || 0}&employeeId=${
         values?.employee?.value || 0
-      }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`,
+      }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&targetType=${
+        values?.targetType?.value || 0
+      }&supOrLineOrDottedSupId=${values?.supervisorName?.value || 0}`,
       (data) => {
         if (data) {
           setPages((prev) => ({
@@ -228,31 +242,67 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-            <div className="col-lg-3">
-              <div className="input-field-main">
-                <label>Supervisor Name</label>
-                <AsyncFormikSelect
-                  isClear={true}
-                  selectedValue={values?.supervisorName}
-                  styles={{
-                    control: (provided) => ({
-                      ...customStyles?.control(provided),
-                      width: "100%",
-                    }),
-                  }}
-                  isSearchIcon={true}
-                  handleChange={(valueOption) => {
-                    setFieldValue("supervisorName", valueOption);
-                    setTableData([]);
-                  }}
-                  loadOptions={async (value) => {
-                    return getSuperVisorDDL({
-                      value,
-                    });
-                  }}
-                />
-              </div>
-            </div>
+            {isOfficeAdmin && (
+              <>
+                <div className="col-lg-3">
+                  <label>Supervisor Type</label>
+                  <FormikSelect
+                    classes="input-sm form-control"
+                    name="supervisorType"
+                    options={[
+                      {
+                        value: 0,
+                        label: "Supervisor",
+                      },
+                      {
+                        value: 1,
+                        label: "Line Manager",
+                      },
+                      {
+                        value: 2,
+                        label: "Dotted Supervisor",
+                      },
+                    ]}
+                    value={values?.supervisorType}
+                    onChange={(valueOption) => {
+                      setEmployeeDDL([]);
+                      setDepartmentDDL([]);
+                      setFieldValue("supervisorType", valueOption);
+                      getSupervisorForAdmin(
+                        valueOption?.value,
+                        intAccountId,
+                        setSupervisorDDL
+                      );
+                    }}
+                    styles={customStyles}
+                  />
+                </div>
+                <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Supervisor Name</label>
+                    <FormikSelect
+                      name="supervisorName"
+                      placeholder=""
+                      options={supervisorDDL || []}
+                      value={values?.supervisorName}
+                      onChange={(valueOption) => {
+                        setTableData([]);
+                        setFieldValue("supervisorName", valueOption);
+                        setEmployeeDDL([]);
+                        setDepartmentDDL([]);
+                        GetSupervisorDepartmentsAndEmployeesDdl(
+                          valueOption?.value,
+                          setDepartmentDDL,
+                          setEmployeeDDL
+                        );
+                      }}
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="col-md-3">
               <div className="input-field-main">
                 <label>Department</label>
@@ -269,35 +319,23 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div>
-
-            <div className="col-lg-3">
+            <div className="col-md-3">
               <div className="input-field-main">
                 <label>Employee</label>
-                <AsyncFormikSelect
-                  isClear={true}
-                  selectedValue={values?.employee}
-                  styles={{
-                    control: (provided) => ({
-                      ...customStyles?.control(provided),
-                      width: "100%",
-                    }),
-                  }}
-                  isSearchIcon={true}
-                  handleChange={(valueOption) => {
+                <FormikSelect
+                  name="employee"
+                  placeholder=""
+                  options={employeeDDL || []}
+                  value={values?.employee}
+                  onChange={(valueOption) => {
                     setTableData([]);
                     setFieldValue("employee", valueOption);
                   }}
-                  loadOptions={async (value) => {
-                    return getAsyncEmployeeApi({
-                      orgId,
-                      buId: values?.businessUnit?.value,
-                      intId: 0,
-                      value,
-                    });
-                  }}
+                  styles={customStyles}
                 />
               </div>
             </div>
+
             <div className="col-lg-3">
               <label>Type</label>
               <FormikSelect
