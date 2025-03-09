@@ -300,6 +300,8 @@ Are you sure ? You want to assign Calendar again?
                 <Row gutter={[10, 2]}>
                   <Col md={12} sm={24}>
                     <PSelect
+                      showSearch
+                      filterOption={false}
                       options={ddlApi?.data?.length > 0 ? ddlApi?.data : []}
                       name="calender"
                       label={
@@ -389,6 +391,9 @@ Are you sure ? You want to assign Calendar again?
                   {calenderType?.value === 2 && (
                     <Col md={12} sm={24}>
                       <PSelect
+                        allowClear
+                        showSearch
+                        filterOption={false}
                         options={
                           startingCalendarApi?.data?.length > 0
                             ? startingCalendarApi?.data
