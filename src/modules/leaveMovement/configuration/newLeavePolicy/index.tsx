@@ -35,7 +35,7 @@ export const NewLeavePolicy = () => {
 
   const {
     permissionList,
-    profileData: { buId, employeeId, orgId, wgId },
+    profileData: { buId, wId, orgId, wgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
   const [typeId, setTypeId] = useState<any>({});
@@ -153,19 +153,14 @@ export const NewLeavePolicy = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-
+    const ids = values?.leaveType?.map((i: any) => i?.value).join(",");
     landingApi.action({
-      urlKey: "newLanding",
+      urlKey: "GetPolicyLanding",
       method: "GET",
       params: {
-        fromDate: values?.fromDate
-          ? moment(values?.fromDate).startOf("month").format("YYYY-MM-DD")
-          : todayDate(),
-        toDate: values?.toDate
-          ? moment(values?.toDate).endOf("month").format("YYYY-MM-DD")
-          : todayDate(),
-        pageNumber: pagination?.current || 1,
-        pageSize: pagination?.pageSize || 100,
+        WorkplaceId: wId,
+        LeaveTypeId: ids,
+        Status: values?.status?.value,
       },
       onSuccess: (res: any) => {
         res?.data?.forEach((element: any, idex: number) => {
@@ -206,7 +201,7 @@ export const NewLeavePolicy = () => {
     },
     {
       title: "Leave Type",
-      dataIndex: "leaveType",
+      dataIndex: "leaveTypeName",
       width: 100,
     },
     {
@@ -516,7 +511,7 @@ export const NewLeavePolicy = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Employment Type is required",
+                      message: "Leave Type is required",
                     },
                   ]}
                 />
@@ -525,9 +520,9 @@ export const NewLeavePolicy = () => {
                 <PSelect
                   //   mode="multiple"
                   options={[
-                    { value: "", label: "All" },
-                    { value: "Active", label: "Active" },
-                    { value: "Inactive", label: "Inactive" },
+                    { value: 2, label: "All" },
+                    { value: 1, label: "Active" },
+                    { value: 0, label: "Inactive" },
                   ]}
                   name="status"
                   label="status"
