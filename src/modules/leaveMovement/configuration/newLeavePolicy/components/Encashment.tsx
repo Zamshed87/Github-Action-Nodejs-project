@@ -143,276 +143,290 @@ export const Encashment = ({
           ]}
         />
       </Col>
-      <Row gutter={[10, 2]}>
-        <Col md={6} sm={24}>
-          <PSelect
-            // mode="multiple"
-            allowClear
-            options={JoinOrConfirmEnum?.data?.DateDependsOnEnum || []}
-            name="enLengthDependOn"
-            label="Service Length Depend On"
-            placeholder="Service Length Depend On"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                enLengthDependOn: op,
-              });
-            }}
-            rules={[
-              {
-                required: true,
-                message: "Service Length Depend On is required",
-              },
-            ]}
-          />
-        </Col>
-        <Col md={6} sm={24}>
-          <PSelect
-            // mode="multiple"
-            allowClear
-            options={enumApi?.data?.EncashableTimelineEnum || []}
-            name="encashmentTimeline"
-            label="Encashment Timeline"
-            placeholder="Encashment Timeline"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                encashmentTimeline: op,
-              });
-            }}
-            rules={[
-              {
-                required: true,
-                message: "Encashment Timeline is required",
-              },
-            ]}
-          />
-        </Col>
-      </Row>
-      <Row gutter={[10, 2]}>
-        <Col md={6} sm={24}>
-          <PInput
-            type="number"
-            name="serviceStartLength"
-            label="From Service Length (Month)"
-            placeholder=""
-            rules={[
-              {
-                message: "Number must be positive",
-                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
-              },
-              {
-                required: tableData?.length === 0,
-                message: "From Service Length (Month) is required",
-              },
-            ]}
-          />
-        </Col>
-        <Col md={6} sm={24}>
-          <PInput
-            type="number"
-            name="serviceEndLength"
-            label="To Service Length (Month)"
-            placeholder=""
-            rules={[
-              {
-                message: "Number must be positive",
-                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
-              },
-              {
-                required: tableData?.length === 0,
-                message: "To Service Length (Month) is required",
-              },
-            ]}
-          />
-        </Col>
-        <Col md={6} sm={24}>
-          <PSelect
-            // mode="multiple"
-            allowClear
-            options={PercentOrFixedEnum?.data?.DaysTypeEnum || []}
-            name="encashType"
-            label="Leave Encashment Type"
-            placeholder="Leave Encashment Type"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                encashType: op,
-              });
-            }}
-            rules={[
-              {
-                required: tableData?.length === 0,
-                message: "Leave Carry Forward Type is required",
-              },
-            ]}
-          />
-        </Col>
-        <Form.Item shouldUpdate noStyle>
-          {() => {
-            const { encashType } = form.getFieldsValue(true);
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const {
+            isEncashment,
+            paidAmount,
+            encashBenefits,
+            maxEncashment,
+            encashType,
+            serviceEndLength,
+            serviceStartLength,
+          } = form.getFieldsValue(true);
 
-            return (
+          return (
+            isEncashment?.value === 1 && (
               <>
-                <Col md={5} sm={24}>
-                  <PInput
-                    type="number"
-                    name="maxEncashment"
-                    label={`Max Leave Encashment (${
-                      encashType?.value == 2 ? "% of Days" : "Fixed Days"
-                    })`}
-                    placeholder=""
-                    rules={[
-                      {
-                        message: "Number must be positive",
-                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
-                      },
-                      {
-                        required: tableData?.length === 0,
-                        message:
-                          "Max Carry Forward After Lapse (%, Days) is required",
-                      },
-                    ]}
-                  />
-                </Col>
-              </>
-            );
-          }}
-        </Form.Item>
-        <Col md={6} sm={24}>
-          <PSelect
-            // mode="multiple"
-            allowClear
-            options={grossBasicEnum?.data?.LeavePolicyDependOnEnum || []}
-            name="encashBenefits"
-            label="Encashment Benefits"
-            placeholder=""
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                encashBenefits: op,
-              });
-            }}
-            rules={[
-              {
-                required: tableData?.length === 0,
-                message: "Leave Carry Forward Type is required",
-              },
-            ]}
-          />
-        </Col>
-        <Form.Item shouldUpdate noStyle>
-          {() => {
-            const {
-              paidAmount,
-              encashBenefits,
-              maxEncashment,
-              encashType,
-              serviceEndLength,
-              serviceStartLength,
-            } = form.getFieldsValue(true);
-
-            return (
-              <>
-                <Col md={5} sm={24}>
-                  <PInput
-                    type="number"
-                    name="paidAmount"
-                    label={`Paid (${
-                      encashBenefits?.value != 3 ? "% " : "Amount"
-                    })`}
-                    placeholder=""
-                    rules={[
-                      {
-                        message: "Number must be positive",
-                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
-                      },
-                      {
-                        required: tableData?.length === 0,
-                        message:
-                          "Max Carry Forward After Lapse (%, Days) is required",
-                      },
-                    ]}
-                  />
-                </Col>
-                <Col
-                  style={{
-                    marginTop: "23px",
-                  }}
-                >
-                  <PButton
-                    type="primary"
-                    action="button"
-                    content="Add"
-                    onClick={() => {
-                      if (
-                        paidAmount === undefined ||
-                        encashBenefits === undefined ||
-                        encashType === undefined ||
-                        serviceEndLength === undefined ||
-                        serviceStartLength === undefined ||
-                        maxEncashment === undefined
-                      ) {
-                        return toast.warn("Please fill up the fields");
-                      }
-                      if (serviceEndLength < serviceStartLength) {
-                        return toast.warn(
-                          "Service End Length must be greater than Service Start Length"
-                        );
-                      }
-                      const fields = [
-                        "serviceStartLength",
-                        "serviceEndLength",
-                        "encashmentType",
-                        "maxEncashment",
-                        "encashBenefits",
-                        "paidAmount",
-                      ];
-                      form
-                        .validateFields(fields)
-                        .then(() => {
-                          if (
-                            isMonthExists(serviceStartLength, serviceEndLength)
-                          ) {
-                            return toast.warn("Service Length already exists");
-                          } else {
-                            setTableData((prev: any) => [
-                              ...prev,
-                              {
-                                serviceLength: `${serviceStartLength} - ${serviceEndLength}`,
-                                encashmentType: encashType?.label,
-                                maxEncashment,
-                                encashBenefits: encashBenefits?.label,
-                                paidAmount,
-                              },
-                            ]);
-                            form.setFieldsValue({
-                              serviceStartLength: undefined,
-                              serviceEndLength: undefined,
-                              encashType: undefined,
-                              maxEncashment: undefined,
-                              encashBenefits: undefined,
-                              paidAmount: undefined,
-                            });
-                          }
-                        })
-                        .catch((e: any) => {
-                          console.log({ e });
+                <Row gutter={[10, 2]}>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={JoinOrConfirmEnum?.data?.DateDependsOnEnum || []}
+                      name="enLengthDependOn"
+                      label="Service Length Depend On"
+                      placeholder="Service Length Depend On"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          enLengthDependOn: op,
                         });
+                      }}
+                      rules={[
+                        {
+                          required: isEncashment?.value === 1,
+                          message: "Service Length Depend On is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={enumApi?.data?.EncashableTimelineEnum || []}
+                      name="encashmentTimeline"
+                      label="Encashment Timeline"
+                      placeholder="Encashment Timeline"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          encashmentTimeline: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: isEncashment?.value === 1,
+                          message: "Encashment Timeline is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={[10, 2]}>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="number"
+                      name="serviceStartLength"
+                      label="From Service Length (Month)"
+                      placeholder=""
+                      rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
+                          required:
+                            isEncashment?.value === 1 &&
+                            tableData?.length === 0,
+                          message: "From Service Length (Month) is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="number"
+                      name="serviceEndLength"
+                      label="To Service Length (Month)"
+                      placeholder=""
+                      rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
+                          required:
+                            isEncashment?.value === 1 &&
+                            tableData?.length === 0,
+                          message: "To Service Length (Month) is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={PercentOrFixedEnum?.data?.DaysTypeEnum || []}
+                      name="encashType"
+                      label="Leave Encashment Type"
+                      placeholder="Leave Encashment Type"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          encashType: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required:
+                            isEncashment?.value === 1 &&
+                            tableData?.length === 0,
+                          message: "Leave Carry Forward Type is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={5} sm={24}>
+                    <PInput
+                      type="number"
+                      name="maxEncashment"
+                      label={`Max Leave Encashment (${
+                        encashType?.value == 2 ? "% of Days" : "Fixed Days"
+                      })`}
+                      placeholder=""
+                      rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
+                          required:
+                            isEncashment?.value === 1 &&
+                            tableData?.length === 0,
+                          message:
+                            "Max Carry Forward After Lapse (%, Days) is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={
+                        grossBasicEnum?.data?.LeavePolicyDependOnEnum || []
+                      }
+                      name="encashBenefits"
+                      label="Encashment Benefits"
+                      placeholder=""
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          encashBenefits: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required:
+                            isEncashment?.value === 1 &&
+                            tableData?.length === 0,
+                          message: "Leave Carry Forward Type is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={5} sm={24}>
+                    <PInput
+                      type="number"
+                      name="paidAmount"
+                      label={`Paid (${
+                        encashBenefits?.value != 3 ? "% " : "Amount"
+                      })`}
+                      placeholder=""
+                      rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
+                          required:
+                            isEncashment?.value === 1 &&
+                            tableData?.length === 0,
+                          message:
+                            "Max Carry Forward After Lapse (%, Days) is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    style={{
+                      marginTop: "23px",
                     }}
-                  />
-                </Col>
+                  >
+                    <PButton
+                      type="primary"
+                      action="button"
+                      content="Add"
+                      onClick={() => {
+                        if (
+                          paidAmount === undefined ||
+                          encashBenefits === undefined ||
+                          encashType === undefined ||
+                          serviceEndLength === undefined ||
+                          serviceStartLength === undefined ||
+                          maxEncashment === undefined
+                        ) {
+                          return toast.warn("Please fill up the fields");
+                        }
+                        if (serviceEndLength < serviceStartLength) {
+                          return toast.warn(
+                            "Service End Length must be greater than Service Start Length"
+                          );
+                        }
+                        const fields = [
+                          "serviceStartLength",
+                          "serviceEndLength",
+                          "encashmentType",
+                          "maxEncashment",
+                          "encashBenefits",
+                          "paidAmount",
+                        ];
+                        form
+                          .validateFields(fields)
+                          .then(() => {
+                            if (
+                              isMonthExists(
+                                serviceStartLength,
+                                serviceEndLength
+                              )
+                            ) {
+                              return toast.warn(
+                                "Service Length already exists"
+                              );
+                            } else {
+                              setTableData((prev: any) => [
+                                ...prev,
+                                {
+                                  serviceLength: `${serviceStartLength} - ${serviceEndLength}`,
+                                  encashmentType: encashType?.label,
+                                  maxEncashment,
+                                  encashBenefits: encashBenefits?.label,
+                                  paidAmount,
+                                },
+                              ]);
+                              form.setFieldsValue({
+                                serviceStartLength: undefined,
+                                serviceEndLength: undefined,
+                                encashType: undefined,
+                                maxEncashment: undefined,
+                                encashBenefits: undefined,
+                                paidAmount: undefined,
+                              });
+                            }
+                          })
+                          .catch((e: any) => {
+                            console.log({ e });
+                          });
+                      }}
+                    />
+                  </Col>
+
+                  {tableData?.length > 0 && (
+                    <Col>
+                      <DataTable
+                        bordered
+                        data={tableData}
+                        loading={false}
+                        header={encashheader}
+                      />
+                    </Col>
+                  )}
+                </Row>
               </>
-            );
-          }}
-        </Form.Item>
-        {tableData?.length > 0 && (
-          <Col>
-            <DataTable
-              bordered
-              data={tableData}
-              loading={false}
-              header={encashheader}
-            />
-          </Col>
-        )}
-      </Row>
+            )
+          );
+        }}
+      </Form.Item>
     </>
   );
 };

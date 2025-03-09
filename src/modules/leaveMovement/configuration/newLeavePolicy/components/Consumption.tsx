@@ -122,7 +122,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
           return (
             <>
               {/* {leaveConsumeType?.filter((i: any) => i?.value !== 1).length > */}
-              {leaveConsumeType?.value != 1 && (
+              {leaveConsumeType?.value > 1 && (
                 <>
                   <Col md={5} sm={24}>
                     <PInput

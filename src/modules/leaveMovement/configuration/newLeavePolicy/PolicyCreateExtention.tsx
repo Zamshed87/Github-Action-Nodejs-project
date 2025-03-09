@@ -379,7 +379,7 @@ export const PolicyCreateExtention = () => {
             sandwichLeaveScenarioId:
               selectedRow1?.length > 0
                 ? selectedRow1?.map((row: any) => row.index)?.join(",")
-                : null,
+                : "",
           },
         };
       case 2:
@@ -608,16 +608,30 @@ export const PolicyCreateExtention = () => {
             )}
 
             <Row justify="end" className="mt-3" gutter={10}>
-              {current < steps.length - 1 && (
+              {current > 0 && (
                 <PButton
                   type="primary"
                   action="button"
+                  content="Previous"
+                  onClick={() => prev()}
+                />
+              )}
+              {current < steps.length - 1 && (
+                <PButton
+                  type="primary"
+                  className="ml-2"
+                  action="button"
                   content="Next"
                   onClick={() => {
+                    const values = form.getFieldsValue(true);
                     const cond1 = current === 0 && consumeData.length === 0;
-                    const cond2 = current === 3 && tableData.length === 0;
+                    const cond2 =
+                      current === 3 &&
+                      values?.isEncashment === 1 &&
+                      tableData.length === 0;
                     const cond3 = current === 0 && balanceTable.length === 0;
-                    const cond4 = current === 0 && policy.length === 0;
+                    const cond4 =
+                      current === 0 && values?.isLeave && policy.length === 0;
                     form
                       .validateFields(fields[current])
                       .then(() => {
@@ -661,15 +675,6 @@ export const PolicyCreateExtention = () => {
                   onClick={() => message.success("Processing complete!")}
                 />
               )} */}
-              {current > 0 && (
-                <PButton
-                  className="ml-2"
-                  type="primary"
-                  action="button"
-                  content="Previous"
-                  onClick={() => prev()}
-                />
-              )}
             </Row>
           </PCardBody>
         </PCard>

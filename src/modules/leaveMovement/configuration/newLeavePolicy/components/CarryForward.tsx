@@ -147,6 +147,52 @@ export const CarryForward = ({ form, PercentOrFixedEnum }: any) => {
                     </Col>
                   )}
                 </Row>
+                <Row gutter={[10, 2]}>
+                  <Col md={6} sm={24}>
+                    <PInput
+                      type="number"
+                      name="maxCarryForwardBalance"
+                      label="Max Carry Forward Balance (Days)"
+                      placeholder=""
+                      rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
+                          required: isCarryForward?.value === 1,
+                          message:
+                            "Max Carry Forward Balance (Days) is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={[
+                        { value: 1, label: "Yes" },
+                        { value: 0, label: "No" },
+                      ]}
+                      name="addPrevCarry"
+                      label="Add previous year carry balance "
+                      placeholder="Add previous year carry balance "
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          addPrevCarry: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message:
+                            "Add previous year carry balance  is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                </Row>
               </>
             )
           );
@@ -154,7 +200,7 @@ export const CarryForward = ({ form, PercentOrFixedEnum }: any) => {
       </Form.Item>
 
       <Row gutter={[10, 2]}>
-        <Form.Item shouldUpdate noStyle>
+        {/* <Form.Item shouldUpdate noStyle>
           {() => {
             const { leavelapse } = form.getFieldsValue(true);
 
@@ -185,31 +231,7 @@ export const CarryForward = ({ form, PercentOrFixedEnum }: any) => {
               )
             );
           }}
-        </Form.Item>
-        <Col md={6} sm={24}>
-          <PSelect
-            // mode="multiple"
-            allowClear
-            options={[
-              { value: 1, label: "Yes" },
-              { value: 0, label: "No" },
-            ]}
-            name="addPrevCarry"
-            label="Add previous year carry balance "
-            placeholder="Add previous year carry balance "
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                addPrevCarry: op,
-              });
-            }}
-            rules={[
-              {
-                required: true,
-                message: "Add previous year carry balance  is required",
-              },
-            ]}
-          />
-        </Col>
+        </Form.Item> */}
       </Row>
     </>
   );

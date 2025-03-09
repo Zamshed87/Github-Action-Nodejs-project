@@ -137,7 +137,7 @@ export const General = ({
   const getDDL = () => {
     const values = form.getFieldsValue(true);
     policyApi.action({
-      urlKey: "GetLeavePolicy",
+      urlKey: "GetPolicyName",
       method: "GET",
       params: {
         WorkplaceId: values?.workplace?.value,

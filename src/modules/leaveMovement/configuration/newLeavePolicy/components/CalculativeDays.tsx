@@ -144,86 +144,98 @@ export const CalculativeDays = ({
           />
         </Col>
       </Row>
-      <Row gutter={[10, 2]}>
-        <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
-          <PSelect
-            // mode="multiple"
-            allowClear
-            options={
-              policyApi?.data?.data?.length > 0 ? policyApi?.data?.data : []
-            }
-            name="policy"
-            label="Leave Policy"
-            placeholder=""
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                policy: op,
-              });
-            }}
-            rules={[
-              {
-                required: policy?.length === 0,
-                message: "Leave Policy is required",
-              },
-            ]}
-          />
-        </Col>
-        <Form.Item shouldUpdate noStyle>
-          {() => {
-            const { policy } = form.getFieldsValue(true);
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const { isLeave } = form.getFieldsValue(true);
 
-            return (
-              <Col
-                style={{
-                  marginTop: "40px",
-                }}
-              >
-                <PButton
-                  type="primary"
-                  action="button"
-                  content="Add"
-                  onClick={() => {
-                    if (policy === undefined) {
-                      return toast.warn("Please Select a Policy");
+          return (
+            isLeave && (
+              <Row gutter={[10, 2]}>
+                <Col md={5} sm={24} style={{ marginTop: "1.2rem" }}>
+                  <PSelect
+                    // mode="multiple"
+                    allowClear
+                    options={
+                      policyApi?.data?.data?.length > 0
+                        ? policyApi?.data?.data
+                        : []
                     }
-
-                    const fields = ["policy"];
-                    form
-                      .validateFields(fields)
-                      .then(() => {
-                        setPolicy((prev: any) => [
-                          ...prev,
-                          {
-                            name: policy?.policyName,
-                            type: policy?.leaveType,
-                            codeName: policy?.policyDisplayName,
-                            id: policy?.policyId,
-                          },
-                        ]);
-                        form.setFieldsValue({
-                          policy: undefined,
-                        });
-                      })
-                      .catch((e: any) => {
-                        console.log({ e });
+                    name="policy"
+                    label="Leave Policy"
+                    placeholder=""
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        policy: op,
                       });
+                    }}
+                    rules={[
+                      {
+                        required: isLeave && policy?.length === 0,
+                        message: "Leave Policy is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const { policy } = form.getFieldsValue(true);
+
+                    return (
+                      <Col
+                        style={{
+                          marginTop: "40px",
+                        }}
+                      >
+                        <PButton
+                          type="primary"
+                          action="button"
+                          content="Add"
+                          onClick={() => {
+                            if (policy === undefined) {
+                              return toast.warn("Please Select a Policy");
+                            }
+
+                            const fields = ["policy"];
+                            form
+                              .validateFields(fields)
+                              .then(() => {
+                                setPolicy((prev: any) => [
+                                  ...prev,
+                                  {
+                                    name: policy?.policyName,
+                                    type: policy?.leaveType,
+                                    codeName: policy?.policyDisplayName,
+                                    id: policy?.policyId,
+                                  },
+                                ]);
+                                form.setFieldsValue({
+                                  policy: undefined,
+                                });
+                              })
+                              .catch((e: any) => {
+                                console.log({ e });
+                              });
+                          }}
+                        />
+                      </Col>
+                    );
                   }}
-                />
-              </Col>
-            );
-          }}
-        </Form.Item>
-        {policy?.length > 0 && (
-          <Col>
-            <DataTable
-              bordered
-              data={policy}
-              loading={false}
-              header={encashheader}
-            />
-          </Col>
-        )}
-      </Row>
+                </Form.Item>
+                {policy?.length > 0 && (
+                  <Col>
+                    <DataTable
+                      bordered
+                      data={policy}
+                      loading={false}
+                      header={encashheader}
+                    />
+                  </Col>
+                )}
+              </Row>
+            )
+          );
+        }}
+      </Form.Item>
     </>
   );
 };
