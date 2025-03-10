@@ -105,19 +105,15 @@ export const getExitInterviewLandingTableColumn = (
             sort: false,
             filter: false,
             className: "text-center",
-            width: 30,
         },
         {
             title: "Assigned To",
             dataIndex: "strEmployeeName",
-            width: 120,
-            sort: true,
             filter: false,
         },
         {
             title: "Length of Service",
             dataIndex: "serviceLength",
-            width: 120,
         },
         {
             title: "Date of Resign",
@@ -129,13 +125,10 @@ export const getExitInterviewLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            width: 50,
-
         },
         {
             title: "Resign Status",
             dataIndex: "approvalStatus",
-            sort: true,
             filter: false,
             render: (item) => (
                 <div className="d-flex justify-content-center">
@@ -184,13 +177,10 @@ export const getExitInterviewLandingTableColumn = (
                 </div>
             ),
             fieldType: "string",
-            width: 30,
         },
         {
             title: "Interview Completed By ",
             dataIndex: "strInterviewCompletedBy",
-            width: 120,
-            sort: true,
             filter: false,
         },
         {
@@ -203,13 +193,10 @@ export const getExitInterviewLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            width: 50,
         },
         {
             title: "Status",
             dataIndex: "strInterviewStatus",
-            width: 60,
-            sort: true,
             filter: false,
         },
         {
@@ -274,7 +261,6 @@ export const getExitInterviewLandingTableColumn = (
                     )}
                 </div>
             ),
-            width: 60,
         }
     ]
 };
