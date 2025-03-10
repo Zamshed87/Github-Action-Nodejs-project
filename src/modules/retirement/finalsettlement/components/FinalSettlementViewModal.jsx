@@ -332,6 +332,27 @@ export default function FinalSettlementViewModal({ id, empId }) {
                 },
               ]}
             />
+            <Divider
+              orientation="left"
+              style={{
+                borderColor: "#34a853",
+                marginTop: "20px",
+                fontWeight: "600",
+              }}
+            >
+              Remarks
+            </Divider>
+            {singleFinalSettlementData?.remarks && (
+              <div
+                style={{
+                  borderRadius: "10px",
+                  padding: "10px",
+                  border: "1px solid #34a853",
+                }}
+              >
+                <p>{singleFinalSettlementData?.remarks}</p>
+              </div>
+            )}
           </Card>
         </Col>
       </Row>

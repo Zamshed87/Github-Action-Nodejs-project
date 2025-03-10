@@ -1729,6 +1729,10 @@ const FinalSettlementLandingv2 = lazy(() =>
 const FinalSettlementGenerate = lazy(() =>
   import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
 );
+const FinalSettlementEdit = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx")
+);
+
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 const AttendanceShiftChange = lazy(() =>
@@ -4170,6 +4174,10 @@ export const routingList = [
   {
     path: "/retirement/finalSettlement/generate/:separationid/:empid",
     component: FinalSettlementGenerate,
+  },
+  {
+    path: "/retirement/finalSettlement/edit/:settlementid/:separationid/:empid",
+    component: FinalSettlementEdit,
   }
 ];
 

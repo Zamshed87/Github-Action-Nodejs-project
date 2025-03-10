@@ -2,15 +2,15 @@ import { Card, Col, Collapse, Divider, Input, Row } from "antd";
 import BackButton from "common/BackButton";
 import PrimaryButton from "common/PrimaryButton";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { DataTable } from "Components";
+import { DataTable, PInput } from "Components";
+import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { Form, useFormik } from "formik";
 
 export default function FinalSettlementGenerate() {
   const { orgId } = useSelector(
@@ -36,6 +36,7 @@ export default function FinalSettlementGenerate() {
     initialValues: {
       otherDeduction: 0,
       otherAddition: 0,
+      remarks: "",
     },
     onSubmit: (values) => {
       setSingleFinalSettlementData((prev) => ({
@@ -58,6 +59,7 @@ export default function FinalSettlementGenerate() {
         totalDeduction: singleFinalSettlementData?.totalDeduction,
         tax: singleFinalSettlementData?.tax,
         pf: singleFinalSettlementData?.pf,
+        remarks: values?.remarks,
         rows: singleFinalSettlementData?.rows,
         loan: singleFinalSettlementData?.loan,
         absentDeduction: singleFinalSettlementData?.absentDeduction,
@@ -108,7 +110,6 @@ export default function FinalSettlementGenerate() {
     );
   }, [params?.separationid]);
 
-  console.log(singleFinalSettlementData);
   return (
     <div className="table-card businessUnit-wrapper dashboard-scroll">
       <form onSubmit={handleSubmit}>
@@ -168,7 +169,11 @@ export default function FinalSettlementGenerate() {
                   },
                   {
                     name: "Total Payable Amount",
-                    value: singleFinalSettlementData?.netPayableAmount || 0,
+                    value:
+                      singleFinalSettlementData?.summary?.totalDueSalary +
+                        singleFinalSettlementData?.summary?.totalOthersDue -
+                        values?.otherDeduction +
+                        values?.otherAddition || 0,
                   },
                 ]}
                 header={[
@@ -189,15 +194,7 @@ export default function FinalSettlementGenerate() {
                     render: (data, record) => {
                       {
                         if (record?.name === "Total Payable Amount") {
-                          return (
-                            <b>
-                              {dataFormatter(
-                                data +
-                                  values?.otherAddition -
-                                  values?.otherDeduction
-                              )}
-                            </b>
-                          );
+                          return <b>{dataFormatter(data)}</b>;
                         } else if (record?.name === "Others Deduction") {
                           return (
                             <Input
@@ -479,6 +476,22 @@ export default function FinalSettlementGenerate() {
                     dataIndex: "Status",
                   },
                 ]}
+              />
+              <Divider
+                orientation="left"
+                style={{
+                  borderColor: "#34a853",
+                  marginTop: "20px",
+                  fontWeight: "600",
+                }}
+              >
+                Remarks
+              </Divider>
+              <PInput
+                style={{ fontSize: "11px" }}
+                type="textarea"
+                value={values?.remarks}
+                onChange={(e) => setFieldValue("remarks", e.target.value)}
               />
             </Card>
           </Col>

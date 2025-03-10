@@ -325,7 +325,7 @@ export const getFinalSettlementLandingTableColumn = (
                         <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
                             <PrimaryButton
                                 type="button"
-                                icon={<EditTwoTone style={{ color: "#34a853" }} />}
+                                icon={<EditTwoTone twoToneColor="#34a853" />}
                                 className={"iconButton"}
                                 customStyle={{
                                     height: "25px",
@@ -334,42 +334,30 @@ export const getFinalSettlementLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
-                                    history.push(`/retirement/finalsettlement/edit/${data?.intFinalSettlementId}`)
+                                    history.push(`/retirement/finalsettlement/edit/${data?.intFinalSettlementId}/${data?.separationId}/${data?.intEmployeeId}`)
                                 }}
                             />
                         </Tooltip>
                     )}
-                    {data?.intFinalSettlementId !== null && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
-                        <PrimaryButton
-                            type="button"
-                            icon={<ProfileFilled style={{ color: "#34a853" }} />}
-                            className={"iconButton"}
-                            customStyle={{
-                                height: "25px",
-                                width: "25px"
-                            }}
-                            onClick={() => {
-                                setId(data?.separationId)
-                                setEmpId(data?.intEmployeeId)
-                            }}
-                        />
-                    </Tooltip>)}
-                    <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
-                        <button
-                            className={"iconButton"}
-                            style={{
-                                height: "25px",
-                                width: "25px"
-                            }}
-                            type="button"
-                            onClick={() => {
-                                setId(data?.separationId)
-                                setEmpId(data?.intEmployeeId)
-                                confirmSendForApprovalPopup(data?.separationId, data?.intEmployeeId)
-                            }}
-                        ><SendTwoToneIcon color="success" />
-                        </button>
-                    </Tooltip>
+                    {data?.intFinalSettlementId !== null && (
+                        <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
+                            <button
+                                className={"iconButton"}
+                                style={{
+                                    height: "25px",
+                                    width: "25px"
+                                }}
+                                type="button"
+                                onClick={() => {
+                                    setId(data?.separationId)
+                                    setEmpId(data?.intEmployeeId)
+                                    confirmSendForApprovalPopup(data?.separationId, data?.intEmployeeId)
+                                }}
+                            ><SendTwoToneIcon color="success" />
+                            </button>
+                        </Tooltip>
+                    )}
+
                 </div>
             ),
         }

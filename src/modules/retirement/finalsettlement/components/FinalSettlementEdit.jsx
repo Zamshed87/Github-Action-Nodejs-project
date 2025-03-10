@@ -2,17 +2,17 @@ import { Card, Col, Collapse, Divider, Input, Row } from "antd";
 import BackButton from "common/BackButton";
 import PrimaryButton from "common/PrimaryButton";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { DataTable } from "Components";
+import { DataTable, PInput } from "Components";
+import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { Form, useFormik } from "formik";
 
-export default function FinalSettlementGenerate() {
+export default function FinalSettlementEdit() {
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -36,6 +36,7 @@ export default function FinalSettlementGenerate() {
     initialValues: {
       otherDeduction: 0,
       otherAddition: 0,
+      remarks: "",
     },
     onSubmit: (values) => {
       setSingleFinalSettlementData((prev) => ({
@@ -47,36 +48,16 @@ export default function FinalSettlementGenerate() {
         },
       }));
       const payload = {
-        finalSettlementId: singleFinalSettlementData?.finalSettlementId,
-        intSeparationId: singleFinalSettlementData?.intSeparationId,
-        intEmployeeId: singleFinalSettlementData?.intEmployeeId,
-        strEmployeeName: singleFinalSettlementData?.strEmployeeName,
-        strEmployeeCode: singleFinalSettlementData?.strEmployeeCode,
-        fromDate: singleFinalSettlementData?.fromDate,
-        toDate: singleFinalSettlementData?.toDate,
-        totalAllowance: singleFinalSettlementData?.totalAllowance,
-        totalDeduction: singleFinalSettlementData?.totalDeduction,
-        tax: singleFinalSettlementData?.tax,
-        pf: singleFinalSettlementData?.pf,
-        rows: singleFinalSettlementData?.rows,
-        loan: singleFinalSettlementData?.loan,
-        absentDeduction: singleFinalSettlementData?.absentDeduction,
-        earlyResignDeduction: singleFinalSettlementData?.earlyResignDeduction,
-        grossSalary: singleFinalSettlementData?.grossSalary,
-        headers: singleFinalSettlementData?.headers,
-        netPayableAmount: singleFinalSettlementData?.netPayableAmount,
-        othersDues: singleFinalSettlementData?.othersDues ?? [],
-        summary: {
-          ...singleFinalSettlementData?.summary,
-          otherAddition: values?.otherAddition ?? 0,
-          otherDeduction: values?.otherDeduction ?? 0,
-        },
-        earnings: singleFinalSettlementData?.earnings ?? [],
-        deductions: singleFinalSettlementData?.deductions ?? [],
+        IntFinalSettlementId: singleFinalSettlementData?.finalSettlementId,
+        IntSeparationId: singleFinalSettlementData?.intSeparationId,
+        IntEmployeeId: singleFinalSettlementData?.intEmployeeId,
+        OtherAddition: values?.otherAddition ?? 0,
+        OtherDeduction: values?.otherDeduction ?? 0,
+        Remarks: values?.remarks ?? "",
       };
 
       postFinalSettlementData(
-        `/FinalSettlement/SaveFinalSettlement`,
+        `/FinalSettlement/UpdateFinalSettlement`,
         payload,
         () => {
           history.push("/retirement/finalsettlement");
@@ -99,16 +80,16 @@ export default function FinalSettlementGenerate() {
       }
     );
     getFinalSettlementData(
-      `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
+      `/FinalSettlement/GetFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
       (res) => {
         setSingleFinalSettlementData(res?.data);
         setFieldValue("otherDeduction", res?.data?.summary?.otherDeduction);
         setFieldValue("otherAddition", res?.data?.summary?.otherAddition);
+        setFieldValue("remarks", res?.data?.remarks);
       }
     );
   }, [params?.separationid]);
 
-  console.log(singleFinalSettlementData);
   return (
     <div className="table-card businessUnit-wrapper dashboard-scroll">
       <form onSubmit={handleSubmit}>
@@ -168,7 +149,11 @@ export default function FinalSettlementGenerate() {
                   },
                   {
                     name: "Total Payable Amount",
-                    value: singleFinalSettlementData?.netPayableAmount || 0,
+                    value:
+                      singleFinalSettlementData?.summary?.totalDueSalary +
+                        singleFinalSettlementData?.summary?.totalOthersDue -
+                        values?.otherDeduction +
+                        values?.otherAddition || 0,
                   },
                 ]}
                 header={[
@@ -189,15 +174,7 @@ export default function FinalSettlementGenerate() {
                     render: (data, record) => {
                       {
                         if (record?.name === "Total Payable Amount") {
-                          return (
-                            <b>
-                              {dataFormatter(
-                                data +
-                                  values?.otherAddition -
-                                  values?.otherDeduction
-                              )}
-                            </b>
-                          );
+                          return <b>{dataFormatter(data)}</b>;
                         } else if (record?.name === "Others Deduction") {
                           return (
                             <Input
@@ -479,6 +456,22 @@ export default function FinalSettlementGenerate() {
                     dataIndex: "Status",
                   },
                 ]}
+              />
+              <Divider
+                orientation="left"
+                style={{
+                  borderColor: "#34a853",
+                  marginTop: "20px",
+                  fontWeight: "600",
+                }}
+              >
+                Remarks
+              </Divider>
+              <PInput
+                style={{ fontSize: "11px" }}
+                type="textarea"
+                value={values?.remarks}
+                onChange={(e) => setFieldValue("remarks", e.target.value)}
               />
             </Card>
           </Col>
