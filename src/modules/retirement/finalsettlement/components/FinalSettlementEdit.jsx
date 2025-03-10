@@ -12,7 +12,7 @@ import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
 
-export default function FinalSettlementGenerate() {
+export default function FinalSettlementEdit() {
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -48,37 +48,16 @@ export default function FinalSettlementGenerate() {
         },
       }));
       const payload = {
-        finalSettlementId: singleFinalSettlementData?.finalSettlementId,
-        intSeparationId: singleFinalSettlementData?.intSeparationId,
-        intEmployeeId: singleFinalSettlementData?.intEmployeeId,
-        strEmployeeName: singleFinalSettlementData?.strEmployeeName,
-        strEmployeeCode: singleFinalSettlementData?.strEmployeeCode,
-        fromDate: singleFinalSettlementData?.fromDate,
-        toDate: singleFinalSettlementData?.toDate,
-        totalAllowance: singleFinalSettlementData?.totalAllowance,
-        totalDeduction: singleFinalSettlementData?.totalDeduction,
-        tax: singleFinalSettlementData?.tax,
-        pf: singleFinalSettlementData?.pf,
-        remarks: values?.remarks,
-        rows: singleFinalSettlementData?.rows,
-        loan: singleFinalSettlementData?.loan,
-        absentDeduction: singleFinalSettlementData?.absentDeduction,
-        earlyResignDeduction: singleFinalSettlementData?.earlyResignDeduction,
-        grossSalary: singleFinalSettlementData?.grossSalary,
-        headers: singleFinalSettlementData?.headers,
-        netPayableAmount: singleFinalSettlementData?.netPayableAmount,
-        othersDues: singleFinalSettlementData?.othersDues ?? [],
-        summary: {
-          ...singleFinalSettlementData?.summary,
-          otherAddition: values?.otherAddition ?? 0,
-          otherDeduction: values?.otherDeduction ?? 0,
-        },
-        earnings: singleFinalSettlementData?.earnings ?? [],
-        deductions: singleFinalSettlementData?.deductions ?? [],
+        IntFinalSettlementId: singleFinalSettlementData?.finalSettlementId,
+        IntSeparationId: singleFinalSettlementData?.intSeparationId,
+        IntEmployeeId: singleFinalSettlementData?.intEmployeeId,
+        OtherAddition: values?.otherAddition ?? 0,
+        OtherDeduction: values?.otherDeduction ?? 0,
+        Remarks: values?.remarks ?? "",
       };
 
       postFinalSettlementData(
-        `/FinalSettlement/SaveFinalSettlement`,
+        `/FinalSettlement/UpdateFinalSettlement`,
         payload,
         () => {
           history.push("/retirement/finalsettlement");
@@ -101,11 +80,12 @@ export default function FinalSettlementGenerate() {
       }
     );
     getFinalSettlementData(
-      `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
+      `/FinalSettlement/GetFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
       (res) => {
         setSingleFinalSettlementData(res?.data);
         setFieldValue("otherDeduction", res?.data?.summary?.otherDeduction);
         setFieldValue("otherAddition", res?.data?.summary?.otherAddition);
+        setFieldValue("remarks", res?.data?.remarks);
       }
     );
   }, [params?.separationid]);
