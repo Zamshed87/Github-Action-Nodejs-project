@@ -165,35 +165,30 @@ export const getClearanceLandingTableColumn = (
         {
             title: "Code",
             dataIndex: "strEmployeeCode",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Employee",
             dataIndex: "strEmployeeName",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Designation",
             dataIndex: "strDesignation",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Department",
             dataIndex: "strDepartment",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
         {
             title: "Separation Type",
             dataIndex: "strSeparationTypeName",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
@@ -207,7 +202,6 @@ export const getClearanceLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            sort: true,
             filter: false,
             fieldType: "date",
         },
@@ -221,14 +215,12 @@ export const getClearanceLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            sort: true,
             filter: false,
             fieldType: "date",
         },
         {
             title: "Created By",
             dataIndex: "strCreatedBy",
-            sort: true,
             filter: false,
             fieldType: "string",
         },
@@ -242,15 +234,12 @@ export const getClearanceLandingTableColumn = (
                         : "N/A"}
                 </>
             ),
-            sort: true,
             filter: false,
             fieldType: "date",
-            width: 100,
         },
         {
             title: "Status",
             dataIndex: "approvalStatus",
-            sort: true,
             filter: false,
             render: (data) => (
                 <div className="d-flex align-items-center">
@@ -307,7 +296,6 @@ export const getClearanceLandingTableColumn = (
                 </div>
             ),
             fieldType: "string",
-            width: 80,
         },
         {
             title: "Actions",
@@ -374,7 +362,6 @@ export const getClearanceLandingTableColumn = (
                     </div>
                 </div>
             ),
-            width: 60,
         }
     ]
 };

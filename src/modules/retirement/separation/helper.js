@@ -144,28 +144,24 @@ export const separationApplicationLandingTableColumn = (
     {
       title: "Code",
       dataIndex: "strEmployeeCode",
-      sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Employee",
       dataIndex: "strEmployeeName",
-      sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Designation",
       dataIndex: "strDesignation",
-      sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Department",
       dataIndex: "strDepartment",
-      sort: true,
       filter: false,
       fieldType: "string",
     },
@@ -242,7 +238,6 @@ export const separationApplicationLandingTableColumn = (
           </span>
         </div>
       ),
-      sort: true,
       filter: false,
       fieldType: "string",
     },
@@ -256,7 +251,6 @@ export const separationApplicationLandingTableColumn = (
             : "N/A"}
         </>
       ),
-      sort: true,
       filter: false,
       fieldType: "date",
     },
@@ -270,14 +264,12 @@ export const separationApplicationLandingTableColumn = (
             : "N/A"}
         </>
       ),
-      sort: true,
       filter: false,
       fieldType: "date",
     },
     {
       title: "Created By",
       dataIndex: "strCreatedBy",
-      sort: true,
       filter: false,
       fieldType: "string",
     },
@@ -291,15 +283,12 @@ export const separationApplicationLandingTableColumn = (
             : "N/A"}
         </>
       ),
-      sort: true,
       filter: false,
       fieldType: "date",
-      width: 100,
     },
     {
       title: "Status",
       dataIndex: "approvalStatus",
-      sort: true,
       filter: false,
       render: (data) => (
         <div className="d-flex align-items-center">
@@ -403,7 +392,6 @@ export const separationApplicationLandingTableColumn = (
       sort: false,
       filter: false,
       fieldType: "string",
-      width: 60,
     },
   ];
 };
