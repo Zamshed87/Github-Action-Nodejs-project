@@ -3,7 +3,7 @@ import { PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import React, { useEffect } from "react";
 
-export const Lapse = ({ form }: any) => {
+export const Lapse = ({ form, detailsApi }: any) => {
   const enumApi = useApiRequest({});
 
   const getDependTypes = () => {
@@ -18,6 +18,18 @@ export const Lapse = ({ form }: any) => {
   useEffect(() => {
     getDependTypes();
   }, []);
+  useEffect(() => {
+    if (detailsApi?.data?.data?.generalData[0]?.leaveLapseId) {
+      const findData = enumApi?.data?.LeaveLapseEnum?.find(
+        (i: any) =>
+          i?.value == detailsApi?.data?.data?.generalData[0]?.leaveLapseId
+      );
+      form.setFieldsValue({
+        leavelapse: findData,
+      });
+    }
+  }, [detailsApi]);
+
   return (
     <Row gutter={[10, 2]}>
       <Divider

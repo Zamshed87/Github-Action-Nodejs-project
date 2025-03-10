@@ -21,7 +21,7 @@ import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
@@ -163,10 +163,7 @@ export const NewLeavePolicy = () => {
         Status: values?.status?.value,
       },
       onSuccess: (res: any) => {
-        res?.data?.forEach((element: any, idex: number) => {
-          res.data[idex].monthId = element?.monthYear.split("/")[0];
-          res.data[idex].yearId = element?.monthYear.split("/")[1];
-        });
+        console.log(landingApi?.data);
       },
     });
   };
@@ -201,17 +198,17 @@ export const NewLeavePolicy = () => {
     },
     {
       title: "Leave Type",
-      dataIndex: "leaveTypeName",
+      dataIndex: "leaveType",
       width: 100,
     },
     {
       title: "Display Name",
-      dataIndex: "displayName",
+      dataIndex: "policyDisplayName",
       width: 100,
     },
     {
       title: "Display Code",
-      dataIndex: "displayCode",
+      dataIndex: "policyDisplayCode",
       width: 100,
     },
     {
@@ -247,24 +244,9 @@ export const NewLeavePolicy = () => {
                   return toast.warn("You don't have permission");
                   e.stopPropagation();
                 }
-                //   setOpen(true);
-                // detailsApi?.action({
-                //   urlKey: "DepositDetails",
-                //   method: "GET",
-                //   params: {
-                //     month: item?.monthId,
-                //     year: item?.yearId,
-                //     depositType: item?.depositTypeId,
-                //   },
-                //   onSuccess: () => {
-                //     setOpen(true);
-                //     setTypeId({
-                //       id: item?.depositTypeId,
-                //       month: item?.monthId,
-                //       year: item?.yearId,
-                //     });
-                //   },
-                // });
+                history.push(
+                  `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`
+                );
               },
             },
             {

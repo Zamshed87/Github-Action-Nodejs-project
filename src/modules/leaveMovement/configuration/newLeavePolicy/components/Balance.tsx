@@ -9,6 +9,7 @@ export const Balance = ({
   balanceTable,
   setBalanceTable,
   JoinOrConfirmEnum,
+  detailsApi,
 }: any) => {
   const balanceHeader: any = [
     {
@@ -117,6 +118,18 @@ export const Balance = ({
     getDependTypes();
     getDependTypes3();
   }, []);
+  useEffect(() => {
+    if (detailsApi?.data?.data?.balanceData[0]?.serviceLengthDependOnId) {
+      const findData = JoinOrConfirmEnum?.data?.DateDependsOnEnum?.find(
+        (i: any) =>
+          i?.value ==
+          detailsApi?.data?.data?.balanceData[0]?.serviceLengthDependOnId
+      );
+      form.setFieldsValue({
+        dependsOn: findData,
+      });
+    }
+  }, [detailsApi]);
   return (
     <>
       <Row gutter={[10, 2]}>

@@ -44,8 +44,8 @@ import { PModal } from "Components/Modal";
 export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const params: any = useParams();
-  const [current, setCurrent] = useState(0);
+  const { id: policyId }: any = useParams();
+  const [current, setCurrent] = useState(1);
   const [consumeData, setConsumeData] = useState<any>([]);
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
@@ -74,6 +74,7 @@ export const PolicyCreateExtention = () => {
 
   const createApi = useApiRequest({});
   const policyApi = useApiRequest({});
+  const detailsApi = useApiRequest({});
   const grossBasicEnum = useApiRequest({});
   const JoinOrConfirmEnum = useApiRequest({});
   const PercentOrFixedEnum = useApiRequest({});
@@ -486,6 +487,225 @@ export const PolicyCreateExtention = () => {
       width: 120,
     },
   ];
+
+  useEffect(() => {
+    if (+policyId) {
+      detailsApi?.action({
+        urlKey: "GetById",
+        method: "GET",
+        params: {
+          PolicyId: +policyId,
+        },
+        onSuccess: (res: any) => {
+          const {
+            generalData,
+            consumeTypeData,
+            balanceData,
+            calculativeData,
+            carryData,
+            encashmentData,
+            additionalData,
+          } = res.data;
+
+          if (generalData && generalData.length > 0) {
+            const general = generalData[0];
+            const { leavePolicyCommonList } = general;
+            form.setFieldsValue({
+              strPolicyName: leavePolicyCommonList?.policyName,
+              leaveType: {
+                value: leavePolicyCommonList?.leaveTypeId,
+                label: leavePolicyCommonList?.leaveType,
+              },
+              strDisplayName: leavePolicyCommonList?.policyDisplayName,
+              strDisplayCode: leavePolicyCommonList?.policyDisplayCode,
+              workplace: {
+                value: leavePolicyCommonList?.workplaceId,
+                label: leavePolicyCommonList?.workplaceName,
+              },
+              designationListDTO: general.designationList?.map((item: any) => ({
+                value: item.designationId,
+                label: item.designationName,
+              })),
+              intEmploymentTypeList: general.employmentTypeList?.map(
+                (item: any) => ({
+                  value: item.employmentTypeId,
+                  label: item.employmentTypeName,
+                })
+              ),
+              intGender: general.genderList?.map((item: any) => ({
+                value: item.genderId,
+                label: item.genderName,
+              })),
+              religionListDto: general.religionList?.map((item: any) => ({
+                value: item.religionId,
+                label: item.religionName,
+              })),
+              applicationBody: general.description,
+              paidType: {
+                label: general.isPaidLeave ? "Paid Leave" : "Unpaid Leave",
+                value: general.isPaidLeave ? "Paid Leave" : "Unpaid Leave",
+              },
+              payDependsOn: {
+                value: general.payDependOnId,
+                label: general.payDependOn,
+              },
+              payValue: general.payDependOnValue,
+              leavelapse: {
+                value: general.leaveLapseId,
+              },
+              afterLeaveCompleted: general.lapseAfterDayCompleted,
+              isProRata: {
+                value: general.isProRata ? 1 : 0,
+              },
+              proRataCount: general.proRataLastStartDays,
+              proRataBasis: {
+                value: general.proRataBasisId,
+              },
+              dependsOn: {
+                value: general.serviceLengthDependOnId,
+              },
+            });
+          }
+
+          if (consumeTypeData && consumeTypeData.length > 0) {
+            const consumeDataMapped = consumeTypeData.map((item: any) => {
+              let leaveConsumeTypeLabel = "";
+              if (item.leaveConsumeTypeId === 1)
+                leaveConsumeTypeLabel = "Full Day";
+              else if (item.leaveConsumeTypeId === 2)
+                leaveConsumeTypeLabel = "1st Half Day";
+              else if (item.leaveConsumeTypeId === 3)
+                leaveConsumeTypeLabel = "2nd Half Day";
+              else if (item.leaveConsumeTypeId === 4)
+                leaveConsumeTypeLabel = "Clock Time";
+
+              let consumeHr = "";
+              if (leaveConsumeTypeLabel !== "Full Day") {
+                consumeHr = `${item.minimumConsumeHour} to ${item.maximumConsumeHour} Hr.`;
+              }
+              return {
+                leaveConsumeType: leaveConsumeTypeLabel,
+                consumeHr: consumeHr,
+                standardWorkHour: item.standardWorkingHour,
+              };
+            });
+            setConsumeData(consumeDataMapped);
+          }
+
+          if (balanceData && balanceData.length > 0) {
+            const balanceTableMapped = balanceData.map((item: any) => {
+              let leaveDependsOnLabel = "";
+              if (item.balanceDependOn === 1)
+                leaveDependsOnLabel = "Fixed Days";
+              else if (item.balanceDependOn === 2)
+                leaveDependsOnLabel = "Calculative Days";
+              else if (item.balanceDependOn === 3)
+                leaveDependsOnLabel = "Bridge Leave";
+
+              let bridgeLeaveForLabel = "";
+              if (item.bridgeLeaveFor === 1) bridgeLeaveForLabel = "Both";
+              else if (item.bridgeLeaveFor === 2)
+                bridgeLeaveForLabel = "Holiday";
+              else if (item.bridgeLeaveFor === 3)
+                bridgeLeaveForLabel = "Off Days";
+
+              return {
+                serviceLength: `${item.fromServiceLength} - ${item.toServiceLength}`,
+                leaveDependsOn: leaveDependsOnLabel,
+                calculativeDays: item.calculativeDays,
+                bridgeLeaveFor: bridgeLeaveForLabel,
+                minWorkHr: item.minimumWorkingHour,
+                leaveDaysFor: item.leaveDays,
+                expireAfterAvailable: item.expiresDays,
+              };
+            });
+            setBalanceTable(balanceTableMapped);
+          }
+
+          if (calculativeData && calculativeData.length > 0) {
+            const calculative = calculativeData[0];
+            form.setFieldsValue({
+              isPresent: calculative.isIncluePresent,
+              isMovement: calculative.isInclueMovement,
+              isLate: calculative.isInclueLate,
+              isLeave: calculative.isInclueLeave,
+              isOffday: calculative.isInclueOffDay,
+              isHoliday: calculative.isInclueHoliday,
+              isAbsent: calculative.isInclueAbsent,
+            });
+          }
+          if (carryData && carryData.length > 0) {
+            const carry = carryData[0];
+            form.setFieldsValue({
+              isCarryForward: {
+                value: carry.isCarryForward ? 1 : 0,
+              },
+              leaveCarryForwardType: {
+                value: carry.carryForwardTypeId,
+              },
+              minConsumeTime: carry.maxCarryAfterLapse,
+              addPrevCarry: {
+                value: carry.isAddPreviouscarry ? 1 : 0,
+              },
+              maxCarryForwardBalance: carry.maxCarryDays,
+              isCarryExpired: {
+                value: carry.isCarryExpire ? 1 : 0,
+              },
+              expiryCarryForwardDaysAfterLapse: carry.carryExpireDays,
+            });
+          }
+          if (encashmentData && encashmentData.length > 0) {
+            const mappedEncashmentData = encashmentData.map((item: any) => {
+              let encashmentTypeLabel = "Fixed Days";
+              if (item.maxEncashmentTypeId === 2)
+                encashmentTypeLabel = "% of Days";
+
+              let encashBenefitsLabel = "Basic Salary";
+              if (item.encashmentDependOnId === 2)
+                encashBenefitsLabel = "Gross Salary";
+              if (item.encashmentDependOnId === 3)
+                encashBenefitsLabel = "Fixed Amount";
+
+              return {
+                serviceLength: `${item.fromServiceLength} - ${item.toServiceLength}`,
+                encashmentType: encashmentTypeLabel,
+                maxEncashment: item.maxEncashmentDays,
+                encashBenefits: encashBenefitsLabel,
+                paidAmount: item.encashmentAmount,
+              };
+            });
+            setTableData(mappedEncashmentData);
+
+            if (encashmentData[0]) {
+              form.setFieldsValue({
+                enLengthDependOn: {
+                  value: encashmentData[0].serviceLengthDependOnId,
+                },
+                encashmentTimeline: {
+                  value: encashmentData[0].encashmentTimelineId,
+                },
+              });
+            }
+          }
+          if (additionalData && additionalData.length > 0) {
+            const additional = additionalData[0];
+            form.setFieldsValue({
+              isEssShowBalance: { value: additional.isBalanceShowESS ? 1 : 0 },
+              isEssApply: { value: additional.isApplyFromESS ? 1 : 0 },
+              leaveRoundingType: { value: additional.roundingTypeId },
+              leaveApplicationTime: { value: additional.applicationTimeId },
+              isAttachmentMandatory: {
+                value: additional.isAttachmentMandatory ? 1 : 0,
+              },
+              attachmentMandatoryAfter: additional.minLeaveForAttachment,
+              maxLeaveApplyMonthly: additional.maxLeaveInMonth,
+              minLeaveApplyDays: additional.maxLeaveInDays,
+            });
+          }
+        },
+      });
+    }
+  }, [policyId]);
   return (
     <>
       <PForm
@@ -533,7 +753,7 @@ export const PolicyCreateExtention = () => {
               <>
                 <General
                   form={form}
-                  params={params}
+                  params={policyId}
                   buId={buId}
                   orgId={orgId}
                   employeeId={employeeId}
@@ -548,13 +768,14 @@ export const PolicyCreateExtention = () => {
                   consumeData={consumeData}
                   setConsumeData={setConsumeData}
                 />
-                <Lapse form={form} />
+                <Lapse form={form} detailsApi={detailsApi} />
                 <ProRata form={form} />
                 <Balance
                   form={form}
                   balanceTable={balanceTable}
                   setBalanceTable={setBalanceTable}
                   JoinOrConfirmEnum={JoinOrConfirmEnum}
+                  detailsApi={detailsApi}
                 />
                 <CalculativeDays
                   form={form}
@@ -569,6 +790,7 @@ export const PolicyCreateExtention = () => {
                 form={form}
                 selectedRow1={selectedRow1}
                 setSelectedRow1={setSelectedRow1}
+                detailsApi={detailsApi}
               />
             ) : current === 2 ? (
               // <Consumption

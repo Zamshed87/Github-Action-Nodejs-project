@@ -1,10 +1,16 @@
 import { Col, Divider, Form, Row } from "antd";
 import { DataTable, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export const Sandwitch = ({ form, selectedRow1, setSelectedRow1 }: any) => {
+export const Sandwitch = ({
+  form,
+  selectedRow1,
+  setSelectedRow1,
+  detailsApi,
+}: any) => {
   const [sandWitchLanding, setSandWitchLanding] = useState<any[]>([]);
+  const previousScenarioId = useRef<string | null>(null); // Use useRef to store the previous scenarioId
 
   const sandWitchHeader: any = [
     {
@@ -50,6 +56,7 @@ export const Sandwitch = ({ form, selectedRow1, setSelectedRow1 }: any) => {
         data?.SandwichLeaveEnum?.forEach((item: any, id: any) => {
           data.SandwichLeaveEnum[id].index = item.value;
           data.SandwichLeaveEnum[id].scenario = item.label;
+          data.SandwichLeaveEnum[id].key = id;
         });
         setSandWitchLanding(data?.SandwichLeaveEnum);
       },
@@ -58,7 +65,34 @@ export const Sandwitch = ({ form, selectedRow1, setSelectedRow1 }: any) => {
   useEffect(() => {
     getDependTypes();
   }, []);
+  const findMatch = (d: any) => {
+    const t: any = [];
+    d?.forEach((i: any) => {
+      const f = sandWitchLanding?.find((j: any) => j?.index == i);
+      console.log({ f });
+      if (f) {
+        t.push(f);
+      }
+    });
 
+    setSelectedRow1(t);
+  };
+  useEffect(() => {
+    if (detailsApi?.data?.data?.sandwichData?.length > 0) {
+      const sandwich = detailsApi.data?.data?.sandwichData[0];
+      form.setFieldsValue({
+        isSandwitch: {
+          value: sandwich.isSandwichLeave ? 1 : 0,
+        },
+      });
+      const d = sandwich?.sandwichLeaveScenarioId?.split(",");
+      if (d?.join(",") !== previousScenarioId.current) {
+        d?.length > 0 && findMatch(d);
+        previousScenarioId.current = d?.join(",") || null; // Update previousScenarioId
+      }
+    }
+  }, [detailsApi]);
+  console.log({ selectedRow1 });
   return (
     <Row gutter={[10, 2]}>
       <Divider

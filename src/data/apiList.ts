@@ -319,8 +319,9 @@ export const apiList = {
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
   newLanding: "",
   CreateLeavePolicy: "/LeavePolicy/CreateLeavePolicy",
-  GetPolicyName: "/LeavePolicy/GetPolicyName",
+  GetPolicyName: "LeavePolicy/Get",
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
   GetEnums: "/Enum/GetEnums",
-  GetPolicyLanding: "/LeavePolicy/GetPolicyLanding",
+  GetPolicyLanding: "LeavePolicy/Get",
+  GetById: "LeavePolicy/GetById",
 };
