@@ -15,10 +15,11 @@ import EmployeeBooklet from "./employee-booklet";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
-  const { strDisplayName, isOwner, isOfficeAdmin, orgId } = useSelector(
+  const { strDisplayName, isOwner, isOfficeAdmin, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { values, setValues, errors, touched } = useFormik({
@@ -35,6 +36,10 @@ const MasterDashboardLanding = () => {
     enableReinitialize: true,
   });
 
+  const businessUnit = businessUnitDDL?.find(
+    (item) => item?.BusinessUnitId === buId
+  );
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("dashboard"));
     document.title = "Dashboard";
@@ -50,15 +55,6 @@ const MasterDashboardLanding = () => {
           style={{ marginBottom: "4px" }}
         >
           <div>
-            <p
-              style={{
-                color: "#344054",
-                fontWeight: 400,
-                fontSize: "12px",
-              }}
-            >
-              {dateFormatterForDashboard()}
-            </p>
             <h4
               className="employee-self-dashboard-employee-name"
               style={{ color: gray500, fontSize: "1rem" }}
@@ -75,9 +71,37 @@ const MasterDashboardLanding = () => {
               </span>
               , Welcome Back !
             </h4>
+            <p
+              style={{
+                color: "#344054",
+                fontWeight: 400,
+                fontSize: "12px",
+              }}
+            >
+              {dateFormatterForDashboard()}
+            </p>
           </div>
 
-          {values?.dashboardRoles?.length > 1 &&
+          <div>
+            <h4
+              className="employee-self-dashboard-employee-name"
+              style={{ color: gray500, fontSize: "1rem" }}
+            >
+              {businessUnit?.BusinessUnitName + " "}[
+              {businessUnit?.BusinessUnitCode}]
+            </h4>
+            <p
+              style={{
+                color: "#344054",
+                fontWeight: 400,
+                fontSize: "12px",
+              }}
+            >
+              {businessUnit?.BusinessUnitAddress}
+            </p>
+          </div>
+
+          {/* {values?.dashboardRoles?.length > 1 &&
             (!isOwner || isOfficeAdmin) && (
               <div style={{ width: "150px" }}>
                 <FormikSelect
@@ -96,7 +120,7 @@ const MasterDashboardLanding = () => {
                   touched={touched}
                 />
               </div>
-            )}
+            )} */}
         </div>
 
         {isOwner ? (
