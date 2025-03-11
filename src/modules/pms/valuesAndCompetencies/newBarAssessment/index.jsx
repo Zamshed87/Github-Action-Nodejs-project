@@ -38,7 +38,13 @@ const BarAssessmentLanding = () => {
   });
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Performance Management System"));
+    dispatch(
+      setFirstLevelNameAction(
+        firstSegment === "SelfService"
+          ? "Employee Self Service"
+          : "Performance Management System"
+      )
+    );
   }, []);
 
   let permission = null;
