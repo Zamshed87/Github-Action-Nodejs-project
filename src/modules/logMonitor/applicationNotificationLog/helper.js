@@ -1,4 +1,3 @@
-import { PButton } from "Components";
 
 export const getHeader = (pages) => [
   {
@@ -58,11 +57,5 @@ export const getHeader = (pages) => [
     width: 50,
     align: "center",
     render: (value) => (value ? "✔️" : "❌"),
-  },
-  {
-    title: "Action",
-    dataIndex: "",
-    align: "center",
-    render: (_, rec) => <PButton content="Details" />,
-  },
+  }
 ];

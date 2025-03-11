@@ -49,7 +49,6 @@ const ApplicationNotificationLog = () => {
               setPages(pagination);
             }
           }}
-          scroll={{ x: "2200px" }}
         />
       </PCard>
     </PForm>

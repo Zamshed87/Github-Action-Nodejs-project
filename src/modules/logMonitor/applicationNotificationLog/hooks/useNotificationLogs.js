@@ -25,6 +25,7 @@ const useNotificationLogs = () => {
   const [form] = Form.useForm();
   const [data, getData, loading, setData] = useAxiosGet({});
 
+  // form fields
   const businessUnit = Form.useWatch("businessUnit", form);
   const workplaceGroup = Form.useWatch("workplaceGroup", form);
   const workplaceList = Form.useWatch("workplaceList", form);
