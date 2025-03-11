@@ -9,7 +9,7 @@ import {
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -382,6 +382,30 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
       align: "center",
       width: 130,
       sorter: false,
+    },
+    {
+      title: "Reason",
+      dataIndex: "strRemarks",
+      width: 100,
+      render: (data: any) => (
+        <Tooltip title={data || "N/A"} placement="topLeft">
+          <span
+            style={{
+              display: "inline-block",
+              maxWidth: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              width: "100px",
+            }}
+          >
+            {data
+              ? data.split(" ").slice(0, 2).join(" ") +
+                (data.split(" ").length > 2 ? "..." : "")
+              : "N/A"}
+          </span>
+        </Tooltip>
+      ),
     },
     {
       title: "Approval Status",

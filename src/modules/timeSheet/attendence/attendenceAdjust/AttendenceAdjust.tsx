@@ -431,6 +431,30 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       width: 160,
     },
     {
+      title: "Reason",
+      dataIndex: "strRemarks",
+      width: 100,
+      render: (data: any) => (
+        <Tooltip title={data || "N/A"} placement="topLeft">
+          <span
+            style={{
+              display: "inline-block",
+              maxWidth: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              width: "100px",
+            }}
+          >
+            {data
+              ? data.split(" ").slice(0, 2).join(" ") +
+                (data.split(" ").length > 2 ? "..." : "")
+              : "N/A"}
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
       render: (data: any) => moment(data).format("DD-MMM-YYYY"),
@@ -498,6 +522,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       filter: true,
       sorter: false,
     },
+
     {
       title: "Approval Status",
       dataIndex: "ApplicationStatus",
@@ -845,14 +870,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               onChange: (selectedRowKeys, selectedRows) => {
                 // Filter out rows where ApplicationStatus is "Pending" or "Approved"
                 const validRows = selectedRows.filter(
-                  (row: any) =>
-                    row.ApplicationStatus !== "Pending"
+                  (row: any) => row.ApplicationStatus !== "Pending"
                 );
 
                 // Find any invalid rows that were attempted to be selected
                 const invalidRows = selectedRows.filter(
-                  (row: any) =>
-                    row.ApplicationStatus === "Pending"
+                  (row: any) => row.ApplicationStatus === "Pending"
                 );
 
                 if (invalidRows.length > 0) {
