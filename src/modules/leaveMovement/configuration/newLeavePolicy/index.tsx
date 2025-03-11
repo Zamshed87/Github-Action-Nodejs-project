@@ -162,9 +162,6 @@ export const NewLeavePolicy = () => {
         LeaveTypeId: ids,
         Status: values?.status?.value,
       },
-      onSuccess: (res: any) => {
-        console.log(landingApi?.data);
-      },
     });
   };
 
@@ -478,15 +475,28 @@ export const NewLeavePolicy = () => {
                 <PSelect
                   mode="multiple"
                   options={
-                    leaveTypeApi?.data?.length > 0 ? leaveTypeApi?.data : []
+                    leaveTypeApi?.data?.length > 0
+                      ? [{ value: 0, label: "All" }, ...leaveTypeApi?.data]
+                      : []
                   }
                   name="leaveType"
                   label=" Leave Type"
                   placeholder="  Leave Type"
                   onChange={(value, op) => {
-                    form.setFieldsValue({
-                      leaveType: op,
-                    });
+                    if (value && value.includes(0)) {
+                      // If "All" (value 0) is selected, clear other selections and set only "All"
+                      form.setFieldsValue({
+                        leaveType: [op.find((item: any) => item.value === 0)],
+                      });
+                    } else {
+                      // If "All" is deselected or other options are selected, filter out "All"
+                      const filteredOp = op.filter(
+                        (item: any) => item.value !== 0
+                      );
+                      form.setFieldsValue({
+                        leaveType: filteredOp,
+                      });
+                    }
 
                     // value && getWorkplace();
                   }}

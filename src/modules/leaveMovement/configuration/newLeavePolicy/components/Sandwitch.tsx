@@ -86,13 +86,12 @@ export const Sandwitch = ({
         },
       });
       const d = sandwich?.sandwichLeaveScenarioId?.split(",");
-      if (d?.join(",") !== previousScenarioId.current) {
-        d?.length > 0 && findMatch(d);
-        previousScenarioId.current = d?.join(",") || null; // Update previousScenarioId
-      }
+      // if (d?.join(",") !== previousScenarioId.current) {
+      d?.length > 0 && findMatch(d);
+      // previousScenarioId.current = d?.join(",") || null; // Update previousScenarioId
+      // }
     }
-  }, [detailsApi]);
-  console.log({ selectedRow1 });
+  }, [detailsApi?.data, sandWitchLanding]);
   return (
     <Row gutter={[10, 2]}>
       <Divider

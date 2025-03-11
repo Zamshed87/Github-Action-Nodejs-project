@@ -45,7 +45,7 @@ export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: policyId }: any = useParams();
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(0);
   const [consumeData, setConsumeData] = useState<any>([]);
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
@@ -292,7 +292,7 @@ export const PolicyCreateExtention = () => {
               ?.map((item: any) => item.value)
               .join(","),
             description: values?.applicationBody,
-            documentId: attachmentList[0]?.documentId || 0,
+            documentId: attachmentList[0]?.response[0]?.globalFileUrlId || 0,
             // ---------Paid Leave-----------------
             isPaidLeave: values?.paidType?.label?.includes("Paid") || false,
             payDependOnId: +values?.payDependsOn?.value || 0,
@@ -359,18 +359,18 @@ export const PolicyCreateExtention = () => {
               })) || [],
             // --------- Calculative Days-----------------
             calculativeDays: {
-              isIncluePresent: values?.isPresent || false, // Bind from isPresent
-              isInclueMovement: values?.isMovement || false, // Bind from isMovement
-              isInclueLate: values?.isLate || false, // Bind from isLate
-              isInclueLeave: values?.isLeave || false, // Bind from isLeave
-              isInclueOffDay: values?.isOffday || false, // Bind from isOffday
-              isInclueHoliday: values?.isHoliday || false, // Bind from isHoliday
-              isInclueAbsent: values?.isAbsent || false, // Bind from isAbsent
+              isIncluePresent: values?.isPresent || false,
+              isInclueMovement: values?.isMovement || false,
+              isInclueLate: values?.isLate || false,
+              isInclueLeave: values?.isLeave || false,
+              isInclueOffDay: values?.isOffday || false,
+              isInclueHoliday: values?.isHoliday || false,
+              isInclueAbsent: values?.isAbsent || false,
+              calculativePolicies:
+                policy?.map((item: any) => ({
+                  policyId: item?.id,
+                })) || [],
             },
-            calculativePolicies:
-              policy?.map((item: any) => ({
-                policyId: item?.id,
-              })) || [],
           },
         };
       case 1:
@@ -510,6 +510,8 @@ export const PolicyCreateExtention = () => {
           if (generalData && generalData.length > 0) {
             const general = generalData[0];
             const { leavePolicyCommonList } = general;
+            setCurrent(leavePolicyCommonList?.stepperId - 1);
+            setId(+policyId);
             form.setFieldsValue({
               strPolicyName: leavePolicyCommonList?.policyName,
               leaveType: {
@@ -678,6 +680,7 @@ export const PolicyCreateExtention = () => {
 
             if (encashmentData[0]) {
               form.setFieldsValue({
+                isEncashment: { value: encashmentData[0].isEncashment ? 1 : 0 },
                 enLengthDependOn: {
                   value: encashmentData[0].serviceLengthDependOnId,
                 },
@@ -719,6 +722,7 @@ export const PolicyCreateExtention = () => {
       >
         <PCard>
           <PCardHeader
+            backButton
             submitText={current === 4 ? "Save" : undefined}
             // buttonList={[
             //   {
@@ -761,6 +765,8 @@ export const PolicyCreateExtention = () => {
                   attachmentList={attachmentList}
                   setAttachmentList={setAttachmentList}
                   policyApi={policyApi}
+                  detailsApi={detailsApi}
+                  dispatch={dispatch}
                 />
                 <PaidLeave form={form} grossBasicEnum={grossBasicEnum} />
                 <Consumption
@@ -801,6 +807,7 @@ export const PolicyCreateExtention = () => {
               <CarryForward
                 form={form}
                 PercentOrFixedEnum={PercentOrFixedEnum}
+                detailsApi={detailsApi}
               />
             ) : current === 3 ? (
               // <Sandwitch
@@ -817,10 +824,11 @@ export const PolicyCreateExtention = () => {
                 grossBasicEnum={grossBasicEnum}
                 JoinOrConfirmEnum={JoinOrConfirmEnum}
                 PercentOrFixedEnum={PercentOrFixedEnum}
+                detailsApi={detailsApi}
               />
             ) : current === 4 ? (
               // <Lapse form={form} />
-              <Additional form={form} />
+              <Additional form={form} detailsApi={detailsApi} />
             ) : (
               // : current === 5 ? (
               //   // <CarryForward form={form} />

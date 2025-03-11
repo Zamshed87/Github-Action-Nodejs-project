@@ -7,6 +7,8 @@ import { useApiRequest } from "Hooks";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 import { toast } from "react-toastify";
+import { ImAttachment } from "react-icons/im";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 export const General = ({
   form,
@@ -18,6 +20,8 @@ export const General = ({
   setAttachmentList,
   attachmentList,
   policyApi,
+  detailsApi,
+  dispatch,
 }: any) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -421,6 +425,25 @@ export const General = ({
               />
             </>
           </div>
+          {attachmentList?.length === 0 &&
+          detailsApi?.data?.data?.generalData[0]?.documentId ? (
+            <div
+              style={{
+                color: "rgb(0, 114, 229)",
+                cursor: "pointer",
+                marginTop: "0.5rem",
+              }}
+              onClick={() => {
+                dispatch(
+                  getDownlloadFileView_Action(
+                    detailsApi?.data?.data?.generalData[0]?.documentId
+                  )
+                );
+              }}
+            >
+              <ImAttachment /> Attachment
+            </div>
+          ) : null}
         </Col>
       </Row>
 

@@ -3,7 +3,7 @@ import { PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import React, { useEffect } from "react";
 
-export const Additional = ({ form }: any) => {
+export const Additional = ({ form, detailsApi }: any) => {
   const enumApi = useApiRequest({});
 
   const getDependTypes = () => {
@@ -18,6 +18,19 @@ export const Additional = ({ form }: any) => {
   useEffect(() => {
     getDependTypes();
   }, []);
+  useEffect(() => {
+    if (detailsApi?.data?.data?.additionalData[0]?.length > 0) {
+      const findData = enumApi?.data?.LeaveApplicationTimeEnum?.find(
+        (i: any) =>
+          i?.value ==
+          detailsApi?.data?.data?.additionalData[0]?.applicationTimeId
+      );
+
+      form.setFieldsValue({
+        leaveApplicationTime: findData,
+      });
+    }
+  }, [detailsApi?.data, enumApi?.data]);
   return (
     <>
       <Divider
