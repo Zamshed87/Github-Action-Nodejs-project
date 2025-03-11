@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import { useApiRequest } from "Hooks";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { shallowEqual, useSelector } from "react-redux";
 
 const useNotificationLogFilters = ({ form }) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
-    businessUnitDDL
+    businessUnitDDL,
+    workplaceDDL,
   } = useSelector((store) => store?.auth, shallowEqual);
+
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
 
-  const getWorkplaceGroup = () => {
+  const getWorkplaceGroupDDL = () => {
     const { businessUnit } = form.getFieldsValue(true);
     workplaceGroup?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -30,7 +31,7 @@ const useNotificationLogFilters = ({ form }) => {
       },
     });
   };
-  const getWorkplace = () => {
+  const getWorkplaceDDL = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -51,16 +52,19 @@ const useNotificationLogFilters = ({ form }) => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
-    getWorkplace();
+    getWorkplaceGroupDDL();
+    getWorkplaceDDL();
   }, [orgId, buId, wgId, wId]);
 
   return {
-    businessUnitDDL,
-    workplaceGroup,
-    getWorkplaceGroup,
-    workplace,
-    getWorkplace,
+    businessUnitDDL: businessUnitDDL?.map((bu) => ({
+      label: bu.BusinessUnitName,
+      value: bu.BusinessUnitId,
+    })),
+    workplaceGroupDDL: workplaceGroup.data,
+    getWorkplaceGroupDDL,
+    workplaceDDL: [{ label: "All", value: workplaceDDL?.map((w) => w.WorkplaceId)?.join(",")}, ...workplaceGroup.data],
+    getWorkplaceDDL,
   };
 };
 

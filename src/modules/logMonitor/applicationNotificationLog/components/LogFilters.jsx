@@ -1,19 +1,15 @@
 import { Row, Col } from "antd";
 import { PButton, PInput, PSelect } from "Components";
-import { shallowEqual, useSelector } from "react-redux";
 import useNotificationLogFilters from "../hooks/useNotificationLogFilters";
 import moment from "moment";
 
 const LogFilters = ({ form }) => {
   const {
-    profileData: {bId},
-  } = useSelector((store) => store?.auth, shallowEqual);
-  const {
     businessUnitDDL,
-    workplaceGroup,
-    getWorkplaceGroup,
-    workplace,
-    getWorkplace,
+    workplaceGroupDDL,
+    getWorkplaceGroupDDL,
+    workplaceDDL,
+    getWorkplaceDDL,
   } = useNotificationLogFilters({ form });
 
   const disabledDate = (current) => {
@@ -36,14 +32,14 @@ const LogFilters = ({ form }) => {
               workplaceGroup: undefined,
               workplace: undefined,
             });
-            getWorkplaceGroup();
+            getWorkplaceGroupDDL();
           }}
           rules={[{ required: true, message: "Business Unit is required" }]}
         />
       </Col>
       <Col md={4} sm={12} xs={24}>
         <PSelect
-          options={workplaceGroup?.data || []}
+          options={workplaceGroupDDL || []}
           name="workplaceGroup"
           label="Workplace Group"
           placeholder="Workplace Group"
@@ -52,23 +48,23 @@ const LogFilters = ({ form }) => {
               workplaceGroup: op,
               workplace: undefined,
             });
-            getWorkplace();
+            getWorkplaceDDL();
           }}
           rules={[{ required: true, message: "Workplace Group is required" }]}
         />
       </Col>
       <Col md={4} sm={12} xs={24}>
         <PSelect
-          options={workplace?.data || []}
-          name="workplace"
-          label="Workplace"
-          placeholder="Workplace"
+          options={workplaceDDL || []}
+          name="workplaceList"
+          label="Workplace List"
+          placeholder="Workplace List"
           onChange={(value, op) => {
             form.setFieldsValue({
-              workplace: op,
+              workplaceList: op,
             });
           }}
-          rules={[{ required: true, message: "Workplace is required" }]}
+          rules={[{ required: true, message: "Workplace List is required" }]}
         />
       </Col>
       <Col md={3} sm={12} xs={24}>
