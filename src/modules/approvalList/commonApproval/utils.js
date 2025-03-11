@@ -461,20 +461,13 @@ export const columnsManual = (page) => [
     width: "120px",
     render: (status, record) => (
       <div>
-        <LightTooltip
-          style={{ fontSize: "14px" }}
-          title={
-            <div className="movement-tooltip p-1">
-              <div className="">
-                <p className="tooltip-title">Reason</p>
-                <p className="tooltip-subTitle mb-0">{record?.reason}</p>
-              </div>
-            </div>
-          }
+        {record?.applicationInformation?.strRemarks}{" "}
+        <Tooltip
+          title={`Reason: ${record?.applicationInformation?.strRemarks}`}
           arrow
         >
-          <InfoOutlined sx={{ marginRight: "12px" }} />
-        </LightTooltip>
+          <InfoCircleOutlined style={{ color: "green", cursor: "pointer" }} />
+        </Tooltip>
         {status === "Present" && <Chips label="Present" classess="success" />}
         {status === "Late" && <Chips label="Late" classess="warning" />}
         {status === "Holiday" && <Chips label="Holiday" classess="secondary" />}
