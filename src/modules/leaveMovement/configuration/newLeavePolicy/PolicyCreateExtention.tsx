@@ -366,11 +366,11 @@ export const PolicyCreateExtention = () => {
               isInclueOffDay: values?.isOffday || false,
               isInclueHoliday: values?.isHoliday || false,
               isInclueAbsent: values?.isAbsent || false,
-              calculativePolicies:
-                policy?.map((item: any) => ({
-                  policyId: item?.id,
-                })) || [],
             },
+            calculativePolicies:
+              policy?.map((item: any) => ({
+                policyId: item?.id,
+              })) || [],
           },
         };
       case 1:
