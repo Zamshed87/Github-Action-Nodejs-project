@@ -1757,6 +1757,9 @@ const FinalSettlementLandingv2 = lazy(() =>
 const FinalSettlementGenerate = lazy(() =>
   import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
 );
+const FinalSettlementRegenerate = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementRegenerate.jsx")
+);
 const FinalSettlementEdit = lazy(() =>
   import("../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx")
 );
@@ -4237,6 +4240,10 @@ export const routingList = [
   {
     path: "/retirement/finalSettlement/edit/:settlementid/:separationid/:empid",
     component: FinalSettlementEdit,
+  },
+  {
+    path: "/retirement/finalSettlement/regenerate/:settlementid/:separationid/:empid",
+    component: FinalSettlementRegenerate,
   }
 ];
 

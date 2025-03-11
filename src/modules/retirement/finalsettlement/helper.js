@@ -127,6 +127,20 @@ export const getFinalSettlementLandingTableColumn = (
         IConfirmModal(confirmObject);
     };
 
+    const confirmRegenaratePopup = (finalsettleId, sepId, employeeId) => {
+        const confirmObject = {
+            closeOnClickOutside: false,
+            message: "Are you sure you want to regenerate this application?",
+            yesAlertFunc: () => {
+                history.push(`/retirement/finalSettlement/regenerate/${finalsettleId}/${sepId}/${employeeId}`)
+            },
+            noAlertFunc: () => {
+                getData();
+            },
+        };
+        IConfirmModal(confirmObject);
+    };
+
     return [
         {
             title: "SL",
@@ -318,6 +332,7 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
+                                confirmRegenaratePopup(data?.intFinalSettlementId, data?.separationId, data?.intEmployeeId)
                             }}
                         />
                     </Tooltip>)}
