@@ -4122,6 +4122,10 @@ export const routingList = [
     component: IndividualKpiEntrySelf,
   },
   {
+    path: "/SelfService/KpiAssessment",
+    component: IndividualKpiEntrySelf,
+  },
+  {
     path: "/pms/performancePlanning/DepartmentalKPIEntry",
     component: DepartmentalKpiEntry,
   },
