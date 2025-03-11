@@ -186,7 +186,7 @@ export const loanRequestLandingTableColumns = (
       className: "text-right",
 
       title: "Total Amount with Interest",
-      dataIndex: "designationName",
+      dataIndex: "loanAmount",
       width: 200,
       filter: true,
       render: (_, record) => {
