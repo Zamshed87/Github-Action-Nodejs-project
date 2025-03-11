@@ -44,7 +44,7 @@ const BarAssessmentLanding = () => {
   let permission = null;
 
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30496) {
+    if (item?.menuReferenceId === 30496 || item?.menuReferenceId === 30565) {
       permission = item;
     }
   });
@@ -81,7 +81,7 @@ const BarAssessmentLanding = () => {
             history,
             yearId: year?.value,
             assessmentPeriod,
-            assessmentTime
+            assessmentTime,
           })}
           bordered
           data={data?.data || []}
