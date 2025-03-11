@@ -12,9 +12,7 @@ const ApplicationNotificationLog = () => {
   return permission?.isView ? (
     <PForm
       form={form}
-      initialValues={{
-        search:""
-      }}
+      initialValues={{}}
       onFinish={() => {
         fetchNotificationLogs();
       }}
