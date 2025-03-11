@@ -14,12 +14,13 @@ import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 import Loading from "common/loading/Loading";
+import { useApiRequest } from "Hooks";
 type LeaveApplicationForm = any;
 
 const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
   propsObj,
 }) => {
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -39,7 +40,27 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
   const [isload, setLoad] = useState(false);
+  const CommonEmployeeDDL = useApiRequest([]);
+  const getEmployee = (value: any) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
 
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        // workplaceId: wId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
   // Form Instance
   const [form] = Form.useForm();
   // init
@@ -146,9 +167,47 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 ]}
               />
             </Col>
+            <Col md={8} sm={12} xs={24}>
+              <PSelect
+                options={
+                  leaveTypeDDL?.length > 0
+                    ? [...leaveTypeDDL]
+                    : [
+                        {
+                          value: 1,
+                          label: "Full Day",
+                        },
+                        {
+                          value: 2,
+                          label: "1st Half Day",
+                        },
+                        {
+                          value: 1,
+                          label: "Full Day",
+                        },
+                        {
+                          value: 4,
+                          label: "Clock Time",
+                        },
+                      ]
+                }
+                name="leaveConsumeType"
+                label="Leave Consume Type"
+                placeholder="Leave Consume Type"
+                onChange={(value, op) => {
+                  form.setFieldValue("leaveConsumeType", op);
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please Select Leave Consume Type",
+                  },
+                ]}
+              />
+            </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const { leaveType, fromDate, toDate } =
+                const { leaveType, fromDate, toDate, leaveConsumeType } =
                   form.getFieldsValue(true);
                 return (
                   <>
@@ -214,59 +273,106 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                         }}
                       />
                     </Col>
-                    <Col md={8} sm={12} xs={24}>
-                      <PInput
-                        type="date"
-                        name="toDate"
-                        label="To Date"
-                        placeholder="To Date"
-                        rules={[
-                          {
-                            required: true,
-                            message: "To Date is required",
-                          },
-                        ]}
-                        onChange={(date) => {
-                          if (date && fromDate) {
-                            const fDate = moment(fromDate, "YYYY-MM-DD");
-                            const toDate = moment(date, "YYYY-MM-DD");
-                            // const totalLeaves = `${
-                            //   +fromDateToDateDiff(
-                            //     moment(fromDate).format("YYYY-MM-DD"),
-                            //     moment(date).format("YYYY-MM-DD")
-                            //   )?.split(" ")[0] + 1
-                            // } `;
-                            form.setFieldsValue({
-                              leaveDays: toDate.diff(fDate, "days") + 1,
-                            });
-                          } else {
-                            form.setFieldsValue({
-                              leaveDays: 0,
-                            });
-                          }
+                    {leaveConsumeType?.label === "Full Day" && (
+                      <Col md={8} sm={12} xs={24}>
+                        <PInput
+                          type="date"
+                          name="toDate"
+                          label="To Date"
+                          placeholder="To Date"
+                          rules={[
+                            {
+                              required: true,
+                              message: "To Date is required",
+                            },
+                          ]}
+                          onChange={(date) => {
+                            if (date && fromDate) {
+                              const fDate = moment(fromDate, "YYYY-MM-DD");
+                              const toDate = moment(date, "YYYY-MM-DD");
+                              // const totalLeaves = `${
+                              //   +fromDateToDateDiff(
+                              //     moment(fromDate).format("YYYY-MM-DD"),
+                              //     moment(date).format("YYYY-MM-DD")
+                              //   )?.split(" ")[0] + 1
+                              // } `;
+                              form.setFieldsValue({
+                                leaveDays: toDate.diff(fDate, "days") + 1,
+                              });
+                            } else {
+                              form.setFieldsValue({
+                                leaveDays: 0,
+                              });
+                            }
 
-                          form.setFieldsValue({
-                            toDate: date,
-                          });
-                          if (
-                            moment(date).format() ===
-                              moment(fromDate).format() &&
-                            leaveType?.isHalfDayLeave
-                          ) {
                             form.setFieldsValue({
-                              isHalfDay: 0,
-                              halfTime: "8:30 AM – 12:30 PM",
+                              toDate: date,
                             });
-                          } else {
-                            form.setFieldsValue({
-                              isHalfDay: undefined,
-                              halfTime: undefined,
-                            });
-                          }
-                        }}
-                        disabledDate={disabledDate}
-                      />
-                    </Col>
+                            if (
+                              moment(date).format() ===
+                                moment(fromDate).format() &&
+                              leaveType?.isHalfDayLeave
+                            ) {
+                              form.setFieldsValue({
+                                isHalfDay: 0,
+                                halfTime: "8:30 AM – 12:30 PM",
+                              });
+                            } else {
+                              form.setFieldsValue({
+                                isHalfDay: undefined,
+                                halfTime: undefined,
+                              });
+                            }
+                          }}
+                          disabledDate={disabledDate}
+                        />
+                      </Col>
+                    )}
+                    {leaveConsumeType?.label !== "Full Day" && (
+                      <>
+                        <Col md={8} sm={6} xs={24}>
+                          <PInput
+                            type="time"
+                            name="startTime"
+                            label="Start Time"
+                            placeholder="Start Time"
+                            format={"h:mm a"}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Start Time is required",
+                              },
+                            ]}
+                            onChange={(time) => {
+                              form.setFieldsValue({
+                                startTime: time,
+                              });
+                            }}
+                          />
+                        </Col>
+
+                        <Col md={8} sm={6} xs={24}>
+                          <PInput
+                            type="time"
+                            name="endTime"
+                            label="To Time"
+                            placeholder="To Time"
+                            format={"h:mm a"}
+                            rules={[
+                              {
+                                required: true,
+                                message: "To Time is required",
+                              },
+                            ]}
+                            onChange={(time) => {
+                              form.setFieldsValue({
+                                endTime: time,
+                              });
+                            }}
+                          />
+                        </Col>
+                      </>
+                    )}
                   </>
                 );
               }}
@@ -339,15 +445,26 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-            {/* <Col md={4} sm={24}>
-              <PInput
-                type="text"
-                name="leaveDays"
-                placeholder="Leave Days"
-                label="Leave Days"
-                disabled={true}
+            <Col md={8} sm={12} xs={24}>
+              <PSelect
+                name="leaveReliever"
+                label="Leave Reliever"
+                placeholder="Search Min 2 char"
+                options={CommonEmployeeDDL?.data || []}
+                loading={CommonEmployeeDDL?.loading}
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    leaveReliever: op,
+                  });
+                }}
+                onSearch={(value) => {
+                  getEmployee(value);
+                }}
+                showSearch
+                filterOption={false}
+                // rules={[{ required: true, message: "Leave Reliever Is Required" }]}
               />
-            </Col> */}
+            </Col>
             <Col md={8} sm={24}>
               <PInput
                 type="text"

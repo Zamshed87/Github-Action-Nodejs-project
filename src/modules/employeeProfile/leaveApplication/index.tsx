@@ -341,4 +341,4 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
   );
 };
 
-export default withLeaveApplication(EmLeaveApplicationT);
+export default withLeaveApplication(EmLeaveApplicationT, true);

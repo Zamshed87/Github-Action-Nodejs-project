@@ -1,4 +1,4 @@
-import { DataTable, PCardBody } from "Components";
+import { DataTable, PCardBody, TableButton } from "Components";
 import { InfoOutlined } from "@mui/icons-material";
 
 import { LightTooltip } from "common/LightTooltip";
@@ -8,7 +8,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { failColor, gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Divider, Popover } from "antd";
+import { Divider, Popover, Tag } from "antd";
 import { getLeaveTypeData } from "../utils";
 import { shallowEqual, useSelector } from "react-redux";
 import Loading from "common/loading/Loading";
@@ -34,9 +34,13 @@ const LeaveBalanceTable = ({
   } = useSelector((state) => state?.auth, shallowEqual);
 
   const [isView, setIsView] = useState(false);
+  const [details, setDetails] = useState([]);
   const [leaveData, setLeaveData] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+  };
   const [singleObjList, getSingleObjDataAPI, , setSingleObjList] = useAxiosGet(
     {}
   );
@@ -95,7 +99,7 @@ const LeaveBalanceTable = ({
       render: (_, record) => (
         <>
           <p>
-            {record?.strLeaveType}
+            {record?.type}
             {record?.strLeaveType === "Compensatory Leave" &&
             record?.intAllocatedLveInDay > 0 ? (
               <span>
@@ -138,8 +142,8 @@ const LeaveBalanceTable = ({
       width: 80,
     },
     {
-      title: "Balance",
-      dataIndex: "intBalanceLveInDay",
+      title: "Remaining",
+      dataIndex: "totalBalanceDays",
       width: 45,
     },
     {
@@ -182,33 +186,129 @@ const LeaveBalanceTable = ({
           </p>
         </>
       ),
-      dataIndex: "intTakenLveInDay",
+      dataIndex: "totalTakenDays",
+      width: 40,
+    },
+
+    {
+      title: "Total",
+      dataIndex: "totalAllocatedDays",
       width: 40,
     },
     {
+      title: "Status",
+      render: (_, rec) => {
+        return (
+          <div>
+            {rec?.strEmployeeStatus === "Active" ? (
+              <Tag color="green">{rec?.strEmployeeStatus}</Tag>
+            ) : rec?.strEmployeeStatus === "Inactive" ? (
+              <Tag color="red">{rec?.strEmployeeStatus}</Tag>
+            ) : rec?.strEmployeeStatus === "Salary Hold" ? (
+              <Tag color="orange">{rec?.strEmployeeStatus}</Tag>
+            ) : (
+              <Tag color="gold">{rec?.strEmployeeStatus}</Tag>
+            )}
+          </div>
+        );
+      },
+      width: 35,
+    },
+    {
+      width: 20,
+      align: "center",
+      render: (_, rec) => (
+        <>
+          <TableButton
+            buttonsList={[
+              {
+                type: "view",
+                onClick: () => {
+                  setDetails([rec?.details]);
+                  setOpen(true);
+                },
+              },
+            ]}
+          />
+          <Popover
+            placement="bottom"
+            onOpenChange={handleOpenChange}
+            content={
+              <div style={{ width: "550px" }}>
+                <DataTable
+                  header={detailsHeader}
+                  // nodataStyle={{ marginTop: "-35px", height: "175px" }}
+                  // bordered
+                  data={details}
+                />
+              </div>
+            }
+            open={open}
+            trigger="click"
+          >
+            {/* <InfoCircleOutlined style={{ color: failColor, marginLeft: "2px" }} /> */}
+          </Popover>
+        </>
+      ),
+    },
+    // {
+    //   title: "Carry Balance",
+    //   dataIndex: "intCarryBalanceLveInDay",
+    // },
+    // {
+    //   title: "Carry Taken",
+    //   dataIndex: "inyCarryTakenLveInDay",
+    // },
+    // {
+    //   title: "Carry Allocated",
+    //   dataIndex: "intCarryAllocatedLveInDay",
+    // },
+    // {
+    //   title: "Carry Expire",
+    //   render: (data) =>
+    //     data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
+    // },
+  ];
+  // --
+  const detailsHeader = [
+    {
+      title: "Taken",
+      render: (data, record) => (
+        <>
+          <p>{data}</p>
+        </>
+      ),
+      dataIndex: "takenDays",
+      width: 40,
+    },
+    {
+      title: "Balance",
+      dataIndex: "balanceDays",
+      width: 45,
+    },
+
+    {
       title: "Total",
-      dataIndex: "intAllocatedLveInDay",
+      dataIndex: "totalAllocatedDays",
       width: 40,
     },
     {
       title: "Carry Balance",
-      dataIndex: "intCarryBalanceLveInDay",
+      dataIndex: "carryBalanceDays",
     },
     {
       title: "Carry Taken",
-      dataIndex: "inyCarryTakenLveInDay",
+      dataIndex: "carryTakenDays",
     },
     {
       title: "Carry Allocated",
-      dataIndex: "intCarryAllocatedLveInDay",
+      dataIndex: "carryTotalAllocatedDays",
     },
     {
       title: "Carry Expire",
-      render: (data) =>
-        data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
+      render: (data) => (data?.expireDate ? data?.expireDate : "N/A"),
     },
   ];
-
   return (
     <>
       {loading && <Loading />}
@@ -218,9 +318,32 @@ const LeaveBalanceTable = ({
             header={header}
             nodataStyle={{ marginTop: "-35px", height: "175px" }}
             // bordered
-            data={leaves?.length > 0 ? leaves : []}
+            data={
+              leaves?.length > 0
+                ? leaves
+                : [
+                    {
+                      type: "Policy1 [P1]",
+                      totalTakenDays: 0,
+                      totalBalanceDays: 8,
+                      totalAllocatedDays: 8,
+                      status: "Active",
+                      details: {
+                        takenDays: 0,
+                        balanceDays: 4,
+                        totalAllocatedDays: 4,
+                        carryTakenDays: 0,
+                        carryExpiredDays: 0,
+                        carryBalanceDays: 4,
+                        carryTotalAllocatedDays: 4,
+                        expireDate: "06 01 ,2025",
+                      },
+                    },
+                  ]
+            }
           />
         </PCardBody>
+
         <ViewModal
           size="lg"
           title="Compensatory Leave History"

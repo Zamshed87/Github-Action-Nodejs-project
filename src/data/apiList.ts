@@ -324,4 +324,6 @@ export const apiList = {
   GetEnums: "/Enum/GetEnums",
   GetPolicyLanding: "LeavePolicy/Get",
   GetById: "LeavePolicy/GetById",
+  EmployeeLeaveTypeDDL: "/LeaveBalance/EmployeeLeaveTypeDDL",
+  EmployeeLeaveBalanceList: "/LeaveBalance/EmployeeLeaveBalanceList",
 };
