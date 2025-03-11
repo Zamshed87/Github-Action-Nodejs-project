@@ -4137,27 +4137,6 @@ export const routingList = [
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   {
     path: "/logMonitor/applicationNotificationLogs",
     component: ApplicationNotificationLogs,
