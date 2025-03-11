@@ -10,6 +10,7 @@ export const CalculativeDays = ({
   policy,
   setPolicy,
   policyApi,
+  detailsApi,
 }: any) => {
   const encashheader: any = [
     {
@@ -58,7 +59,27 @@ export const CalculativeDays = ({
       ),
     },
   ];
-
+  useEffect(() => {
+    if (detailsApi?.data?.data?.calculativeData?.length > 0) {
+      const findData = policyApi?.data?.data?.find(
+        (i: any) =>
+          i?.value ==
+          detailsApi?.data?.data?.calculativeData[0]?.calculativeDaysPolicyId[0]
+      );
+      form.setFieldsValue({
+        policy: findData,
+      });
+      findData?.policyId &&
+        setPolicy([
+          {
+            name: findData?.policyName,
+            type: findData?.leaveType,
+            codeName: findData?.policyDisplayName,
+            id: findData?.policyId,
+          },
+        ]);
+    }
+  }, [detailsApi?.data, policyApi?.data]);
   return (
     <>
       <Row gutter={[10, 2]}>

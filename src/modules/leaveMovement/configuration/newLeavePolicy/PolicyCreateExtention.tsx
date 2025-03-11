@@ -554,6 +554,7 @@ export const PolicyCreateExtention = () => {
               payValue: general.payDependOnValue,
               leavelapse: {
                 value: general.leaveLapseId,
+                label: general.leaveLapse,
               },
               afterLeaveCompleted: general.lapseAfterDayCompleted,
               isProRata: {
@@ -644,6 +645,7 @@ export const PolicyCreateExtention = () => {
               },
               leaveCarryForwardType: {
                 value: carry.carryForwardTypeId,
+                label: carry.carryForwardType,
               },
               minConsumeTime: carry.maxCarryAfterLapse,
               addPrevCarry: {
@@ -683,9 +685,11 @@ export const PolicyCreateExtention = () => {
                 isEncashment: { value: encashmentData[0].isEncashment ? 1 : 0 },
                 enLengthDependOn: {
                   value: encashmentData[0].serviceLengthDependOnId,
+                  label: encashmentData[0].serviceLengthDependOn,
                 },
                 encashmentTimeline: {
                   value: encashmentData[0].encashmentTimelineId,
+                  label: encashmentData[0].encashmentTimeline,
                 },
               });
             }
@@ -696,7 +700,10 @@ export const PolicyCreateExtention = () => {
               isEssShowBalance: { value: additional.isBalanceShowESS ? 1 : 0 },
               isEssApply: { value: additional.isApplyFromESS ? 1 : 0 },
               leaveRoundingType: { value: additional.roundingTypeId },
-              leaveApplicationTime: { value: additional.applicationTimeId },
+              leaveApplicationTime: {
+                value: additional.applicationTimeId,
+                label: additional.applicationTime,
+              },
               isAttachmentMandatory: {
                 value: additional.isAttachmentMandatory ? 1 : 0,
               },
@@ -774,7 +781,7 @@ export const PolicyCreateExtention = () => {
                   consumeData={consumeData}
                   setConsumeData={setConsumeData}
                 />
-                <Lapse form={form} detailsApi={detailsApi} />
+                <Lapse form={form} />
                 <ProRata form={form} />
                 <Balance
                   form={form}
@@ -788,6 +795,7 @@ export const PolicyCreateExtention = () => {
                   policy={policy}
                   setPolicy={setPolicy}
                   policyApi={policyApi}
+                  detailsApi={detailsApi}
                 />
               </>
             ) : current === 1 ? (
@@ -807,7 +815,6 @@ export const PolicyCreateExtention = () => {
               <CarryForward
                 form={form}
                 PercentOrFixedEnum={PercentOrFixedEnum}
-                detailsApi={detailsApi}
               />
             ) : current === 3 ? (
               // <Sandwitch
@@ -824,11 +831,10 @@ export const PolicyCreateExtention = () => {
                 grossBasicEnum={grossBasicEnum}
                 JoinOrConfirmEnum={JoinOrConfirmEnum}
                 PercentOrFixedEnum={PercentOrFixedEnum}
-                detailsApi={detailsApi}
               />
             ) : current === 4 ? (
               // <Lapse form={form} />
-              <Additional form={form} detailsApi={detailsApi} />
+              <Additional form={form} />
             ) : (
               // : current === 5 ? (
               //   // <CarryForward form={form} />

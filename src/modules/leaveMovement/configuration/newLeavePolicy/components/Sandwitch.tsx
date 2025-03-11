@@ -90,6 +90,12 @@ export const Sandwitch = ({
       d?.length > 0 && findMatch(d);
       // previousScenarioId.current = d?.join(",") || null; // Update previousScenarioId
       // }
+    } else {
+      form.setFieldsValue({
+        isSandwitch: {
+          value: 0,
+        },
+      });
     }
   }, [detailsApi?.data, sandWitchLanding]);
   return (

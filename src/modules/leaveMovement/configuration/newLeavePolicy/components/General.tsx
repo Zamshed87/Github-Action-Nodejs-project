@@ -164,6 +164,10 @@ export const General = ({
     getReligion();
   }, []);
 
+  useEffect(() => {
+    getDDL();
+  }, [detailsApi?.data]);
+
   return (
     <>
       <Divider

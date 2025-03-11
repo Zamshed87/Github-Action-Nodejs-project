@@ -11,7 +11,6 @@ export const Encashment = ({
   grossBasicEnum,
   JoinOrConfirmEnum,
   PercentOrFixedEnum,
-  detailsApi,
 }: any) => {
   const encashheader: any = [
     {
@@ -98,25 +97,7 @@ export const Encashment = ({
   useEffect(() => {
     getDependTypes();
   }, []);
-  useEffect(() => {
-    if (detailsApi?.data?.data?.encashmentData[0]?.isEncashment) {
-      const findData = JoinOrConfirmEnum?.data?.DateDependsOnEnum?.find(
-        (i: any) =>
-          i?.value ==
-          detailsApi?.data?.data?.encashmentData[0]?.serviceLengthDependOnId
-      );
-      const findTimeData = enumApi?.data?.EncashableTimelineEnum?.find(
-        (i: any) =>
-          i?.value ==
-          +detailsApi?.data?.data?.encashmentData[0]?.encashmentTimelineId
-      );
-      console.log({ findTimeData });
-      form.setFieldsValue({
-        enLengthDependOn: findData,
-        encashmentTimeline: findTimeData,
-      });
-    }
-  }, [detailsApi?.data, enumApi?.data]);
+
   return (
     <>
       <Divider

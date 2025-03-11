@@ -1,20 +1,8 @@
 import { Col, Divider, Form, Row } from "antd";
 import { PInput, PSelect } from "Components";
-import React, { useEffect } from "react";
+import React from "react";
 
-export const CarryForward = ({ form, PercentOrFixedEnum, detailsApi }: any) => {
-  useEffect(() => {
-    if (detailsApi?.data?.data?.carryData[0]?.isCarryForward) {
-      const findData = PercentOrFixedEnum?.data?.DaysTypeEnum?.find(
-        (i: any) =>
-          i?.value == +detailsApi?.data?.data?.carryData[0]?.carryForwardTypeId
-      );
-
-      form.setFieldsValue({
-        leaveCarryForwardType: findData,
-      });
-    }
-  }, [detailsApi?.data, PercentOrFixedEnum?.data]);
+export const CarryForward = ({ form, PercentOrFixedEnum }: any) => {
   return (
     <>
       <Divider
