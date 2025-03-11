@@ -29,7 +29,7 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-const KpiAssessmentTabs = ({ value, handleChange }) => {
+const KpiAssessmentTabs = ({ value, handleChange, urlSegment }) => {
   return (
     <div>
       <Box sx={{ width: "100%" }}>
@@ -40,7 +40,9 @@ const KpiAssessmentTabs = ({ value, handleChange }) => {
             aria-label="basic tabs example"
           >
             <Tab label="Self" {...a11yProps(0)} />
-            <Tab label="Others" {...a11yProps(1)} />
+            {urlSegment !== "SelfService" && (
+              <Tab label="Others" {...a11yProps(1)} />
+            )}
           </Tabs>
         </Box>
         {/* <CustomTabPanel value={value} index={0}>

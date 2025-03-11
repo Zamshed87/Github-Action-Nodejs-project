@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import { fiscalMonthDDLForKpi } from "../../../../utility/fiscalMonthDDLForKpi";
 import KpiAssessmentTabs from "./kpiAssessmentTabs";
 import IndividualKpiEntry from "../individualKpiEntry";
+import { useLocation } from "react-router-dom";
 
 const initData = {
   year: "",
@@ -32,6 +33,8 @@ const initData = {
 
 const IndividualKpiEntrySelf = () => {
   // 30484
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[1];
   const [pmTypeDDL, getPMTypeDDL] = useAxiosGet();
   const dispatch = useDispatch();
   const [fiscalYearDDL, getFiscalYearDDL, fiscalYearDDLloader] = useAxiosGet();
@@ -65,7 +68,13 @@ const IndividualKpiEntrySelf = () => {
       initData.year = theYearData;
       setFieldValue("year", theYearData);
     });
-    dispatch(setFirstLevelNameAction("Performance Management System"));
+    dispatch(
+      setFirstLevelNameAction(
+        firstSegment === "SelfService"
+          ? "Employee Self Service"
+          : "Performance Management System"
+      )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -106,7 +115,11 @@ const IndividualKpiEntrySelf = () => {
             </h2>
           </div>
           <div className="table-card-heading" style={{ marginBottom: "12px" }}>
-            <KpiAssessmentTabs value={value} handleChange={handleChange} />
+            <KpiAssessmentTabs
+              value={value}
+              handleChange={handleChange}
+              urlSegment={firstSegment}
+            />
           </div>
           {value === 0 ? (
             <>
