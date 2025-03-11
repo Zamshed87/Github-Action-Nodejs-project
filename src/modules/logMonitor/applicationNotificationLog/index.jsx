@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import Loading from "../../../../common/loading/Loading";
 import {
   DataTable,
   PCard,
@@ -13,9 +12,10 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { downloadFile } from "utility/downloadFile";
 import { toast } from "react-toastify";
-import ReportFilters from "../common/ReportFilters";
-import usePerformanceAppraisalReport from "./hooks/usePerformanceAppraisalReport";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import Loading from "common/loading/Loading";
+import LogFilters from "./components/LogFilters";
+import useNotificationLogs from "./hooks/useNotificationLogs";
 
 const ApplicationNotificationLog = () => {
   const [excelLoading, setExcelLoading] = useState(false);
@@ -35,12 +35,12 @@ const ApplicationNotificationLog = () => {
 
   const {
     permissionList,
-    profileData: { buId, wgId, wId, employeeId,userName, isOfficeAdmin },
+    profileData: { buId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
 
-  const { reportData, fetchPerformanceAppraisalReport, loading } =
-    usePerformanceAppraisalReport({
+  const { reportData, fetchNotificationLogs, loading } =
+    useNotificationLogs({
       buId,
       wgId,
       wId,
@@ -56,17 +56,17 @@ const ApplicationNotificationLog = () => {
       permission = item;
     }
   });
-  return permission?.isView ? (
+  return (permission?.isView || true) ? (
       <PForm
         form={form}
         initialValues={{
-          supervisor: isOfficeAdmin ? { value: 0, label: "All" } : {value:employeeId,label:userName},
+          supervisor: { value: 0, label: "All" },
           department: { value: 0, label: "All" },
           designation: { value: 0, label: "All" },
           levelOfLeadershipId: { value: 0, label: "All" },
         }}
         onFinish={(values) => {
-          fetchPerformanceAppraisalReport({
+          fetchNotificationLogs({
             supervisorId: values?.supervisor?.value,
             departmentId: values?.department?.value,
             designationId: values?.designation?.value,
@@ -76,7 +76,7 @@ const ApplicationNotificationLog = () => {
           });
         }}
       >
-        {loading || (excelLoading && <Loading />)}
+        {loading || (excelLoading && <Loading/>)}
         <PCard>
           <PCardHeader
             title={`Total Report ${reportData?.totalCount || 0}`}
@@ -86,37 +86,10 @@ const ApplicationNotificationLog = () => {
             //   });
             //   fetchKpiMismatchReport({ pages, search: e.target.value });
             // }}
-            exportIcon
-            onExport={() => {
-              const missingFields = [];
-
-              if (supervisor?.value == null) missingFields.push("Supervisor");
-              if (department?.value == null) missingFields.push("Department");
-              if (designation?.value == null) missingFields.push("Designation");
-              if (year?.value == null) missingFields.push("Year");
-              if (levelOfLeadershipId?.value == null)
-                missingFields.push("Level of Leadership");
-
-              if (missingFields.length > 0) {
-                toast.warn(
-                  `Missing required fields: ${missingFields.join(", ")}`
-                );
-              } else {
-                const url = `/PdfAndExcelReport/PMS/PerformanceAppraisalReportExcel?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&SupervisorId=${supervisor?.value}&DepartmentId=${department?.value}&DesignationId=${designation?.value}&Year=${year?.value}&LevelOfLeadershipId=${levelOfLeadershipId?.value}`;
-
-                downloadFile(
-                  url,
-                  `PerformanceAppraisalReport`,
-                  "xlsx",
-                  setExcelLoading
-                );
-              }
-            }}
           />
           <PCardBody className="mb-3">
-            <ReportFilters
+            <LogFilters
               form={form}
-              showLevelOfLeadership={true}
             />
           </PCardBody>
           <DataTable
@@ -131,7 +104,7 @@ const ApplicationNotificationLog = () => {
             }}
             onChange={(pagination, _, __, extra) => {
               if (extra.action === "paginate") {
-                fetchPerformanceAppraisalReport({
+                fetchNotificationLogs({
                   supervisorId: supervisor?.value,
                   departmentId: department?.value,
                   designationId: designation?.value,

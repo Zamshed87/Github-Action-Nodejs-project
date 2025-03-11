@@ -3,7 +3,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 const useNotificationLogs = ({ buId, wId, wgId }) => {
   const [reportData, getReportData, loading, setReportData] = useAxiosGet({});
 
-  const fetchKpiMismatchReport = ({
+  const fetchNotificationLogs = ({
     supervisorId,
     departmentId,
     designationId,
@@ -19,7 +19,7 @@ const useNotificationLogs = ({ buId, wId, wgId }) => {
     );
   };
 
-  return { reportData, fetchKpiMismatchReport, loading };
+  return { reportData, fetchNotificationLogs, loading };
 };
 
 export default useNotificationLogs;
