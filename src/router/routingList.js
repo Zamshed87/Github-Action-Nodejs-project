@@ -4073,6 +4073,10 @@ export const routingList = [
     path: "/pms/performanceAssessment/BARAssessment",
     component: BarAssessment,
   },
+  {
+    path: "/SelfService/BARAssessment",
+    component: BarAssessment,
+  },
   // {
   //   path: "/pms/valuesAndCompetencies/supervisorAssessment",
   //   component: SupervisorAssessment,
