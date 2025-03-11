@@ -33,11 +33,12 @@ const useNotificationLogs = () => {
   const fromDate = Form.useWatch("fromDate", form);
   const toDate = Form.useWatch("toDate", form);
   const search = Form.useWatch("search", form);
-
+  
   const fetchNotificationLogs = () => {
     // we will need this
     // const WorkplaceIdList = workplaceList?.map((w) => w.value)?.join(",");
-    const notificationCategory = null;
+    // const notificationCategory = null;
+    // &NotificationCategory=${notificationCategory}
     const FormattedFromDate = fromDate ? formatDate(fromDate) : undefined;
     const FormattedToDate = toDate ? formatDate(toDate) : undefined;
     getData(
@@ -47,7 +48,7 @@ const useNotificationLogs = () => {
         workplaceGroup?.value
       }&WorkPlaceId=${wId}&WorkplaceIdList=${workplaceList?.value}&Search=${
         search ?? ""
-      }&NotificationCategory=${notificationCategory}&NotificationType=${
+      }&NotificationType=${
         notificationType?.value
       }&FromDate=${FormattedFromDate ?? ""}&ToDate=${
         FormattedToDate ?? ""
