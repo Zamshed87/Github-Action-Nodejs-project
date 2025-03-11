@@ -1740,7 +1740,7 @@ export const routingList = [
   },
 
   // { path: "/dashboard", component: DashboardModule },
-  { path: "/dashboard", component: MasterDashboardLanding },
+  { path: "/dashboard/employee", component: MasterDashboardLanding },
   { path: "/profile/employee", component: EmployeeFeatureNew },
   { path: "/profile/employee/bulk", component: BulkEmployeeCreate },
   { path: "/profile/reports/contractClosing", component: ContactClosingReport },

@@ -10,7 +10,7 @@ export default function SideMenu() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedFirstLevelMenu, setSelectedFirstLevelMenu] = useState("");
   const [selectedSecondLevelMenu, setSelectedSecondLevelMenu] = useState("");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedThirdLevel, setSelectedThirdLevel] = useState("");
   const dispatch = useDispatch();
   const { firstLevelName } = useSelector(
