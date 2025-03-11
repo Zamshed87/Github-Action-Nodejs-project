@@ -319,4 +319,5 @@ export const apiList = {
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
+  GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
 };
