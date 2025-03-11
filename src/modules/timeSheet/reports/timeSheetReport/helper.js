@@ -142,17 +142,19 @@ export const column = (fromDate, toDate) => {
 
 export const getTimeSheetReport = async ({
   wId,
+  wgId,
   pages,
   fromDate,
   toDate,
   accountId,
   setter,
   setLoading,
+  searchText = "",
 }) => {
   try {
     setLoading(true);
     let res = await axios.get(
-      `/TimeSheet/GetFlexibleTimesheetReport?WorkplaceId=${wId}&AccountId=${accountId}&FromDate=${fromDate}&ToDate=${toDate}&PageNumber=${pages?.current}&PageSize=${pages?.pageSize}`
+      `/TimeSheet/GetFlexibleTimesheetReport?WorkplaceId=${wId}&AccountId=${accountId}&FromDate=${fromDate}&ToDate=${toDate}&PageNumber=${pages?.current}&PageSize=${pages?.pageSize}&WorkplaceGroupId=${wgId}&Search=${searchText}`
     );
     setLoading(false);
     if (res.data && Array.isArray(res.data.data)) {
