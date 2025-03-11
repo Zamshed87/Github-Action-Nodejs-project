@@ -6,24 +6,19 @@ import { shallowEqual, useSelector } from "react-redux";
 const useNotificationLogFilters = ({ form }) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
+    businessUnitDDL
   } = useSelector((store) => store?.auth, shallowEqual);
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
 
-  const [
-    levelOfLeadershipDDL,
-    getLevelOfLeadershipDDL,
-    ,
-    setLevelOfLeadershipDDL,
-  ] = useAxiosGet();
-
   const getWorkplaceGroup = () => {
+    const { businessUnit } = form.getFieldsValue(true);
     workplaceGroup?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
+        BusinessUnitId: businessUnit?.value || buId,
         WorkplaceGroupId: wgId,
         intId: employeeId,
       },
@@ -43,7 +38,7 @@ const useNotificationLogFilters = ({ form }) => {
       params: {
         DDLType: "Workplace",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
+        WorkplaceGroupId: workplaceGroup?.value || wgId,
         intId: employeeId,
       },
       onSuccess: (res) => {
@@ -58,24 +53,14 @@ const useNotificationLogFilters = ({ form }) => {
   useEffect(() => {
     getWorkplaceGroup();
     getWorkplace();
-    getLevelOfLeadershipDDL(
-      `/SaasMasterData/GetAllMasterPosition?accountId=${orgId}`,
-      (data) => {
-        setLevelOfLeadershipDDL(
-          data.map((d) => ({
-            value: d.intPositionGroupId,
-            label: d.strPositionGroupName,
-          }))
-        );
-      }
-    );
   }, [orgId, buId, wgId, wId]);
 
   return {
+    businessUnitDDL,
     workplaceGroup,
+    getWorkplaceGroup,
     workplace,
     getWorkplace,
-    levelOfLeadershipDDL,
   };
 };
 
