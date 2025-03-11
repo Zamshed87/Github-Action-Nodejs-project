@@ -106,10 +106,8 @@ const RosterReport = () => {
   const { fromDate, toDate } = getFilteredValues(values, wId, wgId);
   //   table column
   const header: any = () => {
-    // Generate list of dates between fromDate and toDate
     const dateList = fromToDateList(fromDate, toDate);
 
-    // Create dynamic date columns
     const dateColumns = dateList.map((item: any) => ({
       title: () => <span style={{ color: gray600 }}>{item.level}</span>,
       dataIndex: item.date, // Use the date as the key
@@ -124,7 +122,6 @@ const RosterReport = () => {
       width: 150,
     }));
 
-    // Return the static headers + dynamically generated date columns
     return [
       {
         title: "SL",
@@ -183,23 +180,31 @@ const RosterReport = () => {
     ];
   };
 
-  const searchFunc = debounce((value) => {}, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
+  const searchFunc = debounce((value) => {
+    getTimeSheetReport({
+      wId: values?.workplace?.value || wId,
+      wgId: values?.workplaceGroup?.value || wgId,
+      pages,
+      fromDate,
+      toDate,
+      accountId: intAccountId,
+      setter: setData,
+      setLoading,
+      searchText: value || "",
+    });
+  }, 500);
 
   useEffect(() => {
     getTimeSheetReport({
       wId,
+      wgId,
       pages,
       fromDate: values?.fromDate || fromDate,
       toDate: values?.toDate || toDate,
       accountId: intAccountId,
       setter: setData,
       setLoading,
+      searchText: values?.search,
     });
   }, []);
 
@@ -218,16 +223,17 @@ const RosterReport = () => {
       : moment(monthLastDate()).format("YYYY-MM-DD");
 
     getTimeSheetReport({
-      wId,
+      wId: values?.workplace?.value || wId,
+      wgId: values?.workplaceGroup?.value || wgId,
       pages,
       fromDate,
       toDate,
       accountId: intAccountId,
       setter: setData,
       setLoading,
+      searchText: values?.search,
     });
   };
-
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -246,9 +252,14 @@ const RosterReport = () => {
           {(excelLoading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
-            // title={`Total ${data?.length || 0} employees`}
+            title={`Total ${data?.length || 0} employees`}
             onSearch={(e) => {
-              searchFunc(e?.target?.value);
+              if (e?.target?.value) {
+                searchFunc(e?.target?.value);
+              } else {
+                searchFunc("");
+              }
+
               form.setFieldsValue({
                 search: e?.target?.value,
               });
@@ -354,8 +365,8 @@ const RosterReport = () => {
                 onClose={(visible) => setIsFilterVisible(visible)}
                 onFilter={handleFilter}
                 isDate={true}
-                isWorkplaceGroup={false}
-                isWorkplace={false}
+                isWorkplaceGroup={true}
+                isWorkplace={true}
                 isDepartment={false}
                 isDesignation={false}
                 isAllValue={false}
