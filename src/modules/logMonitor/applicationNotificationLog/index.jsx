@@ -14,7 +14,7 @@ const ApplicationNotificationLog = () => {
       form={form}
       initialValues={{}}
       onFinish={() => {
-        fetchNotificationLogs();
+        fetchNotificationLogs(pages);
       }}
     >
       {loading && <Loading />}
@@ -25,7 +25,7 @@ const ApplicationNotificationLog = () => {
             form.setFieldsValue({
               search: e?.target?.value,
             });
-            fetchNotificationLogs();
+            fetchNotificationLogs(pages);
           }}
         />
         <PCardBody className="mb-3">
@@ -37,14 +37,14 @@ const ApplicationNotificationLog = () => {
           data={data?.Data || []}
           loading={loading}
           pagination={{
-            pageSize: data?.PageSize,
+            pageSize: pages?.pageSize,
             total: data?.TotalCount,
             pageSizeOptions: ["25", "50", "100"],
           }}
           onChange={(pagination, _, __, extra) => {
             if (extra.action === "paginate") {
-              fetchNotificationLogs();
               setPages(pagination);
+              fetchNotificationLogs(pagination);
             }
           }}
         />
