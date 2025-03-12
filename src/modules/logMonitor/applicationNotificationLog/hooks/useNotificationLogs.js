@@ -18,7 +18,7 @@ const useNotificationLogs = () => {
   } = useSelector((store) => store?.auth, shallowEqual);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 20,
+    pageSize: 25,
     total: 0,
   });
 
@@ -34,7 +34,7 @@ const useNotificationLogs = () => {
   const toDate = Form.useWatch("toDate", form);
   const search = Form.useWatch("search", form);
   
-  const fetchNotificationLogs = () => {
+  const fetchNotificationLogs = (pages) => {
     // we will need this
     // const WorkplaceIdList = workplaceList?.map((w) => w.value)?.join(",");
     // const notificationCategory = null;
@@ -54,7 +54,6 @@ const useNotificationLogs = () => {
         FormattedToDate ?? ""
       }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`,
       (res) => {
-        console.log(res);
         setData(res?.Result);
       }
     );
