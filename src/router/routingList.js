@@ -1788,7 +1788,10 @@ export const routingList = [
   },
 
   // { path: "/dashboard", component: DashboardModule },
-  { path: "/dashboard", component: MasterDashboardLanding },
+  { path: "/dashboard/employee", component: MasterDashboardLanding },
+  { path: "/dashboard/supervisor", component: MasterDashboardLanding },
+  { path: "/dashboard/management", component: MasterDashboardLanding },
+  { path: "/dashboard/employeeLifecycle", component: MasterDashboardLanding },
   { path: "/profile/employee", component: EmployeeFeatureNew },
   { path: "/profile/employee/bulk", component: BulkEmployeeCreate },
   { path: "/profile/reports/contractClosing", component: ContactClosingReport },
@@ -2038,7 +2041,10 @@ export const routingList = [
     component: MonthlyInOutReport,
   },
   { path: "/profile/reports/rosterReport", component: RosterReport },
-  { path: "/profile/reports/flexibleTimeSheetReport", component: TimeSheetReport },
+  {
+    path: "/profile/reports/flexibleTimeSheetReport",
+    component: TimeSheetReport,
+  },
   { path: "/profile/reports/empRosterReport", component: EmployeesShift },
   {
     path: "/profile/reports/monthlyAttendanceReport",
