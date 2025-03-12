@@ -1744,7 +1744,10 @@ import InterViewModal from "modules/employeeProfile/separation/selfApplication/v
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
-
+// Log Monitor Module
+const ApplicationNotificationLogs = lazy(() =>
+  import("../modules/logMonitor/applicationNotificationLog/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -4189,7 +4192,11 @@ export const routingList = [
   {
     path: "/retirement/finalSettlement/regenerate/:settlementid/:separationid/:empid",
     component: FinalSettlementRegenerate,
-  }
+  },
+  {
+    path: "/logMonitor/applicationNotificationLogs",
+    component: ApplicationNotificationLogs,
+  },
 ];
 
 // Those hidden menu just use for develper
