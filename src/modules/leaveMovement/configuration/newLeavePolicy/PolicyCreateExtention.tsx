@@ -114,6 +114,32 @@ export const PolicyCreateExtention = () => {
         // setId(data?.data);
         // next();
       },
+      onError: (error: any) => {
+        console.log(
+          error?.response?.data?.errors?.["GeneralPayload.Description"]
+        );
+        if (
+          error?.response?.data?.errors?.["GeneralPayload.Description"]
+            ?.length > 1
+        ) {
+          setErrorData(
+            error?.response?.data?.errors?.["GeneralPayload.Description"]
+          );
+          setOpen(true);
+        } else {
+          toast.error(
+            error?.response?.data?.message ||
+              error?.response?.data?.errors?.[
+                "GeneralPayload.Description"
+              ][0] ||
+              error?.response?.data?.Message ||
+              error?.response?.data?.title ||
+              error?.response?.title ||
+              error?.response?.message ||
+              error?.response?.Message
+          );
+        }
+      },
     });
   };
 
