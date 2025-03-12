@@ -30,7 +30,7 @@ const LogFilters = ({ form }) => {
             form.setFieldsValue({
               businessUnit: op,
               workplaceGroup: undefined,
-              workplace: undefined,
+              workplaceList: undefined,
             });
             getWorkplaceGroupDDL();
           }}
@@ -46,7 +46,7 @@ const LogFilters = ({ form }) => {
           onChange={(value, op) => {
             form.setFieldsValue({
               workplaceGroup: op,
-              workplace: undefined,
+              workplaceList: undefined,
             });
             getWorkplaceDDL();
           }}
