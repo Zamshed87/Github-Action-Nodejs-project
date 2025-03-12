@@ -1546,6 +1546,9 @@ const RosterReportPrint = lazy(() =>
 const RosterReport = lazy(() =>
   import("../modules/timeSheet/reports/rosterReport/index.tsx")
 );
+const TimeSheetReport = lazy(() =>
+  import("../modules/timeSheet/reports/timeSheetReport/index.tsx")
+);
 const MonthlyInOutReport = lazy(() =>
   import("../modules/timeSheet/reports/monthlyInOutReport/index.tsx")
 );
@@ -2010,6 +2013,7 @@ export const routingList = [
     component: MonthlyInOutReport,
   },
   { path: "/profile/reports/rosterReport", component: RosterReport },
+  { path: "/profile/reports/flexibleTimeSheetReport", component: TimeSheetReport },
   { path: "/profile/reports/empRosterReport", component: EmployeesShift },
   {
     path: "/profile/reports/monthlyAttendanceReport",
