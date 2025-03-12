@@ -163,7 +163,7 @@ export const handleEvaluationPipelineSetting = async (
     remarks: values?.comments,
     accountId: profileData?.intAccountId,
     actionBy: profileData?.employeeId,
-    // confirmed by PARASH vai
+    // confirmed by PARASH vai 😒
     // positionGroupIdList:
     //   values?.leadership?.length === 1 && values?.leadership[0]?.value == 0
     //     ? getLeadershipFormat(levelofLeaderShip)
@@ -171,7 +171,7 @@ export const handleEvaluationPipelineSetting = async (
     positionGroupIdList: [{ positionGroupId: values?.leadership?.value }],
     rowDto: stakeholderField?.map((item) => {
       return {
-        rowId: 0, // This value is hardcoded if create
+        rowId: item?.rowId || 0, // This value is hardcoded if create
         stakeholderTypeId: item?.stakeholderTypeId,
         stakeholderId: item?.stakeholderId || 0,
         scoreWeight: item?.scoreWeight,

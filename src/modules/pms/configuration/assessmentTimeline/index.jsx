@@ -38,9 +38,11 @@ const AssessmentTimeline = () => {
   const landingApi = (values) => {
     let year = "";
     if (values?.year?.value) {
-      year = `?yearId=${values?.year?.value || 0}`;
+      year = `yearId=${values?.year?.value || 0}`;
     }
-    getCriteriaList(`/PMS/GetAllAssesmentTimelineSetup${year}`);
+    getCriteriaList(
+      `/PMS/GetAllAssesmentTimelineSetup?${year}&pageNumber=1&pageSize=125`
+    );
     GetFiscalYearDDL(`/PMS/GetFiscalYearDDL`);
   };
   useEffect(() => {
