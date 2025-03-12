@@ -11,6 +11,7 @@ import analystics from "../../assets/images/analystics.svg";
 import approval from "../../assets/images/approval.svg";
 import assetManagement from "../../assets/images/assetManagement.svg";
 import assetRetirement from "../../assets/images/retirement.png";
+import assetLogMonitor from "../../assets/images/logMonitor.png";
 import calander from "../../assets/images/calander.svg";
 import employeeSelfService from "../../assets/images/employee-self-service.svg";
 import employeeManagement from "../../assets/images/employeeManagement.svg";
@@ -150,6 +151,9 @@ const Homepage = () => {
     } else if (label === "Retirement") {
       to = "/retirement/separation";
       image = assetRetirement;
+    }else if (label === "Log Monitor") {
+      to = "/logMonitor/applicationNotificationLogs";
+      image = assetLogMonitor;
     }
     return { to, image };
   };

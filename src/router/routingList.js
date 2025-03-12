@@ -1546,6 +1546,9 @@ const RosterReportPrint = lazy(() =>
 const RosterReport = lazy(() =>
   import("../modules/timeSheet/reports/rosterReport/index.tsx")
 );
+const TimeSheetReport = lazy(() =>
+  import("../modules/timeSheet/reports/timeSheetReport/index.tsx")
+);
 const MonthlyInOutReport = lazy(() =>
   import("../modules/timeSheet/reports/monthlyInOutReport/index.tsx")
 );
@@ -1721,7 +1724,10 @@ const RetirementReleaseSeparationForm = lazy(() =>
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
-
+// Log Monitor Module
+const ApplicationNotificationLogs = lazy(() =>
+  import("../modules/logMonitor/applicationNotificationLog/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -1990,6 +1996,7 @@ export const routingList = [
     component: MonthlyInOutReport,
   },
   { path: "/profile/reports/rosterReport", component: RosterReport },
+  { path: "/profile/reports/flexibleTimeSheetReport", component: TimeSheetReport },
   { path: "/profile/reports/empRosterReport", component: EmployeesShift },
   {
     path: "/profile/reports/monthlyAttendanceReport",
@@ -4133,6 +4140,10 @@ export const routingList = [
   {
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
+  },
+  {
+    path: "/logMonitor/applicationNotificationLogs",
+    component: ApplicationNotificationLogs,
   },
 ];
 
