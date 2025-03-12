@@ -140,6 +140,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         {/* Search Input */}
         {onSearch ? (
           <PInput
+            name="search"
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={debouncedOnSearch}
