@@ -1,14 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
+import { getEnumData } from "common/api/commonApi";
 
 const useNotificationLogFilters = ({ form }) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
     businessUnitDDL,
-    workplaceDDL,
+    // workplaceDDL,
   } = useSelector((store) => store?.auth, shallowEqual);
 
+  const [notificationType, setNotificationType] = useState([]);
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
 
@@ -54,6 +56,7 @@ const useNotificationLogFilters = ({ form }) => {
   useEffect(() => {
     getWorkplaceGroupDDL();
     getWorkplaceDDL();
+    getEnumData("NotificationType", setNotificationType);
   }, [orgId, buId, wgId, wId]);
 
   return {
@@ -63,8 +66,15 @@ const useNotificationLogFilters = ({ form }) => {
     })),
     workplaceGroupDDL: workplaceGroup.data,
     getWorkplaceGroupDDL,
-    workplaceDDL: [{ label: "All", value: workplace?.data?.map((w) => w?.intWorkplaceId)?.join(",")}, ...workplace.data],
+    workplaceDDL: [
+      {
+        label: "All",
+        value: workplace?.data?.map((w) => w?.intWorkplaceId)?.join(","),
+      },
+      ...workplace.data,
+    ],
     getWorkplaceDDL,
+    notificationType
   };
 };
 
