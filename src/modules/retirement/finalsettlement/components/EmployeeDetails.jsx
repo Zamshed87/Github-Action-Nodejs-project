@@ -1,8 +1,7 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Card, Descriptions, Avatar, Typography } from "antd";
+import { Avatar, Card, Descriptions, Typography } from "antd";
 import { APIUrl } from "App";
 import moment from "moment";
-import React from "react";
 
 const { Title } = Typography;
 

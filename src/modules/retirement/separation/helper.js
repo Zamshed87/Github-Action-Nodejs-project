@@ -473,7 +473,7 @@ export const employeeSeparationCrud = async (
 ) => {
   try {
     setLoading(true);
-    let payload = {
+    const payload = {
       partId: partId,
       intSeparationId: values?.autoId || 0,
       businessUnitId: buId,
@@ -554,7 +554,7 @@ export const searchData = (keywords, allData, setRowDto, setLoading) => {
     }
     setLoading && setLoading(true);
     const regex = new RegExp(keywords?.toLowerCase());
-    let newData = allData?.filter(
+    const newData = allData?.filter(
       (item) =>
         regex.test(item?.EmployeeName?.toLowerCase()) ||
         regex.test(item?.DepartmentName?.toLowerCase()) ||

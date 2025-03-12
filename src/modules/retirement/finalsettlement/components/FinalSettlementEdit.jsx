@@ -23,8 +23,7 @@ export default function FinalSettlementEdit() {
   const history = useHistory();
   const [, getSingleEmployeeData, getSingleEmployeeLoading] = useAxiosGet();
   const [, getFinalSettlementData, getFinalSettlementLoading] = useAxiosGet();
-  const [, postFinalSettlementData, postFinalSettlementLoading] =
-    useAxiosPost();
+  const [, postFinalSettlementData] = useAxiosPost();
 
   const [empBasic, setEmpBasic] = useState({});
   const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(

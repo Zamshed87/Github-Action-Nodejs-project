@@ -17,6 +17,7 @@ import {
 } from "./helper";
 import { useHistory } from "react-router-dom";
 import FinalSettlementViewModal from "./components/FinalSettlementViewModal";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 export default function FinalSettlementLanding() {
   const {
@@ -42,6 +43,7 @@ export default function FinalSettlementLanding() {
 
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
+  const [, PostSendForApproval] = useAxiosPost();
 
   const [pages, setPages] = useState({
     current: 1,
@@ -172,7 +174,7 @@ export default function FinalSettlementLanding() {
               visible={openFilter}
               onClose={(visible) => setOpenFilter(visible)}
               onFilter={handleFilter}
-              isDateSeparate={true}
+              isDate={true}
               isWorkplaceGroup={true}
               isWorkplace={true}
               isStatus={true}
@@ -190,6 +192,7 @@ export default function FinalSettlementLanding() {
                     pages?.pageSize,
                     history,
                     setOpenFinalSettlementViewModal,
+                    PostSendForApproval,
                     getData,
                     id,
                     setId,

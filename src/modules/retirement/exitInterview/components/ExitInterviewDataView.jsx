@@ -10,14 +10,13 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { getQuestionaireById } from "../helper";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 export default function ExitInterviewDataView({ id, empId, questionId }) {
-  const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState({});
 
   useEffect(() => {
-    getQuestionaireById(questionId, setSingleData, setLoading);
+    getQuestionaireById(questionId, setSingleData);
   }, [id, empId]);
 
   const isExistForCheckbox = (op, opArr) => opArr?.includes(op);
