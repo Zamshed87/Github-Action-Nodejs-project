@@ -112,6 +112,7 @@ export const getClearanceLandingTableColumn = (
     page,
     paginationSize,
     postClearanceData,
+    postReleaseData,
     setOpenExitInterviewDataViewModal,
     getData,
     id,
@@ -140,12 +141,14 @@ export const getClearanceLandingTableColumn = (
         IConfirmModal(confirmObject);
     };
 
-    const confirmReleasePopup = (sepId, employeeId) => {
+    const confirmReleasePopup = (sepId) => {
         const confirmObject = {
             closeOnClickOutside: false,
             message: "Are you sure you want to release this application?",
             yesAlertFunc: () => {
-                console.log("release", sepId, employeeId);
+                postReleaseData("Separation/ReleasedSeparation", { IntSeparationId: sepId, IsReleased: 1 }, () => {
+                    getData();
+                }, true)
             },
             noAlertFunc: () => {
                 getData();
@@ -353,7 +356,7 @@ export const getClearanceLandingTableColumn = (
                                     onClick={() => {
                                         setId(data?.separationId)
                                         setEmpId(data?.intEmployeeId)
-                                        confirmReleasePopup(data?.separationId, data?.intEmployeeId);
+                                        confirmReleasePopup(data?.separationId);
                                     }}
                                 ><SendTwoToneIcon color="success" />
                                 </button>
