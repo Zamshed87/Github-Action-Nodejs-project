@@ -461,7 +461,6 @@ export const columnsManual = (page) => [
     width: "120px",
     render: (status, record) => (
       <div>
-        {record?.applicationInformation?.strRemarks}{" "}
         <Tooltip
           title={`Reason: ${record?.applicationInformation?.strRemarks}`}
           arrow
