@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Col, Collapse, Divider, Input, Row } from "antd";
 import BackButton from "common/BackButton";
 import PrimaryButton from "common/PrimaryButton";
@@ -28,8 +27,7 @@ export default function FinalSettlementRegenerate() {
     postFinalSettlementRegenarateData,
     postFinalSettlementRegenarateLoading,
   ] = useAxiosPost();
-  const [, postFinalSettlementData, postFinalSettlementLoading] =
-    useAxiosPost();
+  const [, postFinalSettlementData] = useAxiosPost();
 
   const [empBasic, setEmpBasic] = useState({});
   const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(
