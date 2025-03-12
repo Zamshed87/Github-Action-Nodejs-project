@@ -199,7 +199,7 @@ export default function ManagementSeparation() {
               visible={openFilter}
               onClose={(visible) => setOpenFilter(visible)}
               onFilter={handleFilter}
-              isDateSeparate={true}
+              isDate={true}
               isStatus={true}
               statusDDL={statusDDL}
             />

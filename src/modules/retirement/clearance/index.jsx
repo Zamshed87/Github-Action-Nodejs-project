@@ -51,6 +51,7 @@ export default function ClearanceLanding() {
   const [openExitInterviewDataViewModal, setOpenExitInterviewDataViewModal] =
     useState(false);
   const [, postClearanceData] = useAxiosPost();
+  const [, postReleaseData] = useAxiosPost();
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
@@ -172,7 +173,7 @@ export default function ClearanceLanding() {
               visible={openFilter}
               onClose={(visible) => setOpenFilter(visible)}
               onFilter={handleFilter}
-              isDateSeparate={true}
+              isDate={true}
               isStatus={true}
               statusDDL={statusDDL}
             />
@@ -186,6 +187,7 @@ export default function ClearanceLanding() {
                     pages?.current,
                     pages?.pageSize,
                     postClearanceData,
+                    postReleaseData,
                     setOpenExitInterviewDataViewModal,
                     getData,
                     id,

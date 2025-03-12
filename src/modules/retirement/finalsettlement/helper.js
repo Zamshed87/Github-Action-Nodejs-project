@@ -106,6 +106,7 @@ export const getFinalSettlementLandingTableColumn = (
     paginationSize,
     history,
     setOpenFinalSettlementViewModal,
+    PostSendForApproval,
     getData,
     id,
     setId,
@@ -113,12 +114,18 @@ export const getFinalSettlementLandingTableColumn = (
     setEmpId,
 ) => {
 
-    const confirmSendForApprovalPopup = (sepId, employeeId) => {
+    const confirmSendForApprovalPopup = (finalsettleId, sepId, employeeId) => {
         const confirmObject = {
             closeOnClickOutside: false,
             message: "Are you sure you want to send this application for Approval?",
             yesAlertFunc: () => {
-                console.log("Send for Approval", sepId, employeeId);
+                PostSendForApproval("/FinalSettlement/SendForApproval", {
+                    "IntFinalSettlementId": finalsettleId,
+                    "IntSeparationId": sepId,
+                    "IntEmployeeId": employeeId
+                }, () => {
+                    getData();
+                }, true)
             },
             noAlertFunc: () => {
                 getData();
@@ -180,13 +187,13 @@ export const getFinalSettlementLandingTableColumn = (
         },
         {
             title: "Supervisor",
-            dataIndex: "strSupervisor",
+            dataIndex: "strSupervisorName",
             filter: false,
             fieldType: "string",
         },
         {
             title: "Line Manager",
-            dataIndex: "strLineManager",
+            dataIndex: "strLineManagerName",
             filter: false,
             fieldType: "string",
         },
@@ -320,7 +327,7 @@ export const getFinalSettlementLandingTableColumn = (
                         </Tooltip>
 
                     )}
-                    {data?.intFinalSettlementId !== null && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
+                    {(data?.strFinalSettlementStatus === "Rejected" || data?.strFinalSettlementStatus === "Pending") && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
                         <PrimaryButton
                             type="button"
                             icon={<ProfileFilled style={{ color: "#34a853" }} />}
@@ -336,7 +343,7 @@ export const getFinalSettlementLandingTableColumn = (
                             }}
                         />
                     </Tooltip>)}
-                    {data?.intFinalSettlementId !== null && (
+                    {(data?.strFinalSettlementStatus === "Rejected" || data?.strFinalSettlementStatus === "Pending") && (
                         <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
                             <PrimaryButton
                                 type="button"
@@ -354,7 +361,7 @@ export const getFinalSettlementLandingTableColumn = (
                             />
                         </Tooltip>
                     )}
-                    {data?.intFinalSettlementId !== null && (
+                    {(data?.strFinalSettlementStatus === "Rejected" || data?.strFinalSettlementStatus === "Pending") && (
                         <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
                             <button
                                 className={"iconButton"}
@@ -366,7 +373,7 @@ export const getFinalSettlementLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
-                                    confirmSendForApprovalPopup(data?.separationId, data?.intEmployeeId)
+                                    confirmSendForApprovalPopup(data?.intFinalSettlementId, data?.separationId, data?.intEmployeeId)
                                 }}
                             ><SendTwoToneIcon color="success" />
                             </button>
