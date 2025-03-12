@@ -1727,7 +1727,10 @@ const RetirementReleaseSeparationForm = lazy(() =>
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
-
+// Log Monitor Module
+const ApplicationNotificationLogs = lazy(() =>
+  import("../modules/logMonitor/applicationNotificationLog/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -4152,6 +4155,10 @@ export const routingList = [
   {
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
+  },
+  {
+    path: "/logMonitor/applicationNotificationLogs",
+    component: ApplicationNotificationLogs,
   },
 ];
 
