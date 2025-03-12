@@ -10,20 +10,42 @@ import { customStyles } from "../../utility/selectCustomStyle";
 import ManagementDashboardLanding from "./ManagementDashboardLanding/ManagementDashboardLanding";
 import SelfDashboardLanding from "./SelfDashboardLanding/SelfDashboardLanding";
 import SupervisorDashboardLanding from "./SupervisorDashboardLanding/SupervisorDashboardLanding";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import EmployeeBooklet from "./employee-booklet";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
-  const { strDisplayName, isOwner, isOfficeAdmin, orgId } = useSelector(
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[2];
+  const { strDisplayName, isOwner, isOfficeAdmin, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+
+  const getDashboardId = (name) => {
+    switch (name) {
+      case "employee":
+        return 1;
+      case "supervisor":
+        return 2;
+      case "management":
+        return 3;
+      case "employeeLifecycle":
+        return 4;
+      default:
+        return 1;
+    }
+  };
+
   const { values, setValues, errors, touched } = useFormik({
     initialValues: {
-      dashboardroleType: { value: 1, label: "Employee" },
+      dashboardroleType: {
+        value: getDashboardId(firstSegment),
+        label: "Employee",
+      },
       dashboardRoles: [
         {
           value: 1,
@@ -35,8 +57,12 @@ const MasterDashboardLanding = () => {
     enableReinitialize: true,
   });
 
+  const businessUnit = businessUnitDDL?.find(
+    (item) => item?.BusinessUnitId === buId
+  );
+
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("dashboard"));
+    dispatch(setFirstLevelNameAction("Dashboard"));
     document.title = "Dashboard";
     // eslint-disable-next-line
   }, []);
@@ -50,15 +76,6 @@ const MasterDashboardLanding = () => {
           style={{ marginBottom: "4px" }}
         >
           <div>
-            <p
-              style={{
-                color: "#344054",
-                fontWeight: 400,
-                fontSize: "12px",
-              }}
-            >
-              {dateFormatterForDashboard()}
-            </p>
             <h4
               className="employee-self-dashboard-employee-name"
               style={{ color: gray500, fontSize: "1rem" }}
@@ -75,9 +92,37 @@ const MasterDashboardLanding = () => {
               </span>
               , Welcome Back !
             </h4>
+            <p
+              style={{
+                color: "#344054",
+                fontWeight: 400,
+                fontSize: "12px",
+              }}
+            >
+              {dateFormatterForDashboard()}
+            </p>
           </div>
 
-          {values?.dashboardRoles?.length > 1 &&
+          <div>
+            <h4
+              className="employee-self-dashboard-employee-name"
+              style={{ color: gray500, fontSize: "1rem" }}
+            >
+              {businessUnit?.BusinessUnitName + " "}[
+              {businessUnit?.BusinessUnitCode}]
+            </h4>
+            <p
+              style={{
+                color: "#344054",
+                fontWeight: 400,
+                fontSize: "12px",
+              }}
+            >
+              {businessUnit?.BusinessUnitAddress}
+            </p>
+          </div>
+
+          {/* {values?.dashboardRoles?.length > 1 &&
             (!isOwner || isOfficeAdmin) && (
               <div style={{ width: "150px" }}>
                 <FormikSelect
@@ -96,7 +141,7 @@ const MasterDashboardLanding = () => {
                   touched={touched}
                 />
               </div>
-            )}
+            )} */}
         </div>
 
         {isOwner ? (
