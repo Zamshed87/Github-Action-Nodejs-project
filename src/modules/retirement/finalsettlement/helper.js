@@ -320,7 +320,7 @@ export const getFinalSettlementLandingTableColumn = (
                         </Tooltip>
 
                     )}
-                    {data?.intFinalSettlementId !== null && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
+                    {(data?.intFinalSettlementId !== null && data?.strFinalSettlementStatus === "Pending") && (<Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
                         <PrimaryButton
                             type="button"
                             icon={<ProfileFilled style={{ color: "#34a853" }} />}
@@ -336,7 +336,7 @@ export const getFinalSettlementLandingTableColumn = (
                             }}
                         />
                     </Tooltip>)}
-                    {data?.intFinalSettlementId !== null && (
+                    {(data?.intFinalSettlementId !== null && data?.strFinalSettlementStatus === "Pending") && (
                         <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
                             <PrimaryButton
                                 type="button"
@@ -354,7 +354,7 @@ export const getFinalSettlementLandingTableColumn = (
                             />
                         </Tooltip>
                     )}
-                    {data?.intFinalSettlementId !== null && (
+                    {(data?.intFinalSettlementId !== null && data?.strFinalSettlementStatus !== "Sent for approval") && (
                         <Tooltip placement="top" color={"#34a853"} title={"Send For Approval"}>
                             <button
                                 className={"iconButton"}

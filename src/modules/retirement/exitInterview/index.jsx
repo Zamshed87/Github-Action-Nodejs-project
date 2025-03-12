@@ -176,7 +176,7 @@ export default function ExitInterviewLanding() {
               visible={openFilter}
               onClose={(visible) => setOpenFilter(visible)}
               onFilter={handleFilter}
-              isDateSeparate={true}
+              isDate={true}
               isStatus={true}
               statusDDL={statusDDL}
             />
