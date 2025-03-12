@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import Loading from "../../../../common/loading/Loading";
 import { getBarAssessmentColumn } from "./helper";
 import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
@@ -17,6 +17,8 @@ const BarAssessmentLanding = () => {
     pageSize: 10,
     total: 0,
   });
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[1];
   const history = useHistory();
   const dispatch = useDispatch();
 
