@@ -95,7 +95,7 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
     setStakeholderField([
       ...stakeholderField,
       {
-        idx: values?.scoreWeight + stakeholderField?.length,
+        idx: crypto.randomUUID(),
         stakeholderName: values?.stakeholder?.label,
         stakeholderId: values?.stakeholder?.value,
         stakeholderTypeName: values?.stakeholderType?.label,
@@ -124,6 +124,7 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
         const updatedRowDto = data.rowDto.map((item) => ({
           ...item,
           idx: item.rowId,
+          rowId: item.rowId,
         }));
 
         setStakeholderField(updatedRowDto);
