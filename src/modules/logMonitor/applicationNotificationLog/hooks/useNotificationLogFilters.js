@@ -63,7 +63,7 @@ const useNotificationLogFilters = ({ form }) => {
     })),
     workplaceGroupDDL: workplaceGroup.data,
     getWorkplaceGroupDDL,
-    workplaceDDL: [{ label: "All", value: workplaceDDL?.map((w) => w.WorkplaceId)?.join(",")}, ...workplaceGroup.data],
+    workplaceDDL: [{ label: "All", value: workplaceDDL?.map((w) => w.WorkplaceId)?.join(",")}, ...workplace.data],
     getWorkplaceDDL,
   };
 };
