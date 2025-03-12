@@ -10,11 +10,13 @@ import { customStyles } from "../../utility/selectCustomStyle";
 import ManagementDashboardLanding from "./ManagementDashboardLanding/ManagementDashboardLanding";
 import SelfDashboardLanding from "./SelfDashboardLanding/SelfDashboardLanding";
 import SupervisorDashboardLanding from "./SupervisorDashboardLanding/SupervisorDashboardLanding";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import EmployeeBooklet from "./employee-booklet";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[2];
   const { strDisplayName, isOwner, isOfficeAdmin, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -22,9 +24,28 @@ const MasterDashboardLanding = () => {
   const { businessUnitDDL } = useSelector((state) => state?.auth, shallowEqual);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+
+  const getDashboardId = (name) => {
+    switch (name) {
+      case "employee":
+        return 1;
+      case "supervisor":
+        return 2;
+      case "management":
+        return 3;
+      case "employeeLifecycle":
+        return 4;
+      default:
+        return 1;
+    }
+  };
+
   const { values, setValues, errors, touched } = useFormik({
     initialValues: {
-      dashboardroleType: { value: 1, label: "Employee" },
+      dashboardroleType: {
+        value: getDashboardId(firstSegment),
+        label: "Employee",
+      },
       dashboardRoles: [
         {
           value: 1,
@@ -41,7 +62,7 @@ const MasterDashboardLanding = () => {
   );
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("dashboard"));
+    dispatch(setFirstLevelNameAction("Dashboard"));
     document.title = "Dashboard";
     // eslint-disable-next-line
   }, []);
