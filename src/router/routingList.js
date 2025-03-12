@@ -1590,6 +1590,7 @@ import TurnOver from "modules/timeSheet/reports/turnOverReport";
 import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
 import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
 import { SelfExpenseApplicationLanding } from "../modules/expense/updatedExpanseApp/index.tsx";
+import { LeavePolicyDetails } from "modules/leaveMovement/configuration/newLeavePolicy/LeavePolicyDetails";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2172,7 +2173,7 @@ export const routingList = [
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/view/:id",
-    component: PolicyCreateExtention,
+    component: LeavePolicyDetails,
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
