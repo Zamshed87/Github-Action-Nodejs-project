@@ -18,7 +18,6 @@ const BarAssessmentLanding = () => {
     total: 0,
   });
   const location = useLocation();
-  const firstSegment = location.pathname.split("/")[1];
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -40,6 +39,7 @@ const BarAssessmentLanding = () => {
   });
 
   useEffect(() => {
+    const firstSegment = location.pathname.split("/")[1];
     dispatch(
       setFirstLevelNameAction(
         firstSegment === "SelfService"
