@@ -159,7 +159,7 @@ export const NewLeavePolicy = () => {
       method: "GET",
       params: {
         WorkplaceId: wId,
-        LeaveTypeId: ids,
+        LeaveTypeId: ids || 0,
         Status: values?.status?.value,
       },
     });
@@ -386,6 +386,10 @@ export const NewLeavePolicy = () => {
   const onFinish = () => {
     landingApiCall();
   };
+  useEffect(() => {
+    landingApiCall();
+  }, []);
+
   //   const deleteDepositById = (item: any) => {
   //     deleteApi?.action({
   //       urlKey: "Deposit",
@@ -413,8 +417,8 @@ export const NewLeavePolicy = () => {
         form={form}
         initialValues={{
           // employee: { value: employeeId, label: userName },
-          fromDate: moment(todayDate()),
-          toDate: moment(todayDate()),
+          leaveType: [{ value: 0, label: "All" }],
+          status: { value: 2, label: "All" },
         }}
         onFinish={onFinish}
       >
@@ -441,36 +445,6 @@ export const NewLeavePolicy = () => {
           {loading && <Loading />}
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              {/* <Col md={6} sm={12} xs={24}>
-                <PInput
-                  type="month"
-                  name="fromDate"
-                  format={"MMM-YYYY"}
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={6} sm={12} xs={24}>
-                <PInput
-                  type="month"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  format={"MMM-YYYY"}
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col> */}
               <Col md={6} sm={24}>
                 <PSelect
                   mode="multiple"
@@ -517,7 +491,7 @@ export const NewLeavePolicy = () => {
                     { value: 0, label: "Inactive" },
                   ]}
                   name="status"
-                  label="status"
+                  label="Status"
                   placeholder="status"
                   onChange={(value, op) => {
                     form.setFieldsValue({

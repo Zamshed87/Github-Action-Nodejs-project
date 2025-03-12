@@ -80,6 +80,7 @@ export const CalculativeDays = ({
         ]);
     }
   }, [detailsApi?.data, policyApi?.data]);
+
   return (
     <>
       <Row gutter={[10, 2]}>

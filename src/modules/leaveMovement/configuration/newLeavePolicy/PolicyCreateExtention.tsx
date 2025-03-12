@@ -510,7 +510,11 @@ export const PolicyCreateExtention = () => {
           if (generalData && generalData.length > 0) {
             const general = generalData[0];
             const { leavePolicyCommonList } = general;
-            setCurrent(leavePolicyCommonList?.stepperId - 1);
+            if (leavePolicyCommonList?.stepperId === 5) {
+              setCurrent(leavePolicyCommonList?.stepperId - 1);
+            } else {
+              setCurrent(leavePolicyCommonList?.stepperId);
+            }
             setId(+policyId);
             form.setFieldsValue({
               strPolicyName: leavePolicyCommonList?.policyName,
@@ -701,9 +705,14 @@ export const PolicyCreateExtention = () => {
               isEssApply: { value: additional.isApplyFromESS ? 1 : 0 },
               leaveRoundingType: { value: additional.roundingTypeId },
               leaveApplicationTime: {
-                value: additional.applicationTimeId,
-                label: additional.applicationTime,
+                value: additional?.applicationTimeId
+                  ? additional?.applicationTimeId
+                  : 1,
+                label: additional?.applicationTimeId
+                  ? additional?.applicationTime
+                  : "Apply Anytime",
               },
+
               isAttachmentMandatory: {
                 value: additional.isAttachmentMandatory ? 1 : 0,
               },
@@ -716,14 +725,50 @@ export const PolicyCreateExtention = () => {
       });
     }
   }, [policyId]);
+  const isExist = balanceTable.filter(
+    (i: any) => i?.leaveDependsOn === "Calculative Days"
+  );
   return (
     <>
       <PForm
         form={form}
         initialValues={{
           // employee: { value: employeeId, label: userName },
-          fromDate: moment(todayDate()),
-          toDate: moment(todayDate()),
+          paidType: { value: "Paid Leave", label: "Paid Leave" },
+          dependsOn: {
+            value: "2",
+            label: "Date of Confirmation",
+          },
+          // enLengthDependOn: {
+          //   value: "2",
+          //   label: "Date of Confirmation",
+          // },
+          // encashmentTimeline: {
+          //   value: "1",
+          //   label: "Anytime",
+          // },
+
+          isProRata: { value: 1, label: "Yes" },
+          payDependsOn: {
+            value: 2,
+            label: "Gross Salary",
+          },
+          payValue: 100,
+          proRataCount: 15,
+          proRataBasis: {
+            value: 3,
+            label: "Update After End",
+          },
+          isCarryForward: { value: 0, label: "No" },
+          isEncashment: { value: 0, label: "No" },
+          isAttachmentMandatory: { value: 0, label: "No" },
+          isEssApply: { value: 1, label: "Yes" },
+          isEssShowBalance: { value: 1, label: "Yes" },
+          leaveApplicationTime: {
+            value: "1",
+            label: "Apply Anytime",
+          },
+          leaveRoundingType: { value: 3, label: "Round Down" },
         }}
         onFinish={onFinish}
       >
@@ -790,13 +835,16 @@ export const PolicyCreateExtention = () => {
                   JoinOrConfirmEnum={JoinOrConfirmEnum}
                   detailsApi={detailsApi}
                 />
-                <CalculativeDays
-                  form={form}
-                  policy={policy}
-                  setPolicy={setPolicy}
-                  policyApi={policyApi}
-                  detailsApi={detailsApi}
-                />
+                {isExist?.length > 0 && (
+                  <CalculativeDays
+                    form={form}
+                    policy={policy}
+                    setPolicy={setPolicy}
+                    policyApi={policyApi}
+                    detailsApi={detailsApi}
+                    balanceTable={balanceTable}
+                  />
+                )}
               </>
             ) : current === 1 ? (
               // <PaidLeave form={form} />

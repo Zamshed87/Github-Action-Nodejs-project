@@ -293,14 +293,28 @@ export const General = ({
         <Col md={6} sm={24}>
           <PSelect
             mode="multiple"
-            options={empDesignationDDL?.data || []}
+            options={
+              empDesignationDDL?.data?.length > 0
+                ? [{ value: 0, label: "All" }, ...empDesignationDDL?.data]
+                : []
+            }
             name="designationListDTO"
             label="Designation"
             placeholder="Designation"
             onChange={(value, op) => {
-              form.setFieldsValue({
-                designationListDTO: op,
-              });
+              console.log({ value });
+              if (value && value.includes(0)) {
+                form.setFieldsValue({
+                  designationListDTO: [
+                    op.find((item: any) => item.value === 0),
+                  ],
+                });
+              } else {
+                const filteredOp = op.filter((item: any) => item.value !== 0);
+                form.setFieldsValue({
+                  designationListDTO: filteredOp,
+                });
+              }
             }}
             rules={[
               {
@@ -315,14 +329,27 @@ export const General = ({
         <Col md={6} sm={24}>
           <PSelect
             mode="multiple"
-            options={EmploymentTypeDDL?.data || []}
+            options={
+              EmploymentTypeDDL?.data?.length > 0
+                ? [{ value: 0, label: "All" }, ...EmploymentTypeDDL?.data]
+                : []
+            }
             name="intEmploymentTypeList"
             label=" Employment Type"
             placeholder="  Employment Type"
             onChange={(value, op) => {
-              form.setFieldsValue({
-                intEmploymentTypeList: op,
-              });
+              if (value && value.includes(0)) {
+                form.setFieldsValue({
+                  intEmploymentTypeList: [
+                    op.find((item: any) => item.value === 0),
+                  ],
+                });
+              } else {
+                const filteredOp = op.filter((item: any) => item.value !== 0);
+                form.setFieldsValue({
+                  intEmploymentTypeList: filteredOp,
+                });
+              }
             }}
             rules={[
               {
@@ -332,29 +359,13 @@ export const General = ({
             ]}
           />
         </Col>
-        {/* <Col md={6} sm={24}>
-    <PSelect
-      //   mode="multiple"
-      options={[
-        { value: "", label: "All" },
-        { value: "Active", label: "Active" },
-        { value: "Inactive", label: "Inactive" },
-      ]}
-      name="status"
-      label="status"
-      placeholder="status"
-      onChange={(value, op) => {
-        form.setFieldsValue({
-          status: op,
-        });
-      }}
-    />
-  </Col> */}
+
         <Col md={6} sm={24}>
           <PSelect
             mode="multiple"
             allowClear
             options={[
+              { value: 0, label: "All" },
               { value: 1, label: "Male" },
               { value: 2, label: "Female" },
             ]}
@@ -362,9 +373,16 @@ export const General = ({
             label="Gender"
             placeholder="Gender"
             onChange={(value, op) => {
-              form.setFieldsValue({
-                intGender: op,
-              });
+              if (value && value.includes(0)) {
+                form.setFieldsValue({
+                  intGender: [op.find((item: any) => item.value === 0)],
+                });
+              } else {
+                const filteredOp = op.filter((item: any) => item.value !== 0);
+                form.setFieldsValue({
+                  intGender: filteredOp,
+                });
+              }
             }}
             rules={[
               {
@@ -380,14 +398,25 @@ export const General = ({
           <PSelect
             mode="multiple"
             allowClear
-            options={religionDDL?.data || []}
+            options={
+              religionDDL?.data?.length > 0
+                ? [{ value: 0, label: "All" }, ...religionDDL?.data]
+                : []
+            }
             name="religionListDto"
             label="Religion"
             placeholder="Religion"
             onChange={(value, op) => {
-              form.setFieldsValue({
-                religionListDto: op,
-              });
+              if (value && value.includes(0)) {
+                form.setFieldsValue({
+                  religionListDto: [op.find((item: any) => item.value === 0)],
+                });
+              } else {
+                const filteredOp = op.filter((item: any) => item.value !== 0);
+                form.setFieldsValue({
+                  religionListDto: filteredOp,
+                });
+              }
             }}
             rules={[
               {
@@ -397,14 +426,7 @@ export const General = ({
             ]}
           />
         </Col>
-        {/* <Col md={3} sm={24} style={{ marginTop: "1.5rem" }}>
-        <PInput
-          label="Is Paid Leave"
-          type="checkbox"
-          layout="horizontal"
-          name="isPaidLeave"
-        />
-      </Col> */}
+
         <Col md={6} style={{ marginTop: "1.5rem" }}>
           <div>
             <>
@@ -457,7 +479,7 @@ export const General = ({
 
           return (
             <>
-              <Col md={24} sm={24}>
+              <Col md={12} sm={24}>
                 <h2 style={{ marginBottom: "12px" }}>Leave Description</h2>
                 <ReactQuill
                   style={{
