@@ -28,6 +28,7 @@ const itemAddHandler = (values, setRowDto, cb) => {
       itemName: values?.itemName?.label,
       itemId: values?.itemName?.value,
       itemCode: values?.itemName?.itemCode,
+      identification: `${values?.identifierBy} - ${values?.itemName?.itemCode}`,
       rate: +values?.rate,
       value: values?.isAutoValue ? (+values?.startNumber || 1) + i : "",
     };
@@ -56,6 +57,15 @@ const registrationColumn = (errors, touched, rowDto, setRowDto) => {
     {
       title: "Item Code",
       dataIndex: "itemCode",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Identification",
+      dataIndex: "",
+      render: (record, index) => {
+        return `${record?.itemName} - ${record?.itemCode}`;
+      },
       sort: false,
       filter: false,
     },
