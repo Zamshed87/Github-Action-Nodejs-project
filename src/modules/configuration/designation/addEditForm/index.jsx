@@ -18,6 +18,8 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
+  // Form Instance
+  const [form] = Form.useForm();
   const saveHRPostion = useApiRequest({});
   const getBUnitDDL = useApiRequest({});
   const [loading, setLoading] = useState(false);
@@ -53,8 +55,6 @@ export default function AddEditForm({
 
   // Pages Start From Here code from above will be removed soon
 
-  // Form Instance
-  const [form] = Form.useForm();
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
     const cb = () => {
@@ -81,7 +81,7 @@ export default function AddEditForm({
       intWorkplaceId: wId,
       intRankingId: 0,
       intBusinessUnitId: buId,
-      positionGroupId: values?.levelOfLeader?.value || null,
+      intPositionGroupId: values?.levelOfLeader?.value || null,
     };
     const payload = {
       designation: values?.strDesignation,
@@ -144,6 +144,8 @@ export default function AddEditForm({
           value: singleData?.intPositionGroupId,
         },
       ]);
+    } else {
+      form.resetFields();
     }
   }, [singleData]);
   return (
