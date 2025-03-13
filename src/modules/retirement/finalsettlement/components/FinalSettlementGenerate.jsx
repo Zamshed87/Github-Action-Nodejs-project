@@ -25,14 +25,15 @@ export default function FinalSettlementGenerate() {
   const [, getSingleEmployeeData, singleEmployeeLoading] = useAxiosGet();
   const [, getFinalSettlementData, finalSettlementLoading] = useAxiosGet();
   const [, getApprovalHistoryData] = useAxiosGet();
-  const [asesstHistoryData, getAssestHistoryData] = useAxiosGet();
+  const [, getAssestHistoryData] = useAxiosGet();
   const [, postFinalSettlementData] = useAxiosPost();
 
   const [empBasic, setEmpBasic] = useState({});
   const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(
     {}
   );
-  const [approvalHistoryData, setApprovalHistoryData] = useState({});
+  const [approvalHistoryData, setApprovalHistoryData] = useState([]);
+  const [asesstHistoryData, setAssestHistoryData] = useState([]);
 
   const { setFieldValue, values, handleSubmit } = useFormik({
     enableReinitialize: true,
@@ -112,7 +113,10 @@ export default function FinalSettlementGenerate() {
       }
     );
     getAssestHistoryData(
-      `Separation/GetEmployeeAssets?separationId=${params?.separationid}`
+      `Separation/GetEmployeeAssets?separationId=${params?.separationid}`,
+      (res) => {
+        setAssestHistoryData(res?.data);
+      }
     );
     getFinalSettlementData(
       `/FinalSettlement/GenerateFinalSettlement?separationId=${params?.separationid}&employeeId=${params?.empid}`,
@@ -421,7 +425,7 @@ export default function FinalSettlementGenerate() {
               <DataTable
                 bordered
                 pagination={false}
-                data={[asesstHistoryData?.data || []]}
+                data={asesstHistoryData || []}
                 header={[
                   {
                     title: "Asset Name",
