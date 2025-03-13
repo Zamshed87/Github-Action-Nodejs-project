@@ -209,7 +209,6 @@ export default function ClearanceLanding() {
                   isScrollAble={false}
                 />
                 <PModal
-                  title="Exit Interview"
                   open={openExitInterviewDataViewModal}
                   onCancel={() => {
                     getClearanceLanding(
