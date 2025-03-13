@@ -331,6 +331,8 @@ const CommonApprovalComponent = () => {
               ? columnSalaryGenerate
               : id == 30
               ? columnFinalSettlement
+              : id == 29
+              ? columnsSeparation(setViewData, setViewModal)
               : columnsDefault
           }
           bordered
