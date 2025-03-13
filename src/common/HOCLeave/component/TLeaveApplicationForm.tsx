@@ -191,7 +191,11 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                         label="Leave Consume Type"
                         placeholder="Leave Consume Type"
                         onChange={(value, op) => {
-                          form.setFieldValue("leaveConsumeType", op);
+                          form.setFieldsValue({
+                            leaveConsumeType: op,
+                            endTime: undefined,
+                            startTime: undefined,
+                          });
                         }}
                         rules={[
                           {
@@ -325,7 +329,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                             type="time"
                             name="startTime"
                             label="Start Time"
-                            placeholder="Start Time"
+                            placeholder=""
                             format={"h:mm a"}
                             rules={[
                               {
@@ -345,13 +349,13 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                           <PInput
                             type="time"
                             name="endTime"
-                            label="To Time"
-                            placeholder="To Time"
+                            label="End Time"
+                            placeholder=""
                             format={"h:mm a"}
                             rules={[
                               {
                                 required: true,
-                                message: "To Time is required",
+                                message: "End Time is required",
                               },
                             ]}
                             onChange={(time) => {

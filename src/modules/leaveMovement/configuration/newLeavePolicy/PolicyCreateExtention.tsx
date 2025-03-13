@@ -115,9 +115,6 @@ export const PolicyCreateExtention = () => {
         // next();
       },
       onError: (error: any) => {
-        console.log(
-          error?.response?.data?.errors?.["GeneralPayload.Description"]
-        );
         if (
           error?.response?.data?.errors?.["GeneralPayload.Description"]
             ?.length > 1
@@ -761,10 +758,7 @@ export const PolicyCreateExtention = () => {
         initialValues={{
           // employee: { value: employeeId, label: userName },
           paidType: { value: "Paid Leave", label: "Paid Leave" },
-          dependsOn: {
-            value: "2",
-            label: "Date of Confirmation",
-          },
+          dependsOn: { value: "1", label: "Date of Joining" },
           // enLengthDependOn: {
           //   value: "2",
           //   label: "Date of Confirmation",
@@ -781,10 +775,7 @@ export const PolicyCreateExtention = () => {
           },
           payValue: 100,
           proRataCount: 15,
-          proRataBasis: {
-            value: 3,
-            label: "Update After End",
-          },
+          proRataBasis: { value: "1", label: "Update From Start" },
           isCarryForward: { value: 0, label: "No" },
           isEncashment: { value: 0, label: "No" },
           isAttachmentMandatory: { value: 0, label: "No" },
@@ -794,7 +785,7 @@ export const PolicyCreateExtention = () => {
             value: "1",
             label: "Apply Anytime",
           },
-          leaveRoundingType: { value: 3, label: "Round Down" },
+          leaveRoundingType: { value: 1, label: "No Round" },
         }}
         onFinish={onFinish}
       >

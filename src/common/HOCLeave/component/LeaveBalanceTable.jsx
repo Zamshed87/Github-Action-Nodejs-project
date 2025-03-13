@@ -328,29 +328,7 @@ const LeaveBalanceTable = ({
             header={header}
             nodataStyle={{ marginTop: "-35px", height: "175px" }}
             // bordered
-            data={
-              leaves?.length > 0
-                ? leaves
-                : [
-                    {
-                      type: "Policy1 [P1]",
-                      totalTakenDays: 0,
-                      totalBalanceDays: 8,
-                      totalAllocatedDays: 8,
-                      status: "Active",
-                      details: {
-                        takenDays: 0,
-                        balanceDays: 4,
-                        totalAllocatedDays: 4,
-                        carryTakenDays: 0,
-                        carryExpiredDays: 0,
-                        carryBalanceDays: 4,
-                        carryTotalAllocatedDays: 4,
-                        expireDate: "06 01 ,2025",
-                      },
-                    },
-                  ]
-            }
+            data={leaves?.length > 0 ? leaves : []}
           />
         </PCardBody>
 

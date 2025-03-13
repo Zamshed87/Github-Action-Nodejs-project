@@ -317,7 +317,6 @@ export const apiList = {
   GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
-  newLanding: "",
   CreateLeavePolicy: "/LeavePolicy/Create",
   GetPolicyName: "LeavePolicy/Get",
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
@@ -326,4 +325,5 @@ export const apiList = {
   GetById: "LeavePolicy/GetById",
   EmployeeLeaveTypeDDL: "/LeaveBalance/EmployeeLeaveTypeDDL",
   EmployeeLeaveBalanceList: "/LeaveBalance/EmployeeLeaveBalanceList",
+  CreateLeave: "/LeaveApplication/Create",
 };
