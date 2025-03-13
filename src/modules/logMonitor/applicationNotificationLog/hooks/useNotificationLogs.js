@@ -29,27 +29,27 @@ const useNotificationLogs = ({form}) => {
   const workplaceGroup = Form.useWatch("workplaceGroup", form);
   const workplaceList = Form.useWatch("workplaceList", form);
   const notificationType = Form.useWatch("notificationType", form);
+  const applicationCategory = Form.useWatch("applicationCategory", form);
+  const pushNotifyStatus = Form.useWatch("pushNotifyStatus", form);
+  const employee = Form.useWatch("employee", form);
   const fromDate = Form.useWatch("fromDate", form);
   const toDate = Form.useWatch("toDate", form);
   const search = Form.useWatch("search", form);
   
   const fetchNotificationLogs = (pages) => {
-    // we will need this
-    // const WorkplaceIdList = workplaceList?.map((w) => w.value)?.join(",");
-    // const notificationCategory = null;
-    // &NotificationCategory=${notificationCategory}
+    
     const FormattedFromDate = fromDate ? formatDate(fromDate) : undefined;
     const FormattedToDate = toDate ? formatDate(toDate) : undefined;
     getData(
       `/LogMonitor/GetApplicationNotificationLog?businessUnitId=${
         businessUnit?.value
-      }&WorkplaceGroupId=${
+      }&WorkplaceGroupIds=${
         workplaceGroup?.value
       }&WorkPlaceId=${wId}&WorkplaceIdList=${workplaceList?.value}&Search=${
         search ?? ""
       }&NotificationType=${
         notificationType?.value
-      }&FromDate=${FormattedFromDate ?? ""}&ToDate=${
+      }&applicationCategory=${applicationCategory?.value}&pushNotifyStatus=${pushNotifyStatus?.value}&employeeId=${employee?.value}&FromDate=${FormattedFromDate ?? ""}&ToDate=${
         FormattedToDate ?? ""
       }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`,
       (res) => {

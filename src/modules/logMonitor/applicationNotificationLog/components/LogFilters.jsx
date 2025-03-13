@@ -5,9 +5,10 @@ import moment from "moment";
 
 const LogFilters = ({ form }) => {
   const {
-    notificationType
+    notificationType,
+    getPushNotificationStatus,
   } = useNotificationLogFilters({ form });
-  
+
   const disabledDate = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
@@ -26,6 +27,7 @@ const LogFilters = ({ form }) => {
             form.setFieldsValue({
               notificationType: op,
             });
+            getPushNotificationStatus(op?.label + "NotifyStatus");
           }}
           rules={[{ required: true, message: "Notification Type is required" }]}
         />

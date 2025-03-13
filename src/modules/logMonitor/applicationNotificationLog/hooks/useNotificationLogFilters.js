@@ -3,16 +3,18 @@ import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { getEnumData } from "common/api/commonApi";
 import moment from "moment";
-  const defaultFromDate = moment();
-  const defaultToDate = moment().endOf("month");
+const defaultFromDate = moment().startOf("month");
+const defaultToDate = moment().endOf("month");
 const useNotificationLogFilters = ({ form }) => {
   const {
     profileData: { orgId, buId, buName, wgId, wId, employeeId },
     businessUnitDDL,
-    // workplaceDDL,
+    workplaceGroupDDL,
+    workplaceDDL,
   } = useSelector((store) => store?.auth, shallowEqual);
-  const [initialValues,setInitialValues] = useState({});
   const [notificationType, setNotificationType] = useState([]);
+  const [pushNotifyStatus, setPushNotifyStatus] = useState([]);
+  const [applicationCategory, setApplicationCategory] = useState([]);
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const employeeDDL = useApiRequest([]);
@@ -36,7 +38,7 @@ const useNotificationLogFilters = ({ form }) => {
     });
   };
   const getWorkplaceGroupDDL = () => {
-    const { businessUnit } = form.getFieldsValue(true);
+    const { businessUnit } = form?.getFieldsValue(true);
     workplaceGroup?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -55,14 +57,14 @@ const useNotificationLogFilters = ({ form }) => {
     });
   };
   const getWorkplaceDDL = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
+    const { workplaceGroup } = form?.getFieldsValue(true);
     workplace?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Workplace",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value || wgId,
+        WorkplaceGroupId: workplaceGroup?.label == "All" ? wgId : workplaceGroup?.value || wgId,
         intId: employeeId,
       },
       onSuccess: (res) => {
@@ -73,30 +75,34 @@ const useNotificationLogFilters = ({ form }) => {
       },
     });
   };
+  const getPushNotificationStatus = (type) => {
+    getEnumData(type, setPushNotifyStatus);
+  }
 
+  const values = {
+    businessUnit: { label: buName, value: buId },
+    workplaceGroup: {
+      label: "All",
+      value: workplaceGroupDDL?.map((w) => w?.WorkplaceGroupId)?.join(","),
+    },
+    workplaceList: {
+      label: "All",
+      value: workplaceDDL?.map((w) => w?.WorkplaceId)?.join(","),
+    },
+    fromDate: defaultFromDate,
+    toDate: defaultToDate,
+  };
+  
   useEffect(() => {
     getWorkplaceGroupDDL();
     getWorkplaceDDL();
     getEnumData("NotificationType", setNotificationType);
-    form.setFieldsValue({
-      businessUnit: { label: buName, value: buId },
-      workplaceGroup: {
-        label: "All",
-        value: workplaceGroup?.data
-          ?.map((w) => w?.intWorkplaceGroupId)
-          ?.join(","),
-      },
-      workplaceList: {
-        label: "All",
-        value: workplace?.data?.map((w) => w?.intWorkplaceId)?.join(","),
-      },
-      fromDate: defaultFromDate,
-      toDate: defaultToDate,
-    });
+    getEnumData("ApplicationCategory", setApplicationCategory);
+    form.setFieldsValue(values);
   }, [orgId, buId, wgId, wId]);
 
   return {
-    initialValues: initialValues,
+    initialValues: values,
     businessUnitDDL: businessUnitDDL?.map((bu) => ({
       label: bu.BusinessUnitName,
       value: bu.BusinessUnitId,
@@ -112,6 +118,9 @@ const useNotificationLogFilters = ({ form }) => {
     ],
     getWorkplaceDDL,
     notificationType,
+    applicationCategory,
+    pushNotifyStatus,
+    getPushNotificationStatus,
     employeeDDL: employeeDDL?.data,
     getEmployeeDDL,
   };

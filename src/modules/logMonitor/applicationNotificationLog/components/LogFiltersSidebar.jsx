@@ -9,9 +9,10 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
     getWorkplaceGroupDDL,
     workplaceDDL,
     getWorkplaceDDL,
-    notificationType,
     employeeDDL,
     getEmployeeDDL,
+    applicationCategory,
+    pushNotifyStatus,
   } = useNotificationLogFilters({ form });
 
   return (
@@ -72,7 +73,7 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
         </Col>
         <Col md={12} sm={24}>
           <PSelect
-            options={notificationType}
+            options={applicationCategory}
             name="applicationCategory"
             label="Application Category"
             placeholder="Application Category"
@@ -86,7 +87,23 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             // ]}
           />
         </Col>
-        <Col md={24} sm={24}>
+        <Col md={12} sm={24}>
+          <PSelect
+            options={pushNotifyStatus}
+            name="pushNotifyStatus"
+            label="Push Notify Status"
+            placeholder="Push Notify Status"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                pushNotifyStatus: op,
+              });
+            }}
+            // rules={[
+            //   { required: true, message: "Application Category is required" },
+            // ]}
+          />
+        </Col>
+        <Col md={12} sm={24}>
           <PSelect
             options={employeeDDL}
             name="employee"
