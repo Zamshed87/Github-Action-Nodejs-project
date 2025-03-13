@@ -128,7 +128,7 @@ const Homepage = () => {
       to = "/analytics/comparativeAnalysis";
       image = analystics;
     } else if (label === "Dashboard") {
-      to = "/dashboard";
+      to = "/dashboard/employee";
       image = speedometer;
     } else if (label === "Task Management") {
       to = "/taskManagement";
@@ -216,7 +216,7 @@ const Homepage = () => {
                 </div>
                 <div className="item-wrapper">
                   <div className="d-flex flex-wrap justify-content-center">
-                    <div
+                    {/* <div
                       onClick={() => {
                         onClickHandler("Dashboard");
                       }}
@@ -242,7 +242,7 @@ const Homepage = () => {
                         </CardContent>
                       </Card>
                       <p className="item-name">{"Dashboard"}</p>
-                    </div>
+                    </div> */}
                     {menuList?.map(
                       (item, index) =>
                         item?.label !== "Overview" && (

@@ -10,8 +10,8 @@ const LogFilters = ({ form }) => {
     getWorkplaceGroupDDL,
     workplaceDDL,
     getWorkplaceDDL,
+    notificationType
   } = useNotificationLogFilters({ form });
-
   const disabledDate = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
@@ -69,12 +69,7 @@ const LogFilters = ({ form }) => {
       </Col>
       <Col md={3} sm={12} xs={24}>
         <PSelect
-          options={[
-            { label: "Push", value: 1 },
-            { label: "RealTime", value: 2 },
-            { label: "Mail", value: 3 },
-            { label: "Sms", value: 4 },
-          ]}
+          options={notificationType}
           name="notificationType"
           label="Notification Type"
           placeholder="Notification Type"
