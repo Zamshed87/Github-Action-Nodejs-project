@@ -11,7 +11,7 @@ const useNotificationLogFilters = ({ form }) => {
     businessUnitDDL,
     // workplaceDDL,
   } = useSelector((store) => store?.auth, shallowEqual);
-
+  const [initialValues,setInitialValues] = useState({});
   const [notificationType, setNotificationType] = useState([]);
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
@@ -78,10 +78,7 @@ const useNotificationLogFilters = ({ form }) => {
     getWorkplaceGroupDDL();
     getWorkplaceDDL();
     getEnumData("NotificationType", setNotificationType);
-  }, [orgId, buId, wgId, wId]);
-
-  return {
-    initialValues: {
+    form.setFieldsValue({
       businessUnit: { label: buName, value: buId },
       workplaceGroup: {
         label: "All",
@@ -95,7 +92,11 @@ const useNotificationLogFilters = ({ form }) => {
       },
       fromDate: defaultFromDate,
       toDate: defaultToDate,
-    },
+    });
+  }, [orgId, buId, wgId, wId]);
+
+  return {
+    initialValues: initialValues,
     businessUnitDDL: businessUnitDDL?.map((bu) => ({
       label: bu.BusinessUnitName,
       value: bu.BusinessUnitId,

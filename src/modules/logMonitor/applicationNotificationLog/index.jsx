@@ -6,20 +6,16 @@ import LogFilters from "./components/LogFilters";
 import useNotificationLogs from "./hooks/useNotificationLogs";
 import LogFiltersSidebar from "./components/LogFiltersSidebar";
 import { useState } from "react";
-import useNotificationLogFilters from "./hooks/useNotificationLogFilters";
 import { Form } from "antd";
 
 const ApplicationNotificationLog = () => {
   const [form] = Form.useForm();
   const [openFilter, setOpenFilter] = useState(false);
   const { pages, setPages, data, fetchNotificationLogs, loading, permission } = useNotificationLogs({form});
-  const { initialValues } = useNotificationLogFilters({form});
-
   return permission?.isView ? (
     <PForm
       id="logFiltersForm"
       form={form}
-      initialValues={initialValues}
       onFinish={() => {
         fetchNotificationLogs(pages);
       }}

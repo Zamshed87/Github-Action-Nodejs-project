@@ -21,8 +21,9 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
       onClose={() => setOpenFilter(false)}
       open={openFilter}
     >
+      <div className="ant-form ant-form-vertical ant-form-middle PeopleDeskFormWrapper">
       <Row gutter={[10, 2]}>
-        <Col md={12} sm={12} xs={24}>
+        <Col md={12} sm={24}>
           <PSelect
             options={businessUnitDDL || []}
             name="businessUnit"
@@ -39,7 +40,7 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             rules={[{ required: true, message: "Business Unit is required" }]}
           />
         </Col>
-        <Col md={11} sm={12} xs={24}>
+        <Col md={12} sm={24}>
           <PSelect
             options={workplaceGroupDDL || []}
             name="workplaceGroup"
@@ -55,7 +56,7 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             rules={[{ required: true, message: "Workplace Group is required" }]}
           />
         </Col>
-        <Col  md={12} sm={12} xs={24}>
+        <Col md={12} sm={24}>
           <PSelect
             options={workplaceDDL || []}
             name="workplaceList"
@@ -69,7 +70,7 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             rules={[{ required: true, message: "Workplace List is required" }]}
           />
         </Col>
-        <Col  md={11} sm={12} xs={24}>
+        <Col md={12} sm={24}>
           <PSelect
             options={notificationType}
             name="applicationCategory"
@@ -85,14 +86,14 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             // ]}
           />
         </Col>
-        <Col md={12} sm={12} xs={24}>
+        <Col md={24} sm={24}>
           <PSelect
             options={employeeDDL}
             name="employee"
             label="Select Employee"
             placeholder="Search Employee"
             showSearch
-            onSearch={(value)=>{
+            onSearch={(value) => {
               getEmployeeDDL(value);
             }}
             onChange={(value, op) => {
@@ -105,14 +106,14 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             // ]}
           />
         </Col>
-        <Col  md={12} sm={12} xs={24}></Col>
+        {/* <Col  md={24} sm={24}></Col> */}
         <Col md={4} sm={24}>
           <PButton
             style={{ marginTop: "20px" }}
             type="primary"
             content={"View"}
             action="submit"
-            onClick={()=>{
+            onClick={() => {
               form.submit();
             }}
           />
@@ -132,6 +133,7 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
           />
         </Col>
       </Row>
+      </div>
     </Drawer>
   );
 };
