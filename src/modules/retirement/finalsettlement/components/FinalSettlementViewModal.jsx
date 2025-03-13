@@ -5,24 +5,41 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
+import Chips from "common/Chips";
 
 export default function FinalSettlementViewModal({ id, empId }) {
-  const { orgId } = useSelector(
+  const { orgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const [, getSingleEmployeeData, getSingleEmployeeLoading] = useAxiosGet();
   const [, getFinalSettlementData, getFinalSettlementLoading] = useAxiosGet();
+  const [, getApprovalHistoryData] = useAxiosGet();
+  const [, getAssestHistoryData] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState({});
   const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(
     {}
   );
+  const [approvalHistoryData, setApprovalHistoryData] = useState([]);
+  const [asesstHistoryData, setAssestHistoryData] = useState([]);
 
   useEffect(() => {
     getSingleEmployeeData(
       `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
       (res) => {
         setEmpBasic(res);
+      }
+    );
+    getApprovalHistoryData(
+      `Approval/GetApproverList?accountId=${intAccountId}&applicationType=${21}&applicationId=${id}`,
+      (res) => {
+        setApprovalHistoryData(res);
+      }
+    );
+    getAssestHistoryData(
+      `Separation/GetEmployeeAssets?separationId=${id}`,
+      (res) => {
+        setAssestHistoryData(res?.data);
       }
     );
     getFinalSettlementData(
@@ -227,49 +244,27 @@ export default function FinalSettlementViewModal({ id, empId }) {
             <DataTable
               bordered
               pagination={false}
-              data={[
-                {
-                  SL: 1,
-                  Approver: "Admin",
-                  "Approver Name": "John Doe",
-                  "Approval Date": "2022-01-01 12:00:00",
-                  Status: "Approved",
-                  Comments: "no comments",
-                },
-                {
-                  SL: 2,
-                  Approver: "Finance",
-                  "Approver Name": "Jane Doe",
-                  "Approval Date": "2022-01-02 12:00:00",
-                  Status: "Rejected",
-                  Comments: "Need More Information",
-                },
-              ]}
+              data={approvalHistoryData || []}
               header={[
                 {
-                  title: "SL",
-                  dataIndex: "SL",
-                },
-                {
                   title: "Approver",
-                  dataIndex: "Approver",
+                  dataIndex: "approverTypeName",
                 },
                 {
                   title: "Approver Name",
-                  dataIndex: "Approver Name",
-                },
-                {
-                  title: "Approval Date",
-                  dataIndex: "Approval Date",
+                  dataIndex: "approverName",
                 },
                 {
                   title: "Status",
-                  dataIndex: "Approval Date",
-                  align: "right",
-                },
-                {
-                  title: "Comments",
-                  dataIndex: "Comments",
+                  dataIndex: "isApprove",
+                  align: "left",
+                  render: (data, record) => {
+                    if (record?.isApprove === true) {
+                      return <Chips label="Approved" classess="success p-2" />;
+                    } else {
+                      return <Chips label="Pending" classess="warning p-2" />;
+                    }
+                  },
                 },
               ]}
             />
@@ -286,49 +281,23 @@ export default function FinalSettlementViewModal({ id, empId }) {
             <DataTable
               bordered
               pagination={false}
-              data={[
-                {
-                  SL: 1,
-                  "Asset Name": "Laptop",
-                  UoM: "Pcs",
-                  "Last Assign Date": "2022-01-01 12:00:00",
-                  Status: "Assigned",
-                },
-                {
-                  SL: 2,
-                  "Asset Name": "Mouse",
-                  UoM: "Pcs",
-                  "Last Assign Date": "2022-01-02 12:00:00",
-                  Status: "Assigned",
-                },
-                {
-                  SL: 3,
-                  "Asset Name": "Keyboard",
-                  UoM: "Pcs",
-                  "Last Assign Date": "2022-01-03 12:00:00",
-                  Status: "Assigned",
-                },
-              ]}
+              data={asesstHistoryData || []}
               header={[
                 {
-                  title: "SL",
-                  dataIndex: "SL",
-                },
-                {
                   title: "Asset Name",
-                  dataIndex: "Asset Name",
+                  dataIndex: "ItemName",
                 },
                 {
                   title: "UoM",
-                  dataIndex: "UoM",
+                  dataIndex: "ItemUom",
                 },
                 {
                   title: "Last Assign Date",
-                  dataIndex: "Last Assign Date",
+                  dataIndex: "AssignDate",
                 },
                 {
                   title: "Status",
-                  dataIndex: "Status",
+                  dataIndex: "Active",
                 },
               ]}
             />
