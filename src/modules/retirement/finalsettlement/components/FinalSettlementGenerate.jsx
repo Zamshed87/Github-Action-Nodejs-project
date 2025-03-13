@@ -123,7 +123,6 @@ export default function FinalSettlementGenerate() {
       }
     );
   }, [params?.separationid]);
-  console.log(approvalHistoryData);
   return (
     <div className="table-card businessUnit-wrapper dashboard-scroll">
       <form onSubmit={handleSubmit}>
