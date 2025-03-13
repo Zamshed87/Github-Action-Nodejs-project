@@ -22,6 +22,7 @@ export const statusDDL = [
     { value: "Approved", label: "Approved" },
     { value: "Withdrawn", label: "Withdrawn" },
     { value: "Clearance", label: "Clearance" },
+    { value: "Clearance Completed", label: "Clearance Completed" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
 ];
@@ -112,6 +113,7 @@ export const getClearanceLandingTableColumn = (
     page,
     paginationSize,
     postClearanceData,
+    postReleaseData,
     setOpenExitInterviewDataViewModal,
     getData,
     id,
@@ -125,8 +127,11 @@ export const getClearanceLandingTableColumn = (
             message: "Are you sure you want to send this application for Clearance?",
             yesAlertFunc: () => {
                 postClearanceData(
-                    `/Separation/StartSeparationClearance?id=${sepId}&employeeId=${employeeId}`,
-                    "",
+                    `/SeparationClearance/StartSeparationClearance`,
+                    {
+                        "IntSeparationId": sepId,
+                        "IntEmployeeId": employeeId
+                    },
                     () => {
                         getData();
                     },
@@ -140,12 +145,22 @@ export const getClearanceLandingTableColumn = (
         IConfirmModal(confirmObject);
     };
 
-    const confirmReleasePopup = (sepId, employeeId) => {
+    const confirmReleasePopup = (sepId) => {
         const confirmObject = {
             closeOnClickOutside: false,
             message: "Are you sure you want to release this application?",
             yesAlertFunc: () => {
-                console.log("release", sepId, employeeId);
+                postReleaseData(
+                    `Separation/ReleasedSeparation`,
+                    {
+                        "IntSeparationId": sepId,
+                        "IsReleased": true
+                    },
+                    () => {
+                        getData();
+                    },
+                    true
+                );
             },
             noAlertFunc: () => {
                 getData();
@@ -286,6 +301,9 @@ export const getClearanceLandingTableColumn = (
                         {data?.approvalStatus === "Clearance" && (
                             <Chips label="Clearance" classess="info p-2" />
                         )}
+                        {data?.approvalStatus === "Clearance Completed" && (
+                            <Chips label="Clearance Completed" classess="success p-2" />
+                        )}
                         {data?.approvalStatus === "Final Settlement Completed" && (
                             <Chips label="Final Settlement Completed" classess="success p-2" />
                         )}
@@ -296,6 +314,7 @@ export const getClearanceLandingTableColumn = (
                 </div>
             ),
             fieldType: "string",
+            width: 200
         },
         {
             title: "Actions",
@@ -341,7 +360,7 @@ export const getClearanceLandingTableColumn = (
                                 </button>
                             </Tooltip>
                         )}
-                        {data?.approvalStatus?.includes("Clearance") && (
+                        {data?.approvalStatus === "Final Settlement Completed" && (
                             <Tooltip placement="top" color={"#34a853"} title={"Release"}>
                                 <button
                                     className={"iconButton"}
@@ -353,7 +372,7 @@ export const getClearanceLandingTableColumn = (
                                     onClick={() => {
                                         setId(data?.separationId)
                                         setEmpId(data?.intEmployeeId)
-                                        confirmReleasePopup(data?.separationId, data?.intEmployeeId);
+                                        confirmReleasePopup(data?.separationId);
                                     }}
                                 ><SendTwoToneIcon color="success" />
                                 </button>
