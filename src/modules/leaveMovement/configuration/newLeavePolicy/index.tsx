@@ -14,7 +14,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
+import { Col, Form, Row, Switch, Tag } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -211,16 +211,34 @@ export const NewLeavePolicy = () => {
     {
       title: "Status",
       dataIndex: "status",
-      render: (_: any, rec: any) => {
+      render: (_: any, rec: any, index: number) => {
         return (
           <div>
-            {rec?.status === "Active" ? (
+            {/* {rec?.status === "Active" ? (
               <Tag color="green">{rec?.status}</Tag>
             ) : rec?.status === "Inactive" ? (
               <Tag color="red">{rec?.status}</Tag>
             ) : (
               <Tag color="gold">{rec?.status}</Tag>
-            )}
+            )} */}
+            <p className="">
+              <Switch
+                checked={rec?.status === "Active"}
+                onChange={(checked) => {
+                  const newStatus = checked ? "Active" : "Inactive";
+                  landingApi?.data?.data?.forEach((i: any, id: any) => {
+                    if (id == index) {
+                      landingApi.data.data[id].status = "Inactive";
+                    }
+                  });
+                  // Update your data source here
+                  // Example (replace with your actual data update logic):
+                  // dataSource[index].status = newStatus;
+                  // setDataSource([...dataSource]);
+                  console.log({ newStatus });
+                }}
+              />
+            </p>
           </div>
         );
       },
