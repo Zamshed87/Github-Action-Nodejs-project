@@ -55,6 +55,77 @@ export const columnsDefault = [
   },
 ];
 
+export const columnFinalSettlement = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+    filter: false,
+    sorter: true,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+    width: "90px",
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+    width: "70px",
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+    width: "70px",
+  },
+  {
+    title: "Application Type",
+    dataIndex: ["applicationType"],
+    width: "90px",
+  },
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+    width: "90px",
+  },
+  
+  {
+    title: "Last Working Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Effective Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
+];
+
 export const columnSalaryGenerate = [
   {
     title: "SL",
