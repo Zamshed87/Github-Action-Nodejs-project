@@ -129,7 +129,7 @@ const AssetRegistrationForm = () => {
                           </div>
                           <FormikSelect
                             menuPosition="fixed"
-                            name="employeeName"
+                            name="itemName"
                             options={itemDDL || []}
                             value={values?.itemName}
                             onChange={(valueOption) => {
@@ -144,57 +144,14 @@ const AssetRegistrationForm = () => {
                             errors={errors}
                             placeholder=""
                             touched={touched}
-                            isDisabled={rowDto?.length}
+                            // isDisabled={rowDto?.length}
                           />
                         </div>
-                        {/*  <div className="col-lg-4">
-                          <div className="d-flex">
-                            <div className="mt-4">
-                              <label>Depreciation</label>
-                              <FormikCheckBox
-                                height="15px"
-                                styleobj={{
-                                  color: gray900,
-                                  checkedColor: greenColor,
-                                  padding: "0px 0px 0px 10px",
-                                }}
-                                label=""
-                                name="isDepreciation"
-                                checked={values?.isDepreciation}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "isDepreciation",
-                                    e.target.checked
-                                  );
-                                }}
-                              />
-                            </div>
-                            {values?.isDepreciation ? (
-                              <div>
-                                <label>
-                                  Percentage <Required />
-                                </label>
-                                <FormikInput
-                                  classes="input-sm"
-                                  placeholder=" "
-                                  value={values?.percentage}
-                                  name="percentage"
-                                  type="number"
-                                  onChange={(e) => {
-                                    setFieldValue("percentage", e.target.value);
-                                  }}
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
-                            ) : null}
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                     <div className="col-lg-2">
                       <label>
-                        Identifier By <Required />
+                        Identifier <Required />
                       </label>
                       <FormikInput
                         classes="input-sm"
@@ -271,7 +228,7 @@ const AssetRegistrationForm = () => {
                         }}
                         errors={errors}
                         touched={touched}
-                        disabled={rowDto?.length}
+                        disabled={id}
                       />
                     </div>
                     <div className="col-lg-2">
@@ -293,7 +250,7 @@ const AssetRegistrationForm = () => {
                         }}
                         errors={errors}
                         touched={touched}
-                        disabled={rowDto?.length}
+                        disabled={id}
                       />
                     </div>
                     <div className="col-lg-2 mt-4">
@@ -309,9 +266,9 @@ const AssetRegistrationForm = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               itemAddHandler(values, setRowDto, () => {
-                                setFieldValue("itemName", "");
-                                setFieldValue("qty", "");
-                                setFieldValue("rate", "");
+                                // setFieldValue("itemName", "");
+                                // setFieldValue("qty", "");
+                                // setFieldValue("rate", "");
                                 setFieldValue("isAutoValue", false);
                                 setFieldValue("startNumber", "");
                               });
