@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { getEnumData } from "common/api/commonApi";
-
+import moment from "moment";
+  const defaultFromDate = moment();
+  const defaultToDate = moment().endOf("month");
 const useNotificationLogFilters = ({ form }) => {
   const {
-    profileData: { orgId, buId, wgId, wId, employeeId },
+    profileData: { orgId, buId, buName, wgId, wId, employeeId },
     businessUnitDDL,
     // workplaceDDL,
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -13,7 +15,26 @@ const useNotificationLogFilters = ({ form }) => {
   const [notificationType, setNotificationType] = useState([]);
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
+  const employeeDDL = useApiRequest([]);
 
+  const getEmployeeDDL = (value = "") => {
+    // if (value?.length < 2) return CommonEmployeeDDL?.reset();
+    employeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
   const getWorkplaceGroupDDL = () => {
     const { businessUnit } = form.getFieldsValue(true);
     workplaceGroup?.action({
@@ -60,11 +81,26 @@ const useNotificationLogFilters = ({ form }) => {
   }, [orgId, buId, wgId, wId]);
 
   return {
+    initialValues: {
+      businessUnit: { label: buName, value: buId },
+      workplaceGroup: {
+        label: "All",
+        value: workplaceGroup?.data
+          ?.map((w) => w?.intWorkplaceGroupId)
+          ?.join(","),
+      },
+      workplaceList: {
+        label: "All",
+        value: workplace?.data?.map((w) => w?.intWorkplaceId)?.join(","),
+      },
+      fromDate: defaultFromDate,
+      toDate: defaultToDate,
+    },
     businessUnitDDL: businessUnitDDL?.map((bu) => ({
       label: bu.BusinessUnitName,
       value: bu.BusinessUnitId,
     })),
-    workplaceGroupDDL: workplaceGroup.data,
+    workplaceGroupDDL: workplaceGroup?.data,
     getWorkplaceGroupDDL,
     workplaceDDL: [
       {
@@ -74,7 +110,9 @@ const useNotificationLogFilters = ({ form }) => {
       ...workplace.data,
     ],
     getWorkplaceDDL,
-    notificationType
+    notificationType,
+    employeeDDL: employeeDDL?.data,
+    getEmployeeDDL,
   };
 };
 

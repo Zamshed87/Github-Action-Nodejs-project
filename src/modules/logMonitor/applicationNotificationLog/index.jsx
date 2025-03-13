@@ -4,15 +4,22 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Loading from "common/loading/Loading";
 import LogFilters from "./components/LogFilters";
 import useNotificationLogs from "./hooks/useNotificationLogs";
+import LogFiltersSidebar from "./components/LogFiltersSidebar";
+import { useState } from "react";
+import useNotificationLogFilters from "./hooks/useNotificationLogFilters";
+import { Form } from "antd";
 
 const ApplicationNotificationLog = () => {
-
-  const { form, pages, setPages, data, fetchNotificationLogs, loading, permission } = useNotificationLogs();
+  const [form] = Form.useForm();
+  const [openFilter, setOpenFilter] = useState(false);
+  const { pages, setPages, data, fetchNotificationLogs, loading, permission } = useNotificationLogs({form});
+  const { initialValues } = useNotificationLogFilters({form});
 
   return permission?.isView ? (
     <PForm
+      id="logFiltersForm"
       form={form}
-      initialValues={{}}
+      initialValues={initialValues}
       onFinish={() => {
         fetchNotificationLogs(pages);
       }}
@@ -27,8 +34,23 @@ const ApplicationNotificationLog = () => {
             });
             fetchNotificationLogs(pages);
           }}
+          buttonList={[
+            {
+              type: "primary",
+              content: "Filter",
+              onClick: () => {
+                setOpenFilter(!openFilter);
+              },
+              icon: <i className="fas fa-filter mr-1"></i>,
+            },
+          ]}
         />
         <PCardBody className="mb-3">
+          <LogFiltersSidebar
+            form={form}
+            openFilter={openFilter}
+            setOpenFilter={setOpenFilter}
+          />
           <LogFilters form={form} />
         </PCardBody>
         <DataTable

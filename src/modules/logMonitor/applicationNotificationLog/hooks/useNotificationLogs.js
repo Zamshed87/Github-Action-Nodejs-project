@@ -9,7 +9,7 @@ export const formatDate = (date) => {
   return moment(date).format("YYYY-MM-DD");
 };
 
-const useNotificationLogs = () => {
+const useNotificationLogs = ({form}) => {
   const dispatch = useDispatch();
   const {
     profileData: { wId },
@@ -22,7 +22,6 @@ const useNotificationLogs = () => {
     total: 0,
   });
 
-  const [form] = Form.useForm();
   const [data, getData, loading, setData] = useAxiosGet({});
 
   // form fields
@@ -72,7 +71,6 @@ const useNotificationLogs = () => {
   });
 
   return {
-    form,
     pages,
     setPages,
     data,

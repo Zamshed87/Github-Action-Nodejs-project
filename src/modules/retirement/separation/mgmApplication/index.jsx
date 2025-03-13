@@ -73,7 +73,7 @@ export default function ManagementSeparation() {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
-  const defaultFromDate = moment();
+  const defaultFromDate = moment().startOf("month");
   const defaultToDate = moment().endOf("month");
 
   const getData = (pagination, searchText) => {
