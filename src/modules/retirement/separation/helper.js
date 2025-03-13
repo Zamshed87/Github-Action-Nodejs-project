@@ -335,6 +335,9 @@ export const separationApplicationLandingTableColumn = (
             {data?.approvalStatus === "Clearance" && (
               <Chips label="Clearance" classess="info p-2" />
             )}
+            {data?.approvalStatus === "Clearance Completed" && (
+              <Chips label="Clearance Completed" classess="success p-2" />
+            )}
             {data?.approvalStatus === "Final Settlement Completed" && (
               <Chips label="Final Settlement Completed" classess="success p-2" />
             )}
@@ -345,6 +348,7 @@ export const separationApplicationLandingTableColumn = (
         </div>
       ),
       fieldType: "string",
+      width: 200,
     },
     {
       title: "Actions",

@@ -130,13 +130,13 @@ export const separationApplicationLandingTableColumn = (
     IConfirmModal(confirmObject);
   };
 
-  const cancelConfirmPopup = () => {
+  const cancelConfirmPopup = (sepId) => {
     const confirmObject = {
       closeOnClickOutside: false,
       message: "Do you want to Cancel this application?",
       yesAlertFunc: () => {
         postCancelSeperationData(
-          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          `/Separation/CancelSeparation?id=${sepId}&employeeId=${employeeId}`,
           "",
           () => {
             getData();
@@ -483,7 +483,7 @@ export const separationApplicationLandingTableColumn = (
                 onClick={() => {
                   setAprovalStatus(item?.approvalStatus);
                   setSeparationId(item?.separationId);
-                  cancelConfirmPopup();
+                  cancelConfirmPopup(item?.separationId);
                 }}
               />
             </Tooltip>
