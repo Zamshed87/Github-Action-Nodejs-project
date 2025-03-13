@@ -21,11 +21,11 @@ export const individualKpiMappingTableColumn = ({
     },
     {
       title: "workplace Group",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "workplaceGroup",
     },
     {
       title: "Workplace",
-      dataIndex: "workplaceName",
+      dataIndex: "workplace",
     },
     {
       title: "Department",

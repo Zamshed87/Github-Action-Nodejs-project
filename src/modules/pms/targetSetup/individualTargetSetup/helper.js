@@ -52,10 +52,11 @@ export const individualtargetSetupTableColumn = ({ values, history }) => {
     {
       title: "Sl",
       dataIndex: "sl",
+      align: "center",
     },
     {
       title: "Employee Id",
-      dataIndex: "employeeId",
+      dataIndex: "employeeCode",
     },
     {
       title: () => <span style={{ color: gray600 }}>Employee Name</span>,
