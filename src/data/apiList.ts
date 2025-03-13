@@ -326,4 +326,5 @@ export const apiList = {
   EmployeeLeaveTypeDDL: "/LeaveBalance/EmployeeLeaveTypeDDL",
   EmployeeLeaveBalanceList: "/LeaveBalance/EmployeeLeaveBalanceList",
   CreateLeave: "/LeaveApplication/Create",
+  GetAllLeave: "/LeaveApplication/GetAll",
 };

@@ -3,7 +3,11 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { dateFormatterForInput } from "utility/dateFormatter";
+import {
+  dateFormatterForInput,
+  monthFirstDate,
+  monthLastDate,
+} from "utility/dateFormatter";
 import IConfirmModal from "../IConfirmModal";
 import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
@@ -55,6 +59,7 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
     const [medicalLvePunishment, setMedicalLvePunishment] = useState([]);
     const leaveDDLApi = useApiRequest({});
     const balanceApi = useApiRequest({});
+    const historyApi = useApiRequest({});
     const createApi = useApiRequest({});
     const getLeaveDDL = (id) => {
       leaveDDLApi?.action({
@@ -75,6 +80,30 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
             });
           });
           setLeaveTypeDDL(res);
+        },
+      });
+    };
+    const getLeaveHistory = (id) => {
+      historyApi?.action({
+        urlKey: "GetAllLeave",
+        method: "post",
+        payload: {
+          employeeId: id,
+          fromDate: moment().startOf("year").format("YYYY-MM-DD"),
+          toDate: moment().endOf("year").format("YYYY-MM-DD"),
+          leaveTypeList: [],
+          approvalStatusList: [],
+        },
+        onSuccess: (res) => {
+          // res.forEach((item, idx) => {
+          //   res[idx].value = item?.id;
+          //   res[idx].label = item?.name;
+          //   res[idx].assingendConsumeTypeList?.forEach((it, i) => {
+          //     res[idx].assingendConsumeTypeList[i].value = it?.id;
+          //     res[idx].assingendConsumeTypeList[i].label = it?.name;
+          //   });
+          // });
+          setLeaveHistoryData(res);
         },
       });
     };
@@ -260,6 +289,7 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
     const getData = (empId, year) => {
       getLeaveDDL(empId ? empId : employeeId);
       balanceInfo(empId ? empId : employeeId);
+      getLeaveHistory(empId ? empId : employeeId);
       // PeopleDeskSaasDDL(
       //   "EmployeeLeaveType",
       //   wgId,
@@ -271,16 +301,16 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
       //   0,
       //   year
       // );
-      getEmployeeLeaveBalanceAndHistory(
-        empId ? empId : employeeId,
-        "LeaveHistory",
-        setLeaveHistoryData,
-        setLoading,
-        setAllData,
-        year,
-        buId,
-        wgId
-      );
+      // getEmployeeLeaveBalanceAndHistory(
+      //   empId ? empId : employeeId,
+      //   "LeaveHistory",
+      //   setLeaveHistoryData,
+      //   setLoading,
+      //   setAllData,
+      //   year,
+      //   buId,
+      //   wgId
+      // );
 
       // This api and leave balance is also used in supervisor dashboard and employee booklet. for any kind of change please consider that.
       // getEmployeeLeaveBalanceAndHistory(

@@ -23,6 +23,7 @@ import NoResult from "common/NoResult";
 import { gray500 } from "utility/customColor";
 import Loading from "common/loading/Loading";
 import TLeaveApplicationForm from "common/HOCLeave/component/TLeaveApplicationForm";
+import { LeaveApp_History } from "common/HOCLeave/component/LeaveHistory";
 
 type TEmLeaveApplication = any;
 const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
@@ -270,8 +271,8 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                 />
               </Col>
             </Row>
-            <div className="row">
-              <div className="col-md-12 my-3">
+            {/* <div className="row"> */}
+            {/* <div className="col-md-12 my-3">
                 <div className="table-card-body pl-lg-1 pl-md-3">
                   <div>
                     <div className="d-flex align-items-center justify-content-between">
@@ -322,8 +323,17 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                     )}
                   </div>
                 </div>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
+            <Row gutter={[10, 2]}>
+              <Col md={24}>
+                <LeaveApp_History
+                  empId={form.getFieldValue("employee")?.value}
+                  setLeaveHistoryData={setLeaveHistoryData}
+                  leaveHistoryData={leaveHistoryData}
+                />
+              </Col>
+            </Row>
           </div>
           {/* </>
               );
