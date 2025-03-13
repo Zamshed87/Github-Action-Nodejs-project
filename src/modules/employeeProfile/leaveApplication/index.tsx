@@ -103,7 +103,6 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
       },
     });
   };
-
   return (
     <PForm
       form={form}
@@ -252,7 +251,8 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                     setIsEdit,
                     setSingleData,
                     leaveTypeDDL:
-                      leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
+                      // leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
+                      leaveTypeDDL,
                     setLoading,
                     loading,
                     editPermission: permission?.isEdit,

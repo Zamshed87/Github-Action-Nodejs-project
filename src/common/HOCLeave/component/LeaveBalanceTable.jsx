@@ -27,7 +27,7 @@ const LeaveBalanceTable = ({
     );
   }
 
-  console.log("values", values);
+  // console.log("values", values);
   const {
     profileData: { buId },
     permissionList,
@@ -37,9 +37,16 @@ const LeaveBalanceTable = ({
   const [details, setDetails] = useState([]);
   const [leaveData, setLeaveData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const handleOpenChange = (newOpen) => {
-    setOpen(newOpen);
+  const [selectedRowKey, setSelectedRowKey] = useState(null);
+
+  const toggleRowDetails = (key, details) => {
+    if (selectedRowKey === key) {
+      setSelectedRowKey(null); // Close if the same row is clicked
+      setDetails([]);
+    } else {
+      setSelectedRowKey(key);
+      setDetails([details]);
+    }
   };
   const [singleObjList, getSingleObjDataAPI, , setSingleObjList] = useAxiosGet(
     {}
@@ -200,14 +207,14 @@ const LeaveBalanceTable = ({
       render: (_, rec) => {
         return (
           <div>
-            {rec?.strEmployeeStatus === "Active" ? (
-              <Tag color="green">{rec?.strEmployeeStatus}</Tag>
-            ) : rec?.strEmployeeStatus === "Inactive" ? (
-              <Tag color="red">{rec?.strEmployeeStatus}</Tag>
-            ) : rec?.strEmployeeStatus === "Salary Hold" ? (
-              <Tag color="orange">{rec?.strEmployeeStatus}</Tag>
+            {rec?.status === "Active" ? (
+              <Tag color="green">{rec?.status}</Tag>
+            ) : rec?.status === "Inactive" ? (
+              <Tag color="red">{rec?.status}</Tag>
+            ) : rec?.status === "Salary Hold" ? (
+              <Tag color="orange">{rec?.status}</Tag>
             ) : (
-              <Tag color="gold">{rec?.strEmployeeStatus}</Tag>
+              <Tag color="gold">{rec?.status}</Tag>
             )}
           </div>
         );
@@ -217,37 +224,35 @@ const LeaveBalanceTable = ({
     {
       width: 20,
       align: "center",
-      render: (_, rec) => (
+      render: (_, rec, idx) => (
         <>
           <TableButton
             buttonsList={[
               {
                 type: "view",
                 onClick: () => {
-                  setDetails([rec?.details]);
-                  setOpen(true);
+                  toggleRowDetails(idx, rec?.details);
                 },
               },
             ]}
           />
-          <Popover
-            placement="bottom"
-            onOpenChange={handleOpenChange}
-            content={
-              <div style={{ width: "550px" }}>
-                <DataTable
-                  header={detailsHeader}
-                  // nodataStyle={{ marginTop: "-35px", height: "175px" }}
-                  // bordered
-                  data={details}
-                />
-              </div>
-            }
-            open={open}
-            trigger="click"
-          >
-            {/* <InfoCircleOutlined style={{ color: failColor, marginLeft: "2px" }} /> */}
-          </Popover>
+          {selectedRowKey === idx && (
+            <Popover
+              placement="bottom"
+              content={
+                <div style={{ width: "570px" }}>
+                  <DataTable header={detailsHeader} data={details} />
+                </div>
+              }
+              open={selectedRowKey === idx}
+              trigger="click"
+              onOpenChange={(newOpen) => {
+                if (!newOpen) {
+                  setSelectedRowKey(null); // Close popover when clicking outside
+                }
+              }}
+            />
+          )}
         </>
       ),
     },
@@ -279,12 +284,12 @@ const LeaveBalanceTable = ({
         </>
       ),
       dataIndex: "takenDays",
-      width: 40,
+      width: 47,
     },
     {
       title: "Balance",
       dataIndex: "balanceDays",
-      width: 45,
+      width: 50,
     },
 
     {
@@ -292,17 +297,22 @@ const LeaveBalanceTable = ({
       dataIndex: "totalAllocatedDays",
       width: 40,
     },
-    {
-      title: "Carry Balance",
-      dataIndex: "carryBalanceDays",
-    },
+
     {
       title: "Carry Taken",
       dataIndex: "carryTakenDays",
     },
     {
+      title: "Carry Balance",
+      dataIndex: "carryBalanceDays",
+    },
+    {
       title: "Carry Allocated",
       dataIndex: "carryTotalAllocatedDays",
+    },
+    {
+      title: "Carry Expire",
+      dataIndex: "carryExpiredDays",
     },
     {
       title: "Carry Expire",

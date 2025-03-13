@@ -34,6 +34,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
     leaveTypeDDL = [],
   } = propsObj;
   // hook
+  console.log({ leaveTypeDDL });
+
   const dispatch = useDispatch();
   const [next3daysForEmp, setNext3daysForEmp] = useState<any>(undefined);
   const [, setStartYear] = useState<any>(undefined);
@@ -67,6 +69,10 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
   useEffect(() => {
     form.setFieldsValue({
       leaveType: leaveTypeDDL?.length > 0 ? { ...leaveTypeDDL[0] } : undefined,
+      leaveConsumeType:
+        leaveTypeDDL?.length > 0
+          ? { ...leaveTypeDDL[0]?.assingendConsumeTypeList[0] }
+          : undefined,
       fromDate: values?.isSelfService ? undefined : moment(todayDate()),
       toDate: values?.isSelfService ? undefined : moment(todayDate()),
       leaveDays: values?.isSelfService ? 0 : 1,
@@ -167,50 +173,34 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 ]}
               />
             </Col>
-            <Col md={8} sm={12} xs={24}>
-              <PSelect
-                options={
-                  leaveTypeDDL?.length > 0
-                    ? [...leaveTypeDDL]
-                    : [
-                        {
-                          value: 1,
-                          label: "Full Day",
-                        },
-                        {
-                          value: 2,
-                          label: "1st Half Day",
-                        },
-                        {
-                          value: 1,
-                          label: "Full Day",
-                        },
-                        {
-                          value: 4,
-                          label: "Clock Time",
-                        },
-                      ]
-                }
-                name="leaveConsumeType"
-                label="Leave Consume Type"
-                placeholder="Leave Consume Type"
-                onChange={(value, op) => {
-                  form.setFieldValue("leaveConsumeType", op);
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please Select Leave Consume Type",
-                  },
-                ]}
-              />
-            </Col>
+
             <Form.Item shouldUpdate noStyle>
               {() => {
                 const { leaveType, fromDate, toDate, leaveConsumeType } =
                   form.getFieldsValue(true);
                 return (
                   <>
+                    <Col md={8} sm={12} xs={24}>
+                      <PSelect
+                        options={
+                          leaveType?.assingendConsumeTypeList?.length > 0
+                            ? leaveType?.assingendConsumeTypeList
+                            : []
+                        }
+                        name="leaveConsumeType"
+                        label="Leave Consume Type"
+                        placeholder="Leave Consume Type"
+                        onChange={(value, op) => {
+                          form.setFieldValue("leaveConsumeType", op);
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please Select Leave Consume Type",
+                          },
+                        ]}
+                      />
+                    </Col>
                     <Col md={8} sm={12} xs={24}>
                       <PInput
                         type="date"

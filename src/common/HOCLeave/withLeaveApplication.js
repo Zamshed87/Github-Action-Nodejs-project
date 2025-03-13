@@ -66,7 +66,12 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
           res.forEach((item, idx) => {
             res[idx].value = item?.id;
             res[idx].label = item?.name;
+            res[idx].assingendConsumeTypeList?.forEach((it, i) => {
+              res[idx].assingendConsumeTypeList[i].value = it?.id;
+              res[idx].assingendConsumeTypeList[i].label = it?.name;
+            });
           });
+          setLeaveTypeDDL(res);
         },
       });
     };
@@ -78,6 +83,9 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
           employeeId: id,
           date: todayDate(),
           isAdmin: isAdmin,
+        },
+        onSuccess: (res) => {
+          setLeaveBalanceData(res);
         },
       });
     };
