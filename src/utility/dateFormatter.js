@@ -81,7 +81,7 @@ export const dateFormatterForDashboard = () => {
 
   const monthName = `${monthNames[month]},`;
 
-  const dateNumber = `${date?.getDate()},`?.padStart(2, "0");
+  const dateNumber = `${date?.getDate()} `?.padStart(2, "0");
 
   return `${dateNumber} ${monthName} ${year}, ${dayName}.`;
 };
