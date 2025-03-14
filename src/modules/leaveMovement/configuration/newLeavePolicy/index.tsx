@@ -28,6 +28,7 @@ import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
+import LeaveExtension from "./components/LeaveExtension";
 
 export const NewLeavePolicy = () => {
   const dispatch = useDispatch();
@@ -35,10 +36,9 @@ export const NewLeavePolicy = () => {
 
   const {
     permissionList,
-    profileData: { buId, wId, orgId, wgId },
+    profileData: { buId, wId, orgId, wgId, employeeId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
-  const [loading, setLoading] = useState(false);
-  const [typeId, setTypeId] = useState<any>({});
+  const [singleData, setSingleData] = useState<any>({});
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 38),
@@ -262,10 +262,8 @@ export const NewLeavePolicy = () => {
             {
               type: "extend",
               onClick: (e: any) => {
-                // if (!employeeFeature?.isEdit) {
-                //   return toast.warn("You don't have permission");
-                // }
-                // history.push({
+                setSingleData(item);
+                setOpen(true);
                 //   pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
                 //   state: {
                 //     month: item?.monthId,
@@ -566,22 +564,22 @@ export const NewLeavePolicy = () => {
         </PCard>
         <PModal
           open={open}
-          title={"Leave Details"}
+          title={"Leave Extension"}
           width=""
           onCancel={() => setOpen(false)}
           maskClosable={false}
           components={
             <>
-              {/* <DataTable
-                bordered
-                data={
-                  detailsApi?.data?.data?.length > 0
-                    ? detailsApi?.data.data
-                    : []
-                }
-                loading={detailsApi?.loading}
-                header={detailsHeader}
-              /> */}
+              <LeaveExtension
+                orgId={orgId}
+                buId={buId}
+                wgId={wgId}
+                employeeId={employeeId}
+                getData={() => landingApiCall()}
+                setOpen={setOpen}
+                setSingleData={setSingleData}
+                singleData={singleData}
+              />
             </>
           }
         />
