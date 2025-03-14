@@ -225,17 +225,12 @@ export const NewLeavePolicy = () => {
               <Switch
                 checked={rec?.status === "Active"}
                 onChange={(checked) => {
-                  const newStatus = checked ? "Active" : "Inactive";
-                  landingApi?.data?.data?.forEach((i: any, id: any) => {
-                    if (id == index) {
-                      landingApi.data.data[id].status = "Inactive";
-                    }
-                  });
+                  // const newStatus = checked ? "Active" : "Inactive";
+                  deleteDepositById(rec);
                   // Update your data source here
                   // Example (replace with your actual data update logic):
                   // dataSource[index].status = newStatus;
                   // setDataSource([...dataSource]);
-                  console.log({ newStatus });
                 }}
               />
             </p>
@@ -408,27 +403,44 @@ export const NewLeavePolicy = () => {
     landingApiCall();
   }, []);
 
-  //   const deleteDepositById = (item: any) => {
-  //     deleteApi?.action({
-  //       urlKey: "Deposit",
-  //       method: "DELETE",
-  //       params: {
-  //         id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         detailsApi?.action({
-  //           urlKey: "DepositDetails",
-  //           method: "GET",
-  //           params: {
-  //             month: typeId?.month,
-  //             year: typeId?.year,
-  //             depositType: typeId?.id,
-  //           },
-  //         });
-  //       },
-  //     });
-  //   };
+  const deleteDepositById = (item: any) => {
+    deleteApi?.action({
+      urlKey: "DeleteByIdLeave",
+      method: "DELETE",
+      params: {
+        PartName: "InActivePolicy",
+        PolicyId: item?.policyId,
+      },
+      toast: true,
+      onSuccess: () => {
+        landingApiCall();
+      },
+      onError: (error: any) => {
+        if (
+          error?.response?.data?.errors?.["GeneralPayload.Description"]
+            ?.length > 1
+        ) {
+          //  setErrorData(
+          //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+          //  );
+          //  setOpen(true);
+        } else {
+          toast.error(
+            error?.response?.data?.message[0] ||
+              error?.response?.data?.message ||
+              error?.response?.data?.errors?.[
+                "GeneralPayload.Description"
+              ][0] ||
+              error?.response?.data?.Message ||
+              error?.response?.data?.title ||
+              error?.response?.title ||
+              error?.response?.message ||
+              error?.response?.Message
+          );
+        }
+      },
+    });
+  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -460,7 +472,7 @@ export const NewLeavePolicy = () => {
             ]}
             title={`Leave Policy`}
           />
-          {loading && <Loading />}
+          {deleteApi?.loading && <Loading />}
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
