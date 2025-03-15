@@ -406,7 +406,7 @@ export const NewLeavePolicy = () => {
       urlKey: "DeleteByIdLeave",
       method: "DELETE",
       params: {
-        PartName: "InActivePolicy",
+        PartName: item?.status === "Active" ? "InActivePolicy" : "ActivePolicy",
         PolicyId: item?.policyId,
       },
       toast: true,
@@ -424,16 +424,17 @@ export const NewLeavePolicy = () => {
           //  setOpen(true);
         } else {
           toast.error(
-            error?.response?.data?.message[0] ||
+            error?.response?.data?.message?.[0] ||
               error?.response?.data?.message ||
               error?.response?.data?.errors?.[
                 "GeneralPayload.Description"
-              ][0] ||
+              ]?.[0] ||
               error?.response?.data?.Message ||
               error?.response?.data?.title ||
               error?.response?.title ||
               error?.response?.message ||
-              error?.response?.Message
+              error?.response?.Message ||
+              "Something went wrong"
           );
         }
       },
