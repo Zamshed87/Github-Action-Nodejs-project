@@ -1054,6 +1054,9 @@ const EmLoanReportPrint = lazy(() =>
 const EmMovementHistory = lazy(() =>
   import("../modules/employeeProfile/Reports/movementHistory/index.tsx")
 );
+const TypeWiseLeave = lazy(() =>
+  import("../modules/employeeProfile/Reports/typeWiseLeave/index.js")
+);
 const EmMovementReportPrint = lazy(() =>
   import(
     "../modules/employeeProfile/Reports/movementHistory/MovementReportPrint.jsx"
@@ -2050,6 +2053,10 @@ export const routingList = [
     component: EmMovementHistory,
   },
   {
+    path: "/profile/reports/typeWiseLeaveReport",
+    component: TypeWiseLeave,
+  },
+  {
     path: "/profile/reports/movementHistory/print",
     component: EmMovementReportPrint,
   },
@@ -2241,15 +2248,15 @@ export const routingList = [
   },
   {
     path: "/SelfService/supervisor/calenderAssign",
-    component: CalendarAssignSelfService ,
+    component: CalendarAssignSelfService,
   },
   {
     path: "/SelfService/supervisor/offdayAssign",
-    component: OffDaySelfService ,
+    component: OffDaySelfService,
   },
   {
     path: "/SelfService/supervisor/monthlyOffdayAssign",
-    component: MonthlyOffdayAssignLandingSelfService ,
+    component: MonthlyOffdayAssignLandingSelfService,
   },
   {
     path: "/administration/timeManagement/leavePolicyAssign",
