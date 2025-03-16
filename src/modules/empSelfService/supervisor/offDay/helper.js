@@ -203,13 +203,13 @@ export const offDayAssignDtoCol = (
       fieldType: "string",
     },
     {
-      title: "Line Manager",
-      dataIndex: "lineManagerName",
+      title: "Dotted Supervisor",
+      dataIndex: "dottedSupervisorName",
       sorter: true,
     },
     {
-      title: "Dotted Supervisor",
-      dataIndex: "dottedSupervisorName",
+      title: "Line Manager",
+      dataIndex: "lineManagerName",
       sorter: true,
     },
     {
