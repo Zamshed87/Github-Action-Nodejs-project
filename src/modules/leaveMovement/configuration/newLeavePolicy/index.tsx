@@ -50,7 +50,7 @@ export const NewLeavePolicy = () => {
   const landingApi = useApiRequest({});
   const leaveTypeApi = useApiRequest({});
   const deleteApi = useApiRequest({});
-  const detailsApi = useApiRequest({});
+  const generateApi = useApiRequest({});
   const [open, setOpen] = useState(false);
 
   //   const debounce = useDebounce();
@@ -165,22 +165,6 @@ export const NewLeavePolicy = () => {
     });
   };
 
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
-
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
   const header: any = [
     {
       title: "SL",
@@ -240,48 +224,98 @@ export const NewLeavePolicy = () => {
     },
 
     {
-      title: "",
-      width: 30,
+      title: "Actions",
+      width: 120,
 
       align: "center",
       render: (_: any, item: any) => (
-        <TableButton
-          buttonsList={[
-            {
-              type: "view",
-              onClick: (e: any) => {
-                if (!employeeFeature?.isEdit) {
-                  return toast.warn("You don't have permission");
-                  e.stopPropagation();
-                }
-                history.push(
-                  `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`
-                );
+        <div className="d-flex justify-content-around">
+          <TableButton
+            buttonsList={[
+              {
+                type: "view",
+                onClick: (e: any) => {
+                  if (!employeeFeature?.isEdit) {
+                    return toast.warn("You don't have permission");
+                    e.stopPropagation();
+                  }
+                  history.push(
+                    `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`
+                  );
+                },
               },
-            },
-            {
-              type: "extend",
-              onClick: (e: any) => {
-                setSingleData(item);
-                setOpen(true);
-                //   pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
-                //   state: {
-                //     month: item?.monthId,
-                //     year: item?.yearId,
-                //   },
-                // });
-                //   setOpen(true);
-                //   setId(rec);
+              {
+                type: "extend",
+                onClick: (e: any) => {
+                  setSingleData(item);
+                  setOpen(true);
+                  //   pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
+                  //   state: {
+                  //     month: item?.monthId,
+                  //     year: item?.yearId,
+                  //   },
+                  // });
+                  //   setOpen(true);
+                  //   setId(rec);
+                },
               },
-            },
-            // {
-            //   type: "delete",
-            //   onClick: () => {
-            //     deleteDepositById(item);
-            //   },
-            // },
-          ]}
-        />
+              // {
+              //   type: "delete",
+              //   onClick: () => {
+              //     deleteDepositById(item);
+              //   },
+              // },
+            ]}
+          />
+          <PButton
+            type="primary"
+            action="button"
+            content="Generate"
+            onClick={() => {
+              generateApi?.action({
+                urlKey: "BalanceGenerate",
+                method: "post",
+                payload: {
+                  businessUnitId: buId,
+                  workplaceGroupId: wgId,
+                  policyId: item?.policyId,
+                  createdBy: employeeId,
+                },
+                toast: true,
+                onSuccess: (res) => {
+                  landingApiCall();
+                  toast.success(res?.message[0]);
+                },
+                onError: (error: any) => {
+                  if (
+                    error?.response?.data?.errors?.[
+                      "GeneralPayload.Description"
+                    ]?.length > 1
+                  ) {
+                    //  setErrorData(
+                    //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+                    //  );
+                    //  setOpen(true);
+                  } else {
+                    toast.error(
+                      error?.response?.data?.message?.[0] ||
+                        error?.response?.data?.message ||
+                        error?.response?.data?.errors?.[
+                          "GeneralPayload.Description"
+                        ]?.[0] ||
+                        error?.response?.data?.Message ||
+                        error?.response?.data?.title ||
+                        error?.response?.title ||
+                        error?.response?.message ||
+                        error?.response?.Message ||
+                        "Something went wrong"
+                    );
+                  }
+                },
+              });
+            }}
+          />{" "}
+        </div>
       ),
     },
   ];
