@@ -230,14 +230,14 @@ export const CalendarAssignSelfService = () => {
       width: 95,
     },
     {
-      title: "Line Manager",
-      dataIndex: "lineManagerName",
+      title: "Dotted Supervisor",
+      dataIndex: "dottedSupervisorName",
       sorter: true,
       width: 95,
     },
     {
-      title: "Dotted Supervisor",
-      dataIndex: "dottedSupervisorName",
+      title: "Line Manager",
+      dataIndex: "lineManagerName",
       sorter: true,
       width: 95,
     },
