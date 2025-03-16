@@ -1,29 +1,39 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Popover } from "antd";
 import { failColor } from "utility/customColor";
 import notConfiguredImage from "../../../assets/images/not-configured.png";
 
-const renderBoolean = (value) => (value ? "✔️" : <img style={{width:"25px"}} src={notConfiguredImage} alt="not configured"/>);
+const renderBoolean = (value) =>
+  value ? (
+    "✔️"
+  ) : (
+    <img
+      style={{ width: "25px" }}
+      src={notConfiguredImage}
+      alt="not configured"
+    />
+  );
 
-const renderWithPopover = (value) => {
+const renderWithPopover = (value, setModal) => {
   if (!value) return "-"; // Show dash if null or empty
   if (value.length > 50) {
     return (
       <span>
         {value.substring(0, 50)}...{" "}
-        <Popover content={value} trigger="click">
-          <InfoCircleOutlined style={{ color: failColor, cursor: "pointer" }} />
-        </Popover>
+        <InfoCircleOutlined
+          onClick={() => setModal({ open: true, data: value })}
+          style={{ color: failColor, cursor: "pointer" }}
+        />
       </span>
     );
   }
   return value; // Show full text if ≤ 50 characters
 };
 
-export const getHeader = (pages) => [
+export const getHeader = (pages, setModal) => [
   {
     title: "SL",
-    render: (text, record, index) => (pages?.current - 1) * pages?.pageSize + index + 1,
+    render: (text, record, index) =>
+      (pages?.current - 1) * pages?.pageSize + index + 1,
     width: 25,
     align: "center",
   },
@@ -73,27 +83,27 @@ export const getHeader = (pages) => [
     dataIndex: "MailNotifyStatus",
     width: 120,
     align: "center",
-    render: renderWithPopover,
+    render: (value) => renderWithPopover(value, setModal),
   },
   {
     title: "Push Status",
     dataIndex: "PushNotifyStatus",
     width: 120,
     align: "center",
-    render: renderWithPopover,
+    render: (value) => renderWithPopover(value, setModal),
   },
   {
     title: "Real-time Status",
     dataIndex: "RealTimeNotifyStatus",
     width: 120,
     align: "center",
-    render: renderWithPopover,
+    render: (value) => renderWithPopover(value, setModal),
   },
   {
     title: "SMS Status",
     dataIndex: "SmsNotifyStatus",
     width: 120,
     align: "center",
-    render: renderWithPopover,
+    render: (value) => renderWithPopover(value, setModal),
   },
 ];
