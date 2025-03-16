@@ -34,7 +34,6 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
     leaveTypeDDL = [],
   } = propsObj;
   // hook
-  console.log({ leaveTypeDDL });
 
   const dispatch = useDispatch();
   const [next3daysForEmp, setNext3daysForEmp] = useState<any>(undefined);
@@ -74,7 +73,6 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
           ? { ...leaveTypeDDL[0]?.assingendConsumeTypeList[0] }
           : undefined,
       fromDate: values?.isSelfService ? undefined : moment(todayDate()),
-      toDate: values?.isSelfService ? undefined : moment(todayDate()),
       leaveDays: values?.isSelfService ? 0 : 1,
     });
   }, [leaveTypeDDL]);
@@ -155,9 +153,6 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         initialValues={{
           isHalfDay: 0,
           // fromDate: values?.isSelfService ? "" : moment(todayDate()),
-          // toDate: moment(todayDate()),
-          halfTime: "8:30 AM – 12:30 PM",
-          // leaveDays: 1,
         }}
       >
         {isload && <Loading />}
@@ -382,74 +377,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-            <Form.Item shouldUpdate noStyle>
-              {() => {
-                const { fromDate, toDate, leaveType, isHalfDay } =
-                  form.getFieldsValue();
 
-                return (
-                  <>
-                    {moment(fromDate).format() === moment(toDate).format() &&
-                    leaveType?.isHalfDayLeave ? (
-                      <Col md={isHalfDay ? 8 : 24} sm={12} xs={24}>
-                        <PRadio
-                          name="isHalfDay"
-                          type="group"
-                          options={[
-                            {
-                              value: 0,
-                              label: "Full Day",
-                            },
-                            {
-                              value: 1,
-                              label: "Half Day",
-                            },
-                          ]}
-                          onChange={(e: any) => {
-                            const value = e.target.value;
-                            if (value === 0) {
-                              form.setFieldsValue({
-                                isHalfDay: value,
-                                halfTime: undefined,
-                                leaveDays: 1,
-                              });
-                            } else {
-                              form.setFieldsValue({
-                                leaveDays: 0.5,
-                              });
-                            }
-                          }}
-                        />
-                      </Col>
-                    ) : undefined}
-                    {isHalfDay === 1 ? (
-                      <Col md={16} sm={12} xs={24}>
-                        <PRadio
-                          name="halfTime"
-                          type="group"
-                          options={[
-                            {
-                              value: "8:30 AM – 12:30 PM",
-                              label: "8:30 AM – 12:30 PM",
-                            },
-                            {
-                              value: "1:30 PM- 5:30 PM",
-                              label: "1:30 PM- 5:30 PM",
-                            },
-                          ]}
-                          onChange={(e: any) => {
-                            const value = e.target.value;
-                            form.setFieldsValue({
-                              halfTime: value,
-                            });
-                          }}
-                        />
-                      </Col>
-                    ) : undefined}
-                  </>
-                );
-              }}
-            </Form.Item>
             <Col md={8} sm={12} xs={24}>
               <PSelect
                 name="leaveReliever"
@@ -568,7 +496,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
             </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const { leaveDays } = form.getFieldsValue(true);
+                const { leaveDays, leaveConsumeType } =
+                  form.getFieldsValue(true);
 
                 return (
                   <Col
@@ -581,11 +510,17 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                       content={
                         isEdit
                           ? `Update  to ${
-                              leaveDays == 0.5 ? "Half" : leaveDays
+                              leaveConsumeType?.label !== "Full Day"
+                                ? "Half"
+                                : leaveDays < 1
+                                ? 1
+                                : leaveDays
                             } ${leaveDays < 2 ? "Day" : "Days"} Leave`
-                          : `Apply ${leaveDays == 0.5 ? "Half" : leaveDays} ${
-                              leaveDays < 2 ? "Day" : "Days"
-                            } Leave`
+                          : `Apply ${
+                              leaveConsumeType?.label !== "Full Day"
+                                ? "Half"
+                                : leaveDays
+                            } ${leaveDays < 2 ? "Day" : "Days"} Leave`
                       }
                       onClick={viewHandler}
                     />

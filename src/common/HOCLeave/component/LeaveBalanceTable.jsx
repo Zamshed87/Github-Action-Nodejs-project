@@ -159,7 +159,7 @@ const LeaveBalanceTable = ({
         <>
           <p>
             {data}
-            <Popover
+            {/* <Popover
               placement="bottom"
               content={punishmentPopupContent(leaveData)}
               onClick={() => {
@@ -178,7 +178,7 @@ const LeaveBalanceTable = ({
               <InfoCircleOutlined
                 style={{ color: failColor, marginLeft: "2px" }}
               />
-            </Popover>
+            </Popover> */}
             {/* {show && record?.strLeaveType === "Casual Leave" && (
               <Popover
                 placement="bottom"
