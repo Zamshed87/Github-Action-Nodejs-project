@@ -328,4 +328,5 @@ export const apiList = {
   CreateLeave: "/LeaveApplication/Create",
   GetAllLeave: "/LeaveApplication/GetAll",
   DeleteByIdLeave: "/LeavePolicy/ActiveOrDeleteById",
+  ExtendLeave: "/LeavePolicy/Extend",
 };

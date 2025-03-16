@@ -4,6 +4,7 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Switch } from "antd";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 
 export default function LeaveExtension({
@@ -35,6 +36,7 @@ export default function LeaveExtension({
     };
 
     const payload = {
+      workplaceGroupId: wgId,
       policyId: singleData?.policyId,
       businessUnitId: buId,
       accountId: orgId,
@@ -47,16 +49,27 @@ export default function LeaveExtension({
         ?.map((item: any) => item.value)
         .join(","),
     };
-    // extensionApi.action({
-    //   urlKey: "",
-    //   method: "POST",
-    //   payload: payload,
-    //   onSuccess: () => {
-    //     cb();
-    //   },
+    extensionApi.action({
+      urlKey: "ExtendLeave",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+      onError: (res: any) => {
+        toast.error(
+          res?.response?.data?.message ||
+            res?.response?.data?.errors?.["GeneralPayload.Description"][0] ||
+            res?.response?.data?.Message ||
+            res?.response?.data?.title ||
+            res?.response?.title ||
+            res?.response?.message ||
+            res?.response?.Message
+        );
+      },
 
-    //   toast: true,
-    // });
+      toast: true,
+    });
   };
   const EmploymentTypeDDL = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
