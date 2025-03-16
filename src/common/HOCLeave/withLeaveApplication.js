@@ -190,6 +190,7 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
       };
 
       payload = {
+        intApplicationId: singleData?.leaveApplicationId || 0,
         businessUnitId: buId,
         workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
         intLeaveTypeId: values?.leaveType?.value,
@@ -233,17 +234,20 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
             console.log("first");
             // createLeaveApplication(payload, setLoading, callback, setLoad);
             createApi.action({
-              urlKey: "CreateLeave",
-              method: "post",
+              urlKey: isEdit ? "UpdateLeave" : "CreateLeave",
+              method: isEdit ? "put" : "post",
               payload,
               toast: true,
               onSuccess: (res) => {
                 console.log({ res });
-                setLoad(false);
+                callback();
+                toast.success(res?.message[0]);
               },
               onError: (error) => {
                 console.log({ error });
                 callback();
+                setLoad(false);
+
                 setLoad(false);
                 toast.error(
                   error?.response?.data?.message[0] ||

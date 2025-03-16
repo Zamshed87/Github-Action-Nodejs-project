@@ -80,22 +80,32 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
   }, [leaveTypeDDL]);
   //   edit
   useEffect(() => {
-    if (singleData?.intApplicationId) {
+    if (singleData?.leaveApplicationId) {
       form.setFieldsValue({
         leaveType: {
-          value: singleData?.LeaveTypeId,
-          label: singleData?.LeaveType,
-          isHalfDayLeave: singleData?.HalfDay,
+          value: singleData?.leaveId,
+          label: singleData?.leaveType,
+          // isHalfDayLeave: singleData?.HalfDay,
+        },
+        leaveConsumeType: {
+          value: singleData?.leaveConsumeTypeId,
+          label: singleData?.leaveType,
+          // isHalfDayLeave: singleData?.HalfDay,
+        },
+        leaveReliever: {
+          value: singleData?.leaveReliverId,
+          label: singleData?.leaveReliverName,
+          // isHalfDayLeave: singleData?.HalfDay,
         },
         isHalfDay: singleData?.HalfDay ? 1 : 0,
         halfTime: singleData?.HalfDayRange,
-        fromDate: moment(singleData?.AppliedFromDate),
-        toDate: moment(singleData?.AppliedToDate),
-        location: singleData?.AddressDuetoLeave,
-        reason: singleData?.Reason,
-        leaveDays: singleData?.HalfDay
-          ? "0.5 "
-          : `${singleData?.TotalDays} ` || "",
+        fromDate: moment(singleData?.dteFromDate),
+        toDate: moment(singleData?.dteToDate),
+        location: singleData?.location,
+        reason: singleData?.reason,
+        leaveDays: singleData?.totalLeaveDays || "",
+        startTime: moment(singleData?.tmeFromTime, "h:mma"),
+        endTime: moment(singleData?.tmeToTime, "h:mma"),
       });
     }
   }, [singleData]);
@@ -165,6 +175,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                     form.setFieldValue("fromDate", undefined);
                   }
                 }}
+                disabled={isEdit}
                 rules={[
                   {
                     required: true,

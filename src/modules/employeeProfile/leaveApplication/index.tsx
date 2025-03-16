@@ -331,6 +331,11 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                   empId={form.getFieldValue("employee")?.value}
                   setLeaveHistoryData={setLeaveHistoryData}
                   leaveHistoryData={leaveHistoryData}
+                  setIsEdit={setIsEdit}
+                  setSingleData={setSingleData}
+                  setImageFile={setImageFile}
+                  allFormValues={form.getFieldsValue(true)}
+                  isOfficeAdmin={isOfficeAdmin}
                 />
               </Col>
             </Row>

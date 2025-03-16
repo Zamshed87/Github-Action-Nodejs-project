@@ -307,7 +307,8 @@ export const apiList = {
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   CalendarAssignFilter: "/Employee/CalendarAssignFilter",
-  CalendarAssignBySupervisorFilter: "/Employee/CalendarAssignBySupervisorFilter",
+  CalendarAssignBySupervisorFilter:
+    "/Employee/CalendarAssignBySupervisorFilter",
   DepositType: "DepositType",
   Deposit: "Deposit",
   DepositDetails: "Deposit/GetDetails",
@@ -330,4 +331,6 @@ export const apiList = {
   GetAllLeave: "/LeaveApplication/GetAll",
   DeleteByIdLeave: "/LeavePolicy/ActiveOrDeleteById",
   ExtendLeave: "/LeavePolicy/Extend",
+  DeleteLeave: "/LeaveApplication/Delete",
+  UpdateLeave: "/LeaveApplication/Update",
 };

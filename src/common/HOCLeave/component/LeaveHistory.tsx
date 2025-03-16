@@ -28,18 +28,21 @@ import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 export const LeaveApp_History = ({
   empId,
   setLeaveHistoryData,
   leaveHistoryData,
+  setIsEdit,
+  setSingleData,
+  setImageFile,
+  allFormValues,
+  isOfficeAdmin,
 }: any) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const {
-    permissionList,
-    profileData: { buId, wId, orgId, wgId },
-  } = useSelector((state: any) => state?.auth, shallowEqual);
+
   const [loading, setLoading] = useState(false);
 
   //   const permission = useMemo(
@@ -50,7 +53,7 @@ export const LeaveApp_History = ({
   //   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  const leaveTypeApi = useApiRequest({});
+  // const leaveTypeApi = useApiRequest({});
   const deleteApi = useApiRequest({});
   const detailsApi = useApiRequest({});
   const [open, setOpen] = useState(false);
@@ -62,28 +65,28 @@ export const LeaveApp_History = ({
 
   // navTitle
 
-  useEffect(() => {
-    getLeaveTypes();
-  }, []);
+  // useEffect(() => {
+  //   getLeaveTypes();
+  // }, []);
 
-  const getLeaveTypes = () => {
-    leaveTypeApi?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "LeaveType",
-        BusinessUnitId: buId,
-        intId: 0,
-        WorkplaceGroupId: wgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.LeaveType;
-          res[i].value = item?.LeaveTypeId;
-        });
-      },
-    });
-  };
+  // const getLeaveTypes = () => {
+  //   leaveTypeApi?.action({
+  //     urlKey: "PeopleDeskAllDDL",
+  //     method: "GET",
+  //     params: {
+  //       DDLType: "LeaveType",
+  //       BusinessUnitId: buId,
+  //       intId: 0,
+  //       WorkplaceGroupId: wgId,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.LeaveType;
+  //         res[i].value = item?.LeaveTypeId;
+  //       });
+  //     },
+  //   });
+  // };
   type TLandingApi = {
     pagination?: {
       current?: number;
@@ -101,7 +104,7 @@ export const LeaveApp_History = ({
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
     const ids = values?.leaveType?.map((i: any) => i?.value);
-    const statusIds = values?.leaveType?.map((i: any) => i?.value);
+    const statusIds = values?.status?.map((i: any) => i?.value);
     landingApi.action({
       urlKey: "GetAllLeave",
       method: "post",
@@ -109,18 +112,10 @@ export const LeaveApp_History = ({
         employeeId: empId,
         fromDate: moment(values?.fromDate)?.format("YYYY-MM-DD"),
         toDate: moment(values?.toDate)?.format("YYYY-MM-DD"),
-        leaveTypeList: [],
-        approvalStatusList: [],
+        leaveTypeList: ids || [],
+        approvalStatusList: statusIds || [],
       },
-      onSuccess: (res) => {
-        // res.forEach((item, idx) => {
-        //   res[idx].value = item?.id;
-        //   res[idx].label = item?.name;
-        //   res[idx].assingendConsumeTypeList?.forEach((it, i) => {
-        //     res[idx].assingendConsumeTypeList[i].value = it?.id;
-        //     res[idx].assingendConsumeTypeList[i].label = it?.name;
-        //   });
-        // });
+      onSuccess: (res: any) => {
         setLeaveHistoryData(res);
       },
     });
@@ -157,37 +152,48 @@ export const LeaveApp_History = ({
     },
     {
       title: "Leave Duration",
-      dataIndex: "policyName",
+      dataIndex: "duration",
       width: 100,
     },
     {
       title: "Total Leave Days",
-      dataIndex: "policyDisplayName",
+      dataIndex: "totalLeaveDays",
       width: 100,
     },
     {
       title: "Location",
-      dataIndex: "policyDisplayCode",
+      dataIndex: "location",
       width: 100,
     },
     {
       title: "Leave Reliever",
-      dataIndex: "policyDisplayCode",
+      dataIndex: "leaveReliverName",
       width: 100,
     },
     {
       title: "Reason",
-      dataIndex: "policyDisplayCode",
+      dataIndex: "reason",
       width: 100,
     },
     {
       title: "Attachment",
-      dataIndex: "policyDisplayCode",
-      width: 100,
+      dataIndex: "attachmentId",
+      render: (_: any, item: any) => (
+        <TableButton
+          buttonsList={[
+            item?.attachmentId && {
+              type: "view",
+              onClick: (e: any) => {
+                dispatch(getDownlloadFileView_Action(item?.attachmentId));
+              },
+            },
+          ]}
+        />
+      ),
     },
     {
       title: "Application Date",
-      dataIndex: "policyDisplayCode",
+      dataIndex: "applicationDate",
       width: 100,
     },
     {
@@ -197,115 +203,88 @@ export const LeaveApp_History = ({
       dataIndex: "status",
       render: (_: any, rec: any, index: number) => {
         return (
-          <div>
-            {/* {rec?.status === "Active" ? (
-                <Tag color="green">{rec?.status}</Tag>
-              ) : rec?.status === "Inactive" ? (
-                <Tag color="red">{rec?.status}</Tag>
-              ) : (
-                <Tag color="gold">{rec?.status}</Tag>
-              )} */}
-            <p className="">
-              <Switch
-                checked={rec?.status === "Active"}
-                onChange={(checked) => {
-                  const newStatus = checked ? "Active" : "Inactive";
-                  landingApi?.data?.data?.forEach((i: any, id: any) => {
-                    if (id == index) {
-                      landingApi.data.data[id].status = "Inactive";
-                    }
-                  });
-                  // Update your data source here
-                  // Example (replace with your actual data update logic):
-                  // dataSource[index].status = newStatus;
-                  // setDataSource([...dataSource]);
-                }}
-              />
-            </p>
-          </div>
+          <>
+            {rec?.approvalStatus === "Approved" ? (
+              <Tag color="green">{rec?.approvalStatus}</Tag>
+            ) : rec?.approvalStatus === "Rejected" ? (
+              <Tag color="red">{rec?.approvalStatus}</Tag>
+            ) : (
+              <Tag color="gold">{rec?.approvalStatus}</Tag>
+            )}
+          </>
         );
       },
     },
 
     {
       title: "",
-      width: 30,
+      width: 50,
 
       align: "center",
       render: (_: any, item: any) => (
         <TableButton
           buttonsList={[
             {
-              type: "view",
+              type: "edit",
               onClick: (e: any) => {
-                if (true) {
-                  return toast.warn("You don't have permission");
-                  e.stopPropagation();
-                }
-                history.push(
-                  `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`
-                );
+                setIsEdit(true);
+                e.stopPropagation();
+                setSingleData(item);
+                setImageFile({
+                  globalFileUrlId: item?.attachmentId,
+                });
               },
             },
+
             {
-              type: "extend",
-              onClick: (e: any) => {
-                // if (!employeeFeature?.isEdit) {
-                //   return toast.warn("You don't have permission");
-                // }
-                // history.push({
-                //   pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
-                //   state: {
-                //     month: item?.monthId,
-                //     year: item?.yearId,
-                //   },
-                // });
-                //   setOpen(true);
-                //   setId(rec);
+              type: "delete",
+              onClick: () => {
+                deleteLeaveById(item);
               },
             },
-            // {
-            //   type: "delete",
-            //   onClick: () => {
-            //     deleteDepositById(item);
-            //   },
-            // },
           ]}
         />
       ),
     },
   ];
 
-  //   const deleteDepositById = (item: any) => {
-  //     deleteApi?.action({
-  //       urlKey: "Deposit",
-  //       method: "DELETE",
-  //       params: {
-  //         id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         detailsApi?.action({
-  //           urlKey: "DepositDetails",
-  //           method: "GET",
-  //           params: {
-  //             month: typeId?.month,
-  //             year: typeId?.year,
-  //             depositType: typeId?.id,
-  //           },
-  //         });
-  //       },
-  //     });
-  //   };
+  const deleteLeaveById = (item: any) => {
+    deleteApi?.action({
+      urlKey: "DeleteLeave",
+      method: "DELETE",
+      params: {
+        applicationId: item?.leaveApplicationId,
+      },
+      toast: true,
+      onSuccess: (res) => {
+        toast?.success(res?.message?.[0]);
+      },
+
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message[0] ||
+            error?.response?.data?.message ||
+            error?.response?.data?.errors?.["GeneralPayload.Description"][0] ||
+            error?.response?.data?.Message ||
+            error?.response?.data?.title ||
+            error?.response?.title ||
+            error?.response?.message ||
+            error?.response?.Message
+        );
+      },
+    });
+  };
   return (
     <>
       <PForm
         form={form}
-        initialValues={{
-          // employee: { value: employeeId, label: userName },
-          leaveType: [{ value: 0, label: "All" }],
-          status: { value: 2, label: "All" },
-        }}
+        initialValues={
+          {
+            // employee: { value: employeeId, label: userName },
+            // leaveType: [{ value: 0, label: "All" }],
+            // status: { value: 2, label: "All" },
+          }
+        }
       >
         <PCard>
           <PCardHeader title={`Leave History`} />
@@ -355,8 +334,9 @@ export const LeaveApp_History = ({
                 <PSelect
                   mode="multiple"
                   options={
-                    leaveTypeApi?.data?.length > 0
-                      ? [{ value: 0, label: "All" }, ...leaveTypeApi?.data]
+                    leaveHistoryData?.leaveTypeList?.length > 0
+                      ? // { value: 0, label: "All" },
+                        leaveHistoryData?.leaveTypeList
                       : []
                   }
                   name="leaveType"
@@ -390,13 +370,12 @@ export const LeaveApp_History = ({
               </Col>
               <Col md={5} sm={24}>
                 <PSelect
-                  //   mode="multiple"
+                  mode="multiple"
                   options={
-                    [
-                      // { value: 2, label: "All" },
-                      // { value: 1, label: "Active" },
-                      // { value: 0, label: "Inactive" },
-                    ]
+                    leaveHistoryData?.approvalStatusList?.length > 0
+                      ? // { value: 0, label: "All" },
+                        leaveHistoryData?.approvalStatusList
+                      : []
                   }
                   name="status"
                   label="Status"
@@ -430,7 +409,11 @@ export const LeaveApp_History = ({
             <Col lg={23} className="mx-2">
               <DataTable
                 bordered
-                data={leaveHistoryData.length > 0 ? leaveHistoryData : []}
+                data={
+                  leaveHistoryData.employeeLeaveApplicationListDto?.length > 0
+                    ? leaveHistoryData?.employeeLeaveApplicationListDto
+                    : []
+                }
                 loading={landingApi?.loading}
                 header={header}
                 scroll={{ x: 1000 }}
