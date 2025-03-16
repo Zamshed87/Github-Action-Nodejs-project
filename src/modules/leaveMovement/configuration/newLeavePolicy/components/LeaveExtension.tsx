@@ -53,12 +53,14 @@ export default function LeaveExtension({
       urlKey: "ExtendLeave",
       method: "POST",
       payload: payload,
-      onSuccess: () => {
+      onSuccess: (res) => {
         cb();
+        toast.success(res?.message[0]);
       },
       onError: (res: any) => {
         toast.error(
-          res?.response?.data?.message ||
+          res?.response?.data?.[0] ||
+            res?.response?.data?.message ||
             res?.response?.data?.errors?.["GeneralPayload.Description"][0] ||
             res?.response?.data?.Message ||
             res?.response?.data?.title ||
@@ -67,8 +69,6 @@ export default function LeaveExtension({
             res?.response?.Message
         );
       },
-
-      toast: true,
     });
   };
   const EmploymentTypeDDL = useApiRequest([]);

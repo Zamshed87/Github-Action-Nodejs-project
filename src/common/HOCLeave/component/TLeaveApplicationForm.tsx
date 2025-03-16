@@ -89,7 +89,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         },
         leaveConsumeType: {
           value: singleData?.leaveConsumeTypeId,
-          label: singleData?.leaveType,
+          label: singleData?.leaveConsumeType,
           // isHalfDayLeave: singleData?.HalfDay,
         },
         leaveReliever: {
