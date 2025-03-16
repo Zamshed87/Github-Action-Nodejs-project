@@ -137,7 +137,7 @@ const useNotificationLogFilters = ({ form }) => {
     applicationCategory,
     pushNotifyStatus,
     getPushNotificationStatus,
-    employeeDDL: employeeDDL?.data,
+    employeeDDL,
     getEmployeeDDL,
   };
 };

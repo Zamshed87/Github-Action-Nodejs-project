@@ -116,7 +116,8 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
         </Col>
         <Col md={12} sm={24}>
           <PSelect
-            options={employeeDDL}
+            options={employeeDDL?.data}
+            loading={employeeDDL?.loading}
             name="employee"
             label="Select Employee"
             placeholder="Search Employee"
@@ -152,11 +153,7 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
             type="secondary"
             content="Reset"
             onClick={() => {
-              const values = form.getFieldsValue(true);
               form.resetFields();
-              form.setFieldsValue({
-                ...values,
-              });
             }}
           />
         </Col>
