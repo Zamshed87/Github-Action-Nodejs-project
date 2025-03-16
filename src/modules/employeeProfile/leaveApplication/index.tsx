@@ -336,6 +336,9 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                   setImageFile={setImageFile}
                   allFormValues={form.getFieldsValue(true)}
                   isOfficeAdmin={isOfficeAdmin}
+                  landingData={() => {
+                    getData(form.getFieldValue("employee")?.value);
+                  }}
                 />
               </Col>
             </Row>

@@ -39,6 +39,7 @@ export const LeaveApp_History = ({
   setImageFile,
   allFormValues,
   isOfficeAdmin,
+  landingData,
 }: any) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -121,22 +122,6 @@ export const LeaveApp_History = ({
     });
   };
 
-  //  Delete Element
-  //   const deleteProposalById = (item: any) => {
-  //     deleteProposal?.action({
-  //       urlKey: "DeleteIncrementProposal",
-  //       method: "DELETE",
-  //       params: {
-  //         Id: item?.id,
-  //       },
-  //       toast: true,
-  //       onSuccess: () => {
-  //         setSelectedRow([]);
-
-  //         landingApiCall();
-  //       },
-  //     });
-  //   };
   const header: any = [
     {
       title: "SL",
@@ -224,24 +209,51 @@ export const LeaveApp_History = ({
       render: (_: any, item: any) => (
         <TableButton
           buttonsList={[
-            {
-              type: "edit",
-              onClick: (e: any) => {
-                setIsEdit(true);
-                e.stopPropagation();
-                setSingleData(item);
-                setImageFile({
-                  globalFileUrlId: item?.attachmentId,
-                });
-              },
-            },
+            item?.approvalStatus === "Pending" &&
+              // item?.leaveId !== 5 &&
+              ({
+                type: "edit",
+                onClick: (e: any) => {
+                  setIsEdit(true);
+                  e.stopPropagation();
+                  setSingleData(item);
+                  setImageFile({
+                    globalFileUrlId: item?.attachmentId,
+                  });
+                },
+              } as any),
+            isOfficeAdmin &&
+              item?.approvalStatus === "Approved" &&
+              // item?.leaveId !== 5 &&
+              ({
+                type: "edit",
+                onClick: (e: any) => {
+                  setIsEdit(true);
+                  e.stopPropagation();
+                  setSingleData(item);
+                  setImageFile({
+                    globalFileUrlId: item?.attachmentId,
+                  });
+                },
+              } as any),
 
-            {
-              type: "delete",
-              onClick: () => {
-                deleteLeaveById(item);
-              },
-            },
+            item?.approvalStatus === "Pending" &&
+              // item?.leaveId !== 5 &&
+              ({
+                type: "delete",
+                onClick: () => {
+                  deleteLeaveById(item);
+                },
+              } as any),
+            isOfficeAdmin &&
+              item?.approvalStatus === "Approved" &&
+              // item?.leaveId !== 5 &&
+              ({
+                type: "delete",
+                onClick: () => {
+                  deleteLeaveById(item);
+                },
+              } as any),
           ]}
         />
       ),
@@ -258,6 +270,7 @@ export const LeaveApp_History = ({
       toast: true,
       onSuccess: (res) => {
         toast?.success(res?.message?.[0]);
+        landingData();
       },
 
       onError: (error: any) => {
