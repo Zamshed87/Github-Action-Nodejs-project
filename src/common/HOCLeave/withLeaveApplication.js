@@ -89,10 +89,8 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         method: "post",
         payload: {
           employeeId: id,
-          fromDate: moment()
-            .startOf("year")
-            .format("YYYY-MM-DDTHH:mm:ss.SSSSSS"),
-          toDate: moment().endOf("year").format("YYYY-MM-DDTHH:mm:ss.SSSSSS"),
+          fromDate: moment().startOf("year").format("YYYY-MM-DD"),
+          toDate: moment().endOf("year").format("YYYY-MM-DD"),
           leaveTypeList: [],
           approvalStatusList: [],
         },

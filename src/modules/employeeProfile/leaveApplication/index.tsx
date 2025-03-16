@@ -125,10 +125,10 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
         <PCardHeader>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employee, year } = form.getFieldsValue();
+              // const { employee, year } = form.getFieldsValue();
               return (
                 <Row gutter={[10, 2]} style={{ width: "500px" }}>
-                  <Col md={18} sm={12} xs={24}>
+                  <Col xs={24}>
                     <PSelect
                       name="employee"
                       placeholder="Search Min 2 char"
@@ -139,7 +139,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                           employee: op,
                         });
                         getEmpInfoDetails(value);
-                        getData(value, year?.value);
+                        getData(value);
                       }}
                       onSearch={(value) => {
                         getEmployee(value);
@@ -148,7 +148,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                       filterOption={false}
                     />
                   </Col>
-                  <Col md={6}>
+                  {/* <Col md={6}>
                     <PSelect
                       name="year"
                       placeholder="Year"
@@ -161,7 +161,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                       }}
                       filterOption={false}
                     />
-                  </Col>
+                  </Col> */}
                 </Row>
               );
             }}

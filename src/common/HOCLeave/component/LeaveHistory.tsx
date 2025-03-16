@@ -107,10 +107,8 @@ export const LeaveApp_History = ({
       method: "post",
       payload: {
         employeeId: empId,
-        fromDate: moment(values?.fromDate)?.format(
-          "YYYY-MM-DDTHH:mm:ss.SSSSSS"
-        ),
-        toDate: moment(values?.toDate)?.format("YYYY-MM-DDTHH:mm:ss.SSSSSS"),
+        fromDate: moment(values?.fromDate)?.format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate)?.format("YYYY-MM-DD"),
         leaveTypeList: [],
         approvalStatusList: [],
       },
