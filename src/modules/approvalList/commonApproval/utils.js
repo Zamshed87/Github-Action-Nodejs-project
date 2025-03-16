@@ -1107,18 +1107,7 @@ export const columnsRemoteAttendance = [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
-    render: (time) => {
-      if (!time) return "N/A";
-
-      const dateObj = new Date(`1970-01-01T${time}Z`);
-      const formattedTime = dateObj.toLocaleString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      return formattedTime;
-    },
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "Place Name",
@@ -1162,17 +1151,17 @@ export const columnsLocationDevice = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1, // Serial number
-    fixed:"left",
+    fixed: "left",
   },
   {
     title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
-    fixed:"left",
+    fixed: "left",
   },
   {
     title: "Location Or Device",
     dataIndex: ["applicationInformation", "isLocationRegister"],
-    fixed:"left",
+    fixed: "left",
     render: (isLocationRegister) => (
       <div>{isLocationRegister ? "Location" : "Device"}</div>
     ),
