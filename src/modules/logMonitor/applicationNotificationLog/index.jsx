@@ -8,13 +8,13 @@ import LogFiltersSidebar from "./components/LogFiltersSidebar";
 import { useState } from "react";
 import { Form } from "antd";
 import { PModal } from "Components/Modal";
+import ReactJson from "react-json-view";
 
 const ApplicationNotificationLog = () => {
   const [modal, setModal] = useState({ open: false, data: {} });
   const [form] = Form.useForm();
   const [openFilter, setOpenFilter] = useState(false);
-  const { pages, setPages, data, fetchNotificationLogs, loading, permission } =
-    useNotificationLogs({ form });
+  const { pages, setPages, data, fetchNotificationLogs, loading, permission } = useNotificationLogs({ form });
   return permission?.isView ? (
     <PForm
       id="logFiltersForm"
@@ -76,7 +76,7 @@ const ApplicationNotificationLog = () => {
         onCancel={() => {
           setModal({ open: false, data: {} });
         }}
-        components={<div>{modal?.data}</div>}
+        components={<div>{modal?.data && renderData(modal?.data)}</div>}
         width={1000}
       />
     </PForm>
@@ -86,3 +86,22 @@ const ApplicationNotificationLog = () => {
 };
 
 export default ApplicationNotificationLog;
+
+const isJson = (data) => {
+  try {
+    JSON.parse(data);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const renderData = (data) => {
+  if (isJson(data)) {
+    // If it's valid JSON, render it with react-json-view
+    return <ReactJson src={JSON.parse(data)} />;
+  } else {
+    // Otherwise, render as plain text
+    return <div>{data}</div>;
+  }
+};

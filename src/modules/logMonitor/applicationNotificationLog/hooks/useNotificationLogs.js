@@ -50,7 +50,6 @@ const useNotificationLogs = ({form}) => {
       .join("&");
   
     const url = `/LogMonitor/GetApplicationNotificationLog?${filteredParams}`;
-    console.log("API URL:", url);
   
     getData(url, (res) => {
       setData(res?.Result);
