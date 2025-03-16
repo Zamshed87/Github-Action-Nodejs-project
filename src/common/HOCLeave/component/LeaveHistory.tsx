@@ -104,13 +104,15 @@ export const LeaveApp_History = ({
     const statusIds = values?.leaveType?.map((i: any) => i?.value);
     landingApi.action({
       urlKey: "GetAllLeave",
-      method: "GET",
-      params: {
+      method: "post",
+      payload: {
         employeeId: empId,
-        fromDate: moment(values?.fromDate)?.format("YYYY-MM-DD"),
-        toDate: moment(values?.toDate)?.format("YYYY-MM-DD"),
-        leaveTypeList: ids || [],
-        approvalStatusList: statusIds || [],
+        fromDate: moment(values?.fromDate)?.format(
+          "YYYY-MM-DDTHH:mm:ss.SSSSSS"
+        ),
+        toDate: moment(values?.toDate)?.format("YYYY-MM-DDTHH:mm:ss.SSSSSS"),
+        leaveTypeList: [],
+        approvalStatusList: [],
       },
       onSuccess: (res) => {
         // res.forEach((item, idx) => {
@@ -275,121 +277,6 @@ export const LeaveApp_History = ({
       ),
     },
   ];
-  //   const detailsHeader: any = [
-  //     {
-  //       title: "SL",
-  //       render: (_value: any, _row: any, index: number) => index + 1,
-  //       align: "center",
-  //       width: 30,
-  //     },
-  //     {
-  //       title: "Deposit Type",
-  //       dataIndex: "depositTypeName",
-  //       width: 80,
-  //     },
-  //     {
-  //       title: "Employee Name",
-  //       dataIndex: "employeeName",
-  //       render: (_: any, rec: any) => {
-  //         return (
-  //           <div className="d-flex align-items-center">
-  //             <Avatar title={rec?.employeeName} />
-  //             <span className="ml-2">{rec?.employeeName}</span>
-  //           </div>
-  //         );
-  //       },
-
-  //       width: 150,
-  //     },
-  //     {
-  //       title: "Employee Code",
-  //       dataIndex: "employeeCode",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Department",
-  //       dataIndex: "department",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Designation",
-  //       dataIndex: "designation",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Deposit Amount",
-  //       dataIndex: "depositAmount",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Deposits Month Year",
-  //       // dataIndex: "monthYear",
-  //       render: (_: any, data: any) =>
-  //         data?.monthYear ? moment(data?.depositDate).format("MMM-YYYY") : "-",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "comment",
-  //       dataIndex: "comment",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Status",
-  //       dataIndex: "status",
-  //       render: (_: any, rec: any) => {
-  //         return (
-  //           <div>
-  //             {rec?.status === "Approved" ? (
-  //               <Tag color="green">{rec?.status}</Tag>
-  //             ) : // ) : rec?.status === "Inactive" ? (
-  //             //   <Tag color="red">{rec?.status}</Tag>
-  //             rec?.status === "Pending" ? (
-  //               <Tag color="orange">{rec?.status}</Tag>
-  //             ) : (
-  //               <Tag color="red">{rec?.status}</Tag>
-  //               // <Tag color="gold">{rec?.status}</Tag>
-  //             )}
-  //           </div>
-  //         );
-  //       },
-  //       width: 100,
-  //     },
-
-  //     {
-  //       title: "",
-  //       width: 30,
-
-  //       align: "center",
-  //       render: (_: any, item: any) => (
-  //         <TableButton
-  //           buttonsList={
-  //             [
-  //               // {
-  //               //   type: "delete",
-  //               //   onClick: () => {
-  //               //     deleteDepositById(item);
-  //               //   },
-  //               // },
-  //             ]
-  //           }
-  //         />
-  //       ),
-  //     },
-  //   ];
-
-  //   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  //     const { fromDate } = form.getFieldsValue(true);
-  //     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //     // Disable dates before fromDate and after next3daysForEmp
-  //     return current && current < fromDateMoment.startOf("day");
-  //   };
-
-  const onFinish = () => {
-    landingApiCall();
-  };
-  useEffect(() => {
-    landingApiCall();
-  }, []);
 
   //   const deleteDepositById = (item: any) => {
   //     deleteApi?.action({
@@ -421,7 +308,6 @@ export const LeaveApp_History = ({
           leaveType: [{ value: 0, label: "All" }],
           status: { value: 2, label: "All" },
         }}
-        onFinish={onFinish}
       >
         <PCard>
           <PCardHeader title={`Leave History`} />
@@ -462,7 +348,6 @@ export const LeaveApp_History = ({
                   ]}
                   onChange={(date) => {
                     form.setFieldsValue({
-                      fromDate: date,
                       toDate: date,
                     });
                   }}
@@ -532,7 +417,14 @@ export const LeaveApp_History = ({
                   marginTop: "23px",
                 }}
               >
-                <PButton type="primary" action="submit" content="View" />
+                <PButton
+                  type="primary"
+                  action="button"
+                  content="View"
+                  onClick={() => {
+                    landingApiCall();
+                  }}
+                />
               </Col>
             </Row>
           </PCardBody>
