@@ -117,7 +117,7 @@ const tableHeadColumn = (
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId, employeeId } = useSelector(
+  const { orgId, buId, wgId, wId, employeeId,intAccountId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -595,7 +595,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       <PCard>
         <PCardHeader title="Adjust Attendance">
           <PSelect
-            options={AttendanceType}
+            options={AttendanceType(intAccountId)}
             name="attendanceAdujust"
             placeholder="Change Attendance"
             style={{ width: "200px" }}
