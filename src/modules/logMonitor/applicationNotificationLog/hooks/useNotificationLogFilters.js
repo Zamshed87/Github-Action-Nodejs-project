@@ -78,7 +78,6 @@ const useNotificationLogFilters = ({ form }) => {
   const getPushNotificationStatus = (type) => {
     getEnumData(type, setPushNotifyStatus);
   }
-
   const values = {
     businessUnit: { label: buName, value: buId },
     workplaceGroup: {
@@ -92,15 +91,32 @@ const useNotificationLogFilters = ({ form }) => {
     fromDate: defaultFromDate,
     toDate: defaultToDate,
   };
+  useEffect(() => {
+    if (!form) return; // Ensure form is ready
   
+    const values = {
+      businessUnit: { label: buName, value: buId },
+      workplaceGroup: {
+        label: "All",
+        value: workplaceGroupDDL?.map((w) => w?.WorkplaceGroupId)?.join(","),
+      },
+      workplaceList: {
+        label: "All",
+        value: workplaceDDL?.map((w) => w?.WorkplaceId)?.join(","),
+      },
+      fromDate: defaultFromDate,
+      toDate: defaultToDate,
+    };
+  
+    form.setFieldsValue(values);
+  }, [form, orgId, buId, wgId, wId]);
+
   useEffect(() => {
     getWorkplaceGroupDDL();
     getWorkplaceDDL();
     getEnumData("NotificationType", setNotificationType);
     getEnumData("ApplicationCategory", setApplicationCategory);
-    form.setFieldsValue(values);
   }, [orgId, buId, wgId, wId]);
-
   return {
     initialValues: values,
     businessUnitDDL: businessUnitDDL?.map((bu) => ({

@@ -1,6 +1,7 @@
 import { Row, Col, Drawer } from "antd";
 import { PButton, PSelect } from "Components";
 import useNotificationLogFilters from "../hooks/useNotificationLogFilters";
+import { useEffect } from "react";
 
 const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
   const {
@@ -13,7 +14,17 @@ const LogFiltersSidebar = ({ form, openFilter, setOpenFilter }) => {
     getEmployeeDDL,
     applicationCategory,
     pushNotifyStatus,
+    getPushNotificationStatus
   } = useNotificationLogFilters({ form });
+
+  useEffect(() => {
+    if (openFilter) {
+      const { notificationType } = form.getFieldsValue(true);
+      if (notificationType) {
+        getPushNotificationStatus(notificationType.label + "NotifyStatus");
+      }
+    }
+  }, [openFilter]);
 
   return (
     <Drawer
