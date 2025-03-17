@@ -3,17 +3,10 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  dateFormatterForInput,
-  monthFirstDate,
-  monthLastDate,
-} from "utility/dateFormatter";
+import { dateFormatterForInput } from "utility/dateFormatter";
 import IConfirmModal from "../IConfirmModal";
-import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
-import {
-  createLeaveApplication,
-  getEmployeeLeaveBalanceAndHistory,
-} from "./helperAPI";
+import { getPeopleDeskAllLanding } from "../api";
+import { createLeaveApplication } from "./helperAPI";
 import {
   empMgmtLeaveApplicationDto,
   getLvePunishmentData,
@@ -22,8 +15,6 @@ import {
 } from "./utils";
 import { useApiRequest } from "Hooks";
 import { todayDate } from "utility/todayDate";
-import { create } from "lodash";
-import { formatTime12Hour } from "utility/formatTime12Hour";
 
 const withLeaveApplication = (WrappedComponent, isAdmin) => {
   const HocLeaveApplication = () => {
