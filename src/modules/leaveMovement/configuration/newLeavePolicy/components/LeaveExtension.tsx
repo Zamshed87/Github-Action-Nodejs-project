@@ -61,7 +61,7 @@ export default function LeaveExtension({
         toast.error(
           res?.response?.data?.[0] ||
             res?.response?.data?.message ||
-            res?.response?.data?.errors?.["GeneralPayload.Description"][0] ||
+            res?.response?.data?.errors?.["GeneralPayload.Description"]?.[0] ||
             res?.response?.data?.Message ||
             res?.response?.data?.title ||
             res?.response?.title ||
