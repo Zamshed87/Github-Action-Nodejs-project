@@ -297,6 +297,7 @@ export const PolicyCreateExtention = () => {
             businessUnitId: buId,
             workplaceGroupId: wgId,
             stepperId: 1,
+            policyId: id || 0,
             policyName: values?.strPolicyName,
             leaveTypeId: values?.leaveType?.value,
             displayName: values?.strDisplayName,
