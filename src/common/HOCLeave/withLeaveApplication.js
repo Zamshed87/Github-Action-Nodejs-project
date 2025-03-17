@@ -245,7 +245,6 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
               },
               onError: (error) => {
                 console.log({ error });
-                callback();
                 setLoad(false);
 
                 setLoad(false);
