@@ -203,6 +203,16 @@ export const offDayAssignDtoCol = (
       fieldType: "string",
     },
     {
+      title: "Dotted Supervisor",
+      dataIndex: "dottedSupervisorName",
+      sorter: true,
+    },
+    {
+      title: "Line Manager",
+      dataIndex: "lineManagerName",
+      sorter: true,
+    },
+    {
       title: "Off Day",
       dataIndex: "offDayList",
       render: (record) => (
@@ -310,32 +320,32 @@ export const getOffDayLandingHandler = (
     let newData =
       res?.length > 0
         ? res?.map((item) => {
-            return {
-              ...item,
-              selectCheckbox:
-                status !== "saved" &&
-                checked.length > 0 &&
-                isAlreadyPresent(item) >= 0,
-              offDayList:
-                !item?.isFriday &&
+          return {
+            ...item,
+            selectCheckbox:
+              status !== "saved" &&
+              checked.length > 0 &&
+              isAlreadyPresent(item) >= 0,
+            offDayList:
+              !item?.isFriday &&
                 !item?.isSaturday &&
                 !item?.isSunday &&
                 !item?.isMonday &&
                 !item?.isThursday &&
                 !item?.isTuesday &&
                 !item?.isWednesday
-                  ? "N/A"
-                  : printDays(item),
-              offDay:
-                item?.isFriday ||
-                item?.isSaturday ||
-                item?.isSunday ||
-                item?.isMonday ||
-                item?.isThursday ||
-                item?.isTuesday ||
-                item?.isWednesday,
-            };
-          })
+                ? "N/A"
+                : printDays(item),
+            offDay:
+              item?.isFriday ||
+              item?.isSaturday ||
+              item?.isSunday ||
+              item?.isMonday ||
+              item?.isThursday ||
+              item?.isTuesday ||
+              item?.isWednesday,
+          };
+        })
         : [];
     setLanding(newData);
     res?.length > 0 &&
@@ -525,12 +535,12 @@ export const getEmployeeOffdayHistory = async (
           ...i,
           offDayList:
             !i?.isFriday &&
-            !i?.isSaturday &&
-            !i?.isSunday &&
-            !i?.isMonday &&
-            !i?.isThursday &&
-            !i?.isTuesday &&
-            !i?.isWednesday
+              !i?.isSaturday &&
+              !i?.isSunday &&
+              !i?.isMonday &&
+              !i?.isThursday &&
+              !i?.isTuesday &&
+              !i?.isWednesday
               ? "N/A"
               : printDays(i),
         };

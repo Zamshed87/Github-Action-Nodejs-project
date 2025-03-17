@@ -9,7 +9,7 @@ export const formatDate = (date) => {
   return moment(date).format("YYYY-MM-DD");
 };
 
-const useNotificationLogs = () => {
+const useNotificationLogs = ({form}) => {
   const dispatch = useDispatch();
   const {
     profileData: { wId },
@@ -22,42 +22,41 @@ const useNotificationLogs = () => {
     total: 0,
   });
 
-  const [form] = Form.useForm();
   const [data, getData, loading, setData] = useAxiosGet({});
-
-  // form fields
-  const businessUnit = Form.useWatch("businessUnit", form);
-  const workplaceGroup = Form.useWatch("workplaceGroup", form);
-  const workplaceList = Form.useWatch("workplaceList", form);
-  const notificationType = Form.useWatch("notificationType", form);
-  const fromDate = Form.useWatch("fromDate", form);
-  const toDate = Form.useWatch("toDate", form);
-  const search = Form.useWatch("search", form);
   
   const fetchNotificationLogs = (pages) => {
-    // we will need this
-    // const WorkplaceIdList = workplaceList?.map((w) => w.value)?.join(",");
-    // const notificationCategory = null;
-    // &NotificationCategory=${notificationCategory}
-    const FormattedFromDate = fromDate ? formatDate(fromDate) : undefined;
-    const FormattedToDate = toDate ? formatDate(toDate) : undefined;
-    getData(
-      `/LogMonitor/GetApplicationNotificationLog?businessUnitId=${
-        businessUnit?.value
-      }&WorkplaceGroupId=${
-        workplaceGroup?.value
-      }&WorkPlaceId=${wId}&WorkplaceIdList=${workplaceList?.value}&Search=${
-        search ?? ""
-      }&NotificationType=${
-        notificationType?.value
-      }&FromDate=${FormattedFromDate ?? ""}&ToDate=${
-        FormattedToDate ?? ""
-      }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`,
-      (res) => {
-        setData(res?.Result);
-      }
-    );
+    const formValues = form.getFieldsValue(true); // Get all current form values
+  
+    const formattedParams = {
+      businessUnitId: formValues.businessUnit?.value,
+      WorkplaceGroupIds: formValues.workplaceGroup?.value,
+      WorkPlaceId: wId,
+      WorkplaceIdList: formValues.workplaceList?.value,
+      Search: formValues.search ?? "",
+      NotificationType: formValues.notificationType?.value,
+      applicationCategory: formValues.applicationCategory?.value,
+      pushNotifyStatus: formValues.pushNotifyStatus?.value,
+      employeeId: formValues.employee?.value,
+      FromDate: formValues.fromDate ? formatDate(formValues.fromDate) : undefined,
+      ToDate: formValues.toDate ? formatDate(formValues.toDate) : undefined,
+      pageNo: pages?.current,
+      pageSize: pages?.pageSize,
+    };
+  
+    // Remove undefined or null values
+    const filteredParams = Object.entries(formattedParams)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+  
+    const url = `/LogMonitor/GetApplicationNotificationLog?${filteredParams}`;
+  
+    getData(url, (res) => {
+      setData(res?.Result);
+    });
   };
+  
+  
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Log Monitor"));
@@ -72,7 +71,6 @@ const useNotificationLogs = () => {
   });
 
   return {
-    form,
     pages,
     setPages,
     data,

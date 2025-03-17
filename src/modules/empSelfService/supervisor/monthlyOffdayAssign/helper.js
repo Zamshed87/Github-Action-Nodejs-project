@@ -51,32 +51,32 @@ export const getOffDayLandingHandler = (
     let newData =
       res?.length > 0
         ? res?.map((item) => {
-            return {
-              ...item,
-              selectCheckbox:
-                status !== "saved" &&
-                checked.length > 0 &&
-                isAlreadyPresent(item) >= 0,
-              offDayList:
-                !item?.isFriday &&
+          return {
+            ...item,
+            selectCheckbox:
+              status !== "saved" &&
+              checked.length > 0 &&
+              isAlreadyPresent(item) >= 0,
+            offDayList:
+              !item?.isFriday &&
                 !item?.isSaturday &&
                 !item?.isSunday &&
                 !item?.isMonday &&
                 !item?.isThursday &&
                 !item?.isTuesday &&
                 !item?.isWednesday
-                  ? "N/A"
-                  : printDays(item),
-              offDay:
-                item?.isFriday ||
-                item?.isSaturday ||
-                item?.isSunday ||
-                item?.isMonday ||
-                item?.isThursday ||
-                item?.isTuesday ||
-                item?.isWednesday,
-            };
-          })
+                ? "N/A"
+                : printDays(item),
+            offDay:
+              item?.isFriday ||
+              item?.isSaturday ||
+              item?.isSunday ||
+              item?.isMonday ||
+              item?.isThursday ||
+              item?.isTuesday ||
+              item?.isWednesday,
+          };
+        })
         : [];
     setLanding(newData);
     setFilterLanding?.(newData);
@@ -227,6 +227,16 @@ export const offDayAssignDtoCol = (
       filter: true,
       filterDropDownList: headerList[`supervisorNameList`],
       fieldType: "string",
+    },
+    {
+      title: "Dotted Supervisor",
+      dataIndex: "dottedSupervisorName",
+      sorter: true,
+    },
+    {
+      title: "Line Manager",
+      dataIndex: "lineManagerName",
+      sorter: true,
     },
     {
       className: "text-center",
