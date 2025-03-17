@@ -15,6 +15,7 @@ import {
   columnAdditionDeduction,
   columnDeposit,
   columnDisbursment,
+  columnFinalSettlement,
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
@@ -328,6 +329,10 @@ const CommonApprovalComponent = () => {
               ? columnTransferPromotion
               : id == 20
               ? columnSalaryGenerate
+              : id == 30
+              ? columnFinalSettlement
+              : id == 29
+              ? columnsSeparation(setViewData, setViewModal)
               : columnsDefault
           }
           bordered

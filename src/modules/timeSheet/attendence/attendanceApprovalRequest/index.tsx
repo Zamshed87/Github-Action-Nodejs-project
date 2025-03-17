@@ -120,6 +120,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
     wgId,
     wId,
     employeeId,
+    intAccountId,
     intProfileImageUrl,
     userName,
     strDesignation,
@@ -495,7 +496,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
             format={"MMMM-YYYY"}
           />
           <PSelect
-            options={AttendanceType}
+            options={AttendanceType(intAccountId)}
             name="attendanceAdujust"
             placeholder="Change Attendance"
             style={{ width: "200px" }}

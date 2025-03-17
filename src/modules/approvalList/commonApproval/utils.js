@@ -55,6 +55,77 @@ export const columnsDefault = [
   },
 ];
 
+export const columnFinalSettlement = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+    filter: false,
+    sorter: true,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+    width: "90px",
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+    width: "70px",
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+    width: "70px",
+  },
+  {
+    title: "Application Type",
+    dataIndex: ["applicationType"],
+    width: "90px",
+  },
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+    width: "90px",
+  },
+  
+  {
+    title: "Last Working Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Effective Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
+];
+
 export const columnSalaryGenerate = [
   {
     title: "SL",
@@ -140,6 +211,7 @@ export const columnsLeave = (dispatch) => [
     title: "SL",
     align: "center",
     render: (_, __, index) => index + 1,
+    width: "20px",
   },
   {
     title: "Employee Code",
@@ -629,7 +701,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     dataIndex: ["applicationInformation", "separationDate"],
     width: "90px",
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -637,7 +709,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -645,7 +717,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -670,7 +742,6 @@ export const columnsSeparation = (setViewData, setViewModal) => [
         <EyeOutlined
           style={{ marginRight: 5 }}
           onClick={() => {
-            console.log("render", render);
             setViewData(render?.applicationInformation);
             setViewModal(true);
           }}
@@ -1107,18 +1178,7 @@ export const columnsRemoteAttendance = [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
-    render: (time) => {
-      if (!time) return "N/A";
-
-      const dateObj = new Date(`1970-01-01T${time}Z`);
-      const formattedTime = dateObj.toLocaleString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      return formattedTime;
-    },
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "Place Name",
@@ -1162,17 +1222,17 @@ export const columnsLocationDevice = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1, // Serial number
-    fixed:"left",
+    fixed: "left",
   },
   {
     title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
-    fixed:"left",
+    fixed: "left",
   },
   {
     title: "Location Or Device",
     dataIndex: ["applicationInformation", "isLocationRegister"],
-    fixed:"left",
+    fixed: "left",
     render: (isLocationRegister) => (
       <div>{isLocationRegister ? "Location" : "Device"}</div>
     ),
