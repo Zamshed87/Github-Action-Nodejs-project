@@ -380,7 +380,7 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       sort: true,
       filter: false,
-      render: (item) => (
+      render: (data) => (
         <div className="d-flex justify-content-center align-items-center">
           <div>
             <div className="content tableBody-title d-flex align-items-center">
@@ -392,8 +392,8 @@ export const separationApplicationLandingTableColumn = (
                         <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
                         <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
                         <tr>
-                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{item?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
-                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{item?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
                         </tr>
                       </table>
                     </div>
@@ -410,25 +410,31 @@ export const separationApplicationLandingTableColumn = (
             </div>
           </div>
           <div className="ml-2">
-            {item?.approvalStatus === "Pending" && (
+            {data?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.approvalStatus === "Cancelled" && (
+            {data?.approvalStatus === "Cancelled" && (
               <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {item?.approvalStatus === "Approved" && (
+            {data?.approvalStatus === "Approved" && (
               <Chips label="Approved" classess="success p-2" />
             )}
-            {item?.approvalStatus === "Withdrawn" && (
+            {data?.approvalStatus === "Withdrawn" && (
               <Chips label="Withdrawn" classess="danger p-2" />
             )}
-            {item?.approvalStatus === "Clearance" && (
+            {data?.approvalStatus === "Clearance" && (
               <Chips label="Clearance" classess="info p-2" />
             )}
-            {item?.approvalStatus === "Final Settlement Completed" && (
+            {data?.approvalStatus === "Clearance Running" && (
+              <Chips label="Clearance Running" classess="warning p-2" />
+            )}
+            {data?.approvalStatus === "Clearance Completed" && (
+              <Chips label="Clearance Completed" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Final Settlement Completed" && (
               <Chips label="Final Settlement Completed" classess="success p-2" />
             )}
-            {item?.approvalStatus === "Released" && (
+            {data?.approvalStatus === "Released" && (
               <Chips label="Released" classess="indigo p-2" />
             )}
           </div>
