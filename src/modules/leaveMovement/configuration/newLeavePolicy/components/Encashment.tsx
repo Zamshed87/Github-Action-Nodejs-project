@@ -224,26 +224,51 @@ export const Encashment = ({
                       ]}
                     />
                   </Col>
-                  <Col md={6} sm={24}>
-                    <PInput
-                      type="number"
-                      name="serviceEndLength"
-                      label="To Service Length (Month)"
-                      placeholder=""
-                      rules={[
-                        {
-                          message: "Number must be positive",
-                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
-                        },
-                        {
-                          required:
-                            isEncashment?.value === 1 &&
-                            tableData?.length === 0,
-                          message: "To Service Length (Month) is required",
-                        },
-                      ]}
-                    />
-                  </Col>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { serviceStartLength } = form.getFieldsValue(true);
+
+                      return (
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="number"
+                            name="serviceEndLength"
+                            label="To Service Length (Month)"
+                            placeholder=""
+                            rules={[
+                              {
+                                message: "Number must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
+                              {
+                                required:
+                                  isEncashment?.value === 1 &&
+                                  tableData?.length === 0,
+                                message:
+                                  "To Service Length (Month) is required",
+                              },
+                              {
+                                validator: (_, value) => {
+                                  if (
+                                    serviceStartLength &&
+                                    value <= serviceStartLength
+                                  ) {
+                                    return Promise.reject(
+                                      "must be greater than From Service Length (Month)"
+                                    );
+                                  }
+                                  return Promise.resolve();
+                                },
+                              },
+                            ]}
+                          />
+                        </Col>
+                      );
+                    }}
+                  </Form.Item>
+
                   <Col md={6} sm={24}>
                     <PSelect
                       // mode="multiple"
