@@ -218,9 +218,18 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
               </div>
               <p
                 className="viewBtn"
-                onClick={() =>
-                  window.open("/approval/movementApproval", "_blank").focus()
-                }
+                onClick={() => {
+                  const serializableData = {
+                    applicationTypeId: 14,
+                    applicationType: "Movement Application Approval ",
+                  };
+                  history.push(
+                    `/approval/${serializableData?.applicationTypeId}`,
+                    {
+                      state: serializableData,
+                    }
+                  );
+                }}
               >
                 View Details{" "}
                 <span className="ml-2">
@@ -258,9 +267,18 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
               </div>
               <p
                 className="viewBtn"
-                onClick={() =>
-                  window.open("/approval/leaveApproval", "_blank").focus()
-                }
+                onClick={() => {
+                  const serializableData = {
+                    applicationTypeId: 8,
+                    applicationType: "Leave Application Approval ",
+                  };
+                  history.push(
+                    `/approval/${serializableData?.applicationTypeId}`,
+                    {
+                      state: serializableData,
+                    }
+                  );
+                }}
               >
                 View Details{" "}
                 <span className="ml-2">
