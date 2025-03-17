@@ -13,7 +13,6 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { separationApplicationLandingTableColumn } from "../helper";
 import ChargeHandOver from "./components/ChargeHandOver";
-import InterViewModal from "./components/InterViewModal";
 
 const paginationSize = 100;
 export const formatDate = (date) => {
@@ -123,7 +122,12 @@ export default function SelfServiceSeparation() {
                 onCancel={() => {
                   setChargeHandOverModal(false);
                 }}
-                components={<ChargeHandOver separationId={separationId} />}
+                components={
+                  <ChargeHandOver
+                    separationId={separationId}
+                    getSeparationData={getData}
+                  />
+                }
                 width={1000}
               />
             </>

@@ -335,6 +335,9 @@ export const separationApplicationLandingTableColumn = (
             {data?.approvalStatus === "Clearance" && (
               <Chips label="Clearance" classess="info p-2" />
             )}
+            {data?.approvalStatus === "Clearance Running" && (
+              <Chips label="Clearance Running" classess="warning p-2" />
+            )}
             {data?.approvalStatus === "Clearance Completed" && (
               <Chips label="Clearance Completed" classess="success p-2" />
             )}

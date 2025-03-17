@@ -15,6 +15,7 @@ export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
 export const statusDDL = [
     { value: "", label: "All" },
     { value: "Clearance", label: "Clearance" },
+    { value: "Clearance Running", label: "Clearance Running" },
     { value: "Clearance Completed", label: "Clearance Completed" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
@@ -249,6 +250,9 @@ export const getFinalSettlementLandingTableColumn = (
                     )}
                     {data?.approvalStatus === "Clearance" && (
                         <Chips label="Clearance" classess="info p-2" />
+                    )}
+                    {data?.approvalStatus === "Clearance Running" && (
+                        <Chips label="Clearance Running" classess="warning p-2" />
                     )}
                     {data?.approvalStatus === "Clearance Completed" && (
                         <Chips label="Clearance Completed" classess="success p-2" />

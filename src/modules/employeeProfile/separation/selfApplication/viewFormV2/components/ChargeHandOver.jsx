@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 
-export default function ChargeHandOver({ separationId }) {
+export default function ChargeHandOver({ separationId, getSeparationData }) {
   const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -100,8 +100,6 @@ export default function ChargeHandOver({ separationId }) {
   const saveHandler = (values, cb) => {
     if (!values?.employeeName) {
       return toast.warning("Employee Name is required!!!");
-    } else if (!values?.comment.trim()) {
-      return toast.warning("Comment is required!!!");
     }
 
     const modifiedValues = {
@@ -133,6 +131,7 @@ export default function ChargeHandOver({ separationId }) {
       payload,
       () => {
         getData();
+        getSeparationData();
       },
       true
     );

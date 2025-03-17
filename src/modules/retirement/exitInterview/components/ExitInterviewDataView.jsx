@@ -41,19 +41,23 @@ export default function ExitInterviewDataView({ id, empId, questionId }) {
       {/* Interview Details */}
       <Descriptions column={2} bordered size="small">
         <Descriptions.Item label="Interview Type">
-          {singleData?.typeName}
+          {singleData?.typeName || ""}
         </Descriptions.Item>
         <Descriptions.Item label="Interview Title">
-          {singleData?.title}
+          {singleData?.title || ""}
         </Descriptions.Item>
         <Descriptions.Item label="Description" span={3}>
-          {singleData?.description}
+          {singleData?.description || ""}
         </Descriptions.Item>
         <Descriptions.Item label="Start Time">
-          {moment(singleData?.startDateTime).format("hh:mm:ss A")}
+          {singleData?.startDateTime
+            ? moment(singleData?.startDateTime).format("hh:mm:ss A")
+            : ""}
         </Descriptions.Item>
         <Descriptions.Item label="End Time">
-          {moment(singleData?.endDateTime).format("hh:mm:ss A")}
+          {singleData?.endDateTime
+            ? moment(singleData?.endDateTime).format("hh:mm:ss A")
+            : ""}
         </Descriptions.Item>
       </Descriptions>
 
