@@ -37,11 +37,11 @@ export default function ViewFormComponent({ objProps }) {
   };
 
   const dispatch = useDispatch();
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <>
-    {loading && <Loading/>}
+      {loading && <Loading />}
       <div className="viewModal">
         <Modal
           show={show}
@@ -119,27 +119,34 @@ export default function ViewFormComponent({ objProps }) {
                       <h6
                         className="title-item-name"
                         onClick={() => {
-                          dispatch(
-                            getDownlloadFileView_Action(
-                              viewData?.documentId,
-                              "",
-                              "",
-                              setLoading
-                            )
-                          );
+                          if (viewData?.documentId) {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                viewData.documentId,
+                                "",
+                                "",
+                                setLoading
+                              )
+                            );
+                          }
                         }}
                         style={{
                           fontSize: "12px",
                           fontWeight: "500",
-                          color: "#0072E5",
-                          cursor: "pointer",
+                          color: viewData?.documentId ? "#0072E5" : "#A0A0A0",
+                          cursor: viewData?.documentId
+                            ? "pointer"
+                            : "not-allowed",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "5px",
                         }}
                       >
                         {viewData?.documentId ? (
-                          <div>
+                          <>
                             <Attachment style={{ fontSize: "20px" }} />
                             {`Attachment`}
-                          </div>
+                          </>
                         ) : (
                           "No attachment"
                         )}
