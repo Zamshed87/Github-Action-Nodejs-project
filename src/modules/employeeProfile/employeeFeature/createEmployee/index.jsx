@@ -936,6 +936,7 @@ const CreateAndEditEmploye = () => {
                     name="workplace"
                     label="Workplace/Concern"
                     placeholder="Workplace/Concern"
+                    showSearch
                     onChange={(value, op) => {
                       form.setFieldsValue({
                         workplace: op,
