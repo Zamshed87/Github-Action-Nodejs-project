@@ -249,11 +249,11 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
 
                 setLoad(false);
                 toast.error(
-                  error?.response?.data?.message[0] ||
+                  error?.response?.data?.message?.[0] ||
                     error?.response?.data?.message ||
                     error?.response?.data?.errors?.[
                       "GeneralPayload.Description"
-                    ][0] ||
+                    ]?.[0] ||
                     error?.response?.data?.Message ||
                     error?.response?.data?.title ||
                     error?.response?.title ||

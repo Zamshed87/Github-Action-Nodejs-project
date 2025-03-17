@@ -275,9 +275,11 @@ export const LeaveApp_History = ({
 
       onError: (error: any) => {
         toast.error(
-          error?.response?.data?.message[0] ||
+          error?.response?.data?.message?.[0] ||
             error?.response?.data?.message ||
-            error?.response?.data?.errors?.["GeneralPayload.Description"][0] ||
+            error?.response?.data?.errors?.[
+              "GeneralPayload.Description"
+            ]?.[0] ||
             error?.response?.data?.Message ||
             error?.response?.data?.title ||
             error?.response?.title ||

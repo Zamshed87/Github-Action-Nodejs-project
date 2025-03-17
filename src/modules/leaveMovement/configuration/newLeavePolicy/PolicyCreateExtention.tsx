@@ -128,7 +128,7 @@ export const PolicyCreateExtention = () => {
             error?.response?.data?.message ||
               error?.response?.data?.errors?.[
                 "GeneralPayload.Description"
-              ][0] ||
+              ]?.[0] ||
               error?.response?.data?.Message ||
               error?.response?.data?.title ||
               error?.response?.title ||
@@ -993,7 +993,7 @@ export const PolicyCreateExtention = () => {
                                 error?.response?.data?.message ||
                                   error?.response?.data?.errors?.[
                                     "GeneralPayload.Description"
-                                  ][0] ||
+                                  ]?.[0] ||
                                   error?.response?.data?.Message ||
                                   error?.response?.data?.title ||
                                   error?.response?.title ||
