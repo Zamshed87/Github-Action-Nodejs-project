@@ -215,7 +215,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
-
     const payload = rowGenerate.map((item: any) => ({
       ...item,
       intBonusSetupId: item?.intBonusSetupId || 0,
@@ -234,7 +233,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       intMaximumServiceLengthMonth: values?.maxServiceLengthMonth || 0,
       intMinimumServiceLengthDays: values?.minServiceLengthDay || 0,
       intMaximumServiceLengthDays: values?.maxServiceLengthDay || 0,
-      strBonusPercentageOn: values?.bounsDependOn === 1 ? "Gross" : "Basic",
+      strBonusPercentageOn: values?.bounsDependOn?.value ? values?.bounsDependOn?.value == 1 ? "Gross" : "Basic" : values?.bounsDependOn == 1 ? "Gross" : "Basic" ,
       numBonusPercentage: values?.bonusPercentage || 0,
       isDividedbyServiceLength: values?.isDividedByLength || false,
       intCreatedBy: employeeId || 0,
@@ -266,11 +265,11 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
     });
   };
   const [open, setOpen] = useState(false);
-  console.log("rowGenerate from main", rowGenerate);
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     document.title = "Bonus Setup";
   }, [dispatch]);
+
 
   useEffect(() => {
     const formData = {
@@ -296,7 +295,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       ],
       bounsDependOn: {
         label: headerData?.strBonusPercentageOn || "",
-        value: 0,
+        value: headerData?.strBonusPercentageOn == "Gross" ? 1 : 2,
       },
       bonusPercentage: headerData?.numBonusPercentage || 0,
       religion: [
