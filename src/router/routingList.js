@@ -1600,6 +1600,8 @@ import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGen
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import { NewLeavePolicy } from "modules/leaveMovement/configuration/newLeavePolicy";
+import { PolicyCreateExtention } from "modules/leaveMovement/configuration/newLeavePolicy/PolicyCreateExtention";
 import DepositeType from "modules/configuration/depositeType";
 import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
 import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
@@ -1609,6 +1611,7 @@ import TurnOver from "modules/timeSheet/reports/turnOverReport";
 import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
 import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
 import { SelfExpenseApplicationLanding } from "../modules/expense/updatedExpanseApp/index.tsx";
+import { LeavePolicyDetails } from "modules/leaveMovement/configuration/newLeavePolicy/LeavePolicyDetails";
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 import { CalendarAssignSelfService } from "modules/empSelfService/supervisor/calendar";
 import OffDaySelfService from "modules/empSelfService/supervisor/offDay";
@@ -1758,13 +1761,19 @@ const FinalSettlementLandingv2 = lazy(() =>
   import("../modules/retirement/finalsettlement/index.jsx")
 );
 const FinalSettlementGenerate = lazy(() =>
-  import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
+  import(
+    "../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx"
+  )
 );
 const FinalSettlementRegenerate = lazy(() =>
-  import("../modules/retirement/finalsettlement/components/FinalSettlementRegenerate.jsx")
+  import(
+    "../modules/retirement/finalsettlement/components/FinalSettlementRegenerate.jsx"
+  )
 );
 const FinalSettlementEdit = lazy(() =>
-  import("../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx")
+  import(
+    "../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx"
+  )
 );
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -2208,11 +2217,15 @@ export const routingList = [
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy",
-    component: YearlyLeavePolicy,
+    component: NewLeavePolicy,
+  },
+  {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/view/:id",
+    component: LeavePolicyDetails,
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
-    component: CreateEditLeavePolicy,
+    component: PolicyCreateExtention,
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/extention",
@@ -2222,6 +2235,7 @@ export const routingList = [
     path: "/administration/leaveandmovement/yearlyLeavePolicy/edit/:id",
     component: CreateEditLeavePolicy,
   },
+
   {
     path: "/administration/timeManagement/holidaySetup",
     component: HolidaySetup,
@@ -2280,15 +2294,15 @@ export const routingList = [
   },
   {
     path: "/SelfService/supervisor/calenderAssign",
-    component: CalendarAssignSelfService ,
+    component: CalendarAssignSelfService,
   },
   {
     path: "/SelfService/supervisor/offdayAssign",
-    component: OffDaySelfService ,
+    component: OffDaySelfService,
   },
   {
     path: "/SelfService/supervisor/monthlyOffdayAssign",
-    component: MonthlyOffdayAssignLandingSelfService ,
+    component: MonthlyOffdayAssignLandingSelfService,
   },
   {
     path: "/administration/timeManagement/leavePolicyAssign",
