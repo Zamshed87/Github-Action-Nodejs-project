@@ -505,7 +505,7 @@ export const NewLeavePolicy = () => {
             ]}
             title={`Leave Policy`}
           />
-          {deleteApi?.loading && <Loading />}
+          {(deleteApi?.loading || generateApi?.loading) && <Loading />}
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
