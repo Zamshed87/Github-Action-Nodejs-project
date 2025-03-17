@@ -291,13 +291,10 @@ export const LeaveApp_History = ({
     <>
       <PForm
         form={form}
-        initialValues={
-          {
-            // employee: { value: employeeId, label: userName },
-            // leaveType: [{ value: 0, label: "All" }],
-            // status: { value: 2, label: "All" },
-          }
-        }
+        initialValues={{
+          fromDate: moment().startOf("year"),
+          toDate: moment().endOf("year"),
+        }}
       >
         <PCard>
           <PCardHeader title={`Leave History`} />
@@ -373,12 +370,12 @@ export const LeaveApp_History = ({
 
                     // value && getWorkplace();
                   }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Leave Type is required",
-                    },
-                  ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Leave Type is required",
+                  //   },
+                  // ]}
                 />
               </Col>
               <Col md={5} sm={24}>

@@ -433,7 +433,7 @@ export const NewLeavePolicy = () => {
   };
   useEffect(() => {
     landingApiCall();
-  }, []);
+  }, [wgId, wId]);
 
   const deleteDepositById = (item: any) => {
     deleteApi?.action({
