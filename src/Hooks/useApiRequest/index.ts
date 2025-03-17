@@ -39,7 +39,6 @@ export const useApiRequest = (initialState: any) => {
       isToast &&
         toast.success(
           response?.data?.message ||
-            response?.message[0] ||
             response?.data?.message?.[0] ||
             "Submitted Successfully"
         );

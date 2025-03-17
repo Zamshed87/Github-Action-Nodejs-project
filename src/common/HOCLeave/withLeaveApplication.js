@@ -241,7 +241,7 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
               onSuccess: (res) => {
                 console.log({ res });
                 callback();
-                toast.success(res?.message[0]);
+                toast.success(res?.message?.[0] || "Success");
               },
               onError: (error) => {
                 console.log({ error });
@@ -258,7 +258,8 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
                     error?.response?.data?.title ||
                     error?.response?.title ||
                     error?.response?.message ||
-                    error?.response?.Message
+                    error?.response?.Message ||
+                    "something went wrong"
                 );
               },
             });
