@@ -113,6 +113,7 @@ export const PolicyCreateExtention = () => {
       onSuccess: (data: any) => {
         // setId(data?.data);
         // next();
+        toast.success(data?.message?.[0] || "Created Successfully");
       },
       onError: (error: any) => {
         if (
@@ -970,6 +971,7 @@ export const PolicyCreateExtention = () => {
                           onSuccess: (data: any) => {
                             setId(data?.data);
                             next();
+                            toast.success(data?.message?.[0] || "Success");
                           },
                           onError: (error: any) => {
                             console.log(
