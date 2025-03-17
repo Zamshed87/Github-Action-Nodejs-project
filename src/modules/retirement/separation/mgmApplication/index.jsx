@@ -1,10 +1,6 @@
-import {
-  AddOutlined,
-  FilterAltOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
-import { Col, Drawer, Form, Row } from "antd";
-import { PButton, PForm, PInput, PSelect } from "Components";
+import { AddOutlined } from "@mui/icons-material";
+import { Form } from "antd";
+import CommonFilter from "common/CommonFilter";
 import { PModal } from "Components/Modal";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -17,7 +13,6 @@ import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import PrimaryButton from "../../../../common/PrimaryButton";
-import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   getSeparationLanding,
@@ -55,7 +50,6 @@ export default function ManagementSeparation() {
   });
 
   // state
-  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [id, setId] = useState(null);
@@ -77,16 +71,13 @@ export default function ManagementSeparation() {
   const defaultToDate = moment().endOf("month");
 
   const getData = (pagination, searchText) => {
-    const fromDate = formatDate(values?.fromDate || defaultFromDate);
-    const toDate = formatDate(values?.toDate || defaultToDate);
-
     getSeparationLanding(
       "EmployeeSeparationList",
       buId,
       wgId,
-      fromDate,
-      toDate,
-      values?.status || 0,
+      "",
+      "",
+      values?.status || "",
       searchText,
       setRowDto,
       setLoading,
@@ -97,6 +88,34 @@ export default function ManagementSeparation() {
       "",
       decodedToken.workplaceGroupList || "",
       decodedToken.workplaceList || ""
+    );
+  };
+
+  const handleFilter = (values, searchText = "", pagination = pages) => {
+    const { workplace, workplaceGroup } = values;
+    const fromDate = values?.fromDate
+      ? moment(values?.fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : null;
+    const toDate = values?.toDate
+      ? moment(values?.toDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : null;
+    getSeparationLanding(
+      "EmployeeSeparationList",
+      buId,
+      wgId,
+      fromDate || "",
+      toDate || "",
+      values?.status || "",
+      searchText,
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      wId,
+      "",
+      workplaceGroup?.value || wgId,
+      workplace?.value || wId
     );
   };
 
@@ -141,7 +160,7 @@ export default function ManagementSeparation() {
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
-      values?.status?.value || 0,
+      values?.status?.value || "",
       "",
       setRowDto,
       setLoading,
@@ -160,181 +179,45 @@ export default function ManagementSeparation() {
       {loading && <Loading />}
       {permission?.isView ? (
         <div className="table-card businessUnit-wrapper dashboard-scroll">
-          <div className="table-card-heading" style={{ marginBottom: "20px" }}>
-            <div>
-              {/* <h6>Separation</h6> */}
-              <PButton
-                size="small"
-                type="primary"
-                icon={<FilterAltOutlined />}
-                content={"Filter"}
-                onClick={() => {
-                  setOpenFilter(true);
-                }}
-              />
-            </div>
-            <ul className="d-flex flex-wrap">
-              {(status || values?.search) && (
-                <li>
-                  <ResetButton
-                    classes="btn-filter-reset"
-                    title="reset"
-                    icon={
-                      <SettingsBackupRestoreOutlined
-                        sx={{ marginRight: "10px", fontSize: "16px" }}
-                      />
-                    }
-                    styles={{
-                      marginRight: "16px",
-                    }}
-                    onClick={() => {
-                      form.setFieldValue("status", "");
-                      form.setFieldValue("search", "");
-                      setStatus("");
-                      getData(pages, "");
-                    }}
-                  />
-                </li>
-              )}
-              <li>
-                <MasterFilter
-                  inputWidth="200"
-                  width="200px"
-                  isHiddenFilter
-                  value={values?.search}
-                  setValue={(value) => {
-                    form.setFieldValue("search", value);
-                    if (value) {
-                      getData(pages, value);
-                    } else {
-                      getData(pages, "");
-                    }
-                  }}
-                  cancelHandler={() => {
-                    form.setFieldValue("search", "");
-                    getData(pages, "");
-                  }}
-                />
-              </li>
-              <li>
-                <Drawer
-                  title="Filter"
-                  onClose={() => setOpenFilter(false)}
-                  open={openFilter}
-                >
-                  <PForm
-                    form={form}
-                    initialValues={{
-                      fromDate: defaultFromDate,
-                      toDate: defaultToDate,
-                      status: 0,
-                    }}
-                  >
-                    <Row gutter={[10, 2]}>
-                      <Col md={24} sm={12} xs={24}>
-                        <PSelect
-                          style={{ marginBottom: "5px" }}
-                          options={statusDDL || []}
-                          name="status"
-                          label={"Status"}
-                          showSearch
-                          placeholder="Status"
-                          onChange={(value) => {
-                            form.setFieldValue({
-                              status: value,
-                            });
-                          }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Status is required",
-                            },
-                          ]}
-                        />
-                      </Col>
-                      <Col md={12} sm={24}>
-                        <PInput
-                          type="date"
-                          name="fromDate"
-                          label="From Date"
-                          placeholder="From Date"
-                          onChange={(value) => {
-                            form.setFieldsValue({
-                              fromDate: value,
-                            });
-                          }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "From Date is required",
-                            },
-                          ]}
-                        />
-                      </Col>
-                      <Col md={12} sm={24}>
-                        <PInput
-                          type="date"
-                          name="toDate"
-                          label="To Date"
-                          placeholder="To Date"
-                          onChange={(value) => {
-                            form.setFieldsValue({
-                              toDate: value,
-                            });
-                          }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "To Date is required",
-                            },
-                          ]}
-                        />
-                      </Col>
-                      <Col md={6} sm={24}>
-                        <PButton
-                          style={{ marginTop: "15px" }}
-                          type="primary"
-                          content={"Filter"}
-                          onClick={() => {
-                            const values = form.getFieldsValue(true);
-                            form
-                              .validateFields()
-                              .then(() => {
-                                getData(pages, values?.search);
-                              })
-                              .catch(() => {});
-                          }}
-                        />
-                      </Col>
-                      <Col md={6} sm={24}>
-                        <PButton
-                          style={{ marginTop: "15px" }}
-                          type="secondary"
-                          content="Reset"
-                          onClick={() => {
-                            form.resetFields();
-                          }}
-                        />
-                      </Col>
-                    </Row>
-                  </PForm>
-                </Drawer>
-              </li>
-              <li>
-                <PrimaryButton
-                  type="button"
-                  className="btn btn-default flex-center"
-                  label={"Apply"}
-                  icon={<AddOutlined sx={{ marginRight: "11px" }} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!permission?.isCreate)
-                      return toast.warn("You don't have permission");
-                    history.push("/retirement/separation/create");
-                  }}
-                />
-              </li>
-            </ul>
+          <div className="d-flex justify-content-end mr-2">
+            <MasterFilter
+              inputWidth="200"
+              width="200px"
+              isHiddenFilter
+              value={values?.search}
+              setValue={(value) => {
+                form.setFieldValue("search", value);
+                if (value) {
+                  getData(pages, value);
+                } else {
+                  getData(pages, "");
+                }
+              }}
+              cancelHandler={() => {
+                form.setFieldValue("search", "");
+                getData(pages, "");
+              }}
+            />
+            <CommonFilter
+              visible={openFilter}
+              onClose={(visible) => setOpenFilter(visible)}
+              onFilter={handleFilter}
+              isDate={true}
+              isStatus={true}
+              statusDDL={statusDDL}
+            />
+            <PrimaryButton
+              type="button"
+              className="btn btn-default flex-center ml-2"
+              label={"Apply"}
+              icon={<AddOutlined sx={{ marginRight: "11px" }} />}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!permission?.isCreate)
+                  return toast.warn("You don't have permission");
+                history.push("/retirement/separation/create");
+              }}
+            />
           </div>
           {rowDto?.length > 0 ? (
             <>
@@ -362,11 +245,6 @@ export default function ManagementSeparation() {
                 uniqueKey="strEmployeeCode"
                 isCheckBox={false}
                 isScrollAble={false}
-                onRowClick={(data) => {
-                  history.push(
-                    `/retirement/separation/view/${data?.separationId}`
-                  );
-                }}
               />
               <PModal
                 title="Separation History View"

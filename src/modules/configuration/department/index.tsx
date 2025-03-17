@@ -181,6 +181,7 @@ function Department() {
         form={form}
         onFinish={() => {
           setOpen(true);
+          setId("")
         }}
       >
         <PCard>

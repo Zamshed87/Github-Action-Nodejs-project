@@ -13,6 +13,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { separationApplicationLandingTableColumn } from "../helper";
 import ChargeHandOver from "./components/ChargeHandOver";
+import InterViewModal from "./components/InterViewModal";
 
 const paginationSize = 100;
 export const formatDate = (date) => {
@@ -34,11 +35,11 @@ export default function SelfServiceSeparation() {
   const [, postWithdrawSeperationData] = useAxiosPost();
   const [, postCancelSeperationData] = useAxiosPost();
   const [aprovalStatus, setAprovalStatus] = useState("");
-  const [separationId, setSeparationId] = useState("");
+  const [separationId, setSeparationId] = useState(null);
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30535) {
+    if (item?.menuReferenceId === 30554) {
       permission = item;
     }
   });
@@ -59,7 +60,6 @@ export default function SelfServiceSeparation() {
     setLoading(true);
     getSeperationData(`/Separation/GetSeparationByEmployee`, (res) => {
       setRowDto(res?.data);
-      setSeparationId(res?.data?.[0]?.separationId);
       setLoading(false);
     });
   };
@@ -107,7 +107,8 @@ export default function SelfServiceSeparation() {
                   postCancelSeperationData,
                   aprovalStatus,
                   setAprovalStatus,
-                  separationId
+                  separationId,
+                  setSeparationId
                 )}
                 pages={pages}
                 rowDto={rowDto || []}

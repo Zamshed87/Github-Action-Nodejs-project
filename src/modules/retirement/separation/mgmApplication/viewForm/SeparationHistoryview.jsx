@@ -1,5 +1,5 @@
 import { FilePresentOutlined } from "@mui/icons-material";
-import { Popover } from "antd";
+import { Card, Popover } from "antd";
 import { APIUrl } from "App";
 import Chips from "common/Chips";
 import Loading from "common/loading/Loading";
@@ -23,7 +23,7 @@ function SeparationHistoryview({ id, empId }) {
   const dispatch = useDispatch();
 
   //Api Hooks
-  const [, getApprovalListData] = useAxiosGet();
+  const [, getApprovalListData, approvalloading] = useAxiosGet();
   const [handoverData, getHandoverData, handoverloading] = useAxiosGet();
   const [exitInterviewData, getExitInterviewData, exitInterviewDataloading] =
     useAxiosGet();
@@ -31,7 +31,6 @@ function SeparationHistoryview({ id, empId }) {
   //States
   const [empBasic, setEmpBasic] = useState({});
   const [singleSeparationData, setSingleSeparationData] = useState({});
-  const [loading, setLoading] = useState(false);
 
   //Table Header
   const header = [
@@ -56,7 +55,7 @@ function SeparationHistoryview({ id, empId }) {
       fixed: "left",
     },
     {
-      title: "",
+      title: "Attachment",
       dataIndex: "docArr",
       render: (data) =>
         data?.length > 0
@@ -92,20 +91,17 @@ function SeparationHistoryview({ id, empId }) {
 
   useEffect(() => {
     if (id) {
-      setLoading(true);
       getApprovalListData(
         `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
         (res) => {
           setEmpBasic(res);
-          setLoading(false);
         }
       );
-      getSeparationLandingById(id, setSingleSeparationData, setLoading);
+      getSeparationLandingById(id, setSingleSeparationData);
     }
   }, [id]);
   return (
     <>
-      {loading && <Loading />}
       {empBasic && (
         <div>
           <div
@@ -118,7 +114,7 @@ function SeparationHistoryview({ id, empId }) {
           >
             Employee Details
           </div>
-          <div className="card-about-info-main about-info-card">
+          <Card loading={approvalloading} style={{ marginBottom: "10px" }}>
             <div className="d-flex justify-content-between">
               <div className="d-flex justify-content-between">
                 <div>
@@ -328,7 +324,9 @@ function SeparationHistoryview({ id, empId }) {
                           >
                             Notice Period -
                           </small>{" "}
-                          {empBasic?.noticePeriod || "N/A"}
+                          {empBasic?.noticePeriod !== null
+                            ? `${empBasic?.noticePeriod} Days`
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -342,17 +340,31 @@ function SeparationHistoryview({ id, empId }) {
                     <span style={{ fontSize: "13.5px" }}>Status:</span>&nbsp;
                     {
                       <>
-                        {singleSeparationData?.approvalStatus === "Approve" && (
-                          <Chips label="Approved" classess="success p-2" />
-                        )}
                         {singleSeparationData?.approvalStatus === "Pending" && (
                           <Chips label="Pending" classess="warning p-2" />
                         )}
-                        {singleSeparationData?.approvalStatus === "Process" && (
-                          <Chips label="Process" classess="primary p-2" />
+                        {singleSeparationData?.approvalStatus ===
+                          "Cancelled" && (
+                          <Chips label="Cancelled" classess="danger p-2 mr-2" />
                         )}
-                        {singleSeparationData?.approvalStatus === "Reject" && (
-                          <Chips label="Rejected" classess="danger p-2 mr-2" />
+                        {singleSeparationData?.approvalStatus ===
+                          "Approved" && (
+                          <Chips label="Approved" classess="success p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Withdrawn" && (
+                          <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Clearance" && (
+                          <Chips label="Clearance" classess="info p-2 mr-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Final Settlement Completed" && (
+                          <Chips
+                            label="Final Settlement Completed"
+                            classess="success p-2 mr-2"
+                          />
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Released" && (
@@ -409,10 +421,7 @@ function SeparationHistoryview({ id, empId }) {
                         onClick={() => {
                           if (id) {
                             getHandoverData(
-                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`,
-                              () => {
-                                setLoading(false);
-                              }
+                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`
                             );
                           }
                         }}
@@ -452,40 +461,46 @@ function SeparationHistoryview({ id, empId }) {
                               filter: false,
                               render: (item) => (
                                 <div className="d-flex justify-content-center">
-                                  {item === "Approve" && (
-                                    <Chips
-                                      label="Approved"
-                                      classess="success p-2"
-                                    />
-                                  )}
                                   {item === "Pending" && (
                                     <Chips
                                       label="Pending"
                                       classess="warning p-2"
                                     />
                                   )}
-                                  {item === "Process" && (
+                                  {item === "Cancelled" && (
                                     <Chips
-                                      label="Process"
-                                      classess="primary p-2"
+                                      label="Cancelled"
+                                      classess="danger p-2"
                                     />
                                   )}
-                                  {item === "Reject" && (
+                                  {item === "Approved" && (
                                     <Chips
-                                      label="Rejected"
-                                      classess="danger p-2 mr-2"
+                                      label="Approved"
+                                      classess="success p-2"
+                                    />
+                                  )}
+                                  {item === "Withdrawn" && (
+                                    <Chips
+                                      label="Withdrawn"
+                                      classess="danger p-2"
+                                    />
+                                  )}
+                                  {item === "Clearance" && (
+                                    <Chips
+                                      label="Clearance"
+                                      classess="info p-2"
+                                    />
+                                  )}
+                                  {item === "Final Settlement Completed" && (
+                                    <Chips
+                                      label="Final Settlement Completed"
+                                      classess="success p-2"
                                     />
                                   )}
                                   {item === "Released" && (
                                     <Chips
                                       label="Released"
-                                      classess="indigo p-2 mr-2"
-                                    />
-                                  )}
-                                  {item === "Cancelled" && (
-                                    <Chips
-                                      label="Released"
-                                      classess="danger p-2 mr-2"
+                                      classess="indigo p-2"
                                     />
                                   )}
                                 </div>
@@ -527,10 +542,7 @@ function SeparationHistoryview({ id, empId }) {
                         onClick={() => {
                           if (id) {
                             getExitInterviewData(
-                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`,
-                              () => {
-                                setLoading(false);
-                              }
+                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`
                             );
                           }
                         }}
@@ -540,7 +552,7 @@ function SeparationHistoryview({ id, empId }) {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
           <DataTable
             bordered
             data={singleSeparationData ? [singleSeparationData] : []}

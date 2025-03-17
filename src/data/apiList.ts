@@ -299,9 +299,6 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
-  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
-  CreateNUpdateShiftChangeRequest:
-    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
@@ -317,6 +314,10 @@ export const apiList = {
   DepositDisbursement: "/DepositDisbursement",
   DepositDetailReportByEmployee: "Deposit/DepositDetailReportByEmployee",
   GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
+  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
+  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
+  CreateNUpdateShiftChangeRequest:
+    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
   CreateLeavePolicy: "/LeavePolicy/Create",
@@ -334,4 +335,5 @@ export const apiList = {
   DeleteLeave: "/LeaveApplication/Delete",
   UpdateLeave: "/LeaveApplication/Update",
   BalanceGenerate: "/LeavePolicy/BalanceGenerate",
+  GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
 };

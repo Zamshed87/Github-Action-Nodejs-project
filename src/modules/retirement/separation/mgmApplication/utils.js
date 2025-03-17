@@ -37,7 +37,7 @@ const approvalListHeader = ({
       align: "center",
       render: (_, record) =>
         // Write condition to check status
-         record?.strApproverStatus === "Pending" ? (
+        record?.strApproverStatus === "Pending" ? (
           <PBadge type="warning" text={record?.strApproverStatus} />
         ) : record?.strApproverStatus === "Rejected" || record?.strApproverStatus === "Reject By Admin" ? (
           <PBadge type="danger" text={record?.strApproverStatus} />
@@ -95,7 +95,7 @@ const approvalListHeader = ({
                 className="btn btn-green"
                 disabled={
                   data?.application?.intCurrentStage ===
-                  record?.intPipelineRowId
+                    record?.intPipelineRowId
                     ? false
                     : true
                 }
@@ -114,7 +114,7 @@ const approvalListHeader = ({
                 }}
                 disabled={
                   data?.application?.intCurrentStage ===
-                  record?.intPipelineRowId
+                    record?.intPipelineRowId
                     ? false
                     : true
                 }
@@ -243,11 +243,15 @@ const assetHeader = [
 ];
 
 const statusDDL = [
-  { value: 0, label: "All" },
-  { value: 1, label: "Pending" },
-  { value: 2, label: "Approved" },
-  { value: 3, label: "Rejected" },
-  { value: 4, label: "Released" },
+  { value: "", label: "All" },
+  { value: "Pending", label: "Pending" },
+  { value: "Cancelled", label: "Cancelled" },
+  { value: "Approved", label: "Approved" },
+  { value: "Withdrawn", label: "Withdrawn" },
+  { value: "Clearance", label: "Clearance" },
+  { value: "Clearance Completed", label: "Clearance Completed" },
+  { value: "Final Settlement Completed", label: "Final Settlement Completed" },
+  { value: "Released", label: "Released" },
 ];
 
 const calculateTotalAmounts = (deductionDataset, duesDataset) => {

@@ -18,13 +18,13 @@ const SupervisorAssessmentNew = () => {
     // profileData: { buId, orgId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30443),
+    () => permissionList.find((item) => item?.menuReferenceId === 30494),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
   return (
     <>
-      {permission?.isView ? (
+      {permission?.isEdit ? (
         <div className="table-card userGroup-wrapper">
           <div className="d-flex align-items-center">
             <BackButton />

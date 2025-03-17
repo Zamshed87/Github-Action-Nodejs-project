@@ -27,6 +27,7 @@ import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
+import { isDevServer } from "App";
 
 export const SecurityDepositLanding = () => {
   const dispatch = useDispatch();
@@ -416,12 +417,12 @@ export const SecurityDepositLanding = () => {
                 type: "primary",
                 content: "Bulk Template",
                 onClick: () => {
+                  console.log(
+                    process.env.NODE_ENV === "development",
+                    process.env.NODE_ENV
+                  );
                   downloadFile(
-                    `${
-                      process.env.NODE_ENV === "development"
-                        ? "/document/downloadfile?id=8386"
-                        : ""
-                    }`,
+                    `${isDevServer ? "/document/downloadfile?id=8386" : ""}`,
                     "Security Deposit Bulk Upload",
                     "xlsx",
                     setLoading

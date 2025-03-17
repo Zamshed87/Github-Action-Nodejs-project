@@ -35,12 +35,12 @@ const DepartmentaltargetSetupLanding = () => {
   });
 
   const {
-    profileData: { orgId, buId, intAccountId },
+    profileData: { orgId, buId, intAccountId, wId, wgId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
@@ -57,7 +57,13 @@ const DepartmentaltargetSetupLanding = () => {
 
   const getLandingData = () => {
     getTableData(
-      `/PMS/GetKpiChartReport?PartName=MappedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=2&KpiForReffId=${values?.department?.value}&accountId=${intAccountId}&from=1&to=12&pmTypeId=${values?.pmType?.value}`
+      `/PMS/GetKpiChartReport?PartName=MappedKPI&BusinessUnit=${buId}&YearId=${
+        values?.year?.value
+      }&KpiForId=2&KpiForReffId=${
+        values?.department?.value
+      }&accountId=${intAccountId}&from=1&to=12&pmTypeId=${
+        values?.pmType?.value || 1
+      }`
     );
   };
   useEffect(() => {
