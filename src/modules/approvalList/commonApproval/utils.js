@@ -211,6 +211,7 @@ export const columnsLeave = (dispatch) => [
     title: "SL",
     align: "center",
     render: (_, __, index) => index + 1,
+    width: "20px",
   },
   {
     title: "Employee Code",
@@ -700,7 +701,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     dataIndex: ["applicationInformation", "separationDate"],
     width: "90px",
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -708,7 +709,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -716,7 +717,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -741,7 +742,6 @@ export const columnsSeparation = (setViewData, setViewModal) => [
         <EyeOutlined
           style={{ marginRight: 5 }}
           onClick={() => {
-            console.log("render", render);
             setViewData(render?.applicationInformation);
             setViewModal(true);
           }}
