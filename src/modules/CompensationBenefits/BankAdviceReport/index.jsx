@@ -149,8 +149,10 @@ const BankAdviceReport = () => {
   const commonLanding1 = useApiRequest([]);
   // Functions
   const commonLandingFor = (values) => {
-    if (!values?.adviceName?.value) {
-      return toast.warning("Please select Salary Code");
+    if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value) {
+        return toast.warning("Please select Salary Code");
+      }
     }
     commonLanding?.action({
       method: "get",
@@ -175,8 +177,10 @@ const BankAdviceReport = () => {
   };
 
   const commonLandingForPdf = (values) => {
-    if (!values?.adviceName?.value) {
-      return toast.warning("Please select Salary Code");
+    if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value) {
+        return toast.warning("Please select Salary Code");
+      }
     }
     commonLanding1?.action({
       method: "get",
@@ -229,8 +233,9 @@ const BankAdviceReport = () => {
     commonLandingForPdf(values);
 
     if (values?.bankAdviceFor?.value === 2) {
-      if (!values?.bonusCode?.length > 0)
+      if (!values?.bonusCode?.length > 0) {
         return toast.warning("Please select Bonus Code");
+      }
       getBankAdviceBonusRequestLanding(
         orgId,
         buId,
@@ -242,8 +247,9 @@ const BankAdviceReport = () => {
         setLoading
       );
     } else if (values?.bankAdviceFor?.value === 1) {
-      if (!values?.adviceName?.value)
+      if (!values?.adviceName?.value) {
         return toast.warning("Please select Salary Code");
+      }
       getBankAdviceRequestLanding(
         orgId,
         buId,
