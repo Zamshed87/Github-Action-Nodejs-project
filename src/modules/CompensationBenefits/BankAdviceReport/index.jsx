@@ -512,7 +512,7 @@ const BankAdviceReport = () => {
   }, []);
   return (
     <form onSubmit={handleSubmit}>
-      {(loading || tenMsBankAdvice?.loading) && <Loading />}
+      {(loading || tenMsBankAdvice?.loading || commonLanding.loading || commonLanding1.loading) && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading mt-2 pt-1">
