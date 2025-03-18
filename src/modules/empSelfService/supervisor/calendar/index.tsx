@@ -105,6 +105,8 @@ export const CalendarAssignSelfService = () => {
       sectionList: filerList?.section || [],
 
       supervisorNameList: filerList?.supervisorName || [],
+      dottedSupervisorNameList: filerList?.dottedSupervisorName || [],
+      lineManagerNameList: filterList?.lineManagerName || [],
     };
     landingApi.action({
       urlKey: "CalendarAssignBySupervisorFilter",
@@ -233,12 +235,18 @@ export const CalendarAssignSelfService = () => {
       title: "Dotted Supervisor",
       dataIndex: "dottedSupervisorName",
       sorter: true,
+      filter: true,
+      filterKey: "dottedSupervisorNameList",
+      filterSearch: true,
       width: 95,
     },
     {
       title: "Line Manager",
       dataIndex: "lineManagerName",
       sorter: true,
+      filter: true,
+      filterKey: "lineManagerNameList",
+      filterSearch: true,
       width: 95,
     },
     {

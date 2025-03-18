@@ -93,7 +93,7 @@ export const columnFinalSettlement = [
     dataIndex: ["applicationInformation", "numTotalAmount"],
     width: "90px",
   },
-  
+
   {
     title: "Last Working Date",
     width: "90px",
@@ -1399,8 +1399,8 @@ export const columnsSalaryCertificate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1418,35 +1418,25 @@ export const columnsBonusGenerate = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
-    title: "Employee Code",
-    dataIndex: ["applicationInformation", "employeeCode"],
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+    render: (workplaceGroupName) => workplaceGroupName || "N/A",
   },
   {
-    title: "Employee Name",
-    dataIndex: ["applicationInformation", "employeeName"],
+    title: "Salary Code",
+    dataIndex: ["applicationInformation", "salaryCode"],
+    render: (salaryCode) => salaryCode || "N/A",
   },
-  {
-    title: "Designation",
-    dataIndex: ["applicationInformation", "designation"],
-  },
-  {
-    title: "Department",
-    dataIndex: ["applicationInformation", "department"],
-  },
+
   {
     title: "Bonus Name",
-    dataIndex: ["applicationInformation", "strBonusName"],
+    dataIndex: ["applicationInformation", "bonusName"],
     render: (bonusName) => bonusName || "N/A",
   },
   {
     title: "Bonus Amount",
-    dataIndex: ["applicationInformation", "numBonusAmount"],
-    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
-  },
-  {
-    title: "Effective Date",
-    dataIndex: ["applicationInformation", "dteEffectiveDate"],
-    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
+    dataIndex: ["applicationInformation", "bonusAmount"],
+    render: (bonusAmount) => (bonusAmount ? `${bonusAmount.toLocaleString()}` : "N/A"),
   },
   {
     title: "Waiting Stage",
@@ -1464,8 +1454,8 @@ export const columnsBonusGenerate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1551,8 +1541,8 @@ export const columnsIOUAdjustment = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1648,8 +1638,8 @@ export const columnsShiftChange = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
