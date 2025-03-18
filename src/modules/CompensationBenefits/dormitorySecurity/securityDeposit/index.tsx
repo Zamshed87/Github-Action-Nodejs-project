@@ -72,48 +72,6 @@ export const SecurityDepositLanding = () => {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  // workplace wise
-  // const getWorkplaceGroup = () => {
-  //   workplaceGroup?.action({
-  //     urlKey: "WorkplaceGroupWithRoleExtension",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: buId,
-  //       workplaceGroupId: wgId,
-  //       empId: employeeId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplaceGroup;
-  //         res[i].value = item?.intWorkplaceGroupId;
-  //       });
-  //     },
-  //   });
-  // };
-
-  // const getWorkplace = () => {
-  //   const { workplaceGroup } = form.getFieldsValue(true);
-  //   workplace?.action({
-  //     urlKey: "WorkplaceWithRoleExtension",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: buId,
-  //       workplaceGroupId: workplaceGroup?.value,
-  //       empId: employeeId,
-  //     },
-  //     onSuccess: (res: any) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplace;
-  //         res[i].value = item?.intWorkplaceId;
-  //       });
-  //     },
-  //   });
-  // };
-
   type TLandingApi = {
     pagination?: {
       current?: number;

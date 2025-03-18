@@ -473,14 +473,14 @@ export const columnsManual = (page) => [
   },
   {
     title: "Actual In-Time",
-    dataIndex: ["applicationInformation", "tmeStartTime"],
+    dataIndex: ["applicationInformation", "startTime"],
     render: (time) => (
       <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
     ),
   },
   {
     title: "Actual Out-Time",
-    dataIndex: ["applicationInformation", "tmeEndTime"],
+    dataIndex: ["applicationInformation", "endTime"],
     render: (time) => (
       <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
     ),
