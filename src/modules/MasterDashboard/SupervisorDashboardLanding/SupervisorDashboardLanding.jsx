@@ -221,7 +221,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 onClick={() => {
                   const serializableData = {
                     applicationTypeId: 14,
-                    applicationType: "Movement Application Approval ",
+                    applicationType: "Movement Application",
                   };
                   history.push(
                     `/approval/${serializableData?.applicationTypeId}`,
@@ -270,7 +270,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 onClick={() => {
                   const serializableData = {
                     applicationTypeId: 8,
-                    applicationType: "Leave Application Approval ",
+                    applicationType: "Leave Application",
                   };
                   history.push(
                     `/approval/${serializableData?.applicationTypeId}`,
