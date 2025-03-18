@@ -895,7 +895,7 @@ export const PolicyCreateExtention = () => {
 
             title={`Leave Policy`}
           />
-          {loading && <Loading />}
+          {(loading || createApi?.loading) && <Loading />}
           <Steps
             className="my-3"
             size="small"
