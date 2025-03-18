@@ -150,6 +150,7 @@ const CommonApprovalComponent = () => {
         isApprove,
         isReject: !isApprove,
         actionBy: employeeId,
+        applicationTypeId: id || 0,
       };
     });
 
