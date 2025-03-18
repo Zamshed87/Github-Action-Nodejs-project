@@ -21,12 +21,9 @@ import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
-import moment from "moment";
-import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
 import LeaveExtension from "./components/LeaveExtension";
 
@@ -53,18 +50,10 @@ export const NewLeavePolicy = () => {
   const generateApi = useApiRequest({});
   const [open, setOpen] = useState(false);
 
-  //   const debounce = useDebounce();
-
-  //   const options: any = [
-  //     { value: "", label: "All" },
-  //     { value: true, label: "Assigned" },
-  //     { value: false, label: "Not-Assigned" },
-  //   ];
   // Form Instance
   const [form] = Form.useForm();
   //   api states
-  // const workplaceGroup = useApiRequest([]);
-  // const workplace = useApiRequest([]);
+
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
@@ -467,8 +456,8 @@ export const NewLeavePolicy = () => {
           //  setOpen(true);
         } else {
           toast.error(
-            error?.response?.data?.message?.[0] ||
-              error?.response?.data?.message ||
+            error?.response?.data?.message ||
+              error?.response?.data?.message?.[0] ||
               error?.response?.data?.errors?.[
                 "GeneralPayload.Description"
               ]?.[0] ||
