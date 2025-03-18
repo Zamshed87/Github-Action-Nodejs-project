@@ -407,18 +407,32 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 rules={[{ required: true, message: "Location Is Required" }]}
               />
             </Col>
-            <Col md={24} sm={24}>
-              <PInput
-                type="textarea"
-                name="reason"
-                placeholder="Reason"
-                label="Reason"
-                bordered={true}
-                maxLength={200}
-                autoSize={{ minRows: 1, maxRows: 3 }}
-                rules={[{ required: true, message: "Reason Is Required" }]}
-              />
-            </Col>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { leaveConsumeType } = form.getFieldsValue(true);
+
+                return (
+                  <Col
+                    md={leaveConsumeType?.label !== "Full Day" ? 16 : 24}
+                    sm={24}
+                  >
+                    <PInput
+                      type="textarea"
+                      name="reason"
+                      placeholder="Reason"
+                      label="Reason"
+                      bordered={true}
+                      maxLength={200}
+                      autoSize={{ minRows: 1, maxRows: 3 }}
+                      rules={[
+                        { required: true, message: "Reason Is Required" },
+                      ]}
+                    />
+                  </Col>
+                );
+              }}
+            </Form.Item>
+
             <Col md={24} style={{ marginTop: "1.4rem" }}>
               <div className="input-main position-group-select">
                 {imageFile?.globalFileUrlId ? (
@@ -494,6 +508,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 )}
               </div>
             </Col>
+          </Row>
+          <Row justify="end">
             <Form.Item shouldUpdate noStyle>
               {() => {
                 const { leaveDays, leaveConsumeType } =
@@ -553,6 +569,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
               >
                 <PButton
                   type="primary"
+                  className="ml-2"
                   content={"Reset"}
                   onClick={() => {
                     form.resetFields();
