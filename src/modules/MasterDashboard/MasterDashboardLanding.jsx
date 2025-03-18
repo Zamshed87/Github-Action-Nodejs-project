@@ -121,27 +121,6 @@ const MasterDashboardLanding = () => {
               {businessUnit?.BusinessUnitAddress}
             </p>
           </div>
-
-          {/* {values?.dashboardRoles?.length > 1 &&
-            (!isOwner || isOfficeAdmin) && (
-              <div style={{ width: "150px" }}>
-                <FormikSelect
-                  isClearable={false}
-                  name="userType"
-                  options={values?.dashboardRoles}
-                  value={values?.dashboardroleType}
-                  onChange={(valueOption) =>
-                    setValues((prev) => ({
-                      ...prev,
-                      dashboardroleType: valueOption,
-                    }))
-                  }
-                  styles={customStyles}
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            )} */}
         </div>
 
         {isOwner ? (
