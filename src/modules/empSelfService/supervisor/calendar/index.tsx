@@ -106,7 +106,7 @@ export const CalendarAssignSelfService = () => {
 
       supervisorNameList: filerList?.supervisorName || [],
       dottedSupervisorNameList: filerList?.dottedSupervisorName || [],
-      lineManagerNameList: filterList?.lineManagerName || [],
+      lineManagerNameList: filerList?.lineManagerName || [],
     };
     landingApi.action({
       urlKey: "CalendarAssignBySupervisorFilter",
