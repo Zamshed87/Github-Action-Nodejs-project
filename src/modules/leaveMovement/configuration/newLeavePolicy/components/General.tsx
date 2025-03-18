@@ -304,7 +304,6 @@ export const General = ({
             label="Designation"
             placeholder="Designation"
             onChange={(value, op) => {
-              console.log({ value });
               if (value && value.includes(0)) {
                 form.setFieldsValue({
                   designationListDTO: [

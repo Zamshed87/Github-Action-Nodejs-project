@@ -438,10 +438,8 @@ export const PolicyCreateExtention = () => {
             serviceLengthDependOnId: +values?.dependsOn?.value || 0,
             leaveBalances:
               balanceTable?.map((item: any) => ({
-                fromServiceLength:
-                  parseInt(item.serviceLength.split(" - ")[0]) || 0,
-                toServiceLength:
-                  parseInt(item.serviceLength.split(" - ")[1]) || 0,
+                fromServiceLength: item.serviceLength.split(" - ")[0] || 0,
+                toServiceLength: item.serviceLength.split(" - ")[1] || 0,
                 balanceDependOn:
                   item.leaveDependsOn === "Fixed Days"
                     ? 1
@@ -450,7 +448,7 @@ export const PolicyCreateExtention = () => {
                     : item.leaveDependsOn === "Bridge Leave"
                     ? 3
                     : 0,
-                calculativeDays: parseInt(item.calculativeDays) || 0,
+                calculativeDays: item.calculativeDays || 0,
                 bridgeLeaveFor:
                   item.bridgeLeaveFor === "Off Days"
                     ? 3
@@ -459,9 +457,9 @@ export const PolicyCreateExtention = () => {
                     : item.bridgeLeaveFor === "Both"
                     ? 1
                     : 0,
-                minimumWorkingHour: parseInt(item.minWorkHr) || 0,
-                leaveDays: parseInt(item.leaveDaysFor) || 0,
-                expiresDays: parseInt(item.expireAfterAvailable) || 0,
+                minimumWorkingHour: item.minWorkHr || 0,
+                leaveDays: item.leaveDaysFor || 0,
+                expiresDays: item.expireAfterAvailable || 0,
               })) || [],
             // --------- Calculative Days-----------------
             calculativeDays: {
@@ -543,8 +541,8 @@ export const PolicyCreateExtention = () => {
               }
 
               return {
-                fromServiceLength: parseInt(fromLength),
-                toServiceLength: parseInt(toLength),
+                fromServiceLength: fromLength,
+                toServiceLength: toLength,
                 maxEncashmentTypeId: maxEncashmentTypeId,
                 maxEncashmentDays: item.maxEncashment,
                 encashmentDependOnId: encashmentDependOnId,
@@ -1056,11 +1054,6 @@ export const PolicyCreateExtention = () => {
                             toast.success(data?.message?.[0] || "Success");
                           },
                           onError: (error: any) => {
-                            console.log(
-                              error?.response?.data?.errors?.[
-                                "GeneralPayload.Description"
-                              ]
-                            );
                             if (
                               error?.response?.data?.errors?.[
                                 "GeneralPayload.Description"
@@ -1088,9 +1081,7 @@ export const PolicyCreateExtention = () => {
                           },
                         });
                       })
-                      .catch((e: any) => {
-                        console.log({ e });
-                      });
+                      .catch((e: any) => {});
                   }}
                 />
               )}

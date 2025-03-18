@@ -430,9 +430,7 @@ export const Encashment = ({
                               });
                             }
                           })
-                          .catch((e: any) => {
-                            console.log({ e });
-                          });
+                          .catch((e: any) => {});
                       }}
                     />
                   </Col>

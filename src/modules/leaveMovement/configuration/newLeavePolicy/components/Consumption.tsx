@@ -289,9 +289,7 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                           minConsumeTime: undefined,
                         });
                       })
-                      .catch((e: any) => {
-                        console.log({ e });
-                      });
+                      .catch((e: any) => {});
                   }}
                 />
               </Col>

@@ -70,7 +70,6 @@ export const Sandwitch = ({
     const t: any = [];
     d?.forEach((i: any) => {
       const f = sandWitchLanding?.find((j: any) => j?.index == i);
-      console.log({ f });
       if (f) {
         t.push(f);
       }
@@ -151,7 +150,6 @@ export const Sandwitch = ({
       <Form.Item shouldUpdate noStyle>
         {() => {
           const { isSandwitch } = form.getFieldsValue(true);
-          console.log({ isSandwitch });
           return (
             isSandwitch?.value === 1 && (
               <>

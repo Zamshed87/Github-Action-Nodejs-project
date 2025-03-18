@@ -436,12 +436,6 @@ export const Balance = ({
                         form
                           .validateFields(fields)
                           .then(() => {
-                            console.log(
-                              isMonthExists(
-                                serviceStartLengthBalance,
-                                serviceEndLengthBalance
-                              )
-                            );
                             if (
                               isMonthExists(
                                 serviceStartLengthBalance,

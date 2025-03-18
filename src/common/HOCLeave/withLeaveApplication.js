@@ -179,7 +179,6 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         cb();
         setImageFile("");
       };
-      console.log({ values });
       payload = {
         intApplicationId: singleData?.leaveApplicationId || 0,
         businessUnitId: buId,
@@ -228,7 +227,6 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         message: `Ready to submit a leave application?`,
         yesAlertFunc: () => {
           if (values?.employee) {
-            console.log("first");
             // createLeaveApplication(payload, setLoading, callback, setLoad);
             createApi.action({
               urlKey: isEdit ? "UpdateLeave" : "CreateLeave",
@@ -236,12 +234,10 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
               payload,
               toast: true,
               onSuccess: (res) => {
-                console.log({ res });
                 callback();
                 toast.success(res?.message?.[0] || "Success");
               },
               onError: (error) => {
-                console.log({ error });
                 setLoad(false);
 
                 toast.error(
