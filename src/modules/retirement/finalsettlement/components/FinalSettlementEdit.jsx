@@ -325,6 +325,37 @@ export default function FinalSettlementEdit() {
                   fontWeight: "600",
                 }}
               >
+                Deductions
+              </Divider>
+              <DataTable
+                showHeader={false}
+                pagination={false}
+                data={singleFinalSettlementData?.deductions || []}
+                header={[
+                  {
+                    title: "name",
+                    dataIndex: "strElementName",
+                    render: (data) => (data === "Early Resign" ? null : data),
+                  },
+                  {
+                    title: "info",
+                    dataIndex: "amount",
+                    align: "right",
+                    render: (_, record) =>
+                      record.strElementName === "Early Resign"
+                        ? null
+                        : record.amount,
+                  },
+                ]}
+              />
+              <Divider
+                orientation="left"
+                style={{
+                  borderColor: "#34a853",
+                  marginTop: "20px",
+                  fontWeight: "600",
+                }}
+              >
                 Others Due
               </Divider>
               <DataTable
