@@ -116,11 +116,14 @@ export const getClearanceLandingTableColumn = (
     postClearanceData,
     postReleaseData,
     setOpenExitInterviewDataViewModal,
+    setReleaseDataViewModal,
     getData,
     id,
     setId,
     empId,
     setEmpId,
+    setApplicationdate,
+    setLastWorkingDate
 ) => {
     const confirmClearancePopup = (sepId, employeeId) => {
         const confirmObject = {
@@ -132,30 +135,6 @@ export const getClearanceLandingTableColumn = (
                     {
                         "IntSeparationId": sepId,
                         "IntEmployeeId": employeeId
-                    },
-                    () => {
-                        getData();
-                    },
-                    true
-                );
-            },
-            noAlertFunc: () => {
-                getData();
-            },
-        };
-        IConfirmModal(confirmObject);
-    };
-
-    const confirmReleasePopup = (sepId) => {
-        const confirmObject = {
-            closeOnClickOutside: false,
-            message: "Are you sure you want to release this application?",
-            yesAlertFunc: () => {
-                postReleaseData(
-                    `Separation/ReleasedSeparation`,
-                    {
-                        "IntSeparationId": sepId,
-                        "IsReleased": true
                     },
                     () => {
                         getData();
@@ -376,7 +355,9 @@ export const getClearanceLandingTableColumn = (
                                     onClick={() => {
                                         setId(data?.separationId)
                                         setEmpId(data?.intEmployeeId)
-                                        confirmReleasePopup(data?.separationId);
+                                        setApplicationdate(data?.dteSeparationDate)
+                                        setLastWorkingDate(data?.dteLastWorkingDate)
+                                        setReleaseDataViewModal(true);
                                     }}
                                 ><SendTwoToneIcon color="success" />
                                 </button>

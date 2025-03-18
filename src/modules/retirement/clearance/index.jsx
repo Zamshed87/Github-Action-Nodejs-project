@@ -17,6 +17,7 @@ import {
   SearchFilter,
   statusDDL,
 } from "./helper";
+import ReleaseViewModal from "./components/ReleaseViewModal";
 
 export default function ClearanceLanding() {
   const {
@@ -50,12 +51,15 @@ export default function ClearanceLanding() {
   const [openFilter, setOpenFilter] = useState(false);
   const [openExitInterviewDataViewModal, setOpenExitInterviewDataViewModal] =
     useState(false);
+  const [openReleaseDataViewModal, setReleaseDataViewModal] = useState(false);
   const [, postClearanceData] = useAxiosPost();
   const [, postReleaseData] = useAxiosPost();
 
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
   const [empId, setEmpId] = useState(null);
+  const [applicationdate, setApplicationdate] = useState(null);
+  const [lastWorkingDate, setLastWorkingDate] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const getData = (pagination, searchText) => {
@@ -189,11 +193,14 @@ export default function ClearanceLanding() {
                     postClearanceData,
                     postReleaseData,
                     setOpenExitInterviewDataViewModal,
+                    setReleaseDataViewModal,
                     getData,
                     id,
                     setId,
                     empId,
-                    setEmpId
+                    setEmpId,
+                    setApplicationdate,
+                    setLastWorkingDate
                   )}
                   pages={pages}
                   rowDto={rowDto || []}
@@ -234,6 +241,42 @@ export default function ClearanceLanding() {
                   components={
                     <>
                       <SeparationHistoryview id={id} empId={empId} />
+                    </>
+                  }
+                  width={1000}
+                />
+                <PModal
+                  title="Employee Release"
+                  open={openReleaseDataViewModal}
+                  onCancel={() => {
+                    getClearanceLanding(
+                      "Clearance",
+                      buId,
+                      wgId,
+                      values?.filterFromDate || "",
+                      values?.filterToDate || "",
+                      values?.status?.value || "",
+                      "",
+                      setRowDto,
+                      setLoading,
+                      1,
+                      paginationSize,
+                      setPages,
+                      wId,
+                      "",
+                      decodedToken.workplaceGroupList || "",
+                      decodedToken.workplaceList || ""
+                    );
+                    setReleaseDataViewModal(false);
+                  }}
+                  components={
+                    <>
+                      <ReleaseViewModal
+                        id={id}
+                        applicationdate={applicationdate}
+                        lastWorkingDate={lastWorkingDate}
+                        getData={getData}
+                      />
                     </>
                   }
                   width={1000}
