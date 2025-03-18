@@ -2,6 +2,7 @@ import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Switch } from "antd";
+import IConfirmModal from "common/IConfirmModal";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -26,6 +27,8 @@ export default function LeaveExtension({
   // Form Instance
   const [form] = Form.useForm();
   // submit
+  const generateApi = useApiRequest({});
+
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
     const cb = () => {
@@ -49,27 +52,100 @@ export default function LeaveExtension({
         ?.map((item: any) => item.value)
         .join(","),
     };
-    extensionApi.action({
-      urlKey: "ExtendLeave",
-      method: "POST",
-      payload: payload,
-      onSuccess: (res) => {
-        cb();
-        toast.success(res?.message[0]);
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do You Want To Geneate Leave Balance?`,
+      yesAlertFunc: () => {
+        extensionApi.action({
+          urlKey: "ExtendLeave",
+          method: "POST",
+          payload: payload,
+          onSuccess: (res) => {
+            toast.success(res?.message[0]);
+            generateApi?.action({
+              urlKey: "BalanceGenerate",
+              method: "post",
+              payload: {
+                businessUnitId: buId,
+                workplaceGroupId: wgId,
+                policyId: res?.data,
+                createdBy: employeeId,
+              },
+              toast: true,
+              onSuccess: (res) => {
+                toast.success(res?.message[0]);
+                cb();
+              },
+              onError: (error: any) => {
+                if (
+                  error?.response?.data?.errors?.["GeneralPayload.Description"]
+                    ?.length > 1
+                ) {
+                  //  setErrorData(
+                  //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+                  //  );
+                  //  setOpen(true);
+                } else {
+                  toast.error(
+                    error?.response?.data?.message?.[0] ||
+                      error?.response?.data?.message ||
+                      error?.response?.data?.errors?.[
+                        "GeneralPayload.Description"
+                      ]?.[0] ||
+                      error?.response?.data?.Message ||
+                      error?.response?.data?.title ||
+                      error?.response?.title ||
+                      error?.response?.message ||
+                      error?.response?.Message ||
+                      "Something went wrong"
+                  );
+                }
+              },
+            });
+          },
+          onError: (res: any) => {
+            toast.error(
+              res?.response?.data?.[0] ||
+                res?.response?.data?.message ||
+                res?.response?.data?.errors?.[
+                  "GeneralPayload.Description"
+                ]?.[0] ||
+                res?.response?.data?.Message ||
+                res?.response?.data?.title ||
+                res?.response?.title ||
+                res?.response?.message ||
+                res?.response?.Message
+            );
+          },
+        });
       },
-      onError: (res: any) => {
-        toast.error(
-          res?.response?.data?.[0] ||
-            res?.response?.data?.message ||
-            res?.response?.data?.errors?.["GeneralPayload.Description"]?.[0] ||
-            res?.response?.data?.Message ||
-            res?.response?.data?.title ||
-            res?.response?.title ||
-            res?.response?.message ||
-            res?.response?.Message
-        );
+      noAlertFunc: () => {
+        extensionApi.action({
+          urlKey: "ExtendLeave",
+          method: "POST",
+          payload: payload,
+          onSuccess: (res) => {
+            cb();
+            toast.success(res?.message[0]);
+          },
+          onError: (res: any) => {
+            toast.error(
+              res?.response?.data?.[0] ||
+                res?.response?.data?.message ||
+                res?.response?.data?.errors?.[
+                  "GeneralPayload.Description"
+                ]?.[0] ||
+                res?.response?.data?.Message ||
+                res?.response?.data?.title ||
+                res?.response?.title ||
+                res?.response?.message ||
+                res?.response?.Message
+            );
+          },
+        });
       },
-    });
+    };
+    IConfirmModal(confirmObject);
   };
   const EmploymentTypeDDL = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);

@@ -102,8 +102,12 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         location: singleData?.location,
         reason: singleData?.reason,
         leaveDays: singleData?.totalLeaveDays || "",
-        startTime: moment(singleData?.tmeFromTime, "h:mma"),
-        endTime: moment(singleData?.tmeToTime, "h:mma"),
+        startTime: singleData?.tmeFromTime
+          ? moment(singleData?.tmeFromTime, "h:mma")
+          : undefined,
+        endTime: singleData?.tmeToTime
+          ? moment(singleData?.tmeToTime, "h:mma")
+          : undefined,
       });
     }
   }, [singleData]);
@@ -508,8 +512,79 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 )}
               </div>
             </Col>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { leaveDays, leaveConsumeType } =
+                  form.getFieldsValue(true);
+
+                return (
+                  <Col
+                    style={{
+                      marginTop: "23px",
+                    }}
+                    // md={6}
+                  >
+                    <PButton
+                      type="primary"
+                      content={
+                        isEdit
+                          ? `Update  to ${
+                              leaveConsumeType?.label == "Clock Time"
+                                ? "Clock Time"
+                                : leaveConsumeType?.label !== "Full Day"
+                                ? "Half"
+                                : leaveDays < 1
+                                ? 1
+                                : leaveDays
+                            } ${
+                              leaveConsumeType?.label == "Clock Time"
+                                ? ""
+                                : leaveDays < 2
+                                ? "Day"
+                                : "Days"
+                            } Leave`
+                          : `Apply ${
+                              leaveConsumeType?.label == "Clock Time"
+                                ? "Clock Time"
+                                : leaveConsumeType?.label !== "Full Day"
+                                ? "Half"
+                                : leaveDays
+                            } ${
+                              leaveConsumeType?.label == "Clock Time"
+                                ? ""
+                                : leaveDays < 2
+                                ? "Day"
+                                : "Days"
+                            } Leave`
+                      }
+                      onClick={viewHandler}
+                    />
+                  </Col>
+                );
+              }}
+            </Form.Item>
+
+            {isEdit ? (
+              <Col
+                style={{
+                  marginTop: "23px",
+                }}
+                // md={6}
+              >
+                <PButton
+                  type="primary"
+                  className="ml-2"
+                  content={"Reset"}
+                  onClick={() => {
+                    form.resetFields();
+                    setAttachmentList([]);
+                    setImageFile({});
+                  }}
+                />
+              </Col>
+            ) : undefined}
           </Row>
-          <Row justify="end">
+          {/* <Row justify="end">
             <Form.Item shouldUpdate noStyle>
               {() => {
                 const { leaveDays, leaveConsumeType } =
@@ -579,7 +654,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 />
               </Col>
             ) : undefined}
-          </Row>
+          </Row> */}
         </PCardBody>{" "}
       </PForm>
     </>

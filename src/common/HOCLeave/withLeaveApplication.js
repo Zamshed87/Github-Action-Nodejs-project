@@ -179,7 +179,7 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         cb();
         setImageFile("");
       };
-
+      console.log({ values });
       payload = {
         intApplicationId: singleData?.leaveApplicationId || 0,
         businessUnitId: buId,
