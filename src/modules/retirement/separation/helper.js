@@ -347,6 +347,9 @@ export const separationApplicationLandingTableColumn = (
             {data?.approvalStatus === "Released" && (
               <Chips label="Released" classess="indigo p-2" />
             )}
+            {data?.approvalStatus === "Rejected" && (
+              <Chips label="Rejected" classess="danger p-2" />
+            )}
           </div>
         </div>
       ),

@@ -22,6 +22,7 @@ export const statusDDL = [
     { value: "Clearance Completed", label: "Clearance Completed" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
+    { value: "Rejected", label: "Rejected" },
 ];
 
 // SearchFilter Component

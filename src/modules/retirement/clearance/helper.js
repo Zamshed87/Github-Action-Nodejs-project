@@ -26,6 +26,7 @@ export const statusDDL = [
     { value: "Clearance Completed", label: "Clearance Completed" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
+    { value: "Rejected", label: "Rejected" },
 ];
 
 // SearchFilter Component
@@ -116,11 +117,14 @@ export const getClearanceLandingTableColumn = (
     postClearanceData,
     postReleaseData,
     setOpenExitInterviewDataViewModal,
+    setReleaseDataViewModal,
     getData,
     id,
     setId,
     empId,
     setEmpId,
+    setApplicationdate,
+    setLastWorkingDate
 ) => {
     const confirmClearancePopup = (sepId, employeeId) => {
         const confirmObject = {
@@ -132,30 +136,6 @@ export const getClearanceLandingTableColumn = (
                     {
                         "IntSeparationId": sepId,
                         "IntEmployeeId": employeeId
-                    },
-                    () => {
-                        getData();
-                    },
-                    true
-                );
-            },
-            noAlertFunc: () => {
-                getData();
-            },
-        };
-        IConfirmModal(confirmObject);
-    };
-
-    const confirmReleasePopup = (sepId) => {
-        const confirmObject = {
-            closeOnClickOutside: false,
-            message: "Are you sure you want to release this application?",
-            yesAlertFunc: () => {
-                postReleaseData(
-                    `Separation/ReleasedSeparation`,
-                    {
-                        "IntSeparationId": sepId,
-                        "IsReleased": true
                     },
                     () => {
                         getData();
@@ -314,6 +294,9 @@ export const getClearanceLandingTableColumn = (
                         {data?.approvalStatus === "Released" && (
                             <Chips label="Released" classess="indigo p-2" />
                         )}
+                        {data?.approvalStatus === "Rejected" && (
+                            <Chips label="Rejected" classess="danger p-2" />
+                        )}
                     </div>
                 </div>
             ),
@@ -376,7 +359,9 @@ export const getClearanceLandingTableColumn = (
                                     onClick={() => {
                                         setId(data?.separationId)
                                         setEmpId(data?.intEmployeeId)
-                                        confirmReleasePopup(data?.separationId);
+                                        setApplicationdate(data?.dteSeparationDate)
+                                        setLastWorkingDate(data?.dteLastWorkingDate)
+                                        setReleaseDataViewModal(true);
                                     }}
                                 ><SendTwoToneIcon color="success" />
                                 </button>
