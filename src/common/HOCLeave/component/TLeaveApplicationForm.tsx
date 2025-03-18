@@ -227,8 +227,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                           setNext3daysForEmp(
                             calculateNextDateAntd(
                               dateString,
-                              leaveType?.intMaxLveDaySelf
-                                ? leaveType?.intMaxLveDaySelf - 1
+                              leaveType?.maxLeaveInApplication
+                                ? leaveType?.maxLeaveInApplication - 1
                                 : 2
                             )
                           );

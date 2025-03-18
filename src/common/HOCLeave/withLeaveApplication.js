@@ -188,9 +188,15 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         intEmployeeId: values?.employee ? values?.employee?.value : employeeId,
         intConsumeType: values?.leaveConsumeType?.value,
         dteFromDate: dateFormatterForInput(values?.fromDate),
-        dteToDate: dateFormatterForInput(values?.toDate),
-        tmeFromTime: moment(values?.startTime).format("HH:mm:ss.SSS"),
-        tmeToTime: moment(values?.endTime).format("HH:mm:ss.SSS"),
+        dteToDate: values?.toDate
+          ? dateFormatterForInput(values?.toDate)
+          : dateFormatterForInput(values?.fromDate),
+        tmeFromTime: values?.startTime
+          ? moment(values?.startTime).format("HH:mm:ss.SSS")
+          : null,
+        tmeToTime: values?.endTime
+          ? moment(values?.endTime).format("HH:mm:ss.SSS")
+          : null,
         intLeaveReliverId: values?.leaveReliever?.value,
         intDocumentId: values?.imageFile?.globalFileUrlId
           ? values?.imageFile?.globalFileUrlId
@@ -238,7 +244,6 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
                 console.log({ error });
                 setLoad(false);
 
-                setLoad(false);
                 toast.error(
                   error?.response?.data?.message?.[0] ||
                     error?.response?.data?.message ||
@@ -258,7 +263,9 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
             // createLeaveApplication(payload, setLoading, callback, setLoad);
           }
         },
-        noAlertFunc: () => null,
+        noAlertFunc: () => {
+          setLoad(false);
+        },
       };
       IConfirmModal(confirmObject);
     };
