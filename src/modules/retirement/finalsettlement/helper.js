@@ -19,6 +19,7 @@ export const statusDDL = [
     { value: "Clearance Completed", label: "Clearance Completed" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
+    { value: "Rejected", label: "Rejected" },
 ];
 
 // SearchFilter Component
@@ -262,6 +263,9 @@ export const getFinalSettlementLandingTableColumn = (
                     )}
                     {data?.approvalStatus === "Released" && (
                         <Chips label="Released" classess="indigo p-2" />
+                    )}
+                    {data?.approvalStatus === "Rejected" && (
+                        <Chips label="Rejected" classess="danger p-2" />
                     )}
                 </div>
             ),
