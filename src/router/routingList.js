@@ -1715,14 +1715,6 @@ const SeparationApplicationForm = lazy(() =>
   )
 );
 
-const RetirementViewSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
-);
-const RetirementReleaseSeparationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
-  )
-);
 const ExitInterviewLanding = lazy(() =>
   import("../modules/retirement/exitInterview/index.jsx")
 );
@@ -2261,15 +2253,15 @@ export const routingList = [
   },
   {
     path: "/SelfService/supervisor/calenderAssign",
-    component: CalendarAssignSelfService ,
+    component: CalendarAssignSelfService,
   },
   {
     path: "/SelfService/supervisor/offdayAssign",
-    component: OffDaySelfService ,
+    component: OffDaySelfService,
   },
   {
     path: "/SelfService/supervisor/monthlyOffdayAssign",
-    component: MonthlyOffdayAssignLandingSelfService ,
+    component: MonthlyOffdayAssignLandingSelfService,
   },
   {
     path: "/administration/timeManagement/leavePolicyAssign",
@@ -4181,14 +4173,6 @@ export const routingList = [
   {
     path: "/retirement/separation/edit/:id",
     component: SeparationApplicationForm,
-  },
-  {
-    path: "/retirement/separation/view/:id",
-    component: RetirementViewSeparationForm,
-  },
-  {
-    path: "/retirement/separation/release/:id",
-    component: RetirementReleaseSeparationForm,
   },
   {
     path: "/retirement/exitInterview",
