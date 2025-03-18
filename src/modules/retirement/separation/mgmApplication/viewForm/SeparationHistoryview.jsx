@@ -336,7 +336,7 @@ function SeparationHistoryview({ id, empId }) {
               <div style={{ minWidth: "340px" }}>
                 <br />
                 <div className="d-flex justify-content-between">
-                  <div>
+                  <div className="mr-2">
                     <span style={{ fontSize: "13.5px" }}>Status:</span>&nbsp;
                     {
                       <>
@@ -345,7 +345,7 @@ function SeparationHistoryview({ id, empId }) {
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Cancelled" && (
-                          <Chips label="Cancelled" classess="danger p-2 mr-2" />
+                          <Chips label="Cancelled" classess="danger p-2" />
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Approved" && (
@@ -353,22 +353,40 @@ function SeparationHistoryview({ id, empId }) {
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Withdrawn" && (
-                          <Chips label="Withdrawn" classess="danger p-2 mr-2" />
+                          <Chips label="Withdrawn" classess="danger p-2" />
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Clearance" && (
-                          <Chips label="Clearance" classess="info p-2 mr-2" />
+                          <Chips label="Clearance" classess="info p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Clearance Running" && (
+                          <Chips
+                            label="Clearance Running"
+                            classess="warning p-2"
+                          />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Clearance Completed" && (
+                          <Chips
+                            label="Clearance Completed"
+                            classess="success p-2"
+                          />
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Final Settlement Completed" && (
                           <Chips
                             label="Final Settlement Completed"
-                            classess="success p-2 mr-2"
+                            classess="success p-2"
                           />
                         )}
                         {singleSeparationData?.approvalStatus ===
                           "Released" && (
-                          <Chips label="Released" classess="indigo p-2 mr-2" />
+                          <Chips label="Released" classess="indigo p-2" />
+                        )}
+                        {singleSeparationData?.approvalStatus ===
+                          "Rejected" && (
+                          <Chips label="Rejected" classess="danger p-2" />
                         )}
                       </>
                     }
