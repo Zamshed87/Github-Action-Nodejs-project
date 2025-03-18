@@ -407,7 +407,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 rules={[{ required: true, message: "Location Is Required" }]}
               />
             </Col>
-            <Col md={16} sm={24}>
+            <Col md={24} sm={24}>
               <PInput
                 type="textarea"
                 name="reason"
@@ -510,17 +510,33 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                       content={
                         isEdit
                           ? `Update  to ${
-                              leaveConsumeType?.label !== "Full Day"
+                              leaveConsumeType?.label == "Clock Time"
+                                ? "Clock Time"
+                                : leaveConsumeType?.label !== "Full Day"
                                 ? "Half"
                                 : leaveDays < 1
                                 ? 1
                                 : leaveDays
-                            } ${leaveDays < 2 ? "Day" : "Days"} Leave`
+                            } ${
+                              leaveConsumeType?.label == "Clock Time"
+                                ? ""
+                                : leaveDays < 2
+                                ? "Day"
+                                : "Days"
+                            } Leave`
                           : `Apply ${
-                              leaveConsumeType?.label !== "Full Day"
+                              leaveConsumeType?.label == "Clock Time"
+                                ? "Clock Time"
+                                : leaveConsumeType?.label !== "Full Day"
                                 ? "Half"
                                 : leaveDays
-                            } ${leaveDays < 2 ? "Day" : "Days"} Leave`
+                            } ${
+                              leaveConsumeType?.label == "Clock Time"
+                                ? ""
+                                : leaveDays < 2
+                                ? "Day"
+                                : "Days"
+                            } Leave`
                       }
                       onClick={viewHandler}
                     />
