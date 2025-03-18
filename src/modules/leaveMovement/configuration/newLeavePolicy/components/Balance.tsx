@@ -195,6 +195,8 @@ export const Balance = ({
             name="serviceStartLengthBalance"
             label="From Service Length (Month)"
             placeholder=""
+            min={0}
+            max={99999}
             rules={[
               {
                 message: "Number must be positive",
@@ -218,6 +220,8 @@ export const Balance = ({
                   name="serviceEndLengthBalance"
                   label="To Service Length (Month)"
                   placeholder=""
+                  min={0}
+                  max={99999}
                   rules={[
                     {
                       message: "Number must be positive",

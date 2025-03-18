@@ -63,7 +63,6 @@ export const Sandwitch = ({
     });
   };
   useEffect(() => {
-    setSelectedRow1([]);
     getDependTypes();
   }, []);
   const findMatch = (d: any) => {
@@ -90,13 +89,6 @@ export const Sandwitch = ({
       d?.length > 0 && findMatch(d);
       // previousScenarioId.current = d?.join(",") || null; // Update previousScenarioId
       // }
-    } else {
-      form.setFieldsValue({
-        isSandwitch: {
-          value: 0,
-          label: "No",
-        },
-      });
     }
   }, [detailsApi?.data, sandWitchLanding]);
   return (
