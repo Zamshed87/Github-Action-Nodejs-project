@@ -8,15 +8,12 @@ import {
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
 import { General } from "./components/General";
 import { Consumption } from "./components/Consumption";
 import { Sandwitch } from "./components/Sandwitch";
@@ -39,6 +36,7 @@ import { BsCashCoin } from "react-icons/bs";
 import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
 import { PModal } from "Components/Modal";
+import IConfirmModal from "common/IConfirmModal";
 // import { ModalFooter } from "Components/Modal";
 
 export const PolicyCreateExtention = () => {
@@ -71,6 +69,7 @@ export const PolicyCreateExtention = () => {
       document.title = "PeopleDesk";
     };
   }, []);
+  const generateApi = useApiRequest({});
 
   const createApi = useApiRequest({});
   const policyApi = useApiRequest({});
@@ -105,40 +104,122 @@ export const PolicyCreateExtention = () => {
   // ddls
 
   const onFinish = () => {
-    createApi.action({
-      urlKey: "CreateLeavePolicy",
-      method: "post",
-      payload: generatePayload(current),
-      toast: true,
-      onSuccess: (data: any) => {
-        // setId(data?.data);
-        // next();
-        toast.success(data?.message?.[0] || "Created Successfully");
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do You Want To Generate Balance ?`,
+      yesAlertFunc: () => {
+        createApi.action({
+          urlKey: "CreateLeavePolicy",
+          method: "post",
+          payload: generatePayload(current),
+          toast: true,
+          onSuccess: (data: any) => {
+            toast.success(data?.message?.[0] || "Created Successfully");
+            generateApi?.action({
+              urlKey: "BalanceGenerate",
+              method: "post",
+              payload: {
+                businessUnitId: buId,
+                workplaceGroupId: wgId,
+                policyId: id,
+                createdBy: employeeId,
+              },
+              toast: true,
+              onSuccess: (res) => {
+                toast.success(res?.message[0]);
+                history.push(
+                  `/administration/leaveandmovement/yearlyLeavePolicy`
+                );
+              },
+              onError: (error: any) => {
+                if (
+                  error?.response?.data?.errors?.["GeneralPayload.Description"]
+                    ?.length > 1
+                ) {
+                  //  setErrorData(
+                  //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+                  //  );
+                  //  setOpen(true);
+                } else {
+                  toast.error(
+                    error?.response?.data?.message?.[0] ||
+                      error?.response?.data?.message ||
+                      error?.response?.data?.errors?.[
+                        "GeneralPayload.Description"
+                      ]?.[0] ||
+                      error?.response?.data?.Message ||
+                      error?.response?.data?.title ||
+                      error?.response?.title ||
+                      error?.response?.message ||
+                      error?.response?.Message ||
+                      "Something went wrong"
+                  );
+                }
+              },
+            });
+          },
+          onError: (error: any) => {
+            if (
+              error?.response?.data?.errors?.["GeneralPayload.Description"]
+                ?.length > 1
+            ) {
+              setErrorData(
+                error?.response?.data?.errors?.["GeneralPayload.Description"]
+              );
+              setOpen(true);
+            } else {
+              toast.error(
+                error?.response?.data?.message ||
+                  error?.response?.data?.errors?.[
+                    "GeneralPayload.Description"
+                  ]?.[0] ||
+                  error?.response?.data?.Message ||
+                  error?.response?.data?.title ||
+                  error?.response?.title ||
+                  error?.response?.message ||
+                  error?.response?.Message
+              );
+            }
+          },
+        });
       },
-      onError: (error: any) => {
-        if (
-          error?.response?.data?.errors?.["GeneralPayload.Description"]
-            ?.length > 1
-        ) {
-          setErrorData(
-            error?.response?.data?.errors?.["GeneralPayload.Description"]
-          );
-          setOpen(true);
-        } else {
-          toast.error(
-            error?.response?.data?.message ||
-              error?.response?.data?.errors?.[
-                "GeneralPayload.Description"
-              ]?.[0] ||
-              error?.response?.data?.Message ||
-              error?.response?.data?.title ||
-              error?.response?.title ||
-              error?.response?.message ||
-              error?.response?.Message
-          );
-        }
+      noAlertFunc: () => {
+        createApi.action({
+          urlKey: "CreateLeavePolicy",
+          method: "post",
+          payload: generatePayload(current),
+          toast: true,
+          onSuccess: (data: any) => {
+            toast.success(data?.message?.[0] || "Created Successfully");
+            history.push(`/administration/leaveandmovement/yearlyLeavePolicy`);
+          },
+          onError: (error: any) => {
+            if (
+              error?.response?.data?.errors?.["GeneralPayload.Description"]
+                ?.length > 1
+            ) {
+              setErrorData(
+                error?.response?.data?.errors?.["GeneralPayload.Description"]
+              );
+              setOpen(true);
+            } else {
+              toast.error(
+                error?.response?.data?.message ||
+                  error?.response?.data?.errors?.[
+                    "GeneralPayload.Description"
+                  ]?.[0] ||
+                  error?.response?.data?.Message ||
+                  error?.response?.data?.title ||
+                  error?.response?.title ||
+                  error?.response?.message ||
+                  error?.response?.Message
+              );
+            }
+          },
+        });
       },
-    });
+    };
+    IConfirmModal(confirmObject);
   };
 
   const next = () => {
