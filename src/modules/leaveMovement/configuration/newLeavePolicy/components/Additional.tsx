@@ -240,7 +240,7 @@ export const Additional = ({ form }: any) => {
           <PInput
             type="number"
             name="minLeaveApplyDays"
-            label="Min. Leave Apply Days (At a Time)"
+            label="Max. Leave Apply Days (At a Time)"
             placeholder=""
             rules={[
               {
@@ -249,7 +249,7 @@ export const Additional = ({ form }: any) => {
               },
               {
                 required: true,
-                message: "Min. Leave Apply Days (At a Time) is required",
+                message: "Max. Leave Apply Days (At a Time) is required",
               },
             ]}
           />

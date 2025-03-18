@@ -8,15 +8,12 @@ import {
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
 import { General } from "./components/General";
 import { Consumption } from "./components/Consumption";
 import { Sandwitch } from "./components/Sandwitch";
@@ -39,6 +36,7 @@ import { BsCashCoin } from "react-icons/bs";
 import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
 import { PModal } from "Components/Modal";
+import IConfirmModal from "common/IConfirmModal";
 // import { ModalFooter } from "Components/Modal";
 
 export const PolicyCreateExtention = () => {
@@ -71,6 +69,7 @@ export const PolicyCreateExtention = () => {
       document.title = "PeopleDesk";
     };
   }, []);
+  const generateApi = useApiRequest({});
 
   const createApi = useApiRequest({});
   const policyApi = useApiRequest({});
@@ -105,40 +104,122 @@ export const PolicyCreateExtention = () => {
   // ddls
 
   const onFinish = () => {
-    createApi.action({
-      urlKey: "CreateLeavePolicy",
-      method: "post",
-      payload: generatePayload(current),
-      toast: true,
-      onSuccess: (data: any) => {
-        // setId(data?.data);
-        // next();
-        toast.success(data?.message?.[0] || "Created Successfully");
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do You Want To Generate Balance ?`,
+      yesAlertFunc: () => {
+        createApi.action({
+          urlKey: "CreateLeavePolicy",
+          method: "post",
+          payload: generatePayload(current),
+          toast: true,
+          onSuccess: (data: any) => {
+            toast.success(data?.message?.[0] || "Created Successfully");
+            generateApi?.action({
+              urlKey: "BalanceGenerate",
+              method: "post",
+              payload: {
+                businessUnitId: buId,
+                workplaceGroupId: wgId,
+                policyId: id,
+                createdBy: employeeId,
+              },
+              toast: true,
+              onSuccess: (res) => {
+                toast.success(res?.message[0]);
+                history.push(
+                  `/administration/leaveandmovement/yearlyLeavePolicy`
+                );
+              },
+              onError: (error: any) => {
+                if (
+                  error?.response?.data?.errors?.["GeneralPayload.Description"]
+                    ?.length > 1
+                ) {
+                  //  setErrorData(
+                  //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+                  //  );
+                  //  setOpen(true);
+                } else {
+                  toast.error(
+                    error?.response?.data?.message?.[0] ||
+                      error?.response?.data?.message ||
+                      error?.response?.data?.errors?.[
+                        "GeneralPayload.Description"
+                      ]?.[0] ||
+                      error?.response?.data?.Message ||
+                      error?.response?.data?.title ||
+                      error?.response?.title ||
+                      error?.response?.message ||
+                      error?.response?.Message ||
+                      "Something went wrong"
+                  );
+                }
+              },
+            });
+          },
+          onError: (error: any) => {
+            if (
+              error?.response?.data?.errors?.["GeneralPayload.Description"]
+                ?.length > 1
+            ) {
+              setErrorData(
+                error?.response?.data?.errors?.["GeneralPayload.Description"]
+              );
+              setOpen(true);
+            } else {
+              toast.error(
+                error?.response?.data?.message ||
+                  error?.response?.data?.errors?.[
+                    "GeneralPayload.Description"
+                  ]?.[0] ||
+                  error?.response?.data?.Message ||
+                  error?.response?.data?.title ||
+                  error?.response?.title ||
+                  error?.response?.message ||
+                  error?.response?.Message
+              );
+            }
+          },
+        });
       },
-      onError: (error: any) => {
-        if (
-          error?.response?.data?.errors?.["GeneralPayload.Description"]
-            ?.length > 1
-        ) {
-          setErrorData(
-            error?.response?.data?.errors?.["GeneralPayload.Description"]
-          );
-          setOpen(true);
-        } else {
-          toast.error(
-            error?.response?.data?.message ||
-              error?.response?.data?.errors?.[
-                "GeneralPayload.Description"
-              ]?.[0] ||
-              error?.response?.data?.Message ||
-              error?.response?.data?.title ||
-              error?.response?.title ||
-              error?.response?.message ||
-              error?.response?.Message
-          );
-        }
+      noAlertFunc: () => {
+        createApi.action({
+          urlKey: "CreateLeavePolicy",
+          method: "post",
+          payload: generatePayload(current),
+          toast: true,
+          onSuccess: (data: any) => {
+            toast.success(data?.message?.[0] || "Created Successfully");
+            history.push(`/administration/leaveandmovement/yearlyLeavePolicy`);
+          },
+          onError: (error: any) => {
+            if (
+              error?.response?.data?.errors?.["GeneralPayload.Description"]
+                ?.length > 1
+            ) {
+              setErrorData(
+                error?.response?.data?.errors?.["GeneralPayload.Description"]
+              );
+              setOpen(true);
+            } else {
+              toast.error(
+                error?.response?.data?.message ||
+                  error?.response?.data?.errors?.[
+                    "GeneralPayload.Description"
+                  ]?.[0] ||
+                  error?.response?.data?.Message ||
+                  error?.response?.data?.title ||
+                  error?.response?.title ||
+                  error?.response?.message ||
+                  error?.response?.Message
+              );
+            }
+          },
+        });
       },
-    });
+    };
+    IConfirmModal(confirmObject);
   };
 
   const next = () => {
@@ -357,10 +438,8 @@ export const PolicyCreateExtention = () => {
             serviceLengthDependOnId: +values?.dependsOn?.value || 0,
             leaveBalances:
               balanceTable?.map((item: any) => ({
-                fromServiceLength:
-                  parseInt(item.serviceLength.split(" - ")[0]) || 0,
-                toServiceLength:
-                  parseInt(item.serviceLength.split(" - ")[1]) || 0,
+                fromServiceLength: +item.serviceLength.split(" - ")[0] || 0,
+                toServiceLength: +item.serviceLength.split(" - ")[1] || 0,
                 balanceDependOn:
                   item.leaveDependsOn === "Fixed Days"
                     ? 1
@@ -369,7 +448,7 @@ export const PolicyCreateExtention = () => {
                     : item.leaveDependsOn === "Bridge Leave"
                     ? 3
                     : 0,
-                calculativeDays: parseInt(item.calculativeDays) || 0,
+                calculativeDays: +item.calculativeDays || 0,
                 bridgeLeaveFor:
                   item.bridgeLeaveFor === "Off Days"
                     ? 3
@@ -378,9 +457,9 @@ export const PolicyCreateExtention = () => {
                     : item.bridgeLeaveFor === "Both"
                     ? 1
                     : 0,
-                minimumWorkingHour: parseInt(item.minWorkHr) || 0,
-                leaveDays: parseInt(item.leaveDaysFor) || 0,
-                expiresDays: parseInt(item.expireAfterAvailable) || 0,
+                minimumWorkingHour: +item.minWorkHr || 0,
+                leaveDays: +item.leaveDaysFor || 0,
+                expiresDays: +item.expireAfterAvailable || 0,
               })) || [],
             // --------- Calculative Days-----------------
             calculativeDays: {
@@ -462,8 +541,8 @@ export const PolicyCreateExtention = () => {
               }
 
               return {
-                fromServiceLength: parseInt(fromLength),
-                toServiceLength: parseInt(toLength),
+                fromServiceLength: fromLength,
+                toServiceLength: toLength,
                 maxEncashmentTypeId: maxEncashmentTypeId,
                 maxEncashmentDays: item.maxEncashment,
                 encashmentDependOnId: encashmentDependOnId,
@@ -779,6 +858,7 @@ export const PolicyCreateExtention = () => {
           proRataCount: 15,
           proRataBasis: { value: "1", label: "Update From Start" },
           isCarryForward: { value: 0, label: "No" },
+          isSandwitch: { value: 0, label: "No" },
           isEncashment: { value: 0, label: "No" },
           isAttachmentMandatory: { value: 0, label: "No" },
           isEssApply: { value: 1, label: "Yes" },
@@ -974,11 +1054,6 @@ export const PolicyCreateExtention = () => {
                             toast.success(data?.message?.[0] || "Success");
                           },
                           onError: (error: any) => {
-                            console.log(
-                              error?.response?.data?.errors?.[
-                                "GeneralPayload.Description"
-                              ]
-                            );
                             if (
                               error?.response?.data?.errors?.[
                                 "GeneralPayload.Description"
@@ -1006,9 +1081,7 @@ export const PolicyCreateExtention = () => {
                           },
                         });
                       })
-                      .catch((e: any) => {
-                        console.log({ e });
-                      });
+                      .catch((e: any) => {});
                   }}
                 />
               )}

@@ -210,6 +210,8 @@ export const Encashment = ({
                       name="serviceStartLength"
                       label="From Service Length (Month)"
                       placeholder=""
+                      min={0}
+                      max={99999}
                       rules={[
                         {
                           message: "Number must be positive",
@@ -235,6 +237,8 @@ export const Encashment = ({
                             name="serviceEndLength"
                             label="To Service Length (Month)"
                             placeholder=""
+                            min={0}
+                            max={99999}
                             rules={[
                               {
                                 message: "Number must be positive",
@@ -430,9 +434,7 @@ export const Encashment = ({
                               });
                             }
                           })
-                          .catch((e: any) => {
-                            console.log({ e });
-                          });
+                          .catch((e: any) => {});
                       }}
                     />
                   </Col>

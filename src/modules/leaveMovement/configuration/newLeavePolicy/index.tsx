@@ -21,12 +21,9 @@ import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
-import moment from "moment";
-import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
 import LeaveExtension from "./components/LeaveExtension";
 
@@ -53,18 +50,10 @@ export const NewLeavePolicy = () => {
   const generateApi = useApiRequest({});
   const [open, setOpen] = useState(false);
 
-  //   const debounce = useDebounce();
-
-  //   const options: any = [
-  //     { value: "", label: "All" },
-  //     { value: true, label: "Assigned" },
-  //     { value: false, label: "Not-Assigned" },
-  //   ];
   // Form Instance
   const [form] = Form.useForm();
   //   api states
-  // const workplaceGroup = useApiRequest([]);
-  // const workplace = useApiRequest([]);
+
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
@@ -195,6 +184,7 @@ export const NewLeavePolicy = () => {
     {
       title: "Status",
       dataIndex: "status",
+      width: 50,
       render: (_: any, rec: any, index: number) => {
         return (
           <div>
@@ -205,19 +195,23 @@ export const NewLeavePolicy = () => {
             ) : (
               <Tag color="gold">{rec?.status}</Tag>
             )} */}
-            <p className="">
-              <Switch
-                checked={rec?.status === "Active"}
-                onChange={(checked) => {
-                  // const newStatus = checked ? "Active" : "Inactive";
-                  deleteDepositById(rec);
-                  // Update your data source here
-                  // Example (replace with your actual data update logic):
-                  // dataSource[index].status = newStatus;
-                  // setDataSource([...dataSource]);
-                }}
-              />
-            </p>
+            {rec?.stepperId === 5 ? (
+              <p className="">
+                <Switch
+                  checked={rec?.status === "Active"}
+                  onChange={(checked) => {
+                    // const newStatus = checked ? "Active" : "Inactive";
+                    deleteDepositById(rec);
+                    // Update your data source here
+                    // Example (replace with your actual data update logic):
+                    // dataSource[index].status = newStatus;
+                    // setDataSource([...dataSource]);
+                  }}
+                />
+              </p>
+            ) : (
+              <Tag color="red">{"Incompleted"}</Tag>
+            )}
           </div>
         );
       },
@@ -232,89 +226,89 @@ export const NewLeavePolicy = () => {
         <div className="d-flex justify-content-around">
           <TableButton
             buttonsList={[
-              {
-                type: "view",
-                onClick: (e: any) => {
-                  if (!employeeFeature?.isEdit) {
-                    return toast.warn("You don't have permission");
-                    e.stopPropagation();
-                  }
-                  history.push(
-                    `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`
-                  );
-                },
-              },
-              {
-                type: "extend",
-                onClick: (e: any) => {
-                  setSingleData(item);
-                  setOpen(true);
-                  //   pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
-                  //   state: {
-                  //     month: item?.monthId,
-                  //     year: item?.yearId,
-                  //   },
-                  // });
-                  //   setOpen(true);
-                  //   setId(rec);
-                },
-              },
-              // {
-              //   type: "delete",
-              //   onClick: () => {
-              //     deleteDepositById(item);
-              //   },
-              // },
+              item?.stepperId < 5 &&
+                ({
+                  type: "edit",
+                  onClick: (e: any) => {
+                    history.push(
+                      `/administration/leaveandmovement/yearlyLeavePolicy/edit/${item?.policyId}`
+                    );
+                  },
+                } as any),
+              item?.stepperId === 5 &&
+                ({
+                  type: "view",
+                  onClick: (e: any) => {
+                    if (!employeeFeature?.isEdit) {
+                      return toast.warn("You don't have permission");
+                      e.stopPropagation();
+                    }
+                    window.open(
+                      `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`,
+                      "_blank"
+                    );
+                  },
+                } as any),
+              item?.stepperId === 5 &&
+                ({
+                  type: "extend",
+                  onClick: (e: any) => {
+                    setSingleData(item);
+                    setOpen(true);
+                  },
+                } as any),
             ]}
           />
-          <PButton
-            type="primary"
-            action="button"
-            content="Generate"
-            onClick={() => {
-              generateApi?.action({
-                urlKey: "BalanceGenerate",
-                method: "post",
-                payload: {
-                  businessUnitId: buId,
-                  workplaceGroupId: wgId,
-                  policyId: item?.policyId,
-                  createdBy: employeeId,
-                },
-                toast: true,
-                onSuccess: (res) => {
-                  landingApiCall();
-                  toast.success(res?.message[0]);
-                },
-                onError: (error: any) => {
-                  if (
-                    error?.response?.data?.errors?.[
-                      "GeneralPayload.Description"
-                    ]?.length > 1
-                  ) {
-                    //  setErrorData(
-                    //    error?.response?.data?.errors?.["GeneralPayload.Description"]
-                    //  );
-                    //  setOpen(true);
-                  } else {
-                    toast.error(
-                      error?.response?.data?.message?.[0] ||
-                        error?.response?.data?.message ||
-                        error?.response?.data?.errors?.[
-                          "GeneralPayload.Description"
-                        ]?.[0] ||
-                        error?.response?.data?.Message ||
-                        error?.response?.data?.title ||
-                        error?.response?.title ||
-                        error?.response?.message ||
-                        error?.response?.Message ||
-                        "Something went wrong"
-                    );
-                  }
-                },
-              });
-            }}
-          />{" "}
+          {item?.stepperId === 5 && (
+            <PButton
+              type="primary"
+              action="button"
+              content="Generate"
+              onClick={() => {
+                generateApi?.action({
+                  urlKey: "BalanceGenerate",
+                  method: "post",
+                  payload: {
+                    businessUnitId: buId,
+                    workplaceGroupId: wgId,
+                    policyId: item?.policyId,
+                    createdBy: employeeId,
+                  },
+                  toast: true,
+                  onSuccess: (res) => {
+                    landingApiCall();
+                    toast.success(res?.message[0]);
+                  },
+                  onError: (error: any) => {
+                    if (
+                      error?.response?.data?.errors?.[
+                        "GeneralPayload.Description"
+                      ]?.length > 1
+                    ) {
+                      //  setErrorData(
+                      //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+                      //  );
+                      //  setOpen(true);
+                    } else {
+                      toast.error(
+                        error?.response?.data?.message?.[0] ||
+                          error?.response?.data?.message ||
+                          error?.response?.data?.errors?.[
+                            "GeneralPayload.Description"
+                          ]?.[0] ||
+                          error?.response?.data?.Message ||
+                          error?.response?.data?.title ||
+                          error?.response?.title ||
+                          error?.response?.message ||
+                          error?.response?.Message ||
+                          "Something went wrong"
+                      );
+                    }
+                  },
+                });
+              }}
+            />
+          )}
         </div>
       ),
     },
@@ -458,8 +452,8 @@ export const NewLeavePolicy = () => {
           //  setOpen(true);
         } else {
           toast.error(
-            error?.response?.data?.message?.[0] ||
-              error?.response?.data?.message ||
+            error?.response?.data?.message ||
+              error?.response?.data?.message?.[0] ||
               error?.response?.data?.errors?.[
                 "GeneralPayload.Description"
               ]?.[0] ||

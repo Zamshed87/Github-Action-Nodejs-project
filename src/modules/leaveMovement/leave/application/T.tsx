@@ -36,7 +36,6 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     buId,
     wgId,
     isOfficeAdmin,
-    // demoPopupForDeleteAdmin,
     casualLvePunishment,
     medicalLvePunishment,
   } = props?.propjObj;
@@ -65,61 +64,6 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
 
       <PCard>
         <Row gutter={[10, 2]} style={{ marginTop: "-3rem" }}>
-          {/* <div className="table-card">
-            <LeaveCommonHeader employeeInfo={employeeInfo} />
-
-            <Row gutter={[10, 2]} className=" justify-content-center">
-              <Col
-                md={12}
-                className="leave-movement-FormCard"
-                style={{ marginTop: "-3.4rem" }}
-              >
-                <TLeaveApplicationForm
-                  propsObj={{
-                    saveHandler,
-                    singleData,
-
-                    values: form.getFieldsValue(true),
-                    imageFile,
-                    setImageFile,
-
-                    isEdit,
-                    leaveTypeDDL,
-                  }}
-                />
-              </Col>
-              <Col
-                md={12}
-                className="leave-movement-FormCard"
-                style={{ marginTop: "-4px" }}
-              >
-                <LeaveBalanceTable
-                  leaveBalanceData={leaveBalanceData}
-                  // show={true}
-                  values={form.getFieldsValue(true)}
-                  casualLvePunishment={casualLvePunishment}
-                  medicalLvePunishment={medicalLvePunishment}
-                />
-              </Col>
-            </Row>
-            <Row gutter={[10, 2]}>
-              <Col md={24}>
-                <LeaveApp_History
-                  empId={form.getFieldValue("employee")?.value}
-                  setLeaveHistoryData={setLeaveHistoryData}
-                  leaveHistoryData={leaveHistoryData}
-                  setIsEdit={setIsEdit}
-                  setSingleData={setSingleData}
-                  setImageFile={setImageFile}
-                  allFormValues={form.getFieldsValue(true)}
-                  isOfficeAdmin={isOfficeAdmin}
-                  landingData={() => {
-                    getData(form.getFieldValue("employee")?.value);
-                  }}
-                />
-              </Col>
-            </Row>
-          </div> */}
           <CommonView
             employeeInfo={employeeInfo}
             saveHandler={saveHandler}

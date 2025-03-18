@@ -3,17 +3,10 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  dateFormatterForInput,
-  monthFirstDate,
-  monthLastDate,
-} from "utility/dateFormatter";
+import { dateFormatterForInput } from "utility/dateFormatter";
 import IConfirmModal from "../IConfirmModal";
-import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
-import {
-  createLeaveApplication,
-  getEmployeeLeaveBalanceAndHistory,
-} from "./helperAPI";
+import { getPeopleDeskAllLanding } from "../api";
+import { createLeaveApplication } from "./helperAPI";
 import {
   empMgmtLeaveApplicationDto,
   getLvePunishmentData,
@@ -22,8 +15,6 @@ import {
 } from "./utils";
 import { useApiRequest } from "Hooks";
 import { todayDate } from "utility/todayDate";
-import { create } from "lodash";
-import { formatTime12Hour } from "utility/formatTime12Hour";
 
 const withLeaveApplication = (WrappedComponent, isAdmin) => {
   const HocLeaveApplication = () => {
@@ -188,7 +179,6 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         cb();
         setImageFile("");
       };
-
       payload = {
         intApplicationId: singleData?.leaveApplicationId || 0,
         businessUnitId: buId,
@@ -197,9 +187,15 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         intEmployeeId: values?.employee ? values?.employee?.value : employeeId,
         intConsumeType: values?.leaveConsumeType?.value,
         dteFromDate: dateFormatterForInput(values?.fromDate),
-        dteToDate: dateFormatterForInput(values?.toDate),
-        tmeFromTime: moment(values?.startTime).format("HH:mm:ss.SSS"),
-        tmeToTime: moment(values?.endTime).format("HH:mm:ss.SSS"),
+        dteToDate: values?.toDate
+          ? dateFormatterForInput(values?.toDate)
+          : dateFormatterForInput(values?.fromDate),
+        tmeFromTime: values?.startTime
+          ? moment(values?.startTime).format("HH:mm:ss.SSS")
+          : null,
+        tmeToTime: values?.endTime
+          ? moment(values?.endTime).format("HH:mm:ss.SSS")
+          : null,
         intLeaveReliverId: values?.leaveReliever?.value,
         intDocumentId: values?.imageFile?.globalFileUrlId
           ? values?.imageFile?.globalFileUrlId
@@ -231,7 +227,6 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         message: `Ready to submit a leave application?`,
         yesAlertFunc: () => {
           if (values?.employee) {
-            console.log("first");
             // createLeaveApplication(payload, setLoading, callback, setLoad);
             createApi.action({
               urlKey: isEdit ? "UpdateLeave" : "CreateLeave",
@@ -239,15 +234,12 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
               payload,
               toast: true,
               onSuccess: (res) => {
-                console.log({ res });
                 callback();
                 toast.success(res?.message?.[0] || "Success");
               },
               onError: (error) => {
-                console.log({ error });
                 setLoad(false);
 
-                setLoad(false);
                 toast.error(
                   error?.response?.data?.message?.[0] ||
                     error?.response?.data?.message ||
@@ -267,7 +259,9 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
             // createLeaveApplication(payload, setLoading, callback, setLoad);
           }
         },
-        noAlertFunc: () => null,
+        noAlertFunc: () => {
+          setLoad(false);
+        },
       };
       IConfirmModal(confirmObject);
     };

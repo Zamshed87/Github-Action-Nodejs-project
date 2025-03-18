@@ -28,7 +28,7 @@ export const General = ({
   // api
   const leaveTypeApi = useApiRequest({});
   const EmploymentTypeDDL = useApiRequest([]);
-  const HRPositionDDL = useApiRequest([]);
+  // const HRPositionDDL = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
   const religionDDL = useApiRequest([]);
@@ -166,6 +166,8 @@ export const General = ({
 
   useEffect(() => {
     getDDL();
+    getEmploymentType();
+    getEmployeDesignation();
   }, [detailsApi?.data]);
 
   return (
@@ -276,8 +278,8 @@ export const General = ({
                 workplace: op,
               });
               if (value) {
-                getEmploymentType();
                 // getHRPosition();
+                getEmploymentType();
                 getEmployeDesignation();
                 getDDL();
               }
@@ -302,7 +304,6 @@ export const General = ({
             label="Designation"
             placeholder="Designation"
             onChange={(value, op) => {
-              console.log({ value });
               if (value && value.includes(0)) {
                 form.setFieldsValue({
                   designationListDTO: [

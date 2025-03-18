@@ -69,7 +69,6 @@ export const Sandwitch = ({
     const t: any = [];
     d?.forEach((i: any) => {
       const f = sandWitchLanding?.find((j: any) => j?.index == i);
-      console.log({ f });
       if (f) {
         t.push(f);
       }
@@ -90,12 +89,6 @@ export const Sandwitch = ({
       d?.length > 0 && findMatch(d);
       // previousScenarioId.current = d?.join(",") || null; // Update previousScenarioId
       // }
-    } else {
-      form.setFieldsValue({
-        isSandwitch: {
-          value: 0,
-        },
-      });
     }
   }, [detailsApi?.data, sandWitchLanding]);
   return (
@@ -149,7 +142,6 @@ export const Sandwitch = ({
       <Form.Item shouldUpdate noStyle>
         {() => {
           const { isSandwitch } = form.getFieldsValue(true);
-
           return (
             isSandwitch?.value === 1 && (
               <>

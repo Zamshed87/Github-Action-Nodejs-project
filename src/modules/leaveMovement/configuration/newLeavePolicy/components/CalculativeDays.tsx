@@ -234,9 +234,7 @@ export const CalculativeDays = ({
                                   policy: undefined,
                                 });
                               })
-                              .catch((e: any) => {
-                                console.log({ e });
-                              });
+                              .catch((e: any) => {});
                           }}
                         />
                       </Col>
