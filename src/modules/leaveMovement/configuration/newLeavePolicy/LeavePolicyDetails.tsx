@@ -257,7 +257,7 @@ export const LeavePolicyDetails = () => {
   ];
   return (
     <PCard>
-      <PCardHeader backButton title={`Leave Policy Details`} />
+      <PCardHeader title={`Leave Policy Details`} />
       <h4 className="my-2">General Info</h4>
       <div style={{ fontSize: 12 }}>
         Policy Name: {leavePolicyCommon?.policyName} <br />
