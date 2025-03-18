@@ -232,6 +232,15 @@ export const NewLeavePolicy = () => {
         <div className="d-flex justify-content-around">
           <TableButton
             buttonsList={[
+              item?.stepperId < 5 &&
+                ({
+                  type: "edit",
+                  onClick: (e: any) => {
+                    history.push(
+                      `/administration/leaveandmovement/yearlyLeavePolicy/edit/${item?.policyId}`
+                    );
+                  },
+                } as any),
               {
                 type: "view",
                 onClick: (e: any) => {

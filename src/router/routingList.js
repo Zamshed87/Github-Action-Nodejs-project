@@ -2179,6 +2179,10 @@ export const routingList = [
     component: LeavePolicyDetails,
   },
   {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/edit/:id",
+    component: PolicyCreateExtention,
+  },
+  {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
     component: PolicyCreateExtention,
   },
