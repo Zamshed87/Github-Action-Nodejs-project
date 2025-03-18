@@ -436,7 +436,7 @@ export const LeavePolicyDetails = () => {
             <br />
             Max. Leave Apply Days (Monthly) : {add?.maxLeaveInMonth}
             <br />
-            Min. Leave Apply Days (At a Time) : {add?.maxLeaveInDays}
+            Max. Leave Apply Days (At a Time) : {add?.maxLeaveInDays}
           </div>
         ))}
       </div>

@@ -69,6 +69,9 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
   useEffect(() => {
     getDependTypes();
   }, []);
+  const isDuplicate = (type: string) => {
+    return consumeData.some((item: any) => item.leaveConsumeType === type);
+  };
   return (
     <Row gutter={[10, 2]}>
       <Divider
@@ -255,6 +258,9 @@ export const Consumption = ({ form, consumeData, setConsumeData }: any) => {
                       return toast.warn(
                         "Max Consume Hour must be greater than Min Consume Hour Length"
                       );
+                    }
+                    if (isDuplicate(leaveConsumeType?.label)) {
+                      return toast.warn("Leave Consume Type already exists.");
                     }
                     const fields = [
                       "leaveConsumeType",
