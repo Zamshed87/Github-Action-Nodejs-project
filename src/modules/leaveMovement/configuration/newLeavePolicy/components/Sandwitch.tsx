@@ -63,6 +63,7 @@ export const Sandwitch = ({
     });
   };
   useEffect(() => {
+    setSelectedRow1([]);
     getDependTypes();
   }, []);
   const findMatch = (d: any) => {
@@ -94,6 +95,7 @@ export const Sandwitch = ({
       form.setFieldsValue({
         isSandwitch: {
           value: 0,
+          label: "No",
         },
       });
     }
@@ -149,7 +151,7 @@ export const Sandwitch = ({
       <Form.Item shouldUpdate noStyle>
         {() => {
           const { isSandwitch } = form.getFieldsValue(true);
-
+          console.log({ isSandwitch });
           return (
             isSandwitch?.value === 1 && (
               <>

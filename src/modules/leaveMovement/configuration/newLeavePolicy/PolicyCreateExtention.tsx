@@ -860,6 +860,7 @@ export const PolicyCreateExtention = () => {
           proRataCount: 15,
           proRataBasis: { value: "1", label: "Update From Start" },
           isCarryForward: { value: 0, label: "No" },
+          isSandwitch: { value: 0, label: "No" },
           isEncashment: { value: 0, label: "No" },
           isAttachmentMandatory: { value: 0, label: "No" },
           isEssApply: { value: 1, label: "Yes" },
