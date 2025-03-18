@@ -18,6 +18,7 @@ export const statusDDL = [
     { value: "Approved", label: "Approved" },
     { value: "Withdrawn", label: "Withdrawn" },
     { value: "Clearance", label: "Clearance" },
+    { value: "Clearance Running", label: "Clearance Running" },
     { value: "Clearance Completed", label: "Clearance Completed" },
     { value: "Final Settlement Completed", label: "Final Settlement Completed" },
     { value: "Released", label: "Released" },
@@ -131,49 +132,34 @@ export const getExitInterviewLandingTableColumn = (
             title: "Resign Status",
             dataIndex: "approvalStatus",
             filter: false,
-            render: (item) => (
+            render: (data) => (
                 <div className="d-flex justify-content-center">
-                    {item?.approvalStatus === "Pending" && (
-                        <Chips
-                            label="Pending"
-                            classess="warning p-2"
-                        />
+                    {data?.approvalStatus === "Pending" && (
+                        <Chips label="Pending" classess="warning p-2" />
                     )}
-                    {item?.approvalStatus === "Cancelled" && (
-                        <Chips
-                            label="Cancelled"
-                            classess="danger p-2"
-                        />
+                    {data?.approvalStatus === "Cancelled" && (
+                        <Chips label="Cancelled" classess="danger p-2" />
                     )}
-                    {item?.approvalStatus === "Approved" && (
-                        <Chips
-                            label="Approved"
-                            classess="success p-2"
-                        />
+                    {data?.approvalStatus === "Approved" && (
+                        <Chips label="Approved" classess="success p-2" />
                     )}
-                    {item?.approvalStatus === "Withdrawn" && (
-                        <Chips
-                            label="Withdrawn"
-                            classess="danger p-2"
-                        />
+                    {data?.approvalStatus === "Withdrawn" && (
+                        <Chips label="Withdrawn" classess="danger p-2" />
                     )}
-                    {item?.approvalStatus === "Clearance" && (
-                        <Chips
-                            label="Clearance"
-                            classess="info p-2"
-                        />
+                    {data?.approvalStatus === "Clearance" && (
+                        <Chips label="Clearance" classess="info p-2" />
                     )}
-                    {item?.approvalStatus === "Final Settlement Completed" && (
-                        <Chips
-                            label="Final Settlement Completed"
-                            classess="success p-2"
-                        />
+                    {data?.approvalStatus === "Clearance Running" && (
+                        <Chips label="Clearance Running" classess="warning p-2" />
                     )}
-                    {item?.approvalStatus === "Released" && (
-                        <Chips
-                            label="Released"
-                            classess="indigo p-2"
-                        />
+                    {data?.approvalStatus === "Clearance Completed" && (
+                        <Chips label="Clearance Completed" classess="success p-2" />
+                    )}
+                    {data?.approvalStatus === "Final Settlement Completed" && (
+                        <Chips label="Final Settlement Completed" classess="success p-2" />
+                    )}
+                    {data?.approvalStatus === "Released" && (
+                        <Chips label="Released" classess="indigo p-2" />
                     )}
                 </div>
             ),
