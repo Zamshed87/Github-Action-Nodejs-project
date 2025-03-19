@@ -8,7 +8,7 @@ import { Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
-import moment from "moment";
+import { convertTo12HourFormat } from "utility/timeFormatter";
 
 export const columnsDefault = [
   {
@@ -294,16 +294,12 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
-    render: (startTime) =>
-      startTime && (
-        <div>{moment(startTime, "HH:mm:ss").format("hh:mm:ss A")}</div>
-      ),
+    render: (startTime) => startTime && convertTo12HourFormat(startTime),
   },
   {
     title: "End Time",
     dataIndex: ["applicationInformation", "endTime"],
-    render: (endTime) =>
-      endTime && <div>{moment(endTime, "HH:mm:ss").format("hh:mm:ss A")}</div>,
+    render: (endTime) => endTime && convertTo12HourFormat(endTime),
   },
   {
     title: "Total Days",
@@ -498,17 +494,13 @@ export const columnsManual = (page) => [
   },
   {
     title: "Actual In-Time",
-    dataIndex: ["applicationInformation", "tmeStartTime"],
-    render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
-    ),
+    dataIndex: ["applicationInformation", "startTime"],
+    render: (time) => <div>{time ? convertTo12HourFormat(time) : "-"}</div>,
   },
   {
     title: "Actual Out-Time",
-    dataIndex: ["applicationInformation", "tmeEndTime"],
-    render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
-    ),
+    dataIndex: ["applicationInformation", "endTime"],
+    render: (time) => <div>{time ? convertTo12HourFormat(time) : "-"}</div>,
   },
 
   {

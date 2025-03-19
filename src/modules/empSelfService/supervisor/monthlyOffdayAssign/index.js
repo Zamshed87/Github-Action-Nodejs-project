@@ -54,6 +54,8 @@ function MonthlyOffdayAssignLandingSelfService() {
     territoryNameList: [],
     employmentTypeList: [],
     sectionList: [],
+    dottedSupervisorNameList: [],
+    lineManagerNameList: [],
   };
 
   const dispatch = useDispatch();

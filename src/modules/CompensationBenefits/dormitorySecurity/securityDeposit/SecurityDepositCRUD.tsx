@@ -185,7 +185,6 @@ export const SecurityDepositCRUD = () => {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         workplaceId: wId,
-
         accountId: orgId,
       },
       onSuccess: (res: any) => {
@@ -197,8 +196,6 @@ export const SecurityDepositCRUD = () => {
     });
   };
   const getSecurityType = () => {
-    // const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
     securityTypeDDL?.action({
       urlKey: "DepositType",
       method: "GET",
