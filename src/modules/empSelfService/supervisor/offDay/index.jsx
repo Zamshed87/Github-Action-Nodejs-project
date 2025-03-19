@@ -91,6 +91,8 @@ function OffDaySelfService() {
     areaNameList: [],
     territoryNameList: [],
     sectionList: [],
+    dottedSupervisorNameList: [],
+    lineManagerNameList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
