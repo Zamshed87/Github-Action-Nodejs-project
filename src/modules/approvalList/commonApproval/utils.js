@@ -8,6 +8,7 @@ import { Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
+import moment from "moment";
 
 export const columnsDefault = [
   {
@@ -98,17 +99,13 @@ export const columnFinalSettlement = [
     title: "Last Working Date",
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Effective Date",
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Waiting Stage",
@@ -123,7 +120,6 @@ export const columnFinalSettlement = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-
 ];
 
 export const columnSalaryGenerate = [
@@ -239,10 +235,16 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Designation",
     dataIndex: ["applicationInformation", "designation"],
+    width: 70,
+  },
+  {
+    title: "Consume Type",
+    dataIndex: ["applicationInformation", "strConsumeType"],
   },
   {
     title: "Department",
     dataIndex: ["applicationInformation", "department"],
+    width: 70,
   },
   {
     title: "Application Date",
@@ -251,6 +253,8 @@ export const columnsLeave = (dispatch) => [
   },
   {
     title: "Attachment",
+    width: 70,
+
     dataIndex: "attachmentId",
     render: (_, record) => (
       <div className="leave-application-document ml-1">
@@ -288,8 +292,27 @@ export const columnsLeave = (dispatch) => [
     render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+    render: (startTime) =>
+      startTime && (
+        <div>{moment(startTime, "HH:mm:ss").format("hh:mm:ss A")}</div>
+      ),
+  },
+  {
+    title: "End Time",
+    dataIndex: ["applicationInformation", "endTime"],
+    render: (endTime) =>
+      endTime && <div>{moment(endTime, "HH:mm:ss").format("hh:mm:ss A")}</div>,
+  },
+  {
     title: "Total Days",
-    dataIndex: ["applicationInformation", "totalDays"],
+    dataIndex: ["applicationInformation", "intTotalTakenDays"],
+  },
+  {
+    title: "Reliver",
+    dataIndex: ["applicationInformation", "strReliverName"],
+    width: 70,
   },
   {
     title: "Waiting Stage",
@@ -298,6 +321,8 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Status",
     dataIndex: ["applicationInformation", "status"],
+    width: 70,
+
     render: (status) => (
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
@@ -700,25 +725,19 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     title: "Separation Date",
     dataIndex: ["applicationInformation", "separationDate"],
     width: "90px",
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Last Working Date",
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Effective Date",
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Waiting Stage",
@@ -1399,8 +1418,8 @@ export const columnsSalaryCertificate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-                ? "orange"
-                : "red",
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
@@ -1436,7 +1455,8 @@ export const columnsBonusGenerate = [
   {
     title: "Bonus Amount",
     dataIndex: ["applicationInformation", "bonusAmount"],
-    render: (bonusAmount) => (bonusAmount ? `${bonusAmount.toLocaleString()}` : "N/A"),
+    render: (bonusAmount) =>
+      bonusAmount ? `${bonusAmount.toLocaleString()}` : "N/A",
   },
   {
     title: "Waiting Stage",
@@ -1454,8 +1474,8 @@ export const columnsBonusGenerate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-                ? "orange"
-                : "red",
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
@@ -1541,8 +1561,8 @@ export const columnsIOUAdjustment = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-                ? "orange"
-                : "red",
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
@@ -1638,8 +1658,8 @@ export const columnsShiftChange = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-                ? "orange"
-                : "red",
+              ? "orange"
+              : "red",
           fontWeight: "bold",
         }}
       >
