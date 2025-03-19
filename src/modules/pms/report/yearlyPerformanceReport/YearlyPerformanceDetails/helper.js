@@ -84,13 +84,7 @@ export const getHeader = (length, totalKPIScoreByScale, history, data) => {
   }
   result = result.concat([
     {
-      title: "Avg. KPI Score",
-      dataIndex: "avgKPIScore",
-      width: 50,
-      align: "center",
-    },
-    {
-      title: "Total KPI Score by Scale",
+      title: "Stakeholder Type Based Total KPI Score by Scale",
       onCell: (_, index) => {
         if (index === 0) {
           return { rowSpan: length };
@@ -122,6 +116,12 @@ export const getBarHeader = (length, totalBARScoreByScale, history, data) => {
     {
       title: "Question Name",
       dataIndex: "questionName",
+      width: 100,
+      align: "center",
+    },
+    {
+      title: "Weight per Question",
+      dataIndex: "weight",
       width: 100,
       align: "center",
     },
@@ -177,13 +177,7 @@ export const getBarHeader = (length, totalBARScoreByScale, history, data) => {
   }
   result = result.concat([
     {
-      title: "Avg. BAR Score",
-      dataIndex: "avgBARScore",
-      width: 50,
-      align: "center",
-    },
-    {
-      title: "Total BAR Score by Scale",
+      title: "Stakeholder Type Based Total BAR Score by Scale",
       onCell: (_, index) => {
         if (index === 0) {
           return { rowSpan: length };

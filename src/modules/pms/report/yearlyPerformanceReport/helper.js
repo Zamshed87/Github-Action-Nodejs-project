@@ -34,14 +34,14 @@ export const getHeader = (pages, setModal, reportData) => {
     });
   }
   kpiChildren.push({
-    title: "Avg. KPI Score",
+    title: "Stakeholder Type Based Total KPI Score by Scale",
     dataIndex: "avgKPIScore",
     sorter: true,
     width: 50,
     align: "center",
   });
   barChildren.push({
-    title: "Avg. BAR Score",
+    title: "Stakeholder Type Based Total BAR Score by Scale",
     dataIndex: "avgBARScore",
     sorter: true,
     width: 50,
@@ -84,6 +84,13 @@ export const getHeader = (pages, setModal, reportData) => {
       align: "center",
     },
     {
+      title: "Weight",
+      dataIndex: "kpiWeight",
+      sorter: true,
+      width: 60,
+      align: "center",
+    },
+    {
       title: "Key Performance Indicator (KPI)",
       children: kpiChildren,
     },
@@ -115,6 +122,7 @@ export const getHeader = (pages, setModal, reportData) => {
     {
       title: "Action",
       dataIndex: "",
+      width: "42px",
       align: "center",
       render: (_, rec) => {
         return (
