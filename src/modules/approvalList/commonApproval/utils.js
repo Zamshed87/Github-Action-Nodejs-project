@@ -8,6 +8,7 @@ import { Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
+import { convertTo12HourFormat } from "utility/timeFormatter";
 
 export const columnsDefault = [
   {
@@ -475,14 +476,14 @@ export const columnsManual = (page) => [
     title: "Actual In-Time",
     dataIndex: ["applicationInformation", "startTime"],
     render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+      <div>{time ? convertTo12HourFormat(time) : "-"}</div>
     ),
   },
   {
     title: "Actual Out-Time",
     dataIndex: ["applicationInformation", "endTime"],
     render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+      <div>{time ? convertTo12HourFormat(time) : "-"}</div>
     ),
   },
 
