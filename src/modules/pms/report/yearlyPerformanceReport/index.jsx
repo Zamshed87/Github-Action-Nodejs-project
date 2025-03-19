@@ -153,7 +153,7 @@ const YearlyPerformanceReport = () => {
                 setPages(pagination);
               }
             }}
-            scroll={{ x: "2200px" }}
+            scroll={{ x: "3000px" }}
           />
         </PCard>
       </PForm>

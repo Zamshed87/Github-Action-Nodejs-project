@@ -33,6 +33,9 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
               Total
             </Table.Summary.Cell>
             <Table.Summary.Cell align="center">
+              {details?.barTotal?.weight}
+            </Table.Summary.Cell>
+            <Table.Summary.Cell align="center">
               {details?.barTotal?.desiredValue}
             </Table.Summary.Cell>
             {details?.barScoreHeaders?.map((header,index) => {
@@ -46,13 +49,11 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
               );
             })}
             <Table.Summary.Cell align="center">
-              {details?.barTotal?.avgBARScore}
-            </Table.Summary.Cell>
-            <Table.Summary.Cell align="center">
               {details?.totalBARScoreByScale}
             </Table.Summary.Cell>
           </Table.Summary.Row>
         )}
+        // scroll={{ x: "200px" }}
       />
     </div>
   );

@@ -94,7 +94,7 @@ export const getBarAssessmentColumn = ({
     {
       title: "Action",
       sorter: false,
-      width: "50px",
+      width: "100px",
       align: "center",
       render: (_, data) => {
         if(data?.assesmentStatus == "Complete") {

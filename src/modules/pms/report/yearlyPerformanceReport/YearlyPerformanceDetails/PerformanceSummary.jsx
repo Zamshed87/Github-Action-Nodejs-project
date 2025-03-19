@@ -20,7 +20,7 @@ const PerformanceSummary = ({ summary }) => {
             </tr>
             <tr>
               <td className="fw-bold p-2">Total BAR Score by Scale</td>
-              <td className="p-2">{summary?.totalPerformanceScore}</td>
+              <td className="p-2">{summary?.totalBARScoreByScale}</td>
             </tr>
             <tr>
               <td className="fw-bold p-2">Total Performance Score (Out of 100)</td>

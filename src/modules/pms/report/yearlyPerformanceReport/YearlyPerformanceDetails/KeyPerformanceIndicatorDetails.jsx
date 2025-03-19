@@ -29,7 +29,7 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
         data={details?.kpiDetails || []}
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell colSpan={4} align="end">
+            <Table.Summary.Cell colSpan={3} align="end">
               Total
             </Table.Summary.Cell>
             <Table.Summary.Cell align="center">
@@ -56,6 +56,7 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
             </Table.Summary.Cell>
           </Table.Summary.Row>
         )}
+        scroll={{ x: "2200px" }}
       />
     </div>
   );
