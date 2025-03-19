@@ -29,7 +29,7 @@ import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 import IndividualKpiPresentation from "modules/pms/performancePlanning/individualKpiEntrySelf/kpiPresentation";
 
 export const origin = window.location.origin;
-export const prodUrl = "https://devapp.peopledesk.io";
+export const prodUrl = "https://app.peopledesk.io";
 
 export const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
@@ -47,7 +47,7 @@ export const domainUrl =
 
 Axios.interceptors.request.use(
   (config: any) => {
-    if (isDevServer) return config;
+    // if (isDevServer) return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -113,7 +113,7 @@ Axios.interceptors.request.use(
 let isToastDisplayed = false;
 Axios.interceptors.response.use(
   async function (response: any) {
-    if (isDevServer) return response;
+    // if (isDevServer) return response;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
