@@ -37,7 +37,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
       }
     );
     getAssestHistoryData(
-      `Separation/GetEmployeeAssets?separationId=${id}`,
+      `Separation/GetEmployeeAssets?employeeId=${empId}`,
       (res) => {
         setAssestHistoryData(res?.data);
       }
@@ -316,19 +316,26 @@ export default function FinalSettlementViewModal({ id, empId }) {
               header={[
                 {
                   title: "Asset Name",
-                  dataIndex: "ItemName",
+                  dataIndex: "itemName",
                 },
                 {
                   title: "UoM",
-                  dataIndex: "ItemUom",
+                  dataIndex: "itemUom",
                 },
                 {
                   title: "Last Assign Date",
-                  dataIndex: "AssignDate",
+                  dataIndex: "assignDate",
                 },
                 {
                   title: "Status",
-                  dataIndex: "Active",
+                  dataIndex: "active",
+                  render: (data, record) => {
+                    if (record?.active === true) {
+                      return <Chips label="Active" classess="success p-2" />;
+                    } else {
+                      return <Chips label="Inactive" classess="warning p-2" />;
+                    }
+                  },
                 },
               ]}
             />

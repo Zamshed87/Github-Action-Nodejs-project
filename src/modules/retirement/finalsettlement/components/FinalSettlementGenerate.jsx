@@ -12,6 +12,7 @@ import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
 import Chips from "common/Chips";
+import Loading from "common/loading/Loading";
 
 export default function FinalSettlementGenerate() {
   const { orgId, intAccountId } = useSelector(
@@ -34,6 +35,7 @@ export default function FinalSettlementGenerate() {
   );
   const [approvalHistoryData, setApprovalHistoryData] = useState([]);
   const [asesstHistoryData, setAssestHistoryData] = useState([]);
+  const [isSaveClicked, setIsSaveClicked] = useState(false);
 
   const { setFieldValue, values, handleSubmit } = useFormik({
     enableReinitialize: true,
@@ -80,15 +82,17 @@ export default function FinalSettlementGenerate() {
         earnings: singleFinalSettlementData?.earnings ?? [],
         deductions: singleFinalSettlementData?.deductions ?? [],
       };
-
-      postFinalSettlementData(
-        `/FinalSettlement/SaveFinalSettlement`,
-        payload,
-        () => {
-          history.push("/retirement/finalsettlement");
-        },
-        true
-      );
+      if (isSaveClicked === false) {
+        setIsSaveClicked(true);
+        postFinalSettlementData(
+          `/FinalSettlement/SaveFinalSettlement`,
+          payload,
+          () => {
+            history.push("/retirement/finalsettlement");
+          },
+          true
+        );
+      }
     },
   });
 
@@ -113,7 +117,7 @@ export default function FinalSettlementGenerate() {
       }
     );
     getAssestHistoryData(
-      `Separation/GetEmployeeAssets?separationId=${params?.separationid}`,
+      `Separation/GetEmployeeAssets?employeeId=${params?.empid}`,
       (res) => {
         setAssestHistoryData(res?.data);
       }
@@ -129,6 +133,7 @@ export default function FinalSettlementGenerate() {
   }, [params?.separationid]);
   return (
     <div className="table-card businessUnit-wrapper dashboard-scroll">
+      {isSaveClicked && <Loading />}
       <form onSubmit={handleSubmit}>
         <div className="d-flex  justify-content-between">
           <div className="d-flex align-items-center">
@@ -139,6 +144,7 @@ export default function FinalSettlementGenerate() {
             className="btn btn-green btn-green-disable mb-2 mr-2"
             type="submit"
             label="Save"
+            disabled={isSaveClicked || finalSettlementLoading}
           />
         </div>
         <EmployeeDetails loading={singleEmployeeLoading} employee={empBasic} />
@@ -460,19 +466,28 @@ export default function FinalSettlementGenerate() {
                 header={[
                   {
                     title: "Asset Name",
-                    dataIndex: "ItemName",
+                    dataIndex: "itemName",
                   },
                   {
                     title: "UoM",
-                    dataIndex: "ItemUom",
+                    dataIndex: "itemUom",
                   },
                   {
                     title: "Last Assign Date",
-                    dataIndex: "AssignDate",
+                    dataIndex: "assignDate",
                   },
                   {
                     title: "Status",
-                    dataIndex: "Active",
+                    dataIndex: "active",
+                    render: (data, record) => {
+                      if (record?.active === true) {
+                        return <Chips label="Active" classess="success p-2" />;
+                      } else {
+                        return (
+                          <Chips label="Inactive" classess="warning p-2" />
+                        );
+                      }
+                    },
                   },
                 ]}
               />
