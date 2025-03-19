@@ -205,12 +205,18 @@ export const offDayAssignDtoCol = (
     {
       title: "Dotted Supervisor",
       dataIndex: "dottedSupervisorName",
-      sorter: true,
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`dottedSupervisorNameList`],
+      fieldType: "string",
     },
     {
       title: "Line Manager",
       dataIndex: "lineManagerName",
-      sorter: true,
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`lineManagerNameList`],
+      fieldType: "string",
     },
     {
       title: "Off Day",
