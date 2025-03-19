@@ -15,7 +15,6 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -294,53 +293,7 @@ export const SecurityDepositCRUD = () => {
         />
       ),
     },
-    // {
-    //   title: "Status",
-    //   width: 150,
-
-    //   // render: (_: any, rec: any) => {
-    //   //   return (
-    //   //     <div>
-    //   //       {rec?.strEmployeeStatus === "Approved" ? (
-    //   //         <Tag color="green">{rec?.status}</Tag>
-    //   //       ) : rec?.status === "Rejected" ? (
-    //   //         <Tag color="red">{rec?.status}</Tag>
-    //   //       ) : rec?.status === "Pending" ? (
-    //   //         <Tag color="orange">{rec?.status}</Tag>
-    //   //       ) : (
-    //   //         <Tag color="default">{rec?.status}</Tag>
-    //   //       )}
-
-    //   //     </div>
-    //   //   );
-    //   // },
-    //   render: (_: any, rec: any) => (
-    //     <div className="d-flex align-items-center">
-    //       <span className="ml-2">
-    //         {rec?.strEmployeeStatus === "Approved" ? (
-    //           <Tag color="green">{rec?.status}</Tag>
-    //         ) : rec?.status === "Rejected" ? (
-    //           <Tag color="red">{rec?.status}</Tag>
-    //         ) : rec?.status === "Pending" ? (
-    //           <Tag color="orange">{rec?.status}</Tag>
-    //         ) : (
-    //           <Tag color="default">{rec?.status}</Tag>
-    //         )}
-    //       </span>
-    //       {rec?.approvalLog?.length > 0 && (
-    //         <InfoOutlined
-    //           className="ml-2"
-    //           sx={{ cursor: "pointer", fontSize: "17px" }}
-    //           onClick={(e) => {
-    //             e.stopPropagation();
-    //             setAnchorElHistory(e.currentTarget as any);
-    //             setSelectedSingleEmployee(rec);
-    //           }}
-    //         />
-    //       )}
-    //     </div>
-    //   ),
-    // },
+   
     {
       title: "",
       width: 30,
