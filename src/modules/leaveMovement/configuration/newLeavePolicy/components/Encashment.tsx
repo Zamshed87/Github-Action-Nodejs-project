@@ -211,7 +211,7 @@ export const Encashment = ({
                       label="From Service Length (Month)"
                       placeholder=""
                       min={0}
-                      max={99999}
+                      max={9999}
                       rules={[
                         {
                           message: "Number must be positive",
@@ -238,7 +238,7 @@ export const Encashment = ({
                             label="To Service Length (Month)"
                             placeholder=""
                             min={0}
-                            max={99999}
+                            max={9999}
                             rules={[
                               {
                                 message: "Number must be positive",
