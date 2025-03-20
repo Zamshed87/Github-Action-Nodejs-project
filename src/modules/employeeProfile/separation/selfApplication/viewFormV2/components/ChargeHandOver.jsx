@@ -13,7 +13,11 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 
-export default function ChargeHandOver({ separationId, getSeparationData }) {
+export default function ChargeHandOver({
+  separationId,
+  getSeparationData,
+  setChargeHandOverModal,
+}) {
   const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -21,7 +25,7 @@ export default function ChargeHandOver({ separationId, getSeparationData }) {
   const params = useParams();
   const [employeeList, setEmployeeList] = useState([]);
   const [, getHandOverData, handoverloading] = useAxiosGet();
-  const [, postHandOverData] = useAxiosPost();
+  const [, postHandOverData, handoverPostLoading] = useAxiosPost();
   const [loading, setLoading] = useState(false);
   const initData = {
     employeeName: "",
@@ -132,6 +136,7 @@ export default function ChargeHandOver({ separationId, getSeparationData }) {
       () => {
         getData();
         getSeparationData();
+        setChargeHandOverModal(false);
       },
       true
     );
@@ -152,7 +157,7 @@ export default function ChargeHandOver({ separationId, getSeparationData }) {
 
   return (
     <div>
-      {loading && <Loading />}
+      {(loading || handoverPostLoading) && <Loading />}
       <div className="d-flex justify-content-end mb-3">
         <PrimaryButton
           type="button"
@@ -165,6 +170,7 @@ export default function ChargeHandOver({ separationId, getSeparationData }) {
           onClick={() => {
             saveChangeHandler();
           }}
+          disabled={handoverPostLoading}
         />
       </div>
       <Card

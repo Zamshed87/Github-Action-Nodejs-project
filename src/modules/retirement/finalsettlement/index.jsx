@@ -58,6 +58,7 @@ export default function FinalSettlementLanding() {
   const [rowDto, setRowDto] = useState([]);
   const [id, setId] = useState(null);
   const [empId, setEmpId] = useState(null);
+  const [clearanceId, setClearanceId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const getData = (pagination, searchText) => {
@@ -197,7 +198,8 @@ export default function FinalSettlementLanding() {
                     id,
                     setId,
                     empId,
-                    setEmpId
+                    setEmpId,
+                    setClearanceId
                   )}
                   pages={pages}
                   rowDto={rowDto || []}
@@ -238,7 +240,11 @@ export default function FinalSettlementLanding() {
                   }}
                   components={
                     <>
-                      <FinalSettlementViewModal id={id} empId={empId} />
+                      <FinalSettlementViewModal
+                        id={id}
+                        empId={empId}
+                        clearanceId={clearanceId}
+                      />
                     </>
                   }
                   width={1000}

@@ -6,8 +6,9 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
 import Chips from "common/Chips";
+import { dateFormatter } from "utility/dateFormatter";
 
-export default function FinalSettlementViewModal({ id, empId }) {
+export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
   const { orgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -31,7 +32,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
       }
     );
     getApprovalHistoryData(
-      `Approval/GetApproverList?accountId=${intAccountId}&applicationType=${21}&applicationId=${id}`,
+      `Approval/GetApproverList?accountId=${intAccountId}&applicationType=${29}&applicationId=${clearanceId}`,
       (res) => {
         setApprovalHistoryData(res);
       }
@@ -82,13 +83,13 @@ export default function FinalSettlementViewModal({ id, empId }) {
                     singleFinalSettlementData?.summary?.totalOthersDue || 0,
                 },
                 {
+                  name: "Others Addition",
+                  value: singleFinalSettlementData?.summary?.otherAddition || 0,
+                },
+                {
                   name: "Others Deduction",
                   value:
                     singleFinalSettlementData?.summary?.otherDeduction || 0,
-                },
-                {
-                  name: "Others Addition",
-                  value: singleFinalSettlementData?.summary?.otherAddition || 0,
                 },
                 {
                   name: "Total Payable Amount",
@@ -134,6 +135,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
               ghost={true}
               accordion={true}
               defaultActiveKey={["0"]}
+              collapsible="disabled"
             >
               <Collapse.Panel
                 header={
@@ -158,10 +160,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
                         info: (
                           <b>
                             {dataFormatter(
-                              singleFinalSettlementData?.earnings?.reduce(
-                                (a, b) => a + b.actualAmount,
-                                0
-                              )
+                              singleFinalSettlementData?.summary?.totalDueSalary
                             )}
                           </b>
                         ),
@@ -219,7 +218,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
                   render: (_, record) =>
                     record.strElementName === "Early Resign"
                       ? null
-                      : record.amount,
+                      : dataFormatter(record.amount),
                 },
               ]}
             />
@@ -325,6 +324,7 @@ export default function FinalSettlementViewModal({ id, empId }) {
                 {
                   title: "Last Assign Date",
                   dataIndex: "assignDate",
+                  render: (data) => dateFormatter(data),
                 },
                 {
                   title: "Status",
