@@ -15,6 +15,7 @@ import {
   columnAdditionDeduction,
   columnDeposit,
   columnDisbursment,
+  columnFinalSettlement,
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
@@ -149,6 +150,7 @@ const CommonApprovalComponent = () => {
         isApprove,
         isReject: !isApprove,
         actionBy: employeeId,
+        applicationTypeId: id || 0,
       };
     });
 
@@ -328,6 +330,10 @@ const CommonApprovalComponent = () => {
               ? columnTransferPromotion
               : id == 20
               ? columnSalaryGenerate
+              : id == 30
+              ? columnFinalSettlement
+              : id == 29
+              ? columnsSeparation(setViewData, setViewModal)
               : columnsDefault
           }
           bordered

@@ -307,6 +307,7 @@ export const apiList = {
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
   IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   CalendarAssignFilter: "/Employee/CalendarAssignFilter",
+  CalendarAssignBySupervisorFilter: "/Employee/CalendarAssignBySupervisorFilter",
   DepositType: "DepositType",
   Deposit: "Deposit",
   DepositDetails: "Deposit/GetDetails",

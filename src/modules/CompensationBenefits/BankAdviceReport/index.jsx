@@ -149,9 +149,13 @@ const BankAdviceReport = () => {
   const commonLanding1 = useApiRequest([]);
   // Functions
   const commonLandingFor = (values) => {
-    if (!values?.adviceName?.value) {
-      return toast.warning("Please select Salary Code");
+    if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value) {
+        return toast.warning("Please select Salary Code");
+      }
     }
+    const IntSalaryGenerateRequestId = values?.bankAdviceFor?.value === 1 ?  values?.adviceName?.value : values?.bonusCode?.value;
+
     commonLanding?.action({
       method: "get",
       urlKey: "commonLanding",
@@ -164,7 +168,7 @@ const BankAdviceReport = () => {
         IntMonthId: values?.monthId,
         IntYearId: values?.yearId,
         IntBankId: values?.bank?.value,
-        IntSalaryGenerateRequestId: values?.adviceName?.value,
+        IntSalaryGenerateRequestId: IntSalaryGenerateRequestId,
         strAdviceType: values?.adviceType?.value,
         bankAdviceFor: values?.bankAdviceFor?.value,
       },
@@ -175,9 +179,13 @@ const BankAdviceReport = () => {
   };
 
   const commonLandingForPdf = (values) => {
-    if (!values?.adviceName?.value) {
-      return toast.warning("Please select Salary Code");
+    
+    if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value) {
+        return toast.warning("Please select Salary Code");
+      }
     }
+    const IntSalaryGenerateRequestId = values?.bankAdviceFor?.value === 1 ?  values?.adviceName?.value : values?.bonusCode?.value;
     commonLanding1?.action({
       method: "get",
       urlKey: "commonLanding1",
@@ -189,7 +197,7 @@ const BankAdviceReport = () => {
         IntMonthId: values?.monthId,
         IntYearId: values?.yearId,
         IntBankId: values?.bank?.value,
-        IntSalaryGenerateRequestId: values?.adviceName?.value,
+        IntSalaryGenerateRequestId: IntSalaryGenerateRequestId,
         StrAdviceType: values?.adviceType?.value,
         StrDownloadType: "TopSheet",
         bankAdviceFor: values?.bankAdviceFor?.value,
@@ -229,8 +237,9 @@ const BankAdviceReport = () => {
     commonLandingForPdf(values);
 
     if (values?.bankAdviceFor?.value === 2) {
-      if (!values?.bonusCode?.length > 0)
+      if (!values?.bonusCode?.value) {
         return toast.warning("Please select Bonus Code");
+      }
       getBankAdviceBonusRequestLanding(
         orgId,
         buId,
@@ -242,8 +251,9 @@ const BankAdviceReport = () => {
         setLoading
       );
     } else if (values?.bankAdviceFor?.value === 1) {
-      if (!values?.adviceName?.value)
+      if (!values?.adviceName?.value) {
         return toast.warning("Please select Salary Code");
+      }
       getBankAdviceRequestLanding(
         orgId,
         buId,
@@ -502,7 +512,7 @@ const BankAdviceReport = () => {
   }, []);
   return (
     <form onSubmit={handleSubmit}>
-      {(loading || tenMsBankAdvice?.loading) && <Loading />}
+      {(loading || tenMsBankAdvice?.loading || commonLanding.loading || commonLanding1.loading) && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading mt-2 pt-1">
@@ -744,11 +754,11 @@ const BankAdviceReport = () => {
                           onChange={(valueOption) => {
                             setWorkplaceDDL([]);
                             setFieldValue("bonusCode", valueOption);
-                            if (valueOption?.length > 0) {
-                              const concatBonusCode = valueOption
-                                ?.map((item) => item?.value)
-                                .join(",");
-                              const api = `/Employee/BonusGenerateQueryAll?StrPartName=GetWorkplaceListbyBonusHeaderId&searchText=${concatBonusCode}`;
+                            if (valueOption) {
+                              // const concatBonusCode = valueOption
+                              //   ?.map((item) => item?.value)
+                              //   .join(",");
+                              const api = `/Employee/BonusGenerateQueryAll?StrPartName=GetWorkplaceListbyBonusHeaderId&searchText=${valueOption?.value}`;
                               getPeopleDeskAllDDL(
                                 api,
                                 "intWorkPlaceId",
@@ -791,7 +801,7 @@ const BankAdviceReport = () => {
                               padding: "0",
                             }),
                           }}
-                          isMulti
+                          // isMulti
                           placeholder="Bonus Code"
                         />
                       </div>
@@ -1019,7 +1029,9 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
+                            const IntSalaryGenerateRequestId = values?.bankAdviceFor?.value === 1 ?  values?.adviceName?.value : values?.bonusCode?.value;
+
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
                             downloadFile(
                               url,
                               `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetExcel_${values?.monthId}-${values?.yearId}`,
@@ -1041,7 +1053,9 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=Advice`;
+                            const IntSalaryGenerateRequestId = values?.bankAdviceFor?.value === 1 ?  values?.adviceName?.value : values?.bonusCode?.value;
+
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=Advice`;
 
                             downloadFile(
                               url,
@@ -1086,7 +1100,9 @@ const BankAdviceReport = () => {
                                 reactToPrintFn();
                               }
                             } else {
-                              const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
+                              const IntSalaryGenerateRequestId = values?.bankAdviceFor?.value === 1 ?  values?.adviceName?.value : values?.bonusCode?.value;
+
+                              const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
                               getPDFAction(
                                 url,
                                 setLoading,
@@ -1108,7 +1124,9 @@ const BankAdviceReport = () => {
                             />
                           ),
                           onClick: () => {
-                            const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${values?.adviceName?.value}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}`;
+                            const IntSalaryGenerateRequestId = values?.bankAdviceFor?.value === 1 ?  values?.adviceName?.value : values?.bonusCode?.value;
+
+                            const url = `/PdfAndExcelReport/BankWiseBankAdvice?StrPartName=excelView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}`;
 
                             downloadFile(
                               url,

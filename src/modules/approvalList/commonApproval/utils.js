@@ -8,6 +8,7 @@ import { Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
+import { convertTo12HourFormat } from "utility/timeFormatter";
 
 export const columnsDefault = [
   {
@@ -53,6 +54,77 @@ export const columnsDefault = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
+];
+
+export const columnFinalSettlement = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+    filter: false,
+    sorter: true,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+    width: "90px",
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+    width: "70px",
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+    width: "70px",
+  },
+  {
+    title: "Application Type",
+    dataIndex: ["applicationType"],
+    width: "90px",
+  },
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+    width: "90px",
+  },
+
+  {
+    title: "Last Working Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Effective Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
 ];
 
 export const columnSalaryGenerate = [
@@ -140,6 +212,7 @@ export const columnsLeave = (dispatch) => [
     title: "SL",
     align: "center",
     render: (_, __, index) => index + 1,
+    width: "20px",
   },
   {
     title: "Employee Code",
@@ -401,16 +474,16 @@ export const columnsManual = (page) => [
   },
   {
     title: "Actual In-Time",
-    dataIndex: ["applicationInformation", "tmeStartTime"],
+    dataIndex: ["applicationInformation", "startTime"],
     render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+      <div>{time ? convertTo12HourFormat(time) : "-"}</div>
     ),
   },
   {
     title: "Actual Out-Time",
-    dataIndex: ["applicationInformation", "tmeEndTime"],
+    dataIndex: ["applicationInformation", "endTime"],
     render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+      <div>{time ? convertTo12HourFormat(time) : "-"}</div>
     ),
   },
 
@@ -629,7 +702,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     dataIndex: ["applicationInformation", "separationDate"],
     width: "90px",
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -637,7 +710,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -645,7 +718,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -670,7 +743,6 @@ export const columnsSeparation = (setViewData, setViewModal) => [
         <EyeOutlined
           style={{ marginRight: 5 }}
           onClick={() => {
-            console.log("render", render);
             setViewData(render?.applicationInformation);
             setViewModal(true);
           }}
@@ -1107,18 +1179,7 @@ export const columnsRemoteAttendance = [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
-    render: (time) => {
-      if (!time) return "N/A";
-
-      const dateObj = new Date(`1970-01-01T${time}Z`);
-      const formattedTime = dateObj.toLocaleString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      return formattedTime;
-    },
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "Place Name",
@@ -1162,17 +1223,17 @@ export const columnsLocationDevice = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1, // Serial number
-    fixed:"left",
+    fixed: "left",
   },
   {
     title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
-    fixed:"left",
+    fixed: "left",
   },
   {
     title: "Location Or Device",
     dataIndex: ["applicationInformation", "isLocationRegister"],
-    fixed:"left",
+    fixed: "left",
     render: (isLocationRegister) => (
       <div>{isLocationRegister ? "Location" : "Device"}</div>
     ),
@@ -1339,8 +1400,8 @@ export const columnsSalaryCertificate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1358,35 +1419,25 @@ export const columnsBonusGenerate = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
-    title: "Employee Code",
-    dataIndex: ["applicationInformation", "employeeCode"],
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+    render: (workplaceGroupName) => workplaceGroupName || "N/A",
   },
   {
-    title: "Employee Name",
-    dataIndex: ["applicationInformation", "employeeName"],
+    title: "Salary Code",
+    dataIndex: ["applicationInformation", "salaryCode"],
+    render: (salaryCode) => salaryCode || "N/A",
   },
-  {
-    title: "Designation",
-    dataIndex: ["applicationInformation", "designation"],
-  },
-  {
-    title: "Department",
-    dataIndex: ["applicationInformation", "department"],
-  },
+
   {
     title: "Bonus Name",
-    dataIndex: ["applicationInformation", "strBonusName"],
+    dataIndex: ["applicationInformation", "bonusName"],
     render: (bonusName) => bonusName || "N/A",
   },
   {
     title: "Bonus Amount",
-    dataIndex: ["applicationInformation", "numBonusAmount"],
-    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
-  },
-  {
-    title: "Effective Date",
-    dataIndex: ["applicationInformation", "dteEffectiveDate"],
-    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
+    dataIndex: ["applicationInformation", "bonusAmount"],
+    render: (bonusAmount) => (bonusAmount ? `${bonusAmount.toLocaleString()}` : "N/A"),
   },
   {
     title: "Waiting Stage",
@@ -1404,8 +1455,8 @@ export const columnsBonusGenerate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1491,8 +1542,8 @@ export const columnsIOUAdjustment = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1588,8 +1639,8 @@ export const columnsShiftChange = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
