@@ -126,6 +126,7 @@ export default function SelfServiceSeparation() {
                   <ChargeHandOver
                     separationId={separationId}
                     getSeparationData={getData}
+                    setChargeHandOverModal={setChargeHandOverModal}
                   />
                 }
                 width={1000}

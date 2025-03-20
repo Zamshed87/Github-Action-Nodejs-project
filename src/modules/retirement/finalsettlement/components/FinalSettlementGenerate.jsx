@@ -6,13 +6,14 @@ import { DataTable, PInput } from "Components";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
 import Chips from "common/Chips";
 import Loading from "common/loading/Loading";
+import { dateFormatter } from "utility/dateFormatter";
 
 export default function FinalSettlementGenerate() {
   const { orgId, intAccountId } = useSelector(
@@ -28,6 +29,8 @@ export default function FinalSettlementGenerate() {
   const [, getApprovalHistoryData] = useAxiosGet();
   const [, getAssestHistoryData] = useAxiosGet();
   const [, postFinalSettlementData] = useAxiosPost();
+  const location = useLocation();
+  const intClearanceId = location?.state?.clearanceId;
 
   const [empBasic, setEmpBasic] = useState({});
   const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(
@@ -109,9 +112,7 @@ export default function FinalSettlementGenerate() {
       }
     );
     getApprovalHistoryData(
-      `Approval/GetApproverList?accountId=${intAccountId}&applicationType=${21}&applicationId=${
-        params?.separationid
-      }`,
+      `Approval/GetApproverList?accountId=${intAccountId}&applicationType=${29}&applicationId=${intClearanceId}`,
       (res) => {
         setApprovalHistoryData(res);
       }
@@ -178,14 +179,14 @@ export default function FinalSettlementGenerate() {
                       singleFinalSettlementData?.summary?.totalOthersDue || 0,
                   },
                   {
-                    name: "Others Deduction",
-                    value:
-                      singleFinalSettlementData?.summary?.otherDeduction || 0,
-                  },
-                  {
                     name: "Others Addition",
                     value:
                       singleFinalSettlementData?.summary?.otherAddition || 0,
+                  },
+                  {
+                    name: "Others Deduction",
+                    value:
+                      singleFinalSettlementData?.summary?.otherDeduction || 0,
                   },
                   {
                     name: "Total Payable Amount",
@@ -282,6 +283,7 @@ export default function FinalSettlementGenerate() {
                 ghost={true}
                 accordion={true}
                 defaultActiveKey={["0"]}
+                collapsible="disabled"
               >
                 <Collapse.Panel
                   header={
@@ -306,10 +308,8 @@ export default function FinalSettlementGenerate() {
                           info: (
                             <b>
                               {dataFormatter(
-                                singleFinalSettlementData?.earnings?.reduce(
-                                  (a, b) => a + b.actualAmount,
-                                  0
-                                )
+                                singleFinalSettlementData?.summary
+                                  ?.totalDueSalary
                               )}
                             </b>
                           ),
@@ -367,7 +367,7 @@ export default function FinalSettlementGenerate() {
                     render: (_, record) =>
                       record.strElementName === "Early Resign"
                         ? null
-                        : record.amount,
+                        : dataFormatter(record.amount),
                   },
                 ]}
               />
@@ -475,6 +475,7 @@ export default function FinalSettlementGenerate() {
                   {
                     title: "Last Assign Date",
                     dataIndex: "assignDate",
+                    render: (data) => dateFormatter(data),
                   },
                   {
                     title: "Status",
