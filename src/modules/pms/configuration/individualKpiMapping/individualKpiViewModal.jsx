@@ -53,7 +53,9 @@ const IndividualKpiViewModal = ({ selectedData }) => {
               </div>
             )}
           </div>
-          <div className="col-md-12">
+          {/* may be have to change later 😒 */}
+
+          {/* <div className="col-md-12">
             <h2 className="mb-2">Department Wise KPI</h2>
             {allKpiList?.departmentWise?.length > 0 ? (
               <div className="table-card-styled table-responsive tableOne mb-2">
@@ -68,7 +70,7 @@ const IndividualKpiViewModal = ({ selectedData }) => {
                 <h3 className="text-secondary">No Department Wise KPI found</h3>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </>

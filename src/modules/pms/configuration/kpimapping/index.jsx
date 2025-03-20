@@ -99,7 +99,7 @@ const KpiMapping = () => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             history.push(
-                              `/pms/configuration/kpimapping/employeeWise/create`
+                              `/pms/targetsetup/kpimapping/employeeWise/create`
                             );
                           },
                         },
@@ -109,7 +109,7 @@ const KpiMapping = () => {
                           onClick: () => {
                             if (permission?.isCreate) {
                               history.push(
-                                "/pms/configuration/kpimapping/departmentWise/create"
+                                "/pms/targetsetup/kpimapping/departmentWise/create"
                               );
                             } else {
                               toast.warn("You don't have permission");
@@ -122,7 +122,7 @@ const KpiMapping = () => {
                           onClick: () => {
                             if (permission?.isCreate) {
                               history.push(
-                                "/pms/configuration/kpimapping/designationWise/create"
+                                "/pms/targetsetup/kpimapping/designationWise/create"
                               );
                             } else {
                               toast.warn("You don't have permission");

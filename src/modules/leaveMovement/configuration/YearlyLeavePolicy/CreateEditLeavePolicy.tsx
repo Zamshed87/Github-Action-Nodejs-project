@@ -56,10 +56,9 @@ const CreateEditLeavePolicy = () => {
   const { state }: any = useLocation();
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState<any>([]);
-  const { orgId, employeeId, buId, wgId } = useSelector(
-    (state: any) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, employeeId, buId, buName, wgId, wgName, wId, wName } =
+    useSelector((state: any) => state?.auth?.profileData, shallowEqual);
+  console.log(buId, buName, wgId, wgName, wId, wName, "==================");
   useEffect(() => {
     policyApi?.action({
       method: "GET",
@@ -103,7 +102,28 @@ const CreateEditLeavePolicy = () => {
       },
     });
   }, [orgId, buId, wgId]);
-
+  useEffect(() => {
+    form.setFieldsValue({
+      bu: { label: buName, value: buId },
+      wg: { label: wgName, value: wgId },
+      intWorkplaceList: { value: wId, label: wName },
+    });
+    // form.resetFields(["calendarName", "hrPosition", "employmentType"]);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDdl/WorkplaceGroupWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
+    getYearlyPolicyPopUpDDL(
+      `/PeopleDeskDdl/WorkplaceWithRoleExtension?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&empId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
+    getEmploymentType();
+    getHRPosition();
+  }, [buId, wgId, wId]);
   useEffect(() => {
     getPeopleDeskAllDDL(
       // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
@@ -179,9 +199,10 @@ const CreateEditLeavePolicy = () => {
 
   const getEmploymentType = () => {
     const { intWorkplaceList } = form.getFieldsValue(true);
-    const strWorkplaceIdList = intWorkplaceList
-      ?.map((item: any) => item.value)
-      .join(",");
+    // Determine if intWorkplaceList is an array or an object
+    const strWorkplaceIdList = Array.isArray(intWorkplaceList)
+      ? intWorkplaceList.map((item: any) => item.value).join(",") // Handle array
+      : intWorkplaceList?.value; // Handle object
 
     EmploymentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -202,9 +223,10 @@ const CreateEditLeavePolicy = () => {
   };
   const getHRPosition = () => {
     const { intWorkplaceList } = form.getFieldsValue(true);
-    const strWorkplaceIdList = intWorkplaceList
-      ?.map((item: any) => item.value)
-      .join(",");
+    // Determine if intWorkplaceList is an array or an object
+    const strWorkplaceIdList = Array.isArray(intWorkplaceList)
+      ? intWorkplaceList.map((item: any) => item.value).join(",") // Handle array
+      : intWorkplaceList?.value; // Handle object
 
     HRPositionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -279,6 +301,16 @@ const CreateEditLeavePolicy = () => {
           isIncludeHoliday: commonDDL[1]?.value,
           isIncludeOffday: commonDDL[1]?.value,
           isAdvanceLeave: commonDDL[0]?.value,
+          bu: { label: buName, value: buId },
+          wg: { label: wgName, value: wgId },
+          intWorkplaceList: [
+            {
+              label: wName,
+              value: wId,
+              strWorkplace: wName,
+              intWorkplaceId: wId,
+            },
+          ],
         }}
       >
         <PCard>
@@ -952,6 +984,10 @@ const CreateEditLeavePolicy = () => {
                                   form.setFieldsValue({
                                     bu: op,
                                   });
+                                  form.setFieldsValue({
+                                    wg: undefined,
+                                    intWorkplaceList: undefined,
+                                  });
                                   // getPeopleDeskAllDDL(
                                   //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
                                   //     op[op?.length - 1]?.value
@@ -989,6 +1025,13 @@ const CreateEditLeavePolicy = () => {
                                   form.setFieldsValue({
                                     wg: op,
                                   });
+                                  form.setFieldsValue({
+                                    intWorkplaceList: undefined,
+                                    intEmploymentTypeList: undefined,
+                                    hrPositionListDTO: undefined,
+                                  });
+                                  EmploymentTypeDDL.reset();
+                                  HRPositionDDL.reset();
                                   // getYearlyPolicyPopUpDDL(
                                   //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
                                   //     bu[0]?.value

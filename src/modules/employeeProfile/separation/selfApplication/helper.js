@@ -1,8 +1,5 @@
-import { CloseCircleTwoTone, SettingTwoTone } from "@ant-design/icons";
-import {
-  FilePresentOutlined,
-  InfoOutlined
-} from "@mui/icons-material";
+import { CloseCircleTwoTone, EditTwoTone, SettingTwoTone } from "@ant-design/icons";
+import { FilePresentOutlined, InfoOutlined } from "@mui/icons-material";
 import { Dropdown, Tooltip } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
@@ -10,6 +7,7 @@ import IConfirmModal from "common/IConfirmModal";
 import { LightTooltip } from "common/LightTooltip";
 import PrimaryButton from "common/PrimaryButton";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import moment from "moment";
 import { toast } from "react-toastify";
 import { gray500, gray700, gray900 } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
@@ -108,7 +106,8 @@ export const separationApplicationLandingTableColumn = (
   postCancelSeperationData,
   aprovalStatus,
   setAprovalStatus,
-  separationId
+  separationId,
+  setSeparationId
 ) => {
   const confirmPopup = () => {
     const confirmObject = {
@@ -116,7 +115,7 @@ export const separationApplicationLandingTableColumn = (
       message: "Are you sure you want to withdraw this application?",
       yesAlertFunc: () => {
         postWithdrawSeperationData(
-          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          `/Separation/WithdrawalSeparation?id=${separationId}&employeeId=${employeeId}`,
           "",
           () => {
             getData();
@@ -131,13 +130,13 @@ export const separationApplicationLandingTableColumn = (
     IConfirmModal(confirmObject);
   };
 
-  const cancelConfirmPopup = () => {
+  const cancelConfirmPopup = (sepId) => {
     const confirmObject = {
       closeOnClickOutside: false,
       message: "Do you want to Cancel this application?",
       yesAlertFunc: () => {
         postCancelSeperationData(
-          `/Separation/CancelSeparation?id=${separationId}&employeeId=${employeeId}`,
+          `/Separation/CancelSeparation?id=${sepId}&employeeId=${employeeId}`,
           "",
           () => {
             getData();
@@ -151,8 +150,7 @@ export const separationApplicationLandingTableColumn = (
     IConfirmModal(confirmObject);
   };
 
-
-  const items = [
+  const getMenuItems = (data) => [
     {
       key: "1",
       label: (
@@ -187,8 +185,11 @@ export const separationApplicationLandingTableColumn = (
             height: "35px",
           }}
           label={"Exit Interview"}
+          disabled={data?.intQuestionAssignId === null ? true : false || data?.isExitInterviewDone === true ? true : false}
           onClick={() => {
-            console.log("Exit Interview");
+            history.push("/SelfService/separation/applicationV2/interView", {
+              data: data,
+            });
           }}
         />
       ),
@@ -379,43 +380,84 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       sort: true,
       filter: false,
-      render: (item) => (
-        <>
-          {item?.approvalStatus === "Approve" && (
-            <Chips label="Approved" classess="success p-2" />
-          )}
-          {item?.approvalStatus === "Pending" && (
-            <Chips label="Pending" classess="warning p-2" />
-          )}
-          {item?.approvalStatus === "Process" && (
-            <Chips label="Process" classess="primary p-2" />
-          )}
-          {item?.approvalStatus === "Reject" && (
-            <Chips label="Rejected" classess="danger p-2 mr-2" />
-          )}
-          {item?.approvalStatus === "Released" && (
-            <Chips label="Released" classess="indigo p-2 mr-2" />
-          )}
-        </>
+      render: (data) => (
+        <div className="d-flex justify-content-center align-items-center">
+          <div>
+            <div className="content tableBody-title d-flex align-items-center">
+              <LightTooltip
+                title={
+                  <div className="p-1">
+                    <div className="mb-1">
+                      <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
+                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                        <tr>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                }
+                arrow
+              >
+                <InfoOutlined
+                  sx={{
+                    color: gray900,
+                  }}
+                />
+              </LightTooltip>
+            </div>
+          </div>
+          <div className="ml-2">
+            {data?.approvalStatus === "Pending" && (
+              <Chips label="Pending" classess="warning p-2" />
+            )}
+            {data?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
+            )}
+            {data?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Withdrawn" && (
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {data?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {data?.approvalStatus === "Clearance Running" && (
+              <Chips label="Clearance Running" classess="warning p-2" />
+            )}
+            {data?.approvalStatus === "Clearance Completed" && (
+              <Chips label="Clearance Completed" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Final Settlement Completed" && (
+              <Chips label="Final Settlement Completed" classess="success p-2" />
+            )}
+            {data?.approvalStatus === "Released" && (
+              <Chips label="Released" classess="indigo p-2" />
+            )}
+          </div>
+        </div>
       ),
       fieldType: "string",
     },
     {
-      title: "",
+      title: "Actions",
       dataIndex: "approvalStatus",
-      render: (item, data) => (
+      render: (item) => (
         <div className="d-flex">
           <Tooltip placement="top" color={"#34a853"} title={"Manage"}>
             <Dropdown
               menu={{
-                items,
+                items: getMenuItems(item),
               }}
               placement="bottomLeft"
               arrow={{
                 pointAtCenter: true,
               }}
               trigger={["click"]}
-              disabled={item?.approvalStatus !== "Approve"}
+              disabled={item?.approvalStatus !== "Approved"}
             >
               <PrimaryButton
                 type="button"
@@ -427,29 +469,52 @@ export const separationApplicationLandingTableColumn = (
                   border: "none",
                 }}
                 onClick={() => {
+                  setSeparationId(item?.separationId);
                   setAprovalStatus(item?.approvalStatus);
                 }}
               />
             </Dropdown>
           </Tooltip>
-          {item?.approvalStatus === "Pending" && <Tooltip placement="top" color={"#ff4d4f"} title={"Cancel"}>
-            <PrimaryButton
-              type="button"
-              icon={<CloseCircleTwoTone twoToneColor="#ff4d4f" />}
-              customStyle={{
-                height: "30px",
-                fontSize: "16px",
-                padding: "0px 12px 0px 12px",
-                border: "none",
-              }}
-              onClick={() => {
-                setAprovalStatus(item?.approvalStatus);
-                cancelConfirmPopup()
-              }
-              }
-            />
-          </Tooltip>}
-
+          {item?.approvalStatus === "Pending" && (
+            <Tooltip placement="top" color={"#ff4d4f"} title={"Cancel"}>
+              <PrimaryButton
+                type="button"
+                icon={<CloseCircleTwoTone twoToneColor="#ff4d4f" />}
+                customStyle={{
+                  height: "30px",
+                  fontSize: "16px",
+                  padding: "0px 12px 0px 12px",
+                  border: "none",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
+                  setSeparationId(item?.separationId);
+                  cancelConfirmPopup(item?.separationId);
+                }}
+              />
+            </Tooltip>
+          )}
+          {item?.approvalStatus === "Pending" && (
+            <Tooltip placement="top" color={"#fa8c16"} title={"Edit"}>
+              <PrimaryButton
+                type="button"
+                icon={<EditTwoTone twoToneColor="#fa8c16" />}
+                customStyle={{
+                  height: "30px",
+                  fontSize: "16px",
+                  padding: "0px 12px 0px 12px",
+                  border: "none",
+                }}
+                onClick={() => {
+                  setAprovalStatus(item?.approvalStatus);
+                  setSeparationId(item?.separationId);
+                  history.push(
+                    `/SelfService/separation/applicationV2/edit/${item?.separationId}`
+                  );
+                }}
+              />
+            </Tooltip>
+          )}
         </div>
       ),
       sort: false,
@@ -463,9 +528,7 @@ export const separationApplicationLandingTableColumn = (
 export const getSeparationLandingById = async (id, setter, setLoading) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(
-      `/separation/GetSeparationById/${id}`
-    );
+    const res = await axios.get(`/separation/GetSeparationById/${id}`);
 
     const modifyRes = [res?.data]?.map((itm) => {
       return {
@@ -521,5 +584,46 @@ export const getEmployeeProfileViewData = async (
     }
   } catch (error) {
     setLoading && setLoading(false);
+  }
+};
+
+export const interViewQuestionSave = async (
+  data,
+  fieldsArr,
+  values,
+  setLoading,
+  cb
+) => {
+  setLoading(true);
+  try {
+    const payload = {
+      EmployeeId: data?.intEmployeeId || 0,
+      SeparationId: data?.separationId || 0,
+      Request: {
+        id: data?.intQuestionAssignId || 0,
+        startDateTime: values?.startTime,
+        endDateTime: moment().format("YYYY-MM-DDTHH:mm:ss"),
+        questions: fieldsArr.map((field) => {
+          const id = `field-${field.id}`;
+          const answer = values[id];
+
+          return {
+            id: field.id,
+            answer: field.typeName === "Checkbox" ? answer : [answer] || [],
+          };
+        }),
+      },
+    };
+
+
+    const res = await axios.post(`/ExitInterview/SubmitExitInterview`, payload);
+    cb && cb();
+    toast.success(res?.data?.Message, { toastId: 1 });
+  } catch (error) {
+    toast.warn(error?.response?.data?.Message || "Something went wrong", {
+      toastId: 1,
+    });
+  } finally {
+    setLoading(false);
   }
 };
