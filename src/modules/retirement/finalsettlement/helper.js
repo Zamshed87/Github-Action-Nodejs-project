@@ -115,6 +115,7 @@ export const getFinalSettlementLandingTableColumn = (
     setId,
     empId,
     setEmpId,
+    setClearanceId
 ) => {
 
     const confirmSendForApprovalPopup = (finalsettleId, sepId, employeeId) => {
@@ -137,12 +138,12 @@ export const getFinalSettlementLandingTableColumn = (
         IConfirmModal(confirmObject);
     };
 
-    const confirmRegenaratePopup = (finalsettleId, sepId, employeeId) => {
+    const confirmRegenaratePopup = (finalsettleId, sepId, employeeId, intClearanceId) => {
         const confirmObject = {
             closeOnClickOutside: false,
             message: "Are you sure you want to regenerate this application?",
             yesAlertFunc: () => {
-                history.push(`/retirement/finalSettlement/regenerate/${finalsettleId}/${sepId}/${employeeId}`)
+                history.push(`/retirement/finalSettlement/regenerate/${finalsettleId}/${sepId}/${employeeId}`, { clearanceId: intClearanceId })
             },
             noAlertFunc: () => {
                 getData();
@@ -315,6 +316,7 @@ export const getFinalSettlementLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
+                                    setClearanceId(data?.intClearanceId)
                                     setOpenFinalSettlementViewModal(true)
                                 }}
                             />
@@ -333,7 +335,7 @@ export const getFinalSettlementLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
-                                    history.push(`/retirement/finalsettlement/generate/${data?.separationId}/${data?.intEmployeeId}`)
+                                    history.push(`/retirement/finalsettlement/generate/${data?.separationId}/${data?.intEmployeeId}`, { clearanceId: data?.intClearanceId })
                                 }}
                             />
                         </Tooltip>
@@ -351,7 +353,7 @@ export const getFinalSettlementLandingTableColumn = (
                             onClick={() => {
                                 setId(data?.separationId)
                                 setEmpId(data?.intEmployeeId)
-                                confirmRegenaratePopup(data?.intFinalSettlementId, data?.separationId, data?.intEmployeeId)
+                                confirmRegenaratePopup(data?.intFinalSettlementId, data?.separationId, data?.intEmployeeId, data?.intClearanceId)
                             }}
                         />
                     </Tooltip>)}
@@ -368,7 +370,7 @@ export const getFinalSettlementLandingTableColumn = (
                                 onClick={() => {
                                     setId(data?.separationId)
                                     setEmpId(data?.intEmployeeId)
-                                    history.push(`/retirement/finalsettlement/edit/${data?.intFinalSettlementId}/${data?.separationId}/${data?.intEmployeeId}`)
+                                    history.push(`/retirement/finalsettlement/edit/${data?.intFinalSettlementId}/${data?.separationId}/${data?.intEmployeeId}`, { clearanceId: data?.intClearanceId })
                                 }}
                             />
                         </Tooltip>
