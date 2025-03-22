@@ -1068,6 +1068,7 @@ export const PolicyCreateExtention = () => {
                             } else {
                               toast.error(
                                 error?.response?.data?.message ||
+                                  error?.response?.data?.message?.[0] ||
                                   error?.response?.data?.errors?.[
                                     "GeneralPayload.Description"
                                   ]?.[0] ||

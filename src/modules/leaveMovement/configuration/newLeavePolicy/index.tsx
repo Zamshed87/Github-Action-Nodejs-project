@@ -47,6 +47,7 @@ export const NewLeavePolicy = () => {
   const landingApi = useApiRequest({});
   const leaveTypeApi = useApiRequest({});
   const deleteApi = useApiRequest({});
+  const activeInactiveApi = useApiRequest({});
   const generateApi = useApiRequest({});
   const [open, setOpen] = useState(false);
 
@@ -201,7 +202,7 @@ export const NewLeavePolicy = () => {
                   checked={rec?.status === "Active"}
                   onChange={(checked) => {
                     // const newStatus = checked ? "Active" : "Inactive";
-                    deleteDepositById(rec);
+                    activeInactiveById(rec);
                     // Update your data source here
                     // Example (replace with your actual data update logic):
                     // dataSource[index].status = newStatus;
@@ -233,6 +234,13 @@ export const NewLeavePolicy = () => {
                     history.push(
                       `/administration/leaveandmovement/yearlyLeavePolicy/edit/${item?.policyId}`
                     );
+                  },
+                } as any),
+              item?.stepperId < 5 &&
+                ({
+                  type: "delete",
+                  onClick: (e: any) => {
+                    deletePolicyId(item);
                   },
                 } as any),
               item?.stepperId === 5 &&
@@ -313,115 +321,6 @@ export const NewLeavePolicy = () => {
       ),
     },
   ];
-  //   const detailsHeader: any = [
-  //     {
-  //       title: "SL",
-  //       render: (_value: any, _row: any, index: number) => index + 1,
-  //       align: "center",
-  //       width: 30,
-  //     },
-  //     {
-  //       title: "Deposit Type",
-  //       dataIndex: "depositTypeName",
-  //       width: 80,
-  //     },
-  //     {
-  //       title: "Employee Name",
-  //       dataIndex: "employeeName",
-  //       render: (_: any, rec: any) => {
-  //         return (
-  //           <div className="d-flex align-items-center">
-  //             <Avatar title={rec?.employeeName} />
-  //             <span className="ml-2">{rec?.employeeName}</span>
-  //           </div>
-  //         );
-  //       },
-
-  //       width: 150,
-  //     },
-  //     {
-  //       title: "Employee Code",
-  //       dataIndex: "employeeCode",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Department",
-  //       dataIndex: "department",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Designation",
-  //       dataIndex: "designation",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Deposit Amount",
-  //       dataIndex: "depositAmount",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Deposits Month Year",
-  //       // dataIndex: "monthYear",
-  //       render: (_: any, data: any) =>
-  //         data?.monthYear ? moment(data?.depositDate).format("MMM-YYYY") : "-",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "comment",
-  //       dataIndex: "comment",
-  //       width: 100,
-  //     },
-  //     {
-  //       title: "Status",
-  //       dataIndex: "status",
-  //       render: (_: any, rec: any) => {
-  //         return (
-  //           <div>
-  //             {rec?.status === "Approved" ? (
-  //               <Tag color="green">{rec?.status}</Tag>
-  //             ) : // ) : rec?.status === "Inactive" ? (
-  //             //   <Tag color="red">{rec?.status}</Tag>
-  //             rec?.status === "Pending" ? (
-  //               <Tag color="orange">{rec?.status}</Tag>
-  //             ) : (
-  //               <Tag color="red">{rec?.status}</Tag>
-  //               // <Tag color="gold">{rec?.status}</Tag>
-  //             )}
-  //           </div>
-  //         );
-  //       },
-  //       width: 100,
-  //     },
-
-  //     {
-  //       title: "",
-  //       width: 30,
-
-  //       align: "center",
-  //       render: (_: any, item: any) => (
-  //         <TableButton
-  //           buttonsList={
-  //             [
-  //               // {
-  //               //   type: "delete",
-  //               //   onClick: () => {
-  //               //     deleteDepositById(item);
-  //               //   },
-  //               // },
-  //             ]
-  //           }
-  //         />
-  //       ),
-  //     },
-  //   ];
-
-  //   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  //     const { fromDate } = form.getFieldsValue(true);
-  //     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //     // Disable dates before fromDate and after next3daysForEmp
-  //     return current && current < fromDateMoment.startOf("day");
-  //   };
-
   const onFinish = () => {
     landingApiCall();
   };
@@ -429,8 +328,8 @@ export const NewLeavePolicy = () => {
     landingApiCall();
   }, [wgId, wId]);
 
-  const deleteDepositById = (item: any) => {
-    deleteApi?.action({
+  const activeInactiveById = (item: any) => {
+    activeInactiveApi?.action({
       urlKey: "DeleteByIdLeave",
       method: "DELETE",
       params: {
@@ -441,31 +340,69 @@ export const NewLeavePolicy = () => {
       onSuccess: () => {
         landingApiCall();
       },
-      onError: (error: any) => {
-        if (
-          error?.response?.data?.errors?.["GeneralPayload.Description"]
-            ?.length > 1
-        ) {
-          //  setErrorData(
-          //    error?.response?.data?.errors?.["GeneralPayload.Description"]
-          //  );
-          //  setOpen(true);
-        } else {
-          toast.error(
-            error?.response?.data?.message ||
-              error?.response?.data?.message?.[0] ||
-              error?.response?.data?.errors?.[
-                "GeneralPayload.Description"
-              ]?.[0] ||
-              error?.response?.data?.Message ||
-              error?.response?.data?.title ||
-              error?.response?.title ||
-              error?.response?.message ||
-              error?.response?.Message ||
-              "Something went wrong"
-          );
-        }
+      // onError: (error: any) => {
+      //   if (
+      //     error?.response?.data?.errors?.["GeneralPayload.Description"]
+      //       ?.length > 1
+      //   ) {
+      //     //  setErrorData(
+      //     //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+      //     //  );
+      //     //  setOpen(true);
+      //   } else {
+      //     toast.error(
+      //       error?.response?.data?.message ||
+      //         error?.response?.data?.message?.[0] ||
+      //         error?.response?.data?.errors?.[
+      //           "GeneralPayload.Description"
+      //         ]?.[0] ||
+      //         error?.response?.data?.Message ||
+      //         error?.response?.data?.title ||
+      //         error?.response?.title ||
+      //         error?.response?.message ||
+      //         error?.response?.Message ||
+      //         "Something went wrong"
+      //     );
+      //   }
+      // },
+    });
+  };
+  const deletePolicyId = (item: any) => {
+    deleteApi?.action({
+      urlKey: "LeavePolicyDeleteById",
+      method: "DELETE",
+      params: {
+        PolicyId: item?.policyId,
       },
+      toast: true,
+      onSuccess: () => {
+        landingApiCall();
+      },
+      // onError: (error: any) => {
+      //   if (
+      //     error?.response?.data?.errors?.["GeneralPayload.Description"]
+      //       ?.length > 1
+      //   ) {
+      //     //  setErrorData(
+      //     //    error?.response?.data?.errors?.["GeneralPayload.Description"]
+      //     //  );
+      //     //  setOpen(true);
+      //   } else {
+      //     toast.error(
+      //       error?.response?.data?.message ||
+      //         error?.response?.data?.message?.[0] ||
+      //         error?.response?.data?.errors?.[
+      //           "GeneralPayload.Description"
+      //         ]?.[0] ||
+      //         error?.response?.data?.Message ||
+      //         error?.response?.data?.title ||
+      //         error?.response?.title ||
+      //         error?.response?.message ||
+      //         error?.response?.Message ||
+      //         "Something went wrong"
+      //     );
+      //   }
+      // },
     });
   };
   return employeeFeature?.isView ? (
@@ -499,7 +436,9 @@ export const NewLeavePolicy = () => {
             ]}
             title={`Leave Policy`}
           />
-          {(deleteApi?.loading || generateApi?.loading) && <Loading />}
+          {(deleteApi?.loading ||
+            generateApi?.loading ||
+            activeInactiveApi?.loading) && <Loading />}
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={6} sm={24}>
