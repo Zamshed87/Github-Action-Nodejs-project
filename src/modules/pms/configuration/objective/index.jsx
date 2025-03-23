@@ -25,6 +25,10 @@ import { Tooltip } from "@mui/material";
 import { gray900 } from "../../../../utility/customColor";
 import { generateCommonExcelAction } from "../../../../common/Excel/excelConvert";
 import AntScrollTable from "../../../../common/AntScrollTable";
+import usePermissions from "Hooks/usePermissions";
+import FormikSelect from "common/FormikSelect";
+import { useFormik } from "formik";
+import { customStyles } from "utility/selectCustomStyle";
 
 const PMSObjective = () => {
   const [pages, setPages] = useState({
@@ -32,18 +36,69 @@ const PMSObjective = () => {
     pageSize: 30,
     total: 0,
   });
-
   const {
-    permissionList,
-    profileData: { orgId, employeeId, buName },
-  } = useSelector((store) => store?.auth, shallowEqual);
+    permission,
+    buId,
+    wgId,
+    wId,
+    orgId,
+    intAccountId,
+    profileData: { employeeId, buName },
+  } = usePermissions(30460);
+
   const [, getObjectiveLanding, loadingOnGetObjectiveLanding] = useAxiosGet();
+  const [
+    objectiveTypeDDL,
+    getObjectiveTypeDDL,
+    loadingOnGetObjectiveTypeDDL,
+    setObjectiveTypeDDL,
+  ] = useAxiosGet();
   const [objectiveTableData, setObjectiveTableData] = useState([]);
   const [, deletePMSObjective, loadingOnDelete] = useAxiosPost();
   const dispatch = useDispatch();
   const history = useHistory();
   const [search, setSearch] = useState("");
   const [, getExcelData, excelDataLoader] = useAxiosGet();
+  const initialValues = {
+    objectiveIndex: null,
+    pmType: null,
+    objectiveTypes: null,
+    objective: "",
+    description: "",
+  };
+  const {
+    errors,
+    touched,
+    handleSubmit,
+    resetForm,
+    setFieldValue,
+    setValues,
+    values,
+  } = useFormik({
+    initialValues,
+    onSubmit: (formValues) => {
+      const objectiveTypes = formValues?.objectiveTypes?.value
+        ? `objectiveType=${formValues?.objectiveTypes?.value}`
+        : "";
+      const status =
+        formValues?.status?.value !== null
+          ? `&status=${formValues?.status?.value}`
+          : "";
+      getObjectiveLanding(
+        `/PMS/GetPMSObejctiveLanding?${objectiveTypes}${status}&accountId=${orgId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&search=${search}`,
+        (data) => {
+          if (data) {
+            setPages((prev) => ({
+              ...prev,
+              total: data?.totalCount,
+            }));
+            setObjectiveTableData(data?.data);
+          }
+          return data?.data;
+        }
+      );
+    },
+  });
 
   const getData = (pages, search = "") => {
     getObjectiveLanding(
@@ -63,15 +118,10 @@ const PMSObjective = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
+    getObjectiveTypeDDL(`/PMS/ObjectiveTypeDDL?PMTypeId=1`);
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30460),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
 
   const handleTableChange = ({ pagination }) => {
     setPages((prev) => ({ ...prev, ...pagination }));
@@ -200,12 +250,61 @@ const PMSObjective = () => {
                   if (!permission?.isCreate) {
                     return toast.warn("You don't have permission to create");
                   }
-                  history.push("/pms/configuration/objective/create");
+                  history.push("/pms/kpiSettings/objective/create");
                 }}
               />
             </li>
           </ul>
         </div>
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="input-field-main col-md-3">
+              <label>Objective Type</label>
+              <FormikSelect
+                classes="input-sm  form-control"
+                name="objectiveTypes"
+                options={objectiveTypeDDL || []}
+                value={values?.objectiveTypes}
+                onChange={(valueOption) => {
+                  setFieldValue("objectiveTypes", valueOption);
+                }}
+                styles={customStyles}
+                errors={errors}
+                touched={touched}
+              />
+            </div>
+            <div className="input-field-main col-md-3">
+              <label>Status</label>
+              <FormikSelect
+                classes="input-sm  form-control"
+                name="status"
+                options={
+                  [
+                    { label: "All", value: null },
+                    { label: "Active", value: true },
+                    { label: "Inactive", value: false },
+                  ] || []
+                }
+                value={values?.status}
+                onChange={(valueOption) => {
+                  setFieldValue("status", valueOption);
+                }}
+                styles={customStyles}
+                errors={errors}
+                touched={touched}
+              />
+            </div>
+            <div className="col-md-3 mt-4">
+              <PrimaryButton
+                onClick={() => handleSubmit()}
+                type="button"
+                className="btn btn-green flex-center"
+                label="View"
+              />
+            </div>
+          </div>
+        </form>
+
         {objectiveTableData?.length <= 0 ? (
           <NoResult />
         ) : (

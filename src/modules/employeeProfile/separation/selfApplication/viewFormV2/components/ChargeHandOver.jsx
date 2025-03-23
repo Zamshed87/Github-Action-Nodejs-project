@@ -13,7 +13,11 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 
-export default function ChargeHandOver({ separationId }) {
+export default function ChargeHandOver({
+  separationId,
+  getSeparationData,
+  setChargeHandOverModal,
+}) {
   const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -21,7 +25,7 @@ export default function ChargeHandOver({ separationId }) {
   const params = useParams();
   const [employeeList, setEmployeeList] = useState([]);
   const [, getHandOverData, handoverloading] = useAxiosGet();
-  const [, postHandOverData] = useAxiosPost();
+  const [, postHandOverData, handoverPostLoading] = useAxiosPost();
   const [loading, setLoading] = useState(false);
   const initData = {
     employeeName: "",
@@ -100,8 +104,6 @@ export default function ChargeHandOver({ separationId }) {
   const saveHandler = (values, cb) => {
     if (!values?.employeeName) {
       return toast.warning("Employee Name is required!!!");
-    } else if (!values?.comment.trim()) {
-      return toast.warning("Comment is required!!!");
     }
 
     const modifiedValues = {
@@ -109,8 +111,8 @@ export default function ChargeHandOver({ separationId }) {
       strEmployeeName: values?.employeeName?.employeeName,
       intHandOverId: 0,
       intEmployeeId: values?.employeeId,
-      strDesignation: "",
-      strDepartment: "",
+      strDesignation: values?.employeeName?.strDesignation,
+      strDepartment: values?.employeeName?.strDepartment,
       comment: values?.comment,
     };
     setEmployeeList((prev) => [...prev, modifiedValues]);
@@ -133,6 +135,8 @@ export default function ChargeHandOver({ separationId }) {
       payload,
       () => {
         getData();
+        getSeparationData();
+        setChargeHandOverModal(false);
       },
       true
     );
@@ -153,7 +157,7 @@ export default function ChargeHandOver({ separationId }) {
 
   return (
     <div>
-      {loading && <Loading />}
+      {(loading || handoverPostLoading) && <Loading />}
       <div className="d-flex justify-content-end mb-3">
         <PrimaryButton
           type="button"
@@ -166,6 +170,7 @@ export default function ChargeHandOver({ separationId }) {
           onClick={() => {
             saveChangeHandler();
           }}
+          disabled={handoverPostLoading}
         />
       </div>
       <Card

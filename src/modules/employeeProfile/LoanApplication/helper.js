@@ -188,7 +188,7 @@ export const loanRequestLandingTableColumns = (
       title: "Total Amount with Interest",
       dataIndex: "loanAmount",
       width: 200,
-      filter: true,
+      // filter: true,
       render: (_, record) => {
         const amount = record?.intInterest
           ? (

@@ -72,7 +72,11 @@ const SbuTargetSetup = () => {
 
   const getLandingData = () => {
     getTableData(
-      `/PMS/GetKpiChartReport?PartName=MappedKPI&BusinessUnit=${buId}&YearId=${values?.year?.value}&KpiForId=3&KpiForReffId=${values?.sbu?.value}&accountId=${orgId}&from=1&to=12&pmTypeId=${values?.pmType?.value}`
+      `/PMS/GetKpiChartReport?PartName=MappedKPI&BusinessUnit=${buId}&YearId=${
+        values?.year?.value
+      }&KpiForId=3&KpiForReffId=${
+        values?.sbu?.value
+      }&accountId=${orgId}&from=1&to=12&pmTypeId=${values?.pmType?.value || 1}`
     );
   };
 
