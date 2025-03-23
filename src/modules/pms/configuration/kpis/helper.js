@@ -4,6 +4,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import IConfirmModal from "../../../../common/IConfirmModal";
+import { Switch } from "antd";
+import Chips from "common/Chips";
 
 export const kpiMeasurementDDL = [
   {
@@ -35,18 +37,18 @@ export const kpiFormatDDL = [
 ];
 
 export const validationSchema = Yup.object().shape({
-  pmType: Yup.object()
-    .shape({
-      label: Yup.string().required("PM Type is required"),
-      value: Yup.string().required("PM Type is required"),
-    })
-    .typeError("PM Type is required"),
-  // objectiveType: Yup.object()
+  // pmType: Yup.object()
   //   .shape({
-  //     label: Yup.string().required("Objective Type is required"),
-  //     value: Yup.string().required("Objective Type is required"),
+  //     label: Yup.string().required("PM Type is required"),
+  //     value: Yup.string().required("PM Type is required"),
   //   })
-  //   .typeError("Objective Type is required"),
+  //   .typeError("PM Type is required"),
+  objectiveType: Yup.object()
+    .shape({
+      label: Yup.string().required("Objective Type is required"),
+      value: Yup.string().required("Objective Type is required"),
+    })
+    .typeError("Objective Type is required"),
   objective: Yup.object()
     .shape({
       label: Yup.string().required("Objective is required"),
@@ -94,12 +96,19 @@ export const getKPIsLanding = async (
   setRowDto,
   setLoading,
   pages,
-  setPages
+  setPages,
+  formValues
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/PMS/GetKPISPagination?AccountId=${orgId}&BusinessUnitId=${buId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}`
+      `/PMS/GetKPISPagination?AccountId=${orgId}&BusinessUnitId=${buId}&pageNo=${
+        pages?.current
+      }&pageSize=${pages?.pageSize}&objectiveType=${
+        formValues?.objectiveType?.value ? formValues?.objectiveType?.value : ""
+      }&objective=${
+        formValues?.objective?.value ? formValues?.objective?.value : ""
+      }&status=${formValues?.status?.value ? formValues?.status?.value : ""}`
     );
     if (res?.data) {
       setPages((prev) => ({
@@ -186,12 +195,12 @@ export const kpisCreateColumn = (
       render: (data) => <div>{data?.label}</div>,
       sorter: true,
     },
-    {
-      title: "PM Type",
-      dataIndex: "pmType",
-      render: (data) => <div>{data?.label}</div>,
-      sorter: true,
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: "pmType",
+    //   render: (data) => <div>{data?.label}</div>,
+    //   sorter: true,
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveType",
@@ -301,20 +310,26 @@ export const kpisLandingColumn = (
       className: "text-center",
     },
     {
-      title: "KPI Name (Code)",
-      dataIndex: "strKpis",
-      render: (data, record) => (
-        <div>
-          {data} ({record.strCode})
-        </div>
-      ),
-      sorter: true,
+      title: "KPI Code",
+      dataIndex: "strCode",
     },
     {
-      title: "PM Type",
-      dataIndex: "strPmtype",
+      title: "KPI Name",
+      dataIndex: "strKpis",
+    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: "strPmtype",
+    //   render: (data) => <div>{data}</div>,
+    //   filter: true,
+    //   sorter: true,
+    // },
+    {
+      title: "Objective Type",
+      dataIndex: "strObjectiveType",
       render: (data) => <div>{data}</div>,
       sorter: true,
+      filter: true,
     },
     {
       title: "Objective",
@@ -329,21 +344,26 @@ export const kpisLandingColumn = (
       sorter: true,
     },
     {
-      title: "Measurement",
+      title: "KPI Measurement",
       dataIndex: "strMinMax",
       render: (data) => <div>{data}</div>,
       sorter: true,
     },
     {
-      title: "Format",
+      title: "KPI Format",
       dataIndex: "kpiformat",
       render: (data) => <div>{data}</div>,
       sorter: true,
     },
     {
-      title: "Chart Type",
-      dataIndex: "chartName",
-      render: (data) => <div>{data}</div>,
+      title: "Status",
+      dataIndex: "isActive",
+      render: (data) =>
+        data ? (
+          <Chips label="active" classess="success" />
+        ) : (
+          <Chips label="inactive" classess="danger" />
+        ),
       sorter: true,
     },
     {
@@ -359,7 +379,7 @@ export const kpisLandingColumn = (
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpis/edit/${record.intKpisId}`,
+                    `/pms/kpiSettings/kpis/edit/${record.intKpisId}`,
                     { toEditData: record }
                   );
                 }}
@@ -368,7 +388,20 @@ export const kpisLandingColumn = (
               </button>
             </Tooltip>
             <Tooltip title="Delete" arrow>
-              <button
+              <Switch
+                size="small"
+                checked={record?.isActive}
+                onChange={() => {
+                  deleteKPIs(
+                    orgId,
+                    record.intKpisId,
+                    employeeId,
+                    setLoading,
+                    getData
+                  );
+                }}
+              />
+              {/* <button
                 type="button"
                 className="iconButton mt-0 mt-md-2 mt-lg-0"
                 onClick={() => {
@@ -392,7 +425,7 @@ export const kpisLandingColumn = (
                 }}
               >
                 <DeleteOutlined />
-              </button>
+              </button> */}
             </Tooltip>
           </div>
         </>

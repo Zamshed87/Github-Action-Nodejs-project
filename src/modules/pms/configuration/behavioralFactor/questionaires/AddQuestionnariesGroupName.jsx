@@ -12,6 +12,7 @@ const initialValues = {
   weight: "",
 };
 const AddQuestionnariesGroupName = ({
+  data,
   employeeId,
   orgId,
   addQuestionnariesGroupName,
@@ -31,6 +32,7 @@ const AddQuestionnariesGroupName = ({
             numWeightage: item?.numWeightage,
             intActionBy: employeeId,
             intAccountId: orgId,
+            intPositionGroupId: data?.value,
             questionRows: [],
           };
         });
@@ -82,6 +84,14 @@ const AddQuestionnariesGroupName = ({
       );
     });
 
+    const isSumHundred = rowData.reduce((acc, curr) => {
+      return acc + curr.numWeightage;
+    }, 0);
+
+    if (isSumHundred === 100 || isSumHundred > 100) {
+      return toast.warn("Sum of weightage must be 100");
+    }
+
     if (isExist) return toast.warn("Group name already exist");
     const obj = {
       intHeaderId: 0,
@@ -100,7 +110,7 @@ const AddQuestionnariesGroupName = ({
 
   useEffect(() => {
     getQuestionGroupList(
-      `/PMS/GetQuestionnaireGroupName?accountId=${orgId}`,
+      `/PMS/GetQuestionnaireGroupName?positionGroupId=${data?.value}`,
       (data) => {
         const modifiedData = data?.map((item) => {
           return {
@@ -119,7 +129,11 @@ const AddQuestionnariesGroupName = ({
       {(questionGroupListLoader || loadingAddQuestionnariesGroupName) && (
         <Loading />
       )}
+
       <div className="add-new-employee-form">
+        <div className="row ml-3 mb-2">
+          <h1>Level of Leadership: </h1> <h2>{data?.label}</h2>
+        </div>
         <div className="row m-0">
           <div className="col-md-6">
             <label>Question Group Name</label>

@@ -1,10 +1,16 @@
 import { Tooltip } from "@mui/material";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { toast } from "react-toastify";
-import { gray600 } from "../../../../utility/customColor";
+import {
+  blackColor80,
+  gray600,
+  greenColor,
+} from "../../../../utility/customColor";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import * as Yup from "yup";
+import FormikToggle from "common/FormikToggle";
+import { Switch } from "antd";
 
 export const onGetObjectiveLanding = ({
   getObjectiveLanding,
@@ -45,7 +51,6 @@ export const onAddObjective = ({
     let foundedList = objectiveList?.filter(
       (item, index) =>
         index !== formValues?.objectiveIndex &&
-        item?.pmtypeId === formValues?.pmType?.value &&
         item?.objectiveTypeId === formValues?.objectiveType?.value &&
         item?.objective === formValues?.objective
     );
@@ -55,7 +60,6 @@ export const onAddObjective = ({
   } else {
     found = objectiveList?.some(
       (item) =>
-        item?.pmtypeId === formValues?.pmType?.value &&
         item?.objectiveTypeId === formValues?.objectiveType?.value &&
         item?.objective === formValues?.objective
     );
@@ -70,7 +74,7 @@ export const onAddObjective = ({
       : "",
     objective: formValues?.objective,
     pMTypeName: formValues?.pmType?.label,
-    pmtypeId: formValues?.pmType?.value,
+    pmtypeId: formValues?.pmType?.value || 1,
     objectiveTypeName: formValues?.objectiveType?.label,
     objectiveTypeId: formValues?.objectiveType?.value,
     description: formValues?.description,
@@ -144,9 +148,10 @@ export const pmsObjectiveTableColumn = ({
       dataIndex: "sl",
       sorter: false,
       className: "text-center",
+      render: (_, __, idx) => idx + 1,
     },
     {
-      title: "Objective",
+      title: "Objectives/ KRA Code",
       dataIndex: "objective",
       sorter: true,
       filter: true,
@@ -155,17 +160,18 @@ export const pmsObjectiveTableColumn = ({
       title: () => <span style={{ color: gray600 }}>Description</span>,
       dataIndex: "description",
     },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
+    //   sorter: true,
+    //   filter: true,
+    //   width: 100,
+    // },
     {
-      title: "PM Type",
-      dataIndex: fromLanding ? "pmTypeName" : "pMTypeName",
-      sorter: true,
-      filter: true,
-      width: 100,
-    },
-    {
-      title: "Objective Type",
+      title: "Objectives/ KRA Type",
       dataIndex: "objectiveTypeName",
       sorter: true,
+      filter: true,
       width: 150,
     },
     fromLanding
@@ -190,7 +196,7 @@ export const pmsObjectiveTableColumn = ({
                   if (!permission?.isEdit)
                     return toast.warn("You don't have permission");
                   history?.push({
-                    pathname: "/pms/configuration/objective/edit",
+                    pathname: "/pms/kpiSettings/objective/edit",
                     state: {
                       objectiveId: record?.objectiveId,
                       objectiveRow: record,
@@ -216,44 +222,67 @@ export const pmsObjectiveTableColumn = ({
               <EditOutlined sx={{ fontSize: "20px" }} />
             </button>
           </Tooltip>
-          <Tooltip title="Delete" arrow>
-            <button
-              type="button"
-              className="iconButton mt-0 mt-md-2 mt-lg-0 mx-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (fromLanding) {
-                  let confirmObject = {
-                    closeOnClickOutside: false,
-                    message: "Are you sure want to delete this objective?",
-                    yesAlertFunc: () => {
-                      deletePMSObjective?.(
-                        `/PMS/DeletePMSObjective?AccountId=${record?.accountId}&ObjectiveId=${record?.objectiveId}&UserId=${employeeId}`,
-                        null,
-                        () => {
-                          onGetObjectiveLanding?.({
-                            getObjectiveLanding,
-                            orgId,
-                            setObjectiveTableData,
-                          });
-                        },
-                        true
-                      );
-                    },
-                    noAlertFunc: () => {},
-                  };
-                  IConfirmModal(confirmObject);
-                } else {
-                  const modifiedObjectiveList = objectiveList?.filter(
-                    (__, nestedIndex) => nestedIndex !== index
-                  );
-                  setObjectiveList?.(modifiedObjectiveList);
-                }
+          {fromLanding ? (
+            <Switch
+              size="small"
+              checked={record?.isActive}
+              onChange={() => {
+                deletePMSObjective?.(
+                  `/PMS/DeletePMSObjective?AccountId=${record?.accountId}&ObjectiveId=${record?.objectiveId}&UserId=${employeeId}`,
+                  null,
+                  () => {
+                    onGetObjectiveLanding?.({
+                      getObjectiveLanding,
+                      orgId,
+                      setObjectiveTableData,
+                      pages,
+                      // setPages,
+                    });
+                  },
+                  true
+                );
               }}
-            >
-              <DeleteOutlineOutlined />
-            </button>
-          </Tooltip>
+            />
+          ) : (
+            <Tooltip title="Delete" arrow>
+              <button
+                type="button"
+                className="iconButton mt-0 mt-md-2 mt-lg-0 mx-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (fromLanding) {
+                    let confirmObject = {
+                      closeOnClickOutside: false,
+                      message: "Are you sure want to delete this objective?",
+                      yesAlertFunc: () => {
+                        deletePMSObjective?.(
+                          `/PMS/DeletePMSObjective?AccountId=${record?.accountId}&ObjectiveId=${record?.objectiveId}&UserId=${employeeId}`,
+                          null,
+                          () => {
+                            onGetObjectiveLanding?.({
+                              getObjectiveLanding,
+                              orgId,
+                              setObjectiveTableData,
+                            });
+                          },
+                          true
+                        );
+                      },
+                      noAlertFunc: () => {},
+                    };
+                    IConfirmModal(confirmObject);
+                  } else {
+                    const modifiedObjectiveList = objectiveList?.filter(
+                      (__, nestedIndex) => nestedIndex !== index
+                    );
+                    setObjectiveList?.(modifiedObjectiveList);
+                  }
+                }}
+              >
+                <DeleteOutlineOutlined />
+              </button>
+            </Tooltip>
+          )}
         </div>
       ),
       sorter: false,
@@ -284,16 +313,16 @@ export const setObjectiveToInitDataOnEditFromLanding = ({
 
 export const validationSchemaOfObjectiveCreate = () => {
   const validationSchema = Yup.object().shape({
-    pmType: Yup.object({
-      label: Yup.string()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-      value: Yup.number()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-    })
-      .required("PM type is required")
-      .typeError("PM type is required"),
+    // pmType: Yup.object({
+    //   label: Yup.string()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    //   value: Yup.number()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    // })
+    //   .required("PM type is required")
+    //   .typeError("PM type is required"),
     objective: Yup.string()
       .required("Objective is required")
       .typeError("Objective is required"),

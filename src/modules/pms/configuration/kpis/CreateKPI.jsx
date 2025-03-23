@@ -104,10 +104,10 @@ const CreateKPI = () => {
             label: toEditData?.kpiformat,
             value: toEditData?.kpiformat,
           },
-          chartType: {
-            label: toEditData?.chartName,
-            value: toEditData?.chartId,
-          },
+          // chartType: {
+          //   label: toEditData?.chartName,
+          //   value: toEditData?.chartId,
+          // },
         }
       : initialValues,
     validationSchema,
@@ -124,7 +124,6 @@ const CreateKPI = () => {
           : rowDto
       )?.some((item) => {
         return (
-          item?.pmType?.value === values?.pmType?.value &&
           item?.objectiveType?.value === values?.objectiveType?.value &&
           item?.objective?.value === values?.objective?.value &&
           item?.kpiName === values?.kpiName
@@ -155,11 +154,11 @@ const CreateKPI = () => {
         kpiformat: values?.kpiFormat?.value,
         intAccountId: orgId,
         intUpdatedBy: employeeId,
-        chartId: values?.chartType?.value,
-        chartName: values?.chartType?.label,
+        // chartId: values?.chartType?.value,
+        // chartName: values?.chartType?.label,
       };
       updateKPIs(payload, setLoading, () => {
-        history.push(`/pms/configuration/kpis`);
+        history.push(`/pms/kpiSettings/kpis`);
       });
     }
     resetForm();
@@ -176,12 +175,12 @@ const CreateKPI = () => {
         kpiformat: data.kpiFormat.value,
         intAccountId: orgId,
         intCreatedBy: employeeId,
-        chartId: data?.chartType.value,
-        chartName: data?.chartType.label,
+        // chartId: data?.chartType.value,
+        // chartName: data?.chartType.label,
       };
     });
     const callback = () => {
-      history.push(`/pms/configuration/kpis`);
+      history.push(`/pms/kpiSettings/kpis`);
     };
     payload?.length > 0
       ? createNEditKPIs(payload, setLoading, callback)
@@ -189,7 +188,13 @@ const CreateKPI = () => {
   };
 
   useEffect(() => {
-    getPeopleDeskAllDDL(`/PMS/PMTypeDDL`, "value", "label", setPmTypeDDL);
+    // getPeopleDeskAllDDL(`/PMS/PMTypeDDL`, "value", "label", setPmTypeDDL);
+    getPeopleDeskAllDDL(
+      `/PMS/ObjectiveTypeDDL?PMTypeId=1`,
+      "value",
+      "label",
+      setObjectiveTypeDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -288,7 +293,7 @@ const CreateKPI = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-3">
+                {/* <div className="col-md-3">
                   <div className="input-field-main">
                     <label>Chart Type</label>
                     <FormikSelect
@@ -309,8 +314,8 @@ const CreateKPI = () => {
                       touched={touched}
                     />
                   </div>
-                </div>
-                <div className="col-md-3">
+                </div> */}
+                {/* <div className="col-md-3">
                   <div className="input-field-main">
                     <label>PM Type</label>
                     <FormikSelect
@@ -344,36 +349,34 @@ const CreateKPI = () => {
                       isDisabled={params?.id && true}
                     />
                   </div>
-                </div>
+                </div> */}
 
-                {values?.pmType?.value === 1 ? (
-                  <div className="col-md-3">
-                    <div className="input-field-main">
-                      <label>Objective Type</label>
-                      <FormikSelect
-                        name="objectiveType"
-                        placeholder=""
-                        options={objectiveTypeDDL || []}
-                        value={values?.objectiveType}
-                        onChange={(valueOption) => {
-                          setFieldValue("objectiveType", valueOption);
-                          getPeopleDeskAllDDL(
-                            `/PMS/ObjectiveDDL?PMTypeId=${
-                              values.pmType?.value
-                            }&ObjectiveTypeId=${valueOption?.value || 0}`,
-                            "value",
-                            "label",
-                            setObjectiveDDL
-                          );
-                        }}
-                        styles={customStyles}
-                        errors={errors}
-                        touched={touched}
-                        isDisabled={params?.id && true}
-                      />
-                    </div>
+                <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Objective Type</label>
+                    <FormikSelect
+                      name="objectiveType"
+                      placeholder=""
+                      options={objectiveTypeDDL || []}
+                      value={values?.objectiveType}
+                      onChange={(valueOption) => {
+                        setFieldValue("objectiveType", valueOption);
+                        getPeopleDeskAllDDL(
+                          `/PMS/ObjectiveDDL?PMTypeId=${1}&ObjectiveTypeId=${
+                            valueOption?.value || 0
+                          }`,
+                          "value",
+                          "label",
+                          setObjectiveDDL
+                        );
+                      }}
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isDisabled={params?.id && true}
+                    />
                   </div>
-                ) : null}
+                </div>
                 <div className="col-md-3">
                   <div className="input-field-main">
                     <label>Objective</label>
