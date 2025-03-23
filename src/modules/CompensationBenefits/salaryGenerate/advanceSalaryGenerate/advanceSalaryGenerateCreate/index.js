@@ -152,13 +152,10 @@ const AdvanceSalaryGenerateCreate = () => {
             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${data[0]?.workPlaceId}&BusinessUnitId=${buId}&intId=0`,
             (info) => {
               const t = [];
-              console.log({ info });
               data.forEach((row) => {
-                console.log({ row });
                 const matched = info?.find(
                   (i) => i?.PositionId == row?.hrPositionId
                 );
-                console.log({ matched });
                 if (matched?.PositionId) {
                   t.push({
                     ...matched,
@@ -166,7 +163,6 @@ const AdvanceSalaryGenerateCreate = () => {
                     label: matched?.PositionName,
                   });
                 }
-                console.log({ t }, 2);
                 setFieldValue("hrPosition", t);
               });
             }
@@ -312,6 +308,13 @@ const AdvanceSalaryGenerateCreate = () => {
     // const workplaceListFromValues = '"' + valueArray.join(",") + '"';
     let modifyRowDto;
     if (isAllAssign) {
+      const amountError = allData?.filter(
+        (itm) => itm?.numGrossSalary < itm?.AdvanceAmount
+      );
+      if (amountError?.length > 0) {
+        toast.warning("Advance amount must be less or Equal to gross salary!");
+        return;
+      }
       modifyRowDto = allData?.map((itm) => {
         return {
           //
@@ -332,6 +335,15 @@ const AdvanceSalaryGenerateCreate = () => {
         };
       });
     } else {
+      const amountError = allData?.filter(
+        (itm) =>
+          itm?.isSalaryGenerate === true &&
+          itm?.numGrossSalary < itm?.AdvanceAmount
+      );
+      if (amountError?.length > 0) {
+        toast.warning("Advance amount must be less than gross salary!");
+        return;
+      }
       modifyRowDto = allData
         ?.filter((itm) => itm?.isSalaryGenerate === true)
         ?.map((itm) => {
@@ -956,17 +968,16 @@ const AdvanceSalaryGenerateCreate = () => {
                           const intBankOrWalletType = `&intBankOrWalletType=${
                             values?.walletType?.value || 0
                           }`;
-
                           getRegenerateAll(
                             `/Payroll/SalarySelectQueryAll?partName=EmployeeListForAdvanceSalaryReGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${
-                              state?.monthId
-                            }&intYearId=${state?.yearId}&strWorkplaceIdList=${
+                              values?.monthId
+                            }&intYearId=${values?.yearId}&strWorkplaceIdList=${
                               values?.workplace?.value
                             }&strHrPositionIdList=${
                               valueArrayHRPosition || 0
                             }&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
-                              state?.fromDate
-                            }&generateToDate=${state?.todate}&intPageNo=${
+                              values?.fromDate
+                            }&generateToDate=${values?.toDate}&intPageNo=${
                               pages?.current
                             }&intPageSize=${
                               pages?.pageSize
