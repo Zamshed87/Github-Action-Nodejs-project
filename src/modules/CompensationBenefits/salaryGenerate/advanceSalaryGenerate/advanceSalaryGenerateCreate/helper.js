@@ -375,7 +375,7 @@ export const salaryGenerateCreateEditTableColumn = (
         // disabled={state?.view}
         value={record?.AdvanceAmount || 0}
         min="0"
-        max={record?.numGrossSalary}
+        // max={record?.numGrossSalary}
         placeholder=""
         className="form-control"
         style={
@@ -384,7 +384,6 @@ export const salaryGenerateCreateEditTableColumn = (
           }
         }
         onChange={(e) => {
-          console.log(record);
           if (e.target.value > record?.numGrossSalary) {
             return;
           } else {
