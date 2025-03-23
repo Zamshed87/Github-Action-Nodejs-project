@@ -2,6 +2,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
+import { todayDate } from "utility/todayDate";
+import { monthFirstDate } from "utility/dateFormatter";
 
 const date = new Date();
 const initYear = date.getFullYear(); // 2022
@@ -19,30 +21,30 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
     },
     {
       title: "Workplace",
-      dataIndex: "strWorkplace",
+      dataIndex: "workplaceName",
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Employee ID",
-      dataIndex: "strEmployeeCode",
+      dataIndex: "employeeCode",
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Employee Name",
-      dataIndex: "strEmployeeName",
+      dataIndex: "employeeName",
       render: (record) => {
         return (
           <div className="d-flex align-items-center">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={record?.strEmployeeName}
+              label={record?.employeeName}
             />
-            <span className="ml-2">{record?.strEmployeeName}</span>
+            <span className="ml-2">{record?.employeeName}</span>
           </div>
         );
       },
@@ -52,13 +54,13 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
     },
     {
       title: "Designation",
-      dataIndex: "strDesignation",
+      dataIndex: "designationName",
       sort: true,
       filter: false,
     },
     {
       title: "Department",
-      dataIndex: "strDepartment",
+      dataIndex: "departmentName",
       sort: true,
       filter: false,
       fieldType: "string",
@@ -78,20 +80,20 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
     //   filter: false,
     //   fieldType: "string",
     // },
-    {
-      title: "Total Allowance",
-      dataIndex: "totalAllowance",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Total Deduction",
-      dataIndex: "totalDeduction",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
+    // {
+    //   title: "Total Allowance",
+    //   dataIndex: "totalAllowance",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Total Deduction",
+    //   dataIndex: "totalDeduction",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
   ];
 };
 
@@ -104,16 +106,19 @@ export const getSalaryAdditionAndDeductionLanding = async (
   search,
   pages,
   setPages,
-  wgId
+  wgId,
+  orgId
 ) => {
   setLoading && setLoading(true);
   // let searchTxt = search ? `&searchTxt=${search}` : "";
-  const intMonth = fromMonth ? +fromMonth.split("-")[1] : +modifyMonthResult;
-  const intYear = fromMonth ? +fromMonth?.split("-")[0] : initYear;
-
+  // const intMonth = fromMonth ? +fromMonth.split("-")[1] : +modifyMonthResult;
+  // const intYear = fromMonth ? +fromMonth?.split("-")[0] : initYear;
+  const fromDate = fromMonth ? `${fromMonth}-01` : monthFirstDate();
   try {
     const res = await axios.get(
-      `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${search}`
+      `/Allowance/AdditionAndDeduction/AllAllowance?fromDate=${fromDate}&searchTxt=${search}&AccountId=${orgId}&WorkplaceGroupId=${wgId}&PageSize=${
+        pages?.pageSize || 100
+      }&PageNo=${pages?.current || 1}`
     );
     if (res?.data) {
       const modifiedData = res.data.data.map((item, index) => ({
@@ -122,8 +127,8 @@ export const getSalaryAdditionAndDeductionLanding = async (
       }));
       setter?.(modifiedData);
       setPages?.({
-        current: res?.data?.currentPage,
-        pageSize: res?.data?.pageSize,
+        current: res?.data?.currentPage || 1,
+        pageSize: res?.data?.pageSize || 100,
         total: res?.data?.totalCount,
       });
       setLoading && setLoading(false);
@@ -137,18 +142,32 @@ export const getSalaryAdditionAndDeductionLanding = async (
 export const createEditAllowanceAndDeduction = async (
   payload,
   setLoading,
-  cb
+  cb,
+  isEdit = false
 ) => {
+  const api = isEdit
+    ? `/Allowance/AdditionAndDeduction/EditAllowance`
+    : `/Allowance/AdditionAndDeduction/Allowance`;
   try {
     setLoading(true);
-    const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
+    let res;
+    if (isEdit) {
+      res = await axios.put(api, payload);
+    } else {
+      res = await axios.post(api, payload);
+    }
     setLoading(false);
     cb && cb();
     toast.success(res?.data?.message);
   } catch (error) {
     setLoading(false);
     cb && cb();
-    toast.warn(error?.response?.data?.message);
+    toast.warn(
+      error?.response?.data?.message ||
+        error?.response?.data?.Message ||
+        error?.Message ||
+        error?.message
+    );
   }
 };
 
@@ -447,11 +466,11 @@ export const getAttendanceAdjustmentFilter = async (
 };
 export const column = {
   sl: "SL",
-  strWorkplace: "Workplace",
-  strEmployeeCode: "Employee ID",
-  strEmployeeName: "Employee Name",
-  strDesignation: "Designation",
-  strDepartment: "Department",
-  totalAllowance: "Total Allowance",
-  totalDeduction: "Total Deduction",
+  workplaceName: "Workplace",
+  employeeCode: "Employee ID",
+  employeeName: "Employee Name",
+  designationName: "Designation",
+  departmentName: "Department",
+  // totalAllowance: "Total Allowance",
+  // totalDeduction: "Total Deduction",
 };

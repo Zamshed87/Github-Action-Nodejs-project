@@ -1,19 +1,23 @@
-import React, { useEffect } from "react";
-import { Drawer, Row, Col, Form, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Drawer, Row, Col, Form, Button, Checkbox } from "antd";
 import { PButton, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 import { FilterOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 type CommonFilterProps = {
   visible: boolean;
   onClose: (visible: boolean) => void;
   onFilter: (values: any) => void;
   isDate?: boolean;
+  isDateSeparate?: boolean;
   isWorkplaceGroup?: boolean;
   isWorkplace?: boolean;
   isDepartment?: boolean;
   isDesignation?: boolean;
+  isStatus?: boolean;
+  statusDDL?: any;
   isAllValue?: boolean;
 };
 
@@ -29,15 +33,23 @@ type ProfileData = {
   orgId: number;
 };
 
+type FilterData = {
+  workplaceGroup?: { value: number };
+  [key: string]: any;
+};
+
 const CommonFilter: React.FC<CommonFilterProps> = ({
   visible,
   onClose,
   onFilter,
   isDate,
+  isDateSeparate,
   isWorkplaceGroup,
   isWorkplace,
   isDepartment,
   isDesignation,
+  isStatus,
+  statusDDL,
   isAllValue,
 }) => {
   // Form Instance
@@ -63,6 +75,35 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
+  const [saveFilter, setSaveFilter] = useState(false);
+
+  const [filterData, setFilterData] = useState<FilterData>({});
+
+  useEffect(() => {
+    if (visible) {
+      const savedFilters = localStorage.getItem("commonFilterData");
+
+      if (savedFilters) {
+        const parsedFilters = JSON.parse(savedFilters);
+
+        const fromDate = parsedFilters.fromDate
+          ? moment(parsedFilters.fromDate)
+          : null;
+        const toDate = parsedFilters.toDate
+          ? moment(parsedFilters.toDate)
+          : null;
+
+        form.setFieldsValue({
+          ...parsedFilters,
+          fromDate,
+          toDate,
+        });
+
+        setFilterData(parsedFilters);
+        setSaveFilter(true);
+      }
+    }
+  }, [visible]);
 
   // workplace Group
   const getWorkplaceGroup = () => {
@@ -118,6 +159,16 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   // Employee Department
   const getEmployeDepartment = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    const workplaceIds = workplace?.value
+      ? workplace?.value.toString().split(",")
+      : [];
+
+    if (!workplaceGroup?.value || workplaceIds.length > 1) {
+      console.warn(
+        "Skipping Department API call: Multiple workplaces selected."
+      );
+      return;
+    }
 
     empDepartmentDDL?.action({
       urlKey: "DepartmentIdAll",
@@ -141,6 +192,18 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   // Designation
   const getDesignation = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    const workplaceIds = workplace?.value
+      ? workplace?.value.toString().split(",")
+      : [];
+
+    if (!workplaceGroup?.value || workplaceIds.length > 1) {
+      console.warn(
+        "Skipping Designation API call: Multiple workplaces selected."
+      );
+      return;
+    }
+
     designationApi?.action({
       urlKey: "DesignationIdAll",
       method: "GET",
@@ -160,18 +223,23 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
     });
   };
 
-  // Fetch Data
+  // Fetch Data Only When Drawer Opens
   useEffect(() => {
-    if (isWorkplaceGroup) {
-      getWorkplaceGroup();
-    } else if (isWorkplace) {
-      getWorkplace();
-    } else if (isDepartment) {
-      getEmployeDepartment();
-    } else if (isDesignation) {
-      getDesignation();
+    if (visible) {
+      if (isWorkplaceGroup) {
+        getWorkplaceGroup();
+      }
+      if (isWorkplace) {
+        getWorkplace();
+      }
+      if (isDepartment) {
+        getEmployeDepartment();
+      }
+      if (isDesignation) {
+        getDesignation();
+      }
     }
-  }, []);
+  }, [visible]); // Runs only when 'visible' changes
 
   return (
     <>
@@ -187,6 +255,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           width: "30px",
           height: "30px",
           background: "#27b327",
+          border: "none",
         }}
       />
       <Drawer
@@ -194,13 +263,13 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
         placement="right"
         onClose={() => onClose(false)}
         open={visible}
-        width={400}
+        width={450}
       >
         <PForm
           form={form}
           onFinish={(values) => {
             onFilter(values);
-            onClose(false);
+            // onClose(false);
           }}
           initialValues={{
             workplaceGroup: {
@@ -214,34 +283,57 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           }}
         >
           <Row gutter={[10, 10]}>
-            {isDate && (
-              <Col md={24} sm={24}>
-                <PInput
-                  label="Date Range"
-                  type="dateRange"
-                  name="dateRange"
+            {isStatus && (
+              <Col md={24} sm={12} xs={24}>
+                <PSelect
+                  style={{ marginBottom: "5px" }}
+                  options={statusDDL || []}
+                  name="status"
+                  label={"Status"}
+                  showSearch
+                  placeholder="Status"
                   onChange={(value) => {
-                    if (Array.isArray(value) && value.length === 2) {
-                      const [fromDate, toDate] = value?.map((date:any) =>
-                        date ? date.format("DD/MM/YYYY") : null
-                      );
-                      form.setFieldsValue({
-                        fromDate,
-                        toDate,
-                      });
-                    } else {
-                      form.setFieldsValue({
-                        fromDate: null,
-                        toDate: null,
-                      });
-                    }
-                  }}                  
+                    form.setFieldsValue({
+                      status: value,
+                    });
+                  }}
                 />
               </Col>
             )}
 
+            {isDate && (
+              <>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="fromDate"
+                    label="From Date"
+                    placeholder="From Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        fromDate: value,
+                      });
+                    }}
+                  />
+                </Col>
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="date"
+                    name="toDate"
+                    label="To Date"
+                    placeholder="To Date"
+                    onChange={(value) => {
+                      form.setFieldsValue({
+                        toDate: value,
+                      });
+                    }}
+                  />
+                </Col>
+              </>
+            )}
+
             {isWorkplaceGroup && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
@@ -261,7 +353,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
             )}
 
             {isWorkplace && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   options={workplaceDDL?.data || []}
                   name="workplace"
@@ -269,9 +361,38 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                   allowClear
                   placeholder="Select Workplace"
                   onChange={(value, op) => {
+                    const workplaceIds = value
+                      ? value.toString().split(",")
+                      : [];
+                    if (workplaceIds.length > 1) {
+                      form.setFieldsValue({
+                        workplace: op,
+                        department: undefined,
+                        designation: undefined,
+                      });
+                    } else {
+                      form.setFieldsValue({ workplace: op });
+                    }
+                    if (workplaceIds.length === 1) {
+                      getEmployeDepartment();
+                      getDesignation();
+                    }
+                  }}
+                />
+              </Col>
+            )}
+
+            {isDepartment && (
+              <Col md={12} sm={12}>
+                <PSelect
+                  allowClear
+                  options={empDepartmentDDL?.data || []}
+                  name="department"
+                  label="Department"
+                  placeholder="Select Department"
+                  onChange={(value, op) => {
                     form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
+                      department: op,
                       designation: undefined,
                     });
                   }}
@@ -279,52 +400,48 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
               </Col>
             )}
 
-            {isDepartment && (
-              <Col md={24} sm={24}>
-                <PSelect
-                  allowClear
-                  options={empDepartmentDDL?.data || []}
-                  name="department"
-                  label="Department"
-                  placeholder="Select Department"
-                />
-              </Col>
-            )}
-
             {isDesignation && (
-              <Col md={24} sm={24}>
+              <Col md={12} sm={12}>
                 <PSelect
                   allowClear
                   options={designationApi?.data || []}
                   name="designation"
                   label="Designation"
                   placeholder="Select Designation"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      designation: op,
+                    });
+                  }}
                 />
               </Col>
             )}
           </Row>
 
           <Col md={12} sm={24}>
-            <div
-              style={{
-                display: "flex",
-                marginTop: "20px",
-              }}
-            >
+            <div style={{ display: "flex", marginTop: "20px" }}>
               <PButton
                 type="primary"
                 content={"View"}
                 style={{ marginRight: "10px" }}
                 onClick={() => {
-                  const values = form.getFieldsValue(true);
+                  const values = form.getFieldsValue();
+                  console.log("values", values);
+
+                  localStorage.setItem(
+                    "commonFilterData",
+                    JSON.stringify(values)
+                  );
                   onFilter(values);
                 }}
               />
+
               <PButton
                 type="secondary"
                 content={"Reset"}
                 onClick={() => {
                   form.resetFields();
+                  localStorage.removeItem("commonFilterData");
                 }}
               />
             </div>

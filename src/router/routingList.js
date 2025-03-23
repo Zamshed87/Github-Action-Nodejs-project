@@ -1561,6 +1561,9 @@ const RosterReportPrint = lazy(() =>
 const RosterReport = lazy(() =>
   import("../modules/timeSheet/reports/rosterReport/index.tsx")
 );
+const TimeSheetReport = lazy(() =>
+  import("../modules/timeSheet/reports/timeSheetReport/index.tsx")
+);
 const MonthlyInOutReport = lazy(() =>
   import("../modules/timeSheet/reports/monthlyInOutReport/index.tsx")
 );
@@ -1591,6 +1594,18 @@ import AdvanceSalaryGenerateLanding from "modules/CompensationBenefits/salaryGen
 import AdvanceSalaryGenerateCreate from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/advanceSalaryGenerateCreate";
 import AdvanceSalaryGenerateView from "modules/CompensationBenefits/salaryGenerate/advanceSalaryGenerate/SalaryGenerateView";
 import NightShiftReport from "modules/timeSheet/reports/nightShiftReport";
+import DepositeType from "modules/configuration/depositeType";
+import { SecurityDepositLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit";
+import { SecurityDepositCRUD } from "modules/CompensationBenefits/dormitorySecurity/securityDeposit/SecurityDepositCRUD";
+import { SecurityDisbursementLanding } from "modules/CompensationBenefits/dormitorySecurity/securityDisburstment";
+import { SecurityMoneyReportLanding } from "modules/CompensationBenefits/dormitorySecurity/securityMoneyReport";
+import TurnOver from "modules/timeSheet/reports/turnOverReport";
+import { CalendarAssign } from "../modules/timeSheet/employeeAssign/calendar/index.tsx";
+import { HolidayAssignPage } from "../modules/timeSheet/employeeAssign/HolidayException/index.tsx";
+import { SelfExpenseApplicationLanding } from "../modules/expense/updatedExpanseApp/index.tsx";
+import { CalendarAssignSelfService } from "modules/empSelfService/supervisor/calendar";
+import OffDaySelfService from "modules/empSelfService/supervisor/offDay";
+import MonthlyOffdayAssignLandingSelfService from "modules/empSelfService/supervisor/monthlyOffdayAssign";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1724,6 +1739,13 @@ const RetirementReleaseSeparationForm = lazy(() =>
   )
 );
 
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
+);
+// Log Monitor Module
+const ApplicationNotificationLogs = lazy(() =>
+  import("../modules/logMonitor/applicationNotificationLog/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -1742,7 +1764,10 @@ export const routingList = [
   },
 
   // { path: "/dashboard", component: DashboardModule },
-  { path: "/dashboard", component: MasterDashboardLanding },
+  { path: "/dashboard/employee", component: MasterDashboardLanding },
+  { path: "/dashboard/supervisor", component: MasterDashboardLanding },
+  { path: "/dashboard/management", component: MasterDashboardLanding },
+  { path: "/dashboard/employeeLifecycle", component: MasterDashboardLanding },
   { path: "/profile/employee", component: EmployeeFeatureNew },
   { path: "/profile/employee/bulk", component: BulkEmployeeCreate },
   { path: "/profile/reports/contractClosing", component: ContactClosingReport },
@@ -1992,6 +2017,10 @@ export const routingList = [
     component: MonthlyInOutReport,
   },
   { path: "/profile/reports/rosterReport", component: RosterReport },
+  {
+    path: "/profile/reports/flexibleTimeSheetReport",
+    component: TimeSheetReport,
+  },
   { path: "/profile/reports/empRosterReport", component: EmployeesShift },
   {
     path: "/profile/reports/monthlyAttendanceReport",
@@ -2000,6 +2029,10 @@ export const routingList = [
   {
     path: "/profile/reports/attendanceLogs",
     component: AttendanceLog,
+  },
+  {
+    path: "/profile/reports/turnover",
+    component: TurnOver,
   },
   {
     path: "/profile/reports/foodAllowenceReport",
@@ -2215,11 +2248,23 @@ export const routingList = [
   },
   {
     path: "/administration/timeManagement/holidayAndExceptionOffdayAssign",
-    component: HolidayException,
+    component: HolidayAssignPage,
   },
   {
     path: "/administration/timeManagement/calendarAssign",
-    component: Calendar,
+    component: CalendarAssign,
+  },
+  {
+    path: "/SelfService/supervisor/calenderAssign",
+    component: CalendarAssignSelfService,
+  },
+  {
+    path: "/SelfService/supervisor/offdayAssign",
+    component: OffDaySelfService,
+  },
+  {
+    path: "/SelfService/supervisor/monthlyOffdayAssign",
+    component: MonthlyOffdayAssignLandingSelfService,
   },
   {
     path: "/administration/timeManagement/leavePolicyAssign",
@@ -2263,6 +2308,10 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  {
+    path: "/administration/configuration/depositType",
+    component: DepositeType,
+  },
   { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/jobLocation", component: JobLocation },
   {
@@ -2440,6 +2489,10 @@ export const routingList = [
     component: SelfAttendenceAdjust,
   },
   {
+    path: "/SelfService/timeManagement/shiftChangeRequest",
+    component: AttendanceShiftChange,
+  },
+  {
     path: "/SelfService/timeManagement/overTimeRequisition",
     component: OverTimeRequisition,
   },
@@ -2456,21 +2509,21 @@ export const routingList = [
     // component: MovementApplication,
     component: EmMovementApplication, // this component is used in management and self service 🔥
   },
-  {
-    path: "/SelfService/expense/expenseApplication/create",
-    component: SelfExpanseApplicationAddForm,
-  },
-  {
-    path: "/SelfService/expense/expenseApplication/edit/:id",
-    component: SelfExpanseApplicationAddForm,
-  },
-  {
-    path: "/SelfService/expense/expenseApplication/view/:id",
-    component: SelfExpenseApplicationView,
-  },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/create",
+  //   component: SelfExpanseApplicationAddForm,
+  // },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/edit/:id",
+  //   component: SelfExpanseApplicationAddForm,
+  // },
+  // {
+  //   path: "/SelfService/expense/expenseApplication/view/:id",
+  //   component: SelfExpenseApplicationView,
+  // },
   {
     path: "/SelfService/expense/expenseApplication",
-    component: UpdateExpanseApplication,
+    component: SelfExpenseApplicationLanding,
   },
   {
     path: "/SelfService/iOU/application/create",
@@ -3274,6 +3327,26 @@ export const routingList = [
   },
 
   // Salary assign & deduction
+  {
+    path: "/compensationAndBenefits/securitydeposit/securityDeposits",
+    component: SecurityDepositLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/edit/:id",
+    component: SecurityDepositCRUD,
+  },
+  {
+    path: "/compensationAndBenefits/securitydeposit/disbursement",
+    component: SecurityDisbursementLanding,
+  },
+  {
+    path: "/compensationAndBenefits/reports/securitymoneyreport",
+    component: SecurityMoneyReportLanding,
+  },
+  {
+    path: "/compensationAndBenefits/securityDeposit/create",
+    component: SecurityDepositCRUD,
+  },
   {
     path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction",
     component: SalaryAssignAndDeduction,
@@ -4127,6 +4200,10 @@ export const routingList = [
   {
     path: "/retirement/separation/release/:id",
     component: RetirementReleaseSeparationForm,
+  },
+  {
+    path: "/logMonitor/applicationNotificationLogs",
+    component: ApplicationNotificationLogs,
   },
 ];
 

@@ -1,15 +1,24 @@
 import { Attachment, InfoOutlined } from "@mui/icons-material";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { dateFormatter } from "utility/dateFormatter";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
+import { Tooltip } from "antd";
+import { formatTime12Hour } from "utility/formatTime12Hour";
+import { gray900 } from "utility/customColor";
+import { getMonthName } from "utility/monthUtility";
+import { convertTo12HourFormat } from "utility/timeFormatter";
 
 export const columnsDefault = [
   {
     title: "SL",
     align: "center",
     render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Employee Name",
@@ -47,15 +56,186 @@ export const columnsDefault = [
   },
 ];
 
-export const columnsLeave = (dispatch) => [
+export const columnFinalSettlement = [
   {
     title: "SL",
     align: "center",
+    width: "30px",
     render: (_, __, index) => index + 1,
   },
   {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
+    filter: false,
+    sorter: true,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+    width: "90px",
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+    width: "70px",
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+    width: "70px",
+  },
+  {
+    title: "Application Type",
+    dataIndex: ["applicationType"],
+    width: "90px",
+  },
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "numTotalAmount"],
+    width: "90px",
+  },
+
+  {
+    title: "Last Working Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Effective Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "lastWorkingDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
+];
+
+export const columnSalaryGenerate = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Salary Code",
+    dataIndex: ["applicationInformation", "salaryCode"],
+  },
+  {
+    title: "Salary Type",
+    dataIndex: ["applicationInformation", "salaryType"],
+  },
+  {
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+  },
+  {
+    title: "Net Payable Salary",
+    dataIndex: ["applicationInformation", "netPayableSalary"],
+  },
+  {
+    title: "Month",
+    render: (_, record) => (
+      <div className="d-flex align-items-center">
+        <LightTooltip
+          title={
+            <div className="movement-tooltip p-1">
+              <div className="border-bottom">
+                <p
+                  className="tooltip-title"
+                  style={{ fontSize: "12px", fontWeight: "600" }}
+                >
+                  Reason
+                </p>
+                <p
+                  className="tooltip-subTitle"
+                  style={{ fontSize: "12px", fontWeight: "500" }}
+                >
+                  {record?.applicationInformation?.strRemarks}
+                </p>
+              </div>
+            </div>
+          }
+          arrow
+        >
+          <InfoOutlined sx={{ color: gray900 }} />
+        </LightTooltip>
+        <div className="ml-2">
+          {getMonthName(record?.applicationInformation?.monthId)},
+          {record?.applicationInformation?.yearId}
+        </div>
+      </div>
+    ),
+    width: "60px",
+  },
+  {
+    title: "From Date",
+    dataIndex: ["applicationInformation", "fromDate"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "To Date",
+    dataIndex: ["applicationInformation", "toDate"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnsLeave = (dispatch) => [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+    width: "20px",
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Leave Type",
+    dataIndex: ["applicationInformation", "leaveType"],
+    render: (text, record) => (
+      <>
+        {text}{" "}
+        <Tooltip
+          title={`Reason: ${record?.applicationInformation?.strRemarks}`}
+          arrow
+        >
+          <InfoCircleOutlined style={{ color: "green", cursor: "pointer" }} />
+        </Tooltip>
+      </>
+    ),
   },
   {
     title: "Designation",
@@ -72,22 +252,22 @@ export const columnsLeave = (dispatch) => [
   },
   {
     title: "Attachment",
-    dataIndex: "documentId",
+    dataIndex: "attachmentId",
     render: (_, record) => (
       <div className="leave-application-document ml-1">
         <span
           onClick={(e) => {
             e.stopPropagation();
-            if (record?.applicationInformation?.documentId !== 0) {
+            if (record?.applicationInformation?.attachmentId !== 0) {
               dispatch(
                 getDownlloadFileView_Action(
-                  record?.applicationInformation?.documentId
+                  record?.applicationInformation?.attachmentId
                 )
               );
             }
           }}
         >
-          {record?.applicationInformation?.documentId !== 0 && (
+          {record?.applicationInformation?.attachmentId !== 0 && (
             <div style={{ color: "green", cursor: "pointer" }}>
               <Attachment /> attachment
             </div>
@@ -133,6 +313,10 @@ export const columnOvertime = [
     render: (_, __, index) => index + 1,
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
   },
@@ -143,10 +327,6 @@ export const columnOvertime = [
   {
     title: "Workplace",
     dataIndex: ["applicationInformation", "workplaceName"],
-  },
-  {
-    title: "Employee ID",
-    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Designation",
@@ -198,7 +378,7 @@ export const columnIncrement = [
     render: (_, __, index) => index + 1,
   },
   {
-    title: "Employee ID",
+    title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
@@ -237,15 +417,6 @@ export const columnIncrement = [
     title: "Depend On",
     dataIndex: ["applicationInformation", "strDependOn"],
   },
-  /**
-   * 
-numIncrementAmount
-: 
-0
-numIncrementPercentage
-: 
-0
-   */
   {
     title: "Amount",
     dataIndex: ["applicationInformation", "totalAmount"],
@@ -270,16 +441,21 @@ numIncrementPercentage
   },
 ];
 
-export const columnsManual = [
+export const columnsManual = (page) => [
   {
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1,
+    render: (text, record, index) =>
+      (page?.pageNo - 1) * page?.pageSize + index + 1,
   },
   {
     title: "Employee Name",
     dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Designation",
@@ -298,16 +474,16 @@ export const columnsManual = [
   },
   {
     title: "Actual In-Time",
-    dataIndex: ["applicationInformation", "tmeStartTime"],
+    dataIndex: ["applicationInformation", "startTime"],
     render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+      <div>{time ? convertTo12HourFormat(time) : "-"}</div>
     ),
   },
   {
     title: "Actual Out-Time",
-    dataIndex: ["applicationInformation", "tmeEndTime"],
+    dataIndex: ["applicationInformation", "endTime"],
     render: (time) => (
-      <div>{time ? new Date(time).toLocaleTimeString() : "-"}</div>
+      <div>{time ? convertTo12HourFormat(time) : "-"}</div>
     ),
   },
 
@@ -358,20 +534,12 @@ export const columnsManual = [
     width: "120px",
     render: (status, record) => (
       <div>
-        <LightTooltip
-          style={{ fontSize: "14px" }}
-          title={
-            <div className="movement-tooltip p-1">
-              <div className="">
-                <p className="tooltip-title">Reason</p>
-                <p className="tooltip-subTitle mb-0">{record?.reason}</p>
-              </div>
-            </div>
-          }
+        <Tooltip
+          title={`Reason: ${record?.applicationInformation?.strRemarks}`}
           arrow
         >
-          <InfoOutlined sx={{ marginRight: "12px" }} />
-        </LightTooltip>
+          <InfoCircleOutlined style={{ color: "green", cursor: "pointer" }} />
+        </Tooltip>
         {status === "Present" && <Chips label="Present" classess="success" />}
         {status === "Late" && <Chips label="Late" classess="warning" />}
         {status === "Holiday" && <Chips label="Holiday" classess="secondary" />}
@@ -402,20 +570,21 @@ export const columnsManual = [
   },
 ];
 
-export const columnsMovement = [
+export const columnsMovement = (page) => [
   {
     title: "SL",
     align: "center",
     width: "30px",
-    render: (_, __, index) => index + 1,
-  },
-  {
-    title: "Employee Name",
-    dataIndex: ["applicationInformation", "employeeName"],
+    render: (text, record, index) =>
+      (page?.pageNo - 1) * page?.pageSize + index + 1,
   },
   {
     title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
   },
   {
     title: "Designation",
@@ -426,30 +595,36 @@ export const columnsMovement = [
     dataIndex: ["applicationInformation", "department"],
   },
   {
-    title: "Leave Type",
+    title: "Movement Type",
     dataIndex: ["applicationInformation", "leaveType"],
+    render: (text, record) => (
+      <>
+        {text}{" "}
+        <Tooltip
+          title={`Reason: ${record?.applicationInformation?.strRemarks}`}
+          arrow
+        >
+          <InfoCircleOutlined style={{ color: "green", cursor: "pointer" }} />
+        </Tooltip>
+      </>
+    ),
+    width: "80px",
   },
   {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "From Date",
     dataIndex: ["applicationInformation", "fromDate"],
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "To Date",
     dataIndex: ["applicationInformation", "toDate"],
     width: "50px",
-    render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Total Days",
@@ -458,10 +633,12 @@ export const columnsMovement = [
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "End Time",
     dataIndex: ["applicationInformation", "endTime"],
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "Remarks",
@@ -525,7 +702,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     dataIndex: ["applicationInformation", "separationDate"],
     width: "90px",
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -533,7 +710,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -541,7 +718,7 @@ export const columnsSeparation = (setViewData, setViewModal) => [
     width: "90px",
     dataIndex: ["applicationInformation", "lastWorkingDate"],
     render: (date) => (
-      <div>{date ? new Date(date).toLocaleDateString() : "N/A"}</div>
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
     ),
   },
   {
@@ -566,7 +743,6 @@ export const columnsSeparation = (setViewData, setViewModal) => [
         <EyeOutlined
           style={{ marginRight: 5 }}
           onClick={() => {
-            console.log("render", render);
             setViewData(render?.applicationInformation);
             setViewModal(true);
           }}
@@ -582,6 +758,10 @@ export const columnsAdvancedSalary = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
     title: "Workplace Group",
@@ -935,6 +1115,10 @@ export const columnsMasterLocation = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
     title: "Longitude",
     dataIndex: ["applicationInformation", "longitude"],
   },
@@ -990,10 +1174,12 @@ export const columnsRemoteAttendance = [
   {
     title: "Attendance Date",
     dataIndex: ["applicationInformation", "dteAttendanceDate"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
     title: "Start Time",
     dataIndex: ["applicationInformation", "startTime"],
+    render: (time) => formatTime12Hour(time),
   },
   {
     title: "Place Name",
@@ -1002,6 +1188,20 @@ export const columnsRemoteAttendance = [
   {
     title: "Address",
     dataIndex: ["applicationInformation", "address"],
+    width: "60px",
+    render: (_, rec) => {
+      const address = rec?.applicationInformation?.address || "";
+      const addressParts = address.split(",").map((part) => part.trim());
+
+      if (addressParts.length > 1) {
+        return (
+          <Tooltip title={address}>
+            <span>{addressParts[0]}, ...</span>
+          </Tooltip>
+        );
+      }
+      return addressParts[0] || "N/A";
+    },
   },
   {
     title: "Waiting Stage",
@@ -1023,38 +1223,67 @@ export const columnsLocationDevice = [
     align: "center",
     width: "30px",
     render: (_, __, index) => index + 1, // Serial number
+    fixed: "left",
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+    fixed: "left",
+  },
+  {
+    title: "Location Or Device",
+    dataIndex: ["applicationInformation", "isLocationRegister"],
+    fixed: "left",
+    render: (isLocationRegister) => (
+      <div>{isLocationRegister ? "Location" : "Device"}</div>
+    ),
   },
   {
     title: "Longitude",
-    dataIndex: ["applicationInformation", "strLongitude"],
+    dataIndex: ["applicationInformation", "longitude"],
   },
   {
     title: "Latitude",
-    dataIndex: ["applicationInformation", "strLatitude"],
+    dataIndex: ["applicationInformation", "latitude"],
   },
   {
     title: "Place Name",
-    dataIndex: ["applicationInformation", "strPlaceName"],
+    dataIndex: ["applicationInformation", "placeName"],
+    render: (placeName) => {
+      const placeNameParts = placeName?.split(" ");
+      if (placeNameParts?.length > 2) {
+        return (
+          <Tooltip title={placeName}>
+            <span>{placeNameParts[0]} ...</span>
+          </Tooltip>
+        );
+      }
+      return placeName;
+    },
   },
   {
     title: "Address",
-    dataIndex: ["applicationInformation", "strAddress"],
-  },
-  {
-    title: "Created At",
-    dataIndex: ["applicationInformation", "dteCreatedAt"],
-  },
-  {
-    title: "Created By",
-    dataIndex: ["applicationInformation", "intCreatedBy"],
+    dataIndex: ["applicationInformation", "address"],
+    render: (address) => {
+      const addressParts = address?.split(" ");
+      if (addressParts?.length > 2) {
+        return (
+          <Tooltip title={address}>
+            <span>{addressParts[0]} ...</span>
+          </Tooltip>
+        );
+      }
+      return address;
+    },
   },
   {
     title: "Device ID",
-    dataIndex: ["applicationInformation", "strDeviceId"],
+    dataIndex: ["applicationInformation", "deviceId"],
+    width: "50px",
   },
   {
     title: "Device Name",
-    dataIndex: ["applicationInformation", "strDeviceName"],
+    dataIndex: ["applicationInformation", "deviceName"],
   },
   {
     title: "Waiting Stage",
@@ -1171,8 +1400,8 @@ export const columnsSalaryCertificate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1190,35 +1419,25 @@ export const columnsBonusGenerate = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
-    title: "Employee Code",
-    dataIndex: ["applicationInformation", "employeeCode"],
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+    render: (workplaceGroupName) => workplaceGroupName || "N/A",
   },
   {
-    title: "Employee Name",
-    dataIndex: ["applicationInformation", "employeeName"],
+    title: "Salary Code",
+    dataIndex: ["applicationInformation", "salaryCode"],
+    render: (salaryCode) => salaryCode || "N/A",
   },
-  {
-    title: "Designation",
-    dataIndex: ["applicationInformation", "designation"],
-  },
-  {
-    title: "Department",
-    dataIndex: ["applicationInformation", "department"],
-  },
+
   {
     title: "Bonus Name",
-    dataIndex: ["applicationInformation", "strBonusName"],
+    dataIndex: ["applicationInformation", "bonusName"],
     render: (bonusName) => bonusName || "N/A",
   },
   {
     title: "Bonus Amount",
-    dataIndex: ["applicationInformation", "numBonusAmount"],
-    render: (amount) => (amount ? `৳${amount.toLocaleString()}` : "N/A"),
-  },
-  {
-    title: "Effective Date",
-    dataIndex: ["applicationInformation", "dteEffectiveDate"],
-    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
+    dataIndex: ["applicationInformation", "bonusAmount"],
+    render: (bonusAmount) => (bonusAmount ? `${bonusAmount.toLocaleString()}` : "N/A"),
   },
   {
     title: "Waiting Stage",
@@ -1236,8 +1455,8 @@ export const columnsBonusGenerate = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1255,7 +1474,7 @@ export const columnsIOUAdjustment = [
     render: (_, __, index) => index + 1, // Serial number
   },
   {
-    title: "Code",
+    title: "Employee Code",
     dataIndex: ["applicationInformation", "employeeCode"],
   },
   {
@@ -1323,8 +1542,8 @@ export const columnsIOUAdjustment = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1420,8 +1639,8 @@ export const columnsShiftChange = [
             status === "Approved"
               ? "green"
               : status === "Pending"
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           fontWeight: "bold",
         }}
       >
@@ -1582,6 +1801,61 @@ export const columnAdditionDeduction = [
     title: "Amount",
     dataIndex: ["applicationInformation", "numTotalAmount"],
   },
+  {
+    title: "Remarks",
+    dataIndex: ["applicationInformation", "remarks"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+  },
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    width: "50px",
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
+export const columnTransferPromotion = [
+  {
+    title: "SL",
+    align: "center",
+    width: "30px",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Application Date",
+    dataIndex: ["applicationInformation", "applicationDate"],
+    render: (date) => <div>{dateFormatter(date)}</div>,
+  },
+  // {
+  //   title: "Transfer/Promotion Type",
+  //   dataIndex: ["applicationInformation", "transferPromotionType"],
+  // },
+  // {
+  //   title: "Effective Date",
+  //   dataIndex: ["applicationInformation", "effectiveDate"],
+  //   render: (date) => <div>{dateFormatter(date)}</div>,
+  // },
   {
     title: "Remarks",
     dataIndex: ["applicationInformation", "remarks"],

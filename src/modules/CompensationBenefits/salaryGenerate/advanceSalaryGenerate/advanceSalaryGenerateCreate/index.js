@@ -69,8 +69,9 @@ const AdvanceSalaryGenerateCreate = () => {
   const [, setIsEdit] = useState(false);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [hrPositionDDL, setHrPositionDDL] = useState([]);
-  const [, getDetails, ,] = useAxiosGet();
-  const [, getRegenerateAll, ,] = useAxiosGet();
+  const [, getDetails, detailsLoad] = useAxiosGet();
+  const [, getHrPosition] = useAxiosGet();
+  const [, getRegenerateAll, loadGenerate] = useAxiosGet();
 
   const [pages, setPages] = useState({
     current: 1,
@@ -141,54 +142,41 @@ const AdvanceSalaryGenerateCreate = () => {
     setRowDto([]);
   }, [wgId]);
 
-  const [, getWorkplaceNhrPosition] = useAxiosGet([]);
   // for edit
   useEffect(() => {
     if (state?.advanceSalaryCode) {
-      // getSalaryGenerateRequestHeaderId(
-      //   "SalaryGenerateRequestByRequestId",
-      //   +params?.id,
-      //   setSingleData,
-      //   setLoading,
-      //   wgId,
-      //   buId,
-      //   (data) => {
-      //     getWorkplaceNhrPosition(
-      //       `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${data?.intAccountId}&strSalaryCode=${data?.strSalaryCode}&intBusinessUnitId=${data?.intBusinessUnitId}&intWorkplaceGroupId=${data?.intWorkplaceGroupId}`,
-      //       (WorkplaceNhrPosition) => {
-      //         const hrPositions =
-      //           WorkplaceNhrPosition.map((item) => ({
-      //             value: item.intHrPosition,
-      //             label: item.strHrPosition,
-      //           })) || [];
-      //         const uniqueWorkplaceIds = [
-      //           ...new Set(
-      //             WorkplaceNhrPosition.map((item) => item.intWorkplaceId)
-      //           ),
-      //         ];
-      //         const workplaces = uniqueWorkplaceIds.map((id) => {
-      //           const correspondingItem = WorkplaceNhrPosition.find(
-      //             (item) => item.intWorkplaceId === id
-      //           );
-      //           return {
-      //             value: id,
-      //             intWorkplaceId: id,
-      //             label: correspondingItem
-      //               ? correspondingItem.strWorkplaceName
-      //               : "",
-      //           };
-      //         });
-      //         setFieldValue("workplace", workplaces);
-      //         setFieldValue("hrPosition", hrPositions);
-      //         setHrPositionDDL(hrPositions);
-      //       }
-      //     );
-      //   }
-      // );
-
       getDetails(
-        `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
+        `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryId}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
         (data) => {
+          getHrPosition(
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${data[0]?.workPlaceId}&BusinessUnitId=${buId}&intId=0`,
+            (info) => {
+              const t = [];
+              console.log({ info });
+              data.forEach((row) => {
+                console.log({ row });
+                const matched = info?.find(
+                  (i) => i?.PositionId == row?.hrPositionId
+                );
+                console.log({ matched });
+                if (matched?.PositionId) {
+                  t.push({
+                    ...matched,
+                    value: matched?.PositionId,
+                    label: matched?.PositionName,
+                  });
+                }
+                console.log({ t }, 2);
+                setFieldValue("hrPosition", t);
+              });
+            }
+          );
+          getPeopleDeskAllDDL(
+            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${data[0]?.workPlaceId}&BusinessUnitId=${buId}&intId=0`,
+            "PositionId",
+            "PositionName",
+            setHrPositionDDL
+          );
           const modify = data?.map((itm) => {
             return {
               intSalaryGenerateRequestId: 0,
@@ -202,6 +190,7 @@ const AdvanceSalaryGenerateCreate = () => {
               intDesignationId: itm?.designationId,
               strDepartment: itm?.departmentName,
               intDepartmentId: itm?.departmentId,
+              TotalPresentDays: itm?.totalPresentDays,
               intWorkplaceGroupId: itm?.workPlaceGroupId,
               strWorkplace: itm?.workplaceName,
               intWorkplaceId: itm?.workPlaceId,
@@ -213,10 +202,13 @@ const AdvanceSalaryGenerateCreate = () => {
               isSalaryGenerate: true,
             };
           });
-          const allIdsMatch = data.every(
-            (row) => row.hrPositionId === data[0]?.hrPositionId
-          );
+          // console.log({ t });
 
+          // const allIdsMatch = data.every(
+          //   (row) => row.hrPositionId === data[0]?.hrPositionId
+          // );
+
+          // setHrPositionDDL(t);
           setAllEmployeeString(modify?.map((i) => i?.intEmployeeId).join(","));
           setRowDto(modify);
           setAllData(modify);
@@ -235,19 +227,14 @@ const AdvanceSalaryGenerateCreate = () => {
               label: state?.workplaceName,
               value: data[0]?.workPlaceId,
             },
-            hrPosition: allIdsMatch
-              ? {
-                  label: data[0]?.hrPositionName,
-                  value: data[0]?.hrPositionId,
-                }
-              : "",
+            // hrPosition: t
+            //   ? {
+            //       label: data[0]?.hrPositionName,
+            //       value: data[0]?.hrPositionId,
+            //     }
+            //   : "",
           });
-          getPeopleDeskAllDDL(
-            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${data[0]?.workPlaceId}&BusinessUnitId=${buId}&intId=0`,
-            "PositionId",
-            "PositionName",
-            setHrPositionDDL
-          );
+
           // getWorkplaceNhrPosition(
           //   `/Payroll/SalarySelectQueryAll?partName=HrPositionListByAdvanceSalaryCode&intAccountId=${orgId}&strSalaryCode=${state?.advanceSalaryCode}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${data[0]?.workPlaceGroupId}`,
           //   (WorkplaceNhrPosition) => {
@@ -336,6 +323,7 @@ const AdvanceSalaryGenerateCreate = () => {
           departmentId: itm?.intDepartmentId,
           designationId: itm?.intDesignationId,
           hrPositionId: itm?.intHRPositionId,
+          totalPresentDays: itm?.TotalPresentDays,
           // yearId: values?.yearId,
           // monthId: values?.monthId,
           basicSalary: itm?.numBasicORGross,
@@ -356,6 +344,8 @@ const AdvanceSalaryGenerateCreate = () => {
             departmentId: itm?.intDepartmentId,
             designationId: itm?.intDesignationId,
             hrPositionId: itm?.intHRPositionId,
+            totalPresentDays: itm?.TotalPresentDays,
+
             // yearId: values?.yearId,
             // monthId: values?.monthId,
             basicSalary: itm?.numBasicORGross,
@@ -388,9 +378,9 @@ const AdvanceSalaryGenerateCreate = () => {
       yearId: values?.yearId,
       monthId: values?.monthId,
 
-      paymentMethod: values?.walletType?.value || 0,
+      paymentMethod: +values?.walletType?.value || 0,
       minimumPresentDays: +values?.minimumPresentDays,
-      advanceBasedOn: values?.advanceBasedOn?.value,
+      advanceBasedOn: +values?.advanceBasedOn?.value,
       advanceBasedOnPercentage: +values?.advanceBasedOnPercentage,
       description: values?.description,
     };
@@ -404,7 +394,7 @@ const AdvanceSalaryGenerateCreate = () => {
 
       if (state?.advanceSalaryCode) {
         getDetails(
-          `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryCode}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
+          `/AdvanceSalary/AdvanceSalary/${state?.advanceSalaryId}?yearId=${state?.yearId}&monthId=${state?.monthId}&fromDate=${state?.fromDate}&toDate=${state?.todate}&advancesalaryId=${state?.advanceSalaryId}`,
           (data) => {
             const modify = data?.map((itm) => {
               return {
@@ -426,6 +416,8 @@ const AdvanceSalaryGenerateCreate = () => {
                 strHRPostionName: itm?.hrPositionName,
                 numGrossSalary: itm?.grossSalary,
                 numBasicORGross: itm?.basicSalary,
+                TotalPresentDays: itm?.totalPresentDays,
+
                 AdvanceAmount: itm?.amount, // Map from `amount`
                 isSalaryGenerate: true,
               };
@@ -568,7 +560,7 @@ const AdvanceSalaryGenerateCreate = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {loading && <Loading />}
+        {(loading || detailsLoad || loadGenerate) && <Loading />}
         {permission?.isView ? (
           <div className="table-card">
             <div className="table-card-heading">
@@ -624,7 +616,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         classes="input-sm"
                         placeholder=" "
                         value={values?.monthYear}
-                        disabled={singleData}
+                        // disabled={singleData}
                         name="monthYear"
                         type="month"
                         onChange={(e) => {
@@ -656,7 +648,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         value={values?.fromDate}
                         name="fromDate"
                         type="date"
-                        disabled={singleData}
+                        // disabled={singleData}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
@@ -677,7 +669,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         placeholder=" "
                         value={values?.toDate}
                         name="toDate"
-                        disabled={singleData}
+                        // disabled={singleData}
                         type="date"
                         onChange={(e) => {
                           setValues((prev) => ({
@@ -719,7 +711,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           ] || []
                         }
                         value={values?.walletType}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -767,11 +759,11 @@ const AdvanceSalaryGenerateCreate = () => {
                           [
                             {
                               value: 1,
-                              label: "Gross",
+                              label: "Gross Salary",
                             },
                             {
                               value: 2,
-                              label: "Basic",
+                              label: "Basic Salary",
                             },
                             {
                               value: 3,
@@ -780,7 +772,7 @@ const AdvanceSalaryGenerateCreate = () => {
                           ] || []
                         }
                         value={values?.advanceBasedOn}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -806,7 +798,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         // placeholder="Month"
                         name="advanceBasedOnPercentage"
                         min={0}
-                        disabled={singleData}
+                        // disabled={singleData}
                         step={"any"}
                         type="number"
                         className="form-control"
@@ -871,7 +863,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         name="workplace"
                         options={workplaceDDL || []}
                         value={values?.workplace}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
@@ -893,7 +885,7 @@ const AdvanceSalaryGenerateCreate = () => {
                     </div>
                   </div>
 
-                  {/* <div className="col-md-3">
+                  <div className="col-md-3">
                     <div className="input-field-main">
                       <label>HR Position</label>
                       <MultiCheckedSelect
@@ -910,8 +902,8 @@ const AdvanceSalaryGenerateCreate = () => {
                         setFieldValue={setFieldValue}
                       />
                     </div>
-                  </div> */}
-                  <div className="col-md-3">
+                  </div>
+                  {/* <div className="col-md-3">
                     <div className="input-field-main">
                       <label>HR Position</label>
 
@@ -933,7 +925,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         // isDisabled={singleData}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-md-5 d-flex mt-4">
                     <button
                       style={{
@@ -942,6 +934,9 @@ const AdvanceSalaryGenerateCreate = () => {
                       className="btn btn-default mr-2"
                       type="button"
                       onClick={() => {
+                        const valueArrayHRPosition = values?.hrPosition?.map(
+                          (obj) => obj.value
+                        );
                         if (state?.advanceSalaryCode) {
                           // if (!isSameWgEmployee) {
                           //   return toast.warning(
@@ -955,20 +950,20 @@ const AdvanceSalaryGenerateCreate = () => {
                           //   ) || [];
                           // // Joining the values into a string separated by commas
                           // const workplaceListFromValues = valueArray.join(",");
-                          // const valueArrayHRPosition = values?.hrPosition?.map(
-                          //   (obj) => obj.value
-                          // );
+                          const valueArrayHRPosition = values?.hrPosition?.map(
+                            (obj) => obj.value
+                          );
                           const intBankOrWalletType = `&intBankOrWalletType=${
                             values?.walletType?.value || 0
                           }`;
 
                           getRegenerateAll(
-                            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForAdvanceSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${
+                            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForAdvanceSalaryReGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${
                               state?.monthId
                             }&intYearId=${state?.yearId}&strWorkplaceIdList=${
                               values?.workplace?.value
                             }&strHrPositionIdList=${
-                              values?.hrPosition?.value || 0
+                              valueArrayHRPosition || 0
                             }&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
                               state?.fromDate
                             }&generateToDate=${state?.todate}&intPageNo=${
@@ -986,26 +981,39 @@ const AdvanceSalaryGenerateCreate = () => {
                               values?.advanceBasedOnPercentage
                             }`,
                             (data) => {
-                              const uniq = [];
-                              data?.forEach((itm) => {
-                                if (
-                                  !rowDto.some(
-                                    (item) =>
-                                      item?.intEmployeeId === itm?.intEmployeeId
-                                  )
-                                ) {
-                                  uniq.push(itm);
+                              // const uniq = [];
+                              // data?.forEach((itm) => {
+                              //   if (
+                              //     !rowDto.some(
+                              //       (item) =>
+                              //         item?.intEmployeeId === itm?.intEmployeeId
+                              //     )
+                              //   ) {
+                              //     uniq.push(itm);
+                              //   }
+                              // });
+
+                              const d = [];
+                              data?.forEach((i) => {
+                                const oldRow = rowDto.find(
+                                  (j) => j.intEmployeeId === i.intEmployeeId
+                                );
+                                if (oldRow?.intEmployeeId) {
+                                  d.push({
+                                    ...oldRow,
+                                    AdvanceAmount: i?.AdvanceAmount,
+                                  });
+                                } else {
+                                  d.push(i);
                                 }
                               });
-                              setRowDto((prev) => [...prev, ...uniq]);
-                              setAllData((prev) => [...prev, ...uniq]);
+
+                              setRowDto(d);
+                              setAllData(d);
                               setAllEmployeeString((prev) => {
-                                return (
-                                  prev +
-                                  uniq
-                                    .map((item) => item?.intEmployeeId)
-                                    .join(",")
-                                );
+                                return d
+                                  .map((item) => item?.intEmployeeId)
+                                  .join(",");
                               });
                             }
                           );
@@ -1043,7 +1051,7 @@ const AdvanceSalaryGenerateCreate = () => {
                             }&intYearId=${values?.yearId}&strWorkplaceIdList=${
                               values?.workplace?.value
                             }&strHrPositionIdList=${
-                              values?.hrPosition?.value || 0
+                              valueArrayHRPosition || 0
                             }&intWorkplaceGroupId=${wgId}${intBankOrWalletType}&generateFromDate=${
                               values?.fromDate
                             }&generateToDate=${values?.toDate}&intPageNo=${
@@ -1076,7 +1084,7 @@ const AdvanceSalaryGenerateCreate = () => {
                         !values?.fromDate ||
                         !values?.toDate ||
                         !values?.workplace?.value ||
-                        !values?.walletType?.value ||
+                        // !values?.walletType?.value ||
                         !values?.advanceBasedOn?.value ||
                         !values?.advanceBasedOnPercentage ||
                         !values?.minimumPresentDays

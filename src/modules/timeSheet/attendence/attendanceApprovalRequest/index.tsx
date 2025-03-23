@@ -9,7 +9,7 @@ import {
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -120,6 +120,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
     wgId,
     wId,
     employeeId,
+    intAccountId,
     intProfileImageUrl,
     userName,
     strDesignation,
@@ -384,6 +385,30 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
       sorter: false,
     },
     {
+      title: "Reason",
+      dataIndex: "strRemarks",
+      width: 100,
+      render: (data: any) => (
+        <Tooltip title={data || "N/A"} placement="topLeft">
+          <span
+            style={{
+              display: "inline-block",
+              maxWidth: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              width: "100px",
+            }}
+          >
+            {data
+              ? data.split(" ").slice(0, 2).join(" ") +
+                (data.split(" ").length > 2 ? "..." : "")
+              : "N/A"}
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
       title: "Approval Status",
       dataIndex: "ApplicationStatus",
       render: (_: any, record: any) =>
@@ -471,7 +496,7 @@ const SelfAttendenceAdjust: React.FC<TAttendenceAdjust> = () => {
             format={"MMMM-YYYY"}
           />
           <PSelect
-            options={AttendanceType}
+            options={AttendanceType(intAccountId)}
             name="attendanceAdujust"
             placeholder="Change Attendance"
             style={{ width: "200px" }}

@@ -66,3 +66,15 @@ export const filterData = (keywords, gridData, setRowDto) => {
   );
   setRowDto(newData);
 };
+
+
+export const turnOverView = async (setter, setLoading, wId, period, type) => {
+  setLoading(true);
+  try {
+    const res = await axios.get(`/Employee/TurnoverReport/${type}?workplaceId=${wId}&period=${period}`);
+    setter(res?.data);
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+  }
+}

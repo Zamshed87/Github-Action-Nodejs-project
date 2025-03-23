@@ -12,7 +12,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tooltip } from "antd";
+import { Col, Form, message, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -117,7 +117,7 @@ const tableHeadColumn = (
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId, employeeId } = useSelector(
+  const { orgId, buId, wgId, wId, employeeId,intAccountId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -431,6 +431,30 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       width: 160,
     },
     {
+      title: "Reason",
+      dataIndex: "strRemarks",
+      width: 100,
+      render: (data: any) => (
+        <Tooltip title={data || "N/A"} placement="topLeft">
+          <span
+            style={{
+              display: "inline-block",
+              maxWidth: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              width: "100px",
+            }}
+          >
+            {data
+              ? data.split(" ").slice(0, 2).join(" ") +
+                (data.split(" ").length > 2 ? "..." : "")
+              : "N/A"}
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
       render: (data: any) => moment(data).format("DD-MMM-YYYY"),
@@ -498,6 +522,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       filter: true,
       sorter: false,
     },
+
     {
       title: "Approval Status",
       dataIndex: "ApplicationStatus",
@@ -570,7 +595,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       <PCard>
         <PCardHeader title="Adjust Attendance">
           <PSelect
-            options={AttendanceType}
+            options={AttendanceType(intAccountId)}
             name="attendanceAdujust"
             placeholder="Change Attendance"
             style={{ width: "200px" }}
@@ -836,17 +861,30 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             rowSelection={{
               type: "checkbox",
               selectedRowKeys: selectedRow.map((item) => item?.key),
-              onChange: (selectedRowKeys, selectedRows) => {
-                setSelectedRow(selectedRows);
-              },
-
-              // getCheckboxProps: (rec) => {
-              //   return {
-              //     disabled: moment(rec?.AttendanceDate, "YYYY-MM-DD").isAfter(
-              //       moment().format("YYYY-MM-DD")
-              //     ),
-              //   };
+              // onChange: (selectedRowKeys, selectedRows) => {
+              //   console.log("selectedRowKeys", selectedRowKeys);
+              //   console.log("selectedRows", selectedRows);
+              //   setSelectedRow(selectedRows);
               // },
+              //    }}
+              onChange: (selectedRowKeys, selectedRows) => {
+                // Filter out rows where ApplicationStatus is "Pending" or "Approved"
+                const validRows = selectedRows.filter(
+                  (row: any) => row.ApplicationStatus !== "Pending"
+                );
+
+                // Find any invalid rows that were attempted to be selected
+                const invalidRows = selectedRows.filter(
+                  (row: any) => row.ApplicationStatus === "Pending"
+                );
+
+                if (invalidRows.length > 0) {
+                  message.warning(
+                    "You cannot select rows with Pending or Approved status."
+                  );
+                }
+                setSelectedRow(validRows);
+              },
             }}
             checkBoxColWidth={50}
           />

@@ -129,7 +129,10 @@ export const submitHandler = ({
   random,
   savePipeline,
 }) => {
-  console.log("values", values);
+  if (values?.randomCount ? values?.randomCountValue <= 0 : false) {
+    return toast.warn("Please select random count value");
+  }
+
   const cb = () => {
     resetForm();
     setIsAddEditForm(false);
@@ -153,12 +156,17 @@ export const submitHandler = ({
       applicationType: values?.pipelineName?.label || "",
       accountId: orgId,
       businessUnitId: buId,
-      workplaceGroupId: +values?.pipelineName?.value === 13 ? -1 : values?.orgName?.value || wgId,
+      workplaceGroupId:
+        +values?.pipelineName?.value === 13
+          ? -1
+          : values?.orgName?.value || wgId,
       workplaceGroupName: values?.orgName?.label || "",
-      workplaceId: +values?.pipelineName?.value === 13 ? -1 : workplace?.value || -1,
-      workplaceName: workplace?.customLabel || "",
+      workplaceId:
+        +values?.pipelineName?.value === 13 ? -1 : workplace?.value || -1,
+      workplaceName: workplace?.customLabel || "All",
       isInSequence: isSequence,
-      randomApproverCount: !values?.isSequence && values?.randomCountValue || 0,
+      randomApproverCount:
+        (!values?.isSequence && values?.randomCountValue) || 0,
       isActive: true,
       createdBy: employeeId,
       createdAt: todayDate(),
@@ -222,11 +230,24 @@ export const fetchPipelineData = async (setPipelineDDL) => {
   }
 };
 
-export const fetchApproverData = async (setApproverDDL) => {
+export const fetchApproverData = async (setApproverDDL, value) => {
   try {
     const res = await axios.get(`/Enum/GetEnums?types=ApproverType`);
-    setApproverDDL(res?.data?.ApproverType);
+    let approvers = res?.data?.ApproverType || [];
+
+    const restrictedActions = ["20", "2", "26", "1"]; 
+    const restrictedApprovers = ["3", "4"];
+
+    if (restrictedActions.includes(value.toString())) {
+      approvers = approvers.map(approver => ({
+        ...approver,
+        disabled: !restrictedApprovers.includes(approver.value.toString()),
+      }));
+    }
+
+    setApproverDDL(approvers);
   } catch (error) {
-    console.log("error", error);
+    console.log("Error fetching approvers:", error);
   }
 };
+

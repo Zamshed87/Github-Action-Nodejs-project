@@ -77,12 +77,13 @@ export const dateFormatterForDashboard = () => {
   const day = date.getDay();
   const dayName = `${days[day]}`;
   const month = date?.getMonth();
+  const year = date.getFullYear();
 
   const monthName = `${monthNames[month]},`;
 
-  const dateNumber = `${date?.getDate()},`?.padStart(2, "0");
+  const dateNumber = `${date?.getDate()} `?.padStart(2, "0");
 
-  return [dateNumber, monthName, dayName]?.join(" ");
+  return `${dateNumber} ${monthName} ${year}, ${dayName}.`;
 };
 
 export const dateFormatterForInput = (param) => {

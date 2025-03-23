@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Spin } from "antd";
+import { Input, Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
 import { DataTable } from "Components";
 import { useLocation } from "react-router";
@@ -15,9 +15,11 @@ import {
   columnAdditionDeduction,
   columnDeposit,
   columnDisbursment,
+  columnFinalSettlement,
   columnIncrement,
   columnOvertime,
   columnsAdvancedSalary,
+  columnSalaryGenerate,
   columnsBonusGenerate,
   columnsDefault,
   columnsExpense,
@@ -35,17 +37,27 @@ import {
   columnsSalaryIncrement,
   columnsSeparation,
   columnsShiftChange,
+  columnTransferPromotion,
 } from "./utils";
 import ApprovalModel from "./ApprovalModel";
 import ViewFormComponent from "./utils/ViewFormComponent";
+import { getFilteredValues } from "./filterValues";
+import { SearchOutlined } from "@mui/icons-material";
+import { debounce } from "lodash";
 
 const CommonApprovalComponent = () => {
+  // redux
+  const { orgId, employeeId, wId, buId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+  const isFirstRun = useRef(true);
   // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
   const dispatch = useDispatch();
-
+  const [searchTerm, setSearchTerm] = useState("");
   // state
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
@@ -55,26 +67,69 @@ const CommonApprovalComponent = () => {
   const [modalAction, setModalAction] = useState(null);
   const [selectedRow, setSelectedRow] = useState([]);
   const [viewModal, setViewModal] = useState(false);
+  const [filterData, setFilterData] = useState({});
+  const [page, setpage] = useState({ pageSize: 25, pageNo: 1 });
+  const [totalRecords, setTotalRecords] = useState(0);
 
-  // redux
-  const { orgId, employeeId, wId, buId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const [filteredWId, setFilteredWId] = useState(wId);
+  const [filteredWgId, setFilteredWgId] = useState(wgId);
 
-  // fetch data
   useEffect(() => {
+    const { workplace, workplaceGroup } = getFilteredValues({}, wId, wgId);
+
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      setFilteredWId(workplace);
+      setFilteredWgId(workplaceGroup);
+    }
+  }, [wId, wgId]);
+
+  useEffect(() => {
+    const fetchData = debounce(() => {
+      fetchPendingApprovals({
+        id,
+        setLoading,
+        orgId,
+        buId,
+        wgId: filteredWgId,
+        wId: filteredWId,
+        employeeId,
+        setData,
+        setTotalRecords,
+        departmentId: filterData?.department?.value || 0,
+        designationId: filterData?.designation?.value || 0,
+        searchText: searchTerm,
+        page,
+      });
+    }, 300);
+
+    fetchData();
+    return () => fetchData.cancel(); // Cleanup on unmount
+  }, [filteredWgId, filteredWId, page]);
+
+  // Handle filter logic
+  const handleFilter = (values) => {
+    setFilterData(values);
+    const { workplaceGroup, workplace } = getFilteredValues(values, wId, wgId);
+    setFilteredWId(workplace);
+    setFilteredWgId(workplaceGroup);
+
     fetchPendingApprovals({
       id,
       setLoading,
       orgId,
       buId,
-      wgId,
-      wId,
+      wgId: workplaceGroup,
+      wId: workplace,
       employeeId,
       setData,
+      setTotalRecords,
+      departmentId: values?.department?.value || 0,
+      designationId: values?.designation?.value || 0,
+      searchText: searchTerm,
+      page
     });
-  }, [id, wgId, wId]);
+  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
@@ -83,21 +138,6 @@ const CommonApprovalComponent = () => {
       document.title = "";
     };
   }, []);
-
-  // handle filter
-  const handleFilter = (values) => {
-    const { workplace, workplaceGroup } = values;
-    fetchPendingApprovals({
-      id,
-      setLoading,
-      orgId,
-      buId,
-      wgId: workplaceGroup?.value || wgId,
-      wId: workplace?.value || wId,
-      employeeId,
-      setData,
-    });
-  };
 
   // handle approve or reject
   const handleApproveReject = async (isApprove) => {
@@ -110,6 +150,7 @@ const CommonApprovalComponent = () => {
         isApprove,
         isReject: !isApprove,
         actionBy: employeeId,
+        applicationTypeId: id || 0,
       };
     });
 
@@ -123,10 +164,15 @@ const CommonApprovalComponent = () => {
         setLoading,
         orgId,
         buId,
-        wgId,
-        wId,
+        wgId: filteredWgId,
+        wId: filteredWId,
         employeeId,
         setData,
+        setTotalRecords,
+        departmentId: filterData?.department?.value || 0,
+        designationId: filterData?.designation?.value || 0,
+        searchText: searchTerm,
+        page,
       });
       setSelectedRow([]);
     } catch (error) {
@@ -156,6 +202,22 @@ const CommonApprovalComponent = () => {
 
   // for view Modal
   const handleViewClose = () => setViewModal(false);
+  const handleSearch = debounce((value) => {
+    fetchPendingApprovals({
+      id,
+      setLoading,
+      orgId,
+      buId,
+      wgId: filteredWgId,
+      wId: filteredWId,
+      employeeId,
+      setData,
+      setTotalRecords,
+      departmentId: filterData?.department?.value || 0,
+      designationId: filterData?.designation?.value,
+      searchText: value,
+    });
+  }, 300);
 
   // render
   return (
@@ -163,29 +225,47 @@ const CommonApprovalComponent = () => {
       <div className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center">
           <BackButton title={`${state?.state?.applicationType} Approval`} />
-          {selectedRow?.length > 0 ? (
+          {selectedRow?.length > 0 && (
             <ApproveRejectComp
               props={{
                 className: "ml-3",
-                onApprove: () => {
-                  showConfirmationModal("approve");
-                },
-                onReject: () => {
-                  showConfirmationModal("reject");
-                },
+                onApprove: () => showConfirmationModal("approve"),
+                onReject: () => showConfirmationModal("reject"),
               }}
             />
-          ) : null}
+          )}
         </div>
-        <CommonFilter
-          visible={isFilterVisible}
-          onClose={(visible) => setIsFilterVisible(visible)}
-          onFilter={handleFilter}
-          isDate={true}
-          isWorkplaceGroup={true}
-          isWorkplace={true}
-          isAllValue={true}
-        />
+
+        <div className="d-flex align-items-center gap-3">
+          <Input
+            placeholder="Search..."
+            prefix={<SearchOutlined />}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }}
+            style={{
+              width: 300,
+              marginRight: 10,
+              borderRadius: 5,
+              marginBottom: 5,
+            }}
+          />
+
+          <CommonFilter
+            visible={isFilterVisible}
+            onClose={(visible) => setIsFilterVisible(visible)}
+            onFilter={handleFilter}
+            isDate={false}
+            isWorkplaceGroup={true}
+            isWorkplace={true}
+            isDepartment={true}
+            isDesignation={true}
+            isEmployee={true}
+            isAllValue={true}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -209,9 +289,9 @@ const CommonApprovalComponent = () => {
               : id == 4
               ? columnIncrement
               : id == 11
-              ? columnsManual
+              ? columnsManual(page)
               : id == 14
-              ? columnsMovement
+              ? columnsMovement(page)
               : id == 21
               ? columnsSeparation(setViewData, setViewModal)
               : id == 26
@@ -246,10 +326,29 @@ const CommonApprovalComponent = () => {
               ? columnDeposit
               : id == 18
               ? columnAdditionDeduction
+              : id == 24
+              ? columnTransferPromotion
+              : id == 20
+              ? columnSalaryGenerate
+              : id == 30
+              ? columnFinalSettlement
+              : id == 29
+              ? columnsSeparation(setViewData, setViewModal)
               : columnsDefault
           }
           bordered
           data={data.map((item) => ({ ...item, key: item.id }))}
+          pagination={{
+            pageSize: page.pageSize,
+            current: page.pageNo,
+            total: totalRecords,
+            showSizeChanger: true,
+            onChange: (pageNo, pageSize) => {
+              setpage({ pageNo, pageSize });
+            },
+            showTotal: (total, range) =>
+              `Showing ${range[0]}-${range[1]} of ${total} items`,
+          }}
         />
       )}
 
@@ -270,7 +369,7 @@ const CommonApprovalComponent = () => {
           classes: "default-modal",
           handleOpen,
           viewData,
-          setViewData
+          setViewData,
         }}
       />
     </div>

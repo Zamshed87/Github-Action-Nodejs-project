@@ -1,3 +1,5 @@
+import { DefaultOptionType } from "antd/lib/select";
+
 export const EmpFilterType = [
   {
     label: "Monthly Basis",
@@ -8,7 +10,7 @@ export const EmpFilterType = [
     value: 2,
   },
 ];
-export const AttendanceType = [
+export const AttendanceType = (intAccountId: number): DefaultOptionType[] => [
   {
     value: 1,
     label: "Present",
@@ -24,9 +26,13 @@ export const AttendanceType = [
     label: "Late",
     code: "late",
   },
-  {
-    value: 4,
-    label: "Changed In/Out Time", // label name depend on the requirement
-    code: "Changed In/Out Time", // code name depend on the requirement
-  },
+  ...(intAccountId !== 5
+    ? [
+        {
+          value: 4,
+          label: "Changed In/Out Time",
+          code: "Changed In/Out Time",
+        },
+      ]
+    : []),
 ];
