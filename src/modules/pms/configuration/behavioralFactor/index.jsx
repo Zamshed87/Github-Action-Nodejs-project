@@ -1,60 +1,129 @@
-import { Box, Tab, Tabs } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { DataTable, Flex, PForm } from "Components";
+import { PModal } from "Components/Modal";
+import { Form, Tooltip } from "antd";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { useEffect, useMemo, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-// import CoreCompetencies from "./coreCompetencies";
-// import CoreValues from "./coreValues";
-import Questionaires from "./questionaires";
-import TabPanel, { a11yProps } from "./tabpanel";
-import BscBehavioralFactor from "./bscBehavioralFactor";
+import { levelOfLeaderApiCall } from "../evaluationCriteria/helper";
+import Clone from "./Clone";
+import usePermissions from "Hooks/usePermissions";
+// import CreateEdit from "./createEdit";
 
 const BehavioralFactor = () => {
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  // 30470
+  const [levelofLeaderShip, setLevelofLeaderShip] = useState([]);
+  const [behavioralFactorCloneModal, setBehavioralFactorCloneModal] =
+    useState(false);
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
+  const { permission, buId, wgId, wId, orgId, intAccountId, profileData } =
+    usePermissions(30469);
+
+  // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
   const dispatch = useDispatch();
+  const history = useHistory();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
+    levelOfLeaderApiCall(
+      profileData?.intAccountId,
+      setLevelofLeaderShip,
+      setLoading
+    ); // Call the API
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return (
+
+  const evaluationCriteriaHeader = [
+    {
+      title: "SL",
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: "Leadership Position",
+      dataIndex: "label",
+    },
+    {
+      title: "Action",
+      dataIndex: "letterGenerateId",
+      render: (generateId, rec) => (
+        <Flex justify="left" gap={10}>
+          <Tooltip placement="bottom" title={"Add Questionnaires"}>
+            <button
+              style={{
+                height: "22px",
+                fontSize: "12px",
+                padding: "0px 12px 0px 12px",
+                marginRight: "5px",
+              }}
+              className="btn btn-default"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                history.push(`/pms/configuration/BehavioralFactor/create`, {
+                  data: rec,
+                });
+              }}
+            >
+              Add Questionnaires
+            </button>
+          </Tooltip>
+          <Tooltip placement="bottom" title={"Clone"}>
+            <button
+              style={{
+                height: "22px",
+                fontSize: "12px",
+                padding: "0px 12px 0px 12px",
+              }}
+              className="btn btn-secondary"
+              type="button"
+              onClick={(e) => {
+                setData(rec);
+                e.stopPropagation();
+                setBehavioralFactorCloneModal(true);
+              }}
+            >
+              Clone
+            </button>
+          </Tooltip>
+        </Flex>
+      ),
+      width: "40%",
+      align: "center",
+    },
+  ];
+
+  return permission?.isView ? (
     <div className="table-card">
-      <div className="tab-panel">
-        <Box sx={{ width: "100%" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-            TabIndicatorProps={{
-              style: { background: "#299647", height: 3 },
-            }}
-          >
-            <Tab label="BSC" {...a11yProps(0)} />
-            <Tab label="360" {...a11yProps(1)} />
-            {/* <Tab label="BSC Core Values" {...a11yProps(0)} />
-            <Tab label="BSC Core Competencies" {...a11yProps(1)} />
-            <Tab label="360 Questionaire" {...a11yProps(2)} /> */}
-          </Tabs>
-          <TabPanel value={value} index={0}>
-            <BscBehavioralFactor />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <Questionaires />
-          </TabPanel>
-          {/* <TabPanel value={value} index={0}>
-            <CoreValues />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <CoreCompetencies />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <Questionaires />
-          </TabPanel> */}
-        </Box>
-      </div>
+      <PForm form={form}>
+        {loading && <Loading />}
+        <div className="mt-2">
+          <DataTable
+            bordered
+            data={levelofLeaderShip || []}
+            header={evaluationCriteriaHeader}
+          />
+        </div>
+        <PModal
+          title="Behavioral Factor Clone"
+          open={behavioralFactorCloneModal}
+          onCancel={() => {
+            setBehavioralFactorCloneModal(false);
+          }}
+          components={
+            <Clone
+              data={data}
+              isScoreSettings={behavioralFactorCloneModal}
+              setIsScoreSettings={setBehavioralFactorCloneModal}
+            />
+          }
+          width={1000}
+        />
+      </PForm>
     </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 
