@@ -3,16 +3,25 @@ import { useParams } from "react-router-dom";
 import { Card, Divider, Spin, Alert } from "antd";
 import { useApiRequest } from "Hooks"; // Adjust the import path as needed
 import { DataTable, PCard, PCardHeader } from "Components";
+import { useDispatch } from "react-redux";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 export const LeavePolicyDetails = () => {
   const { id: policyId }: any = useParams();
   const detailsApi = useApiRequest({});
   const enumApi = useApiRequest({});
   const policyApi = useApiRequest({});
+  const dispatch = useDispatch();
 
   const [sandWitchLanding, setSandWitchLanding] = useState<any>([]);
   const [landing, setLanding] = useState<any>([]);
-
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Leave Policy Details";
+    () => {
+      document.title = "PeopleDesk";
+    };
+  }, []);
   const getDependTypes = () => {
     enumApi?.action({
       urlKey: "GetEnums",
