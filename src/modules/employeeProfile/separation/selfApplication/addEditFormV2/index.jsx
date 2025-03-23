@@ -4,7 +4,7 @@ import { IconButton } from "@mui/material";
 import BackButton from "common/BackButton";
 import DefaultInput from "common/DefaultInput";
 import FormikSelect from "common/FormikSelect";
-import { getPeopleDeskAllDDL, multiple_attachment_actions } from "common/api";
+import { multiple_attachment_actions } from "common/api";
 import Loading from "common/loading/Loading";
 import FormikError from "common/login/FormikError";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatterForInput } from "utility/dateFormatter";
 import { customStyles } from "utility/selectCustomStyle";
@@ -27,7 +27,7 @@ import {
 const initData = {
   separationType: "",
   applicationDate: todayDate(),
-  lastWorkingDay: "",
+  lastWorkingDay: todayDate(),
   applicationBody: "",
 };
 
@@ -57,6 +57,8 @@ export default function SelfServiceSeparationForm() {
   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
     useAxiosGet();
+  const [, getseparationTypeDDL] = useAxiosGet();
+  const history = useHistory();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -67,12 +69,13 @@ export default function SelfServiceSeparationForm() {
   };
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
-      "SeparationTypeId",
-      "SeparationType",
-      setSeparationTypeDDL
-    );
+    getseparationTypeDDL(`/SeparationType/GetSeparationTypeForESS`, (res) => {
+      const newDDL = res?.data?.map((itm) => ({
+        value: itm.value,
+        label: itm.text,
+      }));
+      setSeparationTypeDDL(newDDL);
+    });
   }, [wgId, buId, wId]);
 
   const getEmpSeparationDataHandlerById = () => {
@@ -144,7 +147,9 @@ export default function SelfServiceSeparationForm() {
       ? imageFile?.map((image) => image?.globalFileUrlId)
       : [];
 
-    const modifyAttachmentList = imgRow?.map((image) => +image);
+    const modifyAttachmentList = editImageRow?.map(
+      (image) => +image?.globalFileUrlId
+    );
 
     let payload = {
       intEmployeeId: employeeId,
@@ -216,6 +221,7 @@ export default function SelfServiceSeparationForm() {
         } else {
           resetForm(initData);
         }
+        history.push("/SelfService/separation/applicationV2");
       });
     },
   });
@@ -286,11 +292,11 @@ export default function SelfServiceSeparationForm() {
                         type="date"
                         className="form-control"
                         onChange={(e) => {
-                          setFieldValue("lastWorkingDay", "");
                           setFieldValue("applicationDate", e.target.value);
                         }}
                         errors={errors}
                         touched={touched}
+                        disabled={true}
                       />
                     </div>
                   </div>
@@ -313,9 +319,6 @@ export default function SelfServiceSeparationForm() {
                         className="form-control"
                         errors={errors}
                         touched={touched}
-                        disabled={
-                          !values?.applicationDate || !values?.separationType
-                        }
                       />
                     </div>
                   </div>
@@ -340,7 +343,7 @@ export default function SelfServiceSeparationForm() {
                               .then((data) => {
                                 setImageFile(data);
                               })
-                              .catch((error) => {
+                              .catch(() => {
                                 setImageFile([]);
                               });
                           }

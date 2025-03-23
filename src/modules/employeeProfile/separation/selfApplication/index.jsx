@@ -40,7 +40,7 @@ export default function SelfSeparation() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -48,7 +48,6 @@ export default function SelfSeparation() {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
-  const [, setAllData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [id, setId] = useState(null);
 
@@ -293,24 +292,38 @@ const empSeparationDtoCol = (dispatch, history, setOpenModal, setId) => {
       render: (_, item) => {
         return (
           <div>
-            {item?.approvalStatus === "Approve" && (
-              <Chips label="Approved" classess="success p-2" />
-            )}
             {item?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.approvalStatus === "Process" && (
-              <Chips label="Process" classess="primary p-2" />
+            {item?.approvalStatus === "Cancelled" && (
+              <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {item?.approvalStatus === "Reject" && (
-              <>
-                <Chips label="Rejected" classess="danger p-2 mr-2" />
-              </>
+            {item?.approvalStatus === "Approved" && (
+              <Chips label="Approved" classess="success p-2" />
+            )}
+            {item?.approvalStatus === "Withdrawn" && (
+              <Chips label="Withdrawn" classess="danger p-2" />
+            )}
+            {item?.approvalStatus === "Clearance" && (
+              <Chips label="Clearance" classess="info p-2" />
+            )}
+            {item?.approvalStatus === "Clearance Running" && (
+              <Chips label="Clearance Running" classess="warning p-2" />
+            )}
+            {item?.approvalStatus === "Clearance Completed" && (
+              <Chips label="Clearance Completed" classess="success p-2" />
+            )}
+            {item?.approvalStatus === "Final Settlement Completed" && (
+              <Chips
+                label="Final Settlement Completed"
+                classess="success p-2"
+              />
             )}
             {item?.approvalStatus === "Released" && (
-              <>
-                <Chips label="Released" classess="p-2 mr-2" />
-              </>
+              <Chips label="Released" classess="indigo p-2" />
+            )}
+            {item?.approvalStatus === "Rejected" && (
+              <Chips label="Rejected" classess="danger p-2" />
             )}
           </div>
         );

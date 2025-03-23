@@ -363,6 +363,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                     form.setFieldsValue({
                       payScale: option,
                     });
+                    form.resetFields(["workplace"])
                     getWorkplaceDDL(
                       orgId,
                       buId,

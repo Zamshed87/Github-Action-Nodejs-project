@@ -311,11 +311,9 @@ const ContactClosingReport = () => {
   }, 500);
   const disabledToDate: RangePickerProps["disabledDate"] = (current) => {
     const { contractFromDate } = form.getFieldsValue(true);
-    console.log({ contractFromDate });
     const fromDateMoment = moment(singleData?.dteContactToDate, "MM/DD/YYYY");
     // Disable dates before fromDate and after next3daysForEmp
     // console.log({ singleData });
-    console.log({ fromDateMoment });
 
     return (
       current && current < moment(singleData?.dteContactToDate).startOf("day")
