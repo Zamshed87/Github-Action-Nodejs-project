@@ -72,10 +72,10 @@ const MasterDashboardLanding = () => {
       {loading && <Loading />}
       <div className="table-card">
         <div
-          className="d-flex justify-content-between align-items-center"
+          className="d-flex justify-flex-start align-items-center"
           style={{ marginBottom: "4px" }}
         >
-          <div>
+          <div style={{ width: "42%" }}>
             <h4
               className="employee-self-dashboard-employee-name"
               style={{ color: gray500, fontSize: "1rem" }}
