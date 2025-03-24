@@ -21,7 +21,7 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
       <DataTable
         header={getBarHeader(
           details?.barDetails?.length,
-          details?.totalBARScoreByScale,
+          details?.stakeholderTypeTotalBARScoreByScale,
           history,
           details
         )}
@@ -49,7 +49,7 @@ const BehaviorallyAnchoredRatingBARDetails = ({ details }) => {
               );
             })}
             <Table.Summary.Cell align="center">
-              {details?.totalBARScoreByScale}
+              {details?.stakeholderTypeTotalBARScoreByScale}
             </Table.Summary.Cell>
           </Table.Summary.Row>
         )}

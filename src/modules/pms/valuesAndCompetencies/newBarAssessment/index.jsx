@@ -20,7 +20,8 @@ const BarAssessmentLanding = () => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-
+  const firstSegment = location.pathname.split("/")[1];
+  const selfService = firstSegment === "SelfService";
   const {
     permissionList,
     profileData: { buId, wgId, wId },
@@ -39,10 +40,9 @@ const BarAssessmentLanding = () => {
   });
 
   useEffect(() => {
-    const firstSegment = location.pathname.split("/")[1];
     dispatch(
       setFirstLevelNameAction(
-        firstSegment === "SelfService"
+        selfService
           ? "Employee Self Service"
           : "Performance Management System"
       )
@@ -66,6 +66,7 @@ const BarAssessmentLanding = () => {
           assessmentPeriod: values?.assessmentPeriod?.value,
           assessmentTime: values?.assessmentTime?.value,
           pages,
+          isSelfService:selfService
         });
       }}
     >
@@ -106,6 +107,7 @@ const BarAssessmentLanding = () => {
                 assessmentPeriod: assessmentPeriod?.value,
                 assessmentTime: assessmentTime?.value,
                 pages: pagination,
+                isSelfService:selfService
               });
               setPages(pagination);
             }
