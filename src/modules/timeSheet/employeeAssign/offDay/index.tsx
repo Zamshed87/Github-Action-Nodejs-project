@@ -447,7 +447,6 @@ export const OffDayLanding = () => {
                     (i: any) => i?.employeeId
                   );
                   setIsAssignAll(false);
-                  setSingleData([]);
 
                   setEmpIDString(payload);
 
