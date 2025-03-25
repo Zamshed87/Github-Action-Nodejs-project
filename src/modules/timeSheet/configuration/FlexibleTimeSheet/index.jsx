@@ -58,7 +58,6 @@ const MonthlyAttendanceReport = () => {
   // Form Instance
   const [form] = Form.useForm();
   //   api states
-  // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     document.title = "Flexible Timesheet";
@@ -67,28 +66,35 @@ const MonthlyAttendanceReport = () => {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const apiRequest = (url, params, successCallback) => {
+    landingApi.action({
+      urlKey: url,
+      method: "GET",
+      params: params,
+      onSuccess: successCallback,
+    });
+  };
+
   // api states
   const empDepartmentDDL = useApiRequest([]);
 
   const getEmployeDepartment = () => {
-    empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
+    apiRequest(
+      "PeopleDeskAllDDL",
+      {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId || 0,
         IntWorkplaceId: wId || 0,
         intId: 0,
       },
-      onSuccess: (res) => {
+      (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.DepartmentName;
           res[i].value = item?.DepartmentId;
         });
-      },
-    });
+      }
+    );
   };
 
   const CommonCalendarDDL = useApiRequest([]);
@@ -174,23 +180,22 @@ const MonthlyAttendanceReport = () => {
   }, [landingApi?.data]);
 
   const getCalendarDDL = () => {
-    CommonCalendarDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
+    apiRequest(
+      "PeopleDeskAllDDL",
+      {
         DDLType: "Calender",
         IntWorkplaceId: wId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        intId: 0, // employeeId, Previously set 0
+        intId: 0,
       },
-      onSuccess: (res) => {
+      (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.CalenderName;
           res[i].value = item?.CalenderId;
         });
-      },
-    });
+      }
+    );
   };
   useEffect(() => {
     if (wId) {
@@ -220,12 +225,8 @@ const MonthlyAttendanceReport = () => {
     });
 
     timeSheetSave(payload, setLoading, () => {});
-    // console.log(payload, "payload");
   };
-  {
-    console.log("rowDto", rowDto);
-  }
-  console.log("startingCalenderDDL", startingCalenderDDL);
+
   const dateColumns = headerDateList?.dateLists?.map((date, idx) => ({
     title: date?.level,
     dataIndex: date,
@@ -306,7 +307,7 @@ const MonthlyAttendanceReport = () => {
 
     setRowDto(data);
   };
-  //   table column
+
   const header = () => {
     return [
       {
@@ -321,17 +322,9 @@ const MonthlyAttendanceReport = () => {
           </Button>
         ),
         fixed: "left",
-        width: 80, // Adjust width as needed
+        width: 80,
         align: "center",
       },
-      // {
-      //   title: "SL",
-      //   render: (_, rec, index) =>
-      //     (pages?.current - 1) * pages?.pageSize + index + 1,
-      //   fixed: "left",
-      //   width: 45,
-      //   align: "center",
-      // },
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
@@ -376,11 +369,7 @@ const MonthlyAttendanceReport = () => {
 
         width: 100,
       },
-      // {
-      //   title: "Department",
-      //   dataIndex: "strDepartmentName",
-      //   width: 100,
-      // },
+
       {
         title: "Copy From (Emp ID)",
         width: 250,
@@ -470,12 +459,7 @@ const MonthlyAttendanceReport = () => {
       searchText: value,
     });
   }, 500);
-  // const disabledDate = (current) => {
-  //   const { fromDate } = form.getFieldsValue(true);
-  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //   // Disable dates before fromDate and after next3daysForEmp
-  //   return current && current < fromDateMoment.startOf("day");
-  // };
+
   return employeeFeature?.isView ? (
     <>
       {loading && <Loading />}

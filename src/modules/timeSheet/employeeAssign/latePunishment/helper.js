@@ -3,6 +3,7 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "common/peopleDeskTable/helper";
+import { useApiRequest } from "Hooks";
 import * as Yup from "yup";
 
 export const initHeaderList = {
@@ -12,6 +13,17 @@ export const initHeaderList = {
   hrPositionList: [],
   sectionList: [],
 };
+
+export const apiCall = (urlKey, payload, onSuccess) => {
+  const apiRequest = useApiRequest({});
+  apiRequest.action({
+    urlKey: urlKey,
+    method: "POST",
+    payload: payload,
+    onSuccess: onSuccess,
+  });
+};
+
 
 const getDataApiCall = async (
   modifiedPayload,
@@ -72,24 +84,11 @@ const getDataApiCall = async (
         setFilterOrderList,
         initialHeaderListData,
         setInitialHeaderListData,
-        // setEmpLanding,
         setPages,
       });
       setEmpIDString(res?.data?.employeeIdList);
 
-      //   const modifiedData = res?.data?.loaderDataList?.map((item, index) => ({
-      //     ...item,
-      //     initialSerialNumber: index + 1,
-      //     isSelected: false,
-      //     // isSelected: checkedList?.find(
-      //     //   ({ employeeCode }) => item?.employeeCode === employeeCode
-      //     // )
-      //     //   ? true
-      //     //   : false,
-      //   }));
-      //   console.log({ modifiedData });
       setRowDto(res?.data?.loaderDataList);
-      //   setCheckedList?.([]);
 
       setLandingLoading(false);
     } else {
@@ -295,16 +294,6 @@ export const columns = (
         return (
           <div className="d-flex align-items-center">
             <span className="ml-2">{record?.employeeName}</span>
-            {/* <InfoOutlined
-                style={{ cursor: "pointer" }}
-                className="ml-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSingleShiftData([]);
-                  getShiftInfo(record?.employeeId, setSingleShiftData);
-                  setAnchorEl2(e.currentTarget);
-                }}
-              /> */}
           </div>
         );
       },
