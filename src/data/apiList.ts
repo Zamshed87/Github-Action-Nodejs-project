@@ -338,4 +338,5 @@ export const apiList = {
   LeavePolicyDeleteById: "/LeavePolicy/DeleteById",
   LeaveBalanceReport: "PdfAndExcelReport/LeaveBalanceReport",
   GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
+  OffdayLandingFilter: "/Employee/OffdayLandingFilter",
 };

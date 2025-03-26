@@ -1507,12 +1507,6 @@ const UnderCreateRosterSetup = lazy(() =>
 const LeavePolicyAssign = lazy(() =>
   import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
-// const HolidayException = lazy(() =>
-//   import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
-// );
-const OffDay = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/offDay/index.jsx")
-);
 const MonthlyOffdayAssignLanding = lazy(() =>
   import("../modules/timeSheet/employeeAssign/monthlyOffdayAssign/index.js")
 );
@@ -1619,6 +1613,7 @@ import InterViewModal from "modules/employeeProfile/separation/selfApplication/v
 import { CalendarAssignSelfService } from "modules/empSelfService/supervisor/calendar";
 import OffDaySelfService from "modules/empSelfService/supervisor/offDay";
 import MonthlyOffdayAssignLandingSelfService from "modules/empSelfService/supervisor/monthlyOffdayAssign";
+import { OffDayLanding } from "modules/timeSheet/employeeAssign/offDay";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2317,7 +2312,7 @@ export const routingList = [
   },
   {
     path: "/administration/timeManagement/offDayAssign",
-    component: OffDay,
+    component: OffDayLanding,
   },
   {
     path: "/administration/timeManagement/monthlyOffdayAssign",

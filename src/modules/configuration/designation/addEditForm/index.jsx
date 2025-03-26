@@ -247,9 +247,6 @@ export default function AddEditForm({
                   levelOfLeader: op,
                 });
               }}
-              rules={[
-                { required: true, message: "Level of Leadership is required" },
-              ]}
             />
           </Col>
         </Row>
