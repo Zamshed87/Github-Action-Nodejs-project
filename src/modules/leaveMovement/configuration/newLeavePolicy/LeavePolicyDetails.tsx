@@ -191,12 +191,18 @@ export const LeavePolicyDetails = () => {
     {
       title: "Consume Hour",
       render: (_: any, rec: any) =>
-        `${rec?.minimumConsumeHour}-${rec?.maximumConsumeHour}`,
+        rec?.leaveConsumeType === "Full Day"
+          ? "Not Applicable"
+          : `${rec?.minimumConsumeHour}-${rec?.maximumConsumeHour}`,
       width: 100,
     },
     {
       title: "Standard Working Hour",
       dataIndex: "standardWorkingHour",
+      render: (_: any, rec: any) =>
+        rec?.leaveConsumeType === "Full Day"
+          ? "Not Applicable"
+          : `${rec?.standardWorkingHour}`,
       width: 100,
     },
   ];

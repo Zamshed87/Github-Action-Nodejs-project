@@ -1507,10 +1507,6 @@ const UnderCreateRosterSetup = lazy(() =>
 const LeavePolicyAssign = lazy(() =>
   import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
-
-// const OffDay = lazy(() =>
-//   import("../modules/timeSheet/employeeAssign/offDay/index.tsx")
-// );
 const MonthlyOffdayAssignLanding = lazy(() =>
   import("../modules/timeSheet/employeeAssign/monthlyOffdayAssign/index.js")
 );

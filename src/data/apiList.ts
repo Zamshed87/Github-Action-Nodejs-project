@@ -323,7 +323,6 @@ export const apiList = {
   CreateLeavePolicy: "/LeavePolicy/Create",
   GetPolicyName: "LeavePolicy/Get",
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
-  OffdayLandingFilter: "/Employee/OffdayLandingFilter",
   GetEnums: "/Enum/GetEnums",
   GetPolicyLanding: "LeavePolicy/Get",
   GetById: "LeavePolicy/GetById",
@@ -339,4 +338,5 @@ export const apiList = {
   LeavePolicyDeleteById: "/LeavePolicy/DeleteById",
   LeaveBalanceReport: "PdfAndExcelReport/LeaveBalanceReport",
   GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
+  OffdayLandingFilter: "/Employee/OffdayLandingFilter",
 };
