@@ -13,17 +13,17 @@ const SupervisorAssessmentNew = lazy(() =>
 const SupervisorAssessment = lazy(() =>
   import("../modules/pms/valuesAndCompetencies/supervisorAssessment/index.jsx")
 );
-const BarAssesment = lazy(() =>
-  import("../modules/pms/valuesAndCompetencies/barAssesment/index.jsx")
+const BarAssessment = lazy(() =>
+  import("../modules/pms/valuesAndCompetencies/newBarAssessment/index.jsx")
 );
 const BarAssessmentEvaluationForSupervisor = lazy(() =>
   import(
     "../modules/pms/performanceAssessment/supervisorAssessment/barAssessmentEvaluationForSupervisor.jsx"
   )
 );
-const BarAssesmentEvaluation = lazy(() =>
+const BarAssessmentEvaluation = lazy(() =>
   import(
-    "../modules/pms/valuesAndCompetencies/barAssesment/evaluation/index.jsx"
+    "../modules/pms/valuesAndCompetencies/newBarAssessment/evaluation/index.jsx"
   )
 );
 const SelfAssessmentNew = lazy(() =>
@@ -200,6 +200,12 @@ const PerformanceMarking = lazy(() =>
 );
 const KpiTargetMismatchReport = lazy(() =>
   import("../modules/pms/report/kpiTargetMismatchReport/index.jsx")
+);
+const YearlyPerformanceReport = lazy(() =>
+  import("../modules/pms/report/yearlyPerformanceReport/index.jsx")
+);
+const PerformanceAppraisalReport = lazy(() =>
+  import("../modules/pms/report/performanceAppraisalReport/index.jsx")
 );
 const IndividualKpi = lazy(() => import("../modules/pms/indKpi/index.jsx"));
 const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
@@ -3966,6 +3972,14 @@ export const routingList = [
     component: KpiTargetMismatchReport,
   },
   {
+    path: "/pms/reports/YearlyPerformanceReport",
+    component: YearlyPerformanceReport,
+  },
+  {
+    path: "/pms/reports/PerformanceAppraisalReport",
+    component: PerformanceAppraisalReport,
+  },
+  {
     path: "/performancemanagementsystem/pms/strategicplan",
     component: StrPlan,
   },
@@ -4054,12 +4068,16 @@ export const routingList = [
     component: BarAssessmentEvaluationForSupervisor,
   },
   {
-    path: "/pms/performanceAssessment/BARAssessment/evaluation/:id/:yearId/:quarterId",
-    component: BarAssesmentEvaluation,
+    path: "/pms/performanceAssessment/BARAssessment/evaluation/:employeeId/:yearId",
+    component: BarAssessmentEvaluation,
   },
   {
     path: "/pms/performanceAssessment/BARAssessment",
-    component: BarAssesment,
+    component: BarAssessment,
+  },
+  {
+    path: "/SelfService/BARAssessment",
+    component: BarAssessment,
   },
   // {
   //   path: "/pms/valuesAndCompetencies/supervisorAssessment",
