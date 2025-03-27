@@ -21,7 +21,7 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
       <DataTable
         header={getHeader(
           details?.kpiDetails?.length,
-          details?.totalKPIScoreByScale,
+          details?.stakeholderTypeTotalKPIScoreByScale,
           history,
           details
         )}
@@ -29,7 +29,7 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
         data={details?.kpiDetails || []}
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell colSpan={3} align="end">
+            <Table.Summary.Cell colSpan={4} align="end">
               Total
             </Table.Summary.Cell>
             <Table.Summary.Cell align="center">
@@ -49,10 +49,7 @@ const KeyPerformanceIndicatorDetails = ({ details }) => {
               );
             })}
             <Table.Summary.Cell align="center">
-              {details?.kpiTotal?.avgKPIScore}
-            </Table.Summary.Cell>
-            <Table.Summary.Cell align="center">
-              {details?.totalKPIScoreByScale}
+              {details?.stakeholderTypeTotalKPIScoreByScale}
             </Table.Summary.Cell>
           </Table.Summary.Row>
         )}
