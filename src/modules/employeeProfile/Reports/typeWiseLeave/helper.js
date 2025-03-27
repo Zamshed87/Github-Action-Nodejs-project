@@ -18,6 +18,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 
 export const getTypeWiseLeaveReport = async (
   wgId,
+  buId,
   setter,
   values,
   setLoading
@@ -28,7 +29,9 @@ export const getTypeWiseLeaveReport = async (
   const leaveList = values?.leaveType?.map((leave) => leave.value).join(",");
 
   try {
-    let apiUrl = `/LeaveMovement/TypeWiseLeaveReport?BusinessUnitId=1&WorkplaceGroupId=${wgId}&EmployeeId=${values?.employeeName?.value || 0}&LeaveTypeId=${leaveList || 0}&YearId=${values?.year?.value || 0}`;
+    let apiUrl = `/LeaveMovement/TypeWiseLeaveReport?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&EmployeeId=${
+      values?.employeeName?.value || 0
+    }&LeaveTypeId=${leaveList || 0}&YearId=${values?.year?.value || 0}`;
 
     const res = await axios.get(apiUrl);
 
