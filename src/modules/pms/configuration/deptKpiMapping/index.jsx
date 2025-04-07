@@ -17,6 +17,7 @@ import AntTable from "../../../../common/AntTable";
 import ResetButton from "../../../../common/ResetButton";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import AntScrollTable from "../../../../common/AntScrollTable";
+import BackButton from "common/BackButton";
 
 const DeptKpiMapping = () => {
   const [pages, setPages] = useState({
@@ -61,7 +62,7 @@ const DeptKpiMapping = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30465),
+    () => permissionList.find((item) => item?.menuReferenceId === 30462),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -85,7 +86,7 @@ const DeptKpiMapping = () => {
       {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading justify-content-between">
-            <h2>Departmental KPI Mapping</h2>
+            <BackButton title={"Departmental KPI Mapping"} />
             <ul className="d-flex flex-wrap">
               {search ? (
                 <ResetButton

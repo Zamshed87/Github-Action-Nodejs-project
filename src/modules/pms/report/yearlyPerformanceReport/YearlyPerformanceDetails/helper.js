@@ -1,6 +1,6 @@
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
-export const getHeader = (length, totalKPIScoreByScale, history, data) => {
+export const getHeader = (length, stakeholderTypeTotalKPIScoreByScale, history, data) => {
   let result = [
     {
       title: "Objective Type",
@@ -96,7 +96,7 @@ export const getHeader = (length, totalKPIScoreByScale, history, data) => {
         return { rowSpan: 0 };
       },
       render: (_, index) => {
-        return totalKPIScoreByScale ?? "";
+        return stakeholderTypeTotalKPIScoreByScale ?? "";
       },
       width: 70,
       align: "center",
@@ -105,7 +105,7 @@ export const getHeader = (length, totalKPIScoreByScale, history, data) => {
   return result;
 };
 
-export const getBarHeader = (length, totalBARScoreByScale, history, data) => {
+export const getBarHeader = (length, stakeholderTypeTotalBARScoreByScale, history, data) => {
   let result = [
     {
       title: "Question Group Name",
@@ -189,7 +189,7 @@ export const getBarHeader = (length, totalBARScoreByScale, history, data) => {
         return { rowSpan: 0 };
       },
       render: (_, index) => {
-        return totalBARScoreByScale ?? "";
+        return stakeholderTypeTotalBARScoreByScale ?? "";
       },
       width: 70,
       align: "center",

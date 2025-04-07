@@ -70,7 +70,7 @@ const EmMovementHistory = () => {
   });
 
   const getData = () => {
-    getTypeWiseLeaveReport(wgId, setRowDto, "", setLoading);
+    getTypeWiseLeaveReport(wgId, buId, setRowDto, "", setLoading);
   };
 
   const handleChangePage = (_, newPage, searchText) => {
@@ -113,7 +113,7 @@ const EmMovementHistory = () => {
   }, [buId, wgId, wId]);
 
   useEffect(() => {
-    getTypeWiseLeaveReport(wgId, setRowDto, "", setLoading);
+    getTypeWiseLeaveReport(wgId, buId, setRowDto, "", setLoading);
   }, [buId, wgId, wId]);
 
   const columns = (page, paginationSize) => {
@@ -315,6 +315,7 @@ const EmMovementHistory = () => {
                                 setFieldValue("search", "");
                                 getTypeWiseLeaveReport(
                                   wgId,
+                                  buId,
                                   setRowDto,
                                   values,
                                   setLoading
@@ -441,6 +442,7 @@ const EmMovementHistory = () => {
                               onClick={() => {
                                 getTypeWiseLeaveReport(
                                   wgId,
+                                  buId,
                                   setRowDto,
                                   values,
                                   setLoading

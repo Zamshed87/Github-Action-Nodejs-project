@@ -9,9 +9,10 @@ const useBarAssessmentLanding = ({ buId, wId, wgId }) => {
     assessmentTime,
     pages,
     search = "",
+    isSelfService=false,
   }) => {
     getData(
-      `/PMS/BARAssessmentLanding?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&Year=${year}&AssesmentPeriod=${assessmentPeriod ?? ""}&AssesmentTime=${assessmentTime ?? ""}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${search}`,
+      `/PMS/BARAssessmentLanding?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&Year=${year}&AssesmentPeriod=${assessmentPeriod ?? ""}&AssesmentTime=${assessmentTime ?? ""}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${search}&isSelfService=${isSelfService}`,
       (res) => {
         setData(res);
       }
