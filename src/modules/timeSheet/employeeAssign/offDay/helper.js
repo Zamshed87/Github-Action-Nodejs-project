@@ -451,6 +451,7 @@ export const crudOffDayAssign = async (
     }
     let commonObj = {
       ...values,
+      effectiveDate: moment(values?.effectiveDate).format("YYYY-MM-DD"),
       accountId: orgId,
       workplaceId: wId,
       businessUnitId: buId,
@@ -468,6 +469,7 @@ export const crudOffDayAssign = async (
         ...commonObj,
       };
     } else {
+      console.log({ empIDString, singleData });
       payload = {
         employeeList: isAssignAll ? empIDString : `${singleData?.employeeId}`,
         ...commonObj,
