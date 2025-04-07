@@ -342,6 +342,11 @@ export const bulkLandingTbCol = (
         record?.strToMonth ? `${record?.strToMonth} ${record?.intToYear}` : "",
     },
     {
+      title: "Is Auto Renew",
+      className: "text-start",
+      render: (text, record, index) => (record?.isAutoRenew ? `Yes` : "No"),
+    },
+    {
       title: "Type",
       sorter: false,
       filter: false,
