@@ -17,19 +17,22 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getSerial } from "Utils";
 import AddEditForm from "./component";
+import { apiCall } from "./helper";
 
 export const LatePunishmentAssign = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wId } = useSelector(
-    (state: any) => state?.auth?.profileData,
+  const { buId, wgId, wId, permissionList } = useSelector(
+    (state: any) => ({
+      buId: state?.auth?.profileData?.buId,
+      wgId: state?.auth?.profileData?.wgId,
+      wId: state?.auth?.profileData?.wId,
+      permissionList: state?.auth?.permissionList,
+    }),
     shallowEqual
   );
-  const { permissionList } = useSelector(
-    (state: any) => state?.auth,
-    shallowEqual
-  );
+
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
@@ -73,32 +76,25 @@ export const LatePunishmentAssign = () => {
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
-
       designationList: filerList?.designation || [],
       employmentTypeList: filerList?.employmentType || [],
       departmentList: filerList?.department || [],
       hrPositionList: filerList?.hrPosition || [],
       sectionList: filerList?.section || [],
     };
-    landingApi.action({
-      urlKey: "LatePunishmentPolicyAssignLoader",
-      method: "POST",
-      payload: payload,
-      onSuccess: (res: any) => {
-        setEmpIDString(res?.employeeIdList);
-      },
+    apiCall("LatePunishmentPolicyAssignLoader", payload, (res: any) => {
+      setEmpIDString(res?.employeeIdList);
     });
   };
-  // useEffects
-  // sidebar
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Late Punishment Assign";
     return () => {
       document.title = "Peopledesk";
     };
   }, []);
+
   useEffect(() => {
     landingApiCall();
   }, [wgId, wId]);
@@ -111,6 +107,20 @@ export const LatePunishmentAssign = () => {
       isNotAssign: values?.assigned?.value === 1 ? true : false,
     });
   }, 500);
+
+  const modalContent = (
+    <AddEditForm
+      getData={() => {
+        const values = form.getFieldsValue(true);
+        landingApiCall({
+          isNotAssign: values?.assigned?.value === 1 ? true : false,
+        });
+      }}
+      empIDString={empIDString}
+      setIsAddEditForm={setOpen}
+      setCheckedList={setSelectedRow}
+    />
+  );
 
   // Header
   const header = [
@@ -126,27 +136,6 @@ export const LatePunishmentAssign = () => {
       width: 15,
       align: "center",
     },
-
-    // {
-    //   title: "Work. Group/Location",
-    //   dataIndex: "strWorkplaceGroup",
-    //   sorter: true,
-    //   filter: true,
-    //   filterKey: "strWorkplaceGroupList",
-    //   filterSearch: true,
-    //   width: 60,
-    //   fixed: "left",
-    // },
-    // {
-    //   title: "Workplace/Concern",
-    //   dataIndex: "strWorkplace",
-    //   sorter: true,
-    //   filter: true,
-    //   filterKey: "strWorkplaceList",
-    //   filterSearch: true,
-    //   width: 55,
-    //   fixed: "left",
-    // },
 
     {
       title: "Employee Name",
@@ -238,7 +227,6 @@ export const LatePunishmentAssign = () => {
         <PCard>
           {landingApi?.loading && <Loading />}
           <PCardHeader
-            // exportIcon={true}
             title={`${
               selectedRow?.length > 0
                 ? `Total ${selectedRow?.length}
@@ -255,18 +243,11 @@ export const LatePunishmentAssign = () => {
                 search: e?.target?.value,
               });
             }}
-            // submitText="Create New"
-            // submitIcon={<AddOutlined />}
             buttonList={[
               {
                 type: "primary",
                 content: `Assign ${landingApi?.data?.totalCount}`,
                 onClick: () => {
-                  //   if (employeeFeature?.isCreate) {
-
-                  //   } else {
-                  //     // toast.warn("You don't have permission");
-                  //   }
                   setEmpIDString(landingApi?.data?.employeeIdList);
                   setOpen(true);
                 },
@@ -278,10 +259,6 @@ export const LatePunishmentAssign = () => {
                 }`,
                 content: `Assign ${selectedRow?.length}`,
                 onClick: () => {
-                  //   if (employeeFeature?.isCreate) {
-                  //   } else {
-                  //     // toast.warn("You don't have permission");
-                  //   }
                   const payload: any = selectedRow?.map(
                     (i: any) => i?.employeeId
                   );
@@ -310,7 +287,6 @@ export const LatePunishmentAssign = () => {
             />
           </PCardHeader>
 
-          {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
             data={landingApi?.data?.loaderDataList || []}
@@ -338,15 +314,7 @@ export const LatePunishmentAssign = () => {
               onChange: (selectedRowKeys, selectedRows) => {
                 setSelectedRow(selectedRows);
               },
-
-              // getCheckboxProps: (rec) => {
-              //   return {
-              //     disabled: rec?.ApplicationStatus === "Approved",
-              //   };
-              // },
             }}
-            // checkBoxColWidth={50}
-            // scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
@@ -359,21 +327,7 @@ export const LatePunishmentAssign = () => {
           setOpen(false);
         }}
         maskClosable={false}
-        components={
-          <>
-            <AddEditForm
-              getData={() => {
-                const values = form.getFieldsValue(true);
-                landingApiCall({
-                  isNotAssign: values?.assigned?.value === 1 ? true : false,
-                });
-              }}
-              empIDString={empIDString}
-              setIsAddEditForm={setOpen}
-              setCheckedList={setSelectedRow}
-            />
-          </>
-        }
+        components={modalContent}
       />
     </>
   ) : (
