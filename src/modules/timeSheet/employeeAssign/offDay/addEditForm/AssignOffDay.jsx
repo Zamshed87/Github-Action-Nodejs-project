@@ -74,7 +74,7 @@ export const AssignOffDay = ({
             wgId,
             employeeId,
             offDayLanding: checked,
-            isMulti: checked?.length > 1,
+            isMulti: checked?.length > 0,
             singleData: singleData[0],
             setLoading,
             isAssignAll,

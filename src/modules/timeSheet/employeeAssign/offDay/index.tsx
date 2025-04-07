@@ -321,6 +321,7 @@ export const OffDayLanding = () => {
                       return toast.warn("You don't have permission");
                     setSingleData([record]);
                     setOpen(true);
+
                     // rowDtoHandler(record);
                     setIsAssignAll(false);
                   },
