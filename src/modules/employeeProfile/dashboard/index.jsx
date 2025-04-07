@@ -174,9 +174,6 @@ export default function SelfDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {console.log(
-                            employeeDashboard?.leaveBalanceHistoryList
-                          )}
                           {employeeDashboard?.leaveBalanceHistoryList
                             ?.filter(
                               (item) => item?.isLveBalanceShowForSelfService

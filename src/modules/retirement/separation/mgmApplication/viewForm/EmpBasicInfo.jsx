@@ -187,7 +187,9 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Notice Period -
                     </small>{" "}
-                    {empBasic?.noticePeriod || "N/A"}
+                    {empBasic?.noticePeriod
+                      ? `${empBasic?.noticePeriod} Days`
+                      : "N/A"}
                   </p>
                 </div>
               </div>

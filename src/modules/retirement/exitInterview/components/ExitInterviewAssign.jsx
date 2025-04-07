@@ -1,36 +1,42 @@
 import { FilePresentOutlined } from "@mui/icons-material";
-import { Card, Popover } from "antd";
+import { Popover } from "antd";
 import { APIUrl } from "App";
 import Chips from "common/Chips";
 import Loading from "common/loading/Loading";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { DataTable, PButton } from "Components";
+import { DataTable, PButton, PSelect } from "Components";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { gray700 } from "utility/customColor";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { dateFormatter } from "utility/dateFormatter";
-import profileImg from "../../../../../assets/images/profile.jpg";
-import { getSeparationLandingById } from "../../helper";
+import profileImg from "../../../../assets/images/profile.jpg";
+import { getSeparationLandingById } from "../helper";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
-function SeparationHistoryview({ id, empId }) {
+export default function ExitInterviewAssign({ id, empId }) {
   //Redux Data
-  const { orgId } = useSelector(
+  const { orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
 
   //Api Hooks
-  const [, getApprovalListData, approvalloading] = useAxiosGet();
+  const [, getApprovalListData] = useAxiosGet();
   const [handoverData, getHandoverData, handoverloading] = useAxiosGet();
   const [exitInterviewData, getExitInterviewData, exitInterviewDataloading] =
     useAxiosGet();
+  const [, getInterviewQuestionsDDL] = useAxiosGet();
+  const [, postExitInterviewData] = useAxiosPost();
 
   //States
   const [empBasic, setEmpBasic] = useState({});
   const [singleSeparationData, setSingleSeparationData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [interviewQuestionsDDL, setInterviewQuestionsDDL] = useState([]);
+  const [interviewQuestionId, setinterviewQuestionId] = useState();
 
   //Table Header
   const header = [
@@ -55,7 +61,7 @@ function SeparationHistoryview({ id, empId }) {
       fixed: "left",
     },
     {
-      title: "Attachment",
+      title: "",
       dataIndex: "docArr",
       render: (data) =>
         data?.length > 0
@@ -91,30 +97,67 @@ function SeparationHistoryview({ id, empId }) {
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
       getApprovalListData(
         `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
         (res) => {
           setEmpBasic(res);
+          setLoading(false);
         }
       );
-      getSeparationLandingById(id, setSingleSeparationData);
+      getSeparationLandingById(id, setSingleSeparationData, setLoading);
+      getInterviewQuestionsDDL(
+        `/ExitInterview/GetActiveQuestions?workplaceId=${wId}`,
+        (res) => {
+          setInterviewQuestionsDDL(
+            res?.data?.map((item) => ({
+              label: item?.text,
+              value: item?.value,
+            }))
+          );
+        }
+      );
     }
   }, [id]);
   return (
     <>
+      {loading && <Loading />}
       {empBasic && (
         <div>
           <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "12.5px",
-              color: gray700,
-              marginBottom: "10px",
-            }}
+            className="d-flex justify-content-between align-items-center"
+            style={{ marginBottom: "10px" }}
           >
-            Employee Details
+            <div
+              style={{
+                fontWeight: "bold",
+                fontSize: "12.5px",
+                color: gray700,
+              }}
+            >
+              Employee Details
+            </div>
+            <PButton
+              type="primary"
+              content={<div style={{ fontSize: "10px" }}>Save</div>}
+              onClick={() => {
+                if (id) {
+                  const payload = {
+                    EmployeeId: empId,
+                    QuestionId: interviewQuestionId,
+                    SeparationId: id,
+                  };
+                  postExitInterviewData(
+                    `/ExitInterview/AssignExitInterviewQuestion`,
+                    payload,
+                    "",
+                    true
+                  );
+                }
+              }}
+            />
           </div>
-          <Card loading={approvalloading} style={{ marginBottom: "10px" }}>
+          <div className="card-about-info-main about-info-card">
             <div className="d-flex justify-content-between">
               <div className="d-flex justify-content-between">
                 <div>
@@ -324,9 +367,7 @@ function SeparationHistoryview({ id, empId }) {
                           >
                             Notice Period -
                           </small>{" "}
-                          {empBasic?.noticePeriod !== null
-                            ? `${empBasic?.noticePeriod} Days`
-                            : "N/A"}
+                          {empBasic?.noticePeriod || "N/A"}
                         </p>
                       </div>
                     </div>
@@ -336,7 +377,7 @@ function SeparationHistoryview({ id, empId }) {
               <div style={{ minWidth: "340px" }}>
                 <br />
                 <div className="d-flex justify-content-between">
-                  <div className="mr-2">
+                  <div>
                     <span style={{ fontSize: "13.5px" }}>Status:</span>&nbsp;
                     {
                       <>
@@ -360,20 +401,6 @@ function SeparationHistoryview({ id, empId }) {
                           <Chips label="Clearance" classess="info p-2" />
                         )}
                         {singleSeparationData?.approvalStatus ===
-                          "Clearance Running" && (
-                          <Chips
-                            label="Clearance Running"
-                            classess="warning p-2"
-                          />
-                        )}
-                        {singleSeparationData?.approvalStatus ===
-                          "Clearance Completed" && (
-                          <Chips
-                            label="Clearance Completed"
-                            classess="success p-2"
-                          />
-                        )}
-                        {singleSeparationData?.approvalStatus ===
                           "Final Settlement Completed" && (
                           <Chips
                             label="Final Settlement Completed"
@@ -383,10 +410,6 @@ function SeparationHistoryview({ id, empId }) {
                         {singleSeparationData?.approvalStatus ===
                           "Released" && (
                           <Chips label="Released" classess="indigo p-2" />
-                        )}
-                        {singleSeparationData?.approvalStatus ===
-                          "Rejected" && (
-                          <Chips label="Rejected" classess="danger p-2" />
                         )}
                       </>
                     }
@@ -439,7 +462,10 @@ function SeparationHistoryview({ id, empId }) {
                         onClick={() => {
                           if (id) {
                             getHandoverData(
-                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`
+                              `/ChargeHandedOver/GetChargeHandedOverBySeparationId/${id}`,
+                              () => {
+                                setLoading(false);
+                              }
                             );
                           }
                         }}
@@ -447,7 +473,20 @@ function SeparationHistoryview({ id, empId }) {
                     </Popover>
                   </div>
                 </div>
-                <div className="d-flex justify-content-end mt-2">
+                <div className="d-flex justify-content-between mt-2">
+                  <div>
+                    <span style={{ fontSize: "13.5px" }}>
+                      Exit Interview Question Assign
+                    </span>
+                    <PSelect
+                      options={interviewQuestionsDDL || []}
+                      name="Questions"
+                      placeholder="Select Questions"
+                      onChange={(value) => {
+                        setinterviewQuestionId(value);
+                      }}
+                    />
+                  </div>
                   <div>
                     <Popover
                       content={
@@ -560,7 +599,10 @@ function SeparationHistoryview({ id, empId }) {
                         onClick={() => {
                           if (id) {
                             getExitInterviewData(
-                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`
+                              `ExitInterview/GetExitInterviewBySeparationId?separationId=${id}&employeeId=${empId}`,
+                              () => {
+                                setLoading(false);
+                              }
                             );
                           }
                         }}
@@ -570,7 +612,7 @@ function SeparationHistoryview({ id, empId }) {
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
           <DataTable
             bordered
             data={singleSeparationData ? [singleSeparationData] : []}
@@ -605,5 +647,3 @@ function SeparationHistoryview({ id, empId }) {
     </>
   );
 }
-
-export default SeparationHistoryview;

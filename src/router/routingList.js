@@ -1740,14 +1740,26 @@ const SeparationApplicationForm = lazy(() =>
   )
 );
 
-const RetirementViewSeparationForm = lazy(() =>
-  import("../modules/retirement/separation/mgmApplication/viewForm/index.jsx")
+const ExitInterviewLanding = lazy(() =>
+  import("../modules/retirement/exitInterview/index.jsx")
 );
-const RetirementReleaseSeparationForm = lazy(() =>
-  import(
-    "../modules/retirement/separation/mgmApplication/releaseForm/index.jsx"
-  )
+const ClearanceLanding = lazy(() =>
+  import("../modules/retirement/clearance/index.jsx")
 );
+const FinalSettlementLandingv2 = lazy(() =>
+  import("../modules/retirement/finalsettlement/index.jsx")
+);
+const FinalSettlementGenerate = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
+);
+const FinalSettlementRegenerate = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementRegenerate.jsx")
+);
+const FinalSettlementEdit = lazy(() =>
+  import("../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx")
+);
+
+import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -3419,12 +3431,20 @@ export const routingList = [
     component: SelfServiceSeparationForm,
   },
   {
+    path: "/SelfService/separation/applicationV2/edit/:id",
+    component: SelfServiceSeparationForm,
+  },
+  {
     path: "/SelfService/separation/application",
     component: SelfSeparation,
   },
   {
     path: "/SelfService/separation/applicationV2",
     component: SelfServiceSeparation,
+  },
+  {
+    path: "/SelfService/separation/applicationV2/interView",
+    component: InterViewModal,
   },
   // Asset Management Start
   {
@@ -4220,12 +4240,28 @@ export const routingList = [
     component: SeparationApplicationForm,
   },
   {
-    path: "/retirement/separation/view/:id",
-    component: RetirementViewSeparationForm,
+    path: "/retirement/exitInterview",
+    component: ExitInterviewLanding,
   },
   {
-    path: "/retirement/separation/release/:id",
-    component: RetirementReleaseSeparationForm,
+    path: "/retirement/clearance",
+    component: ClearanceLanding,
+  },
+  {
+    path: "/retirement/finalSettlement",
+    component: FinalSettlementLandingv2,
+  },
+  {
+    path: "/retirement/finalSettlement/generate/:separationid/:empid",
+    component: FinalSettlementGenerate,
+  },
+  {
+    path: "/retirement/finalSettlement/edit/:settlementid/:separationid/:empid",
+    component: FinalSettlementEdit,
+  },
+  {
+    path: "/retirement/finalSettlement/regenerate/:settlementid/:separationid/:empid",
+    component: FinalSettlementRegenerate,
   },
   {
     path: "/logMonitor/applicationNotificationLogs",
