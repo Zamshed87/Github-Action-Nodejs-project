@@ -169,7 +169,8 @@ export const PolicyCreateExtention = () => {
               setOpen(true);
             } else {
               toast.error(
-                error?.response?.data?.message ||
+                error?.response?.data?.message?.[0] ||
+                  error?.response?.data?.message ||
                   error?.response?.data?.errors?.[
                     "GeneralPayload.Description"
                   ]?.[0] ||
@@ -204,7 +205,8 @@ export const PolicyCreateExtention = () => {
               setOpen(true);
             } else {
               toast.error(
-                error?.response?.data?.message ||
+                error?.response?.data?.message?.[0] ||
+                  error?.response?.data?.message ||
                   error?.response?.data?.errors?.[
                     "GeneralPayload.Description"
                   ]?.[0] ||
@@ -1067,8 +1069,8 @@ export const PolicyCreateExtention = () => {
                               setOpen(true);
                             } else {
                               toast.error(
-                                error?.response?.data?.message ||
-                                  error?.response?.data?.message?.[0] ||
+                                error?.response?.data?.message?.[0] ||
+                                  error?.response?.data?.message ||
                                   error?.response?.data?.errors?.[
                                     "GeneralPayload.Description"
                                   ]?.[0] ||
