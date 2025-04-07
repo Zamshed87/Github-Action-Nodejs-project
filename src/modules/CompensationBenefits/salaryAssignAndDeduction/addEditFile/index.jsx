@@ -1006,8 +1006,9 @@ function AddEditForm() {
                                   <td>{item?.autoRenew}</td>
                                   <td>
                                     {moment(item?.fromDate).format("MMM-YYYY")}-
-                                    {moment(item?.toDate).format("MMM-YYYY")}
-                                    {!item?.toDate && "Continue"}
+                                    {item?.autoRenew === "Yes"
+                                      ? "Continue"
+                                      : moment(item?.toDate).format("MMM-YYYY")}
                                   </td>
                                   <td>{item?.basedOn}</td>
                                   <td>
