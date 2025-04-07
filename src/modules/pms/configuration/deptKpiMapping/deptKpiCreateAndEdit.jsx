@@ -37,7 +37,7 @@ export const initialValues = {
 const DeptKpiCreateAndEdit = () => {
   const {
     // permissionList,
-    profileData: { buId, orgId, employeeId, strBusinessUnit },
+    profileData: { buId, orgId, employeeId, strBusinessUnit, wgId, wId },
   } = useSelector((store) => store?.auth);
 
   // const permission = useMemo(
@@ -61,7 +61,7 @@ const DeptKpiCreateAndEdit = () => {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0&workplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
@@ -225,7 +225,9 @@ const DeptKpiCreateAndEdit = () => {
                       onChange={(valueOption) => {
                         setFieldValue("objectiveType", valueOption);
                         getPeopleDeskAllDDL(
-                          `/PMS/ObjectiveDDL?PMTypeId=${values.pmType?.value}&ObjectiveTypeId=${valueOption?.value}`,
+                          `/PMS/ObjectiveDDL?PMTypeId=${1}&ObjectiveTypeId=${
+                            valueOption?.value
+                          }`,
                           "value",
                           "label",
                           setObjectiveDDL

@@ -2,6 +2,7 @@ import { gray600 } from "../../../../utility/customColor";
 import { Tooltip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconActionMenuForTable from "../../../../common/IconActionMenuForTable";
+import axios from "axios";
 
 export const individualKpiMappingTableColumn = ({
   values,
@@ -19,6 +20,14 @@ export const individualKpiMappingTableColumn = ({
       dataIndex: "employeeName",
     },
     {
+      title: "workplace Group",
+      dataIndex: "workplaceGroup",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+    },
+    {
       title: "Department",
       dataIndex: "departmentName",
     },
@@ -27,8 +36,16 @@ export const individualKpiMappingTableColumn = ({
       dataIndex: "designationName",
     },
     {
+      title: "Supervisor",
+      dataIndex: "supervisorName",
+    },
+    {
+      title: "KPI Assigned Type",
+      dataIndex: "supervisorName",
+    },
+    {
       title: "Total KPIs",
-      dataIndex: "totalKpiNew",
+      dataIndex: "employeeWiseKpi",
     },
     {
       title: "Action",
@@ -36,67 +53,112 @@ export const individualKpiMappingTableColumn = ({
         <div className="d-flex align-items-center justify-content-center">
           <Tooltip title="View" arrow>
             <button
+              style={{
+                height: "22px",
+                fontSize: "11px",
+                padding: "0px 10px 0px 10px",
+                margin: "0px 5px 0px 5px",
+                backgroundColor: "var(--green)",
+                color: "white",
+              }}
+              className="btn"
               type="button"
-              className="iconButton mt-0 mt-md-2 mt-lg-0 mx-2"
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedData(record);
                 setShowKpiViewModal(true);
-              }}
+              }} //
             >
-              <VisibilityIcon />
+              View
             </button>
           </Tooltip>
-          <button
-            type="button"
-            className="iconButton mt-0 mt-md-2 mt-lg-0 mx-2"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <IconActionMenuForTable
-              options={[
-                {
-                  value: 1,
-                  label: "Employee Wise",
-                  onClick: () => {
-                    history.push(
-                      `/pms/configuration/kpimapping/employeeWise/edit/3`,
-                      {
-                        deptName: record?.departmentName,
-                        deptId: record?.departmentId,
-                        designationName: record?.designationName,
-                        designationId: record?.designationId,
-                        employeeName: record?.employeeName,
-                        employeeId: record?.employeeId,
-                      }
-                    );
-                  },
-                },
-                {
-                  value: 2,
-                  label: "Department Wise",
-                  onClick: () => {
-                    history.push(
-                      `/pms/configuration/kpimapping/departmentWise/edit/1`,
-                      {
-                        deptName: record?.departmentName,
-                        deptId: record?.departmentId,
-                        designationName: record?.designationName,
-                        designationId: record?.designationId,
-                        employeeName: record?.employeeName,
-                        employeeId: record?.employeeId,
-                      }
-                    );
-                  },
-                },
-              ]}
-            />
-          </button>
+          <Tooltip title="Mapping" arrow>
+            <button
+              style={{
+                height: "22px",
+                fontSize: "11px",
+                padding: "0px 10px 0px 10px",
+                margin: "0px 5px 0px 5px",
+                backgroundColor: "var(--green)",
+                color: "white",
+              }}
+              className="btn"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                history.push(
+                  `/pms/targetsetup/kpimapping/employeeWise/edit/3`,
+                  {
+                    deptName: record?.departmentName,
+                    deptId: record?.departmentId,
+                    designationName: record?.designationName,
+                    designationId: record?.designationId,
+                    employeeName: record?.employeeName,
+                    employeeId: record?.employeeId,
+                  }
+                );
+              }} //
+            >
+              Mapping
+            </button>
+          </Tooltip>
         </div>
       ),
       sorter: false,
       filter: false,
+      align: "center",
     },
   ];
+};
+
+// history.push(
+//   `/pms/configuration/kpimapping/departmentWise/edit/1`,
+//   {
+//     deptName: record?.departmentName,
+//     deptId: record?.departmentId,
+//     designationName: record?.designationName,
+//     designationId: record?.designationId,
+//     employeeName: record?.employeeName,
+//     employeeId: record?.employeeId,
+//   }
+// );
+
+export const GetSupervisorDepartmentsAndEmployeesDdl = async (
+  empId,
+  setDeptDDL,
+  setEmpDDL
+) => {
+  try {
+    const response = await axios.get(
+      `/PMS/GetSupervisorDepartmentsAndEmployeesDdl?employeeId=${empId}`
+    );
+
+    setDeptDDL(response?.data?.departments);
+    setEmpDDL(response?.data?.employees);
+    return response?.data;
+  } catch (error) {
+    console.error("Failed to fetch supervisor data:", error);
+    // supervisorDDL?.reset();
+  }
+};
+
+export const getSupervisorForAdmin = async (
+  supervisorType,
+  intAccountId,
+  setSupervisorDDL
+) => {
+  try {
+    const response = await axios.get(`/PMS/GetSuporvisorsBySupervisorType`, {
+      params: {
+        supervisorType: supervisorType || 0,
+        accountId: intAccountId || "",
+      },
+    });
+
+    setSupervisorDDL(response?.data);
+    return response?.data;
+  } catch (error) {
+    console.error("Failed to fetch supervisor data:", error);
+    // supervisorDDL?.reset();
+  }
 };

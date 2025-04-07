@@ -44,6 +44,8 @@ const DepartmentalKpiEntry = () => {
     profileData: {
       orgId,
       buId,
+      wId,
+      wgId,
       intAccountId,
       strDesignation,
       employeeId,
@@ -57,7 +59,7 @@ const DepartmentalKpiEntry = () => {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&AccountId=${orgId}&BusinessUnitId=${buId}&workplaceGroupId=${wgId}&intWorkplaceId=${wId}&intId=0`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
@@ -81,7 +83,7 @@ const DepartmentalKpiEntry = () => {
         values?.department?.value
       }&accountId=${intAccountId}&from=${values?.fromMonth?.value || 1}&to=${
         values?.toMonth?.value || 12
-      }&pmTypeId=${values?.pmType?.value}`
+      }&pmTypeId=${values?.pmType?.value || 1}`
     );
   };
 
