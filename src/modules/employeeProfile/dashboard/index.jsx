@@ -175,6 +175,7 @@ export default function SelfDashboard() {
                             <th style={{ borderTop: "none" }}>
                               <p
                                 style={{ color: gray400, textAlign: "center" }}
+                                className="px-1"
                               >
                                 Taken
                               </p>
@@ -182,17 +183,18 @@ export default function SelfDashboard() {
                             <th style={{ borderTop: "none" }}>
                               <p
                                 style={{ color: gray400, textAlign: "center" }}
+                                className="px-1"
                               >
                                 Remaining
                               </p>
                             </th>
-                            {/* <th style={{ borderTop: "none" }}>
+                            <th style={{ borderTop: "none" }}>
                               <p
                                 style={{ color: gray400, textAlign: "center" }}
                               >
                                 Status
                               </p>
-                            </th> */}
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -242,7 +244,7 @@ export default function SelfDashboard() {
                                       {item?.totalBalanceDays}
                                     </p>
                                   </td>
-                                  {/* <td
+                                  <td
                                     style={{ borderTop: "1px solid #F2F4F7" }}
                                   >
                                     <p
@@ -253,7 +255,7 @@ export default function SelfDashboard() {
                                     >
                                       {item?.status}
                                     </p>
-                                  </td> */}
+                                  </td>
                                 </tr>
                               </>
                             ))}

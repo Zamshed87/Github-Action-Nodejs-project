@@ -173,6 +173,11 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                               Remaining
                             </p>
                           </th>
+                          <th style={{ borderTop: "none" }}>
+                            <p style={{ color: gray400, textAlign: "center" }}>
+                              Status
+                            </p>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -211,6 +216,16 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                     }}
                                   >
                                     {item?.totalBalanceDays}
+                                  </p>
+                                </td>
+                                <td style={{ borderTop: "1px solid #F2F4F7" }}>
+                                  <p
+                                    style={{
+                                      textAlign: "center",
+                                      color: gray700,
+                                    }}
+                                  >
+                                    {item?.status}
                                   </p>
                                 </td>
                               </tr>
