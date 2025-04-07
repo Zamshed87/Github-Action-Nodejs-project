@@ -1,31 +1,36 @@
+import { DataTable, Flex, PForm } from "Components";
+import { PModal } from "Components/Modal";
+import { Form, Tooltip } from "antd";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { useEffect, useMemo, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { AddOutlined, Edit, Grain } from "@mui/icons-material";
-import { toast } from "react-toastify";
-import React, { useMemo } from "react";
-import { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import { IconButton } from "@mui/material";
+import CreateEdit from "./createEdit";
 
 const EvaluationCriteria = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
-  // const [rowDto, getRowData, rowDataLoader] = useAxiosGet();
+  const [isScoreSettings, setIsScoreSettings] = useState({
+    open: false,
+    type: "",
+  });
+  const [form] = Form.useForm();
+  const [rowData, setRowData] = useState({});
   const { profileData } = useSelector((state) => state?.auth, shallowEqual);
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const landingApi = () => {
+    getCriteriaList(
+      `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
+    );
+  };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Performance Management System"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    getCriteriaList(
-      `/PMS/GetEvaluationCriteria?accountId=${profileData?.intAccountId}`
-    );
+    landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const permission = useMemo(
@@ -33,172 +38,104 @@ const EvaluationCriteria = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  return (
-    <>
-      {criteriaListLoader && <Loading />}
-      <div className="table-card">
-        <div className="table-card-heading justify-content-end">
-          <ul className="d-flex flex-wrap">
-            <ul className="d-flex flex-wrap">
-              {criteriaList?.scoreScaleId ? (
-                <li>
-                  <PrimaryButton
-                    type="button"
-                    className="btn btn-default flex-center"
-                    label={"Edit"}
-                    icon={
-                      <Edit sx={{ marginRight: "11px", fontSize: "16px" }} />
-                    }
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (!permission?.isEdit)
-                        return toast.warn("You don't have permission");
-                      history.push({
-                        pathname: `/pms/configuration/EvaluationCriteria/edit/${criteriaList?.scoreScaleId}`,
-                      });
-                    }}
-                  />
-                </li>
-              ) : (
-                <li>
-                  <PrimaryButton
-                    type="button"
-                    className="btn btn-default flex-center"
-                    label={"Create"}
-                    icon={<AddOutlined sx={{ marginRight: "11px" }} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      history.push(
-                        "/pms/configuration/EvaluationCriteria/create"
-                      );
-                    }}
-                  />
-                </li>
-              )}
-            </ul>
-          </ul>
-        </div>
+  const evaluationCriteriaHeader = [
+    {
+      title: "SL",
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: "Level of Leadership",
+      dataIndex: "levelOfLeadershipName",
+    },
+    {
+      title: "KPI Score",
+      dataIndex: "percentageOfKPI",
+    },
+    {
+      title: "BAR Score",
+      dataIndex: "percentageOfBAR",
+    },
+    {
+      title: "Action",
+      dataIndex: "letterGenerateId",
+      render: (generateId, rec) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title={"Edit"}>
+            <button
+              style={{
+                height: "24px",
+                fontSize: "12px",
+                padding: "0px 12px 0px 12px",
+                backgroundColor: "var(--green)",
+                color: "white",
+              }}
+              className="btn"
+              type="button"
+              onClick={() => {
+                setRowData(rec);
+                setIsScoreSettings(() => ({ open: true, type: "EC" }));
+              }}
+            >
+              Score Setup
+            </button>
+          </Tooltip>
+        </Flex>
+      ),
+      align: "center",
+    },
+  ];
 
-        <div className="table-card-body about-info-card policy-details">
-          <div className="row mb-4">
-            <div className="col-12 mb-4">
-              <h1>Configuration</h1>
-            </div>
-            {criteriaList?.positionGroupWiseCriteriaList?.map((item, index) => (
-              <div className="col-md-2 d-flex align-items-center mb-2">
-                <IconButton
-                  style={{
-                    color: "black",
-                    backgroundColor: "#EAECF0",
-                    padding: "5px",
-                  }}
-                >
-                  <Grain style={{ width: "25px", height: "25px" }} />
-                </IconButton>
-                <div className="ml-3">
-                  <h2>{item?.positionGroupName}</h2>
-                  <p>{item?.evaluationCriteriaOfPMS}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+  return permission?.isView ? (
+    <div className="table-card">
+      {/* <div className="table-card-heading justify-content-end">
+        <ul className="d-flex flex-wrap">
+          <ul className="d-flex flex-wrap">
+            <li>
+              <PrimaryButton
+                type="button"
+                className="btn btn-default flex-center"
+                label={"Create"}
+                icon={<AddOutlined sx={{ marginRight: "11px" }} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // history.push("/pms/configuration/EvaluationCriteria/create");
+                  setIsScoreSettings(() => ({ open: true, type: "EC" }));
+                }}
+              />
+            </li>
+          </ul>
+        </ul>
+      </div> */}
+      {criteriaListLoader && <Loading />}
+      <PForm form={form}>
+        <div className="mt-2">
+          <DataTable
+            bordered
+            data={criteriaList || []}
+            header={evaluationCriteriaHeader}
+          />
         </div>
-        <div className="table-card-body about-info-card policy-details">
-          <div className="row mb-4">
-            <div className="col-lg-6">
-              <h2>Score and Scale for BSC</h2>
-              <div className="d-flex align-items-center mb-2 mt-4">
-                <IconButton
-                  style={{
-                    color: "black",
-                    backgroundColor: "#EAECF0",
-                    padding: "5px",
-                  }}
-                >
-                  <Grain style={{ width: "25px", height: "25px" }} />
-                </IconButton>
-                <div className="ml-3">
-                  <h3>Key Performance Indicator - KPI</h3>
-                  <p>{criteriaList?.percentageOfKPI}</p>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <IconButton
-                  style={{
-                    color: "black",
-                    backgroundColor: "#EAECF0",
-                    padding: "5px",
-                  }}
-                >
-                  <Grain style={{ width: "25px", height: "25px" }} />
-                </IconButton>
-                <div className="ml-3">
-                  <h3>Behaviorally Anchored Rating - BAR</h3>
-                  <p>{criteriaList?.percentageOfBAR}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <h2>Score and Scale for 360</h2>
-              <div className="d-flex align-items-center mb-2 mt-4">
-                <IconButton
-                  style={{
-                    color: "black",
-                    backgroundColor: "#EAECF0",
-                    padding: "5px",
-                  }}
-                >
-                  <Grain style={{ width: "25px", height: "25px" }} />
-                </IconButton>
-                <div className="ml-3">
-                  <h3>Key Performance Indicator - KPI</h3>
-                  <p>{criteriaList?.percentageOfKPI360 || "N/A"}</p>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <IconButton
-                  style={{
-                    color: "black",
-                    backgroundColor: "#EAECF0",
-                    padding: "5px",
-                  }}
-                >
-                  <Grain style={{ width: "25px", height: "25px" }} />
-                </IconButton>
-                <div className="ml-3">
-                  <h3>Behaviorally Anchored Rating - BAR</h3>
-                  <p>{criteriaList?.percentageOfBAR360 || "N/A"}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="table-card-body about-info-card policy-details">
-          <div className="row mb-4">
-            <div className="col-12 mb-4">
-              <h2>Behavioral Scale</h2>
-            </div>
-            {criteriaList?.scaleList?.map((item, index) => (
-              <div className="col-md-2 d-flex align-items-center mb-2">
-                <IconButton
-                  style={{
-                    color: "black",
-                    backgroundColor: "#EAECF0",
-                    padding: "5px",
-                  }}
-                >
-                  <Grain style={{ width: "25px", height: "25px" }} />
-                </IconButton>
-                <div className="ml-3">
-                  <h2>{item?.scaleName}</h2>
-                  <p>{item?.scaleValue}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </>
+        <PModal
+          title="Evaluation Criteria Score Settings"
+          open={isScoreSettings?.open}
+          onCancel={() => {
+            setIsScoreSettings(() => ({ open: false, type: "EC" }));
+            landingApi();
+          }}
+          components={
+            <CreateEdit
+              isScoreSettings={isScoreSettings}
+              setIsScoreSettings={setIsScoreSettings}
+              data={rowData}
+              cb={landingApi}
+            />
+          }
+          width={1000}
+        />
+      </PForm>
+    </div>
+  ) : (
+    <NotPermittedPage />
   );
 };
 

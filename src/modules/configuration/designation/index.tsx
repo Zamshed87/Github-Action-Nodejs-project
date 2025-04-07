@@ -92,7 +92,7 @@ function Designation() {
       title: "SL",
       render: (_: any, rec: any, index: number) => index + 1,
       //   fixed: "left",
-      width: 5,
+      width: 15,
     },
     {
       title: "Designation",
@@ -100,7 +100,12 @@ function Designation() {
       sorter: true,
       //   fixed: "left",
     },
-
+    {
+      title: "Level of Leadership",
+      dataIndex: "srtPositionGroup",
+      sorter: true,
+      //   fixed: "left",
+    },
     {
       title: "Status",
 

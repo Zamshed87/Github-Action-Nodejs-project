@@ -565,117 +565,115 @@ function OffDay() {
                       </ul>
                     </div>
                   </div>
-                  <div className="table-card-body">
-                    <div>
-                      {rowDto.length > 0 ? (
-                        <PeopleDeskTable
-                          columnData={offDayAssignDtoCol(
-                            pages,
-                            paginationSize,
-                            permission,
-                            updateSingleData,
-                            setCreateModal,
-                            setEmpId,
-                            setSingleData,
-                            setIsMulti,
-                            checkedList,
-                            setCheckedList,
-                            // isAlreadyPresent,
-                            // filterLanding,
-                            // setFilterLanding,
-                            setRowDto,
-                            rowDto,
-                            setSelectedSingleEmployee,
-                            setAnchorEl,
-                            setCalendarData,
-                            setLoading,
-                            loading,
-                            headerList,
-                            wgName,
-                            setOffDayHistory,
-                            setAnchorElHistory
-                          )}
-                          pages={pages}
-                          rowDto={rowDto}
-                          setRowDto={setRowDto}
-                          checkedList={checkedList}
-                          setCheckedList={setCheckedList}
-                          checkedHeaderList={checkedHeaderList}
-                          setCheckedHeaderList={setCheckedHeaderList}
-                          handleChangePage={(e, newPage) =>
-                            handleChangePage(e, newPage, values?.search)
-                          }
-                          handleChangeRowsPerPage={(e) =>
-                            handleChangeRowsPerPage(e, values?.search)
-                          }
-                          filterOrderList={filterOrderList}
-                          setFilterOrderList={setFilterOrderList}
-                          uniqueKey="employeeCode"
-                          getFilteredData={(
+                  <div className=" sme-scrollable-table">
+                    {rowDto.length > 0 ? (
+                      <PeopleDeskTable
+                        columnData={offDayAssignDtoCol(
+                          pages,
+                          paginationSize,
+                          permission,
+                          updateSingleData,
+                          setCreateModal,
+                          setEmpId,
+                          setSingleData,
+                          setIsMulti,
+                          checkedList,
+                          setCheckedList,
+                          // isAlreadyPresent,
+                          // filterLanding,
+                          // setFilterLanding,
+                          setRowDto,
+                          rowDto,
+                          setSelectedSingleEmployee,
+                          setAnchorEl,
+                          setCalendarData,
+                          setLoading,
+                          loading,
+                          headerList,
+                          wgName,
+                          setOffDayHistory,
+                          setAnchorElHistory
+                        )}
+                        pages={pages}
+                        rowDto={rowDto}
+                        setRowDto={setRowDto}
+                        checkedList={checkedList}
+                        setCheckedList={setCheckedList}
+                        checkedHeaderList={checkedHeaderList}
+                        setCheckedHeaderList={setCheckedHeaderList}
+                        handleChangePage={(e, newPage) =>
+                          handleChangePage(e, newPage, values?.search)
+                        }
+                        handleChangeRowsPerPage={(e) =>
+                          handleChangeRowsPerPage(e, values?.search)
+                        }
+                        filterOrderList={filterOrderList}
+                        setFilterOrderList={setFilterOrderList}
+                        uniqueKey="employeeCode"
+                        getFilteredData={(
+                          currentFilterSelection,
+                          updatedFilterData,
+                          updatedCheckedHeaderData
+                        ) => {
+                          getData(
+                            {
+                              current: 1,
+                              pageSize: paginationSize,
+                              total: 0,
+                            },
+                            "",
+                            [],
                             currentFilterSelection,
                             updatedFilterData,
                             updatedCheckedHeaderData
-                          ) => {
-                            getData(
-                              {
-                                current: 1,
-                                pageSize: paginationSize,
-                                total: 0,
-                              },
-                              "",
-                              [],
-                              currentFilterSelection,
-                              updatedFilterData,
-                              updatedCheckedHeaderData
-                            );
-                          }}
-                          isCheckBox={true}
-                          isScrollAble={true}
-                        />
-                      ) : (
-                        // <AntTable
-                        //   data={resLanding}
-                        //   columnsData={offDayAssignDtoCol(
-                        //     pages,
-                        //     paginationSize,
-                        //     permission,
-                        //     updateSingleData,
-                        //     setCreateModal,
-                        //     setEmpId,
-                        //     setSingleData,
-                        //     setIsMulti,
-                        //     checked,
-                        //     setChecked,
-                        //     isAlreadyPresent,
-                        //     // filterLanding,
-                        //     // setFilterLanding,
-                        //     setLanding,
-                        //     resLanding,
-                        //     setSelectedSingleEmployee,
-                        //     setAnchorEl,
-                        //     setCalendarData,
-                        //     setLoading,
-                        //     loading
-                        //   )}
-                        //   setColumnsData={(dataRow) => {}}
-                        //   pages={pages?.pageSize}
-                        //   pagination={pages}
-                        //   handleTableChange={({ pagination, newRowDto }) =>
-                        //     handleTableChange(
-                        //       pagination,
-                        //       newRowDto,
-                        //       values?.search || ""
-                        //     )
-                        //   }
-                        //   rowKey={(record) => record?.EmployeeCode}
-                        // />
-                        <>
-                          {!landingLoading && (
-                            <NoResult title="No Result Found" para="" />
-                          )}
-                        </>
-                      )}
-                    </div>
+                          );
+                        }}
+                        isCheckBox={true}
+                        isScrollAble={true}
+                      />
+                    ) : (
+                      // <AntTable
+                      //   data={resLanding}
+                      //   columnsData={offDayAssignDtoCol(
+                      //     pages,
+                      //     paginationSize,
+                      //     permission,
+                      //     updateSingleData,
+                      //     setCreateModal,
+                      //     setEmpId,
+                      //     setSingleData,
+                      //     setIsMulti,
+                      //     checked,
+                      //     setChecked,
+                      //     isAlreadyPresent,
+                      //     // filterLanding,
+                      //     // setFilterLanding,
+                      //     setLanding,
+                      //     resLanding,
+                      //     setSelectedSingleEmployee,
+                      //     setAnchorEl,
+                      //     setCalendarData,
+                      //     setLoading,
+                      //     loading
+                      //   )}
+                      //   setColumnsData={(dataRow) => {}}
+                      //   pages={pages?.pageSize}
+                      //   pagination={pages}
+                      //   handleTableChange={({ pagination, newRowDto }) =>
+                      //     handleTableChange(
+                      //       pagination,
+                      //       newRowDto,
+                      //       values?.search || ""
+                      //     )
+                      //   }
+                      //   rowKey={(record) => record?.EmployeeCode}
+                      // />
+                      <>
+                        {!landingLoading && (
+                          <NoResult title="No Result Found" para="" />
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               ) : (

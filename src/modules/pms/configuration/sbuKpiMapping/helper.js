@@ -269,16 +269,16 @@ export const setObjectiveToInitDataOnEditFromLanding = ({
 
 export const validationSchemaOfObjectiveCreate = () => {
   const validationSchema = Yup.object().shape({
-    pmType: Yup.object({
-      label: Yup.string()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-      value: Yup.number()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-    })
-      .required("PM type is required")
-      .typeError("PM type is required"),
+    // pmType: Yup.object({
+    //   label: Yup.string()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    //   value: Yup.number()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    // })
+    //   .required("PM type is required")
+    //   .typeError("PM type is required"),
     objectiveType: Yup.object({
       label: Yup.string()
         .required("Objective type is required")
@@ -441,12 +441,12 @@ export const validationSchema = () => {
         value: Yup.string().required("Business Unit is required"),
       })
       .typeError("Business Unit is required"),
-    pmType: Yup.object()
-      .shape({
-        label: Yup.string().required("PM Type is required"),
-        value: Yup.string().required("PM Type is required"),
-      })
-      .typeError("PM Type is required"),
+    // pmType: Yup.object()
+    //   .shape({
+    //     label: Yup.string().required("PM Type is required"),
+    //     value: Yup.string().required("PM Type is required"),
+    //   })
+    //   .typeError("PM Type is required"),
     objective: Yup.object()
       .shape({
         label: Yup.string().required("Objective is required"),
