@@ -25,7 +25,7 @@ const FoodAllowenceReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const featurePermission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30423),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30424),
     []
   );
 
