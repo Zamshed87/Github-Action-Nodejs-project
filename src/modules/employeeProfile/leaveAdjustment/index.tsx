@@ -32,8 +32,10 @@ import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { AdjustmentCrud } from "./AdjustmentCrud";
 
 export const LeaveAdjustment = () => {
-  const { orgId, buId, intProfileImageUrl, employeeId, wgId, permissionList } =
-    useSelector((state: any) => state?.auth?.profileData, shallowEqual);
+  const { wId, employeeId, wgId, permissionList } = useSelector(
+    (state: any) => state?.auth?.profileData,
+    shallowEqual
+  );
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -89,33 +91,18 @@ export const LeaveAdjustment = () => {
     // Disable dates before fromDate and after next3daysForEmp
     return current && current < fromDateMoment.startOf("day");
   };
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-    IsForXl?: boolean;
-    date?: string;
-  };
-  const landingApiCall = ({
-    pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
-  }: TLandingApi = {}) => {
+
+  const landingApiCall = () => {
     const values = form.getFieldsValue(true);
     const ids = values?.leaveType?.map((i: any) => i?.value);
     const statusIds = values?.status?.map((i: any) => i?.value);
     landingApi.action({
-      urlKey: "GetAllLeave",
-      method: "post",
-      payload: {
-        employeeId: 0,
-        fromDate: moment(values?.fromDate)?.format("YYYY-MM-DD"),
-        toDate: moment(values?.toDate)?.format("YYYY-MM-DD"),
-        leaveTypeList: ids || [],
-        approvalStatusList: statusIds || [],
+      urlKey: "LeaveAdjustmentLanding",
+      method: "get",
+      params: {
+        FromDate: moment(values?.fromDate)?.format("YYYY-MM-DD"),
+        ToDate: moment(values?.toDate)?.format("YYYY-MM-DD"),
+        Workplace: wId,
       },
       onSuccess: (res: any) => {},
     });
@@ -131,22 +118,22 @@ export const LeaveAdjustment = () => {
 
     {
       title: "Beneficiary Type",
-      dataIndex: "beneficiaryType",
+      dataIndex: "leaveAdjustmentBeneficial",
       width: 100,
     },
     {
       title: "From Beneficiary Name",
-      dataIndex: "duration",
+      dataIndex: "fromBeneficiaryName",
       width: 100,
     },
     {
       title: "To Beneficiary Name",
-      dataIndex: "totalLeaveDays",
+      dataIndex: "toBeneficiaryName",
       width: 100,
     },
     {
       title: "Total Leave Adjust",
-      dataIndex: "location",
+      dataIndex: "totalLeaveAdjustmenBalance",
       width: 100,
     },
 
@@ -163,6 +150,7 @@ export const LeaveAdjustment = () => {
                 type: "edit",
                 onClick: (e: any) => {
                   setIsEdit(true);
+                  setOpen(true);
                   e.stopPropagation();
                   setSingleData(item);
                 },
@@ -174,18 +162,12 @@ export const LeaveAdjustment = () => {
                   deleteLeaveById(item);
                 },
               },
-              {
-                type: "delete",
-                onClick: () => {
-                  deleteLeaveById(item);
-                },
-              },
             ]}
           />
           <PButton
             type="primary"
             action="button"
-            content="Generate"
+            content="Complete"
             onClick={() => {
               //   generateApi?.action({
               //     urlKey: "BalanceGenerate",
@@ -354,14 +336,11 @@ export const LeaveAdjustment = () => {
           <DataTable
             bordered
             data={
-              //   leaveHistoryData.employeeLeaveApplicationListDto?.length > 0
-              //     ? leaveHistoryData?.employeeLeaveApplicationListDto
-              //     :
-              []
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
             }
             loading={landingApi?.loading}
             header={header}
-            scroll={{ x: 1000 }}
+            // scroll={{ x: 1000 }}
           />
         </PCard>
         <PModal
@@ -372,7 +351,14 @@ export const LeaveAdjustment = () => {
           maskClosable={false}
           components={
             <>
-              <AdjustmentCrud />
+              <AdjustmentCrud
+                singleData={singleData}
+                setSingleData={setSingleData}
+                setOpen={setOpen}
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
+                landingApiCall={landingApiCall}
+              />
             </>
           }
         />

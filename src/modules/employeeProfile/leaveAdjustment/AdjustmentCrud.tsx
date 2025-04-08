@@ -4,20 +4,36 @@ import { LightTooltip } from "common/LightTooltip";
 import { DataTable, PForm, PInput, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { debounce } from "lodash";
-import React from "react";
+import { debounce, get } from "lodash";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { failColor } from "utility/customColor";
 import { todayDate } from "utility/todayDate";
 
-export const AdjustmentCrud = () => {
-  const { orgId, buId, intProfileImageUrl, employeeId, wgId, permissionList } =
-    useSelector((state: any) => state?.auth?.profileData, shallowEqual);
+export const AdjustmentCrud = ({
+  singleData,
+  setSingleData,
+  setOpen,
+  isEdit,
+  setIsEdit,
+  landingApiCall,
+}: any) => {
+  const { orgId, buId, wId, employeeId, wgId, userName } = useSelector(
+    (state: any) => state?.auth?.profileData,
+    shallowEqual
+  );
+  const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
+  const [leaveTypeDDLTo, setLeaveTypeDDLTo] = useState([]);
+  const [details, setDetails] = useState([]);
+  const [detailsTo, setDetailsTo] = useState([]);
+
   const beneficiaryType = useApiRequest({});
   const supervisorDDL = useApiRequest({});
   const policyDDL = useApiRequest({});
+  const detailsApi = useApiRequest({});
   const createEditApi = useApiRequest({});
+  const getById = useApiRequest({});
   //   getBUnitDDL.action({
   //     urlKey: "BusinessUnitWithRoleExtension",
   //     method: "GET",
@@ -40,40 +56,80 @@ export const AdjustmentCrud = () => {
       urlKey: "GetEnums",
       method: "GET",
       params: {
-        types: "LeavePolicyDependOnEnum",
+        types: "LeaveAdjustmentBenefiaciaryEnum",
       },
     });
   };
-  const getPolicyDDL = () => {
+  useEffect(() => {
+    getBeneficiaryTypes();
+  }, []);
+  const getPolicyDDL = (type: string, id: any) => {
     policyDDL?.action({
-      urlKey: "GetEnums",
+      urlKey: "EmployeeLeaveTypeDDL",
       method: "GET",
       params: {
-        types: "LeavePolicyDependOnEnum",
+        employeeId: id,
+        date: todayDate(),
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, idx: any) => {
+          res[idx].value = item?.id;
+          res[idx].label = item?.name;
+        });
+        if (type === "from") {
+          setLeaveTypeDDL(res);
+        } else {
+          setLeaveTypeDDLTo(res);
+        }
+      },
+    });
+  };
+  const getDetails = (type: string, id: any) => {
+    const values = form.getFieldsValue(true);
+    detailsApi?.action({
+      urlKey: "PolicyWiseEmployeeLeaveBalanceList",
+      method: "GET",
+      params: {
+        employeeId:
+          type === "from"
+            ? values?.beneficiaryFrom?.value
+            : values?.beneficiaryTo?.value,
+        date: todayDate(),
+        policyId: id,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, idx: any) => {
+          res[idx].value = item?.id;
+          res[idx].label = item?.name;
+        });
+        if (type === "from") {
+          setDetails(res);
+        } else {
+          setDetailsTo(res);
+        }
       },
     });
   };
   const getSuperVisorDDL = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
     supervisorDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
-        // DDLType: "EmployeeBasicInfoForEmpMgmt",
-        // AccountId: intAccountId,
-        // BusinessUnitId: buId,
-        // intId: employeeId,
-        // workplaceGroupId: workplaceGroup?.value,
-        // strWorkplaceIdList: workplace?.value.toString(),
-        // searchTxt: value || "",
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: orgId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: wgId,
+        strWorkplaceIdList: wId,
+        searchTxt: value || "",
       },
-      //   onSuccess: (res) => {
-      //     res.forEach((item, i) => {
-      //       res[i].label = item?.EmployeeOnlyName;
-      //       res[i].value = item?.EmployeeId;
-      //     });
-      //   },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
     });
   }, 500);
   const submitHandler = () => {
@@ -97,6 +153,10 @@ export const AdjustmentCrud = () => {
       toast: true,
       onSuccess: (res) => {
         toast.success(res?.message[0]);
+        setSingleData({});
+        setOpen(false);
+        setIsEdit(false);
+        landingApiCall();
       },
       onError: (error: any) => {
         toast.error(
@@ -115,20 +175,63 @@ export const AdjustmentCrud = () => {
   const header: any = [
     {
       title: "Remaining",
-      dataIndex: "beneficiaryType",
+      dataIndex: "totalBalanceDays",
       width: 100,
     },
     {
       title: "Taken",
-      dataIndex: "beneficiaryType",
+      dataIndex: "totalTakenDays",
       width: 100,
     },
     {
       title: "Total",
-      dataIndex: "duration",
+      dataIndex: "totalAllocatedDays",
       width: 100,
     },
   ];
+  useEffect(() => {
+    if (singleData?.leaveAdjustmentId) {
+      getById?.action({
+        urlKey: "LeaveAdjustmentGetById",
+        method: "GET",
+        params: {
+          LeaveAdjustmentId: singleData?.leaveAdjustmentId,
+        },
+        onSuccess: (res: any) => {
+          form.setFieldsValue({
+            beneficiaryFrom: {
+              value: res?.data?.[0].fromBeneficiaryNameId,
+              label: res?.data?.[0].fromBeneficiaryName,
+            },
+            beneficiaryTo: {
+              value: res?.data?.[0].toBeneficiaryNameId,
+              label: res?.data?.[0].toBeneficiaryName,
+            },
+            beneficiary: {
+              value: res?.data?.[0].leaveAdjustmentBeneficialId,
+              label: res?.data?.[0].leaveAdjustmentBeneficial,
+            },
+            policyFrom: {
+              value: res?.data?.[0].fromBeneficiaryPolicyId,
+              label: res?.data?.[0].fromBeneficiaryPolicy,
+            },
+
+            policyTo: {
+              value: res?.data?.[0].toBeneficiaryPolicyId,
+              label: res?.data?.[0].toBeneficiaryPolicy,
+            },
+            balanceFrom: res?.data?.[0].fromLeaveAdjustmenBalance,
+            balanceTo: res?.data?.[0].toLeaveAdjustmenBalance,
+          });
+          getPolicyDDL("from", res?.data?.[0].fromBeneficiaryNameId);
+          getPolicyDDL("to", res?.data?.[0].toBeneficiaryNameId);
+          getDetails("from", res?.data?.[0].fromBeneficiaryPolicyId);
+          getDetails("to", res?.data?.[0].toBeneficiaryPolicyId);
+        },
+      });
+    }
+  }, []);
+
   return (
     <>
       <PForm form={form} onFinish={submitHandler} initialValues={{}}>
@@ -137,14 +240,33 @@ export const AdjustmentCrud = () => {
             <PSelect
               // mode="multiple"
               allowClear
-              options={beneficiaryType?.data?.DaysTypeEnum || []}
+              options={
+                beneficiaryType?.data?.LeaveAdjustmentBenefiaciaryEnum || []
+              }
               name="beneficiary"
               label="Beneficiary Type"
               placeholder="Beneficiary  Type"
               onChange={(value, op) => {
                 form.setFieldsValue({
-                  encashType: op,
+                  beneficiary: op,
+                  beneficiaryFrom: undefined,
+                  policyFrom: undefined,
+                  balanceFrom: undefined,
+                  beneficiaryTo: undefined,
+                  policyTo: undefined,
+                  balanceTo: undefined,
                 });
+                if (value == 2) {
+                  form.setFieldsValue({
+                    beneficiaryTo: { value: employeeId, label: userName },
+                  });
+                  getPolicyDDL("to", employeeId);
+                } else if (value == 3) {
+                  form.setFieldsValue({
+                    beneficiaryFrom: { value: employeeId, label: userName },
+                  });
+                  getPolicyDDL("from", employeeId);
+                }
               }}
               rules={[
                 {
@@ -177,20 +299,25 @@ export const AdjustmentCrud = () => {
         <Row gutter={[10, 2]}>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { beneficiaryType } = form.getFieldsValue(true);
+              const { beneficiary } = form.getFieldsValue(true);
 
               return (
                 <>
                   <Col md={8} sm={24}>
                     <PSelect
-                      options={[]}
+                      options={
+                        supervisorDDL?.data?.length > 0
+                          ? supervisorDDL?.data
+                          : []
+                      }
                       name="beneficiaryFrom"
                       label="From Beneficiary Name"
-                      disabled={beneficiaryType?.value === 3}
+                      disabled={beneficiary?.value == "3"}
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           beneficiaryFrom: op,
                         });
+                        getPolicyDDL("from", value);
                       }}
                       showSearch
                       filterOption={false}
@@ -216,13 +343,14 @@ export const AdjustmentCrud = () => {
             <PSelect
               // mode="multiple"
               allowClear
-              options={[]}
+              options={leaveTypeDDL || []}
               name="policyFrom"
               label="From Leave Policy"
               onChange={(value, op) => {
                 form.setFieldsValue({
                   policyFrom: op,
                 });
+                getDetails("from", value);
               }}
               rules={[
                 {
@@ -244,12 +372,7 @@ export const AdjustmentCrud = () => {
                       <>
                         <DataTable
                           bordered
-                          data={
-                            //   leaveHistoryData.employeeLeaveApplicationListDto?.length > 0
-                            //     ? leaveHistoryData?.employeeLeaveApplicationListDto
-                            //     :
-                            []
-                          }
+                          data={details || []}
                           //   loading={landingApi?.loading}
                           header={header}
                         />
@@ -296,7 +419,7 @@ export const AdjustmentCrud = () => {
         <Row gutter={[10, 2]}>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { beneficiaryType } = form.getFieldsValue(true);
+              const { beneficiary } = form.getFieldsValue(true);
 
               return (
                 <>
@@ -305,11 +428,12 @@ export const AdjustmentCrud = () => {
                       options={[]}
                       name="beneficiaryTo"
                       label="To Beneficiary Name"
-                      disabled={beneficiaryType?.value === 2}
+                      disabled={beneficiary?.value == "2"}
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           beneficiaryTo: op,
                         });
+                        getPolicyDDL("to", value);
                       }}
                       showSearch
                       filterOption={false}
@@ -334,13 +458,14 @@ export const AdjustmentCrud = () => {
             <PSelect
               // mode="multiple"
               allowClear
-              options={[]}
+              options={leaveTypeDDLTo || []}
               name="policyTo"
               label="To Leave Policy"
               onChange={(value, op) => {
                 form.setFieldsValue({
                   policyTo: op,
                 });
+                getDetails("to", value);
               }}
               rules={[
                 {
@@ -362,12 +487,7 @@ export const AdjustmentCrud = () => {
                       <>
                         <DataTable
                           bordered
-                          data={
-                            //   leaveHistoryData.employeeLeaveApplicationListDto?.length > 0
-                            //     ? leaveHistoryData?.employeeLeaveApplicationListDto
-                            //     :
-                            []
-                          }
+                          data={detailsTo || []}
                           //   loading={landingApi?.loading}
                           header={header}
                         />
@@ -394,8 +514,10 @@ export const AdjustmentCrud = () => {
         </Row>
         <ModalFooter
           onCancel={() => {
-            // setId("");
-            // setIsAddEditForm(false);
+            setSingleData({});
+            setOpen(false);
+            setIsEdit(false);
+            landingApiCall();
           }}
           submitAction="submit"
           //   loading={saveDepartment.loading}
