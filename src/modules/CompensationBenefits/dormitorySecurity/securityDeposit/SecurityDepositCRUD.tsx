@@ -15,7 +15,6 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -215,6 +214,58 @@ export const SecurityDepositCRUD = () => {
     getSecurityType();
   }, []);
 
+  const deleteApi = useApiRequest({});
+
+  const deleteDepositById = (item: any) => {
+    deleteApi?.action({
+      urlKey: "Deposit",
+      method: "DELETE",
+      params: {
+        id: item?.id,
+      },
+      toast: true,
+      onSuccess: () => {
+        detailsApi?.action({
+          urlKey: "DepositDetails",
+          method: "GET",
+          params: {
+            month: state?.month,
+            year: state?.year,
+            depositType: id,
+          },
+          onSuccess: (res: any) => {
+            const date = moment(
+              `${state?.year}` +
+                `-${state?.month?.toString().padStart(2, "0")}-01`
+            );
+
+            form.setFieldsValue({
+              securityTypeDDL: {
+                value: id,
+                label: res?.data?.[0]?.depositTypeName,
+              },
+              monthYear: date,
+            });
+            const modify = res?.data?.map((i: any, index: number) => {
+              return {
+                ...i,
+                employeeId: i?.employeeCode,
+                employeeCode: i?.employeeCode,
+                employeeName: i?.employeeName,
+                departmentName: i?.department,
+                designationName: i?.designation,
+                depositeMoney: i?.depositAmount,
+                remarks: i?.comment,
+                key: index,
+              };
+            });
+            setLanding(modify);
+          },
+        });
+      },
+    });
+  };
+
   const header: any = [
     {
       title: "SL",
@@ -222,16 +273,6 @@ export const SecurityDepositCRUD = () => {
       align: "center",
       width: 30,
     },
-    // {
-    //   title: "Workplace Group",
-    //   dataIndex: "workplaceGroupName",
-    //   width: 100,
-    // },
-    // {
-    //   title: "Workplace",
-    //   dataIndex: "workplaceName",
-    //   width: 100,
-    // },
     {
       title: "Employee Code",
       dataIndex: "employeeCode",
@@ -252,7 +293,6 @@ export const SecurityDepositCRUD = () => {
       dataIndex: "departmentName",
       width: 100,
     },
-    //  Custom Input Columns
     {
       title: "Deposits Money",
       width: 150,
@@ -294,74 +334,28 @@ export const SecurityDepositCRUD = () => {
         />
       ),
     },
-    // {
-    //   title: "Status",
-    //   width: 150,
 
-    //   // render: (_: any, rec: any) => {
-    //   //   return (
-    //   //     <div>
-    //   //       {rec?.strEmployeeStatus === "Approved" ? (
-    //   //         <Tag color="green">{rec?.status}</Tag>
-    //   //       ) : rec?.status === "Rejected" ? (
-    //   //         <Tag color="red">{rec?.status}</Tag>
-    //   //       ) : rec?.status === "Pending" ? (
-    //   //         <Tag color="orange">{rec?.status}</Tag>
-    //   //       ) : (
-    //   //         <Tag color="default">{rec?.status}</Tag>
-    //   //       )}
-
-    //   //     </div>
-    //   //   );
-    //   // },
-    //   render: (_: any, rec: any) => (
-    //     <div className="d-flex align-items-center">
-    //       <span className="ml-2">
-    //         {rec?.strEmployeeStatus === "Approved" ? (
-    //           <Tag color="green">{rec?.status}</Tag>
-    //         ) : rec?.status === "Rejected" ? (
-    //           <Tag color="red">{rec?.status}</Tag>
-    //         ) : rec?.status === "Pending" ? (
-    //           <Tag color="orange">{rec?.status}</Tag>
-    //         ) : (
-    //           <Tag color="default">{rec?.status}</Tag>
-    //         )}
-    //       </span>
-    //       {rec?.approvalLog?.length > 0 && (
-    //         <InfoOutlined
-    //           className="ml-2"
-    //           sx={{ cursor: "pointer", fontSize: "17px" }}
-    //           onClick={(e) => {
-    //             e.stopPropagation();
-    //             setAnchorElHistory(e.currentTarget as any);
-    //             setSelectedSingleEmployee(rec);
-    //           }}
-    //         />
-    //       )}
-    //     </div>
-    //   ),
-    // },
     {
       title: "",
       width: 30,
 
       align: "center",
-      render: (_: any, item: any) => (
-        <TableButton
-          buttonsList={
-            [
-              // {
-              //   type: "delete",
-              //   onClick: () => {
-              //     deleteProposalById(item);
-              //   },
-              // },
-            ]
-          }
-        />
-      ),
+      render: (_: any, item: any) =>
+        id && (
+          <TableButton
+            buttonsList={[
+              {
+                type: "delete",
+                onClick: () => {
+                  deleteDepositById(item);
+                },
+              },
+            ]}
+          />
+        ),
     },
   ];
+
   const errorHeader: any = [
     {
       title: "SL",
@@ -399,14 +393,7 @@ export const SecurityDepositCRUD = () => {
   const viewHandler = async () => {
     const values = form.getFieldsValue(true);
     setSelectedRow([]);
-    // await form
-    //   .validateFields()
-    //   .then(() => {
-    if (
-      // landing?.filter((i: any) => i?.employeeId === values?.employee?.value)
-      //   .length === 0 &&
-      values?.employee?.value
-    ) {
+    if (values?.employee?.value) {
       const newEmp = {
         employeeId: values?.employee?.value,
         employeeCode: values?.employee?.employeeCode,
@@ -443,10 +430,6 @@ export const SecurityDepositCRUD = () => {
         },
       });
     }
-    // })
-    // .catch(() => {
-    //   console.error("Validate Failed:");
-    // });
     form.resetFields(["employee"]);
   };
   const onFinish = () => {
@@ -492,20 +475,11 @@ export const SecurityDepositCRUD = () => {
 
   return employeeFeature?.isView ? (
     <>
-      <PForm
-        form={form}
-        initialValues={
-          {
-            // employee: { value: employeeId, label: userName },
-            // fromDate: moment(getDateOfYear("first")),
-            // toDate: moment(getDateOfYear("last")),
-          }
-        }
-        onFinish={onFinish}
-      >
+      <PForm form={form} initialValues={{}} onFinish={onFinish}>
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
+            backButton={true}
             submitText="Save"
             exportIcon={
               landingApi?.data?.length > 0 &&
@@ -661,72 +635,6 @@ export const SecurityDepositCRUD = () => {
                   ]}
                 />
               </Col>
-
-              {/* <Col md={3} sm={12} xs={24}>
-                  <PInput
-                    type="date"
-                    name="fromDate"
-                    label="From Date"
-                    placeholder="From Date"
-                    onChange={(value) => {
-                      form.setFieldsValue({
-                        fromDate: value,
-                      });
-                    }}
-                  />
-                </Col>
-                <Col md={3} sm={12} xs={24}>
-                  <PInput
-                    type="date"
-                    name="toDate"
-                    label="To Date"
-                    placeholder="To Date"
-                    disabledDate={disabledDate}
-                    onChange={(value) => {
-                      form.setFieldsValue({
-                        toDate: value,
-                      });
-                    }}
-                  />
-                </Col> */}
-
-              {/* <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplaceGroup?.data || []}
-                    name="workplaceGroup"
-                    label="Workplace Group"
-                    placeholder="Workplace Group"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplaceGroup: op,
-                        workplace: undefined,
-                      });
-                      getWorkplace();
-                    }}
-                    rules={
-                      [
-                        //   { required: true, message: "Workplace Group is required" },
-                      ]
-                    }
-                  />
-                </Col>
-                <Col md={5} sm={12} xs={24}>
-                  <PSelect
-                    options={workplace?.data || []}
-                    name="workplace"
-                    label="Workplace"
-                    placeholder="Workplace"
-                    disabled={+id ? true : false}
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        workplace: op,
-                      });
-                      getWorkplaceDetails(value, setBuDetails);
-                    }}
-                    // rules={[{ required: true, message: "Workplace is required" }]}
-                  />
-                </Col> */}
             </Row>
           </PCardBody>
 
