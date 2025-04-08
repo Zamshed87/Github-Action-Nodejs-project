@@ -64,5 +64,6 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/FinalSettlementReportForAll",
   "/PdfAndExcelReport/DownloadExcelforSalaryIncrement",
   "SalaryReport/GetBanglaPaysilp",
-  "/generate-employee-id-card"
+  "/generate-employee-id-card",
+  "/PdfAndExcelReport/EmployeeLoanPdf",
 ];
