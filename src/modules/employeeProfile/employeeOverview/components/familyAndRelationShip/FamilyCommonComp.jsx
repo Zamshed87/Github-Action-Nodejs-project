@@ -663,6 +663,22 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                         <div className="row mb-3">
                           <div className="col-lg-1">
                             <Avatar className="overviewAvatar">
+                              <AssignmentInd
+                                sx={{
+                                  color: gray900,
+                                  fontSize: "18px",
+                                }}
+                              />
+                            </Avatar>
+                          </div>
+                          <div className="col-lg-11">
+                            <h4>{item?.strBirthId || "N/A"}</h4>
+                            <small>Birth Certificate Id</small>
+                          </div>
+                        </div>
+                        <div className="row mb-3">
+                          <div className="col-lg-1">
+                            <Avatar className="overviewAvatar">
                               <Cake
                                 sx={{
                                   color: gray900,
