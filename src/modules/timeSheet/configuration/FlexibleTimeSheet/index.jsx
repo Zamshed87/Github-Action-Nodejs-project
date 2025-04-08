@@ -66,35 +66,27 @@ const MonthlyAttendanceReport = () => {
     };
   }, []);
 
-  const apiRequest = (url, params, successCallback) => {
-    landingApi.action({
-      urlKey: url,
-      method: "GET",
-      params: params,
-      onSuccess: successCallback,
-    });
-  };
-
   // api states
   const empDepartmentDDL = useApiRequest([]);
 
   const getEmployeDepartment = () => {
-    apiRequest(
-      "PeopleDeskAllDDL",
-      {
+    empDepartmentDDL.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId || 0,
         IntWorkplaceId: wId || 0,
         intId: 0,
       },
-      (res) => {
+      onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.DepartmentName;
           res[i].value = item?.DepartmentId;
         });
-      }
-    );
+      },
+    });
   };
 
   const CommonCalendarDDL = useApiRequest([]);
@@ -180,22 +172,23 @@ const MonthlyAttendanceReport = () => {
   }, [landingApi?.data]);
 
   const getCalendarDDL = () => {
-    apiRequest(
-      "PeopleDeskAllDDL",
-      {
+    CommonCalendarDDL.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
         DDLType: "Calender",
         IntWorkplaceId: wId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
         intId: 0,
       },
-      (res) => {
+      onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.CalenderName;
           res[i].value = item?.CalenderId;
         });
-      }
-    );
+      },
+    });
   };
   useEffect(() => {
     if (wId) {
