@@ -109,7 +109,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
       remarks: values?.remarks,
       addressDetails: values?.address,
       isEmergencyContact: values?.isEmergencyContact || false,
-      strBirthId: values?.birthCertificate,
+      BirthId: values?.birthCertificate,
       // 1 = emergency
       // 2 = nominee
       // 3 = grantor
