@@ -347,8 +347,9 @@ function SeparationHistoryview({ id, empId }) {
                           "Cancelled" && (
                           <Chips label="Cancelled" classess="danger p-2" />
                         )}
-                        {singleSeparationData?.approvalStatus ===
-                          "Approved" && (
+                        {singleSeparationData?.approvalStatus
+                          ?.toLowerCase()
+                          .includes("approved") && (
                           <Chips label="Approved" classess="success p-2" />
                         )}
                         {singleSeparationData?.approvalStatus ===

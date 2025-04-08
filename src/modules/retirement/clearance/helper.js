@@ -273,9 +273,11 @@ export const getClearanceLandingTableColumn = (
                         {data?.approvalStatus === "Cancelled" && (
                             <Chips label="Cancelled" classess="danger p-2" />
                         )}
-                        {data?.approvalStatus === "Approved" && (
-                            <Chips label="Approved" classess="success p-2" />
-                        )}
+                        {data?.approvalStatus
+                            ?.toLowerCase()
+                            .includes("approved") && (
+                                <Chips label="Approved" classess="success p-2" />
+                            )}
                         {data?.approvalStatus === "Withdrawn" && (
                             <Chips label="Withdrawn" classess="danger p-2" />
                         )}
