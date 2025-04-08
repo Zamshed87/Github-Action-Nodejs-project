@@ -62,19 +62,18 @@ const PfLoanAddEdit = () => {
   const inputFile = useRef(null);
   const [, saveData, dataLoading] = useAxiosPost({});
   const [loanByIdDto, getLoanById, loanByIdLoading] = useAxiosGet([]);
-
   const onButtonClick = () => {
     inputFile.current.click();
   };
 
   useEffect(() => {
     PeopleDeskSaasDDL(
-      "LoanType",
+      "PFLoanIdbyWorkplace",
       wgId,
       buId,
       setLoanTypeDDL,
-      "LoanTypeId",
-      "LoanType",
+      "value",
+      "label",
       0,
       wId
     );
@@ -254,7 +253,8 @@ const PfLoanAddEdit = () => {
                 <label>Loan Type</label>
                 <FormikSelect
                   name="loanType"
-                  options={[{ value: 12, label: "PF Loan" }]}
+                  // options={[{ value: 12, label: "PF Loan" }]}
+                  options={loanTypeDDL}
                   value={values?.loanType}
                   onChange={(valueOption) => {
                     setFieldValue("loanType", valueOption);
