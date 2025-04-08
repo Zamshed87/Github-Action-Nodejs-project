@@ -1030,6 +1030,12 @@ const JobConfirmationReport = lazy(() =>
 const EmLoanApplication = lazy(() =>
   import("../modules/employeeProfile/LoanApplication/index.jsx")
 );
+const PfLoanLanding = lazy(() =>
+  import("../modules/employeeProfile/pfLoan/index.jsx")
+);
+const PfLoanAddEdit = lazy(() =>
+  import("../modules/employeeProfile/pfLoan/PfLoanAddEdit")
+);
 const EmMovementApplication = lazy(() =>
   import("../modules/employeeProfile/movementApplication/index.tsx")
 );
@@ -1927,7 +1933,10 @@ export const routingList = [
   { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
-
+  { path: "/profile/pfLoan", component: PfLoanLanding },
+  { path: "/profile/pfLoan/create", component: PfLoanAddEdit },
+  { path: "/profile/pfLoan/edit/:id", component: PfLoanAddEdit },
+  
   { path: "/profile/confirmation", component: Confirmation },
   {
     path: "/profile/cafeteriaManagement/cafeteriaPricingSetup",
