@@ -16,7 +16,7 @@ const DetailsYearlyPerformanceReport = ({ employeeId, year }) => {
       <div>
         <div className="d-flex justify-content-between">
           <EmployeeDetails empBasic={details} />
-          <PerformanceSummary summary={details} />
+          <PerformanceSummary summary={details} employeeID={employeeId} year={year}/>
         </div>
         <KeyPerformanceIndicatorDetails details={details} />
         <BehaviorallyAnchoredRatingBARDetails details={details} />
