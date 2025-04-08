@@ -416,9 +416,11 @@ export const separationApplicationLandingTableColumn = (
             {data?.approvalStatus === "Cancelled" && (
               <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {data?.approvalStatus === "Approved" && (
-              <Chips label="Approved" classess="success p-2" />
-            )}
+            {data?.approvalStatus
+              ?.toLowerCase()
+              .includes("approved") && (
+                <Chips label="Approved" classess="success p-2" />
+              )}
             {data?.approvalStatus === "Withdrawn" && (
               <Chips label="Withdrawn" classess="danger p-2" />
             )}
@@ -457,7 +459,11 @@ export const separationApplicationLandingTableColumn = (
                 pointAtCenter: true,
               }}
               trigger={["click"]}
-              disabled={item?.approvalStatus !== "Approved"}
+              disabled={
+                !item?.approvalStatus
+                  ?.toLowerCase()
+                  .includes("approved")
+              }
             >
               <PrimaryButton
                 type="button"

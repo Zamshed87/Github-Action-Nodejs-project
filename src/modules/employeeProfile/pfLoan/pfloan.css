@@ -1,0 +1,22 @@
+.pfLoan table,
+.pfLoan th,
+.pfLoan td {
+  border: 1px solid rgb(187, 185, 185);
+  border-collapse: collapse;
+  font-size: 12px;
+  padding: 3px;
+}
+
+.pfLoan th {
+  text-align: center;
+  background-color: rgb(231, 231, 231);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.pfLoan .secondRow {
+  position: sticky;
+  top: 24px !important;
+  z-index: 1;
+}
