@@ -73,7 +73,7 @@ export const AdjustmentCrud = ({
       },
       onSuccess: (res) => {
         res.forEach((item: any, idx: any) => {
-          res[idx].value = item?.id;
+          res[idx].value = item?.policyId;
           res[idx].label = item?.name;
         });
         if (type === "from") {
@@ -316,6 +316,8 @@ export const AdjustmentCrud = ({
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           beneficiaryFrom: op,
+                          policyFrom: undefined,
+                          balanceFrom: undefined,
                         });
                         getPolicyDDL("from", value);
                       }}
@@ -432,6 +434,8 @@ export const AdjustmentCrud = ({
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           beneficiaryTo: op,
+                          policyTo: undefined,
+                          balanceTo: undefined,
                         });
                         getPolicyDDL("to", value);
                       }}
