@@ -45,8 +45,20 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
     {
       title: "Type",
       dataIndex: "types",
-      width: 100,
       isHidden: isHidden,
+      width:60,
+    },
+    {
+      title: "Month",
+      dataIndex: "month",
+      isHidden: isHidden,
+      width:40,
+    },
+    {
+      title: "Year",
+      dataIndex: "year",
+      isHidden: isHidden,
+      width:30,
     },
     {
       title: "Employee Amount",
