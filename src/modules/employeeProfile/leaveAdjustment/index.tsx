@@ -14,21 +14,18 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Switch, Tag } from "antd";
+import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
-import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { AdjustmentCrud } from "./AdjustmentCrud";
 
 export const LeaveAdjustment = () => {
@@ -53,7 +50,6 @@ export const LeaveAdjustment = () => {
   const landingApi = useApiRequest({});
   // const leaveTypeApi = useApiRequest({});
   const deleteApi = useApiRequest({});
-  const detailsApi = useApiRequest({});
   const [open, setOpen] = useState(false);
 
   //   const debounce = useDebounce();
@@ -61,30 +57,6 @@ export const LeaveAdjustment = () => {
   // Form Instance
   const [form] = Form.useForm();
 
-  // navTitle
-
-  // useEffect(() => {
-  //   getLeaveTypes();
-  // }, []);
-
-  // const getLeaveTypes = () => {
-  //   leaveTypeApi?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "LeaveType",
-  //       BusinessUnitId: buId,
-  //       intId: 0,
-  //       WorkplaceGroupId: wgId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.LeaveType;
-  //         res[i].value = item?.LeaveTypeId;
-  //       });
-  //     },
-  //   });
-  // };
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
@@ -223,6 +195,9 @@ export const LeaveAdjustment = () => {
         LeaveAdjustmentId: item?.leaveAdjustmentId,
       },
       toast: true,
+      onSuccess: (res: any) => {
+        landingApiCall();
+      },
 
       onError: (error: any) => {
         toast.error(
