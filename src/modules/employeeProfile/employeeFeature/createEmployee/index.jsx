@@ -703,7 +703,8 @@ const CreateAndEditEmploye = () => {
                   const payload = {
                     strLoginId:
                       form.getFieldValue("loginUserId") ||
-                      form.getFieldValue("employeeCode"),
+                      form.getFieldValue("employeeCode") ||
+                      "",
                     intUrlId: intUrlId,
                     intAccountId: orgId,
                   };
@@ -760,7 +761,8 @@ const CreateAndEditEmploye = () => {
                   const payload = {
                     strLoginId:
                       form.getFieldValue("loginUserId") ||
-                      form.getFieldValue("employeeCode"),
+                      form.getFieldValue("employeeCode") ||
+                      "",
                     intUrlId: intUrlId,
                     intAccountId: orgId,
                   };
@@ -835,15 +837,18 @@ const CreateAndEditEmploye = () => {
                     name="employeeCode"
                     label="Employee ID"
                     placeholder="Employee ID"
-                    rules={[
-                      { required: true, message: "Employee ID is required" },
-                    ]}
-                    // disabled={params?.id}
+                    rules={
+                      intAccountId !== 16 && [
+                        { required: true, message: "Employee ID is required" },
+                      ]
+                    }
                     disabled={
-                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
+                      intAccountId === 16 ||
+                      (empId && (!employeeFeature?.isEdit || !isOfficeAdmin))
                     }
                   />
                 </Col>
+
                 <Col md={6} sm={24}>
                   <PInput
                     type="text"
