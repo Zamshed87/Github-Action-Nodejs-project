@@ -1077,3 +1077,6 @@ font-size: 12px !important;
   color:#299647 !important ;
 
 } 
+.ant-pagination-item-ellipsis{
+  display: flex !important;
+}
