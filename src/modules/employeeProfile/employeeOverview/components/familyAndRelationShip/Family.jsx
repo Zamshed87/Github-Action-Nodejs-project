@@ -29,6 +29,13 @@ function Family({ index, tabIndex, empId }) {
               typeName="Grantor"
               empId={empId}
             />
+            <FamilyCommonComp
+              mainTitle="Guarantor/Reference Information"
+              subTitle="Add your guarantor/reference information"
+              typeId={4}
+              typeName="Reference"
+              empId={empId}
+            />
           </div>
         </div>
       </>
