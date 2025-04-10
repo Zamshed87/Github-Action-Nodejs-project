@@ -243,6 +243,7 @@ export const AdjustmentCrud = ({
               options={
                 beneficiaryType?.data?.LeaveAdjustmentBenefiaciaryEnum || []
               }
+              disabled={isEdit}
               name="beneficiary"
               label="Beneficiary Type"
               placeholder="Beneficiary  Type"
@@ -312,7 +313,7 @@ export const AdjustmentCrud = ({
                       }
                       name="beneficiaryFrom"
                       label="From Beneficiary Name"
-                      disabled={beneficiary?.value == "3"}
+                      disabled={beneficiary?.value == "3" || isEdit}
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           beneficiaryFrom: op,
@@ -346,6 +347,7 @@ export const AdjustmentCrud = ({
               // mode="multiple"
               allowClear
               options={leaveTypeDDL || []}
+              disabled={isEdit}
               name="policyFrom"
               label="From Leave Policy"
               onChange={(value, op) => {
@@ -365,6 +367,7 @@ export const AdjustmentCrud = ({
           <Col md={8} sm={24}>
             <PInput
               type="number"
+              disabled={isEdit}
               name="balanceFrom"
               label={
                 <>
@@ -430,7 +433,7 @@ export const AdjustmentCrud = ({
                       options={[]}
                       name="beneficiaryTo"
                       label="To Beneficiary Name"
-                      disabled={beneficiary?.value == "2"}
+                      disabled={beneficiary?.value == "2" || isEdit}
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           beneficiaryTo: op,
@@ -463,6 +466,7 @@ export const AdjustmentCrud = ({
               // mode="multiple"
               allowClear
               options={leaveTypeDDLTo || []}
+              disabled={isEdit}
               name="policyTo"
               label="To Leave Policy"
               onChange={(value, op) => {
@@ -483,6 +487,7 @@ export const AdjustmentCrud = ({
             <PInput
               type="number"
               name="balanceTo"
+              disabled={isEdit}
               label={
                 <>
                   Adjust To Balance{" "}
@@ -516,16 +521,18 @@ export const AdjustmentCrud = ({
             />
           </Col>
         </Row>
-        <ModalFooter
-          onCancel={() => {
-            setSingleData({});
-            setOpen(false);
-            setIsEdit(false);
-            landingApiCall();
-          }}
-          submitAction="submit"
-          //   loading={saveDepartment.loading}
-        />
+        {!isEdit && (
+          <ModalFooter
+            onCancel={() => {
+              setSingleData({});
+              setOpen(false);
+              setIsEdit(false);
+              landingApiCall();
+            }}
+            submitAction="submit"
+            //   loading={saveDepartment.loading}
+          />
+        )}
       </PForm>
     </>
   );

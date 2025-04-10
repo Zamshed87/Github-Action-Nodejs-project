@@ -94,8 +94,6 @@ export const LeaveAdjustment = () => {
 
   const landingApiCall = () => {
     const values = form.getFieldsValue(true);
-    const ids = values?.leaveType?.map((i: any) => i?.value);
-    const statusIds = values?.status?.map((i: any) => i?.value);
     landingApi.action({
       urlKey: "LeaveAdjustmentLanding",
       method: "get",
@@ -147,7 +145,7 @@ export const LeaveAdjustment = () => {
           <TableButton
             buttonsList={[
               {
-                type: "edit",
+                type: "view",
                 onClick: (e: any) => {
                   setIsEdit(true);
                   setOpen(true);
@@ -164,7 +162,7 @@ export const LeaveAdjustment = () => {
               },
             ]}
           />
-          <PButton
+          {/* <PButton
             type="primary"
             action="button"
             content="Complete"
@@ -211,7 +209,7 @@ export const LeaveAdjustment = () => {
               //     },
               //   });
             }}
-          />
+          /> */}
         </div>
       ),
     },
@@ -219,21 +217,17 @@ export const LeaveAdjustment = () => {
 
   const deleteLeaveById = (item: any) => {
     deleteApi?.action({
-      urlKey: "DeleteLeave",
+      urlKey: "LeaveAdjustmentDeleteById",
       method: "DELETE",
       params: {
-        applicationId: item?.leaveApplicationId,
+        LeaveAdjustmentId: item?.leaveAdjustmentId,
       },
       toast: true,
-      onSuccess: (res) => {
-        toast?.success(res?.message?.[0]);
-        // landingData();
-      },
 
       onError: (error: any) => {
         toast.error(
-          error?.response?.data?.message?.[0] ||
-            error?.response?.data?.message ||
+          error?.response?.data?.message ||
+            error?.response?.data?.message?.[0] ||
             error?.response?.data?.errors?.[
               "GeneralPayload.Description"
             ]?.[0] ||
@@ -345,7 +339,7 @@ export const LeaveAdjustment = () => {
         </PCard>
         <PModal
           open={open}
-          title={isEdit ? `Edit Adjustment` : `Create Adjustment`}
+          title={isEdit ? `View Adjustment` : `Create Adjustment`}
           width=""
           onCancel={() => setOpen(false)}
           maskClosable={false}

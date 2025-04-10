@@ -342,6 +342,7 @@ export const apiList = {
   LeaveAdjustmentCreate: "/LeaveAdjustment/Create",
   LeaveAdjustmentLanding: "/LeaveAdjustment/Get",
   LeaveAdjustmentGetById: "/LeaveAdjustment/GetById",
+  LeaveAdjustmentDeleteById: "/LeaveAdjustment/DeleteById",
   PolicyWiseEmployeeLeaveBalanceList:
     "/LeaveBalance/PolicyWiseEmployeeLeaveBalanceList",
 };
