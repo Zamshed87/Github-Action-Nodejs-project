@@ -27,8 +27,9 @@ export const downloadFile = (
       setLoading && setLoading(false);
       link.click();
     })
-    .catch(() => {
+    .catch((error) => {
       setLoading && setLoading(false);
+      toast.warn(error?.response?.data?.message || "Failed, try again");
     });
 };
 
