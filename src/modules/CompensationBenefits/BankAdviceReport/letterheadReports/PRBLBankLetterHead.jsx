@@ -50,9 +50,6 @@ export default function PRBLBankLetterHead({
             >
               <p style={{ color: "black", fontSize: "14px" }}>
                 Date: {landingViewPdf?.[0]?.Today}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Our Ref:{" "}
-                {`${landingViewPdf?.[0]?.WorkplaceCode}/AF/${landingViewPdf?.[0]?.MonthName}/${landingViewPdf?.[0]?.YearId}`}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Your Ref:{" "}
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>The Manager,</p>
