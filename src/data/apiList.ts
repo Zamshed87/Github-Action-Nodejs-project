@@ -339,4 +339,10 @@ export const apiList = {
   LeaveBalanceReport: "PdfAndExcelReport/LeaveBalanceReport",
   GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
   OffdayLandingFilter: "/Employee/OffdayLandingFilter",
+  LeaveAdjustmentCreate: "/LeaveAdjustment/Create",
+  LeaveAdjustmentLanding: "/LeaveAdjustment/Get",
+  LeaveAdjustmentGetById: "/LeaveAdjustment/GetById",
+  LeaveAdjustmentDeleteById: "/LeaveAdjustment/DeleteById",
+  PolicyWiseEmployeeLeaveBalanceList:
+    "/LeaveBalance/PolicyWiseEmployeeLeaveBalanceList",
 };

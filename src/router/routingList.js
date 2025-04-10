@@ -1620,6 +1620,7 @@ import { CalendarAssignSelfService } from "modules/empSelfService/supervisor/cal
 import OffDaySelfService from "modules/empSelfService/supervisor/offDay";
 import MonthlyOffdayAssignLandingSelfService from "modules/empSelfService/supervisor/monthlyOffdayAssign";
 import { OffDayLanding } from "modules/timeSheet/employeeAssign/offDay";
+import { LeaveAdjustment } from "modules/employeeProfile/leaveAdjustment";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -1931,6 +1932,7 @@ export const routingList = [
     component: CommonAppPipeline,
   },
   { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
+  { path: "/profile/leaveAdjustment", component: LeaveAdjustment },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
   { path: "/profile/pfLoan", component: PfLoanLanding },
