@@ -40,14 +40,21 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
   const { type } = params;
 
   const addHandler = (values) => {
-    // const isDuplicate = performanceAppraisal.some(
-    //   (org) => org.idx === values?.stakeholder?.label
-    // );
+    // Check for overlaps or if markStart equals an existing markEnd
+    const isOverlapping = performanceAppraisal.some((existing) => {
+      return (
+        (values.markStart < existing.markEnd &&
+          values.markEnd > existing.markStart) ||
+        values.markStart === existing.markEnd
+      );
+    });
 
-    // if (isDuplicate) {
-    //   toast.error("Stakeholder already exists");
-    //   return;
-    // }
+    if (isOverlapping) {
+      toast.error(
+        `The range ${values.markStart} - ${values.markEnd} overlaps with an existing range or starts at an existing end.`
+      );
+      return;
+    }
 
     setPerformanceAppraisal([
       ...performanceAppraisal,
