@@ -47,7 +47,7 @@ import UpayBankLetterHead from "./letterheadReports/UpayBankLetterHead";
 import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
 import MBLBankLetterHead from "./letterheadReports/MBLBankLetterHead";
 import BFTNEBLBankLetterHead from "./letterheadReports/BFTNEBLBankLetterHead";
-import PRBLBankLetterHead from "./letterheadReports/PRBLBankLetterHead";
+import PrimeBankLetterHead from "./letterheadReports/PrimeBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -1391,8 +1391,8 @@ const BankAdviceReport = () => {
                         signatureImage={signatureImage}
                       />
                     )}
-                    {values?.adviceType?.value === "PRBL" && (
-                      <PRBLBankLetterHead
+                    {values?.adviceType?.value === "PRIME" && (
+                      <PrimeBankLetterHead
                         letterHeadImage={letterHeadImage}
                         landingViewPdf={landingViewPdf}
                         signatureImage={signatureImage}

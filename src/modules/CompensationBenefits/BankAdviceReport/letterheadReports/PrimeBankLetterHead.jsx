@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PRBLBankLetterHead({
+export default function PrimeBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,
