@@ -272,6 +272,7 @@ export const NewLeavePolicy = () => {
               type="primary"
               action="button"
               content="Generate"
+              disabled={item?.status !== "Active"}
               onClick={() => {
                 generateApi?.action({
                   urlKey: "BalanceGenerate",
