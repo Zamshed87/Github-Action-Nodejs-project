@@ -1931,14 +1931,14 @@ export const routingList = [
     path: "/administration/configuration/commonapprovalpipeline",
     component: CommonAppPipeline,
   },
-  { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
+  { path: "/profile/leave/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/leaveAdjustment", component: LeaveAdjustment },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
   { path: "/profile/pfLoan", component: PfLoanLanding },
   { path: "/profile/pfLoan/create", component: PfLoanAddEdit },
   { path: "/profile/pfLoan/edit/:id", component: PfLoanAddEdit },
-  
+
   { path: "/profile/confirmation", component: Confirmation },
   {
     path: "/profile/cafeteriaManagement/cafeteriaPricingSetup",
