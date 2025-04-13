@@ -27,6 +27,7 @@ import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
+import { isDevServer } from "App";
 
 export const SecurityDepositLanding = () => {
   const dispatch = useDispatch();
@@ -177,7 +178,6 @@ export const SecurityDepositLanding = () => {
                   return toast.warn("You don't have permission");
                   e.stopPropagation();
                 }
-                //   setOpen(true);
                 detailsApi?.action({
                   urlKey: "DepositDetails",
                   method: "GET",
@@ -197,23 +197,22 @@ export const SecurityDepositLanding = () => {
                 });
               },
             },
-            {
-              type: "edit",
-              onClick: (e: any) => {
-                if (!employeeFeature?.isEdit) {
-                  return toast.warn("You don't have permission");
-                }
-                history.push({
-                  pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
-                  state: {
-                    month: item?.monthId,
-                    year: item?.yearId,
-                  },
-                });
-                //   setOpen(true);
-                //   setId(rec);
-              },
-            },
+            // talk with business team
+            // {
+            //   type: "edit",
+            //   onClick: (e: any) => {
+            //     if (!employeeFeature?.isEdit) {
+            //       return toast.warn("You don't have permission");
+            //     }
+            //     history.push({
+            //       pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
+            //       state: {
+            //         month: item?.monthId,
+            //         year: item?.yearId,
+            //       },
+            //     });
+            //   },
+            // },
             // {
             //   type: "delete",
             //   onClick: () => {
@@ -352,12 +351,12 @@ export const SecurityDepositLanding = () => {
                 type: "primary",
                 content: "Bulk Template",
                 onClick: () => {
+                  console.log(
+                    process.env.NODE_ENV === "development",
+                    process.env.NODE_ENV
+                  );
                   downloadFile(
-                    `${
-                      process.env.NODE_ENV === "development"
-                        ? "/document/downloadfile?id=8386"
-                        : ""
-                    }`,
+                    `${isDevServer ? "/document/downloadfile?id=8386" : ""}`,
                     "Security Deposit Bulk Upload",
                     "xlsx",
                     setLoading
