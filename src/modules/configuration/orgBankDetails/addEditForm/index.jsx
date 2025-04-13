@@ -466,8 +466,8 @@ export default function AddEditForm({
                   label: "MBL",
                 },
                 {
-                  value: "PRBL",
-                  label: "PRBL",
+                  value: "PRIME",
+                  label: "PRIME",
                 },
               ]}
               onChange={(value, op) => {
