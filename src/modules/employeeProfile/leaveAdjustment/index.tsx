@@ -41,7 +41,7 @@ export const LeaveAdjustment = () => {
   const [singleData, setSingleData] = useState(false);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 38),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30576),
     []
   );
   //   menu permission
