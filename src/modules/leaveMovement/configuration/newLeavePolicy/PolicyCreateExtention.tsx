@@ -33,7 +33,7 @@ import { CiGlobe } from "react-icons/ci";
 // import { MdTimelapse } from "react-icons/md";
 // import { SiNewbalance } from "react-icons/si";
 import { BsCashCoin } from "react-icons/bs";
-import { LuSandwich } from "react-icons/lu";
+// import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
 import { PModal } from "Components/Modal";
 import IConfirmModal from "common/IConfirmModal";
@@ -248,11 +248,11 @@ export const PolicyCreateExtention = () => {
     //   status: "wait",
     //   icon: <GrDocumentConfig />,
     // },
-    {
-      title: "Sandwitch",
-      status: "wait",
-      icon: <LuSandwich />,
-    },
+    // {
+    //   title: "Sandwitch",
+    //   status: "wait",
+    //   icon: <LuSandwich />,
+    // },
     // {
     //   title: "Lapse",
     //   status: "wait",
@@ -336,7 +336,7 @@ export const PolicyCreateExtention = () => {
     // ],
     // [],
     // ["leavelapse", "afterLeaveCompleted"],
-    ["isSandwitch"],
+    // ["isSandwitch"],
 
     [
       "addPrevCarry",
@@ -479,7 +479,7 @@ export const PolicyCreateExtention = () => {
               })) || [],
           },
         };
-      case 1:
+      case 8:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
@@ -493,14 +493,14 @@ export const PolicyCreateExtention = () => {
                 : "",
           },
         };
-      case 2:
+      case 1:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
           carryPayload: {
             policyId: id,
 
-            stepperId: 3, // Assuming stepperId is managed elsewhere or not directly bound here
+            stepperId: 2, // Assuming stepperId is managed elsewhere or not directly bound here
             isCarryForward: values?.isCarryForward?.value === 1,
             carryForwardTypeId: +values?.leaveCarryForwardType?.value || 0,
             maxCarryAfterLapse: values?.minConsumeTime || 0,
@@ -510,12 +510,12 @@ export const PolicyCreateExtention = () => {
             carryExpireDays: values?.expiryCarryForwardDaysAfterLapse || 0,
           },
         };
-      case 3:
+      case 2:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
           encashmentPayload: {
-            stepperId: 4,
+            stepperId: 3,
             policyId: id,
 
             isEncashment: values?.isEncashment?.value === 1,
@@ -553,12 +553,12 @@ export const PolicyCreateExtention = () => {
             }),
           },
         };
-      case 4:
+      case 3:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
           additionalPayload: {
-            stepperId: 5,
+            stepperId: 4,
             policyId: id,
 
             isBalanceShowESS: values?.isEssShowBalance?.value === 1,
@@ -569,6 +569,7 @@ export const PolicyCreateExtention = () => {
             minLeaveForAttachment: values?.attachmentMandatoryAfter,
             maxLeaveInMonth: values?.maxLeaveApplyMonthly,
             maxLeaveInDays: values?.minLeaveApplyDays,
+            maxLeaveApplyInLapse: values?.maxLeaveApplyInLapse || 0,
           },
         };
     }
@@ -616,7 +617,7 @@ export const PolicyCreateExtention = () => {
           if (generalData && generalData.length > 0) {
             const general = generalData[0];
             const { leavePolicyCommonList } = general;
-            if (leavePolicyCommonList?.stepperId === 5) {
+            if (leavePolicyCommonList?.stepperId === 4) {
               setCurrent(leavePolicyCommonList?.stepperId - 1);
             } else {
               setCurrent(leavePolicyCommonList?.stepperId);
@@ -820,11 +821,12 @@ export const PolicyCreateExtention = () => {
               },
 
               isAttachmentMandatory: {
-                value: additional.isAttachmentMandatory ? 1 : 0,
+                value: additional?.isAttachmentMandatory ? 1 : 0,
               },
-              attachmentMandatoryAfter: additional.minLeaveForAttachment,
-              maxLeaveApplyMonthly: additional.maxLeaveInMonth,
-              minLeaveApplyDays: additional.maxLeaveInDays,
+              attachmentMandatoryAfter: additional?.minLeaveForAttachment,
+              maxLeaveApplyMonthly: additional?.maxLeaveInMonth,
+              minLeaveApplyDays: additional?.maxLeaveInDays,
+              maxLeaveApplyInLapse: additional?.maxLeaveApplyInLapse || 0,
             });
           }
         },
@@ -860,7 +862,7 @@ export const PolicyCreateExtention = () => {
           proRataCount: 15,
           proRataBasis: { value: "1", label: "Update From Start" },
           isCarryForward: { value: 0, label: "No" },
-          isSandwitch: { value: 0, label: "No" },
+          // isSandwitch: { value: 0, label: "No" },
           isEncashment: { value: 0, label: "No" },
           isAttachmentMandatory: { value: 0, label: "No" },
           isEssApply: { value: 1, label: "Yes" },
@@ -870,13 +872,14 @@ export const PolicyCreateExtention = () => {
             label: "Apply Anytime",
           },
           leaveRoundingType: { value: 1, label: "No Round" },
+          maxLeaveApplyInLapse: 1000,
         }}
         onFinish={onFinish}
       >
         <PCard>
           <PCardHeader
             backButton
-            submitText={current === 4 ? "Save" : undefined}
+            submitText={current === 3 ? "Save" : undefined}
             // buttonList={[
             //   {
             //     type: "primary",
@@ -947,7 +950,7 @@ export const PolicyCreateExtention = () => {
                   />
                 )}
               </>
-            ) : current === 1 ? (
+            ) : current === 8 ? (
               // <PaidLeave form={form} />
               <Sandwitch
                 form={form}
@@ -955,7 +958,7 @@ export const PolicyCreateExtention = () => {
                 setSelectedRow1={setSelectedRow1}
                 detailsApi={detailsApi}
               />
-            ) : current === 2 ? (
+            ) : current === 1 ? (
               // <Consumption
               //   form={form}
               //   consumeData={consumeData}
@@ -965,7 +968,7 @@ export const PolicyCreateExtention = () => {
                 form={form}
                 PercentOrFixedEnum={PercentOrFixedEnum}
               />
-            ) : current === 3 ? (
+            ) : current === 2 ? (
               // <Sandwitch
               //   form={form}
               //   selectedRow2={selectedRow2}
@@ -981,7 +984,7 @@ export const PolicyCreateExtention = () => {
                 JoinOrConfirmEnum={JoinOrConfirmEnum}
                 PercentOrFixedEnum={PercentOrFixedEnum}
               />
-            ) : current === 4 ? (
+            ) : current === 3 ? (
               // <Lapse form={form} />
               <Additional form={form} />
             ) : (
@@ -1032,7 +1035,7 @@ export const PolicyCreateExtention = () => {
                     const values = form.getFieldsValue(true);
                     const cond1 = current === 0 && consumeData.length === 0;
                     const cond2 =
-                      current === 3 &&
+                      current === 2 &&
                       values?.isEncashment === 1 &&
                       tableData.length === 0;
                     const cond3 = current === 0 && balanceTable.length === 0;

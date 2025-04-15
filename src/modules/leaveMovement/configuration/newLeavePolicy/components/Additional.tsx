@@ -221,6 +221,26 @@ export const Additional = ({ form }: any) => {
         <Col md={6} sm={24}>
           <PInput
             type="number"
+            name="maxLeaveApplyInLapse"
+            label="Max. Leave Apply in Lapse"
+            placeholder=""
+            rules={[
+              {
+                required: true,
+                message: "Max. Leave Apply in Lapse is required",
+              },
+              {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PInput
+            type="number"
             name="maxLeaveApplyMonthly"
             label="Max. Leave Apply Days (Monthly)"
             placeholder=""

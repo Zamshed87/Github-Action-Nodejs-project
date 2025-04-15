@@ -13,7 +13,7 @@ export const LeavePolicyDetails = () => {
   const policyApi = useApiRequest({});
   const dispatch = useDispatch();
 
-  const [sandWitchLanding, setSandWitchLanding] = useState<any>([]);
+  // const [sandWitchLanding, setSandWitchLanding] = useState<any>([]);
   const [landing, setLanding] = useState<any>([]);
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
@@ -67,25 +67,25 @@ export const LeavePolicyDetails = () => {
       });
     }
   }, [policyId]);
-  const findMatch = (d: any) => {
-    const t: any = [];
-    d?.forEach((i: any) => {
-      const f = enumApi?.data?.SandwichLeaveEnum?.find(
-        (j: any) => j?.index == i
-      );
-      if (f) {
-        t.push({ scene: f?.label });
-      }
-    });
-    setSandWitchLanding(t);
-  };
-  useEffect(() => {
-    if (detailsApi?.data?.data?.sandwichData?.length > 0) {
-      const sandwich = detailsApi.data?.data?.sandwichData[0];
-      const d = sandwich?.sandwichLeaveScenarioId?.split(",");
-      d?.length > 0 && findMatch(d);
-    }
-  }, [detailsApi?.data, enumApi?.data]);
+  // const findMatch = (d: any) => {
+  //   const t: any = [];
+  //   d?.forEach((i: any) => {
+  //     const f = enumApi?.data?.SandwichLeaveEnum?.find(
+  //       (j: any) => j?.index == i
+  //     );
+  //     if (f) {
+  //       t.push({ scene: f?.label });
+  //     }
+  //   });
+  //   setSandWitchLanding(t);
+  // };
+  // useEffect(() => {
+  //   if (detailsApi?.data?.data?.sandwichData?.length > 0) {
+  //     const sandwich = detailsApi.data?.data?.sandwichData[0];
+  //     const d = sandwich?.sandwichLeaveScenarioId?.split(",");
+  //     d?.length > 0 && findMatch(d);
+  //   }
+  // }, [detailsApi?.data, enumApi?.data]);
   useEffect(() => {
     if (detailsApi?.data?.data?.calculativeData?.length > 0) {
       detailsApi?.data?.data?.calculativeData[0]?.calculativeDaysPolicyId?.forEach(
@@ -371,7 +371,7 @@ export const LeavePolicyDetails = () => {
           header={policyheader}
         />
       </div>
-      <Divider />
+      {/* <Divider />
       <h4 className="my-2"> Sandwich Data: </h4>
 
       <div style={{ fontSize: 12 }}>
@@ -388,7 +388,7 @@ export const LeavePolicyDetails = () => {
             header={sandWitchHeader}
           />
         )}
-      </div>
+      </div> */}
       <Divider />
       <h4 className="my-2"> Carry Data: </h4>
 
@@ -444,6 +444,8 @@ export const LeavePolicyDetails = () => {
             {add?.roundingTypeId === 3 ? "Round Down" : "No Round"}
             <br />
             Leave Application Time : {add?.applicationTime}
+            <br />
+            Max. Leave Apply in Lapse : {add?.maxLeaveApplyInLapse}
             <br />
             Attachment Mandatory : {add?.isAttachmentMandatory ? "Yes" : "No"}
             <br />

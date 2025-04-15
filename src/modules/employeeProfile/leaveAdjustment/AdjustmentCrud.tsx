@@ -200,12 +200,12 @@ export const AdjustmentCrud = ({
         onSuccess: (res: any) => {
           form.setFieldsValue({
             beneficiaryFrom: {
-              value: res?.data?.[0].fromBeneficiaryNameId,
-              label: res?.data?.[0].fromBeneficiaryName,
+              value: res?.data?.[0].fromBeneficiaryNameId || 0,
+              label: res?.data?.[0].fromBeneficiaryName || "Admin",
             },
             beneficiaryTo: {
-              value: res?.data?.[0].toBeneficiaryNameId,
-              label: res?.data?.[0].toBeneficiaryName,
+              value: res?.data?.[0].toBeneficiaryNameId || 0,
+              label: res?.data?.[0].toBeneficiaryName || "Admin",
             },
             beneficiary: {
               value: res?.data?.[0].leaveAdjustmentBeneficialId,
@@ -259,12 +259,12 @@ export const AdjustmentCrud = ({
                 });
                 if (value == 2) {
                   form.setFieldsValue({
-                    beneficiaryTo: { value: employeeId, label: userName },
+                    beneficiaryTo: { value: 0, label: "Admin" },
                   });
                   getPolicyDDL("to", employeeId);
                 } else if (value == 3) {
                   form.setFieldsValue({
-                    beneficiaryFrom: { value: employeeId, label: userName },
+                    beneficiaryFrom: { value: 0, label: "Admin" },
                   });
                   getPolicyDDL("from", employeeId);
                 }
@@ -337,70 +337,72 @@ export const AdjustmentCrud = ({
                       ]}
                     />
                   </Col>
+                  <Col md={8} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={leaveTypeDDL || []}
+                      disabled={beneficiary?.value == "3" || isEdit}
+                      name="policyFrom"
+                      label="From Leave Policy"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          policyFrom: op,
+                        });
+                        getDetails("from", value);
+                      }}
+                      rules={[
+                        {
+                          required: beneficiary?.value != "3",
+                          message: "From Leave Policy is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={8} sm={24}>
+                    <PInput
+                      type="number"
+                      disabled={beneficiary?.value == "3" || isEdit}
+                      name="balanceFrom"
+                      label={
+                        <>
+                          Adjust From Balance
+                          <LightTooltip
+                            title={
+                              <>
+                                <DataTable
+                                  bordered
+                                  data={details || []}
+                                  //   loading={landingApi?.loading}
+                                  header={header}
+                                />
+                              </>
+                            }
+                            arrow
+                          >
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: failColor,
+                                width: 16,
+                                cursor: "pointer",
+                              }}
+                            />
+                          </LightTooltip>
+                        </>
+                      }
+                      rules={[
+                        {
+                          required: beneficiary?.value != "3",
+                          message: "Adjust From Balance is required",
+                        },
+                      ]}
+                    />
+                  </Col>
                 </>
               );
             }}
           </Form.Item>
-
-          <Col md={8} sm={24}>
-            <PSelect
-              // mode="multiple"
-              allowClear
-              options={leaveTypeDDL || []}
-              disabled={isEdit}
-              name="policyFrom"
-              label="From Leave Policy"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  policyFrom: op,
-                });
-                getDetails("from", value);
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: "From Leave Policy is required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={8} sm={24}>
-            <PInput
-              type="number"
-              disabled={isEdit}
-              name="balanceFrom"
-              label={
-                <>
-                  Adjust From Balance
-                  <LightTooltip
-                    title={
-                      <>
-                        <DataTable
-                          bordered
-                          data={details || []}
-                          //   loading={landingApi?.loading}
-                          header={header}
-                        />
-                      </>
-                    }
-                    arrow
-                  >
-                    {" "}
-                    <InfoOutlined
-                      sx={{
-                        color: failColor,
-                        width: 16,
-                        cursor: "pointer",
-                      }}
-                    />
-                  </LightTooltip>
-                </>
-              }
-              rules={[
-                { required: true, message: "Adjust From Balance is required" },
-              ]}
-            />
-          </Col>
         </Row>
         <Divider
           style={{
@@ -430,7 +432,11 @@ export const AdjustmentCrud = ({
                 <>
                   <Col md={8} sm={24}>
                     <PSelect
-                      options={[]}
+                      options={
+                        supervisorDDL?.data?.length > 0
+                          ? supervisorDDL?.data
+                          : []
+                      }
                       name="beneficiaryTo"
                       label="To Beneficiary Name"
                       disabled={beneficiary?.value == "2" || isEdit}
@@ -457,69 +463,72 @@ export const AdjustmentCrud = ({
                       ]}
                     />
                   </Col>
+                  <Col md={8} sm={24}>
+                    <PSelect
+                      // mode="multiple"
+                      allowClear
+                      options={leaveTypeDDLTo || []}
+                      disabled={beneficiary?.value == "2" || isEdit}
+                      name="policyTo"
+                      label="To Leave Policy"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          policyTo: op,
+                        });
+                        getDetails("to", value);
+                      }}
+                      rules={[
+                        {
+                          required: beneficiary?.value != "2",
+                          message: "To Leave Policy is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={8} sm={24}>
+                    <PInput
+                      type="number"
+                      name="balanceTo"
+                      disabled={beneficiary?.value == "2" || isEdit}
+                      label={
+                        <>
+                          Adjust To Balance{" "}
+                          <LightTooltip
+                            title={
+                              <>
+                                <DataTable
+                                  bordered
+                                  data={detailsTo || []}
+                                  //   loading={landingApi?.loading}
+                                  header={header}
+                                />
+                              </>
+                            }
+                            arrow
+                          >
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: failColor,
+                                width: 16,
+                                cursor: "pointer",
+                              }}
+                            />
+                          </LightTooltip>
+                        </>
+                      }
+                      rules={[
+                        {
+                          required: beneficiary?.value != "2",
+                          message: "Adjust To Balance is required",
+                        },
+                      ]}
+                    />
+                  </Col>
                 </>
               );
             }}
           </Form.Item>
-          <Col md={8} sm={24}>
-            <PSelect
-              // mode="multiple"
-              allowClear
-              options={leaveTypeDDLTo || []}
-              disabled={isEdit}
-              name="policyTo"
-              label="To Leave Policy"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  policyTo: op,
-                });
-                getDetails("to", value);
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: "To Leave Policy is required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={8} sm={24}>
-            <PInput
-              type="number"
-              name="balanceTo"
-              disabled={isEdit}
-              label={
-                <>
-                  Adjust To Balance{" "}
-                  <LightTooltip
-                    title={
-                      <>
-                        <DataTable
-                          bordered
-                          data={detailsTo || []}
-                          //   loading={landingApi?.loading}
-                          header={header}
-                        />
-                      </>
-                    }
-                    arrow
-                  >
-                    {" "}
-                    <InfoOutlined
-                      sx={{
-                        color: failColor,
-                        width: 16,
-                        cursor: "pointer",
-                      }}
-                    />
-                  </LightTooltip>
-                </>
-              }
-              rules={[
-                { required: true, message: "Adjust To Balance is required" },
-              ]}
-            />
-          </Col>
         </Row>
         {!isEdit && (
           <ModalFooter
