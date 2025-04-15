@@ -209,7 +209,6 @@ const EmployeePdfLanding = () => {
   const printIDByOrg = (orgId: any, empId: any) => {
     const { isEnglish } = form.getFieldsValue(true);
     const {workplace} = form.getFieldsValue(true);
-    console.log(workplace)
     let api = "";
     if (orgId === 1) {
       api = `/PdfAndExcelReport/ExportIdCardForMatador?employeeIds=${empId}&workplaceId=${workplace?.value ?? wId}&intAccountId=${orgId}&isEnglish=true`;
@@ -221,6 +220,12 @@ const EmployeePdfLanding = () => {
       }`;
       downloadFile(api, "Employee ID Cards", "pdf", setLoading,"post");
     }
+    // halda valley
+    if (orgId === 16) {
+      api = `/Pdf/generate-halda-valley-id-card?employeeIds=${empId}&workplaceId=${workplace?.value ?? wId}&intAccountId=${orgId}`;
+      downloadFile(api, "Employee ID Cards", "pdf", setLoading,"post");
+    }
+
 
   };
   return (
