@@ -479,7 +479,7 @@ export const PolicyCreateExtention = () => {
               })) || [],
           },
         };
-      case 1:
+      case 8:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
@@ -493,7 +493,7 @@ export const PolicyCreateExtention = () => {
                 : "",
           },
         };
-      case 2:
+      case 1:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
@@ -510,7 +510,7 @@ export const PolicyCreateExtention = () => {
             carryExpireDays: values?.expiryCarryForwardDaysAfterLapse || 0,
           },
         };
-      case 3:
+      case 2:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
@@ -553,7 +553,7 @@ export const PolicyCreateExtention = () => {
             }),
           },
         };
-      case 4:
+      case 3:
         return {
           businessUnitId: buId,
           workplaceGroupId: wgId,
@@ -616,7 +616,7 @@ export const PolicyCreateExtention = () => {
           if (generalData && generalData.length > 0) {
             const general = generalData[0];
             const { leavePolicyCommonList } = general;
-            if (leavePolicyCommonList?.stepperId === 5) {
+            if (leavePolicyCommonList?.stepperId === 4) {
               setCurrent(leavePolicyCommonList?.stepperId - 1);
             } else {
               setCurrent(leavePolicyCommonList?.stepperId);
