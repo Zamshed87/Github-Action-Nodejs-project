@@ -1107,6 +1107,7 @@ const BankAdviceReport = () => {
                               "Upay",
                               "SOIBL",
                               "MBL",
+                              "PRIME",
                             ];
                             if (
                               advicenames.includes(values?.adviceType?.value)
