@@ -558,7 +558,7 @@ function Education({
                               )}
                               {orgId === 15 && (
                                 <FormikInput
-                                  placeholder="Finish Year"
+                                  placeholder="Passing Year"
                                   value={values?.toDate}
                                   onChange={(e) => {
                                     setFieldValue("toDate", e.target.value);
