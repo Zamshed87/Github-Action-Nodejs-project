@@ -7,8 +7,41 @@ import IConfirmModal from "common/IConfirmModal";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { orgIdsForBn } from "utility/orgForBanglaField";
+export const data = [
+  {
+    scenario: "Leave + Offday + Leave",
 
+    id: "isLeaveOffdayLeave",
+  },
+  {
+    scenario: "Leave + Holiday + Leave",
+    id: "isLeaveHolidayLeave",
+  },
+  {
+    scenario: "Leave + Offday + Holiday + Leave",
+    id: "isLeaveOffdayOrHolidayLeave",
+  },
+  {
+    scenario: "Offday + Leave + Offday",
+    id: "isOffdayLeaveOffday",
+  },
+  {
+    scenario: "Holiday + Leave + Holiday",
+    id: "isHolidayLeaveHoliday",
+  },
+  {
+    scenario: "Offday/Holiday + Leave + Offday/Holiday",
+    id: "isOffdayOrHolidayLeaveOffdayOrHoliday",
+  },
+];
+
+export const sandwitchHeader: any = [
+  {
+    title: "Scenario",
+    dataIndex: "scenario",
+    width: 100,
+  },
+];
 export default function PunishmentCreate({
   orgId,
   buId,
@@ -42,40 +75,7 @@ export default function PunishmentCreate({
       },
     });
   };
-  const data: any[] = [
-    {
-      scenario: "Leave + Offday + Leave",
 
-      id: "isLeaveOffdayLeave",
-    },
-    {
-      scenario: "Leave + Holiday + Leave",
-      id: "isLeaveHolidayLeave",
-    },
-    {
-      scenario: "Leave + Offday + Holiday + Leave",
-      id: "isLeaveOffdayOrHolidayLeave",
-    },
-    {
-      scenario: "Offday + Leave + Offday",
-      id: "isOffdayLeaveOffday",
-    },
-    {
-      scenario: "Holiday + Leave + Holiday",
-      id: "isHolidayLeaveHoliday",
-    },
-    {
-      scenario: "Offday/Holiday + Leave + Offday/Holiday",
-      id: "isOffdayOrHolidayLeaveOffdayOrHoliday",
-    },
-  ];
-  const header: any = [
-    {
-      title: "Scenario",
-      dataIndex: "scenario",
-      width: 100,
-    },
-  ];
   const encashheader: any = [
     {
       title: "SL",
@@ -318,7 +318,7 @@ export default function PunishmentCreate({
             bordered
             data={data}
             loading={false}
-            header={header}
+            header={sandwitchHeader}
             rowSelection={{
               type: "checkbox",
               selectedRowKeys: selectedRow1.map((item: any) => item?.key),

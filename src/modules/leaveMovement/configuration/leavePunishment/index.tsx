@@ -27,6 +27,7 @@ import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import PunishmentCreate from "./PunishmentCreate";
+import { PunishmentDetails } from "./PunishmentDetails";
 // import LeaveExtension from "./components/LeaveExtension";
 
 export const LeavePunishmentLanding = () => {
@@ -52,6 +53,7 @@ export const LeavePunishmentLanding = () => {
   const activeInactiveApi = useApiRequest({});
   const generateApi = useApiRequest({});
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState(false);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -171,14 +173,14 @@ export const LeavePunishmentLanding = () => {
               {
                 type: "view",
                 onClick: (e: any) => {
-                  if (!employeeFeature?.isEdit) {
-                    return toast.warn("You don't have permission");
-                    e.stopPropagation();
-                  }
-                  window.open(
-                    `/administration/leaveandmovement/yearlyLeavePolicy/view/${item?.policyId}`,
-                    "_blank"
-                  );
+                  setView(true);
+                  setSingleData(item);
+                  setOpen(true);
+
+                  //   window.open(
+                  //     `/administration/punishmentConfiguration/sandwichLeave/view/${item?.punishmentId}`,
+                  //     "_blank"
+                  //   );
                 },
               },
               {
@@ -370,18 +372,34 @@ export const LeavePunishmentLanding = () => {
           onCancel={() => setOpen(false)}
           maskClosable={false}
           components={
-            <>
-              <PunishmentCreate
-                orgId={orgId}
-                buId={buId}
-                wgId={wgId}
-                employeeId={employeeId}
-                getData={() => landingApiCall()}
-                setOpen={setOpen}
-                setSingleData={setSingleData}
-                singleData={singleData}
-              />
-            </>
+            view ? (
+              <>
+                <PunishmentDetails
+                  orgId={orgId}
+                  buId={buId}
+                  wgId={wgId}
+                  employeeId={employeeId}
+                  getData={() => landingApiCall()}
+                  setOpen={setOpen}
+                  setView={setView}
+                  setSingleData={setSingleData}
+                  singleData={singleData}
+                />
+              </>
+            ) : (
+              <>
+                <PunishmentCreate
+                  orgId={orgId}
+                  buId={buId}
+                  wgId={wgId}
+                  employeeId={employeeId}
+                  getData={() => landingApiCall()}
+                  setOpen={setOpen}
+                  setSingleData={setSingleData}
+                  singleData={singleData}
+                />
+              </>
+            )
           }
         />
       </PForm>
