@@ -350,4 +350,5 @@ export const apiList = {
   LeavePunishmentDeleteById: "/LeavePunishment/DeleteById",
   LeavePunishmentCreate: "/LeavePunishment/Create",
   LeavePunishmentGetById: "/LeavePunishment/GetById",
+  LeavePunishmentExtend: "/LeavePunishment/Extend",
 };

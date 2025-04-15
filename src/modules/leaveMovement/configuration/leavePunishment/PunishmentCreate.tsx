@@ -2,8 +2,7 @@ import { DataTable, PButton, TableButton } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row, Switch } from "antd";
-import IConfirmModal from "common/IConfirmModal";
+import { Col, Divider, Form, Row } from "antd";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -46,11 +45,9 @@ export default function PunishmentCreate({
   orgId,
   buId,
   wgId,
-  employeeId,
   getData,
   setOpen,
   setSingleData,
-  singleData,
 }: any) {
   const createApi = useApiRequest({});
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
@@ -117,7 +114,6 @@ export default function PunishmentCreate({
   // Form Instance
   const [form] = Form.useForm();
   // submit
-  const generateApi = useApiRequest({});
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);

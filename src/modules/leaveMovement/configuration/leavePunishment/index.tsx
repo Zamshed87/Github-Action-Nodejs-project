@@ -1,38 +1,34 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
   TableButton,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Switch, Tag } from "antd";
+import { Col, Form, Row, Switch } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import PunishmentCreate from "./PunishmentCreate";
 import { PunishmentDetails } from "./PunishmentDetails";
+import PunishmentExtension from "./PunishmentExtension";
 // import LeaveExtension from "./components/LeaveExtension";
 
 export const LeavePunishmentLanding = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const {
     permissionList,
@@ -54,6 +50,7 @@ export const LeavePunishmentLanding = () => {
   const generateApi = useApiRequest({});
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
+  const [extend, setExtend] = useState(false);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -86,7 +83,6 @@ export const LeavePunishmentLanding = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
     landingApi.action({
@@ -126,7 +122,7 @@ export const LeavePunishmentLanding = () => {
       title: "Status",
       dataIndex: "status",
       width: 50,
-      render: (_: any, rec: any, index: number) => {
+      render: (_: any, rec: any) => {
         return (
           <div>
             {/* {rec?.status === "Active" ? (
@@ -188,6 +184,7 @@ export const LeavePunishmentLanding = () => {
                 onClick: (e: any) => {
                   setSingleData(item);
                   setOpen(true);
+                  setExtend(true);
                 },
               },
             ]}
@@ -367,21 +364,32 @@ export const LeavePunishmentLanding = () => {
         </PCard>
         <PModal
           open={open}
-          title={"Leave Punishment Configuration"}
+          title={`Leave Punishment Configuration ${view ? "Details" : ""}${
+            extend ? "Extention" : ""
+          }`}
           width=""
-          onCancel={() => setOpen(false)}
+          onCancel={() => {
+            setOpen(false);
+            setView(false);
+            setExtend(false);
+            setSingleData({});
+          }}
           maskClosable={false}
           components={
             view ? (
               <>
-                <PunishmentDetails
+                <PunishmentDetails singleData={singleData} />
+              </>
+            ) : extend ? (
+              <>
+                <PunishmentExtension
                   orgId={orgId}
                   buId={buId}
                   wgId={wgId}
                   employeeId={employeeId}
                   getData={() => landingApiCall()}
                   setOpen={setOpen}
-                  setView={setView}
+                  setExtend={setExtend}
                   setSingleData={setSingleData}
                   singleData={singleData}
                 />

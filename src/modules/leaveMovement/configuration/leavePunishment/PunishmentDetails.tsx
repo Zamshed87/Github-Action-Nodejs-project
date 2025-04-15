@@ -1,40 +1,14 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import {
-  DataTable,
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  TableButton,
-} from "Components";
+import { DataTable } from "Components";
 
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row, Switch, Tag } from "antd";
-import Loading from "common/loading/Loading";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { useEffect, useMemo, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Row } from "antd";
 
-import { toast } from "react-toastify";
-import { getWorkplaceDDL } from "common/api/commonApi";
+import { useEffect } from "react";
+
 import { data, sandwitchHeader } from "./PunishmentCreate";
-// import LeaveExtension from "./components/LeaveExtension";
 
-export const PunishmentDetails = ({
-  orgId,
-  buId,
-  wgId,
-  employeeId,
-  getData,
-  setOpen,
-  setView,
-  setSingleData,
-  singleData,
-}: any) => {
+export const PunishmentDetails = ({ singleData }: any) => {
   const detailsApi = useApiRequest({});
 
   useEffect(() => {
@@ -68,41 +42,39 @@ export const PunishmentDetails = ({
 
   return (
     <>
-      <PCard>
-        <PCardHeader title={`Leave Policy Details`} />
-        <h4 className="my-2">General Info</h4>
-        <div style={{ fontSize: 12 }}>
-          Policy Name:{" "}
-          {detailsApi?.data?.data?.generalData?.punishmentPolicyName} <br />
-          Workplace Name: {
-            detailsApi?.data?.data?.generalData?.workplaceName
-          }{" "}
-          <br />
-          Employment Name: {
-            detailsApi?.data?.data?.generalData?.employmentName
-          }{" "}
-          <br />
-        </div>
-        <div className="mt-2">
-          <DataTable
-            bordered
-            data={data.filter((item) => detailsApi?.data?.data?.[item?.id])}
-            loading={false}
-            header={sandwitchHeader}
-          />
-        </div>
-        <div className="mt-2">
-          <h4 className="my-2">Leave Sequence</h4>
+      <h4 className="">General Info</h4>
+      <div style={{ fontSize: 12 }}>
+        Policy Name: {detailsApi?.data?.data?.generalData?.punishmentPolicyName}{" "}
+        <br />
+        Workplace Name: {
+          detailsApi?.data?.data?.generalData?.workplaceName
+        }{" "}
+        <br />
+        Employment Name: {
+          detailsApi?.data?.data?.generalData?.employmentName
+        }{" "}
+        <br />
+      </div>
+      <div className="mt-2">
+        <DataTable
+          bordered
+          data={data.filter((item) => detailsApi?.data?.data?.[item?.id])}
+          loading={false}
+          header={sandwitchHeader}
+        />
+      </div>
+      <div className="mt-2">
+        <h4 className="my-2">Leave Sequence</h4>
 
-          <DataTable
-            bordered
-            data={detailsApi?.data?.data?.sequenceList || []}
-            loading={false}
-            header={header}
-          />
-        </div>
-        <Row gutter={[10, 2]}></Row>
-        {/* <DataTable
+        <DataTable
+          bordered
+          data={detailsApi?.data?.data?.sequenceList || []}
+          loading={false}
+          header={header}
+        />
+      </div>
+      <Row gutter={[10, 2]}></Row>
+      {/* <DataTable
             bordered
             data={
               landingApi?.data?.data?.length > 0 ? landingApi?.data.data : []
@@ -123,7 +95,6 @@ export const PunishmentDetails = ({
             }}
             // scroll={{ x: 1500 }}
           /> */}
-      </PCard>
     </>
   );
 };
