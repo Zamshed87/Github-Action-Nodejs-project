@@ -33,7 +33,7 @@ import { CiGlobe } from "react-icons/ci";
 // import { MdTimelapse } from "react-icons/md";
 // import { SiNewbalance } from "react-icons/si";
 import { BsCashCoin } from "react-icons/bs";
-import { LuSandwich } from "react-icons/lu";
+// import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
 import { PModal } from "Components/Modal";
 import IConfirmModal from "common/IConfirmModal";
@@ -43,7 +43,7 @@ export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: policyId }: any = useParams();
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(3);
   const [consumeData, setConsumeData] = useState<any>([]);
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
@@ -569,6 +569,7 @@ export const PolicyCreateExtention = () => {
             minLeaveForAttachment: values?.attachmentMandatoryAfter,
             maxLeaveInMonth: values?.maxLeaveApplyMonthly,
             maxLeaveInDays: values?.minLeaveApplyDays,
+            maxLeaveApplyInLapse: values?.maxLeaveApplyInLapse,
           },
         };
     }
@@ -820,11 +821,12 @@ export const PolicyCreateExtention = () => {
               },
 
               isAttachmentMandatory: {
-                value: additional.isAttachmentMandatory ? 1 : 0,
+                value: additional?.isAttachmentMandatory ? 1 : 0,
               },
-              attachmentMandatoryAfter: additional.minLeaveForAttachment,
-              maxLeaveApplyMonthly: additional.maxLeaveInMonth,
-              minLeaveApplyDays: additional.maxLeaveInDays,
+              attachmentMandatoryAfter: additional?.minLeaveForAttachment,
+              maxLeaveApplyMonthly: additional?.maxLeaveInMonth,
+              minLeaveApplyDays: additional?.maxLeaveInDays,
+              maxLeaveApplyInLapse: additional?.maxLeaveApplyInLapse || 0,
             });
           }
         },
@@ -870,6 +872,7 @@ export const PolicyCreateExtention = () => {
             label: "Apply Anytime",
           },
           leaveRoundingType: { value: 1, label: "No Round" },
+          maxLeaveApplyInLapse: 1000,
         }}
         onFinish={onFinish}
       >
