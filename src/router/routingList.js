@@ -2234,7 +2234,7 @@ export const routingList = [
     component: LeavePolicyDetails,
   },
   {
-    path: "/administration/leaveandmovement/leavePunishment",
+    path: "/administration/punishmentConfiguration/sandwichLeave",
     component: LeavePunishmentLanding,
   },
   {

@@ -30,36 +30,6 @@ import PunishmentCreate from "./PunishmentCreate";
 // import LeaveExtension from "./components/LeaveExtension";
 
 export const LeavePunishmentLanding = () => {
-  // Payload:
-  // {
-  //   "businessUnitId": 3,
-  //   "workplaceGroupId": 7,
-  //   "policyName": "Casual Leave Punishment",
-  //   "workplaceId": 27,
-  //   "employmentTypeId": 40,
-  //   "description": "string",
-  //   "isLeaveOffdayLeave": true,
-  //   "isLeaveHolidayLeave": true,
-  //   "isLeaveOffdayOrHolidayLeave": true,
-  //   "isOffdayLeaveOffday": false,
-  //   "isHolidayLeaveHoliday": false,
-  //   "isOffdayOrHolidayLeaveOffdayOrHoliday": false,
-  //   "deductionSequence": [
-  //     {
-  //       "sequence": 1,
-  //       "leaveTypeId": 1
-  //     },
-  // {
-  //       "sequence": 2,
-  //       "leaveTypeId": 2
-  //     },
-  // {
-  //       "sequence": 3,
-  //       "leaveTypeId": 3
-  //     }
-  //   ]
-  // }
-
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -70,7 +40,7 @@ export const LeavePunishmentLanding = () => {
   const [singleData, setSingleData] = useState<any>({});
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 38),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30578),
     []
   );
   // menu permission
