@@ -1932,7 +1932,7 @@ export const routingList = [
     component: CommonAppPipeline,
   },
   { path: "/profile/leave/leaveApplication", component: EmLeaveApplicationT },
-  { path: "/profile/leaveAdjustment", component: LeaveAdjustment },
+  { path: "/profile/leave/leaveAdjustment", component: LeaveAdjustment },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
   { path: "/profile/pfLoan", component: PfLoanLanding },

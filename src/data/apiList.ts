@@ -334,7 +334,7 @@ export const apiList = {
   ExtendLeave: "/LeavePolicy/Extend",
   DeleteLeave: "/LeaveApplication/Delete",
   UpdateLeave: "/LeaveApplication/Update",
-  BalanceGenerate: "/LeavePolicy/BalanceGenerate",
+  BalanceGenerate: "/LeaveBalance/BalanceGenerate",
   LeavePolicyDeleteById: "/LeavePolicy/DeleteById",
   LeaveBalanceReport: "PdfAndExcelReport/LeaveBalanceReport",
   GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
