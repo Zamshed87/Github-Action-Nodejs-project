@@ -518,54 +518,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     }
   };
 
-  // const default_gross_calculation = (salaryDependsOn = "") => {
-  //   const modifyData: any = [];
-  //   const { grossAmount } = form.getFieldsValue(true);
-
-  //   rowDto?.forEach((itm: any) => {
-  //     const obj = {
-  //       ...itm,
-  //       [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-  //         itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-  //           ? Math.ceil(grossAmount)
-  //           : itm?.strBasedOn === "Amount"
-  //           ? Math.ceil(itm?.numAmount)
-  //           : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
-  //       numAmount:
-  //         itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-  //           ? Math.ceil(grossAmount)
-  //           : itm?.strBasedOn === "Amount"
-  //           ? Math.ceil(itm?.numAmount)
-  //           : Math.ceil((itm?.numNumberOfPercent * grossAmount) / 100),
-  //       showPercentage: itm?.numNumberOfPercent,
-  //       levelVariable: itm?.strPayrollElementName
-  //         .toLowerCase()
-  //         .split(" ")
-  //         .join(""),
-  //     };
-
-  //     modifyData.push(obj);
-  //   });
-  //   const indexOfLowestAmount = modifyData.reduce(
-  //     (minIndex: any, currentObject: any, currentIndex: any, array: any) => {
-  //       return currentObject.numNumberOfPercent <
-  //         array[minIndex].numNumberOfPercent
-  //         ? currentIndex
-  //         : minIndex;
-  //     },
-  //     0
-  //   );
-  //   adjustOverFollowAmount(
-  //     modifyData,
-  //     grossAmount,
-  //     indexOfLowestAmount,
-  //     setRowDto,
-  //     `${modifyData[indexOfLowestAmount]?.strPayrollElementName
-  //       .toLowerCase()
-  //       .split(" ")
-  //       .join("")}`
-  //   );
-  // };
   const new_gross_calculation = () => {
     const { grossAmount } = form.getFieldsValue(true);
 
@@ -679,41 +631,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     setAccountsDto([...temp]);
   };
 
-  // const adjustOverFollowAmount = (
-  //   array = [],
-  //   grossSalaryAmount: any,
-  //   indexOfLowestAmount: any,
-  //   setterFunc: any,
-  //   payrollElementName: any
-  // ): any => {
-  //   // console.log({ payrollElementName });
-  //   const totalAmount = array.reduce(
-  //     (acc, obj) => acc + (obj as any).numAmount,
-  //     0
-  //   );
-  //   const overFollowAmount = totalAmount - grossSalaryAmount;
-  //   // console.log({
-  //   //   totalAmount,
-  //   //   elementList: array,
-  //   //   grossSalaryAmount,
-  //   //   overFollowAmount,
-  //   // });
-  //   if (overFollowAmount > 0) {
-  //     // console.log({ isOverFollow: overFollowAmount });
-  //     (array[indexOfLowestAmount] as any).numAmount =
-  //       (array[indexOfLowestAmount] as any)?.numAmount - overFollowAmount;
-  //     (array[indexOfLowestAmount] as any)[payrollElementName] -=
-  //       overFollowAmount;
-  //   } else {
-  //     // console.log({ isNotOverFollow: overFollowAmount });
-
-  //     (array[indexOfLowestAmount] as any).numAmount =
-  //       (array[indexOfLowestAmount] as any)?.numAmount + overFollowAmount * -1;
-  //     (array[indexOfLowestAmount] as any)[payrollElementName] +=
-  //       overFollowAmount * -1;
-  //   }
-  //   setterFunc(array);
-  // };
   const header: any = [
     {
       title: "SL",
@@ -1051,9 +968,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         form.setFieldsValue({
                           payscale: op,
                           slabCount: undefined,
-                          // payscaleClass: (op as any)?.jobClass,
-                          // payscaleGrade: (op as any)?.jobGrade,
-                          // payscaleJobLevel: (op as any)?.jobLevel,
                         });
                         getById?.action({
                           urlKey: "GetPayScaleSetupById",
@@ -1362,12 +1276,12 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
                         const temp = [...rowDto];
                         const efficiency =
                           value > getById?.data?.incrementSlabCount
-                            ? value % getById?.data?.incrementSlabCount
+                            ? value - getById?.data?.incrementSlabCount
                             : 0;
                         const actualSlab = value - efficiency;
+
                         temp[0].numAmount =
-                          (temp[0].baseAmount ||
-                            getById?.data?.payScaleElements[0]?.netAmount) +
+                          getById?.data?.payScaleElements[0]?.netAmount +
                           actualSlab * getById?.data?.incrementAmount +
                           efficiency * getById?.data?.extendedIncrementAmount;
 
