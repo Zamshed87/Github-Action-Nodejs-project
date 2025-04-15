@@ -7,6 +7,7 @@ const PFilter = ({
   landingApiCall,
   resetApiCall,
   ishideDate,
+  isSection,
   children,
 }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
@@ -36,6 +37,7 @@ const PFilter = ({
             workplace: { label: "All", value: 0 },
             department: { label: "All", value: 0 },
             designation: { label: "All", value: 0 },
+            section: { label: "All", value: 0 },
           }}
         >
           <Row gutter={[10, 2]}>
@@ -85,6 +87,7 @@ const PFilter = ({
               col={12}
               isDepartment={true}
               isDesignation={true}
+              isSection={isSection}
               // mode="multiple"
             />
 
