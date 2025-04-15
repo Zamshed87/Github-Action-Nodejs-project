@@ -33,6 +33,7 @@ import { attachment_action } from "./../Experience/helper";
 import "./education.css";
 import NocSlider from "./NocSlider";
 import { updateEmployeeProfile } from "../helper";
+import moment from "moment";
 
 const initData = {
   isForeign: false,
@@ -41,8 +42,8 @@ const initData = {
   fieldOfStudy: "",
   cgpa: "",
   outOf: "",
-  fromDate: todayDate(),
-  toDate: todayDate(),
+  fromDate: "",
+  toDate: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -165,8 +166,14 @@ function Education({
         outOf: values?.outOf || "",
         trainingName: "",
         organizationName: "",
-        startDate: values?.fromDate || todayDate(),
-        endDate: values?.toDate || todayDate(),
+        startDate:
+          orgId === 15
+            ? `${values?.fromDate}-01-01`
+            : values?.fromDate || todayDate(),
+        endDate:
+          orgId === 15
+            ? `${values?.toDate}-01-01`
+            : values?.toDate || todayDate(),
         expirationDate: todayDate(),
         name: "",
         relationId: 0,
@@ -249,8 +256,14 @@ function Education({
         outOf: values?.outOf || "",
         trainingName: "",
         organizationName: "",
-        startDate: values?.fromDate || todayDate(),
-        endDate: values?.toDate || todayDate(),
+        startDate:
+          orgId === 15
+            ? `${values?.fromDate}-01-01`
+            : values?.fromDate || todayDate(),
+        endDate:
+          orgId === 15
+            ? `${values?.toDate}-01-01`
+            : values?.toDate || todayDate(),
         expirationDate: todayDate(),
         name: "",
         relationId: 0,
@@ -356,7 +369,7 @@ function Education({
   const onButtonClick = () => {
     inputFile.current.click();
   };
-
+  console.log({ singleData });
   return (
     index === tabIndex && (
       <>
@@ -377,9 +390,15 @@ function Education({
             outOf: singleData ? singleData?.outOf : "",
             fromDate: singleData
               ? dateFormatterForInput(singleData?.fromDate)
+              : orgId === 15
+              ? ""
               : todayDate(),
             toDate: singleData
-              ? dateFormatterForInput(singleData?.toDate)
+              ? orgId === 15
+                ? singleData?.toDate
+                : dateFormatterForInput(singleData?.toDate)
+              : orgId === 15
+              ? ""
               : todayDate(),
           }}
           validationSchema={validationSchema}
@@ -389,7 +408,14 @@ function Education({
             });
           }}
         >
-          {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+          {({
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            setValues,
+            setFieldValue,
+          }) => (
             <>
               {loading && <Loading />}
               <Form onSubmit={handleSubmit} className="common-overview-part">
@@ -501,30 +527,52 @@ function Education({
                                 placeholder="Scale(Out of)"
                                 classes="input-sm"
                               />
-                              <FormikInput
-                                label="Start Date"
-                                value={values?.fromDate}
-                                onChange={(e) =>
-                                  setFieldValue("fromDate", e.target.value)
-                                }
-                                name="fromDate"
-                                type="date"
-                                className="form-control"
-                                errors={errors}
-                                touched={touched}
-                              />
-                              <FormikInput
-                                label="Finish Date"
-                                value={values?.toDate}
-                                onChange={(e) =>
-                                  setFieldValue("toDate", e.target.value)
-                                }
-                                name="toDate"
-                                type="date"
-                                className="form-control"
-                                errors={errors}
-                                touched={touched}
-                              />
+                              {orgId !== 15 && (
+                                <>
+                                  <FormikInput
+                                    label="Start Date"
+                                    value={values?.fromDate}
+                                    onChange={(e) =>
+                                      setFieldValue("fromDate", e.target.value)
+                                    }
+                                    name="fromDate"
+                                    type="date"
+                                    className="form-control"
+                                    errors={errors}
+                                    touched={touched}
+                                  />
+
+                                  <FormikInput
+                                    label="Finish Date"
+                                    value={values?.toDate}
+                                    onChange={(e) =>
+                                      setFieldValue("toDate", e.target.value)
+                                    }
+                                    name="toDate"
+                                    type="date"
+                                    className="form-control"
+                                    errors={errors}
+                                    touched={touched}
+                                  />
+                                </>
+                              )}
+                              {orgId === 15 && (
+                                <FormikInput
+                                  placeholder="Finish Year"
+                                  value={values?.toDate}
+                                  onChange={(e) => {
+                                    setFieldValue("toDate", e.target.value);
+                                    setFieldValue("fromDate", e.target.value);
+                                  }}
+                                  name="toDate"
+                                  type="number"
+                                  min={"1990"}
+                                  max={"3000"}
+                                  classes="input-sm"
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              )}
                               <div className="input-main position-group-select my-2">
                                 <label className="lebel-bold mr-2">
                                   Upload Files
@@ -702,11 +750,23 @@ function Education({
                                               </small>
                                             </div>
                                           </div>
-                                          <small>
-                                            {dateFormatter(item?.dteStartDate)}-
-                                            {dateFormatter(item?.dteEndDate)}{" "}
-                                            {item?.isForeign && "(Foreign)"}
-                                          </small>
+                                          {orgId === 15 ? (
+                                            <small>
+                                              Passing Year -
+                                              {moment(item?.dteEndDate).format(
+                                                "YYYY"
+                                              )}{" "}
+                                              {item?.isForeign && "(Foreign)"}
+                                            </small>
+                                          ) : (
+                                            <small>
+                                              {dateFormatter(
+                                                item?.dteStartDate
+                                              )}
+                                              -{dateFormatter(item?.dteEndDate)}{" "}
+                                              {item?.isForeign && "(Foreign)"}
+                                            </small>
+                                          )}
                                           {item?.intCertificateFileUrlId >
                                             0 && (
                                             <div className="common-slider">
@@ -726,7 +786,8 @@ function Education({
                                               fontSize={"18px"}
                                               options={[
                                                 ...(intAccountId === 5
-                                                  ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                                  ? !rowDto.isMarkCompleted ||
+                                                    isOfficeAdmin
                                                     ? [
                                                         {
                                                           value: 1,
@@ -734,30 +795,52 @@ function Education({
                                                           icon: (
                                                             <ModeEditOutlined
                                                               sx={{
-                                                                marginRight: "10px",
-                                                                fontSize: "16px",
+                                                                marginRight:
+                                                                  "10px",
+                                                                fontSize:
+                                                                  "16px",
                                                               }}
                                                             />
                                                           ),
                                                           onClick: () => {
                                                             setStatus("input");
-                                                            setIsCreateForm(true);
+                                                            setIsCreateForm(
+                                                              true
+                                                            );
+
                                                             setSingleData({
-                                                              isForeign: item?.isForeign,
-                                                              instituteName: item?.strInstituteName,
+                                                              isForeign:
+                                                                item?.isForeign,
+                                                              instituteName:
+                                                                item?.strInstituteName,
                                                               degree: {
-                                                                value: item?.intEducationDegreeId,
-                                                                label: item?.strEducationDegree,
+                                                                value:
+                                                                  item?.intEducationDegreeId,
+                                                                label:
+                                                                  item?.strEducationDegree,
                                                               },
-                                                              fieldOfStudy: item?.strEducationFieldOfStudy,
+                                                              fieldOfStudy:
+                                                                item?.strEducationFieldOfStudy,
                                                               cgpa: item?.strCgpa,
-                                                              outOf: item?.strOutOf,
-                                                              fromDate: item?.dteStartDate,
-                                                              toDate: item?.dteEndDate,
-                                                              intEmployeeEducationId: item?.intEmployeeEducationId,
+                                                              outOf:
+                                                                item?.strOutOf,
+                                                              fromDate:
+                                                                item?.dteStartDate,
+                                                              toDate:
+                                                                orgId == 15
+                                                                  ? moment(
+                                                                      item?.dteEndDate
+                                                                    ).format(
+                                                                      "YYYY"
+                                                                    )
+                                                                  : item?.dteEndDate,
+
+                                                              intEmployeeEducationId:
+                                                                item?.intEmployeeEducationId,
                                                             });
                                                             setImageFile({
-                                                              globalFileUrlId: item?.intCertificateFileUrlId,
+                                                              globalFileUrlId:
+                                                                item?.intCertificateFileUrlId,
                                                             });
                                                           },
                                                         },
@@ -767,13 +850,18 @@ function Education({
                                                           icon: (
                                                             <DeleteOutline
                                                               sx={{
-                                                                marginRight: "10px",
-                                                                fontSize: "16px",
+                                                                marginRight:
+                                                                  "10px",
+                                                                fontSize:
+                                                                  "16px",
                                                               }}
                                                             />
                                                           ),
                                                           onClick: () => {
-                                                            deleteHandler(item?.intEmployeeEducationId, item);
+                                                            deleteHandler(
+                                                              item?.intEmployeeEducationId,
+                                                              item
+                                                            );
                                                           },
                                                         },
                                                       ]
@@ -785,7 +873,8 @@ function Education({
                                                         icon: (
                                                           <ModeEditOutlined
                                                             sx={{
-                                                              marginRight: "10px",
+                                                              marginRight:
+                                                                "10px",
                                                               fontSize: "16px",
                                                             }}
                                                           />
@@ -794,21 +883,37 @@ function Education({
                                                           setStatus("input");
                                                           setIsCreateForm(true);
                                                           setSingleData({
-                                                            isForeign: item?.isForeign,
-                                                            instituteName: item?.strInstituteName,
+                                                            isForeign:
+                                                              item?.isForeign,
+                                                            instituteName:
+                                                              item?.strInstituteName,
                                                             degree: {
-                                                              value: item?.intEducationDegreeId,
-                                                              label: item?.strEducationDegree,
+                                                              value:
+                                                                item?.intEducationDegreeId,
+                                                              label:
+                                                                item?.strEducationDegree,
                                                             },
-                                                            fieldOfStudy: item?.strEducationFieldOfStudy,
+                                                            fieldOfStudy:
+                                                              item?.strEducationFieldOfStudy,
                                                             cgpa: item?.strCgpa,
-                                                            outOf: item?.strOutOf,
-                                                            fromDate: item?.dteStartDate,
-                                                            toDate: item?.dteEndDate,
-                                                            intEmployeeEducationId: item?.intEmployeeEducationId,
+                                                            outOf:
+                                                              item?.strOutOf,
+                                                            fromDate:
+                                                              item?.dteStartDate,
+                                                            toDate:
+                                                              orgId == 15
+                                                                ? moment(
+                                                                    item?.dteEndDate
+                                                                  ).format(
+                                                                    "YYYY"
+                                                                  )
+                                                                : item?.dteEndDate,
+                                                            intEmployeeEducationId:
+                                                              item?.intEmployeeEducationId,
                                                           });
                                                           setImageFile({
-                                                            globalFileUrlId: item?.intCertificateFileUrlId,
+                                                            globalFileUrlId:
+                                                              item?.intCertificateFileUrlId,
                                                           });
                                                         },
                                                       },
@@ -818,18 +923,21 @@ function Education({
                                                         icon: (
                                                           <DeleteOutline
                                                             sx={{
-                                                              marginRight: "10px",
+                                                              marginRight:
+                                                                "10px",
                                                               fontSize: "16px",
                                                             }}
                                                           />
                                                         ),
                                                         onClick: () => {
-                                                          deleteHandler(item?.intEmployeeEducationId, item);
+                                                          deleteHandler(
+                                                            item?.intEmployeeEducationId,
+                                                            item
+                                                          );
                                                         },
                                                       },
                                                     ]),
                                               ]}
-                                              
                                             />
                                           </div>
                                         )}
