@@ -1756,13 +1756,19 @@ const FinalSettlementLandingv2 = lazy(() =>
   import("../modules/retirement/finalsettlement/index.jsx")
 );
 const FinalSettlementGenerate = lazy(() =>
-  import("../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx")
+  import(
+    "../modules/retirement/finalsettlement/components/FinalSettlementGenerate.jsx"
+  )
 );
 const FinalSettlementRegenerate = lazy(() =>
-  import("../modules/retirement/finalsettlement/components/FinalSettlementRegenerate.jsx")
+  import(
+    "../modules/retirement/finalsettlement/components/FinalSettlementRegenerate.jsx"
+  )
 );
 const FinalSettlementEdit = lazy(() =>
-  import("../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx")
+  import(
+    "../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx"
+  )
 );
 
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
@@ -1929,13 +1935,13 @@ export const routingList = [
     path: "/administration/configuration/commonapprovalpipeline",
     component: CommonAppPipeline,
   },
-  { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
+  { path: "/profile/leave/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
   { path: "/profile/pfLoan", component: PfLoanLanding },
   { path: "/profile/pfLoan/create", component: PfLoanAddEdit },
   { path: "/profile/pfLoan/edit/:id", component: PfLoanAddEdit },
-  
+
   { path: "/profile/confirmation", component: Confirmation },
   {
     path: "/profile/cafeteriaManagement/cafeteriaPricingSetup",

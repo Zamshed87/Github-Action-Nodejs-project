@@ -1058,13 +1058,12 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         let temp = [...rowDto];
                         const efficiency =
                           value > getById?.data?.incrementSlabCount
-                            ? value % getById?.data?.incrementSlabCount
+                            ? value - getById?.data?.incrementSlabCount
                             : 0;
                         const actualSlab = value - efficiency;
                         // console.log({ actualSlab, efficiency });
                         temp[0].numAmount =
-                          (temp[0].baseAmount ||
-                            getById?.data?.payScaleElements[0]?.netAmount) +
+                          getById?.data?.payScaleElements[0]?.netAmount +
                           actualSlab * getById?.data?.incrementAmount +
                           efficiency * getById?.data?.extendedIncrementAmount;
 
