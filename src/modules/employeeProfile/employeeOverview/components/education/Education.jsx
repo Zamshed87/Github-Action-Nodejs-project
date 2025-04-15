@@ -566,8 +566,8 @@ function Education({
                                   }}
                                   name="toDate"
                                   type="number"
-                                  min={"1990"}
-                                  max={"3000"}
+                                  min={"1900"}
+                                  max={"4000"}
                                   classes="input-sm"
                                   errors={errors}
                                   touched={touched}
