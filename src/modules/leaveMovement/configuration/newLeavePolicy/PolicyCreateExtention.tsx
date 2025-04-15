@@ -248,11 +248,11 @@ export const PolicyCreateExtention = () => {
     //   status: "wait",
     //   icon: <GrDocumentConfig />,
     // },
-    {
-      title: "Sandwitch",
-      status: "wait",
-      icon: <LuSandwich />,
-    },
+    // {
+    //   title: "Sandwitch",
+    //   status: "wait",
+    //   icon: <LuSandwich />,
+    // },
     // {
     //   title: "Lapse",
     //   status: "wait",
@@ -336,7 +336,7 @@ export const PolicyCreateExtention = () => {
     // ],
     // [],
     // ["leavelapse", "afterLeaveCompleted"],
-    ["isSandwitch"],
+    // ["isSandwitch"],
 
     [
       "addPrevCarry",
@@ -860,7 +860,7 @@ export const PolicyCreateExtention = () => {
           proRataCount: 15,
           proRataBasis: { value: "1", label: "Update From Start" },
           isCarryForward: { value: 0, label: "No" },
-          isSandwitch: { value: 0, label: "No" },
+          // isSandwitch: { value: 0, label: "No" },
           isEncashment: { value: 0, label: "No" },
           isAttachmentMandatory: { value: 0, label: "No" },
           isEssApply: { value: 1, label: "Yes" },
@@ -876,7 +876,7 @@ export const PolicyCreateExtention = () => {
         <PCard>
           <PCardHeader
             backButton
-            submitText={current === 4 ? "Save" : undefined}
+            submitText={current === 3 ? "Save" : undefined}
             // buttonList={[
             //   {
             //     type: "primary",
@@ -947,7 +947,7 @@ export const PolicyCreateExtention = () => {
                   />
                 )}
               </>
-            ) : current === 1 ? (
+            ) : current === 8 ? (
               // <PaidLeave form={form} />
               <Sandwitch
                 form={form}
@@ -955,7 +955,7 @@ export const PolicyCreateExtention = () => {
                 setSelectedRow1={setSelectedRow1}
                 detailsApi={detailsApi}
               />
-            ) : current === 2 ? (
+            ) : current === 1 ? (
               // <Consumption
               //   form={form}
               //   consumeData={consumeData}
@@ -965,7 +965,7 @@ export const PolicyCreateExtention = () => {
                 form={form}
                 PercentOrFixedEnum={PercentOrFixedEnum}
               />
-            ) : current === 3 ? (
+            ) : current === 2 ? (
               // <Sandwitch
               //   form={form}
               //   selectedRow2={selectedRow2}
@@ -981,7 +981,7 @@ export const PolicyCreateExtention = () => {
                 JoinOrConfirmEnum={JoinOrConfirmEnum}
                 PercentOrFixedEnum={PercentOrFixedEnum}
               />
-            ) : current === 4 ? (
+            ) : current === 3 ? (
               // <Lapse form={form} />
               <Additional form={form} />
             ) : (
@@ -1032,7 +1032,7 @@ export const PolicyCreateExtention = () => {
                     const values = form.getFieldsValue(true);
                     const cond1 = current === 0 && consumeData.length === 0;
                     const cond2 =
-                      current === 3 &&
+                      current === 2 &&
                       values?.isEncashment === 1 &&
                       tableData.length === 0;
                     const cond3 = current === 0 && balanceTable.length === 0;
