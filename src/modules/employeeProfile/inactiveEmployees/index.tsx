@@ -161,6 +161,8 @@ const ActiveInactiveEmployeeReport = () => {
           filerList?.strDesignation?.length > 0
             ? `${filerList?.strDesignation}`
             : "",
+        sections:
+          filerList?.strSection?.length > 0 ? `${filerList?.strSection}` : "",
       },
     });
   };
@@ -261,7 +263,9 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "Section",
       dataIndex: "strSection",
-
+      filter: true,
+      filterKey: "strSectionList",
+      filterSearch: true,
       width: 100,
     },
 

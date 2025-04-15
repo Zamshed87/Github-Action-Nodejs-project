@@ -101,6 +101,7 @@ const RosterReport = () => {
         PageNo: pagination.current || pages?.current,
         departments: formatFilterValue(values?.department),
         designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         PageSize:
           pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         EmployeeId: 0,
@@ -353,7 +354,11 @@ const RosterReport = () => {
               excelLanding();
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall} />
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+          />
           {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
