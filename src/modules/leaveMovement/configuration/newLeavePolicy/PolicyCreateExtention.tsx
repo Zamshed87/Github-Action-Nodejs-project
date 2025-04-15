@@ -500,7 +500,7 @@ export const PolicyCreateExtention = () => {
           carryPayload: {
             policyId: id,
 
-            stepperId: 3, // Assuming stepperId is managed elsewhere or not directly bound here
+            stepperId: 2, // Assuming stepperId is managed elsewhere or not directly bound here
             isCarryForward: values?.isCarryForward?.value === 1,
             carryForwardTypeId: +values?.leaveCarryForwardType?.value || 0,
             maxCarryAfterLapse: values?.minConsumeTime || 0,
@@ -515,7 +515,7 @@ export const PolicyCreateExtention = () => {
           businessUnitId: buId,
           workplaceGroupId: wgId,
           encashmentPayload: {
-            stepperId: 4,
+            stepperId: 3,
             policyId: id,
 
             isEncashment: values?.isEncashment?.value === 1,
@@ -558,7 +558,7 @@ export const PolicyCreateExtention = () => {
           businessUnitId: buId,
           workplaceGroupId: wgId,
           additionalPayload: {
-            stepperId: 5,
+            stepperId: 4,
             policyId: id,
 
             isBalanceShowESS: values?.isEssShowBalance?.value === 1,
