@@ -43,7 +43,7 @@ export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: policyId }: any = useParams();
-  const [current, setCurrent] = useState(3);
+  const [current, setCurrent] = useState(0);
   const [consumeData, setConsumeData] = useState<any>([]);
   const [selectedRow1, setSelectedRow1] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
@@ -569,7 +569,7 @@ export const PolicyCreateExtention = () => {
             minLeaveForAttachment: values?.attachmentMandatoryAfter,
             maxLeaveInMonth: values?.maxLeaveApplyMonthly,
             maxLeaveInDays: values?.minLeaveApplyDays,
-            maxLeaveApplyInLapse: values?.maxLeaveApplyInLapse,
+            maxLeaveApplyInLapse: values?.maxLeaveApplyInLapse || 0,
           },
         };
     }
