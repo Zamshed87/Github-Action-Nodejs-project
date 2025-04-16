@@ -22,7 +22,11 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import { deleteSeparationAttachment, separationCrud } from "../../helper";
+import {
+  deleteSeparationAttachment,
+  separationCrud,
+  separationDDL,
+} from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
@@ -112,12 +116,14 @@ export default function ManagementApplicationSeparationForm() {
   }, [dispatch]);
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/SeparationType/GetSeparationTypeForESS`,
-      "SeparationTypeId",
-      "SeparationType",
-      setSeparationTypeDDL
-    );
+    separationDDL(setSeparationTypeDDL, setLoading);
+    // console.log("hello");
+    // getPeopleDeskAllDDL(
+    //   `/SeparationType/GetSeparationTypeForESS`,
+    //   "value",
+    //   "text",
+    //   setSeparationTypeDDL
+    // );
   }, [wgId, buId, wId]);
 
   const getEmpSeparationDataHandlerById = () => {
