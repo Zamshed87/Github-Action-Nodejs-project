@@ -44,6 +44,22 @@ export const separationCrud = async (payload, setLoading, cb) => {
   }
 };
 
+export const separationDDL = async (setter, setLoading) =>{
+  try {
+    setLoading && setLoading(true);
+    const res = await axios.get("/SeparationType/GetSeparationTypeForESS");
+    const modifiedData = res?.data?.data?.map((item) => ({
+      value: item?.value,
+      label: item?.text,
+    }));
+    setter(modifiedData);
+    setLoading && setLoading(false);
+  } catch (error) {
+    setLoading && setLoading(false);
+    toast.warn(error?.response?.data?.message || "Failed, try again");
+   }
+}
+
 // self separation landing
 export const getSeparationLanding = async (
   partType = "",
