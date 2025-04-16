@@ -744,6 +744,9 @@ const SalaryReport = lazy(() =>
 const BankSalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/bankSalaryReport/index.jsx")
 );
+const YearlySalaryReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/yearlySalaryReport/index.jsx")
+);
 const SingleSalaryReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/salaryReport/singleSalaryReport.jsx"
@@ -3021,6 +3024,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/bankSalaryReport",
     component: BankSalaryReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/yearlySalaryReport",
+    component: YearlySalaryReport,
   },
   // increment/promotion start
   { path: "/compensationAndBenefits/increment", component: IncrementLanding },

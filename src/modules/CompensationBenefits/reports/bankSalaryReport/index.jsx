@@ -58,8 +58,8 @@ const BankSalaryReport = () => {
           />
           <PCardBody className="mb-3">
             <BankSalaryReportFilters form={form} />
-            <ReportLanding data={reportData} />
           </PCardBody>
+            <ReportLanding data={reportData} />
         </PCard>
       </PForm>
     </>
