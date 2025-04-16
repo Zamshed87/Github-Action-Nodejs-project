@@ -263,7 +263,7 @@ export default function PunishmentCreate({
               //   mode="multiple"
               options={
                 EmploymentTypeDDL?.data?.length > 0
-                  ? [{ value: 0, label: "All" }, ...EmploymentTypeDDL?.data]
+                  ? EmploymentTypeDDL?.data
                   : []
               }
               name="intEmploymentTypeList"
