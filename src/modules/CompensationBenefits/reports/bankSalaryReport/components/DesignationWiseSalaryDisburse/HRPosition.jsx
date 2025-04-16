@@ -1,19 +1,20 @@
 import { DataTable } from "Components";
-import { getBankWiseSalaryDisburseHeader } from "./helper";
+import { getDesignationWiseSalaryDisburseHeader } from "../helper";
 import { Table } from "antd";
 
-const BankWiseSalaryDisburse = ({ data }) => {
-
+const HRPosition = ({ reportType, data }) => {
   return (
     <div>
-      <h3 className="pb-3 pt-3">HR Position: Staff</h3>
+      <h3 className="pb-3 pt-3">{`HR Position: ${
+        data?.hrPosDesig ?? "N/A"
+      }`}</h3>
       <DataTable
-        header={getBankWiseSalaryDisburseHeader()}
+        header={getDesignationWiseSalaryDisburseHeader(reportType)}
         bordered
-        data={data?.bankWiseSalaryDisburse || []}
+        data={data?.details || []}
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell colSpan={2} align="center">
+            <Table.Summary.Cell colSpan={5} align="center">
               Total Amount
             </Table.Summary.Cell>
             <Table.Summary.Cell align="center">
@@ -26,4 +27,4 @@ const BankWiseSalaryDisburse = ({ data }) => {
   );
 };
 
-export default BankWiseSalaryDisburse;
+export default HRPosition;

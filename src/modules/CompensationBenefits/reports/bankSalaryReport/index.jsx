@@ -6,7 +6,8 @@ import { Form } from "antd";
 import useBankSalaryReport from "./hooks/useBankSalaryReport";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import BankSalaryReportFilters from "./components/BankSalaryReportFilters";
+import BankSalaryReportFilters from "./components/filter/BankSalaryReportFilters";
+import ReportLanding from "./components";
 
 const BankSalaryReport = () => {
   const [form] = Form.useForm();
@@ -45,7 +46,7 @@ const BankSalaryReport = () => {
         {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Total Report ${reportData?.totalCount || 0}`}
+            title={`Bank Salary Report.`}
             exportIcon
             onExport={() => {
               downloadExcel();
@@ -57,6 +58,7 @@ const BankSalaryReport = () => {
           />
           <PCardBody className="mb-3">
             <BankSalaryReportFilters form={form} />
+            <ReportLanding data={reportData} />
           </PCardBody>
         </PCard>
       </PForm>
