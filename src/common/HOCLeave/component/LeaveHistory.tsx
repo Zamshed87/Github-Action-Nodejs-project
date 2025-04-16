@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -11,22 +10,17 @@ import {
   PSelect,
   TableButton,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
+// import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Switch, Tag } from "antd";
+import { Col, Form, Row, Tag } from "antd";
 import Loading from "common/loading/Loading";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { useEffect, useMemo, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { toast } from "react-toastify";
-import { todayDate } from "utility/todayDate";
 import moment from "moment";
-import { downloadFile } from "utility/downloadFile";
 import { PModal } from "Components/Modal";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
@@ -37,12 +31,11 @@ export const LeaveApp_History = ({
   setIsEdit,
   setSingleData,
   setImageFile,
-  allFormValues,
+
   isOfficeAdmin,
   landingData,
 }: any) => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
 
@@ -56,38 +49,11 @@ export const LeaveApp_History = ({
   const landingApi = useApiRequest({});
   // const leaveTypeApi = useApiRequest({});
   const deleteApi = useApiRequest({});
-  const detailsApi = useApiRequest({});
   const [open, setOpen] = useState(false);
-
-  //   const debounce = useDebounce();
 
   // Form Instance
   const [form] = Form.useForm();
 
-  // navTitle
-
-  // useEffect(() => {
-  //   getLeaveTypes();
-  // }, []);
-
-  // const getLeaveTypes = () => {
-  //   leaveTypeApi?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "LeaveType",
-  //       BusinessUnitId: buId,
-  //       intId: 0,
-  //       WorkplaceGroupId: wgId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.LeaveType;
-  //         res[i].value = item?.LeaveTypeId;
-  //       });
-  //     },
-  //   });
-  // };
   type TLandingApi = {
     pagination?: {
       current?: number;
@@ -158,10 +124,12 @@ export const LeaveApp_History = ({
     {
       title: "Reason",
       dataIndex: "reason",
-      width: 100,
+      width: 90,
     },
     {
       title: "Attachment",
+      width: 90,
+
       dataIndex: "attachmentId",
       render: (_: any, item: any) => (
         <TableButton
