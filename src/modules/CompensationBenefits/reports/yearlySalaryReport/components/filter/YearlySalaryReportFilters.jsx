@@ -71,7 +71,7 @@ const YearlySalaryReportFilters = ({ form }) => {
             getWorkplaceDDL();
           }}
           loading={workplaceGroupDDL.loading}
-          // rules={[{ required: true, message: "Workplace Group Is Required" }]}
+          rules={[{ required: true, message: "Workplace Group Is Required" }]}
         />
       </Col>
       <Col md={5} sm={12} xs={24}>

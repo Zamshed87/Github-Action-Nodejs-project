@@ -54,7 +54,7 @@ const YearlySalaryReport = () => {
         {(loadingReportData || loadingExcel) && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Yearly Salary Report ${reportData?.totalCount}`}
+            title={`Yearly Salary Report.`}
             exportIcon
             onExport={() => {
               downloadExcel();
@@ -72,11 +72,11 @@ const YearlySalaryReport = () => {
             bordered
             data={reportData?.details}
             loading={loadingReportData}
-            pagination={{
-              pageSize: reportData?.pageSize,
-              total: reportData?.totalCount,
-              pageSizeOptions: ["25", "50", "100"],
-            }}
+            // pagination={{
+            //   pageSize: reportData?.pageSize,
+            //   total: reportData?.totalCount,
+            //   pageSizeOptions: ["25", "50", "100"],
+            // }}
             onChange={(pagination, _, __, extra) => {
               if (extra.action === "paginate") {
                 fetchReportData();
@@ -91,10 +91,9 @@ const YearlySalaryReport = () => {
                   Total Amount
                 </Table.Summary.Cell>
                 {reportData?.total?.monthlyData?.map(
-                  (month, monthIndex) => {
-                    console.log(month)
+                  (month) => {
                     return <React.Fragment key={month.title}>
-                      {month.details.map((detail, detailIndex) => (
+                      {month.details.map((detail) => (
                         <Table.Summary.Cell
                           key={`${month.title}-${detail.title}`}
                           align="center"
