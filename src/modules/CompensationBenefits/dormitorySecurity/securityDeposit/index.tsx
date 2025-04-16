@@ -356,7 +356,11 @@ export const SecurityDepositLanding = () => {
                     process.env.NODE_ENV
                   );
                   downloadFile(
-                    `${isDevServer ? "/document/downloadfile?id=8386" : ""}`,
+                    `${
+                      process.env.NODE_ENV === "development"
+                        ? "/document/downloadfile?id=8686"
+                        : "/document/downloadfile?id=12004"
+                    }`,
                     "Security Deposit Bulk Upload",
                     "xlsx",
                     setLoading
