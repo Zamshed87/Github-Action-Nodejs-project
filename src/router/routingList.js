@@ -1621,6 +1621,7 @@ import OffDaySelfService from "modules/empSelfService/supervisor/offDay";
 import MonthlyOffdayAssignLandingSelfService from "modules/empSelfService/supervisor/monthlyOffdayAssign";
 import { OffDayLanding } from "modules/timeSheet/employeeAssign/offDay";
 import { LeaveAdjustment } from "modules/employeeProfile/leaveAdjustment";
+import { LeavePunishmentLanding } from "modules/leaveMovement/configuration/leavePunishment";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -2231,6 +2232,10 @@ export const routingList = [
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/view/:id",
     component: LeavePolicyDetails,
+  },
+  {
+    path: "/administration/punishmentConfiguration/sandwichLeave",
+    component: LeavePunishmentLanding,
   },
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy/edit/:id",

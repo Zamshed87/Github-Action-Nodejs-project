@@ -345,4 +345,10 @@ export const apiList = {
   LeaveAdjustmentDeleteById: "/LeaveAdjustment/DeleteById",
   PolicyWiseEmployeeLeaveBalanceList:
     "/LeaveBalance/PolicyWiseEmployeeLeaveBalanceList",
+  LeavePunishmentLanding: "/LeavePunishment/Get",
+  LeavePunishmentActiveOrDeleteById: "/LeavePunishment/ActiveOrDeleteById",
+  LeavePunishmentDeleteById: "/LeavePunishment/DeleteById",
+  LeavePunishmentCreate: "/LeavePunishment/Create",
+  LeavePunishmentGetById: "/LeavePunishment/GetById",
+  LeavePunishmentExtend: "/LeavePunishment/Extend",
 };
