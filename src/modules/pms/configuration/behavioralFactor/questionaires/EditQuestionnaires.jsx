@@ -101,6 +101,7 @@ const EditQuestionnaires = ({
                 classes="input-sm"
                 value={values?.questionnairesGroupName}
                 name="questionnairesGroupName"
+                disabled={true}
                 type="text"
                 className="form-control"
                 onChange={(e) => {
