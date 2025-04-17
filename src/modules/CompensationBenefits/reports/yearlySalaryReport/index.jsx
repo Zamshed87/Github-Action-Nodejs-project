@@ -8,6 +8,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import YearlySalaryReportFilters from "./components/filter/YearlySalaryReportFilters";
 import { getHeader } from "./components/helper";
 import useYearlySalaryReport from "./hooks/useYearlySalaryReport";
+import NoResult from "common/NoResult";
 
 const YearlySalaryReport = () => {
   const [form] = Form.useForm();
@@ -119,7 +120,7 @@ const YearlySalaryReport = () => {
               )}
             />
           ) : (
-            <></>
+            <NoResult title="No Result Found" para="" />
           )}
         </PCard>
       </PForm>

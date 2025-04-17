@@ -8,6 +8,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { getHeader } from "./components/helper";
 import useMonthlySalaryBreakDownReport from "./hooks/useMonthlySalaryBreakDownReport";
 import MonthlySalaryBreakDownReportFilters from "./components/filter/MonthlySalaryBreakDownReportFilters";
+import NoResult from "common/NoResult";
 
 const MonthlySalaryBreakDownReport = () => {
   const [form] = Form.useForm();
@@ -130,7 +131,7 @@ const MonthlySalaryBreakDownReport = () => {
               )}
             />
           ) : (
-            <></>
+            <NoResult title="No Result Found" para="" />
           )}
         </PCard>
       </PForm>
