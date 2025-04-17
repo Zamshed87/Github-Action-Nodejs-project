@@ -6,7 +6,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 import { yearDDLAction } from "utility/yearDDL";
 
-const useYearlySalaryReportFilters = ({ form }) => {
+const useYearlySalaryReportFilters = (form) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId, intAccountId },
   } = useSelector((store) => store?.auth, shallowEqual);

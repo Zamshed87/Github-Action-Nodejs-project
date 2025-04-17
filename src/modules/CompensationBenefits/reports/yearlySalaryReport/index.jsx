@@ -26,6 +26,7 @@ const YearlySalaryReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Yearly Salary Report";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,59 +64,63 @@ const YearlySalaryReport = () => {
           <PCardBody className="mb-3">
             <YearlySalaryReportFilters form={form} />
           </PCardBody>
-          <DataTable
-            header={getHeader(
-              reportData?.reportType,
-              reportData?.details?.[0]?.monthlyData,
-              pages
-            )}
-            bordered
-            data={reportData?.details}
-            loading={loadingReportData}
-            // pagination={{
-            //   pageSize: reportData?.pageSize,
-            //   total: reportData?.totalCount,
-            //   pageSizeOptions: ["25", "50", "100"],
-            // }}
-            onChange={(pagination, _, __, extra) => {
-              if (extra.action === "paginate") {
-                fetchReportData();
-                setPages(pagination);
-              }
-            }}
-            scroll={{ x: "3000px" }}
-            summary={() => (
-              <Table.Summary.Row>
-                {/* Fixed Base Columns */}
-                <Table.Summary.Cell colSpan={5} align="center" index={0}>
-                  Total Amount
-                </Table.Summary.Cell>
-                {reportData?.total?.monthlyData?.map(
-                  (month) => {
-                    return <React.Fragment key={month.title}>
-                      {month.details.map((detail) => (
+          {reportData?.reportType ? (
+            <DataTable
+              header={getHeader(
+                reportData?.reportType,
+                reportData?.details?.[0]?.monthlyData,
+                pages
+              )}
+              bordered
+              data={reportData?.details}
+              loading={loadingReportData}
+              // pagination={{
+              //   pageSize: reportData?.pageSize,
+              //   total: reportData?.totalCount,
+              //   pageSizeOptions: ["25", "50", "100"],
+              // }}
+              onChange={(pagination, _, __, extra) => {
+                if (extra.action === "paginate") {
+                  fetchReportData();
+                  setPages(pagination);
+                }
+              }}
+              scroll={{ x: "3000px" }}
+              summary={() => (
+                <Table.Summary.Row>
+                  {/* Fixed Base Columns */}
+                  <Table.Summary.Cell colSpan={5} align="center" index={0}>
+                    Total Amount
+                  </Table.Summary.Cell>
+                  {reportData?.total?.monthlyData?.map((month) => {
+                    return (
+                      <React.Fragment key={month.title}>
+                        {month.details.map((detail) => (
+                          <Table.Summary.Cell
+                            key={`${month.title}-${detail.title}`}
+                            align="center"
+                          >
+                            {detail.amount}
+                          </Table.Summary.Cell>
+                        ))}
                         <Table.Summary.Cell
-                          key={`${month.title}-${detail.title}`}
+                          key={`${month.title}-total`}
                           align="center"
                         >
-                          {detail.amount}
+                          {month.totalAmount}
                         </Table.Summary.Cell>
-                      ))}
-                      <Table.Summary.Cell
-                        key={`${month.title}-total`}
-                        align="center"
-                      >
-                        {month.totalAmount}
-                      </Table.Summary.Cell>
-                    </React.Fragment>
-                  }
-                )}
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.totalAmount}
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            )}
-          />
+                      </React.Fragment>
+                    );
+                  })}
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.totalAmount}
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              )}
+            />
+          ) : (
+            <></>
+          )}
         </PCard>
       </PForm>
     </>

@@ -25,7 +25,6 @@ const YearlySalaryReportFilters = ({ form }) => {
   const yearType = Form.useWatch("yearType", form);
   const reportType = Form.useWatch("reportType", form);
 
-  console.log(yearType);
   return (
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
@@ -34,7 +33,10 @@ const YearlySalaryReportFilters = ({ form }) => {
           name="yearType"
           label="Year Type"
           placeholder="Select Year Type"
-          onChange={(_, op) => form.setFieldsValue({ yearType: op })}
+          onChange={(_, op) => {
+            form.setFieldsValue({ yearType: op });
+            form.setFieldsValue({ year: undefined });
+          }}
           loading={loadingYearType}
           rules={[{ required: true, message: "Year Type Is Required" }]}
         />

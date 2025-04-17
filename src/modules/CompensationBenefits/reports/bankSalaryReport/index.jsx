@@ -26,6 +26,7 @@ const BankSalaryReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Bank Salary Report"
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   let permission = null;
@@ -59,7 +60,9 @@ const BankSalaryReport = () => {
           <PCardBody className="mb-3">
             <BankSalaryReportFilters form={form} />
           </PCardBody>
-            <ReportLanding data={reportData} />
+            {
+              reportData?.reportType ? <ReportLanding data={reportData} />:<></>
+            }
         </PCard>
       </PForm>
     </>
