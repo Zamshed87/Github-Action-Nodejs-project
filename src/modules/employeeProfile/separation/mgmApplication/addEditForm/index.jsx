@@ -116,23 +116,12 @@ export default function ManagementApplicationSeparationForm() {
   }, [dispatch]);
 
   useEffect(() => {
-<<<<<<< HEAD
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
     );
-=======
-    separationDDL(setSeparationTypeDDL, setLoading);
-    // console.log("hello");
-    // getPeopleDeskAllDDL(
-    //   `/SeparationType/GetSeparationTypeForESS`,
-    //   "value",
-    //   "text",
-    //   setSeparationTypeDDL
-    // );
->>>>>>> 0b43d1b17f65d4aacd3f06b7155a1698c9c5232f
   }, [wgId, buId, wId]);
 
   const getEmpSeparationDataHandlerById = () => {
