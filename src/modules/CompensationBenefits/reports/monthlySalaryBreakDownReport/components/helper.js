@@ -1,8 +1,4 @@
-export const getHeader = (
-  reportType,
-  monthlyData = [],
-  pages = { current: 1, pageSize: 25 }
-) => {
+export const getHeader = (header, pages = { current: 1, pageSize: 25 }) => {
   const baseColumns = [
     {
       title: "SL",
@@ -13,68 +9,87 @@ export const getHeader = (
       fixed: "left",
     },
     {
-      title: "Workplace Name",
-      dataIndex: "workplace",
-      width: 120,
-      align: "center",
-    },
-    {
       title: "Department",
       dataIndex: "department",
-      width: 120,
+      width: 160,
       align: "center",
     },
     {
-      title: "Section",
-      dataIndex: "section",
-      width: 120,
+      title: "Manpower",
+      dataIndex: "manpower",
+      width: 100,
       align: "center",
     },
     {
-      title: reportType ?? "Designation",
-      dataIndex: "hrPosDesig",
-      width: 120,
+      title: "Man Hour",
+      dataIndex: "manHour",
+      width: 100,
+      align: "center",
+    },
+    {
+      title: "Gross Salary",
+      dataIndex: "grossSalary",
+      width: 100,
+      align: "center",
+    },
+    {
+      title: "Overtime",
+      dataIndex: "overtime",
+      width: 100,
       align: "center",
     },
   ];
 
-  const dynamicMonthlyColumns = monthlyData.map((month) => ({
-    title: month.title,
+  const dynamicAllowanceColumns = {
+    title: "Allocation",
     children: [
-      ...month.details.map((detail) => ({
-        title: detail.title,
+      ...(header?.deductionDetail ?? [])?.map((data) => ({
+        title: data?.title,
         align: "center",
-        width: 120,
-        render: (_, record) => {
-          const monthData = record.monthlyData?.find(
-            (m) => m.title === month.title
-          );
-          const detailItem = monthData?.details?.find(
-            (d) => d.title === detail.title
-          );
-          return detailItem?.amount ?? "-";
+        width: 100,
+        render: () => {
+          return data?.amount ?? "-";
         },
       })),
       {
-        title: "Total Pay",
+        title: "Total Earning",
+        width: 100,
         align: "center",
-        width: 120,
-        render: (_, record) => {
-          const monthData = record.monthlyData?.find(
-            (m) => m.title === month.title
-          );
-          return monthData?.totalAmount ?? "-";
+        render: () => {
+          return header?.allowanceTotal ?? "-";
         },
       },
     ],
-  }));
+  };
+  const dynamicDeductionColumns = {
+    title: "Deduction",
+    children: [
+      ...(header?.deductionDetail ?? [])?.map((data) => ({
+        title: data?.title,
+        align: "center",
+        width: 100,
+        render: () => {
+          return data?.amount ?? "-";
+        },
+      })),
+      {
+        title: "Total Deduction",
+        width: 100,
+        align: "center",
+        render: () => {
+          return header?.deductionTotal ?? "-";
+        },
+      },
+    ],
+  };
 
   return [
     ...baseColumns,
-    ...dynamicMonthlyColumns,
+    dynamicAllowanceColumns,
+    dynamicDeductionColumns,
     {
-      title: "Total Amount",
-      dataIndex: "totalAmount",
+      title: "Netpay Amount",
+      dataIndex: "netpayAmount",
       width: 120,
       align: "center",
     },

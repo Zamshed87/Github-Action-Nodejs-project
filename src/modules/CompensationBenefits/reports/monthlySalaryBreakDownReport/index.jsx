@@ -22,6 +22,8 @@ const MonthlySalaryBreakDownReport = () => {
     loadingReportData,
     downloadExcel,
     loadingExcel,
+    downloadPdf,
+    loadingPdf,
   } = useMonthlySalaryBreakDownReport({ form });
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const MonthlySalaryBreakDownReport = () => {
   let permission = null;
 
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30580) {
+    if (item?.menuReferenceId === 30581) {
       permission = item;
     }
   });
@@ -40,18 +42,11 @@ const MonthlySalaryBreakDownReport = () => {
     <>
       <PForm
         form={form}
-        initialValues={{
-          workplace: { label: "All", value: 0 },
-          department: { label: "All", value: 0 },
-          section: { label: "All", value: 0 },
-          hrPosition: { label: "All", value: 0 },
-          designation: { label: "All", value: 0 },
-        }}
         onFinish={() => {
           fetchReportData();
         }}
       >
-        {(loadingReportData || loadingExcel) && <Loading />}
+        {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
         <PCard>
           <PCardHeader
             title={`Monthly Salary Break Down Report.`}
@@ -59,16 +54,16 @@ const MonthlySalaryBreakDownReport = () => {
             onExport={() => {
               downloadExcel();
             }}
+            printIcon
+            pdfExport={() => {
+              downloadPdf();
+            }}
           />
           <PCardBody className="mb-3">
             <YearlySalaryReportFilters form={form} />
           </PCardBody>
           <DataTable
-            header={getHeader(
-              reportData?.reportType,
-              reportData?.details?.[0]?.monthlyData,
-              pages
-            )}
+            header={getHeader(reportData?.details?.[0], pages)}
             bordered
             data={reportData?.details}
             loading={loadingReportData}
@@ -87,31 +82,47 @@ const MonthlySalaryBreakDownReport = () => {
             summary={() => (
               <Table.Summary.Row>
                 {/* Fixed Base Columns */}
-                <Table.Summary.Cell colSpan={5} align="center" index={0}>
-                  Total Amount
+                <Table.Summary.Cell colSpan={2} align="center" index={0}>
+                  Total
                 </Table.Summary.Cell>
-                {reportData?.total?.monthlyData?.map(
-                  (month) => {
-                    return <React.Fragment key={month.title}>
-                      {month.details.map((detail) => (
-                        <Table.Summary.Cell
-                          key={`${month.title}-${detail.title}`}
-                          align="center"
-                        >
-                          {detail.amount}
-                        </Table.Summary.Cell>
-                      ))}
-                      <Table.Summary.Cell
-                        key={`${month.title}-total`}
-                        align="center"
-                      >
-                        {month.totalAmount}
-                      </Table.Summary.Cell>
-                    </React.Fragment>
-                  }
-                )}
                 <Table.Summary.Cell align="center">
-                  {reportData?.total?.totalAmount}
+                  {reportData?.total?.manpower ?? "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.manHour ?? "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.grossSalary ?? "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.overtime ?? "-"}
+                </Table.Summary.Cell>
+                {(reportData?.total?.allowanceDetail ?? []).map((item) => (
+                  <Table.Summary.Cell
+                    key={`allowance-${item.title}`}
+                    align="center"
+                  >
+                    {item.amount ?? "-"}
+                  </Table.Summary.Cell>
+                ))}
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.allowanceTotal ?? "-"}
+                </Table.Summary.Cell>
+
+                {(reportData?.total?.deductionDetail ?? []).map((item) => (
+                  <Table.Summary.Cell
+                    key={`deduction-${item.title}`}
+                    align="center"
+                  >
+                    {item.amount ?? "-"}
+                  </Table.Summary.Cell>
+                ))}
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.deductionTotal ?? "-"}
+                </Table.Summary.Cell>
+
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.netpayAmount ?? "-"}
                 </Table.Summary.Cell>
               </Table.Summary.Row>
             )}
