@@ -10,7 +10,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikInput from "../../../../common/FormikInput";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -260,8 +259,8 @@ export default function TransferAndPromotion() {
               children: (
                 <div>
                   <div>{rec?.departmentName}</div>
-                  <div>{rec?.sectionNameFrom || "N/A"}</div>
-                  <div>{rec?.designationNameFrom}</div>
+                  <div>{rec?.sectionName || "N/A"}</div>
+                  <div>{rec?.designationName}</div>
                 </div>
               ),
             };

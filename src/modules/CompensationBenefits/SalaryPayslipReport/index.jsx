@@ -496,8 +496,13 @@ const SalaryPayslipReport = () => {
                             <th style={{ textAlign: "right" }}>
                               <p style={thStyles}>
                                 {numberWithCommas(
-                                  numTotal(viewPaySlipData, "numAmount", 1).toFixed(1) +
-                                    salaryHeaderData[0]?.numOverTimeAmount || 0
+                                  parseFloat(
+                                    numTotal(
+                                      viewPaySlipData,
+                                      "numAmount",
+                                      1
+                                    ).toFixed(1)
+                                  )
                                 )}
                               </p>
                             </th>
@@ -511,8 +516,13 @@ const SalaryPayslipReport = () => {
                             <th style={{ textAlign: "right" }}>
                               <p style={thStyles}>
                                 {numberWithCommas(
-                                  numTotal(viewPaySlipData, "numTotal", 1).toFixed(1) +
-                                    salaryHeaderData[0]?.numOverTimeAmount || 0
+                                  parseFloat(
+                                    numTotal(
+                                      viewPaySlipData,
+                                      "numTotal",
+                                      1
+                                    ).toFixed(1)
+                                  )
                                 )}
                               </p>
                             </th>
@@ -660,7 +670,8 @@ const SalaryPayslipReport = () => {
                             </th>
                             <th colSpan="3" style={{ textAlign: "right" }}>
                               <p style={thStyles}>
-                                {salaryHeaderData[0]?.numNetPayableSalary}
+                                {salaryHeaderData[0]?.numNetPayableSalary +
+                                  salaryHeaderData[0]?.numTotalAllowance}
                                 {/* {numberWithCommas(
                                   (numTotal(viewPaySlipData, "numTotal", 1) +
                                     salaryHeaderData[0]?.numOverTimeAmount ||
