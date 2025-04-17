@@ -8,6 +8,7 @@ const PFilter = ({
   resetApiCall,
   ishideDate,
   isSection,
+  showDesignation,
   children,
 }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
@@ -86,7 +87,7 @@ const PFilter = ({
               form={form}
               col={12}
               isDepartment={true}
-              isDesignation={true}
+              isDesignation={showDesignation !== "NO"}
               isSection={isSection}
               // mode="multiple"
             />

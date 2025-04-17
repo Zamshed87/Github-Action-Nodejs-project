@@ -150,7 +150,6 @@ const JoineeAttendanceReport = () => {
         WorkplaceGroupId: values?.workplaceGroup?.value || 0,
         WorkplaceIdList: workplaceList || 0,
         departments: formatFilterValue(values?.department),
-        designations: formatFilterValue(values?.designation),
         sections: formatFilterValue(values?.section),
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
@@ -433,7 +432,7 @@ const JoineeAttendanceReport = () => {
             landingApiCall={landingApiCall}
             isSection={true}
             ishideDate={true}
-            isDesignation={false}
+            showDesignation={"NO"}
           >
             <Col md={12} sm={12} xs={24}>
               <PInput
