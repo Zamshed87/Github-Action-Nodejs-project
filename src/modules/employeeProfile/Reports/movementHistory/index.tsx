@@ -92,6 +92,7 @@ const EmMovementHistory = () => {
         WorkplaceId: wId,
         departments: formatFilterValue(values?.department),
         designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         PageNo: pagination.current || 1,
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -309,7 +310,11 @@ const EmMovementHistory = () => {
               );
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall} />
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+          />
           <DataTable
             bordered
             data={landingApi?.data?.data || []}
