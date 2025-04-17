@@ -33,7 +33,7 @@ const MonthlySalaryBreakDownReportFilters = ({ form }) => {
             form.setFieldsValue({ workplace: op });
           }}
           loading={workplaceDDL.loading}
-          // rules={[{ required: true, message: "Workplace Is Required" }]}
+          rules={[{ required: true, message: "Workplace Is Required" }]}
         />
       </Col>
       <Col md={6} sm={24}>
