@@ -502,8 +502,7 @@ const SalaryPayslipReport = () => {
                                       "numAmount",
                                       1
                                     ).toFixed(1)
-                                  ) + salaryHeaderData[0]?.numOverTimeAmount ||
-                                    0
+                                  )
                                 )}
                               </p>
                             </th>
@@ -523,8 +522,7 @@ const SalaryPayslipReport = () => {
                                       "numTotal",
                                       1
                                     ).toFixed(1)
-                                  ) + salaryHeaderData[0]?.numOverTimeAmount ||
-                                    0
+                                  )
                                 )}
                               </p>
                             </th>
