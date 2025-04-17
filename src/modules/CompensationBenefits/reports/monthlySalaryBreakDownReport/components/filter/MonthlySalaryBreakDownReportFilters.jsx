@@ -1,11 +1,11 @@
 import { Row, Col } from "antd";
 import { PButton, PInput, PSelect } from "Components";
-import useYearlySalaryReportFilters from "./useMonthlySalaryBreakDownReportFilters";
+import useMonthlySalaryBreakDownReportFilters from "./useMonthlySalaryBreakDownReportFilters";
 import moment from "moment";
 
-const YearlySalaryReportFilters = ({ form }) => {
+const MonthlySalaryBreakDownReportFilters = ({ form }) => {
   const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } =
-    useYearlySalaryReportFilters(form);
+    useMonthlySalaryBreakDownReportFilters(form);
 
   return (
     <Row gutter={[10, 2]}>
@@ -60,4 +60,4 @@ const YearlySalaryReportFilters = ({ form }) => {
   );
 };
 
-export default YearlySalaryReportFilters;
+export default MonthlySalaryBreakDownReportFilters;

@@ -26,6 +26,7 @@ const BankSalaryReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Bank Salary Report"
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   let permission = null;

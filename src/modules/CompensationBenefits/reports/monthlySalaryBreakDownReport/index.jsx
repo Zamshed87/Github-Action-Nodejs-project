@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { Form, Table } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import YearlySalaryReportFilters from "./components/filter/MonthlySalaryBreakDownReportFilters";
 import { getHeader } from "./components/helper";
 import useMonthlySalaryBreakDownReport from "./hooks/useMonthlySalaryBreakDownReport";
 
@@ -28,6 +27,7 @@ const MonthlySalaryBreakDownReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Monthly Salary Break Down Report";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -60,7 +60,7 @@ const MonthlySalaryBreakDownReport = () => {
             }}
           />
           <PCardBody className="mb-3">
-            <YearlySalaryReportFilters form={form} />
+            <MonthlySalaryBreakDownReport form={form} />
           </PCardBody>
           <DataTable
             header={getHeader(reportData?.details?.[0], pages)}

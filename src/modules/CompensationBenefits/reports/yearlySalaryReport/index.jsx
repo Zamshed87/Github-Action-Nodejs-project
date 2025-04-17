@@ -26,6 +26,7 @@ const YearlySalaryReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Yearly Salary Report"
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
