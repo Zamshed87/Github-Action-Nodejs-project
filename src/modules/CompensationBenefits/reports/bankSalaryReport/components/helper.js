@@ -13,13 +13,22 @@ export const getBankWiseSalaryDisburseHeader = (
     dataIndex: "bankDetails",
     width: 100,
     align: "center",
+    render: (text, record) => {
+      return (
+        <>
+          {record?.bankName}
+          <br />
+          {record?.branchName}
+        </>
+      );
+    },
   },
   {
     title: "Amount",
     dataIndex: "amount",
     width: 100,
     align: "center",
-  }
+  },
 ];
 
 export const getDesignationWiseSalaryDisburseHeader = (
@@ -62,5 +71,5 @@ export const getDesignationWiseSalaryDisburseHeader = (
     dataIndex: "amount",
     width: 100,
     align: "center",
-  }
+  },
 ];

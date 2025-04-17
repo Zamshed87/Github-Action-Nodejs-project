@@ -13,7 +13,7 @@ const useBankSalaryReport = ({ form }) => {
     const { WorkplaceGroupId, Year, Month, ReportTypeId } =
       form?.getFieldsValue(true);
     getReportData(
-      `/PdfAndExcelReport/Payroll/BankSalaryReport?WorkplaceGroupId=${WorkplaceGroupId}&Year=${Year}&Month=${Month}&ReportTypeId=${ReportTypeId}`,
+      `/Payroll/BankSalaryReport?WorkplaceGroupId=${WorkplaceGroupId}&Year=${Year}&Month=${Month}&ReportTypeId=${ReportTypeId}`,
       (res) => {
         setReportData(res);
       }
@@ -23,7 +23,7 @@ const useBankSalaryReport = ({ form }) => {
     try {
       const { WorkplaceGroupId, ReportTypeId } = await form.validateFields(); // validate first
       const { Year, Month } = form?.getFieldsValue(true);
-      
+
       const url = `/PdfAndExcelReport/Payroll/BankSalaryReportExcel?WorkplaceGroupId=${WorkplaceGroupId}&Year=${Year}&Month=${Month}&ReportTypeId=${ReportTypeId}`;
       downloadFile(url, `BankSalaryReport`, "xlsx", setLoadingExcel);
     } catch (error) {
