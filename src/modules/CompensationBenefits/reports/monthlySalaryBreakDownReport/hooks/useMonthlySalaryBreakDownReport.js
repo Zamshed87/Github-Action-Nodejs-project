@@ -41,7 +41,7 @@ const useMonthlySalaryBreakDownReport = ({ form }) => {
       const { workplaceGroup, workplace } = await form.validateFields(); // validate first
       const { Year, Month } = form?.getFieldsValue(true);
 
-      const url = `/PdfAndExcelReport/Payroll/BankSalaryReportExcel?WorkplaceGroupId=${workplaceGroup?.value}&WorkplaceId=${workplace?.value}&Year=${Year}&Month=${Month}`;
+      const url = `/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportExcel?WorkplaceGroupId=${workplaceGroup?.value}&WorkplaceId=${workplace?.value}&Year=${Year}&Month=${Month}`;
       downloadFile(url, `BankSalaryReport`, "xlsx", setLoadingExcel);
     } catch (error) {
       // Validation failed — do nothing or show a toast if needed
@@ -54,7 +54,7 @@ const useMonthlySalaryBreakDownReport = ({ form }) => {
       const { workplaceGroup, workplace } = await form.validateFields(); // validate first
       const { Year, Month } = form?.getFieldsValue(true);
 
-      const url = `/PdfAndExcelReport/Payroll/BankSalaryReportPdf?WorkplaceGroupId=${workplaceGroup?.value}&WorkplaceId=${workplace?.value}&Year=${Year}&Month=${Month}`;
+      const url = `/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportPdf?WorkplaceGroupId=${workplaceGroup?.value}&WorkplaceId=${workplace?.value}&Year=${Year}&Month=${Month}`;
       downloadFile(url, `BankSalaryReport`, "pdf", setLoadingPdf);
     } catch (error) {
       toast.error("Please Select the required fields.");

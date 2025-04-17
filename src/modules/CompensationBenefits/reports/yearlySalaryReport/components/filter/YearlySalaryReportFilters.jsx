@@ -34,7 +34,10 @@ const YearlySalaryReportFilters = ({ form }) => {
           name="yearType"
           label="Year Type"
           placeholder="Select Year Type"
-          onChange={(_, op) => form.setFieldsValue({ yearType: op })}
+          onChange={(_, op) => {
+            form.setFieldsValue({ yearType: op });
+            form.setFieldsValue({ year: undefined });
+          }}
           loading={loadingYearType}
           rules={[{ required: true, message: "Year Type Is Required" }]}
         />
