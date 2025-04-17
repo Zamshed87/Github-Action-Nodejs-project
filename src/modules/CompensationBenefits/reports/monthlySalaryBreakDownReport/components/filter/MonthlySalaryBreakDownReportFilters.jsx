@@ -4,8 +4,7 @@ import useMonthlySalaryBreakDownReportFilters from "./useMonthlySalaryBreakDownR
 import moment from "moment";
 
 const MonthlySalaryBreakDownReportFilters = ({ form }) => {
-  const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } =
-    useMonthlySalaryBreakDownReportFilters(form);
+  const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } = useMonthlySalaryBreakDownReportFilters(form);
 
   return (
     <Row gutter={[10, 2]}>
@@ -47,8 +46,10 @@ const MonthlySalaryBreakDownReportFilters = ({ form }) => {
           onChange={(value) => {
             // Month moment(value).format("MM")
             // Year moment(value).format("YYYY")
-            form.setFieldsValue({ Month: moment(value).format("MM") });
-            form.setFieldsValue({ Year: moment(value).format("YYYY") });
+            form.setFieldsValue({
+              Month: moment(value).format("MM"),
+              Year: moment(value).format("YYYY"),
+            });            
           }}
           rules={[{ required: true, message: "Year Month Is Required" }]}
         />

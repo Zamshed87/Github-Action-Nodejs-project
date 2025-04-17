@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 
-const useMonthlySalaryBreakDownReportFilters = ({ form }) => {
+const useMonthlySalaryBreakDownReportFilters = (form) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);

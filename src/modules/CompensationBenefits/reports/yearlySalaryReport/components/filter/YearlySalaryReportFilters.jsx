@@ -25,7 +25,6 @@ const YearlySalaryReportFilters = ({ form }) => {
   const yearType = Form.useWatch("yearType", form);
   const reportType = Form.useWatch("reportType", form);
 
-  console.log(yearType);
   return (
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>

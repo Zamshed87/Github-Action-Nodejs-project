@@ -7,6 +7,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { getHeader } from "./components/helper";
 import useMonthlySalaryBreakDownReport from "./hooks/useMonthlySalaryBreakDownReport";
+import MonthlySalaryBreakDownReportFilters from "./components/filter/MonthlySalaryBreakDownReportFilters";
 
 const MonthlySalaryBreakDownReport = () => {
   const [form] = Form.useForm();
@@ -60,73 +61,77 @@ const MonthlySalaryBreakDownReport = () => {
             }}
           />
           <PCardBody className="mb-3">
-            <MonthlySalaryBreakDownReport form={form} />
+            <MonthlySalaryBreakDownReportFilters form={form} />
           </PCardBody>
-          <DataTable
-            header={getHeader(reportData?.details?.[0], pages)}
-            bordered
-            data={reportData?.details}
-            loading={loadingReportData}
-            // pagination={{
-            //   pageSize: reportData?.pageSize,
-            //   total: reportData?.totalCount,
-            //   pageSizeOptions: ["25", "50", "100"],
-            // }}
-            onChange={(pagination, _, __, extra) => {
-              if (extra.action === "paginate") {
-                fetchReportData();
-                setPages(pagination);
-              }
-            }}
-            scroll={{ x: "3000px" }}
-            summary={() => (
-              <Table.Summary.Row>
-                {/* Fixed Base Columns */}
-                <Table.Summary.Cell colSpan={2} align="center" index={0}>
-                  Total
-                </Table.Summary.Cell>
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.manpower ?? "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.manHour ?? "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.grossSalary ?? "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.overtime ?? "-"}
-                </Table.Summary.Cell>
-                {(reportData?.total?.allowanceDetail ?? []).map((item) => (
-                  <Table.Summary.Cell
-                    key={`allowance-${item.title}`}
-                    align="center"
-                  >
-                    {item.amount ?? "-"}
+          {reportData?.details?.[0] ? (
+            <DataTable
+              header={getHeader(reportData?.details?.[0], pages)}
+              bordered
+              data={reportData?.details}
+              loading={loadingReportData}
+              // pagination={{
+              //   pageSize: reportData?.pageSize,
+              //   total: reportData?.totalCount,
+              //   pageSizeOptions: ["25", "50", "100"],
+              // }}
+              onChange={(pagination, _, __, extra) => {
+                if (extra.action === "paginate") {
+                  fetchReportData();
+                  setPages(pagination);
+                }
+              }}
+              scroll={{ x: "3000px" }}
+              summary={() => (
+                <Table.Summary.Row>
+                  {/* Fixed Base Columns */}
+                  <Table.Summary.Cell colSpan={2} align="center" index={0}>
+                    Total
                   </Table.Summary.Cell>
-                ))}
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.allowanceTotal ?? "-"}
-                </Table.Summary.Cell>
-
-                {(reportData?.total?.deductionDetail ?? []).map((item) => (
-                  <Table.Summary.Cell
-                    key={`deduction-${item.title}`}
-                    align="center"
-                  >
-                    {item.amount ?? "-"}
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.manpower ?? "-"}
                   </Table.Summary.Cell>
-                ))}
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.deductionTotal ?? "-"}
-                </Table.Summary.Cell>
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.manHour ?? "-"}
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.grossSalary ?? "-"}
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.overtime ?? "-"}
+                  </Table.Summary.Cell>
+                  {(reportData?.total?.allowanceDetail ?? []).map((item) => (
+                    <Table.Summary.Cell
+                      key={`allowance-${item.title}`}
+                      align="center"
+                    >
+                      {item.amount ?? "-"}
+                    </Table.Summary.Cell>
+                  ))}
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.allowanceTotal ?? "-"}
+                  </Table.Summary.Cell>
 
-                <Table.Summary.Cell align="center">
-                  {reportData?.total?.netpayAmount ?? "-"}
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            )}
-          />
+                  {(reportData?.total?.deductionDetail ?? []).map((item) => (
+                    <Table.Summary.Cell
+                      key={`deduction-${item.title}`}
+                      align="center"
+                    >
+                      {item.amount ?? "-"}
+                    </Table.Summary.Cell>
+                  ))}
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.deductionTotal ?? "-"}
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell align="center">
+                    {reportData?.total?.netpayAmount ?? "-"}
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              )}
+            />
+          ) : (
+            <></>
+          )}
         </PCard>
       </PForm>
     </>
