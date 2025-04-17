@@ -20,7 +20,7 @@ const QuestionnairesList = ({
                 <div className="d-flex align-items-center">
                   <h2>
                     <span>{index + 1}.</span>
-                    {questionGroupList?.strGroupName}
+                    {" " + questionGroupList?.strGroupName}
                   </h2>
                   <div className="d-flex align-items-center justify-content-center">
                     <Tooltip title="Edit" arrow>
