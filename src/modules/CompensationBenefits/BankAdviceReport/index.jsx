@@ -5,14 +5,14 @@ import { useApiRequest } from "Hooks";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { MdPrint } from "react-icons/md";
-import { SiMicrosoftexcel } from "react-icons/si";
+import { SiMicrosoftexcel, SiMicrosoftword } from "react-icons/si";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { todayDate } from "utility/todayDate";
-import { APIUrl } from "../../../App";
+import { APIUrl, isDevServer } from "../../../App";
 import { getPeopleDeskAllDDL } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
@@ -1154,6 +1154,35 @@ const BankAdviceReport = () => {
                               url,
                               `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetDetailsExcel_${values?.monthId}-${values?.yearId}`,
                               "xlsx",
+                              setLoading
+                            );
+                          },
+                        },
+
+                        isDevServer && {
+                          value: 4,
+                          label: "Top Sheet and Datails as Word",
+                          icon: (
+                            <SiMicrosoftword
+                              style={{
+                                marginRight: "5px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            const IntSalaryGenerateRequestId =
+                              values?.bankAdviceFor?.value === 1
+                                ? values?.adviceName?.value
+                                : values?.bonusCode?.value;
+
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=wordView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
+
+                            downloadFile(
+                              url,
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetDetailsWord_${values?.monthId}-${values?.yearId}`,
+                              "docx",
                               setLoading
                             );
                           },
