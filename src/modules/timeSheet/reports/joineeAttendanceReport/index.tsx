@@ -35,6 +35,8 @@ import { fromToDateList } from "../helper";
 import { gray600 } from "utility/customColor";
 import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import axios from "axios";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const JoineeAttendanceReport = () => {
   const dispatch = useDispatch();
@@ -147,6 +149,9 @@ const JoineeAttendanceReport = () => {
         businessUnitId: buId,
         WorkplaceGroupId: values?.workplaceGroup?.value || 0,
         WorkplaceIdList: workplaceList || 0,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -423,7 +428,58 @@ const JoineeAttendanceReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+            ishideDate={true}
+            isDesignation={false}
+          >
+            <Col md={12} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="attendanceMonth"
+                label="Attendance Month"
+                placeholder="Attendance Month"
+                format="MMM-YYYY"
+                picker="month"
+                onChange={(value) => {
+                  console.log(moment(value).format("MM/YYYY"));
+                  form.setFieldsValue({
+                    attendanceMonth: value,
+                  });
+                }}
+              />
+            </Col>
+            <Col md={12} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="fromDate"
+                label="Joining From Date"
+                placeholder="From Date"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    fromDate: value,
+                  });
+                }}
+              />
+            </Col>
+            <Col md={12} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="toDate"
+                label="Joining To Date"
+                placeholder="To Date"
+                disabledDate={disabledDate}
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    toDate: value,
+                  });
+                }}
+              />
+            </Col>
+          </PFilter>
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={4} sm={12} xs={24}>
                 <PInput
@@ -515,7 +571,7 @@ const JoineeAttendanceReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered

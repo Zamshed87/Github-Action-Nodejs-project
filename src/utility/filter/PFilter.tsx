@@ -129,6 +129,7 @@ const PFilter = ({
                     departmentId: [0],
                     designation: { label: "All", value: 0 },
                     designationId: [0],
+                    section: { label: "All", value: 0 },
                   });
                   resetApiCall && resetApiCall();
                 }}
