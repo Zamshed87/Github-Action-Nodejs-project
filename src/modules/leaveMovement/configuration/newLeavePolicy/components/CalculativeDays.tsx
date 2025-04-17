@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 export const CalculativeDays = ({
   form,
-  policy,
+  policy: landing,
   setPolicy,
   policyApi,
   detailsApi,
@@ -179,7 +179,16 @@ export const CalculativeDays = ({
                     allowClear
                     options={
                       policyApi?.data?.data?.length > 0
-                        ? policyApi?.data?.data
+                        ? [
+                            {
+                              value: 0,
+                              label: "All",
+                              policyName: "All",
+                              leaveType: "All",
+                              policyId: 0,
+                            },
+                            ...policyApi?.data?.data,
+                          ]
                         : []
                     }
                     name="policy"
@@ -192,7 +201,7 @@ export const CalculativeDays = ({
                     }}
                     rules={[
                       {
-                        required: isLeave && policy?.length === 0,
+                        required: isLeave && landing?.length === 0,
                         message: "Leave Policy is required",
                       },
                     ]}
@@ -216,7 +225,22 @@ export const CalculativeDays = ({
                             if (policy === undefined) {
                               return toast.warn("Please Select a Policy");
                             }
-
+                            if (
+                              landing?.filter(
+                                (i: any) => i.id === policy?.policyId
+                              ).length > 0
+                            ) {
+                              return toast.warn("Already Exists");
+                            }
+                            const isAll = landing?.filter(
+                              (i: any) => i?.name === "All"
+                            );
+                            if (isAll?.length > 0) {
+                              return toast.warn("All  is selected");
+                            }
+                            if (policy?.value === 0) {
+                              setPolicy([]);
+                            }
                             const fields = ["policy"];
                             form
                               .validateFields(fields)
@@ -241,11 +265,11 @@ export const CalculativeDays = ({
                     );
                   }}
                 </Form.Item>
-                {policy?.length > 0 && (
+                {landing?.length > 0 && (
                   <Col>
                     <DataTable
                       bordered
-                      data={policy}
+                      data={landing}
                       loading={false}
                       header={encashheader}
                     />
