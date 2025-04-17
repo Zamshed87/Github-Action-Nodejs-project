@@ -159,6 +159,8 @@ const JobConfirmationReport = () => {
           filerList?.designationName?.length > 0
             ? `${filerList?.designationName}`
             : "",
+        sections:
+          filerList?.sectionName?.length > 0 ? `${filerList?.sectionName}` : "",
       },
     });
   };
@@ -228,6 +230,14 @@ const JobConfirmationReport = () => {
       // sorter: true,
       filter: true,
       filterKey: "strDepartmentList",
+      filterSearch: true,
+      width: 130,
+    },
+    {
+      title: "Section",
+      dataIndex: "sectionName",
+      filter: true,
+      filterKey: "strSectionList",
       filterSearch: true,
       width: 130,
     },

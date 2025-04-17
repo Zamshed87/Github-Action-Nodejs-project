@@ -20,6 +20,7 @@ import {
 } from "./helper";
 import StakeholderTable from "./StakeholderTable";
 import { getEnumData } from "common/api/commonApi";
+import { toast } from "react-toastify";
 
 const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   // redux
@@ -83,14 +84,14 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   };
 
   const addHandler = (values) => {
-    // const isDuplicate = stakeholderField.some(
-    //   (org) => org.idx === values?.stakeholder?.label
-    // );
+    const isDuplicate = stakeholderField.some(
+      (org) => org.stakeholderTypeId === values?.stakeholderType?.value
+    );
 
-    // if (isDuplicate) {
-    //   toast.error("Stakeholder already exists");
-    //   return;
-    // }
+    if (isDuplicate) {
+      toast.error("Stakeholder already exists");
+      return;
+    }
 
     setStakeholderField([
       ...stakeholderField,

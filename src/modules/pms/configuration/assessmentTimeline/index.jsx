@@ -20,6 +20,7 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import ATCreateEdit from "./createEdit";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import Chips from "common/Chips";
+import { toast } from "react-toastify";
 
 const AssessmentTimeline = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet([]);
@@ -116,6 +117,11 @@ const AssessmentTimeline = () => {
                     : `/PMS/Assessment/Start`;
                 ("");
                 saveAssetStart(url, payload, () => {
+                  toast.success(
+                    rec?.status === "Running"
+                      ? "🟢 Sucessfully Started"
+                      : "🔴 Sucessfully Stopped"
+                  );
                   landingApi();
                 });
               }}

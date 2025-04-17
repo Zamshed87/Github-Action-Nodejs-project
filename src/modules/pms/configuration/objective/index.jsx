@@ -65,6 +65,7 @@ const PMSObjective = () => {
     objectiveTypes: null,
     objective: "",
     description: "",
+    status: { label: "Active", value: true },
   };
   const {
     errors,
