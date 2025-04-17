@@ -469,7 +469,7 @@ const SalaryPayslipReport = () => {
                                 </td>
                               </tr>
                             ))}
-                          <tr>
+                          {/* <tr>
                             <td>
                               <p>Overtime</p>
                             </td>
@@ -486,7 +486,7 @@ const SalaryPayslipReport = () => {
                                 {salaryHeaderData[0]?.numOverTimeAmount || 0}
                               </p>
                             </td>
-                          </tr>
+                          </tr> */}
                           <tr>
                             <th>
                               <p style={thStyles} className="pl-1">
