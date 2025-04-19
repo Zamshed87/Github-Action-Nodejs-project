@@ -196,7 +196,7 @@ export const NewLeavePolicy = () => {
             ) : (
               <Tag color="gold">{rec?.status}</Tag>
             )} */}
-            {rec?.stepperId === 5 ? (
+            {rec?.stepperId === 4 ? (
               <p className="">
                 <Switch
                   checked={rec?.status === "Active"}
@@ -227,7 +227,7 @@ export const NewLeavePolicy = () => {
         <div className="d-flex justify-content-around">
           <TableButton
             buttonsList={[
-              item?.stepperId < 5 &&
+              item?.stepperId < 4 &&
                 ({
                   type: "edit",
                   onClick: (e: any) => {
@@ -236,14 +236,14 @@ export const NewLeavePolicy = () => {
                     );
                   },
                 } as any),
-              item?.stepperId < 5 &&
+              item?.stepperId < 4 &&
                 ({
                   type: "delete",
                   onClick: (e: any) => {
                     deletePolicyId(item);
                   },
                 } as any),
-              item?.stepperId === 5 &&
+              item?.stepperId === 4 &&
                 ({
                   type: "view",
                   onClick: (e: any) => {
@@ -257,7 +257,7 @@ export const NewLeavePolicy = () => {
                     );
                   },
                 } as any),
-              item?.stepperId === 5 &&
+              item?.stepperId === 4 &&
                 ({
                   type: "extend",
                   onClick: (e: any) => {
@@ -267,7 +267,7 @@ export const NewLeavePolicy = () => {
                 } as any),
             ]}
           />
-          {item?.stepperId === 5 && (
+          {item?.stepperId === 4 && (
             <PButton
               type="primary"
               action="button"
