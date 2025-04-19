@@ -709,11 +709,11 @@ export const PolicyCreateExtention = () => {
           if (balanceData && balanceData.length > 0) {
             const balanceTableMapped = balanceData.map((item: any) => {
               let leaveDependsOnLabel = "";
-              if (item.balanceDependOn === 1)
+              if (item.balanceDependOnId === 1)
                 leaveDependsOnLabel = "Fixed Days";
-              else if (item.balanceDependOn === 2)
+              else if (item.balanceDependOnId === 2)
                 leaveDependsOnLabel = "Calculative Days";
-              else if (item.balanceDependOn === 3)
+              else if (item.balanceDependOnId === 3)
                 leaveDependsOnLabel = "Bridge Leave";
 
               let bridgeLeaveForLabel = "";
@@ -722,6 +722,7 @@ export const PolicyCreateExtention = () => {
                 bridgeLeaveForLabel = "Holiday";
               else if (item.bridgeLeaveFor === 3)
                 bridgeLeaveForLabel = "Off Days";
+              else bridgeLeaveForLabel = item?.bridgeLeaveFor;
 
               return {
                 serviceLength: `${item.fromServiceLength} - ${item.toServiceLength}`,
@@ -1045,7 +1046,17 @@ export const PolicyCreateExtention = () => {
                       .validateFields(fields[current])
                       .then(() => {
                         if (cond1 || cond2 || cond3 || cond4) {
-                          return toast.warn("Please add data");
+                          return toast.warn(
+                            `Please add ${
+                              cond1
+                                ? "Consume "
+                                : cond2
+                                ? "Encash "
+                                : cond3
+                                ? "Balance "
+                                : "Calculation Policy "
+                            }data`
+                          );
                         }
                         // next();
 
