@@ -90,7 +90,7 @@ export const LeavePunishmentLanding = () => {
       method: "GET",
       params: {
         WorkplaceId: values?.workplace?.value || 0,
-        IsActive: values?.status?.value === 1,
+        IsActive: values?.status?.value,
       },
     });
   };
@@ -314,6 +314,7 @@ export const LeavePunishmentLanding = () => {
                 <PSelect
                   //   mode="multiple"
                   options={[
+                    { value: 2, label: "All" },
                     { value: 1, label: "Active" },
                     { value: 0, label: "Inactive" },
                   ]}
