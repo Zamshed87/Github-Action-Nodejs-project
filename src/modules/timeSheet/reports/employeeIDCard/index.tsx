@@ -193,7 +193,7 @@ const EmployeePdfLanding = () => {
               //   "pdf",
               //   setLoading
               // );
-              printIDByOrg(orgId, rec?.EmployeeId);
+              printIDByOrg(rec?.EmployeeId);
             }}
           />
         ),
@@ -206,7 +206,7 @@ const EmployeePdfLanding = () => {
     });
     return empIdList.join(",");
   };
-  const printIDByOrg = (orgId: any, empId: any) => {
+  const printIDByOrg = (empId: any) => {
     const { isEnglish } = form.getFieldsValue(true);
     const {workplace} = form.getFieldsValue(true);
     let api = "";
@@ -271,7 +271,7 @@ const EmployeePdfLanding = () => {
                       //   "pdf",
                       //   setLoading
                       // );
-                      printIDByOrg(orgId, selectedEmpIds());
+                      printIDByOrg(selectedEmpIds());
                     },
                   },
                 ]
