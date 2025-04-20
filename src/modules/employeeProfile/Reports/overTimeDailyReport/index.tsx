@@ -57,7 +57,7 @@ const EmOverTimeDailyReport = () => {
   const reactToPrintFn = useReactToPrint({
     contentRef,
     pageStyle:
-      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: landscape ! important}}",
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: portrait ! important}}",
     documentTitle: `Overtime Daily Report ${todayDate()}`,
   });
 
