@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import ReactQuill from "react-quill";
 import { useApiRequest } from "Hooks";
-import { getWorkplaceDDL } from "common/api/commonApi";
 import { orgIdsForBn } from "utility/orgForBanglaField";
 import { toast } from "react-toastify";
 import { ImAttachment } from "react-icons/im";
@@ -157,11 +156,31 @@ export const General = ({
       },
     });
   };
-
+  const getWorkPlace = () => {
+    workplaceDDL.action({
+      urlKey: "WorkplaceWithRoleExtension",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        empId: employeeId,
+      },
+      onSuccess: (res: any) => {
+        res?.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+      onError: (e: any) => {
+        toast.error(e?.response?.data);
+      },
+    });
+  };
   useEffect(() => {
     getLeaveTypes();
-    getWorkplaceDDL({ workplaceDDL, orgId, buId, wgId });
     getReligion();
+    getWorkPlace();
   }, []);
 
   useEffect(() => {
