@@ -69,7 +69,7 @@ const YearlySalaryReport = () => {
             <DataTable
               header={getHeader(
                 reportData?.reportType,
-                reportData?.details?.[0]?.monthlyData,
+                reportData?.headers,
                 pages
               )}
               bordered
@@ -86,7 +86,7 @@ const YearlySalaryReport = () => {
                   setPages(pagination);
                 }
               }}
-              scroll={{ x: "3000px" }}
+              scroll={{ x: "3200px" }}
               summary={() => (
                 <Table.Summary.Row>
                   {/* Fixed Base Columns */}
