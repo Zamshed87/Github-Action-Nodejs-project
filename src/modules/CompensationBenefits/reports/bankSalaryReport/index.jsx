@@ -8,6 +8,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import BankSalaryReportFilters from "./components/filter/BankSalaryReportFilters";
 import ReportLanding from "./components";
+import NoResult from "common/NoResult";
 
 const BankSalaryReport = () => {
   const [form] = Form.useForm();
@@ -26,7 +27,7 @@ const BankSalaryReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
-    document.title = "Bank Salary Report"
+    document.title = "Bank Salary Report";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   let permission = null;
@@ -60,9 +61,11 @@ const BankSalaryReport = () => {
           <PCardBody className="mb-3">
             <BankSalaryReportFilters form={form} />
           </PCardBody>
-            {
-              reportData?.reportType ? <ReportLanding data={reportData} />:<></>
-            }
+          {reportData?.reportType ? (
+            <ReportLanding data={reportData} />
+          ) : (
+            <NoResult title="No Result Found" para="" />
+          )}
         </PCard>
       </PForm>
     </>

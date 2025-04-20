@@ -1,6 +1,6 @@
 export const getHeader = (
   reportType,
-  monthlyData = [],
+  headers = [],
   pages = { current: 1, pageSize: 25 }
 ) => {
   const baseColumns = [
@@ -15,7 +15,7 @@ export const getHeader = (
     {
       title: "Workplace Name",
       dataIndex: "workplace",
-      width: 120,
+      width: 150,
       align: "center",
     },
     {
@@ -38,11 +38,11 @@ export const getHeader = (
     },
   ];
 
-  const dynamicMonthlyColumns = monthlyData.map((month) => ({
+  const dynamicMonthlyColumns = headers.map((month) => ({
     title: month.title,
     children: [
       ...month.details.map((detail) => ({
-        title: detail.title,
+        title: detail,
         align: "center",
         width: 120,
         render: (_, record) => {
@@ -50,7 +50,7 @@ export const getHeader = (
             (m) => m.title === month.title
           );
           const detailItem = monthData?.details?.find(
-            (d) => d.title === detail.title
+            (d) => d.title === detail
           );
           return detailItem?.amount ?? "-";
         },
