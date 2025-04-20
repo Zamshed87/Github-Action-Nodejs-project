@@ -101,18 +101,31 @@ const YearlySalaryReport = () => {
                             key={`${month.title}-${detail.title}`}
                             align="center"
                           >
-                            {detail.amount}
+                            {detail.amount ?? "-"}
                           </Table.Summary.Cell>
                         ))}
                         <Table.Summary.Cell
                           key={`${month.title}-total`}
                           align="center"
                         >
-                          {month.totalAmount}
+                          {month.totalAmount ?? "-"}
                         </Table.Summary.Cell>
                       </React.Fragment>
                     );
                   })}
+                  {(() => {
+                    const maxMonths = 12; // max months
+                    const currentMonths =
+                      reportData?.total?.monthlyData?.length || 0;
+                    const missingMonths = maxMonths - currentMonths;
+                    const cellsToPad = missingMonths * 4; // 3 details + 1 total per month
+
+                    return Array.from({ length: cellsToPad }).map((_, idx) => (
+                      <Table.Summary.Cell key={`pad-${idx}`} align="center">
+                        -
+                      </Table.Summary.Cell>
+                    ));
+                  })()}
                   <Table.Summary.Cell align="center">
                     {reportData?.total?.totalAmount}
                   </Table.Summary.Cell>
