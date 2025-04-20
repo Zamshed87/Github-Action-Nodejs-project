@@ -170,7 +170,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           </th>
                           <th style={{ borderTop: "none" }}>
                             <p style={{ color: gray400, textAlign: "center" }}>
-                              Remaining
+                              Balance
                             </p>
                           </th>
                           <th style={{ borderTop: "none" }}>

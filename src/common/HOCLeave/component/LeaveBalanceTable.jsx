@@ -149,11 +149,6 @@ const LeaveBalanceTable = ({
       width: 80,
     },
     {
-      title: "Remaining",
-      dataIndex: "totalBalanceDays",
-      width: 45,
-    },
-    {
       title: "Taken",
       render: (data, record) => (
         <>
@@ -195,6 +190,11 @@ const LeaveBalanceTable = ({
       ),
       dataIndex: "totalTakenDays",
       width: 40,
+    },
+    {
+      title: "Balance",
+      dataIndex: "totalBalanceDays",
+      width: 45,
     },
 
     {

@@ -185,7 +185,7 @@ export default function SelfDashboard() {
                                 style={{ color: gray400, textAlign: "center" }}
                                 className="px-1"
                               >
-                                Remaining
+                                Balance
                               </p>
                             </th>
                             <th style={{ borderTop: "none" }}>
