@@ -56,6 +56,47 @@ export const columnsDefault = [
   },
 ];
 
+export const columnsAsset = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Asset Type",
+    dataIndex: ["applicationInformation", "assetType"],
+  },
+  {
+    title: "Asset Name",
+    dataIndex: ["applicationInformation", "assetName"],
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
+]
+
 export const columnFinalSettlement = [
   {
     title: "SL",
