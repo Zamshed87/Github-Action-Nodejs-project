@@ -20,6 +20,7 @@ import {
   columnOvertime,
   columnsAdvancedSalary,
   columnSalaryGenerate,
+  columnsAsset,
   columnsBonusGenerate,
   columnsDefault,
   columnsExpense,
@@ -127,7 +128,7 @@ const CommonApprovalComponent = () => {
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
       searchText: searchTerm,
-      page
+      page,
     });
   };
 
@@ -334,6 +335,8 @@ const CommonApprovalComponent = () => {
               ? columnFinalSettlement
               : id == 29
               ? columnsSeparation(setViewData, setViewModal)
+              : id == 32
+              ? columnsAsset
               : columnsDefault
           }
           bordered
