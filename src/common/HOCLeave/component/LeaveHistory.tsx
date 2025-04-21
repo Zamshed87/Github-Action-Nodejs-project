@@ -15,7 +15,6 @@ import {
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Tag } from "antd";
 import Loading from "common/loading/Loading";
-import { paginationSize } from "common/peopleDeskTable";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -37,14 +36,7 @@ export const LeaveApp_History = ({
 }: any) => {
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(false);
-
-  //   const permission = useMemo(
-  //     () => permissionList?.find((item: any) => item?.menuReferenceId === 38),
-  //     []
-  //   );
-  // menu permission
-  //   const employeeFeature: any = permission;
+  const [loading] = useState(false);
 
   const landingApi = useApiRequest({});
   // const leaveTypeApi = useApiRequest({});
@@ -54,21 +46,7 @@ export const LeaveApp_History = ({
   // Form Instance
   const [form] = Form.useForm();
 
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-    IsForXl?: boolean;
-    date?: string;
-  };
-  const landingApiCall = ({
-    pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
-  }: TLandingApi = {}) => {
+  const landingApiCall = () => {
     const values = form.getFieldsValue(true);
     const ids = values?.leaveType?.map((i: any) => i?.value);
     const statusIds = values?.status?.map((i: any) => i?.value);
@@ -136,7 +114,7 @@ export const LeaveApp_History = ({
           buttonsList={[
             item?.attachmentId && {
               type: "view",
-              onClick: (e: any) => {
+              onClick: () => {
                 dispatch(getDownlloadFileView_Action(item?.attachmentId));
               },
             },
@@ -147,14 +125,14 @@ export const LeaveApp_History = ({
     {
       title: "Application Date",
       dataIndex: "applicationDate",
-      width: 100,
+      width: 130,
     },
     {
       title: "Status",
       width: 100,
 
       dataIndex: "status",
-      render: (_: any, rec: any, index: number) => {
+      render: (_: any, rec: any) => {
         return (
           <>
             {rec?.approvalStatus === "Approved" ? (
