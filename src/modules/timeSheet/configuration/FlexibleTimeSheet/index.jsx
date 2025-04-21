@@ -515,7 +515,7 @@ const MonthlyAttendanceReport = () => {
                   label="Supervisor"
                   allowClear
                   style={{ width: "300px" }}
-                  disabled={!isOfficeAdmin}
+                  // disabled={!isOfficeAdmin}
                   onSelect={(value, op) => {}}
                 />
               </Col>
