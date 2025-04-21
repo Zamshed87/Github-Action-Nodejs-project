@@ -57,7 +57,7 @@ const useYearlySalaryReport = ({ form }) => {
       const filteredParams = buildQueryParams(formattedParams)
 
       const url = `/PdfAndExcelReport/Payroll/YearlySalaryReportExcel?${filteredParams}`;
-      downloadFile(url, `BankSalaryReport`, "xlsx", setLoadingExcel);
+      downloadFile(url, `YearlySalaryReport`, "xlsx", setLoadingExcel);
     } catch (error) {
       // Validation failed — do nothing or show a toast if needed
       toast.error("Please Select the required fields.");
