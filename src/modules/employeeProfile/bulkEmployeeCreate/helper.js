@@ -105,11 +105,12 @@ export const saveBulkUploadEmployeeAction = async (
     callback();
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
+    console.log("res", res);
   } catch (error) {
     setLoading(false);
     setErrorData(error?.response?.data?.listData);
     setOpen(true);
-    error?.response?.data?.listData?.length < 0 &&
-      toast.warn(error?.response?.data?.message || "Failed, try again");
+    console.log("error",error?.response);
+    toast.error(error?.response?.data?.message || "Failed to process!");
   }
 };
