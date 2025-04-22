@@ -255,7 +255,9 @@ const MonthlyPunchReportDetails = () => {
                       "YYYY-MM-DD"
                     )}&EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
                       formatFilterValue(values?.department) || 0
-                    }&designations=${formatFilterValue(
+                    }&sections=${formatFilterValue(
+                      values?.section
+                    )}&designations=${formatFilterValue(
                       values?.designation || 0
                     )}&SearchTxt=${
                       values?.search || ""

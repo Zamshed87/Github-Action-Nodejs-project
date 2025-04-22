@@ -289,6 +289,8 @@ const EmMovementHistory = () => {
               getPDFAction(
                 `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${wgId}&WorkplaceGroupId=${wId}&departments=${formatFilterValue(
                   values?.department
+                )}&sections=${formatFilterValue(
+                  values?.section
                 )}&designations=${formatFilterValue(
                   values?.designation
                 )}&FromDate=${moment(values?.fromDate).format(
