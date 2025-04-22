@@ -50,7 +50,7 @@ const MonthlySalaryBreakDownReport = () => {
       {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
       <PCard>
         <PCardHeader
-          title={`Monthly Salary Break Down Report.`}
+          title={`Monthly Salary Break Down Report`}
           exportIcon
           onExport={() => {
             downloadExcel();

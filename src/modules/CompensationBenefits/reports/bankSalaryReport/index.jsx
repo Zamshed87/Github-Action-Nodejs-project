@@ -47,7 +47,7 @@ const BankSalaryReport = () => {
       {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
       <PCard>
         <PCardHeader
-          title={`Bank Salary Report.`}
+          title={`Bank Salary Report`}
           exportIcon
           onExport={() => {
             downloadExcel();
