@@ -39,7 +39,6 @@ const YearlySalaryReport = () => {
     }
   });
   return permission?.isView ? (
-    <>
       <PForm
         form={form}
         initialValues={{
@@ -137,7 +136,6 @@ const YearlySalaryReport = () => {
           )}
         </PCard>
       </PForm>
-    </>
   ) : (
     <NotPermittedPage />
   );

@@ -41,38 +41,51 @@ export const getHeader = (header, pages = { current: 1, pageSize: 25 }) => {
   ];
 
   const allowanceChildren = [
-    ...(header?.allowanceDetail ?? []).map((data) => ({
-      title: data?.title,
+    ...(header?.allowance ?? []).map((title) => ({
+      title,
       align: "center",
       width: 100,
-      render: () => data?.amount ?? "-",
+      render: (value, record) => {
+        const allowance = record.allowanceDetail?.find(
+          (item) => item.title === title
+        );
+        return allowance?.amount ?? "-";
+      },
     })),
   ];
 
-  if (header?.allowanceDetail?.length) {
+  if (header?.allowance?.length) {
     allowanceChildren.push({
       title: "Total Earning",
       width: 100,
       align: "center",
-      render: () => header?.allowanceTotal ?? "-",
+      render: (value,record) => {
+        return record?.allowanceTotal ?? "-"
+      },
     });
   }
 
   const deductionChildren = [
-    ...(header?.deductionDetail ?? []).map((data) => ({
-      title: data?.title,
+    ...(header?.deduction ?? []).map((title) => ({
+      title,
       align: "center",
       width: 100,
-      render: () => data?.amount ?? "-",
-    })),
+      render: (value, record) => {
+        const allowance = record.deductionDetail?.find(
+          (item) => item.title === title
+        );
+        return allowance?.amount ?? "-";
+      },    })),
   ];
 
-  if (header?.deductionDetail?.length) {
+  if (header?.deduction?.length) {
     deductionChildren.push({
       title: "Total Deduction",
       width: 100,
       align: "center",
-      render: () => header?.deductionTotal ?? "-",
+      render: (value,record) => {
+        return record?.deductionTotal ?? "-"
+      },
     });
   }
 

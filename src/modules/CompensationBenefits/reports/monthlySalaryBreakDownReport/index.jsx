@@ -65,7 +65,7 @@ const MonthlySalaryBreakDownReport = () => {
         </PCardBody>
         {reportData?.details?.[0] ? (
           <DataTable
-            header={getHeader(reportData?.details?.[0], pages)}
+            header={getHeader(reportData?.headers, pages)}
             bordered
             data={reportData?.details}
             loading={loadingReportData}
