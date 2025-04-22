@@ -39,7 +39,6 @@ const YearlySalaryReport = () => {
     }
   });
   return permission?.isView ? (
-    <>
       <PForm
         form={form}
         initialValues={{
@@ -56,7 +55,7 @@ const YearlySalaryReport = () => {
         {(loadingReportData || loadingExcel) && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Yearly Salary Report.`}
+            title={`Yearly Salary Report`}
             exportIcon
             onExport={() => {
               downloadExcel();
@@ -137,7 +136,6 @@ const YearlySalaryReport = () => {
           )}
         </PCard>
       </PForm>
-    </>
   ) : (
     <NotPermittedPage />
   );
