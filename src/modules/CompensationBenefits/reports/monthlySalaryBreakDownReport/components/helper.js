@@ -40,53 +40,54 @@ export const getHeader = (header, pages = { current: 1, pageSize: 25 }) => {
     },
   ];
 
-  const dynamicAllowanceColumns = {
-    title: "Allocation",
-    children: [
-      ...(header?.deductionDetail ?? [])?.map((data) => ({
-        title: data?.title,
-        align: "center",
-        width: 100,
-        render: () => {
-          return data?.amount ?? "-";
-        },
-      })),
-      {
-        title: "Total Earning",
-        width: 100,
-        align: "center",
-        render: () => {
-          return header?.allowanceTotal ?? "-";
-        },
-      },
-    ],
-  };
-  const dynamicDeductionColumns = {
-    title: "Deduction",
-    children: [
-      ...(header?.deductionDetail ?? [])?.map((data) => ({
-        title: data?.title,
-        align: "center",
-        width: 100,
-        render: () => {
-          return data?.amount ?? "-";
-        },
-      })),
-      {
-        title: "Total Deduction",
-        width: 100,
-        align: "center",
-        render: () => {
-          return header?.deductionTotal ?? "-";
-        },
-      },
-    ],
-  };
+  const allowanceChildren = [
+    ...(header?.allowanceDetail ?? []).map((data) => ({
+      title: data?.title,
+      align: "center",
+      width: 100,
+      render: () => data?.amount ?? "-",
+    })),
+  ];
+
+  if (header?.allowanceDetail?.length) {
+    allowanceChildren.push({
+      title: "Total Earning",
+      width: 100,
+      align: "center",
+      render: () => header?.allowanceTotal ?? "-",
+    });
+  }
+
+  const deductionChildren = [
+    ...(header?.deductionDetail ?? []).map((data) => ({
+      title: data?.title,
+      align: "center",
+      width: 100,
+      render: () => data?.amount ?? "-",
+    })),
+  ];
+
+  if (header?.deductionDetail?.length) {
+    deductionChildren.push({
+      title: "Total Deduction",
+      width: 100,
+      align: "center",
+      render: () => header?.deductionTotal ?? "-",
+    });
+  }
+
+  const dynamicColumns = [
+    ...(allowanceChildren.length
+      ? [{ title: "Allocation", children: allowanceChildren }]
+      : []),
+    ...(deductionChildren.length
+      ? [{ title: "Deduction", children: deductionChildren }]
+      : []),
+  ];
 
   return [
     ...baseColumns,
-    dynamicAllowanceColumns,
-    dynamicDeductionColumns,
+    ...dynamicColumns,
     {
       title: "Netpay Amount",
       dataIndex: "netpayAmount",

@@ -41,101 +41,107 @@ const MonthlySalaryBreakDownReport = () => {
     }
   });
   return permission?.isView ? (
-    <>
-      <PForm
-        form={form}
-        onFinish={() => {
-          fetchReportData();
-        }}
-      >
-        {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
-        <PCard>
-          <PCardHeader
-            title={`Monthly Salary Break Down Report.`}
-            exportIcon
-            onExport={() => {
-              downloadExcel();
+    <PForm
+      form={form}
+      onFinish={() => {
+        fetchReportData();
+      }}
+    >
+      {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
+      <PCard>
+        <PCardHeader
+          title={`Monthly Salary Break Down Report.`}
+          exportIcon
+          onExport={() => {
+            downloadExcel();
+          }}
+          printIcon
+          pdfExport={() => {
+            downloadPdf();
+          }}
+        />
+        <PCardBody className="mb-3">
+          <MonthlySalaryBreakDownReportFilters form={form} />
+        </PCardBody>
+        {reportData?.details?.[0] ? (
+          <DataTable
+            header={getHeader(reportData?.details?.[0], pages)}
+            bordered
+            data={reportData?.details}
+            loading={loadingReportData}
+            // pagination={{
+            //   pageSize: reportData?.pageSize,
+            //   total: reportData?.totalCount,
+            //   pageSizeOptions: ["25", "50", "100"],
+            // }}
+            onChange={(pagination, _, __, extra) => {
+              if (extra.action === "paginate") {
+                fetchReportData();
+                setPages(pagination);
+              }
             }}
-            printIcon
-            pdfExport={() => {
-              downloadPdf();
-            }}
-          />
-          <PCardBody className="mb-3">
-            <MonthlySalaryBreakDownReportFilters form={form} />
-          </PCardBody>
-          {reportData?.details?.[0] ? (
-            <DataTable
-              header={getHeader(reportData?.details?.[0], pages)}
-              bordered
-              data={reportData?.details}
-              loading={loadingReportData}
-              // pagination={{
-              //   pageSize: reportData?.pageSize,
-              //   total: reportData?.totalCount,
-              //   pageSizeOptions: ["25", "50", "100"],
-              // }}
-              onChange={(pagination, _, __, extra) => {
-                if (extra.action === "paginate") {
-                  fetchReportData();
-                  setPages(pagination);
-                }
-              }}
-              scroll={{ x: "3000px" }}
-              summary={() => (
-                <Table.Summary.Row>
-                  {/* Fixed Base Columns */}
-                  <Table.Summary.Cell colSpan={2} align="center" index={0}>
-                    Total
+            scroll={{ x: "3000px" }}
+            summary={() => (
+              <Table.Summary.Row>
+                {/* Fixed Base Columns */}
+                <Table.Summary.Cell colSpan={2} align="center" index={0}>
+                  Total
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.manpower ?? "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.manHour ?? "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.grossSalary ?? "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.overtime ?? "-"}
+                </Table.Summary.Cell>
+
+                {/* Conditionally Render Allowance Columns */}
+                {(reportData?.total?.allowanceDetail ?? []).map((item) => (
+                  <Table.Summary.Cell
+                    key={`allowance-${item.title}`}
+                    align="center"
+                  >
+                    {item.amount ?? "-"}
                   </Table.Summary.Cell>
-                  <Table.Summary.Cell align="center">
-                    {reportData?.total?.manpower ?? "-"}
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell align="center">
-                    {reportData?.total?.manHour ?? "-"}
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell align="center">
-                    {reportData?.total?.grossSalary ?? "-"}
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell align="center">
-                    {reportData?.total?.overtime ?? "-"}
-                  </Table.Summary.Cell>
-                  {(reportData?.total?.allowanceDetail ?? []).map((item) => (
-                    <Table.Summary.Cell
-                      key={`allowance-${item.title}`}
-                      align="center"
-                    >
-                      {item.amount ?? "-"}
-                    </Table.Summary.Cell>
-                  ))}
+                ))}
+                {reportData?.total?.allowanceDetail?.length > 0 && (
                   <Table.Summary.Cell align="center">
                     {reportData?.total?.allowanceTotal ?? "-"}
                   </Table.Summary.Cell>
+                )}
 
-                  {(reportData?.total?.deductionDetail ?? []).map((item) => (
-                    <Table.Summary.Cell
-                      key={`deduction-${item.title}`}
-                      align="center"
-                    >
-                      {item.amount ?? "-"}
-                    </Table.Summary.Cell>
-                  ))}
+                {/* Conditionally Render Deduction Columns */}
+                {(reportData?.total?.deductionDetail ?? []).map((item) => (
+                  <Table.Summary.Cell
+                    key={`deduction-${item.title}`}
+                    align="center"
+                  >
+                    {item.amount ?? "-"}
+                  </Table.Summary.Cell>
+                ))}
+                {reportData?.total?.deductionDetail?.length > 0 && (
                   <Table.Summary.Cell align="center">
                     {reportData?.total?.deductionTotal ?? "-"}
                   </Table.Summary.Cell>
+                )}
 
-                  <Table.Summary.Cell align="center">
-                    {reportData?.total?.netpayAmount ?? "-"}
-                  </Table.Summary.Cell>
-                </Table.Summary.Row>
-              )}
-            />
-          ) : (
-            <NoResult title="No Result Found" para="" />
-          )}
-        </PCard>
-      </PForm>
-    </>
+                {/* Final Total Column */}
+                <Table.Summary.Cell align="center">
+                  {reportData?.total?.netpayAmount ?? "-"}
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            )}
+          />
+        ) : (
+          <NoResult title="No Result Found" para="" />
+        )}
+      </PCard>
+    </PForm>
   ) : (
     <NotPermittedPage />
   );
