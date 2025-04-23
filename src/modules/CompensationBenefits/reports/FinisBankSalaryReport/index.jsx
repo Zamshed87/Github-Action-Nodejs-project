@@ -225,7 +225,7 @@ const FinisBankSalaryReport = () => {
                           values?.bankAdviceFor?.value === 1
                         ) {
                           getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=allSalarycodebyWorkplaceGroup&WorkplaceGroupId=${
                               values?.workplaceGroup?.value
                             }&BusinessUnitId=${buId}&IntMonth=${+e.target.value
                               .split("")
@@ -233,7 +233,7 @@ const FinisBankSalaryReport = () => {
                               .join("")}&IntYear=${+e.target.value
                               .split("")
                               .slice(0, 4)
-                              .join("")}&showUnapproved=true`,
+                              .join("")}`,
                             "value",
                             "label",
                             setPayrollPeriodDDL
@@ -307,7 +307,7 @@ const FinisBankSalaryReport = () => {
                           valueOption?.value === 1
                         ) {
                           getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}&showUnapproved=true`,
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=allSalarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
                             "value",
                             "label",
                             setPayrollPeriodDDL
@@ -317,7 +317,7 @@ const FinisBankSalaryReport = () => {
                           valueOption?.value === 3
                         ) {
                           getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=advanceSalarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}&showUnapproved=true`,
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=advanceSalarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
                             "value",
                             "label",
                             setPayrollPeriodDDL
