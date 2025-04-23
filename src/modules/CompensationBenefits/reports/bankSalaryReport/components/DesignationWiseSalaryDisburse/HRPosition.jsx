@@ -5,7 +5,7 @@ import { Table } from "antd";
 const HRPosition = ({ reportType, data }) => {
   return (
     <div>
-      <h3 className="pb-3 pt-3">{`HR Position: ${
+      <h3 className="pb-3 pt-3">{`${reportType ?? "N/A"}: ${
         data?.hrPosDesig ?? "N/A"
       }`}</h3>
       <DataTable
