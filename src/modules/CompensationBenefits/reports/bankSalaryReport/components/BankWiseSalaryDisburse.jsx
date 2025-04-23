@@ -6,7 +6,7 @@ const BankWiseSalaryDisburse = ({ data }) => {
 
   return (
     <div>
-      <h3 className="pb-3 pt-3">HR Position: Staff</h3>
+      <h3 className="pb-3 pt-3">Bank wise Salary Disburse</h3>
       <DataTable
         header={getBankWiseSalaryDisburseHeader()}
         bordered
