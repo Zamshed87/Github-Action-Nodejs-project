@@ -186,7 +186,7 @@ const PerformanceAppraisal = ({ modal, setModal, data, cb }) => {
             buttonList={[
               {
                 type: "primary",
-                disabled: performanceAppraisal?.length <= 0,
+                // disabled: performanceAppraisal?.length <= 0,
                 content: "Save",
                 icon: <SaveOutlined />,
                 onClick: () => handlePerformanceAppraisal(),
