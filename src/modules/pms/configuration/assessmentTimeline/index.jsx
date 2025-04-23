@@ -119,8 +119,8 @@ const AssessmentTimeline = () => {
                 saveAssetStart(url, payload, () => {
                   toast.success(
                     rec?.status === "Running"
-                      ? "🟢 Sucessfully Started"
-                      : "🔴 Sucessfully Stopped"
+                      ? "🔴 Sucessfully Stopped"
+                      : "🟢 Sucessfully Started"
                   );
                   landingApi();
                 });

@@ -84,12 +84,14 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   };
 
   const addHandler = (values) => {
-    const isDuplicate = stakeholderField.some(
-      (org) => org.stakeholderTypeId === values?.stakeholderType?.value
-    );
+    // Check if stakeholderTypeId matches the last object in stakeholderField
+    const lastStakeholder = stakeholderField[stakeholderField.length - 1];
+    const isDuplicate =
+      lastStakeholder &&
+      lastStakeholder.stakeholderTypeId === values.stakeholderType.value;
 
     if (isDuplicate) {
-      toast.error("Stakeholder already exists");
+      toast.error("Stakeholder matches the last entry");
       return;
     }
 
