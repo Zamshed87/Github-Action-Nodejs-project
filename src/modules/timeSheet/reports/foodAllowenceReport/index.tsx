@@ -78,7 +78,7 @@ const FoodAllowenceReport = () => {
           {(landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Food Allowence Report`}
+            title={`Food Allowance Report`}
             onExport={() => {
               const values = form.getFieldsValue(true);
               const url = `/PdfAndExcelReport/GetFoodAllowenceReport?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&payrollYearId=${moment(

@@ -184,6 +184,7 @@ export const column = {
   employeeName: "Employee Name",
   strEmploymentType: "Employment Type",
   departmentName: "Department",
+  sectionName: "Section",
   designationName: "Designation",
   supervisorName: "Supervisor",
   joiningDate: "Joining Date",

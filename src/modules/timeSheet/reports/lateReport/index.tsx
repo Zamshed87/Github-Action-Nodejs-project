@@ -290,14 +290,18 @@ const LateReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  const workplaceList = `${values?.workplace
-                    ?.map((item: any) => item?.intWorkplaceId)
-                    .join(",")}`;
+                  // const workplaceList = `${values?.workplace
+                  //   ?.map((item: any) => item?.intWorkplaceId)
+                  //   .join(",")}`;
                   const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
                     values?.workplaceGroup?.value
-                  }&workplaceList=${workplaceList}&AttendanceDate=${moment(
-                    values?.fromDate
-                  ).format(
+                  }&workplaceList=${
+                    values?.workplace?.value
+                  }&departments=${formatFilterValue(
+                    values?.department
+                  )}&sections=${formatFilterValue(
+                    values?.section
+                  )}&AttendanceDate=${moment(values?.fromDate).format(
                     "YYYY-MM-DD"
                   )}&PageNo=1&PageSize=10000&ReportType=excel`;
                   downloadFile(
@@ -380,9 +384,9 @@ const LateReport = () => {
               // const list = landingApi?.data?.data?.map(
               //   (item: any) => item?.employeeId
               // );
-              const workplaceList = `${values?.workplace
-                ?.map((item: any) => item?.intWorkplaceId)
-                .join(",")}`;
+              // const workplaceList = `${values?.workplace
+              //   ?.map((item: any) => item?.intWorkplaceId)
+              //   .join(",")}`;
               getPDFAction(
                 `/PdfAndExcelReport/DailyAttendanceReportPDF?ReportType=pdf&IntAccountId=${orgId}&AttendanceDate=${moment(
                   values?.fromDate
@@ -392,7 +396,13 @@ const LateReport = () => {
                   values?.workplaceGroup?.value
                     ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
                     : ""
-                }${values?.workplace ? `&workplaceList=${workplaceList}` : ""}`,
+                }${
+                  values?.workplace
+                    ? `&workplaceList=${values?.workplace?.value}`
+                    : ""
+                }&departments=${formatFilterValue(
+                  values?.department
+                )}&sections=${formatFilterValue(values?.section)}`,
                 setLoading
               );
             }}
