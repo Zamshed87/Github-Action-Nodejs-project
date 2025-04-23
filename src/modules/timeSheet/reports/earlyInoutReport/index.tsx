@@ -286,14 +286,21 @@ const AttendanceReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  const workplaceList = `${values?.workplace
-                    ?.map((item: any) => item?.intWorkplaceId)
-                    .join(",")}`;
+                  // const workplaceList = `${values?.workplace
+                  //   ?.map((item: any) => item?.intWorkplaceId)
+                  //   .join(",")}`;
+
+                  //   departments: formatFilterValue(values?.department),
+                  //  sections: formatFilterValue(values?.section),
                   const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
                     values?.workplaceGroup?.value
-                  }&workplaceList=${workplaceList}&AttendanceDate=${moment(
-                    values?.fromDate
-                  ).format(
+                  }&workplaceList=${
+                    values?.workplace?.value
+                  }&departments=${formatFilterValue(
+                    values?.department
+                  )}&sections=${formatFilterValue(
+                    values?.section
+                  )}&AttendanceDate=${moment(values?.fromDate).format(
                     "YYYY-MM-DD"
                   )}&PageNo=1&PageSize=10000&ReportType=excel`;
                   downloadFile(
@@ -325,9 +332,9 @@ const AttendanceReport = () => {
                   ? moment(values.fromDate).format("YYYY-MM-DD")
                   : todayDate()
               }).pdf`;
-              const workplaceList = `${values?.workplace
-                ?.map((item: any) => item?.intWorkplaceId)
-                .join(",")}`;
+              // const workplaceList = `${values?.workplace
+              //   ?.map((item: any) => item?.intWorkplaceId)
+              //   .join(",")}`;
               getPDFAction(
                 `/PdfAndExcelReport/DailyAttendanceReportPDF?ReportType=pdf&IntAccountId=${orgId}&AttendanceDate=${moment(
                   values?.fromDate
@@ -337,7 +344,13 @@ const AttendanceReport = () => {
                   values?.workplaceGroup?.value
                     ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
                     : ""
-                }${values?.workplace ? `&workplaceList=${workplaceList}` : ""}`,
+                }${
+                  values?.workplace
+                    ? `&workplaceList=${values?.workplace?.value}`
+                    : ""
+                }&departments=${formatFilterValue(
+                  values?.department
+                )}&sections=${formatFilterValue(values?.section)}`,
                 setLoading,
                 pdfName
               );
