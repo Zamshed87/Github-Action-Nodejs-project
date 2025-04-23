@@ -14,8 +14,7 @@ export const initHeaderList = {
   sectionList: [],
 };
 
-export const apiCall = (urlKey, payload, onSuccess) => {
-  const apiRequest = useApiRequest({});
+export const apiCall = (apiRequest, urlKey, payload, onSuccess) => {
   apiRequest.action({
     urlKey: urlKey,
     method: "POST",
@@ -23,7 +22,6 @@ export const apiCall = (urlKey, payload, onSuccess) => {
     onSuccess: onSuccess,
   });
 };
-
 
 const getDataApiCall = async (
   modifiedPayload,
