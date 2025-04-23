@@ -40,53 +40,67 @@ export const getHeader = (header, pages = { current: 1, pageSize: 25 }) => {
     },
   ];
 
-  const dynamicAllowanceColumns = {
-    title: "Allocation",
-    children: [
-      ...(header?.deductionDetail ?? [])?.map((data) => ({
-        title: data?.title,
-        align: "center",
-        width: 100,
-        render: () => {
-          return data?.amount ?? "-";
-        },
-      })),
-      {
-        title: "Total Earning",
-        width: 100,
-        align: "center",
-        render: () => {
-          return header?.allowanceTotal ?? "-";
-        },
+  const allowanceChildren = [
+    ...(header?.allowance ?? []).map((title) => ({
+      title,
+      align: "center",
+      width: 100,
+      render: (value, record) => {
+        const allowance = record.allowanceDetail?.find(
+          (item) => item.title === title
+        );
+        return allowance?.amount ?? "-";
       },
-    ],
-  };
-  const dynamicDeductionColumns = {
-    title: "Deduction",
-    children: [
-      ...(header?.deductionDetail ?? [])?.map((data) => ({
-        title: data?.title,
-        align: "center",
-        width: 100,
-        render: () => {
-          return data?.amount ?? "-";
-        },
-      })),
-      {
-        title: "Total Deduction",
-        width: 100,
-        align: "center",
-        render: () => {
-          return header?.deductionTotal ?? "-";
-        },
+    })),
+  ];
+
+  if (header?.allowance?.length) {
+    allowanceChildren.push({
+      title: "Total Earning",
+      width: 100,
+      align: "center",
+      render: (value,record) => {
+        return record?.allowanceTotal ?? "-"
       },
-    ],
-  };
+    });
+  }
+
+  const deductionChildren = [
+    ...(header?.deduction ?? []).map((title) => ({
+      title,
+      align: "center",
+      width: 100,
+      render: (value, record) => {
+        const allowance = record.deductionDetail?.find(
+          (item) => item.title === title
+        );
+        return allowance?.amount ?? "-";
+      },    })),
+  ];
+
+  if (header?.deduction?.length) {
+    deductionChildren.push({
+      title: "Total Deduction",
+      width: 100,
+      align: "center",
+      render: (value,record) => {
+        return record?.deductionTotal ?? "-"
+      },
+    });
+  }
+
+  const dynamicColumns = [
+    ...(allowanceChildren.length
+      ? [{ title: "Allocation", children: allowanceChildren }]
+      : []),
+    ...(deductionChildren.length
+      ? [{ title: "Deduction", children: deductionChildren }]
+      : []),
+  ];
 
   return [
     ...baseColumns,
-    dynamicAllowanceColumns,
-    dynamicDeductionColumns,
+    ...dynamicColumns,
     {
       title: "Netpay Amount",
       dataIndex: "netpayAmount",

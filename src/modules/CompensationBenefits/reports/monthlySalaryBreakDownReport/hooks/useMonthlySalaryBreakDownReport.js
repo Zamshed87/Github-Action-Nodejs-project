@@ -42,7 +42,7 @@ const useMonthlySalaryBreakDownReport = ({ form }) => {
       const { Year, Month } = form?.getFieldsValue(true);
 
       const url = `/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportExcel?WorkplaceGroupId=${workplaceGroup?.value}&WorkplaceId=${workplace?.value}&Year=${Year}&Month=${Month}`;
-      downloadFile(url, `BankSalaryReport`, "xlsx", setLoadingExcel);
+      downloadFile(url, `MonthlySalaryBreakDownReport`, "xlsx", setLoadingExcel);
     } catch (error) {
       // Validation failed — do nothing or show a toast if needed
       toast.error("Please Select the required fields.");
@@ -55,7 +55,7 @@ const useMonthlySalaryBreakDownReport = ({ form }) => {
       const { Year, Month } = form?.getFieldsValue(true);
 
       const url = `/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportPdf?WorkplaceGroupId=${workplaceGroup?.value}&WorkplaceId=${workplace?.value}&Year=${Year}&Month=${Month}`;
-      downloadFile(url, `BankSalaryReport`, "pdf", setLoadingPdf);
+      downloadFile(url, `MonthlySalaryBreakDownReport`, "pdf", setLoadingPdf);
     } catch (error) {
       toast.error("Please Select the required fields.");
     }
