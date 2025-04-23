@@ -2,14 +2,11 @@ import { DataTable, PCardBody, TableButton } from "Components";
 import { InfoOutlined } from "@mui/icons-material";
 
 import { LightTooltip } from "common/LightTooltip";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { failColor, gray900 } from "utility/customColor";
+import { gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import { Divider, Popover, Tag } from "antd";
-import { getLeaveTypeData } from "../utils";
 import { shallowEqual, useSelector } from "react-redux";
 import Loading from "common/loading/Loading";
 
@@ -289,13 +286,13 @@ const LeaveBalanceTable = ({
     {
       title: "Balance",
       dataIndex: "balanceDays",
-      width: 50,
+      width: 60,
     },
 
     {
       title: "Total",
       dataIndex: "totalAllocatedDays",
-      width: 40,
+      width: 45,
     },
 
     {
@@ -311,11 +308,11 @@ const LeaveBalanceTable = ({
       dataIndex: "carryTotalAllocatedDays",
     },
     {
-      title: "Carry Expire",
+      title: "Carry Expire Balance",
       dataIndex: "carryExpiredDays",
     },
     {
-      title: "Carry Expire",
+      title: "Carry Expire Date",
       render: (data) => (data?.expireDate ? data?.expireDate : "N/A"),
     },
   ];
