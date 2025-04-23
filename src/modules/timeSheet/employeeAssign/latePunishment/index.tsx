@@ -51,6 +51,7 @@ export const LatePunishmentAssign = () => {
 
   // Api Instance
   const landingApi = useApiRequest({});
+
   type TLandingApi = {
     pagination?: {
       current?: number;
@@ -82,9 +83,14 @@ export const LatePunishmentAssign = () => {
       hrPositionList: filerList?.hrPosition || [],
       sectionList: filerList?.section || [],
     };
-    apiCall("LatePunishmentPolicyAssignLoader", payload, (res: any) => {
-      setEmpIDString(res?.employeeIdList);
-    });
+    apiCall(
+      landingApi,
+      "LatePunishmentPolicyAssignLoader",
+      payload,
+      (res: any) => {
+        setEmpIDString(res?.employeeIdList);
+      }
+    );
   };
 
   useEffect(() => {
