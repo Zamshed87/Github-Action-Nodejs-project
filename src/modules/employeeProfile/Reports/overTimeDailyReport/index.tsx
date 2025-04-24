@@ -691,7 +691,7 @@ const EmOverTimeDailyReport = () => {
                 marginBottom: "20px",
               }}
             >
-              Daily Overtime Report -
+              Overtime Sheet -
               {dateFormatter(
                 moment(form.getFieldValue("fromDate")).format("YYYY-MM-DD")
               )}{" "}
