@@ -457,6 +457,9 @@ const ViewTrainingScheduleDetails = lazy(() =>
 const AssetRequisitionSelfCreate = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/addEditForm.jsx")
 );
+const AssetRequisitionCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx")
+);
 const AssetRequisitionSelfLanding = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/index.jsx")
 );
@@ -493,6 +496,9 @@ const AssetEditItemProfile = lazy(() =>
 );
 const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
+);
+const AssetRequisition = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx")
 );
 const AssetRegistrationCreate = lazy(() =>
   import(
@@ -3510,12 +3516,20 @@ export const routingList = [
     component: AssetRequisitionSelfLanding,
   },
   {
+    path: "/assetManagement/assetControlPanel/assetRequisition",
+    component: AssetRequisition,
+  },
+  {
     path: "/SelfService/asset/assetRequisition/edit/:id",
     component: AssetRequisitionSelfCreate,
   },
   {
     path: "/SelfService/asset/assetRequisition/create",
     component: AssetRequisitionSelfCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetRequisition/create",
+    component: AssetRequisitionCreate,
   },
   {
     path: "/assetManagement/registration/items",
