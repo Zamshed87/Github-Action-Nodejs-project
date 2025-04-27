@@ -41,7 +41,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const [show, setShow] = useState(false);
   const [singleNoticeData, setSingleNoticeData] = useState("");
   const [rowDto, setRowDto] = useState([]);
-  const [loadingForBirth, setLoadingForBirth] = useState(false);
+  const [, setLoadingForBirth] = useState(false);
   const history = useHistory();
   const balanceApi = useApiRequest({});
   const balanceInfo = (id) => {
