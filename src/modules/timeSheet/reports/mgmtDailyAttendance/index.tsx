@@ -140,14 +140,15 @@ const MgmtDailyAttendance = () => {
     const workplaceList = values?.workplace?.length
       ? values.workplace.map((item: any) => item.intWorkplaceId).join(",")
       : "";
+      console.log("pagination", pagination);
 
     const payload = {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
       // intWorkplaceId: values?.workplace?.value || 0,
       workplaceList: workplaceList || "",
-      pageNo: pagination?.current,
-      pageSize: pagination?.pageSize,
+      pageNo: pagination?.current || 0,
+      pageSize: pagination?.pageSize || 0,
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
@@ -168,6 +169,7 @@ const MgmtDailyAttendance = () => {
       payload: payload,
     });
   };
+
 
   useEffect(() => {
     getWorkplaceGroup();
@@ -357,8 +359,8 @@ const MgmtDailyAttendance = () => {
         onFinish={() => {
           landingApiCall({
             pagination: {
-              current: landingApi?.data?.currentPage,
-              pageSize: landingApi?.data?.pageSize,
+              current: landingApi?.data?.currentPage || 1,
+              pageSize: landingApi?.data?.pageSize || 100,
             },
           });
         }}
