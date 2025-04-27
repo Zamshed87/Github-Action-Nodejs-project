@@ -38,37 +38,35 @@ const BankSalaryReport = () => {
   });
 
   return permission?.isView ? (
-    <>
-      <PForm
-        form={form}
-        onFinish={() => {
-          fetchReportData();
-        }}
-      >
-        {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
-        <PCard>
-          <PCardHeader
-            title={`Bank Salary Report.`}
-            exportIcon
-            onExport={() => {
-              downloadExcel();
-            }}
-            printIcon
-            pdfExport={() => {
-              downloadPdf();
-            }}
-          />
-          <PCardBody className="mb-3">
-            <BankSalaryReportFilters form={form} />
-          </PCardBody>
-          {reportData?.reportType ? (
-            <ReportLanding data={reportData} />
-          ) : (
-            <NoResult title="No Result Found" para="" />
-          )}
-        </PCard>
-      </PForm>
-    </>
+    <PForm
+      form={form}
+      onFinish={() => {
+        fetchReportData();
+      }}
+    >
+      {(loadingReportData || loadingExcel || loadingPdf) && <Loading />}
+      <PCard>
+        <PCardHeader
+          title={`Bank Salary Report`}
+          exportIcon
+          onExport={() => {
+            downloadExcel();
+          }}
+          printIcon
+          pdfExport={() => {
+            downloadPdf();
+          }}
+        />
+        <PCardBody className="mb-3">
+          <BankSalaryReportFilters form={form} />
+        </PCardBody>
+        {reportData?.reportType ? (
+          <ReportLanding data={reportData} />
+        ) : (
+          <NoResult title="No Result Found" para="" />
+        )}
+      </PCard>
+    </PForm>
   ) : (
     <NotPermittedPage />
   );

@@ -85,7 +85,12 @@ const DeptKpiCreateAndEdit = () => {
     if (location?.state?.departmentId) {
       getData(location?.state?.departmentId, 0, 0, 1);
     }
-
+    getPeopleDeskAllDDL(
+      `/PMS/ObjectiveTypeDDL?PMTypeId=${1}`,
+      "value",
+      "label",
+      setObjectiveTypeDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location?.state?.departmentId]);
 
@@ -107,6 +112,10 @@ const DeptKpiCreateAndEdit = () => {
             label: location?.state?.departmentName,
           }
         : "",
+      pmType: {
+        value: 1,
+        label: "",
+      },
     },
     onSubmit: (formValues) => {
       saveHandler(
@@ -181,7 +190,7 @@ const DeptKpiCreateAndEdit = () => {
                   </div>
                 </div>
 
-                <div className="col-md-3">
+                {/* <div className="col-md-3">
                   <div className="input-field-main">
                     <label>PM Type</label>
                     <FormikSelect
@@ -214,7 +223,7 @@ const DeptKpiCreateAndEdit = () => {
                       touched={touched}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="col-md-3">
                   <div className="input-field-main">
                     <label>Objective Type</label>
@@ -238,7 +247,6 @@ const DeptKpiCreateAndEdit = () => {
                       styles={customStyles}
                       errors={errors}
                       touched={touched}
-                      isDisabled={values?.pmType?.value !== 1 ? true : false}
                     />
                   </div>
                 </div>
