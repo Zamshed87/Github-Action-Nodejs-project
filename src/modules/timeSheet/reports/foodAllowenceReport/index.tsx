@@ -86,7 +86,7 @@ const FoodAllowenceReport = () => {
               ).format("YYYY")}&payrollMonthId=${moment(
                 values?.payrollMonth
               ).format("MM")}`;
-              downloadFile(url, "Food_Allowence_Report", "xlsx", setLoading);
+              downloadFile(url, "Food_Allowance_Report", "xlsx", setLoading);
             }}
             printIcon={true}
             pdfExport={() => {
