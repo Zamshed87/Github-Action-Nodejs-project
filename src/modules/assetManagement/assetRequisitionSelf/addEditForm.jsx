@@ -14,6 +14,8 @@ import useAxiosPost from "../../../utility/customHooks/useAxiosPost";
 import { dateFormatterForInput } from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { todayDate } from "../../../utility/todayDate";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
+import { getSearchEmployeeListWithWarning } from "common/api";
 
 const initData = {
   itemName: "",
@@ -37,7 +39,7 @@ const AssetRequisitionSelfCreate = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -53,7 +55,7 @@ const AssetRequisitionSelfCreate = () => {
       accountId: orgId,
       businessUnitId: buId,
       itemId: values?.itemName?.value,
-      employeeId: employeeId,
+      employeeId: values?.employeeName?.value || employeeId,
       reqisitionQuantity: values?.quantity,
       reqisitionDate: values?.requisitionDate,
       remarks: values?.remarks,
@@ -86,6 +88,10 @@ const AssetRequisitionSelfCreate = () => {
         itemName: {
           value: data?.itemId,
           label: data?.itemName,
+        },
+        employeeName: {
+          value: data?.employeeId,
+          label: data?.employeeName,
         },
         quantity: data?.reqisitionQuantity,
         requisitionDate: dateFormatterForInput(data?.reqisitionDate),
@@ -174,6 +180,23 @@ const AssetRequisitionSelfCreate = () => {
                 <div className="card-style">
                   <div className="row">
                     <div className="col-12"></div>
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Select Employee</label>
+                      </div>
+                      <AsyncFormikSelect
+                        required={true}
+                        selectedValue={values?.employeeName}
+                        isSearchIcon={true}
+                        handleChange={(valueOption) => {
+                          setFieldValue("employeeName", valueOption);
+                        }}
+                        placeholder="Search (min 3 letter)"
+                        loadOptions={(v) =>
+                          getSearchEmployeeListWithWarning(buId, wgId, v)
+                        }
+                      />
+                    </div>
                     <div className="col-lg-3">
                       <div className="input-field-main">
                         <label>Select Item</label>
