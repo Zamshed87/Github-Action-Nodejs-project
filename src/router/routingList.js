@@ -3032,7 +3032,7 @@ export const routingList = [
     component: BankSalaryReport,
   },
   {
-    path: "/compensationAndBenefits/reports/bankSalaryReport2",
+    path: "/compensationAndBenefits/reports/bankAdviceSalaryReport",
     component: FinisBankSalaryReport,
   },
   {
