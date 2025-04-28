@@ -351,4 +351,5 @@ export const apiList = {
   LeavePunishmentCreate: "/LeavePunishment/Create",
   LeavePunishmentGetById: "/LeavePunishment/GetById",
   LeavePunishmentExtend: "/LeavePunishment/Extend",
+  GetEmployeePfAmount: "/Employee/GetEmployeePfAmount",
 };
