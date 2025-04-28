@@ -60,7 +60,8 @@ export const columnsAsset = [
   {
     title: "SL",
     align: "center",
-    render: (_, __, index) => index + 1, // Automatically adding a serial number
+    render: (_, __, index) => index + 1,
+    width: "30px",
   },
   {
     title: "Employee Code",
@@ -79,12 +80,34 @@ export const columnsAsset = [
     dataIndex: ["applicationInformation", "department"],
   },
   {
-    title: "Asset Type",
-    dataIndex: ["applicationInformation", "assetType"],
+    title: "Requisition Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "requisitionDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
   },
   {
-    title: "Asset Name",
-    dataIndex: ["applicationInformation", "assetName"],
+    title: "Qty",
+    dataIndex: ["applicationInformation", "qty"],
+    width: "25px",
+  },
+  {
+    title: "Item Category",
+    dataIndex: ["applicationInformation", "itemCategory"],
+  },
+  {
+    title: "Item Name",
+    dataIndex: ["applicationInformation", "itemName"],
+  },
+  {
+    title: "Item Uom",
+    dataIndex: ["applicationInformation", "itemUom"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
   },
   {
     title: "Status",

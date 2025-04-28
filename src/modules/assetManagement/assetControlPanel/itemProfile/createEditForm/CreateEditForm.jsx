@@ -343,6 +343,7 @@ const ItemProfileForm = () => {
                         isDisabled={!values?.itemCategory}
                       />
                     </div>
+                    
                     <div className="col-lg-3">
                       <label>Manufacturer/Brand Name</label>
                       <FormikInput

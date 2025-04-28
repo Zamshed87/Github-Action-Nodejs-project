@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getSearchEmployeeListWithWarning } from "common/api";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
 import BackButton from "common/BackButton";
 import FormikInput from "common/FormikInput";
 import FormikSelect from "common/FormikSelect";
@@ -14,7 +16,6 @@ import { dateFormatterForInput } from "utility/dateFormatter";
 import { customStyles } from "utility/selectCustomStyle";
 import { todayDate } from "utility/todayDate";
 import * as Yup from "yup";
-
 
 const initData = {
   itemName: "",
@@ -32,13 +33,17 @@ const validationSchema = Yup.object().shape({
     .min(1, "Quantity must be greater than zero")
     .required("Quantity is required"),
   requisitionDate: Yup.date().required("Requisition date is required"),
+  employeeName: Yup.object().shape({
+    label: Yup.string().required("Employee name is required"),
+    value: Yup.string().required("Employee name is required"),
+  }).nullable(),
 });
 
 const AssetRequisitionSelfCreate = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -54,7 +59,7 @@ const AssetRequisitionSelfCreate = () => {
       accountId: orgId,
       businessUnitId: buId,
       itemId: values?.itemName?.value,
-      employeeId: employeeId,
+      employeeId: values?.employeeName?.value || employeeId,
       reqisitionQuantity: values?.quantity,
       reqisitionDate: values?.requisitionDate,
       remarks: values?.remarks,
@@ -87,6 +92,10 @@ const AssetRequisitionSelfCreate = () => {
         itemName: {
           value: data?.itemId,
           label: data?.itemName,
+        },
+        employeeName: {
+          value: data?.employeeId,
+          label: data?.employeeName,
         },
         quantity: data?.reqisitionQuantity,
         requisitionDate: dateFormatterForInput(data?.reqisitionDate),
@@ -173,6 +182,23 @@ const AssetRequisitionSelfCreate = () => {
                 <div className="card-style">
                   <div className="row">
                     <div className="col-12"></div>
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Select Employee</label>
+                      </div>
+                      <AsyncFormikSelect
+                        required={true}
+                        selectedValue={values?.employeeName}
+                        isSearchIcon={true}
+                        handleChange={(valueOption) => {
+                          setFieldValue("employeeName", valueOption);
+                        }}
+                        placeholder="Search (min 3 letter)"
+                        loadOptions={(v) =>
+                          getSearchEmployeeListWithWarning(buId, wgId, v)
+                        }
+                      />
+                    </div>
                     <div className="col-lg-3">
                       <div className="input-field-main">
                         <label>Select Item</label>

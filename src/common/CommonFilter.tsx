@@ -19,6 +19,7 @@ type CommonFilterProps = {
   isStatus?: boolean;
   statusDDL?: any;
   isAllValue?: boolean;
+  isEmployee?: boolean;
 };
 
 type TokenData = {
@@ -51,6 +52,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   isStatus,
   statusDDL,
   isAllValue,
+  isEmployee,
 }) => {
   // Form Instance
   const [form] = Form.useForm();
@@ -75,6 +77,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
+  const CommonEmployeeDDL = useApiRequest([]);
   const [saveFilter, setSaveFilter] = useState(false);
 
   const [filterData, setFilterData] = useState<FilterData>({});
@@ -223,6 +226,26 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
     });
   };
 
+  // Employee
+  const getEmployee = (value: any) => {
+    if (value?.length < 2) return CommonEmployeeDDL?.reset();
+
+    CommonEmployeeDDL?.action({
+      urlKey: "CommonEmployeeDDL",
+      method: "GET",
+      params: {
+        businessUnitId: profileData?.buId,
+        workplaceGroupId: profileData?.wgId,
+        searchText: value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.employeeName;
+          res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
   // Fetch Data Only When Drawer Opens
   useEffect(() => {
     if (visible) {
@@ -412,6 +435,29 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                       designation: op,
                     });
                   }}
+                />
+              </Col>
+            )}
+
+            {isEmployee && (
+              <Col md={12} sm={12}>
+                <PSelect
+                  name="employee"
+                  label="Employee"
+                  placeholder="Search Min 2 char"
+                  options={CommonEmployeeDDL?.data || []}
+                  loading={CommonEmployeeDDL?.loading}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      employee: op,
+                    });
+                  }}
+                  onSearch={(value) => {
+                    getEmployee(value);
+                  }}
+                  showSearch
+                  filterOption={false}
+                  allowClear={true}
                 />
               </Col>
             )}

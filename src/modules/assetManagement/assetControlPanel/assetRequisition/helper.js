@@ -16,7 +16,7 @@ export const onGetAssetRequisitionLanding = (
   wgId
 ) => {
   getAssetRequisitionApplication(
-    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${employeeId}`,
+    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${0}`,
     (data) => {
       setRowDto(data);
     }
@@ -53,6 +53,18 @@ export const assetRequisitionSelfTableColumn = (
       render: (value, item, index) => (page - 1) * paginationSize + index + 1,
       className: "text-center",
       width: "30px",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "employeeName",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Category Name",
+      dataIndex: "itemCategory",
+      sorter: true,
+      filter: true,
     },
     {
       title: "Item Name",
