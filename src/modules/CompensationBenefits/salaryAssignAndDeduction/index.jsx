@@ -234,12 +234,12 @@ function SalaryAssignAndDeduction() {
                         e.preventDefault();
                         setLoading(true);
                         const excelLanding = async () => {
-                          // const intMonth = values?.fromMonth
-                          //   ? +values?.fromMonth.split("-")[1]
-                          //   : +modifyMonthResult;
-                          // const intYear = values?.fromMonth
-                          //   ? +values?.fromMonth?.split("-")[0]
-                          //   : initYear;
+                          const intMonth = values?.fromMonth
+                            ? +values?.fromMonth.split("-")[1]
+                            : +modifyMonthResult;
+                          const intYear = values?.fromMonth
+                            ? +values?.fromMonth?.split("-")[0]
+                            : initYear;
                           const fromDate = values?.fromMonth
                             ? `${values?.fromMonth}-01`
                             : monthFirstDate();

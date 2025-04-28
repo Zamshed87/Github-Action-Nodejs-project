@@ -37,7 +37,11 @@ export const useApiRequest = (initialState: any) => {
         params: params,
       });
       isToast &&
-        toast.success(response?.data?.message || "Submitted Successfully");
+        toast.success(
+          response?.data?.message ||
+            response?.data?.message?.[0] ||
+            "Submitted Successfully"
+        );
 
       onSuccess && onSuccess(response.data);
       setState((prevState) => ({
@@ -48,7 +52,9 @@ export const useApiRequest = (initialState: any) => {
     } catch (error: any) {
       isToast &&
         toast.warning(
-          error?.response?.data?.message ||
+          error?.response?.data?.Message ||
+            error?.Message ||
+            error?.response?.data?.message ||
             error?.message ||
             "Something went wrong"
         );

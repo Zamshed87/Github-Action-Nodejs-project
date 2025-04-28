@@ -28,6 +28,7 @@ const FlipComponent = ({
   leaveBalanceDto,
   landingApiReward,
   landingApiPunishment,
+  balanceApi,
 }) => {
   const book = useRef();
 
@@ -109,7 +110,10 @@ const FlipComponent = ({
                 <LoanHistory loanDto={loanDto} />
               </div>
               <div className="page">
-                <LeaveBalanceData leaveBalanceDto={leaveBalanceDto} />
+                <LeaveBalanceData
+                  leaveBalanceDto={leaveBalanceDto}
+                  balanceApi={balanceApi}
+                />
               </div>
               <div className="page">
                 <RewardHistory landingApiReward={landingApiReward} />

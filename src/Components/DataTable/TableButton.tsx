@@ -29,7 +29,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     dollar: <DollarOutlined />,
     disbursement: <DollarOutlined />,
     print: <PrinterFilled />,
-    extend: <CopyOutlined/>
+    extend: <CopyOutlined />,
   };
 
   const renderButton = (type: buttonType) => {

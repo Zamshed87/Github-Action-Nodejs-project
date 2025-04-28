@@ -193,7 +193,7 @@ const EmployeePdfLanding = () => {
               //   "pdf",
               //   setLoading
               // );
-              printIDByOrg(orgId, rec?.EmployeeId);
+              printIDByOrg(rec?.EmployeeId);
             }}
           />
         ),
@@ -206,10 +206,9 @@ const EmployeePdfLanding = () => {
     });
     return empIdList.join(",");
   };
-  const printIDByOrg = (orgId: any, empId: any) => {
+  const printIDByOrg = (empId: any) => {
     const { isEnglish } = form.getFieldsValue(true);
     const {workplace} = form.getFieldsValue(true);
-    console.log(workplace)
     let api = "";
     if (orgId === 1) {
       api = `/PdfAndExcelReport/ExportIdCardForMatador?employeeIds=${empId}&workplaceId=${workplace?.value ?? wId}&intAccountId=${orgId}&isEnglish=true`;
@@ -221,6 +220,12 @@ const EmployeePdfLanding = () => {
       }`;
       downloadFile(api, "Employee ID Cards", "pdf", setLoading,"post");
     }
+    // halda valley
+    if (orgId === 16) {
+      api = `/Pdf/generate-halda-valley-id-card?employeeIds=${empId}&workplaceId=${workplace?.value ?? wId}&intAccountId=${orgId}`;
+      downloadFile(api, "Employee ID Cards", "pdf", setLoading,"post");
+    }
+
 
   };
   return (
@@ -266,7 +271,7 @@ const EmployeePdfLanding = () => {
                       //   "pdf",
                       //   setLoading
                       // );
-                      printIDByOrg(orgId, selectedEmpIds());
+                      printIDByOrg(selectedEmpIds());
                     },
                   },
                 ]
