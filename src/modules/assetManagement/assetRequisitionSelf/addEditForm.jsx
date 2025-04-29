@@ -180,7 +180,7 @@ const AssetRequisitionSelfCreate = () => {
                 <div className="card-style">
                   <div className="row">
                     <div className="col-12"></div>
-                    <div className="col-lg-3">
+                    {/* <div className="col-lg-3">
                       <div className="input-field-main">
                         <label>Select Employee</label>
                       </div>
@@ -196,7 +196,7 @@ const AssetRequisitionSelfCreate = () => {
                           getSearchEmployeeListWithWarning(buId, wgId, v)
                         }
                       />
-                    </div>
+                    </div> */}
                     <div className="col-lg-3">
                       <div className="input-field-main">
                         <label>Select Item</label>
