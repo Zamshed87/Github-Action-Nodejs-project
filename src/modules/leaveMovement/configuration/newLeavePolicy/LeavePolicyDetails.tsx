@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, Divider, Spin, Alert } from "antd";
+import { Divider, Spin, Alert } from "antd";
 import { useApiRequest } from "Hooks"; // Adjust the import path as needed
 import { DataTable, PCard, PCardHeader } from "Components";
 import { useDispatch } from "react-redux";
@@ -124,7 +124,6 @@ export const LeavePolicyDetails = () => {
     consumeTypeData = [],
     balanceData = [],
     calculativeData = [],
-    sandwichData = [],
     carryData = [],
     encashmentData = [],
     additionalData = [],
@@ -229,13 +228,7 @@ export const LeavePolicyDetails = () => {
       width: 100,
     },
   ];
-  const sandWitchHeader: any = [
-    {
-      title: "Scenario",
-      dataIndex: "scene",
-      width: 100,
-    },
-  ];
+
   const encashheader: any = [
     {
       title: "SL",
@@ -456,6 +449,7 @@ export const LeavePolicyDetails = () => {
             Max. Leave Apply Days (Monthly) : {add?.maxLeaveInMonth}
             <br />
             Max. Leave Apply Days (At a Time) : {add?.maxLeaveInDays}
+            <br />
             Min. Leave Application : {add?.minLeaveInApplication}
           </div>
         ))}

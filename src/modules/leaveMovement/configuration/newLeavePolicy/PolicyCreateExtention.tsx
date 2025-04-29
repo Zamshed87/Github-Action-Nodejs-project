@@ -1,4 +1,4 @@
-import { Col, Divider, Form, message, Row, Steps } from "antd";
+import { Form, Row, Steps } from "antd";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import {
@@ -25,19 +25,13 @@ import { Additional } from "./components/Additional";
 import { Balance } from "./components/Balance";
 import { CalculativeDays } from "./components/CalculativeDays";
 import { PaidLeave } from "./components/PaidLeave";
-// import { FcDataConfiguration } from "react-icons/fc";
-// import { GrConfigure } from "react-icons/gr";
-// import { GrDocumentConfig } from "react-icons/gr";
+
 import { CiGlobe } from "react-icons/ci";
-// import { MdCalculate, MdOutlineMoreTime } from "react-icons/md";
-// import { MdTimelapse } from "react-icons/md";
-// import { SiNewbalance } from "react-icons/si";
+
 import { BsCashCoin } from "react-icons/bs";
-// import { LuSandwich } from "react-icons/lu";
 import { FaRegCalendarPlus } from "react-icons/fa";
 import { PModal } from "Components/Modal";
 import IConfirmModal from "common/IConfirmModal";
-// import { ModalFooter } from "Components/Modal";
 
 export const PolicyCreateExtention = () => {
   const dispatch = useDispatch();
@@ -55,11 +49,10 @@ export const PolicyCreateExtention = () => {
   const [open, setOpen] = useState(false);
 
   const {
-    permissionList,
     profileData: { buId, employeeId, orgId, wgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   // states
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const [form] = Form.useForm();
   useEffect(() => {
@@ -680,6 +673,7 @@ export const PolicyCreateExtention = () => {
               },
               proRataRoundId: {
                 value: general.proRataRoundId,
+                label: general.proRataRound,
               },
               dependsOn: {
                 value: general.serviceLengthDependOnId,
@@ -1106,7 +1100,7 @@ export const PolicyCreateExtention = () => {
                           },
                         });
                       })
-                      .catch((e: any) => {});
+                      .catch(() => null);
                   }}
                 />
               )}
