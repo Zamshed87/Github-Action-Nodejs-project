@@ -222,12 +222,12 @@ export const Additional = ({ form }: any) => {
           <PInput
             type="number"
             name="maxLeaveApplyInLapse"
-            label="Max. Leave Apply in Lapse"
+            label="Max. Leave Application in Lapse"
             placeholder=""
             rules={[
               {
                 required: true,
-                message: "Max. Leave Apply in Lapse is required",
+                message: "Max. Leave Application in Lapse is required",
               },
               {
                 message: "Number must be positive",
@@ -270,6 +270,26 @@ export const Additional = ({ form }: any) => {
               {
                 required: true,
                 message: "Max. Leave Apply Days (At a Time) is required",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
+        <Col md={6} sm={24}>
+          <PInput
+            type="number"
+            name="minLeaveInApplication"
+            label="Min. Leave Application"
+            placeholder=""
+            rules={[
+              {
+                required: true,
+                message: "Min. Leave Application",
+              },
+              {
+                message: "Number must be positive",
+                pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
               },
             ]}
           />

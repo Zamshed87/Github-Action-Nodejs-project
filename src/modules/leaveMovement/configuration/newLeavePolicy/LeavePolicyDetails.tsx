@@ -332,6 +332,8 @@ export const LeavePolicyDetails = () => {
       <div style={{ fontSize: 12 }}>
         ProRata:{general?.isProRata ? "Yes" : "No"}
         <br />
+        ProRata Round: {general?.proRataRound}
+        <br />
         ProRata Last Start Days: {general?.proRataLastStartDays}
         <br />
         Pro Rata Basis: {general?.proRataBasis}
@@ -445,7 +447,7 @@ export const LeavePolicyDetails = () => {
             <br />
             Leave Application Time : {add?.applicationTime}
             <br />
-            Max. Leave Apply in Lapse : {add?.maxLeaveApplyInLapse}
+            Max. Leave Application in Lapse : {add?.maxLeaveApplyInLapse}
             <br />
             Attachment Mandatory : {add?.isAttachmentMandatory ? "Yes" : "No"}
             <br />
@@ -454,6 +456,7 @@ export const LeavePolicyDetails = () => {
             Max. Leave Apply Days (Monthly) : {add?.maxLeaveInMonth}
             <br />
             Max. Leave Apply Days (At a Time) : {add?.maxLeaveInDays}
+            Min. Leave Application : {add?.minLeaveInApplication}
           </div>
         ))}
       </div>

@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 
 export const ProRata = ({ form }: any) => {
   const enumApi = useApiRequest({});
+  const proRataRoundEnumApi = useApiRequest({});
 
   const getDependTypes = () => {
     enumApi?.action({
@@ -12,6 +13,13 @@ export const ProRata = ({ form }: any) => {
       method: "GET",
       params: {
         types: "ProRataBasisEnum",
+      },
+    });
+    proRataRoundEnumApi?.action({
+      urlKey: "GetEnums",
+      method: "GET",
+      params: {
+        types: "ProRataRoundEnum",
       },
     });
   };
@@ -39,85 +47,115 @@ export const ProRata = ({ form }: any) => {
           <span>Pro Rata</span>
         </div>
       </Divider>
-
-      <Col md={6} sm={24}>
-        <PSelect
-          // mode="multiple"
-          allowClear
-          options={[
-            { value: 1, label: "Yes" },
-            { value: 0, label: "No" },
-          ]}
-          name="isProRata"
-          label="ProRata "
-          placeholder="ProRata "
-          onChange={(value, op) => {
-            form.setFieldsValue({
-              isProRata: op,
-            });
-          }}
-          rules={[
-            {
-              required: true,
-              message: "ProRata  is required",
-            },
-          ]}
-        />
-      </Col>
       <Row gutter={[10, 2]}>
+        <Col md={8} sm={24}>
+          <PSelect
+            // mode="multiple"
+            allowClear
+            options={[
+              { value: 1, label: "Yes" },
+              { value: 0, label: "No" },
+            ]}
+            name="isProRata"
+            label="ProRata "
+            placeholder="ProRata "
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                isProRata: op,
+              });
+            }}
+            rules={[
+              {
+                required: true,
+                message: "ProRata  is required",
+              },
+            ]}
+          />
+        </Col>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { isProRata } = form.getFieldsValue(true);
 
             return (
               isProRata?.value === 1 && (
-                <>
-                  <Col md={8} sm={24}>
-                    <PInput
-                      type="number"
-                      name="proRataCount"
-                      label="Pro Rata Count Last Start Days (As Calander Date)"
-                      placeholder=""
-                      rules={[
-                        {
-                          message: "Number must be positive",
-                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
-                        },
-                        {
-                          required: isProRata?.value === 1,
-                          message:
-                            "Pro Rata Count Last Start Days (As Calander Date) is required",
-                        },
-                      ]}
-                    />
-                  </Col>
-                  <Col md={6} sm={24}>
-                    <PSelect
-                      // mode="multiple"
-                      allowClear
-                      options={enumApi?.data?.ProRataBasisEnum || []}
-                      name="proRataBasis"
-                      label="Pro Rata Basis"
-                      placeholder=""
-                      onChange={(value, op) => {
-                        form.setFieldsValue({
-                          proRataBasis: op,
-                        });
-                      }}
-                      rules={[
-                        {
-                          required: isProRata?.value === 1,
-                          message: "Pro Rata Basis is required",
-                        },
-                      ]}
-                    />
-                  </Col>
-                </>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    // mode="multiple"
+                    allowClear
+                    options={proRataRoundEnumApi?.data?.ProRataRoundEnum || []}
+                    name="proRataRoundId"
+                    label="Pro Rata Round"
+                    placeholder=""
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        proRataRoundId: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: isProRata?.value === 1,
+                        message: "Pro Rata Round is required",
+                      },
+                    ]}
+                  />
+                </Col>
               )
             );
           }}
         </Form.Item>
       </Row>
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const { isProRata } = form.getFieldsValue(true);
+
+          return (
+            isProRata?.value === 1 && (
+              <Row gutter={[10, 2]}>
+                <Col md={8} sm={24}>
+                  <PInput
+                    type="number"
+                    name="proRataCount"
+                    label="Pro Rata Count Last Start Days (As Calander Date)"
+                    placeholder=""
+                    rules={[
+                      {
+                        message: "Number must be positive",
+                        pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                      },
+                      {
+                        required: isProRata?.value === 1,
+                        message:
+                          "Pro Rata Count Last Start Days (As Calander Date) is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    // mode="multiple"
+                    allowClear
+                    options={enumApi?.data?.ProRataBasisEnum || []}
+                    name="proRataBasis"
+                    label="Pro Rata Basis"
+                    placeholder=""
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        proRataBasis: op,
+                      });
+                    }}
+                    rules={[
+                      {
+                        required: isProRata?.value === 1,
+                        message: "Pro Rata Basis is required",
+                      },
+                    ]}
+                  />
+                </Col>
+              </Row>
+            )
+          );
+        }}
+      </Form.Item>
     </>
   );
 };
