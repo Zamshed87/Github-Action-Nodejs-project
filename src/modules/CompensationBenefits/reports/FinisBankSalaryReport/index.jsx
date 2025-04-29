@@ -668,10 +668,6 @@ const FinisBankSalaryReport = () => {
             </div>
             <div style={{ overflow: "scroll" }} className="mt-3 w-100">
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
                 ref={contentRef}
                 dangerouslySetInnerHTML={{
                   __html: landingView,
