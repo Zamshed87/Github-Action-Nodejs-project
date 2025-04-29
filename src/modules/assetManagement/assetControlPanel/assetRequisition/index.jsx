@@ -11,8 +11,12 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
-import useDebounce from "utility/customHooks/useDebounce";
-import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+  monthFirstDate,
+  monthLastDate,
+} from "utility/dateFormatter";
 import {
   assetRequisitionSelfTableColumn,
   onGetAssetRequisitionLanding,
@@ -31,7 +35,6 @@ const initData = {
 };
 
 const AssetRequisitionSelfLanding = () => {
-  const debounce = useDebounce();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -42,7 +45,6 @@ const AssetRequisitionSelfLanding = () => {
     shallowEqual
   );
 
-  const [, setfilterAnchorEl] = useState(null);
   const [rowDto, setRowDto] = useState([]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -69,12 +71,25 @@ const AssetRequisitionSelfLanding = () => {
       employeeId,
       values,
       setRowDto,
-      wgId
+      wgId,
+      ""
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
 
-  const handleFilter = (values) => {};
+  const handleFilter = (values) => {
+    const date = values;
+    onGetAssetRequisitionLanding(
+      getAssetRequisitionLanding,
+      orgId,
+      buId,
+      employeeId,
+      values,
+      setRowDto,
+      wgId,
+      date
+    );
+  };
 
   return (
     <>
