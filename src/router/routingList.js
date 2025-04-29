@@ -457,6 +457,9 @@ const ViewTrainingScheduleDetails = lazy(() =>
 const AssetRequisitionSelfCreate = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/addEditForm.jsx")
 );
+const AssetRequisitionCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx")
+);
 const AssetRequisitionSelfLanding = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/index.jsx")
 );
@@ -493,6 +496,9 @@ const AssetEditItemProfile = lazy(() =>
 );
 const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
+);
+const AssetRequisition = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx")
 );
 const AssetRegistrationCreate = lazy(() =>
   import(
@@ -743,6 +749,9 @@ const SalaryReport = lazy(() =>
 );
 const BankSalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/bankSalaryReport/index.jsx")
+);
+const FinisBankSalaryReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx")
 );
 const YearlySalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/yearlySalaryReport/index.jsx")
@@ -3044,6 +3053,10 @@ export const routingList = [
     component: BankSalaryReport,
   },
   {
+    path: "/compensationAndBenefits/reports/bankAdviceSalaryReport",
+    component: FinisBankSalaryReport,
+  },
+  {
     path: "/compensationAndBenefits/reports/yearlySalaryReport",
     component: YearlySalaryReport,
   },
@@ -3503,12 +3516,20 @@ export const routingList = [
     component: AssetRequisitionSelfLanding,
   },
   {
+    path: "/assetManagement/assetControlPanel/assetRequisition",
+    component: AssetRequisition,
+  },
+  {
     path: "/SelfService/asset/assetRequisition/edit/:id",
     component: AssetRequisitionSelfCreate,
   },
   {
     path: "/SelfService/asset/assetRequisition/create",
     component: AssetRequisitionSelfCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetRequisition/create",
+    component: AssetRequisitionCreate,
   },
   {
     path: "/assetManagement/registration/items",
