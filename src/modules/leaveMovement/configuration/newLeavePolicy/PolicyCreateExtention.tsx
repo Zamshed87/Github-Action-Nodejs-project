@@ -314,6 +314,7 @@ export const PolicyCreateExtention = () => {
       "leavelapse",
       "afterLeaveCompleted",
       "isProRata",
+      "proRataRoundId",
       "proRataCount",
       "proRataBasis",
       "dependsOn",
@@ -436,6 +437,7 @@ export const PolicyCreateExtention = () => {
             isProRata: values?.isProRata?.value === 1,
             proRataLastStartDays: values?.proRataCount || 0,
             proRataBasisId: +values?.proRataBasis?.value || 0,
+            proRataRoundId: +values?.proRataRoundId?.value || 0,
             // --------- Balance-----------------
             serviceLengthDependOnId: +values?.dependsOn?.value || 0,
             leaveBalances:
@@ -570,6 +572,7 @@ export const PolicyCreateExtention = () => {
             maxLeaveInMonth: values?.maxLeaveApplyMonthly,
             maxLeaveInDays: values?.minLeaveApplyDays,
             maxLeaveApplyInLapse: values?.maxLeaveApplyInLapse || 0,
+            minLeaveInApplication: values?.minLeaveInApplication || 0,
           },
         };
     }
@@ -674,6 +677,9 @@ export const PolicyCreateExtention = () => {
               proRataCount: general.proRataLastStartDays,
               proRataBasis: {
                 value: general.proRataBasisId,
+              },
+              proRataRoundId: {
+                value: general.proRataRoundId,
               },
               dependsOn: {
                 value: general.serviceLengthDependOnId,
@@ -828,6 +834,7 @@ export const PolicyCreateExtention = () => {
               maxLeaveApplyMonthly: additional?.maxLeaveInMonth,
               minLeaveApplyDays: additional?.maxLeaveInDays,
               maxLeaveApplyInLapse: additional?.maxLeaveApplyInLapse || 0,
+              minLeaveInApplication: additional?.minLeaveInApplication || 0,
             });
           }
         },
@@ -874,6 +881,7 @@ export const PolicyCreateExtention = () => {
           },
           leaveRoundingType: { value: 1, label: "No Round" },
           maxLeaveApplyInLapse: 1000,
+          minLeaveInApplication: 0,
         }}
         onFinish={onFinish}
       >
