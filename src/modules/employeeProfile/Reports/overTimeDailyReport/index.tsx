@@ -717,8 +717,8 @@ const EmOverTimeDailyReport = () => {
                         <th
                           colSpan={17}
                           style={{
-                            border:"none",
-                            background:"transparent",
+                            border: "none",
+                            background: "transparent",
                             textAlign: "left",
                             fontSize: "16px",
                             fontWeight: "bold",
@@ -749,7 +749,10 @@ const EmOverTimeDailyReport = () => {
                     </thead>
                     <tbody>
                       {records.map((item, index) => (
-                        <tr key={item.strEmployeeCode} style={{height:"70px"}}>
+                        <tr
+                          key={item.strEmployeeCode}
+                          style={{ height: "70px" }}
+                        >
                           <td>{index + 1}</td>
                           {/* <td>{item?.strWorkplace}</td> */}
                           <td>{item?.strDepartment}</td>
@@ -776,6 +779,47 @@ const EmOverTimeDailyReport = () => {
                 </div>
               ))}
           </tbody>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "80px", // optional spacing before signatures
+            }}
+          >
+            <div style={{ flex: 1, textAlign: "start" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Prepared By
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "center" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Checked By
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "end" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Approved By
+              </div>
+            </div>
+          </div>
           <div className="footer">System Generated Report {todayDate()}</div>
         </div>
       </table>
