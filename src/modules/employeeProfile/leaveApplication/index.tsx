@@ -125,84 +125,12 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                       filterOption={false}
                     />
                   </Col>
-                  {/* <Col md={6}>
-                    <PSelect
-                      name="year"
-                      placeholder="Year"
-                      options={yearDDLAction(5, 10) || []}
-                      onChange={(value, op) => {
-                        form.setFieldsValue({
-                          year: op,
-                        });
-                        getData(employee?.value, value);
-                      }}
-                      filterOption={false}
-                    />
-                  </Col> */}
                 </Row>
               );
             }}
           </Form.Item>
         </PCardHeader>
         <Row gutter={[10, 2]} style={{ marginTop: "-5.7rem" }}>
-          {/* <div className="table-card">
-            <LeaveCommonHeader
-              employeeInfo={employeeInfo}
-              loadingForInfo={loadingForInfo}
-              progress={progress}
-            />
-
-            <Row gutter={[10, 2]} className=" justify-content-center">
-              <Col
-                md={12}
-                className="leave-movement-FormCard"
-                style={{ marginTop: "-3.4rem" }}
-              >
-                <TLeaveApplicationForm
-                  propsObj={{
-                    saveHandler,
-                    singleData,
-
-                    values: form.getFieldsValue(true),
-                    imageFile,
-                    setImageFile,
-                    isEdit,
-                    leaveTypeDDL:
-                      // leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
-                      leaveTypeDDL,
-                  }}
-                />
-              </Col>
-              <Col
-                md={12}
-                className="leave-movement-FormCard"
-                style={{ marginTop: "-4px" }}
-              >
-                <LeaveBalanceTable
-                  leaveBalanceData={leaveBalanceData}
-                  values={form.getFieldsValue(true)}
-                />
-              </Col>
-            </Row>
-
-            <Row gutter={[10, 2]}>
-              <Col md={24}>
-                <LeaveApp_History
-                  empId={form.getFieldValue("employee")?.value}
-                  setLeaveHistoryData={setLeaveHistoryData}
-                  leaveHistoryData={leaveHistoryData}
-                  setIsEdit={setIsEdit}
-                  setSingleData={setSingleData}
-                  setImageFile={setImageFile}
-                  allFormValues={form.getFieldsValue(true)}
-                  isOfficeAdmin={isOfficeAdmin}
-                  landingData={() => {
-                    getData(form.getFieldValue("employee")?.value);
-                  }}
-                />
-              </Col>
-            </Row>
-          </div> */}
           <CommonView
             loadingForInfo={loadingForInfo}
             progress={progress}
