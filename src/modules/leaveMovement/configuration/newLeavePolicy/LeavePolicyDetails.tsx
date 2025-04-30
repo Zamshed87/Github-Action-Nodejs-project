@@ -440,7 +440,7 @@ export const LeavePolicyDetails = () => {
             <br />
             Leave Application Time : {add?.applicationTime}
             <br />
-            Max. Leave Application in Lapse : {add?.maxLeaveApplyInLapse}
+            Max. Leave Application in Lapse : {add?.maxLeaveApplicationInLapse}
             <br />
             Attachment Mandatory : {add?.isAttachmentMandatory ? "Yes" : "No"}
             <br />

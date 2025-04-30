@@ -827,7 +827,7 @@ export const PolicyCreateExtention = () => {
               attachmentMandatoryAfter: additional?.minLeaveForAttachment,
               maxLeaveApplyMonthly: additional?.maxLeaveInMonth,
               minLeaveApplyDays: additional?.maxLeaveInDays,
-              maxLeaveApplyInLapse: additional?.maxLeaveApplyInLapse || 0,
+              maxLeaveApplyInLapse: additional?.maxLeaveApplicationInLapse || 0,
               minLeaveInApplication: additional?.minLeaveInApplication || 0,
             });
           }
