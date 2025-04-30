@@ -280,7 +280,7 @@ export const Additional = ({ form }: any) => {
           <PInput
             type="number"
             name="minLeaveInApplication"
-            label="Min. Leave Application"
+            label="Min. Leave Application (At a Time)"
             placeholder=""
             rules={[
               {
