@@ -450,7 +450,7 @@ export const LeavePolicyDetails = () => {
             <br />
             Max. Leave Apply Days (At a Time) : {add?.maxLeaveInDays}
             <br />
-            Min. Leave Application : {add?.minLeaveInApplication}
+            Min. Leave Application (At a Time): {add?.minLeaveInApplication}
           </div>
         ))}
       </div>
