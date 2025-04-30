@@ -134,7 +134,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         const imageFile =
           (attachmentList[0] as any)?.response.length > 0
             ? (attachmentList[0] as any)?.response[0]
-            : { globalFileUrlId: singleData?.DocumentFileUrl };
+            : { globalFileUrlId: singleData?.attachmentId };
         setLoad(true);
         saveHandler(
           { ...values, ...data, imageFile },
