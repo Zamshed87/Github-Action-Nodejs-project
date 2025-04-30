@@ -195,6 +195,7 @@ export const assetRequisitionSelfTableColumn = (
                       itemId: item?.itemId,
                       isDenied: item?.isDenied,
                       remarks: item?.remarks,
+                      employeeId: item?.employeeId,
                       reqisitionDate: item?.reqisitionDate,
                       active: false,
                     };
