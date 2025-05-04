@@ -179,6 +179,7 @@ const SeparationReport = () => {
         PageNo: pagination.current || 1,
         departments: formatFilterValue(values?.department),
         designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         separationTypeIds: formatFilterValue(values?.separationType),
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -474,6 +475,7 @@ const SeparationReport = () => {
             resetApiCall={() => {
               form.setFieldValue("separationType", { label: "All", value: 0 });
             }}
+            isSection={true}
           >
             <Col md={24} sm={12} xs={24}>
               <PSelect

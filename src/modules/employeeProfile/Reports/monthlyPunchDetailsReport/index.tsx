@@ -100,6 +100,7 @@ const MonthlyPunchReportDetails = () => {
         pageSize: pagination.pageSize || pages?.pageSize,
         departments: formatFilterValue(values?.department),
         designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         employeeId: employeeId,
         isPaginated: true,
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -198,6 +199,12 @@ const MonthlyPunchReportDetails = () => {
 
         width: 80,
       },
+      {
+        title: "Section",
+        dataIndex: "strSectionName",
+
+        width: 80,
+      },
       ...(d as any),
     ];
   };
@@ -248,7 +255,9 @@ const MonthlyPunchReportDetails = () => {
                       "YYYY-MM-DD"
                     )}&EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
                       formatFilterValue(values?.department) || 0
-                    }&designations=${formatFilterValue(
+                    }&sections=${formatFilterValue(
+                      values?.section
+                    )}&designations=${formatFilterValue(
                       values?.designation || 0
                     )}&SearchTxt=${
                       values?.search || ""
@@ -332,7 +341,11 @@ const MonthlyPunchReportDetails = () => {
               excelLanding();
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall} />
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+          />
           <DataTable
             bordered
             data={landingApi?.data?.length > 0 ? landingApi?.data : []}

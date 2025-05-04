@@ -26,6 +26,8 @@ import {} from "react-icons/md";
 // import { debounce } from "lodash";
 
 import { downloadFile, getPDFAction } from "utility/downloadFile";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const EmpCheckList = () => {
   const dispatch = useDispatch();
@@ -130,6 +132,8 @@ const EmpCheckList = () => {
         intBusinessUnitId: buId,
         IsXls: false,
         intWorkplaceId: values?.workplace?.value,
+        departments: formatFilterValue(values?.department),
+        sections: formatFilterValue(values?.section),
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -209,7 +213,13 @@ const EmpCheckList = () => {
               );
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+            showDesignation={"NO"}
+          />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -281,7 +291,7 @@ const EmpCheckList = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
         </PCard>
         {landingApi?.data?.length > 0 ? (
           <div className="table-card-body mt-3" style={{ overflow: "hidden" }}>
