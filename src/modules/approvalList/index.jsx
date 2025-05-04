@@ -79,7 +79,6 @@ export default function ApprovalList() {
 
     const { workplace, workplaceGroup } = parsedFilters;
 
-    console.log("parsedFilters", parsedFilters);
 
     getApprovalDashboardLanding(
       orgId,

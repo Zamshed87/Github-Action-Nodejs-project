@@ -56,6 +56,70 @@ export const columnsDefault = [
   },
 ];
 
+export const columnsAsset = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+    width: "30px",
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Requisition Date",
+    width: "90px",
+    dataIndex: ["applicationInformation", "requisitionDate"],
+    render: (date) => (
+      <div>{date ? dateFormatter(date) : "N/A"}</div>
+    ),
+  },
+  {
+    title: "Qty",
+    dataIndex: ["applicationInformation", "qty"],
+    width: "25px",
+  },
+  {
+    title: "Item Category",
+    dataIndex: ["applicationInformation", "itemCategory"],
+  },
+  {
+    title: "Item Name",
+    dataIndex: ["applicationInformation", "itemName"],
+  },
+  {
+    title: "Item Uom",
+    dataIndex: ["applicationInformation", "itemUom"],
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+
+]
+
 export const columnFinalSettlement = [
   {
     title: "SL",

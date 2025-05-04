@@ -457,6 +457,9 @@ const ViewTrainingScheduleDetails = lazy(() =>
 const AssetRequisitionSelfCreate = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/addEditForm.jsx")
 );
+const AssetRequisitionCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx")
+);
 const AssetRequisitionSelfLanding = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/index.jsx")
 );
@@ -493,6 +496,9 @@ const AssetEditItemProfile = lazy(() =>
 );
 const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
+);
+const AssetRequisition = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx")
 );
 const AssetRegistrationCreate = lazy(() =>
   import(
@@ -740,6 +746,18 @@ const SalaryReportSingleEmp = lazy(() =>
 );
 const SalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/salaryReport/index.jsx")
+);
+const BankSalaryReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/bankSalaryReport/index.jsx")
+);
+const FinisBankSalaryReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx")
+);
+const YearlySalaryReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/yearlySalaryReport/index.jsx")
+);
+const MonthlySalaryBreakDownReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx")
 );
 const SingleSalaryReport = lazy(() =>
   import(
@@ -3015,6 +3033,22 @@ export const routingList = [
     path: "/compensationAndBenefits/reports/yearlyTaxReturnReport",
     component: YearlyTaxReturnReport,
   },
+  {
+    path: "/compensationAndBenefits/reports/bankSalaryReport",
+    component: BankSalaryReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/bankAdviceSalaryReport",
+    component: FinisBankSalaryReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/yearlySalaryReport",
+    component: YearlySalaryReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/monthlySalaryBreakDownReport",
+    component: MonthlySalaryBreakDownReport,
+  },
   // increment/promotion start
   { path: "/compensationAndBenefits/increment", component: IncrementLanding },
   {
@@ -3467,12 +3501,20 @@ export const routingList = [
     component: AssetRequisitionSelfLanding,
   },
   {
+    path: "/assetManagement/assetControlPanel/assetRequisition",
+    component: AssetRequisition,
+  },
+  {
     path: "/SelfService/asset/assetRequisition/edit/:id",
     component: AssetRequisitionSelfCreate,
   },
   {
     path: "/SelfService/asset/assetRequisition/create",
     component: AssetRequisitionSelfCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetRequisition/create",
+    component: AssetRequisitionCreate,
   },
   {
     path: "/assetManagement/registration/items",

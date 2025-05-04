@@ -484,29 +484,28 @@ const MonthlyAttendanceReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              {isOfficeAdmin && (
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={empDepartmentDDL?.data || []}
-                    name="department"
-                    label="Department"
-                    showSearch
-                    placeholder="Select Department"
-                    allowClear
-                    style={{ width: "300px" }}
-                    onSelect={(value, op) => {
-                      form.setFieldsValue({
-                        supervisor: undefined,
-                      });
-                      if (value) {
-                        getSuperUserList();
-                      } else {
-                        getSuperUserList([]);
-                      }
-                    }}
-                  />
-                </Col>
-              )}
+              {/* Modification guide from business  */}
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={empDepartmentDDL?.data || []}
+                  name="department"
+                  label="Department"
+                  showSearch
+                  placeholder="Select Department"
+                  allowClear
+                  style={{ width: "300px" }}
+                  onSelect={(value, op) => {
+                    form.setFieldsValue({
+                      supervisor: undefined,
+                    });
+                    if (value) {
+                      getSuperUserList();
+                    } else {
+                      getSuperUserList([]);
+                    }
+                  }}
+                />
+              </Col>
 
               <Col md={6} sm={12} xs={24}>
                 <PSelect
@@ -515,7 +514,7 @@ const MonthlyAttendanceReport = () => {
                   label="Supervisor"
                   allowClear
                   style={{ width: "300px" }}
-                  disabled={!isOfficeAdmin}
+                  // disabled={!isOfficeAdmin}
                   onSelect={(value, op) => {}}
                 />
               </Col>

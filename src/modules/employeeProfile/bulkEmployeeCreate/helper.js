@@ -17,7 +17,7 @@ export const processBulkUploadEmployeeAction = async (
       intEmpBulkUploadId: 0,
       intAccountId: orgId,
       intUrlId: intUrlId,
-      intIdentitySlid: item["INDENTITY SL"] || "",
+      intIdentitySlid: item["INDENTITY SL"] || 0,
       strBusinessUnit: item["Business Unit"] || "",
       strWorkplaceGroup: item["Workplace Group"] || "",
       strWorkplace: item["Workplace"] || "",
@@ -75,8 +75,8 @@ export const processBulkUploadEmployeeAction = async (
         item["OT Type"] === 2
           ? "With Salary"
           : item["OT Type"] === 3
-            ? "Without Salary/Additional OT"
-            : "Not Applicable",
+          ? "Without Salary/Additional OT"
+          : "Not Applicable",
       intOtTypeId: +item["OT Type"],
       intOTFixedHour: +item?.["OT Fixed Hour"] || 0,
       strJobLocation: item["Job Location"] || "",
@@ -105,11 +105,12 @@ export const saveBulkUploadEmployeeAction = async (
     callback();
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
+    console.log("res", res);
   } catch (error) {
     setLoading(false);
     setErrorData(error?.response?.data?.listData);
     setOpen(true);
-    error?.response?.data?.listData?.length < 0 &&
-      toast.warn(error?.response?.data?.message || "Failed, try again");
+    console.log("error",error?.response);
+    toast.error(error?.response?.data?.message || "Failed to process!");
   }
 };

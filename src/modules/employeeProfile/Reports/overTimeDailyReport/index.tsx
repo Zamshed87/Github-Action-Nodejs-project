@@ -57,7 +57,7 @@ const EmOverTimeDailyReport = () => {
   const reactToPrintFn = useReactToPrint({
     contentRef,
     pageStyle:
-      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: landscape ! important}}",
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: portrait ! important}}",
     documentTitle: `Overtime Daily Report ${todayDate()}`,
   });
 
@@ -351,195 +351,188 @@ const EmOverTimeDailyReport = () => {
   }, 500);
 
   return employeeFeature?.isView ? (
-    <>
-      <PForm
-        form={form}
-        initialValues={{
-          fromDate: moment(todayDate()),
-        }}
-        onFinish={() => {
-          landingApiCall({
-            pagination: {
-              current: landingApi?.data?.page,
-              pageSize: landingApi?.data?.totalCount,
-            },
-          });
-        }}
-      >
-        <PCard>
-          {excelLoading && <Loading />}
-          <PCardHeader
-            exportIcon={true}
-            title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-              form.setFieldsValue({
-                search: e?.target?.value,
-              });
-            }}
-            printIcon={landingApi?.data?.length > 0 ? true : false}
-            pdfExport={() => {
-              reactToPrintFn();
-            }}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                try {
-                  const values = form.getFieldsValue(true);
+    <PForm
+      form={form}
+      initialValues={{
+        fromDate: moment(todayDate()),
+      }}
+      onFinish={() => {
+        landingApiCall({
+          pagination: {
+            current: landingApi?.data?.page,
+            pageSize: landingApi?.data?.totalCount,
+          },
+        });
+      }}
+    >
+      <PCard>
+        {excelLoading && <Loading />}
+        <PCardHeader
+          exportIcon={true}
+          title={`Total ${landingApi?.data[0]?.totalCount ?? 0} employees`}
+          onSearch={(e) => {
+            searchFunc(e?.target?.value);
+            form.setFieldsValue({
+              search: e?.target?.value,
+            });
+          }}
+          printIcon={landingApi?.data?.length > 0}
+          pdfExport={() => {
+            reactToPrintFn();
+          }}
+          onExport={() => {
+            const excelLanding = async () => {
+              setExcelLoading(true);
+              try {
+                const values = form.getFieldsValue(true);
 
-                  const sectionMerge = values?.section?.map((item: any) => {
-                    return item?.value;
-                  });
-                  const sectionList = sectionMerge?.join(",") || "";
+                const sectionMerge = values?.section?.map((item: any) => {
+                  return item?.value;
+                });
+                const sectionList = sectionMerge?.join(",") ?? "";
 
-                  const payload = {
-                    accountId: orgId,
-                    strSectionIdList: sectionList || "",
-                    searchText: "",
-                    intOTtype: values?.intOTtype?.value || 3,
-                    workplaceGroupId: values?.workplaceGroup?.value || wgId,
-                    strWorkplaceIdList: String(values?.workplace?.value || ""),
-                    strDepartmentIdList: String(
-                      values?.department?.value || ""
-                    ),
-                    pageNumber: 1,
-                    pageSize: 100000,
-                    isPaginated: false,
+                const payload = {
+                  accountId: orgId,
+                  strSectionIdList: sectionList ?? "",
+                  searchText: "",
+                  intOTtype: values?.intOTtype?.value ?? 3,
+                  workplaceGroupId: values?.workplaceGroup?.value ?? wgId,
+                  strWorkplaceIdList: String(values?.workplace?.value ?? ""),
+                  strDepartmentIdList: String(values?.department?.value ?? ""),
+                  pageNumber: 1,
+                  pageSize: 100000,
+                  isPaginated: false,
 
-                    attendanceDate: values?.fromDate
-                      ? moment(values?.fromDate).format("YYYY-MM-DD")
-                      : null,
+                  attendanceDate: values?.fromDate
+                    ? moment(values?.fromDate).format("YYYY-MM-DD")
+                    : null,
 
-                    // strDepartmentList: (filterList as any)?.strDepartment || [],
-                    // strWorkplaceGroupList:
-                    //   (filterList as any)?.strWorkplaceGroup || [],
-                    // strWorkplaceList: (filterList as any)?.strWorkplace || [],
-                    // strLinemanagerList:
-                    //   (filterList as any)?.strLinemanager || [],
-                    // strEmploymentTypeList:
-                    //   (filterList as any)?.strEmploymentType || [],
-                    // strSupervisorNameList:
-                    //   (filterList as any)?.strSupervisorName || [],
-                    // strDottedSupervisorNameList:
-                    //   (filterList as any)?.strDottedSupervisorName || [],
-                    // strDivisionList: (filterList as any)?.strDivisionList || [],
-                    // strPayrollGroupList:
-                    //   (filterList as any)?.strPayrollGroup || [],
-                    // strDesignationList:
-                    //   (filterList as any)?.strDesignation || [],
-                    // strHrPositionList: (filterList as any)?.strHrPosition || [],
-                    // strBankList: (filterList as any)?.strBank || [],
-                    // strSectionList: (filterList as any)?.strSectionList || [],
-                    // //   unnecesary
-                    // wingNameList: [],
-                    // soleDepoNameList: [],
-                    // regionNameList: [],
-                    // areaNameList: [],
-                    // territoryNameList: [],
-                  };
+                  // strDepartmentList: (filterList as any)?.strDepartment || [],
+                  // strWorkplaceGroupList:
+                  //   (filterList as any)?.strWorkplaceGroup || [],
+                  // strWorkplaceList: (filterList as any)?.strWorkplace || [],
+                  // strLinemanagerList:
+                  //   (filterList as any)?.strLinemanager || [],
+                  // strEmploymentTypeList:
+                  //   (filterList as any)?.strEmploymentType || [],
+                  // strSupervisorNameList:
+                  //   (filterList as any)?.strSupervisorName || [],
+                  // strDottedSupervisorNameList:
+                  //   (filterList as any)?.strDottedSupervisorName || [],
+                  // strDivisionList: (filterList as any)?.strDivisionList || [],
+                  // strPayrollGroupList:
+                  //   (filterList as any)?.strPayrollGroup || [],
+                  // strDesignationList:
+                  //   (filterList as any)?.strDesignation || [],
+                  // strHrPositionList: (filterList as any)?.strHrPosition || [],
+                  // strBankList: (filterList as any)?.strBank || [],
+                  // strSectionList: (filterList as any)?.strSectionList || [],
+                  // //   unnecesary
+                  // wingNameList: [],
+                  // soleDepoNameList: [],
+                  // regionNameList: [],
+                  // areaNameList: [],
+                  // territoryNameList: [],
+                };
 
-                  const res = await axios.post(
-                    `/Payroll/GetDailyOvertimeEmployeeList`,
-                    payload
-                  );
-                  const totalAmount = res?.data.reduce(
-                    (sum: any, employee: any) => sum + employee.numTotalAmount,
-                    0
-                  );
-                  if (res?.data?.length < 1) {
-                    setExcelLoading(false);
-                    return toast.error("No data found");
-                  }
-                  const newData = res?.data?.map((item: any, index: any) => {
-                    return {
-                      ...item,
-                      sl: index + 1,
-                    };
-                  });
-                  createCommonExcelFile({
-                    titleWithDate: `Daily Overtime Report - ${dateFormatter(
-                      moment(values?.fromDate).format("YYYY-MM-DD")
-                    )} `,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataMonthlyAttendance(
-                        newData,
-                        Object.keys(column)
-                      ),
-
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    tableFooter: [
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "",
-                      "Total:",
-                      "",
-                      totalAmount,
-                      "",
-                    ],
-                    widthList: {
-                      C: 30,
-                      B: 30,
-                      D: 30,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
+                const res = await axios.post(
+                  `/Payroll/GetDailyOvertimeEmployeeList`,
+                  payload
+                );
+                const totalAmount = res?.data.reduce(
+                  (sum: any, employee: any) => sum + employee.numTotalAmount,
+                  0
+                );
+                if (res?.data?.length < 1) {
                   setExcelLoading(false);
-                } catch (error: any) {
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                  // console.log(error?.message);
+                  return toast.error("No data found");
                 }
-              };
-              excelLanding();
-            }}
-          />
-          <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={4} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="Attendance Date"
-                  placeholder="Attendance Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
+                const newData = res?.data?.map((item: any, index: any) => {
+                  return {
+                    ...item,
+                    sl: index + 1,
+                  };
+                });
+                createCommonExcelFile({
+                  titleWithDate: `Daily Overtime Report - ${dateFormatter(
+                    moment(values?.fromDate).format("YYYY-MM-DD")
+                  )} `,
+                  fromDate: "",
+                  toDate: "",
+                  buAddress: (buDetails as any)?.strAddress,
+                  businessUnit: values?.workplaceGroup?.value
+                    ? (buDetails as any)?.strWorkplace
+                    : buName,
+                  tableHeader: column,
+                  getTableData: () =>
+                    getTableDataMonthlyAttendance(newData, Object.keys(column)),
 
-              {/* <Col md={4} sm={12} xs={24}>
+                  // eslint-disable-next-line @typescript-eslint/no-empty-function
+                  getSubTableData: () => {},
+                  subHeaderInfoArr: [],
+                  subHeaderColumn: [],
+                  extraInfo: {},
+                  tableHeadFontSize: 10,
+                  tableFooter: [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "Total:",
+                    "",
+                    totalAmount,
+                    "",
+                  ],
+                  widthList: {
+                    C: 30,
+                    B: 30,
+                    D: 30,
+                    E: 25,
+                    F: 20,
+                    G: 25,
+                    H: 15,
+                    I: 15,
+                    J: 20,
+                    K: 20,
+                  },
+                  commonCellRange: "A1:J1",
+                  CellAlignment: "left",
+                });
+                setExcelLoading(false);
+              } catch (error: any) {
+                toast.error("Failed to download excel");
+                setExcelLoading(false);
+              }
+            };
+            excelLanding();
+          }}
+        />
+        <PCardBody className="mb-3">
+          <Row gutter={[10, 2]}>
+            <Col md={4} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="fromDate"
+                label="Attendance Date"
+                placeholder="Attendance Date"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    fromDate: value,
+                  });
+                }}
+              />
+            </Col>
+
+            {/* <Col md={4} sm={12} xs={24}>
                 <PSelect
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
@@ -556,223 +549,281 @@ const EmOverTimeDailyReport = () => {
                 />
               </Col> */}
 
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  options={[
-                    {
-                      value: 1,
-                      label: "Not Applicable",
-                    },
-                    { value: 2, label: "With Salary" },
-                    {
-                      value: 3,
-                      label: "Without Salary/Additional OT",
-                    },
-                  ]}
-                  name="intOTtype"
-                  label="OT type"
-                  placeholder="OT Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      intOTtype: op,
-                      workplace: undefined,
-                      department: undefined,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                      department: undefined,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                    getDepartmentDDL();
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-              {/* de */}
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  options={departmentDDL?.data || []}
-                  name="department"
-                  label="Department"
-                  placeholder="Department"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      department: op,
-                      section: undefined,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                    getSectionDDL();
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-              <Col md={4} sm={12} xs={24}>
-                <PSelect
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                  mode="multiple"
-                  options={sectionDDL?.data || []}
-                  name="section"
-                  label="Section"
-                  placeholder="Section"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      section: op,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-
-                    // form.setFieldsValue({
-                    //   intEmploymentTypeList: op,
-                    // });
-                    // const temp = form.getFieldsValue();
-
-                    // isPolicyExist(
-                    //   {
-                    //     ...temp,
-                    //     intEmploymentTypeList: op,
-                    //   },
-                    //   allPolicies,
-                    //   setExistingPolicies
-                    // );
-                    // value && getWorkplace();
-                  }}
-                />
-              </Col>
-
-              <Col
-                style={{
-                  marginTop: "23px",
+            <Col md={4} sm={12} xs={24}>
+              <PSelect
+                options={[
+                  {
+                    value: 1,
+                    label: "Not Applicable",
+                  },
+                  { value: 2, label: "With Salary" },
+                  {
+                    value: 3,
+                    label: "Without Salary/Additional OT",
+                  },
+                ]}
+                name="intOTtype"
+                label="OT type"
+                placeholder="OT Type"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    intOTtype: op,
+                    workplace: undefined,
+                    department: undefined,
+                  });
                 }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody>
+              />
+            </Col>
 
-          <DataTable
-            bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
-            loading={landingApi?.loading}
-            header={header}
-            pagination={{
-              pageSize: pages?.pageSize,
-              total: landingApi?.data[0]?.totalCount,
-            }}
-            filterData={landingApi?.data?.employeeHeader}
-            onChange={(pagination, filters, sorter, extra) => {
-              // Return if sort function is called
-              if (extra.action === "sort") return;
-              setFilterList(filters);
-              setPages({
-                current: pagination.current,
-                pageSize: pagination.pageSize,
-                total: pagination.total,
-              });
-              landingApiCall({
-                pagination,
-                filerList: filters,
-              });
-            }}
-            scroll={{ x: 2000 }}
-          />
-        </PCard>
-
-        <table style={{ display: "none" }}>
-          <div className="pdf-container " ref={contentRef}>
-            <thead className="pdf-title ">
-              <h2 style={{ marginTop: "30px", fontSize: "30px" }}>{buName}</h2>
-              <h3
-                style={{
-                  fontSize: "20px",
-                  marginTop: "20px",
-                  marginBottom: "20px",
+            <Col md={4} sm={12} xs={24}>
+              <PSelect
+                options={workplace?.data || []}
+                name="workplace"
+                label="Workplace"
+                placeholder="Workplace"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                    department: undefined,
+                  });
+                  getWorkplaceDetails(value, setBuDetails);
+                  getDepartmentDDL();
                 }}
-              >
-                Daily Overtime Report -
-                {dateFormatter(
-                  moment(form.getFieldValue("fromDate")).format("YYYY-MM-DD")
-                )}{" "}
-              </h3>
-            </thead>
-            <tbody className="mt-2">
-              <table className="pdf-table">
-                <thead>
-                  <tr>
-                    <th>SL</th>
-                    <th>Workplace</th>
-                    <th>Department</th>
-                    <th>Section</th>
-                    <th>ID NO</th>
-                    <th>Name</th>
-                    <th>Designation</th>
-                    <th>Basic</th>
-                    <th>Gross</th>
-                    <th className="calendar-name">Calendar Name</th>
-                    <th>In Time</th>
-                    <th>Out Time</th>
-                    <th>Late</th>
-                    <th>OT Hour</th>
-                    <th>OT Rate</th>
-                    <th>Net Payable</th>
-                    <th>Signature</th>
-                  </tr>
-                </thead>
-                {landingApi?.data?.length > 0 && (
-                  <tbody>
-                    {landingApi?.data?.map((item: any, index: any) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{item?.strWorkplace}</td>
-                        <td>{item?.strDepartment}</td>
-                        <td>{item?.strSectionName}</td>
-                        <td>{item?.strEmployeeCode}</td>
-                        <td>{item?.strEmployeeName}</td>
-                        <td>{item?.strDesignation}</td>
-                        <td>{item?.numBasicORGross}</td>
-                        <td>{item?.numGrossSalary}</td>
-                        <td className="calendar-name">
-                          {item?.strCalenderName}
-                        </td>
-                        <td>{item?.tmeInTime ? item?.tmeInTime : "-"}</td>
-                        <td>
-                          {item?.tmeLastOutTime ? item?.tmeLastOutTime : "-"}
-                        </td>
-                        <td>{item?.lateHour ? item?.lateHour : "-"}</td>
-                        <td>{item?.numHours}</td>
-                        <td>{item?.numPerHourRate}</td>
-                        <td>{item?.numTotalAmount}</td>
-                        <td>{item?.strSignature}</td>
+                // rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+            {/* de */}
+            <Col md={4} sm={12} xs={24}>
+              <PSelect
+                options={departmentDDL?.data || []}
+                name="department"
+                label="Department"
+                placeholder="Department"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    department: op,
+                    section: undefined,
+                  });
+                  getWorkplaceDetails(value, setBuDetails);
+                  getSectionDDL();
+                }}
+                // rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+            <Col md={4} sm={12} xs={24}>
+              <PSelect
+                // rules={[{ required: true, message: "Workplace is required" }]}
+                mode="multiple"
+                options={sectionDDL?.data || []}
+                name="section"
+                label="Section"
+                placeholder="Section"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    section: op,
+                  });
+                  getWorkplaceDetails(value, setBuDetails);
+
+                  // form.setFieldsValue({
+                  //   intEmploymentTypeList: op,
+                  // });
+                  // const temp = form.getFieldsValue();
+
+                  // isPolicyExist(
+                  //   {
+                  //     ...temp,
+                  //     intEmploymentTypeList: op,
+                  //   },
+                  //   allPolicies,
+                  //   setExistingPolicies
+                  // );
+                  // value && getWorkplace();
+                }}
+              />
+            </Col>
+
+            <Col
+              style={{
+                marginTop: "23px",
+              }}
+            >
+              <PButton type="primary" action="submit" content="View" />
+            </Col>
+          </Row>
+        </PCardBody>
+
+        <DataTable
+          bordered
+          data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+          loading={landingApi?.loading}
+          header={header}
+          pagination={{
+            pageSize: pages?.pageSize,
+            total: landingApi?.data[0]?.totalCount,
+          }}
+          filterData={landingApi?.data?.employeeHeader}
+          onChange={(pagination, filters, sorter, extra) => {
+            // Return if sort function is called
+            if (extra.action === "sort") return;
+            setFilterList(filters);
+            setPages({
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+            });
+            landingApiCall({
+              pagination,
+              filerList: filters,
+            });
+          }}
+          scroll={{ x: 2000 }}
+        />
+      </PCard>
+
+      <table style={{ display: "none" }}>
+        <div className="pdf-container " ref={contentRef}>
+          <thead className="pdf-title ">
+            <h2 style={{ marginTop: "30px", fontSize: "30px" }}>{buName}</h2>
+            <h3
+              style={{
+                fontSize: "20px",
+                marginTop: "20px",
+                marginBottom: "20px",
+              }}
+            >
+              Overtime Sheet -
+              {dateFormatter(
+                moment(form.getFieldValue("fromDate")).format("YYYY-MM-DD")
+              )}{" "}
+            </h3>
+          </thead>
+          <tbody className="mt-2">
+            {landingApi?.data?.length > 0 &&
+              (
+                Object.entries(
+                  landingApi.data.reduce((acc: any, curr: any) => {
+                    const key = curr.strWorkplace;
+                    if (!acc[key]) acc[key] = [];
+                    acc[key].push(curr);
+                    return acc;
+                  }, {})
+                ) as [string, any[]][]
+              ).map(([workplace, records], groupIndex) => (
+                <div key={groupIndex} style={{ marginBottom: "40px" }}>
+                  {/* Table for This Workplace */}
+                  <table className="pdf-table">
+                    <thead>
+                      <tr className="group-title">
+                        <th
+                          colSpan={17}
+                          style={{
+                            border: "none",
+                            background: "transparent",
+                            textAlign: "left",
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Workplace : {workplace}
+                        </th>
                       </tr>
-                    ))}
-                    <tr className="totals-row">
-                      <td colSpan={15}>Total:</td>
-                      <td>
-                        {landingApi?.data?.reduce(
-                          (acc: any, i: any) => acc + i?.numTotalAmount,
-                          0
-                        )}
-                      </td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                )}
-              </table>
-            </tbody>
-            <div className="footer">System Generated Report {todayDate()}</div>
+                      <tr>
+                        <th>SL</th>
+                        {/* <th>Workplace</th> */}
+                        <th style={{ width: "100px" }}>Department</th>
+                        <th>Section</th>
+                        <th>ID NO</th>
+                        <th style={{ width: "100px" }}>Name</th>
+                        <th style={{ width: "100px" }}>Designation</th>
+                        <th>Basic</th>
+                        {/* <th>Gross</th> */}
+                        {/* <th className="calendar-name">Calendar Name</th> */}
+                        <th>In Time</th>
+                        <th>Out Time</th>
+                        {/* <th>Late</th> */}
+                        <th>OT Hour</th>
+                        <th>OT Rate</th>
+                        <th>Net Payable</th>
+                        <th style={{ width: "150px" }}>Signature</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {records.map((item, index) => (
+                        <tr
+                          key={item.strEmployeeCode}
+                          style={{ height: "70px" }}
+                        >
+                          <td>{index + 1}</td>
+                          {/* <td>{item?.strWorkplace}</td> */}
+                          <td>{item?.strDepartment}</td>
+                          <td>{item?.strSectionName}</td>
+                          <td>{item?.strEmployeeCode}</td>
+                          <td>{item?.strEmployeeName}</td>
+                          <td>{item?.strDesignation}</td>
+                          <td>{item?.numBasicORGross}</td>
+                          {/* <td>{item?.numGrossSalary}</td> */}
+                          {/* <td className="calendar-name">
+                            {item?.strCalenderName}
+                          </td> */}
+                          <td>{item?.tmeInTime ?? "-"}</td>
+                          <td>{item?.tmeLastOutTime ?? "-"}</td>
+                          {/* <td>{item?.lateHour || "-"}</td> */}
+                          <td>{item?.numHours}</td>
+                          <td>{item?.numPerHourRate}</td>
+                          <td>{item?.numTotalAmount}</td>
+                          <td>{item?.strSignature}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+          </tbody>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "80px", // optional spacing before signatures
+            }}
+          >
+            <div style={{ flex: 1, textAlign: "start" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Prepared By
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "center" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Checked By
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "end" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Approved By
+              </div>
+            </div>
           </div>
-        </table>
-      </PForm>
-    </>
+          <div className="footer">System Generated Report {todayDate()}</div>
+        </div>
+      </table>
+    </PForm>
   ) : (
     <NotPermittedPage />
   );

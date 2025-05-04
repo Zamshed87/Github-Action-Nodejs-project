@@ -13,10 +13,10 @@ export const onGetAssetRequisitionLanding = (
   employeeId,
   values,
   setRowDto,
-  wgId,
+  wgId
 ) => {
   getAssetRequisitionApplication(
-    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}`,
+    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${employeeId}`,
     (data) => {
       setRowDto(data);
     }
@@ -89,53 +89,59 @@ export const assetRequisitionSelfTableColumn = (
       title: "Status",
       dataIndex: "status",
       filter: true,
-      render: (_, item) => (
-        <>
-          {item?.status === "Approved" && (
-            <Chips label="Approved" classess="success p-2" />
-          )}
-          {item?.status === "Pending" && (
-            <Chips label="Pending" classess="warning p-2" />
-          )}
-          {item?.status === "Denied" && (
-            <Chips label="Denied" classess="primary p-2" />
-          )}
-          {item?.status === "Acknowledged" && (
-            <Chips label="Acknowledged" classess="" />
-          )}
-          {item?.status === "Rejected" && (
-            <>
-              <Chips label="Rejected" classess="danger p-2 mr-2" />
-              {item?.RejectedBy && (
-                <LightTooltip
-                  title={
-                    <div className="p-1">
-                      <div className="mb-1">
-                        <p
-                          className="tooltip-title"
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "600",
-                          }}
-                        >
-                          Rejected by {item?.RejectedBy}
-                        </p>
-                      </div>
+      render: (_, item) => {
+        let chipLabel = "";
+        let chipClass = "";
+        let tooltipContent = null;
+
+        if (item?.status === "Approved") {
+          chipLabel = "Approved";
+          chipClass = "success p-2";
+        } else if (item?.status === "Pending") {
+          chipLabel = "Pending";
+          chipClass = "warning p-2";
+        } else if (item?.status === "Denied") {
+          chipLabel = "Denied";
+          chipClass = "primary p-2";
+        } else if (item?.status === "Acknowledged") {
+          chipLabel = "Acknowledged";
+          chipClass = "";
+        } else if (item?.status === "Rejected") {
+          chipLabel = "Rejected";
+          chipClass = "danger p-2 mr-2";
+          if (item?.RejectedBy) {
+            tooltipContent = (
+              <LightTooltip
+                title={
+                  <div className="p-1">
+                    <div className="mb-1">
+                      <p
+                        className="tooltip-title"
+                        style={{ fontSize: "12px", fontWeight: "600" }}
+                      >
+                        Rejected by {item?.RejectedBy}
+                      </p>
                     </div>
-                  }
-                  arrow
-                >
-                  <InfoOutlined
-                    sx={{
-                      color: gray900,
-                    }}
-                  />
-                </LightTooltip>
-              )}
-            </>
-          )}
-        </>
-      ),
+                  </div>
+                }
+                arrow
+              >
+                <InfoOutlined sx={{ color: gray900 }} />
+              </LightTooltip>
+            );
+          }
+        } else if (item?.status === "Approved By Line Manager") {
+          chipLabel = "Approved By Line Manager";
+          chipClass = "info p-2";
+        }
+
+        return (
+          <>
+            <Chips label={chipLabel} classess={chipClass} />
+            {tooltipContent && tooltipContent}
+          </>
+        );
+      },
     },
     {
       title: "",
@@ -166,6 +172,7 @@ export const assetRequisitionSelfTableColumn = (
                       reqisitionQuantity: item?.reqisitionQuantity,
                       updatedAt: item?.updatedAt || todayDate(),
                       updatedBy: item?.updatedBy || employeeId,
+                      employeeId: item?.employeeId,
                       itemId: item?.itemId,
                       isDenied: item?.isDenied,
                       remarks: item?.remarks,

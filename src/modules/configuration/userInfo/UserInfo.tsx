@@ -46,7 +46,7 @@ const UserInfoN: React.FC<TUserInfo> = () => {
 
   // single Data
   const [singelUser, setSingelUser] = useState("");
-
+  const [, setFilterList] = useState({});
   const [form] = Form.useForm();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
@@ -234,19 +234,32 @@ const UserInfoN: React.FC<TUserInfo> = () => {
               filterData={
                 EmployeeListForUserLandingPagination?.data?.calendarAssignHeader // Filter Object From Api Response
               }
-              pagination={{
-                current:
-                  EmployeeListForUserLandingPagination?.data?.currentPage, // Current Page From Api Response
-                pageSize: EmployeeListForUserLandingPagination?.data?.pageSize, // Page Size From Api Response
-                total: EmployeeListForUserLandingPagination?.data?.totalCount, // Total Count From Api Response
-              }}
+              // pagination={{
+              //   current:
+              //     EmployeeListForUserLandingPagination?.data?.currentPage, // Current Page From Api Response
+              //   pageSize: EmployeeListForUserLandingPagination?.data?.pageSize, // Page Size From Api Response
+              //   total: EmployeeListForUserLandingPagination?.data?.totalCount, // Total Count From Api Response
+              // }}
               loading={EmployeeListForUserLandingPagination?.loading}
-              scroll={{ x: 1000 }}
+              // onChange={(pagination, filters, sorter, extra) => {
+              //   if (extra.action === "sort") return;
+              //   landingApi({
+              //     pagination,
+              //     filerList: filters,
+              //   });
+              // }}
+              pagination={{
+                pageSize: EmployeeListForUserLandingPagination?.data?.pageSize,
+                total: EmployeeListForUserLandingPagination?.data?.totalCount,
+              }}
               onChange={(pagination, filters, sorter, extra) => {
+                // Return if sort function is called
                 if (extra.action === "sort") return;
+                setFilterList(filters);
+  
                 landingApi({
                   pagination,
-                  filerList: filters,
+                  searchText: form.getFieldValue("search"),
                 });
               }}
             />

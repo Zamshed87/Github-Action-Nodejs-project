@@ -103,7 +103,9 @@ const PMSObjective = () => {
 
   const getData = (pages, search = "") => {
     getObjectiveLanding(
-      `/PMS/GetPMSObejctiveLanding?accountId=${orgId}&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&search=${search}`,
+      `/PMS/GetPMSObejctiveLanding?accountId=${orgId}&status=${true}&pageNo=${
+        pages?.current
+      }&pageSize=${pages?.pageSize}&search=${search}`,
       (data) => {
         if (data) {
           setPages((prev) => ({

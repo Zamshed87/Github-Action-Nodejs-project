@@ -100,11 +100,14 @@ export const assetListSelfTableColumn = (
       filter: true,
       render: (_, item) => (
         <>
-          {item?.status === "Approved" && (
-            <Chips label="Approved" classess="success p-2" />
+          {item?.status?.includes("Approved") && (
+            <Chips label={item?.status} classess="success p-2" />
           )}
           {item?.status === "Acknowledged" && (
             <Chips label="Acknowledged" classess="" />
+          )}
+          {item?.status?.includes("Reject") && (
+            <Chips label={item?.status} classess="danger" />
           )}
         </>
       ),
