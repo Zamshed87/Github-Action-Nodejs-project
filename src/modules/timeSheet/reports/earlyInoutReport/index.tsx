@@ -273,7 +273,7 @@ const AttendanceReport = () => {
         <PCard>
           {(excelLoading || apiLoading || loading) && <Loading />}
           <PCardHeader
-            exportIcon={true}
+            // exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             // onSearch={(e) => {
             //   searchFunc(e?.target?.value);
@@ -281,80 +281,83 @@ const AttendanceReport = () => {
             //     search: e?.target?.value,
             //   });
             // }}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                try {
-                  const values = form.getFieldsValue(true);
-                  // const workplaceList = `${values?.workplace
-                  //   ?.map((item: any) => item?.intWorkplaceId)
-                  //   .join(",")}`;
 
-                  //   departments: formatFilterValue(values?.department),
-                  //  sections: formatFilterValue(values?.section),
-                  const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-                    values?.workplaceGroup?.value
-                  }&workplaceList=${
-                    values?.workplace?.value
-                  }&departments=${formatFilterValue(
-                    values?.department
-                  )}&sections=${formatFilterValue(
-                    values?.section
-                  )}&AttendanceDate=${moment(values?.fromDate).format(
-                    "YYYY-MM-DD"
-                  )}&PageNo=1&PageSize=10000&ReportType=excel`;
-                  downloadFile(
-                    url,
-                    `Attendance Report (${
-                      values?.fromDate
-                        ? moment(values.fromDate).format("YYYY-MM-DD")
-                        : todayDate()
-                    })`,
-                    "xlsx",
-                    setExcelLoading
-                  );
-                } catch (error: any) {
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                  // console.log(error?.message);
-                }
-              };
-              excelLanding();
-            }}
-            printIcon={true}
-            pdfExport={() => {
-              const values = form.getFieldsValue(true);
-              // const list = landingApi?.data?.data?.map(
-              //   (item: any) => item?.employeeId
-              // );
-              const pdfName = `Attendance Report (${
-                values?.fromDate
-                  ? moment(values.fromDate).format("YYYY-MM-DD")
-                  : todayDate()
-              }).pdf`;
-              // const workplaceList = `${values?.workplace
-              //   ?.map((item: any) => item?.intWorkplaceId)
-              //   .join(",")}`;
-              getPDFAction(
-                `/PdfAndExcelReport/DailyAttendanceReportPDF?ReportType=pdf&IntAccountId=${orgId}&AttendanceDate=${moment(
-                  values?.fromDate
-                ).format("YYYY-MM-DD")}${
-                  buId ? `&IntBusinessUnitId=${buId}` : ""
-                }${
-                  values?.workplaceGroup?.value
-                    ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                    : ""
-                }${
-                  values?.workplace
-                    ? `&workplaceList=${values?.workplace?.value}`
-                    : ""
-                }&departments=${formatFilterValue(
-                  values?.department
-                )}&sections=${formatFilterValue(values?.section)}`,
-                setLoading,
-                pdfName
-              );
-            }}
+            // from Rayhan vai Clarification == >> 🤗🙌
+
+            // onExport={() => {
+            //   const excelLanding = async () => {
+            //     setExcelLoading(true);
+            //     try {
+            //       const values = form.getFieldsValue(true);
+            //       // const workplaceList = `${values?.workplace
+            //       //   ?.map((item: any) => item?.intWorkplaceId)
+            //       //   .join(",")}`;
+
+            //       //   departments: formatFilterValue(values?.department),
+            //       //  sections: formatFilterValue(values?.section),
+            //       const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+            //         values?.workplaceGroup?.value
+            //       }&workplaceList=${
+            //         values?.workplace?.value
+            //       }&departments=${formatFilterValue(
+            //         values?.department
+            //       )}&sections=${formatFilterValue(
+            //         values?.section
+            //       )}&AttendanceDate=${moment(values?.fromDate).format(
+            //         "YYYY-MM-DD"
+            //       )}&PageNo=1&PageSize=10000&ReportType=excel`;
+            //       downloadFile(
+            //         url,
+            //         `Attendance Report (${
+            //           values?.fromDate
+            //             ? moment(values.fromDate).format("YYYY-MM-DD")
+            //             : todayDate()
+            //         })`,
+            //         "xlsx",
+            //         setExcelLoading
+            //       );
+            //     } catch (error: any) {
+            //       toast.error("Failed to download excel");
+            //       setExcelLoading(false);
+            //       // console.log(error?.message);
+            //     }
+            //   };
+            //   excelLanding();
+            // }}
+            // printIcon={true}
+            // pdfExport={() => {
+            //   const values = form.getFieldsValue(true);
+            //   // const list = landingApi?.data?.data?.map(
+            //   //   (item: any) => item?.employeeId
+            //   // );
+            //   const pdfName = `Attendance Report (${
+            //     values?.fromDate
+            //       ? moment(values.fromDate).format("YYYY-MM-DD")
+            //       : todayDate()
+            //   }).pdf`;
+            //   // const workplaceList = `${values?.workplace
+            //   //   ?.map((item: any) => item?.intWorkplaceId)
+            //   //   .join(",")}`;
+            //   getPDFAction(
+            //     `/PdfAndExcelReport/DailyAttendanceReportPDF?ReportType=pdf&IntAccountId=${orgId}&AttendanceDate=${moment(
+            //       values?.fromDate
+            //     ).format("YYYY-MM-DD")}${
+            //       buId ? `&IntBusinessUnitId=${buId}` : ""
+            //     }${
+            //       values?.workplaceGroup?.value
+            //         ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
+            //         : ""
+            //     }${
+            //       values?.workplace
+            //         ? `&workplaceList=${values?.workplace?.value}`
+            //         : ""
+            //     }&departments=${formatFilterValue(
+            //       values?.department
+            //     )}&sections=${formatFilterValue(values?.section)}`,
+            //     setLoading,
+            //     pdfName
+            //   );
+            // }}
           />
           {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
