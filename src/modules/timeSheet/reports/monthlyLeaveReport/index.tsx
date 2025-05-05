@@ -142,6 +142,7 @@ const MonthlyLeaveReport = () => {
         SearchText: searchText,
         departmentIdList: formatFilterValueList(values?.department) || [0],
         designationIdList: formatFilterValueList(values?.designation) || [0],
+        sectionIdList: formatFilterValueList(values?.section) || [0],
         supervisorId: values?.supervisor?.value || 0,
         workplaceGroupList:
           values?.workplaceGroup?.value == 0 ||
@@ -498,6 +499,7 @@ const MonthlyLeaveReport = () => {
             resetApiCall={() => {
               form.setFieldValue("supervisor", null);
             }}
+            isSection={true}
           >
             <Form.Item shouldUpdate noStyle>
               {() => {

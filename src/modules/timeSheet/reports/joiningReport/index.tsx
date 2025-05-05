@@ -33,6 +33,8 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
 import axios from "axios";
 import { getTableDataMonthlyAttendance } from "../joineeAttendanceReport/helper";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const JoiningReport = () => {
   const dispatch = useDispatch();
@@ -77,44 +79,44 @@ const JoiningReport = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
+  // const getWorkplaceGroup = () => {
+  //   workplaceGroup?.action({
+  //     urlKey: "WorkplaceGroupWithRoleExtension",
+  //     method: "GET",
+  //     params: {
+  //       accountId: orgId,
+  //       businessUnitId: buId,
+  //       workplaceGroupId: wgId,
+  //       empId: employeeId,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.strWorkplaceGroup;
+  //         res[i].value = item?.intWorkplaceGroupId;
+  //       });
+  //     },
+  //   });
+  // };
 
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
+  // const getWorkplace = () => {
+  //   const { workplaceGroup } = form.getFieldsValue(true);
+  //   workplace?.action({
+  //     urlKey: "WorkplaceWithRoleExtension",
+  //     method: "GET",
+  //     params: {
+  //       accountId: orgId,
+  //       businessUnitId: buId,
+  //       workplaceGroupId: workplaceGroup?.value,
+  //       empId: employeeId,
+  //     },
+  //     onSuccess: (res: any) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.strWorkplace;
+  //         res[i].value = item?.intWorkplaceId;
+  //       });
+  //     },
+  //   });
+  // };
   // data call
   type TLandingApi = {
     pagination?: {
@@ -141,6 +143,8 @@ const JoiningReport = () => {
         IntBusinessUnitId: buId,
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
         IntWorkplaceId: values?.workplace?.value,
+        departments: formatFilterValue(values?.department),
+        sections: formatFilterValue(values?.section),
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
         EmployeeId: 0,
@@ -153,7 +157,7 @@ const JoiningReport = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
+    // getWorkplaceGroup();
     landingApiCall();
   }, []);
   //   table column
@@ -405,7 +409,42 @@ const JoiningReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+            ishideDate={true}
+            showDesignation={"NO"}
+          >
+            <Col md={12} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="fromDate"
+                label="From Date"
+                placeholder="From Date"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    fromDate: value,
+                  });
+                }}
+              />
+            </Col>
+            <Col md={12} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="toDate"
+                label="To Date"
+                placeholder="To Date"
+                disabledDate={disabledDate}
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    toDate: value,
+                  });
+                }}
+              />
+            </Col>
+          </PFilter>
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -479,7 +518,7 @@ const JoiningReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
