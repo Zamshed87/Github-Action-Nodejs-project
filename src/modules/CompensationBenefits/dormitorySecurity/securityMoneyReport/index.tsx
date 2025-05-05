@@ -236,7 +236,7 @@ export const SecurityMoneyReportLanding = () => {
     },
     {
       title: "Section",
-      dataIndex: "SectionName",
+      dataIndex: "sectionName",
       width: 100,
     },
     // {
