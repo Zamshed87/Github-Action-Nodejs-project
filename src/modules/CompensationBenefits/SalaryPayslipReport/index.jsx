@@ -670,8 +670,11 @@ const SalaryPayslipReport = () => {
                             </th>
                             <th colSpan="3" style={{ textAlign: "right" }}>
                               <p style={thStyles}>
-                                {salaryHeaderData[0]?.numNetPayableSalary +
-                                  salaryHeaderData[0]?.numTotalAllowance}
+                                {
+                                  // instruction from banik mallik
+                                  salaryHeaderData[0]?.numNetPayableSalary
+                                  // + salaryHeaderData[0]?.numTotalAllowance
+                                }
                                 {/* {numberWithCommas(
                                   (numTotal(viewPaySlipData, "numTotal", 1) +
                                     salaryHeaderData[0]?.numOverTimeAmount ||
