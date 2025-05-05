@@ -236,8 +236,6 @@ export const Additional = ({ form }: any) => {
             ]}
           />
         </Col>
-      </Row>
-      <Row gutter={[10, 2]}>
         <Col md={6} sm={24}>
           <PInput
             type="number"
@@ -256,6 +254,8 @@ export const Additional = ({ form }: any) => {
             ]}
           />
         </Col>
+      </Row>
+      <Row gutter={[10, 2]}>
         <Col md={6} sm={24}>
           <PInput
             type="number"
@@ -274,18 +274,16 @@ export const Additional = ({ form }: any) => {
             ]}
           />
         </Col>
-      </Row>
-      <Row gutter={[10, 2]}>
         <Col md={6} sm={24}>
           <PInput
             type="number"
             name="minLeaveInApplication"
-            label="Min. Leave Application (At a Time)"
+            label="Min. Leave Apply Days (At a Time)"
             placeholder=""
             rules={[
               {
                 required: true,
-                message: "Min. Leave Application",
+                message: "Min. Leave Apply Days",
               },
               {
                 message: "Number must be positive",

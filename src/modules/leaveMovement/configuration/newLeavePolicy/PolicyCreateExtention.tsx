@@ -863,6 +863,7 @@ export const PolicyCreateExtention = () => {
           payValue: 100,
           proRataCount: 15,
           proRataBasis: { value: "1", label: "Update From Start" },
+          proRataRoundId: { value: "1", label: "Round" },
           isCarryForward: { value: 0, label: "No" },
           // isSandwitch: { value: 0, label: "No" },
           isEncashment: { value: 0, label: "No" },
