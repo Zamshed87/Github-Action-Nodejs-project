@@ -803,7 +803,7 @@ const EmOverTimeDailyReport = () => {
           >
             In Word:{" "}
             {landingApi?.data?.length > 0 &&
-              numberToWords(landingApi?.data?.[0]?.TotalNumTotalAmount)}
+              numberToWords(landingApi?.data?.[0]?.TotalNumTotalAmount)} Only
           </td>
           <div
             style={{
