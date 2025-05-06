@@ -23,13 +23,14 @@ import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { PModal } from "Components/Modal";
 import CommonEmpInfo from "common/CommonEmpInfo";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 export const SecurityMoneyReportLanding = () => {
   const dispatch = useDispatch();
 
   const {
     permissionList,
-    profileData: { buId, orgId, wgId, wId },
+    profileData: { buId, orgId, wgId, wId, intAccountId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const [loading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -45,6 +46,7 @@ export const SecurityMoneyReportLanding = () => {
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   const detailsApi = useApiRequest({});
+  const empSectionDDL = useApiRequest([]);
 
   const CommonEmployeeDDL = useApiRequest([]);
 
@@ -63,6 +65,31 @@ export const SecurityMoneyReportLanding = () => {
         res.forEach((item: any, i: number) => {
           res[i].label = item?.employeeName;
           res[i].value = item?.employeeId;
+        });
+      },
+    });
+  };
+
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionIdAll",
+      method: "GET",
+      params: {
+        accountId: intAccountId,
+        businessUnitId: buId,
+        departmentId: department?.value || 0,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label =
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
+          res[i].value = item?.intSectionId;
         });
       },
     });
@@ -175,6 +202,7 @@ export const SecurityMoneyReportLanding = () => {
         departmentId: values?.department?.value || 0,
         strSearch: values?.employee?.employeeCode || "",
         status: values?.status || "",
+        sectionId: values?.section?.value || 0,
       },
     });
   };
@@ -204,6 +232,11 @@ export const SecurityMoneyReportLanding = () => {
     {
       title: "Department",
       dataIndex: "department",
+      width: 100,
+    },
+    {
+      title: "Section",
+      dataIndex: "sectionName",
       width: 100,
     },
     // {
@@ -357,6 +390,7 @@ export const SecurityMoneyReportLanding = () => {
                     form.setFieldsValue({
                       department: op,
                     });
+                    getEmployeeSection();
                   }}
                   // rules={[
                   //   {
@@ -364,6 +398,23 @@ export const SecurityMoneyReportLanding = () => {
                   //     message: "Year is required",
                   //   },
                   // ]}
+                />
+              </Col>
+              <Col md={6} sm={24}>
+                <PSelect
+                  allowClear
+                  showSearch
+                  options={
+                    empSectionDDL?.data?.length > 0 ? empSectionDDL?.data : []
+                  }
+                  name="section"
+                  label="Section"
+                  placeholder=""
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      section: op,
+                    });
+                  }}
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
