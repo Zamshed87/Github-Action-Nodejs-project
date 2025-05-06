@@ -16,7 +16,7 @@ export default function AddEditForm({
   id,
   setId,
 }) {
-  console.log("getData",getData)
+  console.log("getData", getData);
   const getSingleData = useApiRequest({});
   const saveUserRole = useApiRequest({});
 
@@ -55,10 +55,10 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intRoleId: id || 0,
       strRoleName: values?.userRole,
-      isActive: values?.isActive,
+      isActive: id ? values?.isActive : true,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
@@ -71,7 +71,7 @@ export default function AddEditForm({
       method: "POST",
       payload: payload,
       onSuccess: (data) => {
-        toast.success(data?.message)
+        toast.success(data?.message);
         cb();
       },
     });
