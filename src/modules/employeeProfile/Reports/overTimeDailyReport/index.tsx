@@ -784,8 +784,8 @@ const EmOverTimeDailyReport = () => {
                             landingApi?.data?.[0]?.TotalnumHours}
                         </td>
                         <td>
-                          {landingApi?.data?.length > 0 &&
-                            landingApi?.data?.[0]?.TotalnumPerHourRate}
+                          {/* {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalnumPerHourRate} */}
                         </td>
                         <td>
                           {landingApi?.data?.length > 0 &&
