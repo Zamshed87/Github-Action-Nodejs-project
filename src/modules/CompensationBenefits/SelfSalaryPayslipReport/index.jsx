@@ -407,20 +407,6 @@ const SelfSalaryPayslipReport = () => {
                         </tr>
                       ))}
                     <tr>
-                      <td>
-                        <p>Overtime</p>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        <p>{salaryHeaderData[0]?.numOverTimeAmount || 0}</p>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        <p>0</p>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        <p>{salaryHeaderData[0]?.numOverTimeAmount || 0}</p>
-                      </td>
-                    </tr>
-                    <tr>
                       <th>
                         <p style={thStyles} className="pl-1">
                           Total benefits
