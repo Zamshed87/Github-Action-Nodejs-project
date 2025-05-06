@@ -30,6 +30,7 @@ import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
 import { useReactToPrint } from "react-to-print";
 import "./overTimeReport.css";
+import { numberToWords } from "Utils";
 // import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/monthlyAttendanceReport/helper";
 
 const EmOverTimeDailyReport = () => {
@@ -774,11 +775,36 @@ const EmOverTimeDailyReport = () => {
                           <td>{item?.strSignature}</td>
                         </tr>
                       ))}
+                      <tr style={{ fontWeight: "bold", background: "#f5f5f5" }}>
+                        <td colSpan={9} style={{ textAlign: "right" }}>
+                          Total
+                        </td>
+                        <td>
+                          {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalnumHours}
+                        </td>
+                        <td>
+                          {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalnumPerHourRate}
+                        </td>
+                        <td>
+                          {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalNumTotalAmount}
+                        </td>
+                        <td></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
               ))}
           </tbody>
+          <td
+            style={{ fontSize: "18px", fontWeight: "bold", textAlign: "left" }}
+          >
+            In Word:{" "}
+            {landingApi?.data?.length > 0 &&
+              numberToWords(landingApi?.data?.[0]?.TotalNumTotalAmount)}
+          </td>
           <div
             style={{
               display: "flex",
