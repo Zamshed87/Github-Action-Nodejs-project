@@ -9,6 +9,7 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { EditableCell } from "./editableCell";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { toast } from "react-toastify";
 
 const originData = Array.from({
   length: 5,
@@ -52,6 +53,11 @@ const BehavioralFactorScale = () => {
   const save = async (key) => {
     try {
       const values = form.getFieldsValue(true);
+      // Check if scoreScaleId is a fraction
+      if (!Number.isInteger(values?.scaleValue)) {
+        toast.error("Score Scale ID must be an integer.");
+        return;
+      }
       form
         .validateFields()
         .then(() => {
