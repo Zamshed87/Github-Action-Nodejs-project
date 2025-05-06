@@ -1798,6 +1798,10 @@ const AttendanceShiftChange = lazy(() =>
 const ApplicationNotificationLogs = lazy(() =>
   import("../modules/logMonitor/applicationNotificationLog/index.jsx")
 );
+// Benefit Management Module
+const PFPolicy = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -4323,6 +4327,10 @@ export const routingList = [
   {
     path: "/logMonitor/applicationNotificationLogs",
     component: ApplicationNotificationLogs,
+  },
+  {
+    path: "/bm/pfPolicy",
+    component: PFPolicy,
   },
 ];
 
