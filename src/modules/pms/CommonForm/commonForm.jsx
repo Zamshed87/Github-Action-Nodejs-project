@@ -22,6 +22,8 @@ const CommonForm = ({ formConfig, form, children }) => {
           rules={field.rules}
         />
       );
+    } else if (field.type === "component") {
+      return field.component;
     } else if (field.type === "empty") {
       return <></>;
     } else if (field.type === "divider") {

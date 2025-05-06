@@ -85,7 +85,9 @@ export const LatePunishment = (
   getEmployeDesignation: () => void,
   employmentTypeDDL: any[],
   empDepartmentDDL: any[],
-  empDesignationDDL: any[]
+  empDesignationDDL: any[],
+  DayRangeComponent: any,
+  EachDayCountByComponent: any
 ) => {
   return [
     {
@@ -117,6 +119,7 @@ export const LatePunishment = (
       label: "Employment Type",
       varname: "employmentType",
       ddl: employmentTypeDDL || [],
+      mode: "multiple",
       placeholder: "Select employment type",
       rules: [{ required: true, message: "Employment Type is required!" }],
       col: 6,
@@ -127,6 +130,7 @@ export const LatePunishment = (
       varname: "designation",
       ddl: empDesignationDDL || [],
       placeholder: "Select designation",
+      mode: "multiple",
       rules: [{ required: true, message: "Designation is required!" }],
       col: 6,
     },
@@ -135,6 +139,7 @@ export const LatePunishment = (
       label: "Department",
       varname: "department",
       ddl: empDepartmentDDL || [],
+      mode: "multiple",
       placeholder: "Select department",
       rules: [{ required: true, message: "Department is required!" }],
       col: 6,
@@ -167,19 +172,13 @@ export const LatePunishment = (
       col: 6,
     },
     {
-      type: "ddl",
-      label: "Each Day Count By",
-      varname: "eachDayCountBy",
-      ddl: [],
-      placeholder: "Select each day count by",
+      type: "component",
+      component: EachDayCountByComponent,
       col: 6,
     },
     {
-      type: "ddl",
-      label: "Day Range",
-      varname: "dayRange",
-      ddl: [],
-      placeholder: "Select day range",
+      type: "component",
+      component: DayRangeComponent,
       col: 6,
     },
     {

@@ -1,4 +1,4 @@
-import { Col, Form } from "antd";
+import { Col, DatePicker, Form } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
@@ -20,6 +20,7 @@ import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import { DataState } from "./type";
+import RangeDatePicker from "./RangeDatePicker";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -198,6 +199,21 @@ const CreateEditLatePunishmentConfig = () => {
     },
   ];
 
+  const [selectedDates, setSelectedDates] = useState<any>([]);
+
+  const disabledDate = (current: any) => {
+    if (!selectedDates || selectedDates.length === 0) return false;
+
+    const [start] = selectedDates;
+
+    if (!start) return false;
+
+    // Disable dates more than 1 month before or after the start date
+    const tooEarly = current.isBefore(start.startOf("day"));
+    const tooLate = current.isAfter(start.add(1, "month").endOf("day"));
+    return tooEarly || tooLate;
+  };
+
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -233,7 +249,9 @@ const CreateEditLatePunishmentConfig = () => {
                 getEmployeDesignation,
                 employmentTypeDDL?.data,
                 empDepartmentDDL?.data,
-                empDesignationDDL?.data
+                empDesignationDDL?.data,
+                <RangeDatePicker name={"dayRange"} />,
+                <RangeDatePicker name={"eachDayCountBy"} />
               )}
               form={form}
             >
