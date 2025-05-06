@@ -32,6 +32,7 @@ import { useApiRequest } from "Hooks";
 import { modules } from "../../letterConfiguration/utils";
 import { postPDFAction } from "utility/downloadFile";
 
+import html2pdf from 'html2pdf.js';
 const LetterGenAddEdit = () => {
   // Router state
   // const { letterId }: any = useParams();
@@ -90,6 +91,33 @@ const LetterGenAddEdit = () => {
     }).then();
   };
 
+  const handleDownload = () => {
+    const element = document.querySelector('.ql-editor');
+    if (!element) {
+      toast.error("Letter content not found.");
+      return;
+    }
+  
+    const opt = {
+      margin:       0.5,
+      filename:     'letter.pdf',
+      // image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+  
+    html2pdf()
+      .set(opt)
+      .from(element)
+      .toPdf()
+      .get('pdf')
+      .then(function (pdf:any) {
+        pdf.save('letter.pdf');
+      });
+  };
+  
+  
   return letterGenPermission?.isCreate ? (
     <PForm
       formName="tempCreate"
@@ -122,7 +150,6 @@ const LetterGenAddEdit = () => {
               disabled: loading,
               onClick: () => {
                 const values = form.getFieldsValue(true);
-
                 form
                   .validateFields()
                   .then(() => {
@@ -216,6 +243,8 @@ const LetterGenAddEdit = () => {
                 letterGenerateId: letterId || 0,
                 letterBody: letter,
               };
+              handleDownload();
+              return;
               postPDFAction(
                 "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
                 payload,
