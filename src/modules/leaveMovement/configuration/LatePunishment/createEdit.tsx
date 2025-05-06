@@ -1,6 +1,13 @@
 import { Col, Form } from "antd";
 import Loading from "common/loading/Loading";
-import { PButton, PCard, PCardBody, PCardHeader, PForm } from "Components";
+import {
+  DataTable,
+  PButton,
+  PCard,
+  PCardBody,
+  PCardHeader,
+  PForm,
+} from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -8,12 +15,20 @@ import { useParams } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import CommonForm from "modules/pms/CommonForm/commonForm";
-import { LatePunishment } from "./helper";
+import { addHandler, LatePunishment } from "./helper";
 import { getPeopleDeskAllDDL } from "common/api";
+import { useApiRequest } from "Hooks";
+import { getSerial } from "Utils";
+import { DataState } from "./type";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [data, setData] = useState<DataState>([]);
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+
   const params = useParams();
   // redux
   const { profileData } = useSelector(
@@ -39,7 +54,71 @@ const CreateEditLatePunishmentConfig = () => {
     permission = item;
   });
 
-  const addHandler = () => {};
+  const getEmployeDepartment = () => {
+    const { workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+  };
+  const getEmployeDesignation = () => {
+    const { workplace } = form.getFieldsValue(true);
+
+    empDesignationDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDesignation",
+        AccountId: orgId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.DesignationName;
+          res[i].value = item?.DesignationId;
+        });
+      },
+    });
+  };
+
+  const getEmploymentType = () => {
+    const { workplace } = form.getFieldsValue(true);
+
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
@@ -55,7 +134,69 @@ const CreateEditLatePunishmentConfig = () => {
       "strWorkplace",
       setWorkplaceDDL
     );
-  }, []);
+  }, [wgId]);
+
+  const header = [
+    {
+      title: "SL",
+      render: (_: any, rec: any, index: number) =>
+        getSerial({
+          currentPage: 1,
+          pageSize: 100,
+          index,
+        }),
+      fixed: "left",
+      align: "center",
+    },
+    {
+      title: "Late Calculation Type",
+      dataIndex: "lateCalculationType",
+    },
+    {
+      title: "Each Day Count by",
+      dataIndex: "eachDayCountBy",
+    },
+    {
+      title: "Day Range",
+      dataIndex: "dayRange",
+    },
+    {
+      title: "Is Consecutive Day?",
+      dataIndex: "isConsecutiveDay",
+    },
+    {
+      title: "Late Time (Minutes)",
+      dataIndex: "lateTimeMinutes",
+    },
+    {
+      title: "Late Time Calculated by",
+      dataIndex: "lateTimeCalculatedBy",
+    },
+    {
+      title: "Punishment Type",
+      dataIndex: "punishmentType",
+    },
+    {
+      title: "Leave Deduct Type",
+      dataIndex: "leaveDeductType",
+    },
+    {
+      title: "Leave Deduct Qty",
+      dataIndex: "leaveDeductQty",
+    },
+    {
+      title: "Amount Deduct Type",
+      dataIndex: "amountDeductType",
+    },
+    {
+      title: "Amount Deduct",
+      dataIndex: "amountDeduct",
+    },
+    {
+      title: "% of Amount (Based on 1 day)",
+      dataIndex: "percentOfAmount",
+    },
+  ];
 
   return permission?.isCreate ? (
     <div>
@@ -84,7 +225,18 @@ const CreateEditLatePunishmentConfig = () => {
           />
           <PCardBody>
             {" "}
-            <CommonForm formConfig={LatePunishment(workplaceDDL)} form={form}>
+            <CommonForm
+              formConfig={LatePunishment(
+                workplaceDDL,
+                getEmploymentType,
+                getEmployeDepartment,
+                getEmployeDesignation,
+                employmentTypeDDL?.data,
+                empDepartmentDDL?.data,
+                empDesignationDDL?.data
+              )}
+              form={form}
+            >
               {/* Add appropriate children here */}
               <Col md={6} sm={24}>
                 <PButton
@@ -98,7 +250,7 @@ const CreateEditLatePunishmentConfig = () => {
                       .then(() => {
                         const values = form.getFieldsValue(true);
 
-                        addHandler();
+                        addHandler(setData, data, values);
                       })
                       .catch(() => {});
                   }}
@@ -107,6 +259,7 @@ const CreateEditLatePunishmentConfig = () => {
             </CommonForm>
           </PCardBody>
         </PCard>
+        <DataTable bordered data={data || []} loading={false} header={header} />
       </PForm>
     </div>
   ) : (

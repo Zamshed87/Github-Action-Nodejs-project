@@ -1,4 +1,92 @@
-export const LatePunishment = (workplaceDDL: any[]) => {
+import { DataState } from "./type";
+
+const calculationType = [
+  {
+    label: "Each Day",
+    value: 1,
+  },
+  {
+    label: "Day Range",
+    value: 2,
+  },
+  {
+    label: "Time Based",
+    value: 3,
+  },
+];
+
+const calculatedBy = [
+  {
+    label: "Sum of Late Time",
+    value: 1,
+  },
+  {
+    label: "Actual Late Time",
+    value: 2,
+  },
+];
+
+const punishmentType = [
+  {
+    label: "Leave Deduct",
+    value: 1,
+  },
+  {
+    label: "Amount Deduct",
+    value: 2,
+  },
+];
+
+const leaveDeductType = [
+  {
+    label: "Full Day",
+    value: 1,
+  },
+  {
+    label: "Half Day",
+    value: 2,
+  },
+  {
+    label: "Actual Clock Time",
+    value: 3,
+  },
+];
+
+const amountDeductFrom = [
+  {
+    label: "Gross Salary",
+    value: 1,
+  },
+  {
+    label: "Basic Salary",
+    value: 2,
+  },
+  {
+    label: "Fixed Amount",
+    value: 3,
+  },
+];
+
+const amountDeductType = [
+  {
+    label: "Actual Time",
+    value: 1,
+  },
+  {
+    label: "1 Day Salary",
+    value: 2,
+  },
+];
+
+export const LatePunishment = (
+  workplaceDDL: any[],
+  getEmploymentType: () => void,
+  getEmployeDepartment: () => void,
+  getEmployeDesignation: () => void,
+  employmentTypeDDL: any[],
+  empDepartmentDDL: any[],
+  empDesignationDDL: any[]
+) => {
   return [
     {
       type: "textbox",
@@ -17,13 +105,18 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       ddl: workplaceDDL,
       placeholder: "Select workplace",
       rules: [{ required: true, message: "Workplace is required!" }],
+      onChange: (value: any) => {
+        getEmploymentType();
+        getEmployeDepartment();
+        getEmployeDesignation();
+      },
       col: 6,
     },
     {
       type: "ddl",
       label: "Employment Type",
       varname: "employmentType",
-      ddl: [],
+      ddl: employmentTypeDDL || [],
       placeholder: "Select employment type",
       rules: [{ required: true, message: "Employment Type is required!" }],
       col: 6,
@@ -32,7 +125,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Designation",
       varname: "designation",
-      ddl: [],
+      ddl: empDesignationDDL || [],
       placeholder: "Select designation",
       rules: [{ required: true, message: "Designation is required!" }],
       col: 6,
@@ -41,7 +134,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Department",
       varname: "department",
-      ddl: [],
+      ddl: empDepartmentDDL || [],
       placeholder: "Select department",
       rules: [{ required: true, message: "Department is required!" }],
       col: 6,
@@ -66,7 +159,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Late Calculation Type",
       varname: "lateCalculationType",
-      ddl: [],
+      ddl: calculationType || [],
       placeholder: "Select late calculation type",
       rules: [
         { required: true, message: "Late Calculation Type is required!" },
@@ -79,7 +172,6 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       varname: "eachDayCountBy",
       ddl: [],
       placeholder: "Select each day count by",
-      rules: [{ required: true, message: "Each Day Count By is required!" }],
       col: 6,
     },
     {
@@ -88,7 +180,6 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       varname: "dayRange",
       ddl: [],
       placeholder: "Select day range",
-      rules: [{ required: true, message: "Day Range is required!" }],
       col: 6,
     },
     {
@@ -117,7 +208,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Calculated By",
       varname: "calculatedBy",
-      ddl: [],
+      ddl: calculatedBy || [],
       placeholder: "Select calculation type",
       rules: [{ required: true, message: "Calculated By is required!" }],
       col: 6,
@@ -126,7 +217,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Punishment Type",
       varname: "punishmentType",
-      ddl: [],
+      ddl: punishmentType || [],
       placeholder: "Select punishment type",
       rules: [{ required: true, message: "Punishment Type is required!" }],
       col: 6,
@@ -135,7 +226,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Leave Deduct Type",
       varname: "leaveDeductType",
-      ddl: [],
+      ddl: leaveDeductType || [],
       placeholder: "Select leave deduct type",
       rules: [{ required: true, message: "Leave Deduct Type is required!" }],
       col: 6,
@@ -152,7 +243,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Amount Deduct From",
       varname: "amountDeductFrom",
-      ddl: [],
+      ddl: amountDeductFrom || [],
       placeholder: "Select amount deduct from",
       rules: [{ required: true, message: "Amount Deduct From is required!" }],
       col: 6,
@@ -161,7 +252,7 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       type: "ddl",
       label: "Amount Deduct Type",
       varname: "amountDeductType",
-      ddl: [],
+      ddl: amountDeductType || [],
       placeholder: "Select amount deduct type",
       rules: [{ required: true, message: "Amount Deduct Type is required!" }],
       col: 6,
@@ -175,4 +266,47 @@ export const LatePunishment = (workplaceDDL: any[]) => {
       col: 6,
     },
   ];
+};
+
+export const addHandler = (setData: any, data: DataState, values: any) => {
+  setData([
+    ...data,
+    {
+      policyName: values.policyName,
+      workplace: values.workplace?.label || values.workplace,
+      workplaceId: values.workplace?.value || null,
+      employmentType: values.employmentType?.label || values.employmentType,
+      employmentTypeId: values.employmentType?.value || null,
+      designation: values.designation?.label || values.designation,
+      designationId: values.designation?.value || null,
+      department: values.department?.label || values.department,
+      departmentId: values.department?.value || null,
+      policyDescription: values.policyDescription,
+      lateCalculationType:
+        values.lateCalculationType?.label || values.lateCalculationType,
+      lateCalculationTypeId: values.lateCalculationType?.value || null,
+      eachDayCountBy: values.eachDayCountBy?.label || values.eachDayCountBy,
+      eachDayCountById: values.eachDayCountBy?.value || null,
+      dayRange: values.dayRange?.label || values.dayRange,
+      dayRangeId: values.dayRange?.value || null,
+      isConsecutiveDay: values.isConsecutiveDay,
+      minimumLateTime: values.minimumLateTime,
+      maximumLateTime: values.maximumLateTime,
+      lateTimeCalculatedBy: values.calculatedBy?.label || values.calculatedBy,
+      lateTimeCalculatedById: values.calculatedBy?.value || null,
+      punishmentType: values.punishmentType?.label || values.punishmentType,
+      punishmentTypeId: values.punishmentType?.value || null,
+      leaveDeductType: values.leaveDeductType?.label || values.leaveDeductType,
+      leaveDeductTypeId: values.leaveDeductType?.value || null,
+      leaveDeductQty: values.leaveDeductQty,
+      amountDeductFrom:
+        values.amountDeductFrom?.label || values.amountDeductFrom,
+      amountDeductFromId: values.amountDeductFrom?.value || null,
+      amountDeductType:
+        values.amountDeductType?.label || values.amountDeductType,
+      amountDeductTypeId: values.amountDeductType?.value || null,
+      amountPercentage: values.amountPercentage,
+    },
+  ]);
+  // form.resetFields();
 };
