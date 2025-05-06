@@ -3,6 +3,7 @@ import { PForm, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import { getWorkplaceDDL } from "common/api/commonApi";
+import Loading from "common/loading/Loading";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -101,6 +102,7 @@ export default function PunishmentExtension({
   }, []);
   return (
     <>
+      {extensionApi.loading && <Loading />}
       <PForm
         form={form}
         onFinish={() => {

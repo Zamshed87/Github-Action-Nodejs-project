@@ -160,12 +160,12 @@ export const LeavePunishmentLanding = () => {
         <div className="d-flex justify-content-around">
           <TableButton
             buttonsList={[
-              {
-                type: "delete",
-                onClick: (e: any) => {
-                  deletePolicyId(item);
-                },
-              },
+              // {
+              //   type: "delete",
+              //   onClick: (e: any) => {
+              //     deletePolicyId(item);
+              //   },
+              // },
               {
                 type: "view",
                 onClick: (e: any) => {
@@ -239,21 +239,22 @@ export const LeavePunishmentLanding = () => {
       // },
     });
   };
-  const deletePolicyId = (item: any) => {
-    deleteApi?.action({
-      urlKey: "LeavePunishmentDeleteById",
-      method: "DELETE",
-      params: {
-        PunishmentId: item?.punishmentId,
-      },
-      toast: true,
-      onSuccess: () => {
-        landingApiCall();
-      },
-    });
-  };
+  // const deletePolicyId = (item: any) => {
+  //   deleteApi?.action({
+  //     urlKey: "LeavePunishmentDeleteById",
+  //     method: "DELETE",
+  //     params: {
+  //       PunishmentId: item?.punishmentId,
+  //     },
+  //     toast: true,
+  //     onSuccess: () => {
+  //       landingApiCall();
+  //     },
+  //   });
+  // };
   return employeeFeature?.isView ? (
     <>
+      {(activeInactiveApi?.loading || landingApi?.loading) && <Loading />}
       <PForm
         form={form}
         initialValues={{

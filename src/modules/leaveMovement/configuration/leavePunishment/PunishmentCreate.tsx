@@ -4,6 +4,7 @@ import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
 import { getWorkplaceDDL } from "common/api/commonApi";
+import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 export const data = [
@@ -129,8 +130,7 @@ export default function PunishmentCreate({
       workplaceGroupId: wgId,
       policyName: values?.policyName,
       workplaceId: values?.workplace?.value,
-      employmentTypeId: values?.intEmploymentTypeList?.value,
-      description: values?.description,
+      description: values?.description || "",
       isLeaveOffdayLeave: selectedRow1.some(
         (item) => item?.id === "isLeaveOffdayLeave"
       ),
@@ -149,6 +149,10 @@ export default function PunishmentCreate({
       isOffdayOrHolidayLeaveOffdayOrHoliday: selectedRow1.some(
         (item) => item?.id === "isOffdayOrHolidayLeaveOffdayOrHoliday"
       ),
+      employmentTypeIdList: values?.intEmploymentTypeList
+        ?.map((item: any) => item.value)
+        .join(","),
+
       deductionSequence: row.map((item: any, index: number) => ({
         sequence: index + 1,
         leaveTypeId: item?.value,
@@ -208,6 +212,7 @@ export default function PunishmentCreate({
   }, []);
   return (
     <>
+      {createApi?.loading && <Loading />}
       <PForm
         form={form}
         onFinish={() => {
@@ -260,31 +265,31 @@ export default function PunishmentCreate({
 
           <Col md={12} sm={24}>
             <PSelect
-              //   mode="multiple"
+              mode="multiple"
               options={
                 EmploymentTypeDDL?.data?.length > 0
-                  ? EmploymentTypeDDL?.data
+                  ? [{ value: 0, label: "All" }, ...EmploymentTypeDDL?.data]
                   : []
               }
               name="intEmploymentTypeList"
               label=" Employment Type"
               placeholder="  Employment Type"
               onChange={(value, op) => {
-                form.setFieldsValue({
-                  intEmploymentTypeList: op,
-                });
-                // if (value && value.includes(0)) {
-                //   form.setFieldsValue({
-                //     intEmploymentTypeList: [
-                //       op.find((item: any) => item.value === 0),
-                //     ],
-                //   });
-                // } else {
-                //   const filteredOp = op.filter((item: any) => item.value !== 0);
-                //   form.setFieldsValue({
-                //     intEmploymentTypeList: filteredOp,
-                //   });
-                // }
+                // form.setFieldsValue({
+                //   intEmploymentTypeList: op,
+                // });
+                if (value && value.includes(0)) {
+                  form.setFieldsValue({
+                    intEmploymentTypeList: [
+                      op.find((item: any) => item.value === 0),
+                    ],
+                  });
+                } else {
+                  const filteredOp = op.filter((item: any) => item.value !== 0);
+                  form.setFieldsValue({
+                    intEmploymentTypeList: filteredOp,
+                  });
+                }
               }}
               rules={[
                 {
@@ -398,7 +403,7 @@ export default function PunishmentCreate({
                             leaveType: undefined,
                           });
                         })
-                        .catch((e: any) => {});
+                        .catch((e: any) => null);
                     }}
                   />
                 </Col>
