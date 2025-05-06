@@ -130,7 +130,7 @@ export default function PunishmentCreate({
       workplaceGroupId: wgId,
       policyName: values?.policyName,
       workplaceId: values?.workplace?.value,
-      description: values?.description,
+      description: values?.description || "",
       isLeaveOffdayLeave: selectedRow1.some(
         (item) => item?.id === "isLeaveOffdayLeave"
       ),
@@ -149,7 +149,7 @@ export default function PunishmentCreate({
       isOffdayOrHolidayLeaveOffdayOrHoliday: selectedRow1.some(
         (item) => item?.id === "isOffdayOrHolidayLeaveOffdayOrHoliday"
       ),
-      employmentTypeId: values?.intEmploymentTypeList
+      employmentTypeIdList: values?.intEmploymentTypeList
         ?.map((item: any) => item.value)
         .join(","),
 
