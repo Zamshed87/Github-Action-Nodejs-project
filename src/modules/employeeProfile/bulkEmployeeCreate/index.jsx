@@ -168,8 +168,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=8465"
-                                  : "/document/downloadfile?id=10106"
+                                  ? "/document/downloadfile?id=12983"
+                                  : "/document/downloadfile?id=13325"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
