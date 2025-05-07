@@ -34,3 +34,68 @@ export interface LatePunishmentData {
 
 // Type for the data state (array of LatePunishmentData)
 export type DataState = LatePunishmentData[];
+
+export interface LatePunishmentElement {
+  lateCalculationType: number;
+  lateCalculationTypeDescription: string;
+  eachDayCountBy: number;
+  startDay: number;
+  endDay: number;
+  isConsecutiveDay: boolean;
+  minimumLateTime: number;
+  maximumLateTime: number;
+  lateTimeCalculatedBy: number;
+  lateTimeCalculatedByDescription: string;
+  punishmentType: number;
+  punishmentTypeDescription: string;
+  leaveDeductType: number;
+  leaveDeductTypeDescription: string;
+  leaveDeductQty: number;
+  amountDeductFrom: number;
+  amountDeductFromDescription: string;
+  amountDeductType: number;
+  amountDeductTypeDescription: string;
+  amountOrPercentage: number;
+  id: number;
+}
+
+export interface Department {
+  departmentId: number;
+  departmentName: string;
+  id: number;
+}
+
+export interface Designation {
+  designationId: number;
+  designationName: string;
+  id: number;
+}
+
+export interface EmploymentType {
+  employmentTypeId: number;
+  employmentTypeName: string;
+  id: number;
+}
+
+export interface LeaveDeduction {
+  serialNo: number;
+  leaveTypeId: number;
+  leaveTypeName: string;
+  id: number;
+}
+
+export interface LatePunishmentPayload {
+  accountId: number;
+  businessUnitId: number;
+  workplaceGroupId: number;
+  workplaceId: number;
+  name: string;
+  description: string;
+  isActive: boolean;
+  actionBy: number;
+  elements: LatePunishmentElement[];
+  departments: Department[];
+  designations: Designation[];
+  employmentTypes: EmploymentType[];
+  leaveDeductions: LeaveDeduction[];
+}

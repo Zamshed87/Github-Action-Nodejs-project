@@ -1,5 +1,16 @@
 import { toast } from "react-toastify";
-import { DataState } from "./type";
+import {
+  DataState,
+  Department,
+  Designation,
+  EmploymentType,
+  LatePunishmentElement,
+  LatePunishmentPayload,
+  LeaveDeduction,
+} from "./type";
+import { FormInstance } from "antd";
+import { SetStateAction } from "react";
+import axios from "axios";
 
 const calculationType = [
   {
@@ -376,4 +387,116 @@ export const addHandler = (setData: any, data: DataState, values: any) => {
     },
   ]);
   // form.resetFields();
+};
+
+export const createEditLatePunishmentConfig = async (
+  profileData: any,
+  form: FormInstance<any>,
+  data: DataState,
+  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
+  cb: any
+) => {
+  setLoading(true);
+  try {
+    const { orgId, buId, wgId, wId, employeeId, accountId } = profileData;
+    const values = form.getFieldsValue(true);
+
+    const payload = mapLatePunishmentPayload(
+      values,
+      data,
+      orgId,
+      buId,
+      wgId,
+      wId,
+      accountId
+    );
+    const res = await axios.post(`/LatePunishmentpolicy`, payload);
+    form.resetFields();
+    toast.success("Created Successfully", { toastId: 1222 });
+    cb && cb();
+    setLoading(false);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const mapLatePunishmentPayload = (
+  values: any,
+  dataState: any[],
+  orgId: number,
+  buId: number,
+  wgId: number,
+  wId: number,
+  accountId: number
+): LatePunishmentPayload => {
+  const payload: LatePunishmentPayload = {
+    accountId: accountId || 0,
+    businessUnitId: buId || 0,
+    workplaceGroupId: wgId || 0,
+    workplaceId: wId || 0,
+    name: values?.policyName || "",
+    description: values?.policyDescription || "",
+    isActive: true,
+    actionBy: values?.employeeId || 0,
+    elements: dataState.map(
+      (item: any): LatePunishmentElement => ({
+        lateCalculationType: item.lateCalculationTypeId || 0,
+        lateCalculationTypeDescription: item.lateCalculationType || "",
+        eachDayCountBy: item.eachDayCountById || 0,
+        startDay: item.dayRange ? parseInt(item.dayRange.split("-")[0]) : 0,
+        endDay: item.dayRange ? parseInt(item.dayRange.split("-")[1]) : 0,
+        isConsecutiveDay: item.isConsecutiveDay || false,
+        minimumLateTime: item.minimumLateTime || 0,
+        maximumLateTime: item.maximumLateTime || 0,
+        lateTimeCalculatedBy: item.lateTimeCalculatedById || 0,
+        lateTimeCalculatedByDescription: item.lateTimeCalculatedBy || "",
+        punishmentType: item.punishmentTypeId || 0,
+        punishmentTypeDescription: item.punishmentType || "",
+        leaveDeductType: item.leaveDeductTypeId || 0,
+        leaveDeductTypeDescription: item.leaveDeductType || "",
+        leaveDeductQty: item.leaveDeductQty || 0,
+        amountDeductFrom: item.amountDeductFromId || 0,
+        amountDeductFromDescription: item.amountDeductFrom || "",
+        amountDeductType: item.amountDeductTypeId || 0,
+        amountDeductTypeDescription: item.amountDeductType || "",
+        amountOrPercentage: item.amountPercentage || 0,
+        id: item.id || 0,
+      })
+    ),
+    departments: (values?.department || []).map(
+      (dept: any): Department => ({
+        departmentId: dept.value || 0,
+        departmentName: dept.label || "",
+        id: 0,
+      })
+    ),
+    designations: (values?.designation || []).map(
+      (design: any): Designation => ({
+        designationId: design.value || 0,
+        designationName: design.label || "",
+        id: 0,
+      })
+    ),
+    employmentTypes: (values?.employmentType || []).map(
+      (empType: any): EmploymentType => ({
+        employmentTypeId: empType.value || 0,
+        employmentTypeName: empType.label || "",
+        id: 0,
+      })
+    ),
+    leaveDeductions: (values?.leaveDeductions || []).map(
+      (ld: any): LeaveDeduction => ({
+        serialNo: 0,
+        leaveTypeId: ld.value || 0,
+        leaveTypeName: ld.label || "",
+        id: 0,
+      })
+    ),
+  };
+
+  return payload;
 };

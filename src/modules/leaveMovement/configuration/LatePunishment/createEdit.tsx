@@ -8,14 +8,18 @@ import {
   PCardHeader,
   PForm,
 } from "Components";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import CommonForm from "modules/pms/CommonForm/commonForm";
-import { addHandler, LatePunishment } from "./helper";
+import {
+  addHandler,
+  createEditLatePunishmentConfig,
+  LatePunishment,
+} from "./helper";
 import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
@@ -50,10 +54,11 @@ const CreateEditLatePunishmentConfig = () => {
     [key: string]: any;
   };
 
-  let permission: Permission = {};
-  permissionList.forEach((item) => {
-    permission = item;
-  });
+  const permission = useMemo(
+    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const getEmployeDepartment = () => {
     const { workplace } = form.getFieldsValue(true);
@@ -235,7 +240,15 @@ const CreateEditLatePunishmentConfig = () => {
 
                   form
                     .validateFields()
-                    .then(() => {})
+                    .then(() => {
+                      createEditLatePunishmentConfig(
+                        profileData,
+                        form,
+                        data,
+                        setLoading,
+                        () => {}
+                      );
+                    })
                     .catch(() => {});
                 },
               },
