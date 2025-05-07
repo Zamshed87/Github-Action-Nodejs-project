@@ -329,6 +329,7 @@ const CreateEditLatePunishmentConfig = () => {
                         profileData,
                         form,
                         data,
+                        leaveDeductionData,
                         setLoading,
                         () => {}
                       );

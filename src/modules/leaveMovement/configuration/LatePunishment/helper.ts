@@ -395,6 +395,7 @@ export const createEditLatePunishmentConfig = async (
   profileData: any,
   form: FormInstance<any>,
   data: DataState,
+  leaveDeductionData: LeaveDeductionDataState,
   setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
   cb: any
 ) => {
@@ -406,6 +407,7 @@ export const createEditLatePunishmentConfig = async (
     const payload = mapLatePunishmentPayload(
       values,
       data,
+      leaveDeductionData,
       orgId,
       buId,
       wgId,
@@ -429,6 +431,7 @@ export const createEditLatePunishmentConfig = async (
 const mapLatePunishmentPayload = (
   values: any,
   dataState: any[],
+  leaveDeductionData: LeaveDeductionDataState,
   orgId: number,
   buId: number,
   wgId: number,
@@ -490,11 +493,11 @@ const mapLatePunishmentPayload = (
         id: 0,
       })
     ),
-    leaveDeductions: (values?.leaveDeductions || []).map(
-      (ld: any): LeaveDeduction => ({
-        serialNo: 0,
-        leaveTypeId: ld.value || 0,
-        leaveTypeName: ld.label || "",
+    leaveDeductions: (leaveDeductionData || []).map(
+      (ld: any, index: number): LeaveDeduction => ({
+        serialNo: index,
+        leaveTypeId: ld.leaveTypeId || 0,
+        leaveTypeName: ld.leaveTypeName || "",
         id: 0,
       })
     ),
