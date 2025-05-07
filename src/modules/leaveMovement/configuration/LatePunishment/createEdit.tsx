@@ -148,26 +148,38 @@ const CreateEditLatePunishmentConfig = () => {
         }),
       fixed: "left",
       align: "center",
+      width: 30,
     },
     {
       title: "Late Calculation Type",
       dataIndex: "lateCalculationType",
+      fixed: "left",
     },
     {
       title: "Each Day Count by",
       dataIndex: "eachDayCountBy",
+      fixed: "left",
     },
     {
       title: "Day Range",
       dataIndex: "dayRange",
+      fixed: "left",
     },
     {
       title: "Is Consecutive Day?",
       dataIndex: "isConsecutiveDay",
+      render: (rec: any) => {
+        return rec ? "Yes" : "No";
+      },
     },
     {
       title: "Late Time (Minutes)",
       dataIndex: "lateTimeMinutes",
+      render: (value: any, rec: any) => {
+        return (
+          rec?.minimumLateTime + " to " + rec?.maximumLateTime + " Minutes"
+        );
+      },
     },
     {
       title: "Late Time Calculated by",
@@ -199,20 +211,10 @@ const CreateEditLatePunishmentConfig = () => {
     },
   ];
 
-  const [selectedDates, setSelectedDates] = useState<any>([]);
-
-  const disabledDate = (current: any) => {
-    if (!selectedDates || selectedDates.length === 0) return false;
-
-    const [start] = selectedDates;
-
-    if (!start) return false;
-
-    // Disable dates more than 1 month before or after the start date
-    const tooEarly = current.isBefore(start.startOf("day"));
-    const tooLate = current.isAfter(start.add(1, "month").endOf("day"));
-    return tooEarly || tooLate;
-  };
+  const lateCalculationType = Form.useWatch("lateCalculationType", form);
+  const punishmentType = Form.useWatch("punishmentType", form);
+  const leaveDeductType = Form.useWatch("leaveDeductType", form);
+  const amountDeductFrom = Form.useWatch("amountDeductFrom", form);
 
   return permission?.isCreate ? (
     <div>
@@ -251,7 +253,12 @@ const CreateEditLatePunishmentConfig = () => {
                 empDepartmentDDL?.data,
                 empDesignationDDL?.data,
                 <RangeDatePicker name={"dayRange"} />,
-                <RangeDatePicker name={"eachDayCountBy"} />
+                {
+                  lateCalculationType,
+                  punishmentType,
+                  leaveDeductType,
+                  amountDeductFrom,
+                }
               )}
               form={form}
             >
@@ -262,12 +269,10 @@ const CreateEditLatePunishmentConfig = () => {
                   type="primary"
                   content={"Add"}
                   onClick={() => {
-                    const values = form.getFieldsValue(true);
                     form
                       .validateFields()
                       .then(() => {
                         const values = form.getFieldsValue(true);
-
                         addHandler(setData, data, values);
                       })
                       .catch(() => {});
@@ -277,7 +282,13 @@ const CreateEditLatePunishmentConfig = () => {
             </CommonForm>
           </PCardBody>
         </PCard>
-        <DataTable bordered data={data || []} loading={false} header={header} />
+        <DataTable
+          bordered
+          data={data || []}
+          scroll={{ x: 1500 }}
+          loading={false}
+          header={header}
+        />
       </PForm>
     </div>
   ) : (
