@@ -1,7 +1,8 @@
-import { Col, DatePicker, Form, Row } from "antd";
+import { Col, DatePicker, Form, Row, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
+  Flex,
   PButton,
   PCard,
   PCardBody,
@@ -28,6 +29,7 @@ import { getSerial } from "Utils";
 import { DataState, LeaveDeductionDataState } from "./type";
 import RangeDatePicker from "./RangeDatePicker";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { DeleteOutlined } from "@mui/icons-material";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -240,19 +242,36 @@ const CreateEditLatePunishmentConfig = () => {
     {
       title: "SL",
       dataIndex: "serialNo",
-      width: 200,
     },
     {
       title: "Leave Type",
       dataIndex: "leaveTypeName",
       key: "leaveTypeName",
-      width: 200,
     },
     {
       title: "Action",
-      dataIndex: "action",
-      key: "action",
-      width: 100,
+      dataIndex: "status",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                const updatedperticipantField = leaveDeductionData.filter(
+                  (item: any) => item.leaveTypeId !== rec.leaveTypeId
+                );
+                setLeaveDeductionData(updatedperticipantField);
+              }}
+            />
+          </Tooltip>
+        </Flex>
+      ),
+      align: "center",
     },
   ];
 
@@ -339,7 +358,7 @@ const CreateEditLatePunishmentConfig = () => {
           <DataTable
             bordered
             data={data || []}
-            scroll={{ x: 1500 }}
+            // scroll={{ x: 1500 }}
             loading={false}
             header={header}
           />
@@ -347,10 +366,13 @@ const CreateEditLatePunishmentConfig = () => {
 
         {data?.length > 0 &&
           data.every((item) => item.punishmentTypeId === 1) && (
-            <div className="mt-3">
-              <h1>Leave Deduction Sequence</h1>
+            <div className="mt-3 mb-5">
               <PCard>
                 <PCardBody>
+                  <center>
+                    <h1>Leave Deduction Sequence</h1>
+                  </center>
+
                   <Row gutter={[10, 2]}>
                     <Col md={6} sm={24}>
                       <PSelect
@@ -371,7 +393,7 @@ const CreateEditLatePunishmentConfig = () => {
                         ]}
                       />
                     </Col>
-                    <Col md={6} sm={24}>
+                    <Col md={4} sm={24}>
                       <PButton
                         style={{ marginTop: "22px" }}
                         type="primary"
@@ -391,17 +413,17 @@ const CreateEditLatePunishmentConfig = () => {
                         }}
                       />
                     </Col>
+                    <Col md={12} sm={24}>
+                      <DataTable
+                        bordered
+                        data={leaveDeductionData || []}
+                        loading={false}
+                        header={headerLeaveDeduction}
+                      />
+                    </Col>
                   </Row>
                 </PCardBody>
               </PCard>
-              {leaveDeductionData?.length > 0 && (
-                <DataTable
-                  bordered
-                  data={leaveDeductionData || []}
-                  loading={false}
-                  header={headerLeaveDeduction}
-                />
-              )}
             </div>
           )}
       </PForm>
