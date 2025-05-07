@@ -391,7 +391,7 @@ const CreateEditLatePunishmentConfig = () => {
         )}
 
         {data?.length > 0 &&
-          data.every((item) => item.punishmentTypeId === 1) && (
+          data.some((item) => item.punishmentTypeId === 1) && (
             <div className="mt-3 mb-5">
               <PCard>
                 <PCardBody>
