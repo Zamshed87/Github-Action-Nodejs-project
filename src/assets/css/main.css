@@ -257,7 +257,7 @@ p {
   margin: 0;
   font-size: 12px;
   line-height: 18px;
-  color: var(--gray500);
+  /* color: var(--gray500); */
   font-weight: 400;
 }
 
