@@ -236,6 +236,31 @@ const CreateEditLatePunishmentConfig = () => {
       title: "% of Amount (Based on 1 day)",
       dataIndex: "percentOfAmount",
     },
+    {
+      title: "Action",
+      dataIndex: "status",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Delete">
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {
+                const filterData = data.filter(
+                  (item: any) => item.id !== rec.id
+                );
+                setData(filterData);
+              }}
+            />
+          </Tooltip>
+        </Flex>
+      ),
+      align: "center",
+    },
   ];
 
   const headerLeaveDeduction = [
@@ -262,10 +287,10 @@ const CreateEditLatePunishmentConfig = () => {
                 margin: "0 5px",
               }}
               onClick={() => {
-                const updatedperticipantField = leaveDeductionData.filter(
+                const filterData = leaveDeductionData.filter(
                   (item: any) => item.leaveTypeId !== rec.leaveTypeId
                 );
-                setLeaveDeductionData(updatedperticipantField);
+                setLeaveDeductionData(filterData);
               }}
             />
           </Tooltip>
