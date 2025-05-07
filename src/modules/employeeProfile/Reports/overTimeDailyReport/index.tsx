@@ -709,7 +709,7 @@ const EmOverTimeDailyReport = () => {
                     return acc;
                   }, {})
                 ) as [string, any[]][]
-              ).map(([workplace, records], groupIndex) => (
+              ).map(([workplace, records], groupIndex,arr) => (
                 <div key={groupIndex} style={{ marginBottom: "40px" }}>
                   {/* Table for This Workplace */}
                   <table className="pdf-table">
@@ -775,6 +775,7 @@ const EmOverTimeDailyReport = () => {
                           <td>{item?.strSignature}</td>
                         </tr>
                       ))}
+                      {groupIndex === arr?.length - 1 && (
                       <tr style={{ fontWeight: "bold", background: "#f5f5f5" }}>
                         <td colSpan={9} style={{ textAlign: "right" }}>
                           Total
@@ -793,6 +794,7 @@ const EmOverTimeDailyReport = () => {
                         </td>
                         <td></td>
                       </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
