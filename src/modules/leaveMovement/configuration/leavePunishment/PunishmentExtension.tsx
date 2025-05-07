@@ -45,7 +45,7 @@ export default function PunishmentExtension({
       actionBy: employeeId,
       workplaceId: values?.workplace?.value || 0,
 
-      employmentTypeId: values?.intEmploymentTypeList
+      employmentTypeIdList: values?.intEmploymentTypeList
         ?.map((item: any) => item.value)
         .join(","),
     };
