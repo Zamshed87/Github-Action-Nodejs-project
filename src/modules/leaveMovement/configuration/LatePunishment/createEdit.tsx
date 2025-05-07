@@ -1,4 +1,4 @@
-import { Col, DatePicker, Form } from "antd";
+import { Col, DatePicker, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
@@ -7,6 +7,7 @@ import {
   PCardBody,
   PCardHeader,
   PForm,
+  PSelect,
 } from "Components";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -17,23 +18,28 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import CommonForm from "modules/pms/CommonForm/commonForm";
 import {
   addHandler,
+  addLeaveDeductions,
   createEditLatePunishmentConfig,
   LatePunishment,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-import { DataState } from "./type";
+import { DataState, LeaveDeductionDataState } from "./type";
 import RangeDatePicker from "./RangeDatePicker";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [data, setData] = useState<DataState>([]);
+  const [leaveDeductionData, setLeaveDeductionData] =
+    useState<LeaveDeductionDataState>([]);
   const employmentTypeDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
-
+  const [leaveTypeDDL, getleaveTypeDDL, leaveTypeDDLLoader, setleaveTypeDDL] =
+    useAxiosGet();
   const params = useParams();
   // redux
   const { profileData } = useSelector(
@@ -140,6 +146,20 @@ const CreateEditLatePunishmentConfig = () => {
       "strWorkplace",
       setWorkplaceDDL
     );
+    getleaveTypeDDL(
+      `/SaasMasterData/GetAllLveLeaveType?BusinessUnitId=${buId}&WorkGroupId=${wgId}&SearchText=`,
+      (data: any) => {
+        const list: { label: string; value: number }[] = [];
+        data.forEach((item: any, i: any) => {
+          if (item?.isActive === true)
+            list.push({
+              label: item?.strLeaveType + " (" + item?.strLeaveTypeCode + ")",
+              value: item?.intLeaveTypeId,
+            });
+        });
+        setleaveTypeDDL(list);
+      }
+    );
   }, [wgId]);
 
   const header = [
@@ -213,6 +233,26 @@ const CreateEditLatePunishmentConfig = () => {
     {
       title: "% of Amount (Based on 1 day)",
       dataIndex: "percentOfAmount",
+    },
+  ];
+
+  const headerLeaveDeduction = [
+    {
+      title: "SL",
+      dataIndex: "serialNo",
+      width: 200,
+    },
+    {
+      title: "Leave Type",
+      dataIndex: "leaveTypeName",
+      key: "leaveTypeName",
+      width: 200,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      width: 100,
     },
   ];
 
@@ -295,13 +335,75 @@ const CreateEditLatePunishmentConfig = () => {
             </CommonForm>
           </PCardBody>
         </PCard>
-        <DataTable
-          bordered
-          data={data || []}
-          scroll={{ x: 1500 }}
-          loading={false}
-          header={header}
-        />
+        {data?.length > 0 && (
+          <DataTable
+            bordered
+            data={data || []}
+            scroll={{ x: 1500 }}
+            loading={false}
+            header={header}
+          />
+        )}
+
+        {data?.length > 0 &&
+          data.every((item) => item.punishmentTypeId === 1) && (
+            <div className="mt-3">
+              <h1>Leave Deduction Sequence</h1>
+              <PCard>
+                <PCardBody>
+                  <Row gutter={[10, 2]}>
+                    <Col md={6} sm={24}>
+                      <PSelect
+                        options={leaveTypeDDL || []}
+                        name="leaveType"
+                        label="Leave Type"
+                        placeholder="Leave Type"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            leaveType: op,
+                          });
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Leave Type is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={24}>
+                      <PButton
+                        style={{ marginTop: "22px" }}
+                        type="primary"
+                        content={"Add"}
+                        onClick={() => {
+                          form
+                            .validateFields(["leaveType"])
+                            .then(() => {
+                              const values = form.getFieldsValue(true);
+                              addLeaveDeductions(
+                                setLeaveDeductionData,
+                                leaveDeductionData,
+                                values
+                              );
+                            })
+                            .catch(() => {});
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                </PCardBody>
+              </PCard>
+              {leaveDeductionData?.length > 0 && (
+                <DataTable
+                  bordered
+                  data={leaveDeductionData || []}
+                  loading={false}
+                  header={headerLeaveDeduction}
+                />
+              )}
+            </div>
+          )}
       </PForm>
     </div>
   ) : (

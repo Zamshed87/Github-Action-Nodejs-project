@@ -7,6 +7,7 @@ import {
   LatePunishmentElement,
   LatePunishmentPayload,
   LeaveDeduction,
+  LeaveDeductionDataState,
 } from "./type";
 import { FormInstance } from "antd";
 import { SetStateAction } from "react";
@@ -499,4 +500,21 @@ const mapLatePunishmentPayload = (
   };
 
   return payload;
+};
+
+export const addLeaveDeductions = (
+  setData: any,
+  data: LeaveDeductionDataState,
+  values: any
+) => {
+  console.log("values", values);
+  setData([
+    ...data,
+    {
+      serialNo: data.length + 1,
+      leaveTypeId: values?.leaveType?.value,
+      leaveTypeName: values?.leaveType?.label,
+      id: 0,
+    },
+  ]);
 };

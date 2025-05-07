@@ -84,6 +84,8 @@ export interface LeaveDeduction {
   id: number;
 }
 
+export type LeaveDeductionDataState = LeaveDeduction[];
+
 export interface LatePunishmentPayload {
   accountId: number;
   businessUnitId: number;
