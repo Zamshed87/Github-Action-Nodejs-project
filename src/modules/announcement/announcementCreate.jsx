@@ -38,7 +38,7 @@ export default function AnnouncementCreate() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  const [attachmentList, setAttachmentList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [departData, setDepartData] = useState([]);
   const [singleData, setSingleData] = useState({});
@@ -188,6 +188,8 @@ export default function AnnouncementCreate() {
         dteCreatedAt: todayDate(),
         intCreatedBy: employeeId,
         isActive: true,
+        intAttachmentId:
+          attachmentList[0]?.response[0]?.globalFileUrlId?.toString(),
       },
       announcementRow: [
         ...workGroup,
@@ -281,6 +283,8 @@ export default function AnnouncementCreate() {
                           setDepartData,
                           departData,
                           params,
+                          attachmentList,
+                          setAttachmentList,
                         }}
                       ></FormCard>
                     </div>

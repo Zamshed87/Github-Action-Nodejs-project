@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import AttachmentShow from "common/AttachmentShow";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { shallowEqual, useSelector } from "react-redux";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import FormikError from "../../../common/login/FormikError";
@@ -23,6 +25,8 @@ const FormCard = ({ propsObj }) => {
     resetForm,
     initData,
     params,
+    attachmentList,
+    setAttachmentList,
   } = propsObj;
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -34,6 +38,7 @@ const FormCard = ({ propsObj }) => {
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [designationDDL, setDesignationDDL] = useState([]);
   const [userGroupDDL, setUserGroupDDL] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   // const modules = {
   //   toolbar: [
@@ -400,6 +405,33 @@ const FormCard = ({ propsObj }) => {
               touched={touched}
             />
           </div>
+        </div>
+        <div className="col-lg-4 mt-4">
+          <>
+            <FileUploadComponents
+              propsObj={{
+                isOpen,
+                setIsOpen,
+                destroyOnClose: false,
+                attachmentList,
+                setAttachmentList,
+                accountId: orgId,
+                tableReferrence: "ANNOUNCEMENT_NOTICE",
+                documentTypeId: 24,
+                userId: employeeId,
+                buId: buId,
+                maxCount: 20,
+                isIcon: true,
+                isErrorInfo: true,
+                subText:
+                  "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
+              }}
+            />
+          </>
+          <AttachmentShow
+            intAttachmentId={values?.intAttachmentId}
+            label={"Attachment"}
+          />
         </div>
         <div className="col-lg-12">
           <div>
