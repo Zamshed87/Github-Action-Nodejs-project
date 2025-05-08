@@ -1,4 +1,4 @@
-import { Col, DatePicker, Form, Row, Tooltip } from "antd";
+import { Checkbox, Col, DatePicker, Form, Row, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
@@ -300,6 +300,20 @@ const CreateEditLatePunishmentConfig = () => {
     },
   ];
 
+  const CustomCheckbox = () => {
+    return (
+      // <Col md={6} sm={24} style={{ marginTop: "15px" }}>
+      <Form.Item
+        name="isConsecutiveDay"
+        valuePropName="checked"
+        style={{ marginLeft: "15px", marginTop: "15px" }}
+      >
+        <Checkbox>Is Consecutive Day?</Checkbox>
+      </Form.Item>
+      // </Col>
+    );
+  };
+
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
   const punishmentType = Form.useWatch("punishmentType", form);
   const leaveDeductType = Form.useWatch("leaveDeductType", form);
@@ -351,6 +365,7 @@ const CreateEditLatePunishmentConfig = () => {
                 empDepartmentDDL?.data,
                 empDesignationDDL?.data,
                 <RangeDatePicker name={"dayRange"} />,
+                <CustomCheckbox />,
                 {
                   lateCalculationType,
                   punishmentType,

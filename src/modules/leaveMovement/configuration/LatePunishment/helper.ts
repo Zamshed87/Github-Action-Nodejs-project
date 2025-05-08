@@ -105,6 +105,7 @@ export const LatePunishment = (
   empDepartmentDDL: any[],
   empDesignationDDL: any[],
   DayRangeComponent: any,
+  CustomCheckbox: any,
   values: any
 ) => {
   return [
@@ -213,9 +214,8 @@ export const LatePunishment = (
     ...(values?.lateCalculationType?.value !== 3
       ? [
           {
-            type: "checkbox",
-            label: "Is Consecutive Day?",
-            varname: "isConsecutiveDay",
+            type: "component",
+            component: CustomCheckbox,
             col: 6,
           },
         ]
