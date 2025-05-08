@@ -7,6 +7,9 @@ import BackButton from "../../../common/BackButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatterForInput } from "../../../utility/dateFormatter";
 import "./index.css";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { VisibilityOutlined } from "@mui/icons-material";
+import { Tooltip } from "react-bootstrap";
 
 const initData = {
   search: "",
@@ -14,7 +17,13 @@ const initData = {
 
 export default function AnnouncementViewPage() {
   const location = useLocation();
-  const { dteExpiredDate, dteCreatedAt, strDetails, strTitle } = location.state;
+  const {
+    dteExpiredDate,
+    dteCreatedAt,
+    strDetails,
+    strTitle,
+    intAttachmentId,
+  } = location.state;
 
   const saveHandler = (values) => {};
 
@@ -52,15 +61,37 @@ export default function AnnouncementViewPage() {
                   <div className="table-card-head-right"></div>
                 </div>
                 <div className="table-card-body">
-                  <div className="announcement_header">
-                    <h4>{strTitle}</h4>
-                    <div className="d-flex add_info ">
-                      Published date: {dateFormatterForInput(dteCreatedAt)}
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="announcement_header">
+                      <h4>{strTitle}</h4>
+                      <div className="d-flex add_info ">
+                        Published date: {dateFormatterForInput(dteCreatedAt)}
+                      </div>
+                      <div className="d-flex add_info">
+                        Expiry date: {dateFormatterForInput(dteExpiredDate)}
+                      </div>
                     </div>
-                    <div className="d-flex add_info">
-                      Expiry date: {dateFormatterForInput(dteExpiredDate)}
-                    </div>
+                    {intAttachmentId && (
+                      <div style={{ marginLeft: "50px", display: "flex" }}>
+                        <p> Attachment</p>
+
+                        <Tooltip title="Attachment View">
+                          {/* <button type="button" className="iconButton"> */}
+                          <VisibilityOutlined
+                            style={{ cursor: "pointer", marginLeft: "10px" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(
+                                getDownlloadFileView_Action(intAttachmentId)
+                              );
+                            }}
+                          />
+                          {/* </button> */}
+                        </Tooltip>
+                      </div>
+                    )}
                   </div>
+
                   <div
                     className="announcement_body"
                     dangerouslySetInnerHTML={{

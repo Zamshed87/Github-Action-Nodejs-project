@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import FormikError from "../../../common/login/FormikError";
@@ -13,6 +13,9 @@ import {
   getPeopleDeskAllDDL,
 } from "../helper";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
+import { Tooltip } from "antd";
+import { VisibilityOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 const FormCard = ({ propsObj }) => {
   const {
@@ -38,6 +41,7 @@ const FormCard = ({ propsObj }) => {
   const [designationDDL, setDesignationDDL] = useState([]);
   const [userGroupDDL, setUserGroupDDL] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
 
   // const modules = {
   //   toolbar: [
@@ -427,6 +431,25 @@ const FormCard = ({ propsObj }) => {
               }}
             />
           </>
+          {values?.intAttachmentId && (
+            <div style={{ marginLeft: "50px", display: "flex" }}>
+              <p>Issue Attachment</p>
+
+              <Tooltip title="Attachment View">
+                {/* <button type="button" className="iconButton"> */}
+                <VisibilityOutlined
+                  style={{ cursor: "pointer", marginLeft: "10px" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(
+                      getDownlloadFileView_Action(values?.intAttachmentId)
+                    );
+                  }}
+                />
+                {/* </button> */}
+              </Tooltip>
+            </div>
+          )}
         </div>
         <div className="col-lg-12">
           <div>
