@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import AttachmentShow from "common/AttachmentShow";
 import { Form, Formik } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import BackButton from "../../../common/BackButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatterForInput } from "../../../utility/dateFormatter";
 import "./index.css";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { VisibilityOutlined } from "@mui/icons-material";
-import { Tooltip } from "react-bootstrap";
 
 const initData = {
   search: "",
@@ -71,25 +69,10 @@ export default function AnnouncementViewPage() {
                         Expiry date: {dateFormatterForInput(dteExpiredDate)}
                       </div>
                     </div>
-                    {intAttachmentId && (
-                      <div style={{ marginLeft: "50px", display: "flex" }}>
-                        <p> Attachment</p>
-
-                        <Tooltip title="Attachment View">
-                          {/* <button type="button" className="iconButton"> */}
-                          <VisibilityOutlined
-                            style={{ cursor: "pointer", marginLeft: "10px" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              dispatch(
-                                getDownlloadFileView_Action(intAttachmentId)
-                              );
-                            }}
-                          />
-                          {/* </button> */}
-                        </Tooltip>
-                      </div>
-                    )}
+                    <AttachmentShow
+                      intAttachmentId={intAttachmentId}
+                      label={"Attachment"}
+                    />
                   </div>
 
                   <div
