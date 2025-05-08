@@ -17,6 +17,8 @@ const LatePunishmentConfig = () => {
     (state: { auth: { profileData: any } }) => state?.auth,
     shallowEqual
   );
+  const { buId, wgId, wId, orgId, intAccountId, employeeId } = profileData;
+
   const { permissionList } = useSelector(
     (store: { auth: { permissionList: any[] } }) => store?.auth,
     shallowEqual
@@ -24,9 +26,14 @@ const LatePunishmentConfig = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const landingApi = () => {
+  const landingApi = (
+    pagination: { current: number; pageSize: number } = {
+      current: 1,
+      pageSize: 25,
+    }
+  ) => {
     getlatePunishment(
-      `/PMS/GetAllEvaluationCriteriaScoreSettingData?accountId=${profileData?.intAccountId}`
+      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`
     );
   };
   useEffect(() => {
@@ -39,7 +46,7 @@ const LatePunishmentConfig = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30469),
+    () => permissionList.find((item) => item?.menuReferenceId === 30590),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
