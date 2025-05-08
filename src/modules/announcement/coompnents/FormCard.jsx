@@ -417,7 +417,7 @@ const FormCard = ({ propsObj }) => {
                 setAttachmentList,
                 accountId: orgId,
                 tableReferrence: "ANNOUNCEMENT_NOTICE",
-                documentTypeId: 24,
+                documentTypeId: 38,
                 userId: employeeId,
                 buId: buId,
                 maxCount: 20,
