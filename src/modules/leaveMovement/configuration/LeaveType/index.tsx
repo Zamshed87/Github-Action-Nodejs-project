@@ -1,24 +1,10 @@
 import { AddOutlined } from "@mui/icons-material";
-import {
-  Avatar,
-  DataTable,
-  PCard,
-  PCardHeader,
-  PForm,
-  TableButton,
-} from "Components";
+import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form, message } from "antd";
-import axios from "axios";
-import { debounce } from "lodash";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-// import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-// import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-// import { dateFormatter } from "../../../utility/dateFormatter";
-// import AddEditForm from "./addEditFile";
 
 // import "./styles.css";
 import { toast } from "react-toastify";
@@ -30,10 +16,9 @@ import AddEditForm from "./addEditForm";
 function LeaveTypeCreate() {
   // hook
   const dispatch = useDispatch();
-  const history = useHistory();
 
   // redux
-  const { buId, wgId, wgName, wId, buName } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -51,7 +36,6 @@ function LeaveTypeCreate() {
 
   // Api Instance
   const landingApi = useApiRequest({});
-  const GetBusinessDetailsByBusinessUnitId = useApiRequest({});
 
   type TLandingApi = {
     pagination?: {
@@ -64,7 +48,6 @@ function LeaveTypeCreate() {
   };
   const landingApiCall = ({
     pagination = {},
-    filerList,
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
@@ -177,15 +160,9 @@ function LeaveTypeCreate() {
       >
         <PCard>
           <PCardHeader
-            // exportIcon={true}
-            // title={`Total ${landingApi?.data?.totalCount || 0} employees`}
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            // }}
             submitText="Leave Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}
-            onExport={() => {}}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
@@ -194,11 +171,6 @@ function LeaveTypeCreate() {
             data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header}
-            // pagination={{
-            //   pageSize: landingApi?.data?.pageSize,
-            //   total: landingApi?.data?.totalCount,
-            // }}
-            // filterData={landingApi?.data?.employeeHeader}
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
@@ -209,18 +181,6 @@ function LeaveTypeCreate() {
                 searchText: search,
               });
             }}
-            // scroll={{ x: 2000 }}
-            // onRow={(record) => ({
-            //   onClick: () =>
-            //     history.push({
-            //       pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
-            //       state: {
-            //         buId: record?.intBusinessUnitId,
-            //         wgId: record?.intWorkplaceGroupId,
-            //       },
-            //     }),
-            //   className: "pointer",
-            // })}
           />
         </PCard>
       </PForm>
@@ -229,7 +189,10 @@ function LeaveTypeCreate() {
         open={open}
         title={id ? "Edit Leave Type" : "Create Leave Type"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          setId("");
+        }}
         maskClosable={false}
         components={
           <>
