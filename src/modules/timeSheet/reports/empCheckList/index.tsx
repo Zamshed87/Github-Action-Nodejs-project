@@ -131,7 +131,7 @@ const EmpCheckList = () => {
         intAccountId: orgId,
         intBusinessUnitId: buId,
         IsXls: false,
-        workplaceIdList: values?.workplace?.value,
+        workplaceIdList: values?.workplace?.value || 0,
         departments: formatFilterValue(values?.department),
         sections: formatFilterValue(values?.section),
         PageNo: pagination.current || 1,
