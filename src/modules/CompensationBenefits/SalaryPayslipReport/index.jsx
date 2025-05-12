@@ -23,6 +23,7 @@ import { getPDFAction } from "../../../utility/downloadFile";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
+import { Dropdown, Space } from "antd";
 
 const initialValues = {
   date: moment().format("YYYY-MM"),
@@ -51,7 +52,7 @@ const validationSchema = Yup.object().shape({
 const SalaryPayslipReport = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { orgId, wgId, buId } = useSelector(
+  const { orgId, wgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -117,6 +118,55 @@ const SalaryPayslipReport = () => {
       .reduce((sum, item) => sum + item[property], 0);
   };
 
+  const items = [
+    {
+      key: "1",
+      label: (
+        <a
+          target="_blank"
+          onClick={() => {
+            getPDFAction(
+              `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${employeeId}&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intYearId=${values?.intYear}`,
+              setLoading
+            );
+          }}
+        >
+          {" "}
+          <span style={{ fontSize: "12px" }}>English Print</span>{" "}
+          <LocalPrintshopIcon
+            sx={{
+              color: "#637381",
+              fontSize: "16px",
+            }}
+          />
+        </a>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <a
+          target="_blank"
+          onClick={() => {
+            getPDFAction(
+              `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeIdBangla&intEmployeeId=${employeeId}&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intYearId=${values?.intYear}`,
+              setLoading
+            );
+          }}
+        >
+          {" "}
+          <span style={{ fontSize: "12px" }}>Bangla Print</span>{" "}
+          <LocalPrintshopIcon
+            sx={{
+              color: "#637381",
+              fontSize: "16px",
+            }}
+          />
+        </a>
+      ),
+    },
+  ];
+
   return (
     <>
       {(loading ||
@@ -129,35 +179,28 @@ const SalaryPayslipReport = () => {
             <div className="table-card-heading">
               <div className="d-flex align-items-center my-1">
                 <h2>Salary Pay Slip Report</h2>
-                {viewPaySlipData && (
-                  <Tooltip title="Print" arrow>
-                    <button
-                      className="btn-save ml-2"
-                      type="button"
-                      onClick={() => {
-                        getPDFAction(
-                          `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${values?.employee?.value}&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intYearId=${values?.intYear}`,
-                          setLoading
-                        );
-                      }}
-                      disabled={viewPaySlipData?.length <= 0}
-                      style={{
-                        border: "transparent",
-                        width: "30px",
-                        height: "30px",
-                        background: "#f2f2f7",
-                        borderRadius: "100px",
-                      }}
-                    >
-                      <LocalPrintshopIcon
-                        sx={{
-                          color: "#637381",
-                          fontSize: "16px",
+                <Space direction="vertical" className="ml-2">
+                  <Space wrap>
+                    <Dropdown menu={{ items }} placement="bottom" arrow>
+                      <span
+                        style={{
+                          border: "transparent",
+                          width: "30px",
+                          height: "30px",
+                          background: "#f2f2f7",
+                          borderRadius: "100px",
                         }}
-                      />
-                    </button>
-                  </Tooltip>
-                )}
+                      >
+                        <LocalPrintshopIcon
+                          sx={{
+                            color: "#637381",
+                            fontSize: "16px",
+                          }}
+                        />
+                      </span>
+                    </Dropdown>
+                  </Space>
+                </Space>
               </div>
             </div>
             <div className="table-card-body">
