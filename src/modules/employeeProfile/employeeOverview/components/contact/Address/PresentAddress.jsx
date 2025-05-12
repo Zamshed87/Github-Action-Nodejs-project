@@ -26,6 +26,7 @@ import {
 import formatAddress from "common/formatAddress";
 import { checkBng } from "utility/regxExp";
 import { orgIdsForBn } from "utility/orgForBanglaField";
+import { getEmployeeProfileViewDataForAddress } from "modules/employeeProfile/employeeFeature/helper";
 
 const initData = {
   country: "",
@@ -68,10 +69,13 @@ const validationSchema = Yup.object().shape({
   addressBn: Yup.string().matches(checkBng(), "This field should be in Bangla"),
 });
 
-function PresentAddress({ getData, rowDto, empId }) {
+function PresentAddress({ getData, empId }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
+  const [rowDto, setRowDto] = useState([]);
   const [isCreateForm, setIsCreateForm] = useState(false);
+
+  console.log(rowDto, "rowDto");
 
   const [singleData, setSingleData] = useState("");
 
@@ -100,6 +104,17 @@ function PresentAddress({ getData, rowDto, empId }) {
   useEffect(() => {
     getData();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getEmployeeProfileViewDataForAddress(
+      empId,
+      buId,
+      wgId,
+      setRowDto,
+      setLoading
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -173,10 +188,17 @@ function PresentAddress({ getData, rowDto, empId }) {
         remarks: "",
       };
       const callback = () => {
-        getData();
+        getEmployeeProfileViewDataForAddress(
+          empId,
+          buId,
+          wgId,
+          setRowDto,
+          setLoading
+        );
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        getData();
       };
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
@@ -248,10 +270,17 @@ function PresentAddress({ getData, rowDto, empId }) {
         remarks: "",
       };
       const callback = () => {
-        getData();
+        getEmployeeProfileViewDataForAddress(
+          empId,
+          buId,
+          wgId,
+          setRowDto,
+          setLoading
+        );
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        getData();
       };
       updateEmployeeProfile(payload, setLoading, callback);
     }
@@ -323,9 +352,16 @@ function PresentAddress({ getData, rowDto, empId }) {
       remarks: "",
     };
     const callback = () => {
-      getData();
+      getEmployeeProfileViewDataForAddress(
+        empId,
+        buId,
+        wgId,
+        setRowDto,
+        setLoading
+      );
       setStatus("empty");
       setSingleData("");
+      getData();
       cb?.();
     };
     updateEmployeeProfile(payload, setLoading, callback);
@@ -378,7 +414,7 @@ function PresentAddress({ getData, rowDto, empId }) {
         wgId,
         buId,
         setPostOfficeDDL,
-        "intPostOfficeId",
+        "PostOfficeId",
         "strPostOffice",
         singleData?.policeStation?.value
       );
@@ -620,7 +656,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                               wgId,
                               buId,
                               setPostOfficeDDL,
-                              "intPostOfficeId",
+                              "PostOfficeId",
                               "strPostOffice",
                               valueOption?.value
                             );
@@ -853,11 +889,11 @@ function PresentAddress({ getData, rowDto, empId }) {
                                                   policeStation: {
                                                     value:
                                                       rowDto
-                                                        ?.permanentAddress[0]
+                                                        ?.presentAddress[0]
                                                         ?.intThanaId,
                                                     label:
                                                       rowDto
-                                                        ?.permanentAddress[0]
+                                                        ?.presentAddress[0]
                                                         ?.strThana,
                                                   },
                                                   postOffice: {
@@ -869,7 +905,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                                                         ?.strPostOffice,
                                                   },
                                                   postCode:
-                                                    rowDto?.permanentAddress[0]
+                                                    rowDto?.presentAddress[0]
                                                       ?.strZipOrPostCode,
                                                   address:
                                                     rowDto?.presentAddress[0]
@@ -941,10 +977,10 @@ function PresentAddress({ getData, rowDto, empId }) {
                                                 },
                                                 policeStation: {
                                                   value:
-                                                    rowDto?.permanentAddress[0]
+                                                    rowDto?.presentAddress[0]
                                                       ?.intThanaId,
                                                   label:
-                                                    rowDto?.permanentAddress[0]
+                                                    rowDto?.presentAddress[0]
                                                       ?.strThana,
                                                 },
                                                 postOffice: {
@@ -956,7 +992,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                                                       ?.strPostOffice,
                                                 },
                                                 postCode:
-                                                  rowDto?.permanentAddress[0]
+                                                  rowDto?.presentAddress[0]
                                                     ?.strZipOrPostCode,
                                                 address:
                                                   rowDto?.presentAddress[0]
