@@ -13,6 +13,7 @@ export const fetchPendingApprovals = async ({
   setTotalRecords,
   departmentId,
   designationId,
+  waitingStage,
   searchText,
   page,
 }) => {
@@ -32,13 +33,14 @@ export const fetchPendingApprovals = async ({
     if (searchText) params.search = searchText;
     if (designationId) params.designationId = designationId;
     if (departmentId) params.departmentId = departmentId;
+    if (waitingStage) params.waitingStage = waitingStage;
 
     const response = await axios.get(
       `/Approval/GetAllPendingApplicationsForApproval`,
       { params }
     );
 
-    setData(Array.isArray(response.data?.data) ? response.data?.data : []);
+    setData(Array.isArray(response.data?.data) ? response.data : []);
     setTotalRecords(response.data?.totalCount || 0);
   } catch (error) {
     toast.error("Failed to fetch approvals.");
