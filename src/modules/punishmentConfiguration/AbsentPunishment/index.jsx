@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AbsentPunishmentFilters from "./components/filter/AbsentPunishmentFilters";
 import useAbsentPunishment from "./hooks/useAbsentPunishment";
+import { toast } from "react-toastify";
 
 const AbsentPunishment = () => {
   const dispatch = useDispatch();
@@ -43,13 +44,29 @@ const AbsentPunishment = () => {
       {loading && <Loading />}
       <PCard>
         <PCardHeader
-          title={`Total PF Policy ${data?.totalCount || 0}`}
+          title={`Total Absent Punishment ${data?.totalCount || 0}`}
           // onSearch={(e) => {
           //   form.setFieldsValue({
           //     search: e?.target?.value,
           //   });
           //   fetchPfPolicy({ search: e.target.value });
           // }}
+          buttonList={[
+            {
+              type: "primary",
+              content: "Create New",
+              icon: "plus",
+              onClick: () => {
+                if (permission?.isCreate) {
+                  history.push(
+                    "/administration/punishmentConfiguration/absentPunishment/create"
+                  );
+                } else {
+                  toast.warn("You don't have permission");
+                }
+              },
+            },
+          ]}
         />
         <PCardBody className="mb-3">
           <AbsentPunishmentFilters form={form} />
