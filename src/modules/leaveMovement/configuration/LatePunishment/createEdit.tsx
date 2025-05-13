@@ -251,7 +251,7 @@ const CreateEditLatePunishmentConfig = () => {
               }}
               onClick={() => {
                 const filterData = data.filter(
-                  (item: any) => item.id !== rec.id
+                  (item: any) => item.idx !== rec.idx
                 );
                 setData(filterData);
               }}

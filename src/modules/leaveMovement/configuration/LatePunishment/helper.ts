@@ -351,7 +351,7 @@ export const addHandler = (setData: any, data: DataState, values: any) => {
   setData([
     ...data,
     {
-      id: crypto.randomUUID(),
+      idx: crypto.randomUUID(),
       policyName: values.policyName,
       workplace: values.workplace?.label || values.workplace,
       workplaceId: values.workplace?.value || null,

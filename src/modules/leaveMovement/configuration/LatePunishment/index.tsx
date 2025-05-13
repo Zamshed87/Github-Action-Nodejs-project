@@ -1,6 +1,7 @@
+import { EyeInvisibleOutlined } from "@ant-design/icons";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
 import { PModal } from "Components/Modal";
-import { Form, Tooltip } from "antd";
+import { Form, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -33,7 +34,7 @@ const LatePunishmentConfig = () => {
     }
   ) => {
     getlatePunishment(
-      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`
+      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
     );
   };
   useEffect(() => {
@@ -56,44 +57,85 @@ const LatePunishmentConfig = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Level of Leadership",
-      dataIndex: "levelOfLeadershipName",
+      title: "Policy Name",
+      dataIndex: "name",
     },
     {
-      title: "KPI Score",
+      title: "Workplace",
       dataIndex: "percentageOfKPI",
     },
     {
-      title: "BAR Score",
+      title: "Employment Type",
       dataIndex: "percentageOfBAR",
     },
     {
-      title: "Action",
-      dataIndex: "letterGenerateId",
-      render: (rec: any) => (
+      title: "Status",
+      dataIndex: "status",
+      render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"Edit"}>
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-                backgroundColor: "var(--green)",
-                color: "white",
+          <Tooltip
+            placement="bottom"
+            title={rec?.isActive ? "Inactive" : "Active"}
+          >
+            <Switch
+              size="small"
+              checked={rec?.isActive}
+              onChange={() => {
+                // updateTrainerInfo(
+                //   form,
+                //   profileData,
+                //   setLoading,
+                //   rec,
+                //   true,
+                //   () => {
+                //     landingApiCall();
+                //   }
+                // );
               }}
-              className="btn"
-              type="button"
-              onClick={() => {
-                // setRowData(rec);
-                // setIsScoreSettings(() => ({ open: true, type: "EC" }));
-              }}
-            >
-              Score Setup
-            </button>
+            />
           </Tooltip>
         </Flex>
       ),
       align: "center",
+      width: 40,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip placement="bottom" title="Edit">
+            <EyeInvisibleOutlined
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {}}
+            />
+          </Tooltip>
+
+          {/* <Tooltip placement="bottom" title="Delete">
+                <DeleteOutlined
+                  style={{
+                    color: "red",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    margin: "0 5px",
+                  }}
+                  onClick={() => {
+                    deleteTrainingType(rec, setLoading, () => {
+                      landingApiCall();
+                      form.resetFields();
+                    });
+                  }}
+                />
+              </Tooltip> */}
+        </Flex>
+      ),
+      align: "center",
+      width: 30,
     },
   ];
 
