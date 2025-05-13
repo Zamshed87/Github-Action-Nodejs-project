@@ -1,5 +1,4 @@
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -126,7 +125,11 @@ const SalaryPayslipReport = () => {
           target="_blank"
           onClick={() => {
             getPDFAction(
-              `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${employeeId}&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intYearId=${values?.intYear}`,
+              `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${
+                values?.employee?.value || 0
+              }&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${
+                values?.adviceName?.value || 0
+              }&intYearId=${values?.intYear}`,
               setLoading
             );
           }}
@@ -149,7 +152,11 @@ const SalaryPayslipReport = () => {
           target="_blank"
           onClick={() => {
             getPDFAction(
-              `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeIdBangla&intEmployeeId=${employeeId}&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intYearId=${values?.intYear}`,
+              `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeIdBangla&intEmployeeId=${
+                values?.employee?.value || 0
+              }&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${
+                values?.adviceName?.value || 0
+              }&intYearId=${values?.intYear}`,
               setLoading
             );
           }}
