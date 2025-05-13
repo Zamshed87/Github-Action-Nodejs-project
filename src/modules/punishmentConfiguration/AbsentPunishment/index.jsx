@@ -59,7 +59,7 @@ const AbsentPunishment = () => {
               onClick: () => {
                 if (permission?.isCreate) {
                   history.push(
-                    "/administration/punishmentConfiguration/absentPunishment/create"
+                    "/administration/punishmentConfiguration/absentPunishment/configuration"
                   );
                 } else {
                   toast.warn("You don't have permission");

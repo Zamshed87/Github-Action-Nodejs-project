@@ -263,6 +263,9 @@ import PayscaleLanding from "modules/PayrollManagementSytem/payscale";
 const AbsentPunishment = lazy(() =>
   import("../modules/punishmentConfiguration/AbsentPunishment/index.jsx")
 );
+const AbsentPunishmentConfiguration = lazy(() =>
+  import("../modules/punishmentConfiguration/AbsentPunishment/components/absentPunishmentConfiguration/index.jsx")
+);
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
 import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
@@ -3235,6 +3238,10 @@ export const routingList = [
   {
     path: "/administration/punishmentConfiguration/absentPunishment",
     component: AbsentPunishment,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment/configuration",
+    component: AbsentPunishmentConfiguration,
   },
   {
     path: "/administration/payrollConfiguration/jobClass",
