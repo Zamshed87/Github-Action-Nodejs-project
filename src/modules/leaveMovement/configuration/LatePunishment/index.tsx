@@ -1,4 +1,5 @@
-import { EyeInvisibleOutlined } from "@ant-design/icons";
+import { EyeFilled, EyeInvisibleOutlined } from "@ant-design/icons";
+import { ExtensionRounded } from "@mui/icons-material";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
 import { PModal } from "Components/Modal";
 import { Form, Switch, Tooltip } from "antd";
@@ -104,8 +105,8 @@ const LatePunishmentConfig = () => {
       dataIndex: "action",
       render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title="Edit">
-            <EyeInvisibleOutlined
+          <Tooltip placement="bottom" title="View">
+            <EyeFilled
               style={{
                 color: "green",
                 fontSize: "14px",
@@ -116,22 +117,17 @@ const LatePunishmentConfig = () => {
             />
           </Tooltip>
 
-          {/* <Tooltip placement="bottom" title="Delete">
-                <DeleteOutlined
-                  style={{
-                    color: "red",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    margin: "0 5px",
-                  }}
-                  onClick={() => {
-                    deleteTrainingType(rec, setLoading, () => {
-                      landingApiCall();
-                      form.resetFields();
-                    });
-                  }}
-                />
-              </Tooltip> */}
+          <Tooltip placement="bottom" title="Extend">
+            <ExtensionRounded
+              style={{
+                color: "green",
+                fontSize: "14px",
+                cursor: "pointer",
+                margin: "0 5px",
+              }}
+              onClick={() => {}}
+            />
+          </Tooltip>
         </Flex>
       ),
       align: "center",
@@ -162,7 +158,7 @@ const LatePunishmentConfig = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={latePunishment?.data || []}
+              data={latePunishment || []}
               loading={latePunishmentLoader}
               header={header}
               pagination={{
