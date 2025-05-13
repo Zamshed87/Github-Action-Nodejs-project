@@ -721,8 +721,8 @@ export const columnsMovement = (page) => [
     render: (time) => formatTime12Hour(time),
   },
   {
-    title: "Remarks",
-    dataIndex: ["applicationInformation", "remarks"],
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
   },
   {
     title: "Waiting Stage",
