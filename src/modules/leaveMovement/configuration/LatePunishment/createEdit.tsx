@@ -12,7 +12,7 @@ import {
 } from "Components";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useParams as UseParams } from "react-router-dom";
 
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -42,7 +42,8 @@ const CreateEditLatePunishmentConfig = () => {
   const empDesignationDDL = useApiRequest([]);
   const [leaveTypeDDL, getleaveTypeDDL, leaveTypeDDLLoader, setleaveTypeDDL] =
     useAxiosGet();
-  const params = useParams();
+  const params = useParams<{ type?: string }>();
+  alert(params.type);
   // redux
   const { profileData } = useSelector(
     (state: { auth: { profileData: any } }) => state?.auth,

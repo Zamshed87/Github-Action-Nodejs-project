@@ -63,11 +63,11 @@ const LatePunishmentConfig = () => {
     },
     {
       title: "Workplace",
-      dataIndex: "percentageOfKPI",
+      dataIndex: "workplace",
     },
     {
       title: "Employment Type",
-      dataIndex: "percentageOfBAR",
+      dataIndex: "employmentTypes",
     },
     {
       title: "Status",
@@ -78,22 +78,7 @@ const LatePunishmentConfig = () => {
             placement="bottom"
             title={rec?.isActive ? "Inactive" : "Active"}
           >
-            <Switch
-              size="small"
-              checked={rec?.isActive}
-              onChange={() => {
-                // updateTrainerInfo(
-                //   form,
-                //   profileData,
-                //   setLoading,
-                //   rec,
-                //   true,
-                //   () => {
-                //     landingApiCall();
-                //   }
-                // );
-              }}
-            />
+            <Switch size="small" checked={rec?.isActive} onChange={() => {}} />
           </Tooltip>
         </Flex>
       ),
@@ -106,27 +91,35 @@ const LatePunishmentConfig = () => {
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Tooltip placement="bottom" title="View">
-            <EyeFilled
+            <button
               style={{
                 color: "green",
-                fontSize: "14px",
+                fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
+                border: "none",
               }}
               onClick={() => {}}
-            />
+            >
+              View
+            </button>
           </Tooltip>
-
+          |
           <Tooltip placement="bottom" title="Extend">
-            <ExtensionRounded
+            <button
               style={{
                 color: "green",
-                fontSize: "14px",
+                fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
+                border: "none",
               }}
-              onClick={() => {}}
-            />
+              onClick={() => {
+                history.push("/administration/latePunishmentPolicy/extend");
+              }}
+            >
+              Extend
+            </button>
           </Tooltip>
         </Flex>
       ),
