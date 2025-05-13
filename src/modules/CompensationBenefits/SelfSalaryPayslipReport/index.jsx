@@ -1,5 +1,4 @@
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -18,7 +17,7 @@ import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { getPDFAction } from "../../../utility/downloadFile";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { customStyles } from "../../../utility/selectCustomStyle";
-import { Button, Dropdown, Space } from "antd";
+import { Dropdown, Space } from "antd";
 
 const initialValues = {
   date: moment().format("YYYY-MM"),
@@ -40,7 +39,7 @@ const validationSchema = Yup.object().shape({
 const SelfSalaryPayslipReport = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { employeeId, orgId, buId, wgId } = useSelector(
+  const { employeeId, orgId, buId, wgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -126,7 +125,7 @@ const SelfSalaryPayslipReport = () => {
         </a>
       ),
     },
-    {
+    intAccountId === 14 && {
       key: "2",
       label: (
         <a

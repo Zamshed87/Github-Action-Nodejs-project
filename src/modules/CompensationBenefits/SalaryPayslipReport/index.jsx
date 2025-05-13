@@ -51,7 +51,7 @@ const validationSchema = Yup.object().shape({
 const SalaryPayslipReport = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { orgId, wgId, buId, employeeId } = useSelector(
+  const { orgId, wgId, buId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -145,7 +145,7 @@ const SalaryPayslipReport = () => {
         </a>
       ),
     },
-    {
+    intAccountId === 14 && {
       key: "2",
       label: (
         <a
