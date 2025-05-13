@@ -401,7 +401,7 @@ export const createEditLatePunishmentConfig = async (
 ) => {
   setLoading(true);
   try {
-    const { orgId, buId, wgId, wId, employeeId, accountId } = profileData;
+    const { orgId, buId, wgId, wId, employeeId, intAccountId } = profileData;
     const values = form.getFieldsValue(true);
 
     const payload = mapLatePunishmentPayload(
@@ -412,7 +412,7 @@ export const createEditLatePunishmentConfig = async (
       buId,
       wgId,
       wId,
-      accountId
+      intAccountId
     );
     const res = await axios.post(`/LatePunishmentpolicy`, payload);
     form.resetFields();
