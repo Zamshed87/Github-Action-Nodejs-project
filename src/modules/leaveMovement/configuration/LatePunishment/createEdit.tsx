@@ -386,7 +386,7 @@ const CreateEditLatePunishmentConfig = () => {
                       .validateFields()
                       .then(() => {
                         const values = form.getFieldsValue(true);
-                        addHandler(setData, data, values);
+                        addHandler(setData, data, values, form);
                       })
                       .catch(() => {});
                   }}

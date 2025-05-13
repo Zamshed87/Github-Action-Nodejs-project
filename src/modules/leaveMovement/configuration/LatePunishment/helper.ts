@@ -336,7 +336,12 @@ export const LatePunishment = (
   ];
 };
 
-export const addHandler = (setData: any, data: DataState, values: any) => {
+export const addHandler = (
+  setData: any,
+  data: DataState,
+  values: any,
+  form: any
+) => {
   if (values?.minimumLateTime > values?.maximumLateTime) {
     return toast.error(
       "Maximum Late Time should be bigger than Minimum Late Time"
@@ -388,7 +393,7 @@ export const addHandler = (setData: any, data: DataState, values: any) => {
       amountPercentage: values.amountPercentage,
     },
   ]);
-  // form.resetFields();
+  form.resetFields();
 };
 
 export const createEditLatePunishmentConfig = async (
