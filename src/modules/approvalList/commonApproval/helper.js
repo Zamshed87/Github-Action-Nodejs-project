@@ -9,6 +9,7 @@ export const fetchPendingApprovals = async ({
   wgId,
   wId,
   employeeId,
+  employeeCode,
   setData,
   setTotalRecords,
   departmentId,
@@ -34,6 +35,7 @@ export const fetchPendingApprovals = async ({
     if (designationId) params.designationId = designationId;
     if (departmentId) params.departmentId = departmentId;
     if (waitingStage) params.waitingStage = waitingStage;
+    if (employeeCode) params.employeeCode = employeeCode;
 
     const response = await axios.get(
       `/Approval/GetAllPendingApplicationsForApproval`,

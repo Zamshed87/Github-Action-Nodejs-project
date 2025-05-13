@@ -244,6 +244,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
         res.forEach((item: any, i: number) => {
           res[i].label = item?.employeeName;
           res[i].value = item?.employeeId;
+          res[i].employeeCode = item?.employeeCode;
         });
       },
     });
