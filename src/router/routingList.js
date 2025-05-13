@@ -2554,7 +2554,7 @@ export const routingList = [
     component: LatePunishmentConfig,
   },
   {
-    path: "/administration/latePunishmentPolicy/:type",
+    path: "/administration/latePunishmentPolicy/:type/:id",
     component: CreateEditLatePunishmentConfig,
   },
   // {

@@ -26,10 +26,11 @@ import {
 import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-import { DataState, LeaveDeductionDataState } from "./type";
+import { DataState, LatePunishmentData, LeaveDeductionDataState } from "./type";
 import RangeDatePicker from "./RangeDatePicker";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined } from "@mui/icons-material";
+import View from "./view";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -42,8 +43,16 @@ const CreateEditLatePunishmentConfig = () => {
   const empDesignationDDL = useApiRequest([]);
   const [leaveTypeDDL, getleaveTypeDDL, leaveTypeDDLLoader, setleaveTypeDDL] =
     useAxiosGet();
-  const params = useParams<{ type?: string }>();
-  alert(params.type);
+  const [
+    singleLatePunPolicy,
+    getSingleLatePunPolicy,
+    singleLatePunPolicyLoader,
+    setSingleLatePunPolicy,
+  ] = useAxiosGet();
+  const params = useParams<{ type?: string; id?: string }>() as {
+    type?: string;
+    id?: string;
+  };
   // redux
   const { profileData } = useSelector(
     (state: { auth: { profileData: any } }) => state?.auth,
@@ -142,6 +151,20 @@ const CreateEditLatePunishmentConfig = () => {
       document.title = "PeopleDesk";
     };
     // have a need new useEffect to set the title
+    if (params?.type === "extend" || params?.type === "view") {
+      getSingleLatePunPolicy(
+        `/LatePunishmentpolicy/${params?.id}`,
+        (data: any) => {
+          // Populate the form with the fetched data
+          // form.setFieldsValue({
+          //   lateCalculationType: data?.name,
+          // });
+
+          setData(data?.elements || []); // need to modify
+          setLeaveDeductionData(data?.leaveDeductions || []);
+        }
+      );
+    }
 
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
@@ -338,7 +361,7 @@ const CreateEditLatePunishmentConfig = () => {
                   // const values = form.getFieldsValue(true);
 
                   form
-                    .validateFields()
+                    .validateFields([])
                     .then(() => {
                       createEditLatePunishmentConfig(
                         profileData,
@@ -354,47 +377,53 @@ const CreateEditLatePunishmentConfig = () => {
               },
             ]}
           />
-          <PCardBody>
-            {" "}
-            <CommonForm
-              formConfig={LatePunishment(
-                workplaceDDL,
-                getEmploymentType,
-                getEmployeDepartment,
-                getEmployeDesignation,
-                employmentTypeDDL?.data,
-                empDepartmentDDL?.data,
-                empDesignationDDL?.data,
-                <RangeDatePicker name={"dayRange"} />,
-                <CustomCheckbox />,
-                {
-                  lateCalculationType,
-                  punishmentType,
-                  leaveDeductType,
-                  amountDeductFrom,
-                }
-              )}
-              form={form}
-            >
-              {/* Add appropriate children here */}
-              <Col md={6} sm={24}>
-                <PButton
-                  style={{ marginTop: "22px" }}
-                  type="primary"
-                  content={"Add"}
-                  onClick={() => {
-                    form
-                      .validateFields()
-                      .then(() => {
-                        const values = form.getFieldsValue(true);
-                        addHandler(setData, data, values, form);
-                      })
-                      .catch(() => {});
-                  }}
-                />
-              </Col>
-            </CommonForm>
-          </PCardBody>
+          {params?.type !== "view" ? (
+            <PCardBody>
+              {" "}
+              <CommonForm
+                formConfig={LatePunishment(
+                  workplaceDDL,
+                  getEmploymentType,
+                  getEmployeDepartment,
+                  getEmployeDesignation,
+                  employmentTypeDDL?.data,
+                  empDepartmentDDL?.data,
+                  empDesignationDDL?.data,
+                  <RangeDatePicker name={"dayRange"} />,
+                  <CustomCheckbox />,
+                  {
+                    lateCalculationType,
+                    punishmentType,
+                    leaveDeductType,
+                    amountDeductFrom,
+                  }
+                )}
+                form={form}
+              >
+                {/* Add appropriate children here */}
+                <Col md={6} sm={24}>
+                  <PButton
+                    style={{ marginTop: "22px" }}
+                    type="primary"
+                    content={"Add"}
+                    onClick={() => {
+                      form
+                        .validateFields()
+                        .then(() => {
+                          const values = form.getFieldsValue(true);
+                          addHandler(setData, data, values, form);
+                        })
+                        .catch(() => {});
+                    }}
+                  />
+                </Col>
+              </CommonForm>
+            </PCardBody>
+          ) : (
+            <PCardBody>
+              <View data={singleLatePunPolicy} />
+            </PCardBody>
+          )}
         </PCard>
         {data?.length > 0 && (
           <DataTable
@@ -468,6 +497,19 @@ const CreateEditLatePunishmentConfig = () => {
               </PCard>
             </div>
           )}
+        {leaveDeductionData?.length > 0 && (
+          <>
+            <center>
+              <h1>Leave Deduction Sequence</h1>
+            </center>
+            <DataTable
+              bordered
+              data={leaveDeductionData || []}
+              loading={false}
+              header={headerLeaveDeduction}
+            />
+          </>
+        )}
       </PForm>
     </div>
   ) : (

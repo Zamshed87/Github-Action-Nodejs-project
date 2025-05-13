@@ -10,6 +10,7 @@ import { useEffect, useMemo } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import View from "./view";
 
 const LatePunishmentConfig = () => {
   const [latePunishment, getlatePunishment, latePunishmentLoader] =
@@ -99,7 +100,11 @@ const LatePunishmentConfig = () => {
                 margin: "0 5px",
                 border: "none",
               }}
-              onClick={() => {}}
+              onClick={() => {
+                history.push(
+                  "/administration/latePunishmentPolicy/view/" + rec?.id
+                );
+              }}
             >
               View
             </button>
@@ -115,7 +120,9 @@ const LatePunishmentConfig = () => {
                 border: "none",
               }}
               onClick={() => {
-                history.push("/administration/latePunishmentPolicy/extend");
+                history.push(
+                  "/administration/latePunishmentPolicy/extend/" + rec?.id
+                );
               }}
             >
               Extend
@@ -142,7 +149,7 @@ const LatePunishmentConfig = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/administration/latePunishmentPolicy/create");
+                  history.push("/administration/latePunishmentPolicy/create/1");
                 },
               },
             ]}
@@ -169,13 +176,17 @@ const LatePunishmentConfig = () => {
       {/* Modal */}
       <PModal
         open={false} // have to change
-        title={"Training Requisition View"}
+        title={"View"}
         width={1000}
         onCancel={() => {
-          //   setViewModalModal(false);
+          // setViewModalModal(false);
         }}
         maskClosable={false}
-        components={<></>}
+        components={
+          <>
+            <View />
+          </>
+        }
       />
     </div>
   ) : (

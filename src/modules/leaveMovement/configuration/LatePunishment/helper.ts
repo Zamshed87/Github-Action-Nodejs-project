@@ -125,7 +125,7 @@ export const LatePunishment = (
       varname: "workplace",
       ddl: workplaceDDL,
       placeholder: "Select workplace",
-      // rules: [{ required: true, message: "Workplace is required!" }],
+      rules: [{ required: true, message: "Workplace is required!" }],
       onChange: (value: any) => {
         getEmploymentType();
         getEmployeDepartment();
@@ -140,7 +140,7 @@ export const LatePunishment = (
       ddl: employmentTypeDDL || [],
       mode: "multiple",
       placeholder: "Select employment type",
-      // rules: [{ required: true, message: "Employment Type is required!" }],
+      rules: [{ required: true, message: "Employment Type is required!" }],
       col: 6,
     },
     {
@@ -150,7 +150,7 @@ export const LatePunishment = (
       ddl: empDesignationDDL || [],
       placeholder: "Select designation",
       mode: "multiple",
-      // rules: [{ required: true, message: "Designation is required!" }],
+      rules: [{ required: true, message: "Designation is required!" }],
       col: 6,
     },
     {
@@ -160,7 +160,7 @@ export const LatePunishment = (
       ddl: empDepartmentDDL || [],
       mode: "multiple",
       placeholder: "Select department",
-      // rules: [{ required: true, message: "Department is required!" }],
+      rules: [{ required: true, message: "Department is required!" }],
       col: 6,
     },
     {
