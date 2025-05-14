@@ -336,6 +336,35 @@ export const LatePunishment = (
   ];
 };
 
+function eachDayDuplicacyCheck(data: DataState, values: any) {
+  for (const policy of data) {
+    if (values?.isConsecutiveDay) {
+      const isMinLateOverwritten =
+        values.minimumLateTime !== policy.minimumLateTime;
+      const isMaxLateOverwritten =
+        values.maximumLateTime !== policy.maximumLateTime;
+
+      if (isMinLateOverwritten || isMaxLateOverwritten) {
+        toast.error(
+          "You cannot overwrite minimum or maximum late time when 'Is Consecutive Day' is checked."
+        );
+        return false;
+      }
+
+      // Ensure eachDayCountBy object exists
+      if (!values.eachDayCountBy) {
+        values.eachDayCountBy = {};
+      }
+
+      // Overwrite only if validation passed
+      values.eachDayCountBy.level = policy.eachDayCountBy;
+      values.eachDayCountBy.value = policy.eachDayCountById;
+    }
+  }
+
+  return true;
+}
+
 export const addHandler = (
   setData: any,
   data: DataState,
@@ -346,6 +375,12 @@ export const addHandler = (
     return toast.error(
       "Maximum Late Time should be bigger than Minimum Late Time"
     );
+  }
+  if (
+    values.lateCalculationType?.value === 1 &&
+    !eachDayDuplicacyCheck(data, values)
+  ) {
+    return null;
   }
   const dayRange: string = values?.dayRange
     ?.map((date: string) => new Date(date).getUTCDate())
