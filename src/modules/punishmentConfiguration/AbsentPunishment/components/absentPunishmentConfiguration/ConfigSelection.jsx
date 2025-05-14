@@ -128,7 +128,7 @@ const ConfigSelection = ({ form }) => {
           </Col>
           <Col md={3} sm={12} xs={24}>
             <PInput
-            style={{ marginTop: "23px" }}
+              style={{ marginTop: "23px" }}
               label="Is Consecutive Day?"
               type="checkbox"
               layout="horizontal"
@@ -169,10 +169,12 @@ const ConfigSelection = ({ form }) => {
               name="amountDeductionAmountOrPercentage"
               label="% of Amount (Based on 1 day)/ Fixed Amount"
               placeholder="% of Amount (Based on 1 day)/ Fixed Amount"
+              min={1}
               rules={[
                 {
                   required: true,
-                  message: "% of Amount (Based on 1 day)/ Fixed Amount Is Required",
+                  message:
+                    "% of Amount (Based on 1 day)/ Fixed Amount Is Required",
                 },
               ]}
             />
