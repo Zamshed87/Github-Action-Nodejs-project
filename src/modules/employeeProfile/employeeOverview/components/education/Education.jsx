@@ -109,6 +109,7 @@ function Education({
   }, []);
 
   const saveHandler = (values, cb) => {
+    console.log({ values });
     if (singleData) {
       const callback = () => {
         cb();
@@ -168,11 +169,15 @@ function Education({
         organizationName: "",
         startDate:
           orgId === 15
-            ? `${values?.fromDate}-01-01`
+            ? values?.fromDate?.includes("-")
+              ? values.fromDate
+              : `${values?.fromDate}-01-01`
             : values?.fromDate || todayDate(),
         endDate:
           orgId === 15
-            ? `${values?.toDate}-01-01`
+            ? values?.toDate?.includes("-")
+              ? values.toDate
+              : `${values?.toDate}-01-01`
             : values?.toDate || todayDate(),
         expirationDate: todayDate(),
         name: "",
