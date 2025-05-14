@@ -1,4 +1,5 @@
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
+import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -125,7 +126,7 @@ const SelfSalaryPayslipReport = () => {
         </a>
       ),
     },
-    intAccountId === 14 && {
+    {
       key: "2",
       label: (
         <a
@@ -161,28 +162,58 @@ const SelfSalaryPayslipReport = () => {
           <div className="table-card-heading">
             <div className="d-flex align-items-center my-1">
               <h2>Salary Pay Slip Report</h2>
-              <Space direction="vertical" className="ml-2">
-                <Space wrap>
-                  <Dropdown menu={{ items }} placement="bottom" arrow>
-                    <span
-                      style={{
-                        border: "transparent",
-                        width: "30px",
-                        height: "30px",
-                        background: "#f2f2f7",
-                        borderRadius: "100px",
-                      }}
-                    >
-                      <LocalPrintshopIcon
-                        sx={{
-                          color: "#637381",
-                          fontSize: "16px",
+              {intAccountId === 14 ? (
+                <Space direction="vertical" className="ml-2">
+                  <Space wrap>
+                    <Dropdown menu={{ items }} placement="bottom" arrow>
+                      <span
+                        style={{
+                          border: "transparent",
+                          width: "30px",
+                          height: "30px",
+                          background: "#f2f2f7",
+                          borderRadius: "100px",
                         }}
-                      />
-                    </span>
-                  </Dropdown>
+                      >
+                        <LocalPrintshopIcon
+                          sx={{
+                            color: "#637381",
+                            fontSize: "16px",
+                          }}
+                        />
+                      </span>
+                    </Dropdown>
+                  </Space>
                 </Space>
-              </Space>
+              ) : (
+                <Tooltip title="Print" arrow>
+                  <button
+                    className="btn-save ml-2"
+                    type="button"
+                    onClick={() => {
+                      getPDFAction(
+                        `/PdfAndExcelReport/EmployeePaySlipReport?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${employeeId}&intMonthId=${values?.inMonth}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intYearId=${values?.intYear}`,
+                        setLoading
+                      );
+                    }}
+                    disabled={viewPaySlipData?.length <= 0}
+                    style={{
+                      border: "transparent",
+                      width: "30px",
+                      height: "30px",
+                      background: "#f2f2f7",
+                      borderRadius: "100px",
+                    }}
+                  >
+                    <LocalPrintshopIcon
+                      sx={{
+                        color: "#637381",
+                        fontSize: "16px",
+                      }}
+                    />
+                  </button>
+                </Tooltip>
+              )}
             </div>
           </div>
           <div className="table-card-body">
