@@ -109,6 +109,7 @@ function Education({
   }, []);
 
   const saveHandler = (values, cb) => {
+    console.log({ values });
     if (singleData) {
       const callback = () => {
         cb();
