@@ -31,6 +31,7 @@ import RangeDatePicker from "./RangeDatePicker";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined } from "@mui/icons-material";
 import View from "./view";
+import { toast } from "react-toastify";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -339,6 +340,10 @@ const CreateEditLatePunishmentConfig = () => {
     );
   };
 
+  const isDeductionSeqShow = (): boolean => {
+    return data?.length > 0 && data.some((item) => item.punishmentTypeId === 1);
+  };
+
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
   const punishmentType = Form.useWatch("punishmentType", form);
   const leaveDeductType = Form.useWatch("leaveDeductType", form);
@@ -361,8 +366,13 @@ const CreateEditLatePunishmentConfig = () => {
                       // icon:
                       //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
-                        // const values = form.getFieldsValue(true);
-
+                        if (
+                          isDeductionSeqShow() &&
+                          leaveDeductionData?.length === 0
+                        ) {
+                          toast.error("Please set-up leave deduction sequence");
+                          return;
+                        }
                         form
                           .validateFields([])
                           .then(() => {
@@ -444,68 +454,67 @@ const CreateEditLatePunishmentConfig = () => {
           />
         )}
 
-        {data?.length > 0 &&
-          data.some((item) => item.punishmentTypeId === 1) && (
-            <div className="mt-3 mb-5">
-              <PCard>
-                <PCardBody>
-                  <center>
-                    <h1>Leave Deduction Sequence</h1>
-                  </center>
+        {isDeductionSeqShow() && (
+          <div className="mt-3 mb-5">
+            <PCard>
+              <PCardBody>
+                <center>
+                  <h1>Leave Deduction Sequence</h1>
+                </center>
 
-                  <Row gutter={[10, 2]}>
-                    <Col md={6} sm={24}>
-                      <PSelect
-                        options={leaveTypeDDL || []}
-                        name="leaveType"
-                        label="Leave Type"
-                        placeholder="Leave Type"
-                        onChange={(value, op) => {
-                          form.setFieldsValue({
-                            leaveType: op,
-                          });
-                        }}
-                        rules={[
-                          {
-                            required: true,
-                            message: "Leave Type is required",
-                          },
-                        ]}
-                      />
-                    </Col>
-                    <Col md={4} sm={24}>
-                      <PButton
-                        style={{ marginTop: "22px" }}
-                        type="primary"
-                        content={"Add"}
-                        onClick={() => {
-                          form
-                            .validateFields(["leaveType"])
-                            .then(() => {
-                              const values = form.getFieldsValue(true);
-                              addLeaveDeductions(
-                                setLeaveDeductionData,
-                                leaveDeductionData,
-                                values
-                              );
-                            })
-                            .catch(() => {});
-                        }}
-                      />
-                    </Col>
-                    <Col md={12} sm={24}>
-                      <DataTable
-                        bordered
-                        data={leaveDeductionData || []}
-                        loading={false}
-                        header={headerLeaveDeduction}
-                      />
-                    </Col>
-                  </Row>
-                </PCardBody>
-              </PCard>
-            </div>
-          )}
+                <Row gutter={[10, 2]}>
+                  <Col md={6} sm={24}>
+                    <PSelect
+                      options={leaveTypeDDL || []}
+                      name="leaveType"
+                      label="Leave Type"
+                      placeholder="Leave Type"
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          leaveType: op,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Leave Type is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={4} sm={24}>
+                    <PButton
+                      style={{ marginTop: "22px" }}
+                      type="primary"
+                      content={"Add"}
+                      onClick={() => {
+                        form
+                          .validateFields(["leaveType"])
+                          .then(() => {
+                            const values = form.getFieldsValue(true);
+                            addLeaveDeductions(
+                              setLeaveDeductionData,
+                              leaveDeductionData,
+                              values
+                            );
+                          })
+                          .catch(() => {});
+                      }}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <DataTable
+                      bordered
+                      data={leaveDeductionData || []}
+                      loading={false}
+                      header={headerLeaveDeduction}
+                    />
+                  </Col>
+                </Row>
+              </PCardBody>
+            </PCard>
+          </div>
+        )}
         {params?.type === "view" && leaveDeductionData?.length > 0 && (
           <>
             <center>
