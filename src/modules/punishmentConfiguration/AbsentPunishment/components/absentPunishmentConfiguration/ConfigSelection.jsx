@@ -3,13 +3,15 @@ import { PButton, PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
 import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 import DayRangePicker from "Components/PForm/Day/DayRangePicker";
-const dayOptions = Array.from({ length: 31 }, (_, i) => {
-  const day = i + 1;
-  return {
-    label: day.toString(),
-    value: day,
-  };
-});
+
+// const dayOptions = Array.from({ length: 31 }, (_, i) => {
+//   const day = i + 1;
+//   return {
+//     label: day.toString(),
+//     value: day,
+//   };
+// });
+
 const ConfigSelection = ({ form }) => {
   const {
     workplaceDDL,
@@ -21,9 +23,9 @@ const ConfigSelection = ({ form }) => {
     loadingACT,
     loadingADT,
   } = useConfigSelectionHook(form);
-  const employmentTypeList = Form.useWatch("employmentTypeList", form);
+  const eachDayCountBy = Form.useWatch("eachDayCountBy", form);
   const dayRange = Form.useWatch("dayRange", form);
-  console.log(dayRange);
+  console.log(eachDayCountBy, dayRange);
 
   return (
     <>
@@ -115,7 +117,7 @@ const ConfigSelection = ({ form }) => {
       </PCardBody>
       <PCardBody>
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={12} xs={24}>
+          {/* <Col md={4} sm={12} xs={24}>
             <PSelect
               options={dayOptions}
               name="eachDayCountBy"
@@ -128,12 +130,34 @@ const ConfigSelection = ({ form }) => {
                 { required: true, message: "Each Day Count By Is Required" },
               ]}
             />
-          </Col>
+          </Col> */}
+          {/* fake fields to watch live values start */}
+          <Form.Item name="eachDayCountBy" noStyle>
+            <input type="hidden" />
+          </Form.Item>
+
+          <Form.Item name="dayRange" noStyle>
+            <input type="hidden" />
+          </Form.Item>
+          {/* fake fields to watch live values end */}
           <Col md={4} sm={12} xs={24}>
             <DayRangePicker
               type="day"
-              name="eachDayCountBy"
+              name="fakeEachDayCountBy"
               label="Each Day Count by"
+              onChange={(date) => {
+                if (date) {
+                  form.setFieldsValue({
+                    fakeEachDayCountBy: date,
+                    eachDayCountBy: date.format("DD"), // Set only day
+                  });
+                } else {
+                  form.setFieldsValue({
+                    fakeEachDayCountBy: undefined,
+                    eachDayCountBy: undefined,
+                  });
+                }
+              }}
               rules={[
                 { required: true, message: "Each Day Count By Is Required" },
               ]}
@@ -142,8 +166,23 @@ const ConfigSelection = ({ form }) => {
           <Col md={4} sm={12} xs={24}>
             <DayRangePicker
               type="dayRange"
-              name="dayRange"
+              name="fakeDayRange"
               label="Day Range"
+              onChange={(date) => {
+                if (date) {
+                  form.setFieldsValue({
+                    fakeDayRange: [date[0], date[1]],
+                    dayRange: `${date[0].format("DD")} - ${date[1].format(
+                      "DD"
+                    )}`, // Set only day
+                  });
+                } else {
+                  form.setFieldsValue({
+                    fakeDayRange: undefined,
+                    dayRange: undefined,
+                  });
+                }
+              }}
               rules={[{ required: true, message: "Day Range Is Required" }]}
             />
           </Col>
