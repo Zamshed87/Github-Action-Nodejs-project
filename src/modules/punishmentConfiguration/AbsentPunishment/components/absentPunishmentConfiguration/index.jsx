@@ -61,9 +61,7 @@ const AbsentPunishmentConfiguration = () => {
               },
             ]}
           />
-          <PCardBody>
             <ConfigSelection form={form} />
-          </PCardBody>
         </PCard>
         {data?.length > 0 &&
           {

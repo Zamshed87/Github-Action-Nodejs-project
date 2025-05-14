@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
+import { getEnumData } from "common/api/commonApi";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const useConfigSelectionHook = (form) => {
   const {
@@ -10,6 +12,8 @@ const useConfigSelectionHook = (form) => {
   const workplaceDDL = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
+  const [absentCalculationType, getACT, loadingACT, setACT] = useAxiosGet([]);
+  const [absentAmountDeductionType, getADT, loadingADT, setADT] = useAxiosGet([]);
 
   const getWorkplaceDDL = () => {
     workplaceDDL?.action({
@@ -30,7 +34,7 @@ const useConfigSelectionHook = (form) => {
     });
   };
   const getEmploymentTypeDDL = () => {
-    const { workplaceGroup, workplace } = form?.getFieldsValue(true) || {};
+    const { workplace } = form?.getFieldsValue(true) || {};
 
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -38,8 +42,8 @@ const useConfigSelectionHook = (form) => {
       params: {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: workplace?.value ?? wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -60,7 +64,7 @@ const useConfigSelectionHook = (form) => {
         AccountId: orgId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value,
+        IntWorkplaceId: workplace?.value ?? wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -73,6 +77,10 @@ const useConfigSelectionHook = (form) => {
   };
   useEffect(() => {
     getWorkplaceDDL();
+    getEmploymentTypeDDL();
+    getEmployeeDesignation();
+    getACT(getEnumData("AbsentCalculationTypeEnum", setACT));
+    getADT(getEnumData("AbsentAmountDeductionTypeEnum", setADT));
   }, [orgId, buId, wgId, wId]);
 
   return {
@@ -82,6 +90,10 @@ const useConfigSelectionHook = (form) => {
     getEmploymentTypeDDL,
     empDesignationDDL,
     getEmployeeDesignation,
+    absentCalculationType,
+    absentAmountDeductionType,
+    loadingACT,
+    loadingADT,
   };
 };
 
