@@ -428,10 +428,14 @@ const FormCard = ({ propsObj }) => {
               }}
             />
           </>
-          <AttachmentShow
-            intAttachmentId={values?.intAttachmentId}
-            label={"Attachment"}
-          />
+          {attachmentList?.length === 0 && (
+            <div className="mt-2">
+              <AttachmentShow
+                intAttachmentId={values?.intAttachmentId}
+                label={"Attachment"}
+              />
+            </div>
+          )}
         </div>
         <div className="col-lg-12">
           <div>
