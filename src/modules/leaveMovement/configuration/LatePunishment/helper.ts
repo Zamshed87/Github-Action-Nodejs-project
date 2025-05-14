@@ -336,57 +336,67 @@ export const LatePunishment = (
   ];
 };
 
-function eachDayDuplicacyCheck(data: DataState, values: any) {
-  for (const policy of data) {
-    if (values?.isConsecutiveDay) {
-      const isMinLateOverwritten =
-        values.minimumLateTime !== policy.minimumLateTime;
-      const isMaxLateOverwritten =
-        values.maximumLateTime !== policy.maximumLateTime;
+function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
+  const conflictingPolicies = data.filter(
+    (policy) => policy.isConsecutiveDay === values.isConsecutiveDay
+  );
+  for (const policy of conflictingPolicies) {
+    const oldMin = policy.minimumLateTime;
+    const oldMax = policy.maximumLateTime;
+    const newMin = values.minimumLateTime;
+    const newMax = values.maximumLateTime;
 
-      if (isMinLateOverwritten || isMaxLateOverwritten) {
-        toast.error(
-          "You cannot overwrite minimum or maximum late time when 'Is Consecutive Day' is checked."
-        );
-        return false;
-      }
+    const isOverlapping = Math.max(oldMin, newMin) <= Math.min(oldMax, newMax);
 
-      // Ensure eachDayCountBy object exists
-      if (!values.eachDayCountBy) {
-        values.eachDayCountBy = {};
-      }
-
-      // Overwrite only if validation passed
-      values.eachDayCountBy.level = policy.eachDayCountBy;
-      values.eachDayCountBy.value = policy.eachDayCountById;
+    if (isOverlapping) {
+      toast.error(
+        "You cannot set overlapping late time range when 'Is Consecutive Day' is." +
+          values.isConsecutiveDay
+      );
+      return false;
     }
+    console.log(policy.eachDayCountBy, "policy.eachDayCountBy");
+    console.log(policy.eachDayCountById, "policy.eachDayCountById");
+
+    // ✅ Return the updated values directly instead of using form.setFieldsValue
+    return {
+      ...values,
+      eachDayCountBy: {
+        label: policy.eachDayCountBy,
+        value: policy.eachDayCountById,
+      },
+    };
   }
 
-  return true;
+  return values; // no update needed
 }
 
 export const addHandler = (
   setData: any,
   data: DataState,
-  values: any,
+  // values: any,
   form: any
 ) => {
+  let values = form.getFieldsValue(true);
+
   if (values?.minimumLateTime > values?.maximumLateTime) {
     return toast.error(
       "Maximum Late Time should be bigger than Minimum Late Time"
     );
   }
-  if (
-    values.lateCalculationType?.value === 1 &&
-    !eachDayDuplicacyCheck(data, values)
-  ) {
-    return null;
+  if (values.lateCalculationType?.value === 1) {
+    const validated = eachDayDuplicacyCheck(data, values, form);
+
+    if (validated === false) return null;
+
+    values = validated; // 🔁 use updated values
   }
+  console.log(values, "values22");
   const dayRange: string = values?.dayRange
     ?.map((date: string) => new Date(date).getUTCDate())
     .join("-");
 
-  console.log("values.isConsecutiveDay", values.isConsecutiveDay);
+  console.log("values.eachDayCountBy", values.eachDayCountBy?.label);
 
   setData([
     ...data,
