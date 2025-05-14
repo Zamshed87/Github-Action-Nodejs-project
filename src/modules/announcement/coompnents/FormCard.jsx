@@ -417,7 +417,7 @@ const FormCard = ({ propsObj }) => {
                 setAttachmentList,
                 accountId: orgId,
                 tableReferrence: "ANNOUNCEMENT_NOTICE",
-                documentTypeId: 24,
+                documentTypeId: 38,
                 userId: employeeId,
                 buId: buId,
                 maxCount: 20,
@@ -428,10 +428,14 @@ const FormCard = ({ propsObj }) => {
               }}
             />
           </>
-          <AttachmentShow
-            intAttachmentId={values?.intAttachmentId}
-            label={"Attachment"}
-          />
+          {attachmentList?.length === 0 && (
+            <div className="mt-2">
+              <AttachmentShow
+                intAttachmentId={values?.intAttachmentId}
+                label={"Attachment"}
+              />
+            </div>
+          )}
         </div>
         <div className="col-lg-12">
           <div>
