@@ -1,7 +1,11 @@
 import { DatePicker, Form } from "antd";
 import "./style.css";
+import moment from "moment";
 
 const RangeDatePicker = ({ name }: any) => {
+  const currentYear = moment().year();
+  const januaryStart = moment(`${currentYear}-01-01`);
+  const januaryEnd = moment(`${currentYear}-01-31`);
   return name === "dayRange" ? (
     <div className={`PeopleDeskInputWrapper`}>
       {" "}
@@ -30,6 +34,11 @@ const RangeDatePicker = ({ name }: any) => {
           // disabledDate={disabledDate}
           picker={"date"}
           showTime={false}
+          disabledDate={(current) =>
+            current && (current.month() !== 0 || current.year() !== currentYear)
+          }
+          // ✅ Open the calendar in January
+          defaultPickerValue={[januaryStart, januaryStart]}
           popupClassName="single-month-panel"
         />
       </Form.Item>
