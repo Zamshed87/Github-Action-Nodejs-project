@@ -371,8 +371,8 @@ function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
   return values; // no update needed
 }
 
-function isDayRangeOverlappingCheck(data: any[], values: any): boolean {
-  if (!Array.isArray(values?.dayRange)) return false;
+function isDayRangeOverlapping(data: any[], values: any): boolean {
+  // if (!Array.isArray(values?.dayRange)) return false;
 
   const [newStart, newEnd] = [
     new Date(values.dayRange[0]).getUTCDate(),
@@ -418,17 +418,16 @@ export const addHandler = (
   }
   if (
     values.lateCalculationType?.value === 2 &&
-    isDayRangeOverlappingCheck(data, values)
+    isDayRangeOverlapping(data, values)
   ) {
-    return; // 🔁 Stop the form submit
+    return null;
   }
-
   console.log(values, "values22");
   const dayRange: string = values?.dayRange
     ?.map((date: string) => new Date(date).getUTCDate())
     .join("-");
 
-  console.log("data", data);
+  console.log("values.eachDayCountBy", values.eachDayCountBy?.label);
 
   setData([
     ...data,
@@ -450,10 +449,12 @@ export const addHandler = (
       eachDayCountBy: values.eachDayCountBy?.label || values.eachDayCountBy,
       eachDayCountById: values.eachDayCountBy?.value || null,
       dayRange: dayRange,
-      dayRangeId: [
-        new Date(values?.dayRange[0]).getUTCDate(),
-        new Date(values?.dayRange[1]).getUTCDate(),
-      ],
+      dayRangeId: values.dayRange
+        ? [
+            new Date(values.dayRange[0]).getUTCDate(),
+            new Date(values.dayRange[1]).getUTCDate(),
+          ]
+        : [],
       isConsecutiveDay: values.isConsecutiveDay,
       minimumLateTime: values.minimumLateTime || 0,
       maximumLateTime: values.maximumLateTime || 0,
@@ -478,18 +479,18 @@ export const addHandler = (
 
 const fieldsToReset = [
   "lateCalculationType",
-  "eachDayCountBy",
-  "dayRange",
-  "isConsecutiveDay",
-  "minimumLateTime",
-  "maximumLateTime",
-  "calculatedBy",
-  "punishmentType",
-  "leaveDeductType",
-  "leaveDeductQty",
-  "amountDeductFrom",
-  "amountDeductType",
-  "amountPercentage",
+  // "eachDayCountBy",
+  // "dayRange",
+  // "isConsecutiveDay",
+  // "minimumLateTime",
+  // "maximumLateTime",
+  // "calculatedBy",
+  // "punishmentType",
+  // "leaveDeductType",
+  // "leaveDeductQty",
+  // "amountDeductFrom",
+  // "amountDeductType",
+  // "amountPercentage",
 ]; // dynamically computed array
 
 export const createEditLatePunishmentConfig = async (
