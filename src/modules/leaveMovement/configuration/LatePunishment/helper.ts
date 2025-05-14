@@ -338,7 +338,9 @@ export const LatePunishment = (
 
 function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
   const conflictingPolicies = data.filter(
-    (policy) => policy.isConsecutiveDay === values.isConsecutiveDay
+    (policy) =>
+      policy.isConsecutiveDay === values.isConsecutiveDay &&
+      policy.lateCalculationTypeId === 1
   );
   for (const policy of conflictingPolicies) {
     const oldMin = policy.minimumLateTime;
@@ -396,6 +398,26 @@ function isDayRangeOverlapping(data: any[], values: any): boolean {
   return false; // ✅ No conflicts
 }
 
+function isTimeBasedOverlaped(data: any[], values: any): boolean {
+  const conflictingPolicies = data.filter(
+    (policy) => policy.lateCalculationTypeId === 3
+  );
+  for (const policy of conflictingPolicies) {
+    const oldMin = policy.minimumLateTime;
+    const oldMax = policy.maximumLateTime;
+    const newMin = values.minimumLateTime;
+    const newMax = values.maximumLateTime;
+
+    const isOverlapping = Math.max(oldMin, newMin) <= Math.min(oldMax, newMax);
+
+    if (isOverlapping) {
+      toast.error("You cannot set overlapping late time range");
+      return true;
+    }
+  }
+  return false;
+}
+
 export const addHandler = (
   setData: any,
   data: DataState,
@@ -419,6 +441,12 @@ export const addHandler = (
   if (
     values.lateCalculationType?.value === 2 &&
     isDayRangeOverlapping(data, values)
+  ) {
+    return null;
+  }
+  if (
+    values.lateCalculationType?.value === 3 &&
+    isTimeBasedOverlaped(data, values)
   ) {
     return null;
   }
