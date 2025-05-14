@@ -7,7 +7,10 @@ type Props = {
   type?: "day" | "dayRange";
   label?: string;
   rules?: any;
+  format?: string;
   onChange?: (date: any, dateString: any) => void;
+  allowedMonth?: number; // 0 = January
+  allowedYear?: number;
   [key: string]: any; // Allow other DatePicker props
 };
 
@@ -15,14 +18,22 @@ const DayRangePicker = ({
   name,
   type = "day",
   label,
-  format,
   rules,
+  format,
   onChange,
+  allowedMonth = 0,
+  allowedYear = moment().year(),
   ...restProps
 }: Props) => {
-  const currentYear = moment().year();
-  const januaryStart = moment(`${currentYear}-01-01`);
   const isDayRange = type === "dayRange";
+  const allowedMonthStart = moment({ year: allowedYear, month: allowedMonth, day: 1 });
+
+  const disabledDate = (current: moment.Moment) => {
+    return (
+      current &&
+      (current.month() !== allowedMonth || current.year() !== allowedYear)
+    );
+  };
 
   return (
     <div className="PeopleDeskInputWrapper">
@@ -35,11 +46,8 @@ const DayRangePicker = ({
             format={format || "DD"}
             allowClear
             picker="date"
-            disabledDate={(current) =>
-              current &&
-              (current.month() !== 0 || current.year() !== currentYear)
-            }
-            defaultPickerValue={[januaryStart, januaryStart]}
+            disabledDate={disabledDate}
+            defaultPickerValue={[allowedMonthStart, allowedMonthStart]}
             popupClassName="single-month-panel"
             {...restProps}
           />
@@ -51,6 +59,8 @@ const DayRangePicker = ({
             format={format || "DD"}
             allowClear
             picker="date"
+            disabledDate={disabledDate}
+            defaultPickerValue={allowedMonthStart}
             popupClassName="single-month-panel"
             {...restProps}
           />

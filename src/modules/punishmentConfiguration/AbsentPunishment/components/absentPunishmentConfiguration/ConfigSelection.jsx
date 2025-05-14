@@ -131,6 +131,16 @@ const ConfigSelection = ({ form }) => {
           </Col>
           <Col md={4} sm={12} xs={24}>
             <DayRangePicker
+              type="day"
+              name="eachDayCountBy"
+              label="Each Day Count by"
+              rules={[
+                { required: true, message: "Each Day Count By Is Required" },
+              ]}
+            />
+          </Col>
+          <Col md={4} sm={12} xs={24}>
+            <DayRangePicker
               type="dayRange"
               name="dayRange"
               label="Day Range"
