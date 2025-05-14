@@ -2,6 +2,7 @@ import { Row, Col, Form } from "antd";
 import { PButton, PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
 import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
+import DayRangePicker from "Components/PForm/Day/DayRangePicker";
 const dayOptions = Array.from({ length: 31 }, (_, i) => {
   const day = i + 1;
   return {
@@ -20,7 +21,9 @@ const ConfigSelection = ({ form }) => {
     loadingACT,
     loadingADT,
   } = useConfigSelectionHook(form);
-  console.log(Form.useWatch("employmentTypeList", form));
+  const employmentTypeList = Form.useWatch("employmentTypeList", form);
+  const dayRange = Form.useWatch("dayRange", form);
+  console.log(dayRange);
 
   return (
     <>
@@ -124,6 +127,14 @@ const ConfigSelection = ({ form }) => {
               rules={[
                 { required: true, message: "Each Day Count By Is Required" },
               ]}
+            />
+          </Col>
+          <Col md={4} sm={12} xs={24}>
+            <DayRangePicker
+              type="dayRange"
+              name="dayRange"
+              label="Day Range"
+              rules={[{ required: true, message: "Day Range Is Required" }]}
             />
           </Col>
           <Col md={3} sm={12} xs={24}>
