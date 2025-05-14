@@ -14,7 +14,7 @@ export interface LatePunishmentData {
   eachDayCountBy: string | null; // Label from DDL or null (empty DDL)
   eachDayCountById: number | null; // Value from DDL or null
   dayRange: string | null; // Label from DDL or null (empty DDL)
-  dayRangeId: number | null; // Value from DDL or null
+  dayRangeId: [number, number]; // Value from DDL or null
   isConsecutiveDay: boolean;
   minimumLateTime: number;
   maximumLateTime: number;

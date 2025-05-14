@@ -352,31 +352,35 @@ const CreateEditLatePunishmentConfig = () => {
           <PCardHeader
             backButton
             title={`Late Punishment Configuration`}
-            buttonList={[
-              {
-                type: "primary",
-                content: "Save",
-                // icon:
-                //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
-                onClick: () => {
-                  // const values = form.getFieldsValue(true);
+            buttonList={
+              params?.type !== "view"
+                ? [
+                    {
+                      type: "primary",
+                      content: "Save",
+                      // icon:
+                      //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      onClick: () => {
+                        // const values = form.getFieldsValue(true);
 
-                  form
-                    .validateFields([])
-                    .then(() => {
-                      createEditLatePunishmentConfig(
-                        profileData,
-                        form,
-                        data,
-                        leaveDeductionData,
-                        setLoading,
-                        () => {}
-                      );
-                    })
-                    .catch(() => {});
-                },
-              },
-            ]}
+                        form
+                          .validateFields([])
+                          .then(() => {
+                            createEditLatePunishmentConfig(
+                              profileData,
+                              form,
+                              data,
+                              leaveDeductionData,
+                              setLoading,
+                              () => {}
+                            );
+                          })
+                          .catch(() => {});
+                      },
+                    },
+                  ]
+                : []
+            }
           />
           {params?.type !== "view" ? (
             <PCardBody>

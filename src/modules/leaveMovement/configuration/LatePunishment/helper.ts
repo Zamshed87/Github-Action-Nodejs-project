@@ -371,6 +371,31 @@ function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
   return values; // no update needed
 }
 
+function isDayRangeOverlappingCheck(data: any[], values: any): boolean {
+  if (!Array.isArray(values?.dayRange)) return false;
+
+  const [newStart, newEnd] = [
+    new Date(values.dayRange[0]).getUTCDate(),
+    new Date(values.dayRange[1]).getUTCDate(),
+  ];
+
+  for (const policy of data) {
+    const [oldStart, oldEnd] = policy.dayRangeId;
+
+    const isOverlapping =
+      Math.max(newStart, oldStart) <= Math.min(newEnd, oldEnd);
+
+    if (isOverlapping) {
+      toast.error(
+        `Day Range [${newStart}, ${newEnd}] overlaps with existing range [${oldStart}, ${oldEnd}]`
+      );
+      return true;
+    }
+  }
+
+  return false; // ✅ No conflicts
+}
+
 export const addHandler = (
   setData: any,
   data: DataState,
@@ -391,12 +416,19 @@ export const addHandler = (
 
     values = validated; // 🔁 use updated values
   }
+  if (
+    values.lateCalculationType?.value === 2 &&
+    isDayRangeOverlappingCheck(data, values)
+  ) {
+    return; // 🔁 Stop the form submit
+  }
+
   console.log(values, "values22");
   const dayRange: string = values?.dayRange
     ?.map((date: string) => new Date(date).getUTCDate())
     .join("-");
 
-  console.log("values.eachDayCountBy", values.eachDayCountBy?.label);
+  console.log("data", data);
 
   setData([
     ...data,
@@ -418,7 +450,10 @@ export const addHandler = (
       eachDayCountBy: values.eachDayCountBy?.label || values.eachDayCountBy,
       eachDayCountById: values.eachDayCountBy?.value || null,
       dayRange: dayRange,
-      dayRangeId: values.dayRange?.value || null,
+      dayRangeId: [
+        new Date(values?.dayRange[0]).getUTCDate(),
+        new Date(values?.dayRange[1]).getUTCDate(),
+      ],
       isConsecutiveDay: values.isConsecutiveDay,
       minimumLateTime: values.minimumLateTime || 0,
       maximumLateTime: values.maximumLateTime || 0,
