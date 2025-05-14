@@ -1,6 +1,8 @@
+import { EyeFilled, EyeInvisibleOutlined } from "@ant-design/icons";
+import { ExtensionRounded } from "@mui/icons-material";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
 import { PModal } from "Components/Modal";
-import { Form, Tooltip } from "antd";
+import { Form, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -8,6 +10,7 @@ import { useEffect, useMemo } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import View from "./view";
 
 const LatePunishmentConfig = () => {
   const [latePunishment, getlatePunishment, latePunishmentLoader] =
@@ -33,7 +36,7 @@ const LatePunishmentConfig = () => {
     }
   ) => {
     getlatePunishment(
-      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`
+      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
     );
   };
   useEffect(() => {
@@ -56,44 +59,79 @@ const LatePunishmentConfig = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Level of Leadership",
-      dataIndex: "levelOfLeadershipName",
+      title: "Policy Name",
+      dataIndex: "name",
     },
     {
-      title: "KPI Score",
-      dataIndex: "percentageOfKPI",
+      title: "Workplace",
+      dataIndex: "workplace",
     },
     {
-      title: "BAR Score",
-      dataIndex: "percentageOfBAR",
+      title: "Employment Type",
+      dataIndex: "employmentTypes",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (_: any, rec: any) => (
+        <Flex justify="center">
+          <Tooltip
+            placement="bottom"
+            title={rec?.isActive ? "Inactive" : "Active"}
+          >
+            <Switch size="small" checked={rec?.isActive} onChange={() => {}} />
+          </Tooltip>
+        </Flex>
+      ),
+      align: "center",
+      width: 40,
     },
     {
       title: "Action",
-      dataIndex: "letterGenerateId",
-      render: (rec: any) => (
+      dataIndex: "action",
+      render: (_: any, rec: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"Edit"}>
+          <Tooltip placement="bottom" title="View">
             <button
               style={{
-                height: "24px",
+                color: "green",
                 fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-                backgroundColor: "var(--green)",
-                color: "white",
+                cursor: "pointer",
+                margin: "0 5px",
+                border: "none",
               }}
-              className="btn"
-              type="button"
               onClick={() => {
-                // setRowData(rec);
-                // setIsScoreSettings(() => ({ open: true, type: "EC" }));
+                history.push(
+                  "/administration/latePunishmentPolicy/view/" + rec?.id
+                );
               }}
             >
-              Score Setup
+              View
+            </button>
+          </Tooltip>
+          |
+          <Tooltip placement="bottom" title="Extend">
+            <button
+              style={{
+                color: "green",
+                fontSize: "12px",
+                cursor: "pointer",
+                margin: "0 5px",
+                border: "none",
+              }}
+              onClick={() => {
+                history.push(
+                  "/administration/latePunishmentPolicy/extend/" + rec?.id
+                );
+              }}
+            >
+              Extend
             </button>
           </Tooltip>
         </Flex>
       ),
       align: "center",
+      width: 30,
     },
   ];
 
@@ -111,7 +149,7 @@ const LatePunishmentConfig = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/administration/latePunishmentPolicy/create");
+                  history.push("/administration/latePunishmentPolicy/create/1");
                 },
               },
             ]}
@@ -120,7 +158,7 @@ const LatePunishmentConfig = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={latePunishment?.data || []}
+              data={latePunishment || []}
               loading={latePunishmentLoader}
               header={header}
               pagination={{
@@ -138,13 +176,17 @@ const LatePunishmentConfig = () => {
       {/* Modal */}
       <PModal
         open={false} // have to change
-        title={"Training Requisition View"}
+        title={"View"}
         width={1000}
         onCancel={() => {
-          //   setViewModalModal(false);
+          // setViewModalModal(false);
         }}
         maskClosable={false}
-        components={<></>}
+        components={
+          <>
+            <View />
+          </>
+        }
       />
     </div>
   ) : (

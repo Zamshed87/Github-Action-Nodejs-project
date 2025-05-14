@@ -105,6 +105,7 @@ export const LatePunishment = (
   empDepartmentDDL: any[],
   empDesignationDDL: any[],
   DayRangeComponent: any,
+  CustomCheckbox: any,
   values: any
 ) => {
   return [
@@ -124,7 +125,7 @@ export const LatePunishment = (
       varname: "workplace",
       ddl: workplaceDDL,
       placeholder: "Select workplace",
-      // rules: [{ required: true, message: "Workplace is required!" }],
+      rules: [{ required: true, message: "Workplace is required!" }],
       onChange: (value: any) => {
         getEmploymentType();
         getEmployeDepartment();
@@ -139,7 +140,7 @@ export const LatePunishment = (
       ddl: employmentTypeDDL || [],
       mode: "multiple",
       placeholder: "Select employment type",
-      // rules: [{ required: true, message: "Employment Type is required!" }],
+      rules: [{ required: true, message: "Employment Type is required!" }],
       col: 6,
     },
     {
@@ -149,7 +150,7 @@ export const LatePunishment = (
       ddl: empDesignationDDL || [],
       placeholder: "Select designation",
       mode: "multiple",
-      // rules: [{ required: true, message: "Designation is required!" }],
+      rules: [{ required: true, message: "Designation is required!" }],
       col: 6,
     },
     {
@@ -159,7 +160,7 @@ export const LatePunishment = (
       ddl: empDepartmentDDL || [],
       mode: "multiple",
       placeholder: "Select department",
-      // rules: [{ required: true, message: "Department is required!" }],
+      rules: [{ required: true, message: "Department is required!" }],
       col: 6,
     },
     {
@@ -213,9 +214,8 @@ export const LatePunishment = (
     ...(values?.lateCalculationType?.value !== 3
       ? [
           {
-            type: "checkbox",
-            label: "Is Consecutive Day?",
-            varname: "isConsecutiveDay",
+            type: "component",
+            component: CustomCheckbox,
             col: 6,
           },
         ]
@@ -226,7 +226,7 @@ export const LatePunishment = (
       label: "Minimum Late Time (Minutes)",
       varname: "minimumLateTime",
       placeholder: "Enter minimum late time",
-      // rules: [{ required: true, message: "Minimum Late Time is required!" }],
+      rules: [{ required: true, message: "Minimum Late Time is required!" }],
       col: 6,
     },
     {
@@ -234,7 +234,7 @@ export const LatePunishment = (
       label: "Maximum Late Time (Minutes)",
       varname: "maximumLateTime",
       placeholder: "Enter maximum late time",
-      // rules: [{ required: true, message: "Maximum Late Time is required!" }],
+      rules: [{ required: true, message: "Maximum Late Time is required!" }],
       col: 6,
     },
     ...(values?.lateCalculationType?.value !== 3
@@ -269,7 +269,7 @@ export const LatePunishment = (
             ddl: leaveDeductType || [],
             placeholder: "Select leave deduct type",
             rules: [
-              // { required: true, message: "Leave Deduct Type is required!" },
+              { required: true, message: "Leave Deduct Type is required!" },
             ],
             col: 6,
           },
@@ -283,7 +283,7 @@ export const LatePunishment = (
             varname: "leaveDeductQty",
             placeholder: "Enter leave deduct quantity",
             rules: [
-              // { required: true, message: "Leave Deduct Qty. is required!" },
+              { required: true, message: "Leave Deduct Qty. is required!" },
             ],
             col: 6,
           },
@@ -298,7 +298,7 @@ export const LatePunishment = (
             ddl: amountDeductFrom || [],
             placeholder: "Select amount deduct from",
             rules: [
-              // { required: true, message: "Amount Deduct From is required!" },
+              { required: true, message: "Amount Deduct From is required!" },
             ],
             col: 6,
           },
@@ -313,7 +313,7 @@ export const LatePunishment = (
             ddl: amountDeductType || [],
             placeholder: "Select amount deduct type",
             rules: [
-              // { required: true, message: "Amount Deduct Type is required!" },
+              { required: true, message: "Amount Deduct Type is required!" },
             ],
             col: 6,
           },
@@ -327,7 +327,7 @@ export const LatePunishment = (
             varname: "amountPercentage",
             placeholder: "Enter amount percentage",
             rules: [
-              // { required: true, message: "Amount Percentage is required!" },
+              { required: true, message: "Amount Percentage is required!" },
             ],
             col: 6,
           },
@@ -336,22 +336,131 @@ export const LatePunishment = (
   ];
 };
 
-export const addHandler = (setData: any, data: DataState, values: any) => {
+function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
+  const conflictingPolicies = data.filter(
+    (policy) =>
+      policy.isConsecutiveDay === values.isConsecutiveDay &&
+      policy.lateCalculationTypeId === 1
+  );
+  for (const policy of conflictingPolicies) {
+    const oldMin = policy.minimumLateTime;
+    const oldMax = policy.maximumLateTime;
+    const newMin = values.minimumLateTime;
+    const newMax = values.maximumLateTime;
+
+    const isOverlapping = Math.max(oldMin, newMin) <= Math.min(oldMax, newMax);
+
+    if (isOverlapping) {
+      toast.error(
+        "You cannot set overlapping late time range when 'Is Consecutive Day' is." +
+          values.isConsecutiveDay
+      );
+      return false;
+    }
+    console.log(policy.eachDayCountBy, "policy.eachDayCountBy");
+    console.log(policy.eachDayCountById, "policy.eachDayCountById");
+
+    // ✅ Return the updated values directly instead of using form.setFieldsValue
+    return {
+      ...values,
+      eachDayCountBy: {
+        label: policy.eachDayCountBy,
+        value: policy.eachDayCountById,
+      },
+    };
+  }
+
+  return values; // no update needed
+}
+
+function isDayRangeOverlapping(data: any[], values: any): boolean {
+  // if (!Array.isArray(values?.dayRange)) return false;
+
+  const [newStart, newEnd] = [
+    new Date(values.dayRange[0]).getUTCDate(),
+    new Date(values.dayRange[1]).getUTCDate(),
+  ];
+
+  for (const policy of data) {
+    const [oldStart, oldEnd] = policy.dayRangeId;
+
+    const isOverlapping =
+      Math.max(newStart, oldStart) <= Math.min(newEnd, oldEnd);
+
+    if (isOverlapping) {
+      toast.error(
+        `Day Range [${newStart}, ${newEnd}] overlaps with existing range [${oldStart}, ${oldEnd}]`
+      );
+      return true;
+    }
+  }
+
+  return false; // ✅ No conflicts
+}
+
+function isTimeBasedOverlaped(data: any[], values: any): boolean {
+  const conflictingPolicies = data.filter(
+    (policy) => policy.lateCalculationTypeId === 3
+  );
+  for (const policy of conflictingPolicies) {
+    const oldMin = policy.minimumLateTime;
+    const oldMax = policy.maximumLateTime;
+    const newMin = values.minimumLateTime;
+    const newMax = values.maximumLateTime;
+
+    const isOverlapping = Math.max(oldMin, newMin) <= Math.min(oldMax, newMax);
+
+    if (isOverlapping) {
+      toast.error("You cannot set overlapping late time range");
+      return true;
+    }
+  }
+  return false;
+}
+
+export const addHandler = (
+  setData: any,
+  data: DataState,
+  // values: any,
+  form: any
+) => {
+  let values = form.getFieldsValue(true);
+
   if (values?.minimumLateTime > values?.maximumLateTime) {
     return toast.error(
       "Maximum Late Time should be bigger than Minimum Late Time"
     );
   }
+  if (values.lateCalculationType?.value === 1) {
+    const validated = eachDayDuplicacyCheck(data, values, form);
+
+    if (validated === false) return null;
+
+    values = validated; // 🔁 use updated values
+  }
+  if (
+    values.lateCalculationType?.value === 2 &&
+    isDayRangeOverlapping(data, values)
+  ) {
+    return null;
+  }
+  if (
+    values.lateCalculationType?.value === 3 &&
+    isTimeBasedOverlaped(data, values)
+  ) {
+    return null;
+  }
+  console.log(values, "values22");
   const dayRange: string = values?.dayRange
     ?.map((date: string) => new Date(date).getUTCDate())
     .join("-");
 
-  console.log("values.isConsecutiveDay", values.isConsecutiveDay);
+  console.log("values.eachDayCountBy", values.eachDayCountBy?.label);
 
   setData([
     ...data,
     {
-      id: crypto.randomUUID(),
+      idx: crypto.randomUUID(),
       policyName: values.policyName,
       workplace: values.workplace?.label || values.workplace,
       workplaceId: values.workplace?.value || null,
@@ -368,7 +477,12 @@ export const addHandler = (setData: any, data: DataState, values: any) => {
       eachDayCountBy: values.eachDayCountBy?.label || values.eachDayCountBy,
       eachDayCountById: values.eachDayCountBy?.value || null,
       dayRange: dayRange,
-      dayRangeId: values.dayRange?.value || null,
+      dayRangeId: values.dayRange
+        ? [
+            new Date(values.dayRange[0]).getUTCDate(),
+            new Date(values.dayRange[1]).getUTCDate(),
+          ]
+        : [],
       isConsecutiveDay: values.isConsecutiveDay,
       minimumLateTime: values.minimumLateTime || 0,
       maximumLateTime: values.maximumLateTime || 0,
@@ -388,8 +502,24 @@ export const addHandler = (setData: any, data: DataState, values: any) => {
       amountPercentage: values.amountPercentage,
     },
   ]);
-  // form.resetFields();
+  form.resetFields(fieldsToReset);
 };
+
+const fieldsToReset = [
+  "lateCalculationType",
+  // "eachDayCountBy",
+  // "dayRange",
+  // "isConsecutiveDay",
+  // "minimumLateTime",
+  // "maximumLateTime",
+  // "calculatedBy",
+  // "punishmentType",
+  // "leaveDeductType",
+  // "leaveDeductQty",
+  // "amountDeductFrom",
+  // "amountDeductType",
+  // "amountPercentage",
+]; // dynamically computed array
 
 export const createEditLatePunishmentConfig = async (
   profileData: any,
@@ -401,7 +531,7 @@ export const createEditLatePunishmentConfig = async (
 ) => {
   setLoading(true);
   try {
-    const { orgId, buId, wgId, wId, employeeId, accountId } = profileData;
+    const { orgId, buId, wgId, wId, employeeId, intAccountId } = profileData;
     const values = form.getFieldsValue(true);
 
     const payload = mapLatePunishmentPayload(
@@ -412,7 +542,7 @@ export const createEditLatePunishmentConfig = async (
       buId,
       wgId,
       wId,
-      accountId
+      intAccountId
     );
     const res = await axios.post(`/LatePunishmentpolicy`, payload);
     form.resetFields();

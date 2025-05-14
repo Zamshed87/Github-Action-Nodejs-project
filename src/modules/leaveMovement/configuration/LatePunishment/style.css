@@ -15,3 +15,7 @@
 .single-month-panel .ant-picker-footer {
   display: none;
 }
+
+.single-month-panel .ant-picker-content thead {
+  display: none;
+}
