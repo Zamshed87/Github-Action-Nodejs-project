@@ -12,7 +12,11 @@ import {
 } from "Components";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams, useParams as UseParams } from "react-router-dom";
+import {
+  useHistory,
+  useParams,
+  useParams as UseParams,
+} from "react-router-dom";
 
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -54,6 +58,8 @@ const CreateEditLatePunishmentConfig = () => {
     type?: string;
     id?: string;
   };
+  const history = useHistory();
+
   // redux
   const { profileData } = useSelector(
     (state: { auth: { profileData: any } }) => state?.auth,
@@ -382,7 +388,11 @@ const CreateEditLatePunishmentConfig = () => {
                               data,
                               leaveDeductionData,
                               setLoading,
-                              () => {}
+                              () => {
+                                history.push(
+                                  "/administration/latePunishmentPolicy"
+                                );
+                              }
                             );
                           })
                           .catch(() => {});
