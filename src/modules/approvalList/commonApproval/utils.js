@@ -83,9 +83,7 @@ export const columnsAsset = [
     title: "Requisition Date",
     width: "90px",
     dataIndex: ["applicationInformation", "requisitionDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Qty",
@@ -117,8 +115,7 @@ export const columnsAsset = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
-
-]
+];
 
 export const columnFinalSettlement = [
   {
@@ -373,6 +370,10 @@ export const columnsLeave = (dispatch) => [
     title: "Reliver",
     dataIndex: ["applicationInformation", "strReliverName"],
     width: 70,
+  },
+  {
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
   },
   {
     title: "Waiting Stage",
