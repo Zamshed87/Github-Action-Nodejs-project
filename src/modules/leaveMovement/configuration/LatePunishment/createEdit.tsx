@@ -217,14 +217,14 @@ const CreateEditLatePunishmentConfig = () => {
       fixed: "left",
     },
     {
-      title: "Is Consecutive Day?",
+      title: "Consecutive Day?",
       dataIndex: "isConsecutiveDay",
       render: (rec: any) => {
         return rec ? "Yes" : "No";
       },
     },
     {
-      title: "Late Time (Minutes)",
+      title: "Late Time (Min)",
       dataIndex: "lateTimeMinutes",
       render: (value: any, rec: any) => {
         return (
@@ -241,7 +241,7 @@ const CreateEditLatePunishmentConfig = () => {
       dataIndex: "punishmentType",
     },
     {
-      title: "Leave Deduct Type",
+      title: "Leave Deduct",
       dataIndex: "leaveDeductType",
     },
     {
@@ -284,6 +284,7 @@ const CreateEditLatePunishmentConfig = () => {
         </Flex>
       ),
       align: "center",
+      width: 40,
     },
   ];
 
@@ -407,8 +408,12 @@ const CreateEditLatePunishmentConfig = () => {
                     type="primary"
                     content={"Add"}
                     onClick={() => {
+                      const allFields = form.getFieldsValue();
+                      const fieldsToValidate = Object.keys(allFields).filter(
+                        (field) => field !== "leaveType"
+                      );
                       form
-                        .validateFields()
+                        .validateFields(fieldsToValidate)
                         .then(() => {
                           const values = form.getFieldsValue(true);
                           addHandler(setData, data, values, form);
@@ -497,7 +502,7 @@ const CreateEditLatePunishmentConfig = () => {
               </PCard>
             </div>
           )}
-        {leaveDeductionData?.length > 0 && (
+        {params?.type === "view" && leaveDeductionData?.length > 0 && (
           <>
             <center>
               <h1>Leave Deduction Sequence</h1>

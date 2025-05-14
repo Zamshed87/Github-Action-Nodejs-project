@@ -8,7 +8,8 @@ const RangeDatePicker = ({ name }: any) => {
       <Form.Item
         label={"Day Range"}
         name={name}
-        //   rules={rules}
+        rules={[{ required: true, message: "Day Range is required!" }]}
+
         //   valuePropName={type === "checkbox" ? "checked" : valuePropName}
         //   hasFeedback={hasFeedback}
         //   style={{ marginBottom: 0 }}

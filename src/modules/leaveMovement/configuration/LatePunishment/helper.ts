@@ -226,7 +226,7 @@ export const LatePunishment = (
       label: "Minimum Late Time (Minutes)",
       varname: "minimumLateTime",
       placeholder: "Enter minimum late time",
-      // rules: [{ required: true, message: "Minimum Late Time is required!" }],
+      rules: [{ required: true, message: "Minimum Late Time is required!" }],
       col: 6,
     },
     {
@@ -234,7 +234,7 @@ export const LatePunishment = (
       label: "Maximum Late Time (Minutes)",
       varname: "maximumLateTime",
       placeholder: "Enter maximum late time",
-      // rules: [{ required: true, message: "Maximum Late Time is required!" }],
+      rules: [{ required: true, message: "Maximum Late Time is required!" }],
       col: 6,
     },
     ...(values?.lateCalculationType?.value !== 3
@@ -269,7 +269,7 @@ export const LatePunishment = (
             ddl: leaveDeductType || [],
             placeholder: "Select leave deduct type",
             rules: [
-              // { required: true, message: "Leave Deduct Type is required!" },
+              { required: true, message: "Leave Deduct Type is required!" },
             ],
             col: 6,
           },
@@ -283,7 +283,7 @@ export const LatePunishment = (
             varname: "leaveDeductQty",
             placeholder: "Enter leave deduct quantity",
             rules: [
-              // { required: true, message: "Leave Deduct Qty. is required!" },
+              { required: true, message: "Leave Deduct Qty. is required!" },
             ],
             col: 6,
           },
@@ -298,7 +298,7 @@ export const LatePunishment = (
             ddl: amountDeductFrom || [],
             placeholder: "Select amount deduct from",
             rules: [
-              // { required: true, message: "Amount Deduct From is required!" },
+              { required: true, message: "Amount Deduct From is required!" },
             ],
             col: 6,
           },
@@ -313,7 +313,7 @@ export const LatePunishment = (
             ddl: amountDeductType || [],
             placeholder: "Select amount deduct type",
             rules: [
-              // { required: true, message: "Amount Deduct Type is required!" },
+              { required: true, message: "Amount Deduct Type is required!" },
             ],
             col: 6,
           },
@@ -327,7 +327,7 @@ export const LatePunishment = (
             varname: "amountPercentage",
             placeholder: "Enter amount percentage",
             rules: [
-              // { required: true, message: "Amount Percentage is required!" },
+              { required: true, message: "Amount Percentage is required!" },
             ],
             col: 6,
           },
@@ -393,8 +393,24 @@ export const addHandler = (
       amountPercentage: values.amountPercentage,
     },
   ]);
-  form.resetFields();
+  form.resetFields(fieldsToReset);
 };
+
+const fieldsToReset = [
+  "lateCalculationType",
+  "eachDayCountBy",
+  "dayRange",
+  "isConsecutiveDay",
+  "minimumLateTime",
+  "maximumLateTime",
+  "calculatedBy",
+  "punishmentType",
+  "leaveDeductType",
+  "leaveDeductQty",
+  "amountDeductFrom",
+  "amountDeductType",
+  "amountPercentage",
+]; // dynamically computed array
 
 export const createEditLatePunishmentConfig = async (
   profileData: any,
