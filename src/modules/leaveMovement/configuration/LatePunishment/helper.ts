@@ -220,6 +220,19 @@ export const LatePunishment = (
           },
         ]
       : []),
+    ...(values?.lateCalculationType?.value !== 3
+      ? [
+          {
+            type: "ddl",
+            label: "Late Time Calculated By",
+            varname: "calculatedBy",
+            ddl: calculatedBy || [],
+            placeholder: "Select calculation type",
+            rules: [{ required: true, message: "Calculated By is required!" }],
+            col: 6,
+          },
+        ]
+      : []),
 
     {
       type: "number",
@@ -237,19 +250,6 @@ export const LatePunishment = (
       rules: [{ required: true, message: "Maximum Late Time is required!" }],
       col: 6,
     },
-    ...(values?.lateCalculationType?.value !== 3
-      ? [
-          {
-            type: "ddl",
-            label: "Calculated By",
-            varname: "calculatedBy",
-            ddl: calculatedBy || [],
-            placeholder: "Select calculation type",
-            rules: [{ required: true, message: "Calculated By is required!" }],
-            col: 6,
-          },
-        ]
-      : []),
 
     {
       type: "ddl",
@@ -275,7 +275,8 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.leaveDeductType?.value !== 3
+    ...(values?.leaveDeductType?.value === 1 ||
+    values?.leaveDeductType?.value === 2
       ? [
           {
             type: "number",
@@ -304,7 +305,8 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.amountDeductFrom?.value !== 3
+    ...(values?.amountDeductFrom?.value === 1 &&
+    values?.amountDeductFrom?.value === 2
       ? [
           {
             type: "ddl",
