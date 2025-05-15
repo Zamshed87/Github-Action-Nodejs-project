@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const useAbsentPunishment = (form) => {
+  const { wId } = useSelector(
+      (state) => state?.auth?.profileData,
+      shallowEqual
+    );
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 25,
@@ -13,7 +18,7 @@ const useAbsentPunishment = (form) => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      WorkPlaceId: formValues.workplace?.value,
+      WorkPlaceId: wId,
       status: formValues.status,
       PageNo: pages.current,
       PageSize: pages.pageSize,
@@ -29,6 +34,9 @@ const useAbsentPunishment = (form) => {
       setData(res);
     });
   };
+  useEffect(() => {
+    fetchAbsentPunishment();
+  }, [wId]);
 
   return { data, setData, fetchAbsentPunishment, loading, pages, setPages };
 };

@@ -1,14 +1,14 @@
 import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
-import usePfPolicyFilters from "./useAbsentPunishmentFilters";
+// import usePfPolicyFilters from "./useAbsentPunishmentFilters";
 
 const PfPolicyFilters = ({ form }) => {
-  const {
-    workplaceDDL,
-  } = usePfPolicyFilters(form);
+  // const {
+  //   workplaceDDL,
+  // } = usePfPolicyFilters(form);
   return (
     <Row gutter={[10, 2]}>
-      <Col md={5} sm={12} xs={24}>
+      {/* <Col md={5} sm={12} xs={24}>
         <PSelect
           options={workplaceDDL.data}
           name="workplace"
@@ -20,10 +20,14 @@ const PfPolicyFilters = ({ form }) => {
           loading={workplaceDDL.loading}
           rules={[{ required: true, message: "Workplace Is Required" }]}
         />
-      </Col>
+      </Col> */}
       <Col md={5} sm={12} xs={24}>
         <PSelect
           options={[
+            {
+              value: 0,
+              label: "All",
+            },
             {
               value: 1,
               label: "Active",

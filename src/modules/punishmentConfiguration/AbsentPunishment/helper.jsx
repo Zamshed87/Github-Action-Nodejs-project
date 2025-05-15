@@ -8,12 +8,16 @@ const updatePolicyStatus = async (policyId, status) => {
     const response = await axios.post(
       `/AbsentPunishment/ActiveNInactive?policyId=${policyId}&isActive=${status}`
     );
-    toast.success(response?.data?.message || "Status updated successfully");
+    toast.success(
+      response?.data?.message?.[0] || "Status updated successfully"
+    );
   } catch (error) {
-    toast.error(error?.response?.data?.message?.[0] || "Failed to update status");
+    toast.error(
+      error?.response?.data?.message?.[0] || "Failed to update status"
+    );
   }
 };
-export const getHeader = (pages, history, data, setData) => [
+export const getHeader = (pages, setData, setOpenView, setOpenExtend) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -85,15 +89,18 @@ export const getHeader = (pages, history, data, setData) => [
     align: "center",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <PButton content="View" type="primary-outline" onClick={() => {}} />
+        <PButton
+          content="View"
+          type="primary-outline"
+          onClick={() => {
+            setOpenView({ open: true, data: record });
+          }}
+        />
         <PButton
           content="Extend"
           type="primary"
           onClick={() => {
-            history?.push({
-              pathname: `/administration/punishmentConfiguration/absentPunishment/configuration/extend/${record.policyId}`,
-              state: { policyInfo: record },
-            });
+            setOpenExtend({ extend: true, data: record });
           }}
         />
       </div>

@@ -5,14 +5,6 @@ import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 import DayRangePicker from "Components/PForm/Day/DayRangePicker";
 import { toast } from "react-toastify";
 
-// const dayOptions = Array.from({ length: 31 }, (_, i) => {
-//   const day = i + 1;
-//   return {
-//     label: day.toString(),
-//     value: day,
-//   };
-// });
-
 const ConfigSelection = ({ form, setDetailList }) => {
   const {
     workplaceDDL,

@@ -12,13 +12,13 @@ import { toast } from "react-toastify";
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
   const [detailList, setDetailList] = useState([]);
-
   // redux
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [permission, setPermission] = useState(null);
+
 
   useEffect(() => {
     setPermission(
@@ -86,7 +86,7 @@ const AbsentPunishmentConfiguration = () => {
           />
           <ConfigSelection form={form} setDetailList={setDetailList} />
         </PCard>
-        {detailList.length > 0 && (
+        {detailList?.length > 0 && (
           <PCardBody>
             <DataTable
               bordered
