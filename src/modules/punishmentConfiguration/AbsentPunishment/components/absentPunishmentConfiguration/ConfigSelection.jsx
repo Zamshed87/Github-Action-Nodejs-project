@@ -19,6 +19,7 @@ const ConfigSelection = ({ form, setDetailList }) => {
     employmentTypeDDL,
     empDesignationDDL,
     getEmploymentTypeDDL,
+    getEmployeeDesignation,
     absentCalculationTypeDDL,
     absentAmountDeductionTypeDDL,
     loadingACT,
@@ -87,6 +88,7 @@ const ConfigSelection = ({ form, setDetailList }) => {
               onChange={(value) => {
                 form.setFieldsValue({ workplace: value });
                 getEmploymentTypeDDL();
+                getEmployeeDesignation();
               }}
               loading={workplaceDDL.loading}
               rules={[{ required: true, message: "Workplace Is Required" }]}

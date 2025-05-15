@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FormInstance } from "antd/es/form";
 import { PSelect } from "./PSelect";
+import { useWatch } from "antd/lib/form/Form";
 
 type OptionType = {
   label: string;
@@ -41,6 +42,7 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
   const fullOptions: OptionType[] = [allOption, ...options];
 
   const [selectedValues, setSelectedValues] = useState<(string | number)[]>([]);
+  const watchedValue = useWatch(name, form);
 
   useEffect(() => {
     let selected = selectedValues;
@@ -56,6 +58,13 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
     form.setFieldsValue({ [name]: formValue });
   }, [selectedValues, allValues, form, name, options, returnFullObject, advanceAllOption]);
 
+  useEffect(() => {
+    if (!watchedValue || watchedValue.length === 0) {
+      setSelectedValues([]);
+    }
+  }, [watchedValue]);
+  
+  
   const handleChange = (selected: (string | number)[]) => {
     if (advanceAllOption) {
       if (selected.includes(ADVANCED_ALL_VALUE)) {
