@@ -77,7 +77,7 @@ const AbsentPunishment = () => {
             <AbsentPunishmentFilters form={form} />
           </PCardBody>
           <DataTable
-            header={getHeader(pages, history, data, setData)}
+            header={getHeader(pages, setData,setOpenView,setOpenExtend)}
             bordered
             data={data?.absentPunishmentList || []}
             loading={loading}
@@ -110,8 +110,8 @@ const AbsentPunishment = () => {
         onCancel={() => {
           setOpenExtend({extend: false, data: {}});
         }}
-        components={<PolicyExtend data={openExtend.data} />}
-        width={1000}
+        components={<PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} />}
+        width={800}
       />
     </>
   ) : (

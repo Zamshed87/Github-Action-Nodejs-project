@@ -21,7 +21,7 @@ export const createAbsentPunishment = async (
   }
 };
 
-export const detailsHeader = (setDetailList, absentCalculationType) => {
+export const detailsHeader = (setDetailList, absentCalculationType, action=true) => {
   const eachDay = absentCalculationType == 1;
   return [
     {
@@ -67,24 +67,28 @@ export const detailsHeader = (setDetailList, absentCalculationType) => {
     {
       title: "Amount Deduction Type",
       dataIndex: "amountDeductionTypeName",
-      render: (val) => (val ?? "-"),
+      render: (val) => val ?? "-",
     },
     {
       title: "% of Amount",
       dataIndex: "amountDeductionAmountOrPercentage",
       render: (val) => `${val}%`,
     },
-    {
-      title: "Action",
-      render: (_, row, index) => (
-        <PButton
-          type="danger"
-          content="Remove"
-          onClick={() => {
-            setDetailList((prev) => prev.filter((_, i) => i !== index));
-          }}
-        />
-      ),
-    },
+    ...(action
+      ? [
+          {
+            title: "Action",
+            render: (_, row, index) => (
+              <PButton
+                type="danger"
+                content="Remove"
+                onClick={() => {
+                  setDetailList((prev) => prev.filter((_, i) => i !== index));
+                }}
+              />
+            ),
+          },
+        ]
+      : []),
   ];
 };

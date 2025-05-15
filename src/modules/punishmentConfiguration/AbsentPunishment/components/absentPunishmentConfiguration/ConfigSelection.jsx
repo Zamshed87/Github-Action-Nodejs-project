@@ -18,40 +18,59 @@ const ConfigSelection = ({ form, setDetailList }) => {
     loadingADT,
   } = useConfigSelectionHook(form);
   const absentCalculationType = Form.useWatch("absentCalculationType", form);
-  console.log(absentCalculationType);
+  const amountDeductionType = Form.useWatch("amountDeductionType", form);
+  console.log(amountDeductionType);
   const onAddDetail = () => {
     form
       .validateFields()
       .then((values) => {
-        const day = values?.eachDayCountBy?.format("DD");
-        const dayRange = `${values?.dayRange?.[0].format(
-          "DD"
-        )} - ${values?.dayRange?.[1].format("DD")}`;
-        const detail = {
-          eachDayCountBy: parseInt(day),
-          dayRange: dayRange,
-          dayRangeStartDay: values?.dayRange?.[0].format("DD"),
-          dayRangeEndDay: values?.dayRange?.[1].format("DD"),
-          consecutiveDay: values.consecutiveDay,
-          amountDeductionType: values.amountDeductionType?.value,
-          amountDeductionTypeName: values.amountDeductionType?.label,
-          amountDeductionAmountOrPercentage:
-          values.amountDeductionAmountOrPercentage,
-        };
-        setDetailList((prev) => [...prev, detail]);
-        form.resetFields([
-          "eachDayCountBy",
-          "dayRange",
-          "consecutiveDay",
-          "amountDeductionType",
-          "amountDeductionAmountOrPercentage",
-        ]);
+        const dayStart = parseInt(values?.dayRange?.[0].format("DD"));
+        const dayEnd = parseInt(values?.dayRange?.[1].format("DD"));
+  
+        // Check for duplicate or overlapping ranges
+        const isOverlap = (prevDetailList) =>
+          prevDetailList.some(
+            (item) =>
+              !(dayEnd < parseInt(item.dayRangeStartDay) ||
+                dayStart > parseInt(item.dayRangeEndDay))
+          );
+  
+        setDetailList((prev) => {
+          if (isOverlap(prev)) {
+            toast.error("This day range overlaps with an existing one.");
+            return prev;
+          }
+  
+          const detail = {
+            eachDayCountBy: parseInt(values.eachDayCountBy?.format("DD")),
+            dayRange: `${dayStart} - ${dayEnd}`,
+            dayRangeStartDay: dayStart,
+            dayRangeEndDay: dayEnd,
+            consecutiveDay: values.consecutiveDay,
+            amountDeductionType: values.amountDeductionType?.value,
+            amountDeductionTypeName: values.amountDeductionType?.label,
+            amountDeductionAmountOrPercentage:
+              values.amountDeductionAmountOrPercentage,
+          };
+  
+          // Reset only relevant fields
+          form.resetFields([
+            "eachDayCountBy",
+            "dayRange",
+            "consecutiveDay",
+            "amountDeductionType",
+            "amountDeductionAmountOrPercentage",
+          ]);
+  
+          return [...prev, detail];
+        });
       })
       .catch((err) => {
         console.warn("Validation failed:", err);
         toast.error("Please fill all required fields.");
       });
   };
+  
 
   return (
     <>
@@ -61,12 +80,12 @@ const ConfigSelection = ({ form, setDetailList }) => {
             <PInput
               type="text"
               name="policyName"
-              placeholder="Punishment Policy Name"
-              label="Punishment Policy Name"
+              placeholder="Policy Name"
+              label="Policy Name"
               rules={[
                 {
                   required: true,
-                  message: "Punishment Policy Name Is Required",
+                  message: "Policy Name Is Required",
                 },
               ]}
             />
@@ -118,8 +137,8 @@ const ConfigSelection = ({ form, setDetailList }) => {
             <PSelect
               options={absentCalculationTypeDDL}
               name="absentCalculationType"
-              label="Absent Calculation Type"
-              placeholder="Select Absent Calculation Type"
+              label="Calculation Type"
+              placeholder="Select Calculation Type"
               onChange={(value) => {
                 form.setFieldsValue({ absentCalculationType: value });
               }}
@@ -127,7 +146,7 @@ const ConfigSelection = ({ form, setDetailList }) => {
               rules={[
                 {
                   required: true,
-                  message: "Absent Calculation Type Is Required",
+                  message: "Calculation Type Is Required",
                 },
               ]}
             />
@@ -209,14 +228,14 @@ const ConfigSelection = ({ form, setDetailList }) => {
             <PInput
               type="number"
               name="amountDeductionAmountOrPercentage"
-              label="% of Amount (Based on 1 day)/ Fixed Amount"
-              placeholder="% of Amount (Based on 1 day)/ Fixed Amount"
+              label={`% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"}`}
+              placeholder={`% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"}`}
               min={1}
               rules={[
                 {
                   required: true,
                   message:
-                    "% of Amount (Based on 1 day)/ Fixed Amount Is Required",
+                   `% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"} is Required`,
                 },
               ]}
             />
