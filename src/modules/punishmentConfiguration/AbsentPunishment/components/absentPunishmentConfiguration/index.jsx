@@ -1,18 +1,13 @@
 import { Form } from "antd";
 import Loading from "common/loading/Loading";
-import {
-  DataTable,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-} from "Components";
+import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import ConfigSelection from "./ConfigSelection";
-import { detailsHeader } from "./helper";
+import { createAbsentPunishment, detailsHeader } from "./helper";
+import { Toast } from "react-bootstrap";
 
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
@@ -38,9 +33,10 @@ const AbsentPunishmentConfiguration = () => {
       document.title = "PeopleDesk";
     };
   }, []);
+  const absentCalculationType = Form.useWatch("absentCalculationType", form);
   return permission?.isCreate ? (
     <div>
-      {loading && <Loading />}  
+      {loading && <Loading />}
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
@@ -52,9 +48,38 @@ const AbsentPunishmentConfiguration = () => {
                 content: "Save",
                 onClick: () => {
                   form
-                    .validateFields()
-                    .then(() => {})
-                    .catch(() => {});
+                    .validateFields([
+                      "workplaceId",
+                      "employmentTypeList",
+                      "designationList",
+                      "policyName",
+                      "policyDescription",
+                      "absentCalculationType",
+                    ])
+                    .then(async (values) => {
+                      if (detailList.length < 1) {
+                        Toast.error("Please add at least one detail.");
+                        return;
+                      }
+                      const payload = {
+                        workplaceId: values?.workplaceId,
+                        employmentTypeList: values?.employmentTypeList,
+                        designationList: values?.designationList,
+                        policyName: values?.policyName,
+                        policyDescription: values?.policyDescription,
+                        absentCalculationType: values?.absentCalculationType,
+                        absentPunishmentElementDetailsDto: [...detailList],
+                      };
+                      await createAbsentPunishment(
+                        payload,
+                        setLoading,
+                        setDetailList
+                      );
+                      form.resetFields();
+                    })
+                    .catch((_) => {
+                      Toast.error("Please fill all required fields.");
+                    });
                 },
               },
             ]}
@@ -67,7 +92,7 @@ const AbsentPunishmentConfiguration = () => {
               bordered
               data={detailList}
               rowKey={(row, idx) => idx}
-              header={detailsHeader(setDetailList)}
+              header={detailsHeader(setDetailList, absentCalculationType)}
             />
           </PCardBody>
         )}

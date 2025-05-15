@@ -35,12 +35,15 @@ const ConfigSelection = ({ form, setDetailList }) => {
           "DD"
         )} - ${values?.dayRange?.[1].format("DD")}`;
         const detail = {
-          eachDayCountBy: day,
+          eachDayCountBy: parseInt(day),
           dayRange: dayRange,
+          dayRangeStartDay: values?.dayRange?.[0].format("DD"),
+          dayRangeEndDay: values?.dayRange?.[1].format("DD"),
           consecutiveDay: values.consecutiveDay,
-          amountDeductionType: values.amountDeductionType,
+          amountDeductionType: values.amountDeductionType?.value,
+          amountDeductionTypeName: values.amountDeductionType?.label,
           amountDeductionAmountOrPercentage:
-            values.amountDeductionAmountOrPercentage,
+          values.amountDeductionAmountOrPercentage,
         };
         setDetailList((prev) => [...prev, detail]);
         form.resetFields([
@@ -171,24 +174,23 @@ const ConfigSelection = ({ form, setDetailList }) => {
           )}
           {absentCalculationType === "1" && (
             <Col md={3} sm={12} xs={24}>
-            <Form.Item
-              name="consecutiveDay"
-              valuePropName="checked"
-              rules={[
-                { required: true, message: "Consecutive Day is required" },
-              ]}
-              style={{ marginTop: 23, marginBottom: 0 }}
-            >
-              <Checkbox
-                onChange={(e) =>
-                  form.setFieldsValue({ consecutiveDay: e.target.checked })
-                }
+              <Form.Item
+                name="consecutiveDay"
+                valuePropName="checked"
+                rules={[
+                  { required: true, message: "Consecutive Day is required" },
+                ]}
+                style={{ marginTop: 23, marginBottom: 0 }}
               >
-                Is Consecutive Day?
-              </Checkbox>
-            </Form.Item>
-          </Col>
-          
+                <Checkbox
+                  onChange={(e) =>
+                    form.setFieldsValue({ consecutiveDay: e.target.checked })
+                  }
+                >
+                  Is Consecutive Day?
+                </Checkbox>
+              </Form.Item>
+            </Col>
           )}
 
           <Col md={5} sm={12} xs={24}>
@@ -197,8 +199,8 @@ const ConfigSelection = ({ form, setDetailList }) => {
               name="amountDeductionType"
               label="Amount Deduct Type"
               placeholder="Select Amount Deduct Type"
-              onChange={(value) => {
-                form.setFieldsValue({ amountDeductionType: value });
+              onChange={(_, op) => {
+                form.setFieldsValue({ amountDeductionType: op });
               }}
               loading={loadingADT}
               rules={[

@@ -14,8 +14,8 @@ const useAbsentPunishment = (form) => {
 
     const formattedParams = {
       WorkPlaceId: formValues.workplace?.value,
-      Status: formValues.status,
-      PageNo:pages.current,
+      status: formValues.status,
+      PageNo: pages.current,
       PageSize: pages.pageSize,
     };
 
