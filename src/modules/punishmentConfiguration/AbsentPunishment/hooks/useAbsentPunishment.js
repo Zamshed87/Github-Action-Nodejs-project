@@ -30,7 +30,7 @@ const useAbsentPunishment = (form) => {
     });
   };
 
-  return { data, fetchAbsentPunishment, loading, pages, setPages };
+  return { data, setData, fetchAbsentPunishment, loading, pages, setPages };
 };
 
 export default useAbsentPunishment;

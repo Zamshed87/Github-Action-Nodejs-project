@@ -7,7 +7,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import ConfigSelection from "./ConfigSelection";
 import { createAbsentPunishment, detailsHeader } from "./helper";
-import { Toast } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
@@ -56,9 +56,9 @@ const AbsentPunishmentConfiguration = () => {
                       "policyDescription",
                       "absentCalculationType",
                     ])
-                    .then(async (values) => {
+                    .then((values) => {
                       if (detailList.length < 1) {
-                        Toast.error("Please add at least one detail.");
+                        toast.error("Please add at least one detail.");
                         return;
                       }
                       const payload = {
@@ -68,9 +68,9 @@ const AbsentPunishmentConfiguration = () => {
                         policyName: values?.policyName,
                         policyDescription: values?.policyDescription,
                         absentCalculationType: values?.absentCalculationType,
-                        absentPunishmentElementDetailsDto: [...detailList],
+                        absentPunishmentElementDto: [...detailList],
                       };
-                      await createAbsentPunishment(
+                      createAbsentPunishment(
                         payload,
                         setLoading,
                         setDetailList
@@ -78,7 +78,7 @@ const AbsentPunishmentConfiguration = () => {
                       form.resetFields();
                     })
                     .catch((_) => {
-                      Toast.error("Please fill all required fields.");
+                      toast.error("Please fill all required fields.");
                     });
                 },
               },

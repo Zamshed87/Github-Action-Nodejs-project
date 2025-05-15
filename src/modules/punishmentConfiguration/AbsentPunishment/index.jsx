@@ -15,10 +15,9 @@ const AbsentPunishment = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [form] = Form.useForm();
-
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
 
-  const { data, fetchAbsentPunishment, loading, pages, setPages } =
+  const { data,setData, fetchAbsentPunishment, loading, pages, setPages } =
     useAbsentPunishment(form);
 
   useEffect(() => {
@@ -72,7 +71,7 @@ const AbsentPunishment = () => {
           <AbsentPunishmentFilters form={form} />
         </PCardBody>
         <DataTable
-          header={getHeader(pages, history)}
+          header={getHeader(pages, history, data, setData)}
           bordered
           data={data?.absentPunishmentList || []}
           loading={loading}

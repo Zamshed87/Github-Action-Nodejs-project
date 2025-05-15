@@ -10,11 +10,12 @@ export const createAbsentPunishment = async (
   setLoading?.(true);
   try {
     const res = await axios.post(`/AbsentPunishment/Create`, payload);
+    console.log(res);
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading?.(false);
     setDetailList?.([]);
   } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
+    toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
     setLoading?.(false);
     setDetailList?.([]);
   }
