@@ -282,6 +282,8 @@ import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+import LatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment";
+import CreateEditLatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment/createEdit";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
 import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
@@ -458,7 +460,9 @@ const AssetRequisitionSelfCreate = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/addEditForm.jsx")
 );
 const AssetRequisitionCreate = lazy(() =>
-  import("../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx")
+  import(
+    "../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx"
+  )
 );
 const AssetRequisitionSelfLanding = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/index.jsx")
@@ -498,7 +502,9 @@ const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
 );
 const AssetRequisition = lazy(() =>
-  import("../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx")
+  import(
+    "../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx"
+  )
 );
 const AssetRegistrationCreate = lazy(() =>
   import(
@@ -751,13 +757,17 @@ const BankSalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/bankSalaryReport/index.jsx")
 );
 const FinisBankSalaryReport = lazy(() =>
-  import("../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx")
+  import(
+    "../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx"
+  )
 );
 const YearlySalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/yearlySalaryReport/index.jsx")
 );
 const MonthlySalaryBreakDownReport = lazy(() =>
-  import("../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx")
+  import(
+    "../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx"
+  )
 );
 const SingleSalaryReport = lazy(() =>
   import(
@@ -2538,6 +2548,14 @@ export const routingList = [
     // dont remove the space from this route.. otherwise it will throw error or redirect to other route
     path: "/administration/configuration/taxChallanConfig ",
     component: TaxChallanConfigLanding,
+  },
+  {
+    path: "/administration/latePunishmentPolicy",
+    component: LatePunishmentConfig,
+  },
+  {
+    path: "/administration/latePunishmentPolicy/:type/:id",
+    component: CreateEditLatePunishmentConfig,
   },
   // {
   //   path: "/SelfService/timeManagement/attendenceAdjustRequest",
