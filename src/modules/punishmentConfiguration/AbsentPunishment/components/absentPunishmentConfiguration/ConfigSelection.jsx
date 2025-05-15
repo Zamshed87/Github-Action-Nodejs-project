@@ -19,7 +19,6 @@ const ConfigSelection = ({ form, setDetailList }) => {
   } = useConfigSelectionHook(form);
   const absentCalculationType = Form.useWatch("absentCalculationType", form);
   const amountDeductionType = Form.useWatch("amountDeductionType", form);
-  console.log(amountDeductionType);
   const onAddDetail = () => {
     form
       .validateFields()
@@ -66,7 +65,6 @@ const ConfigSelection = ({ form, setDetailList }) => {
         });
       })
       .catch((err) => {
-        console.warn("Validation failed:", err);
         toast.error("Please fill all required fields.");
       });
   };
@@ -261,7 +259,7 @@ const ConfigSelection = ({ form, setDetailList }) => {
                     onAddDetail(detail);
                   })
                   .catch((err) => {
-                    console.log(err);
+                    toast.error("Please fill all required fields.");
                   });
               }}
             />
