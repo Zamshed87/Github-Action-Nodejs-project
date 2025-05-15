@@ -74,7 +74,7 @@ const AbsentPunishment = () => {
         <DataTable
           header={getHeader(pages, history)}
           bordered
-          data={data?.data || []}
+          data={data?.absentPunishmentList || []}
           loading={loading}
           pagination={{
             pageSize: data?.pageSize,

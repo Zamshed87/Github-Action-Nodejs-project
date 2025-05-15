@@ -13,18 +13,17 @@ const useAbsentPunishment = (form) => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      IntWorkPlaceGroupId: formValues.workplaceGroup?.value,
-      IntWorkPlaceId: formValues.workplace?.value,
-      IntEmploymentTypeId: formValues.employmentType?.value,
-      StrStatus: formValues.status,
+      WorkPlaceId: formValues.workplace?.value,
+      Status: formValues.status,
+      PageNo:pages.current,
+      PageSize: pages.pageSize,
     };
 
     const filteredParams = Object.entries(formattedParams)
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
-
-    const url = `/BenefitPolicy/GetPolicies?${filteredParams}`;
+    const url = `/AbsentPunishment/GetAll?${filteredParams}`;
 
     getData(url, (res) => {
       setData(res);

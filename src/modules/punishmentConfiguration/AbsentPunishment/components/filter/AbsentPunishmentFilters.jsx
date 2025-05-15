@@ -2,25 +2,12 @@ import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
 import usePfPolicyFilters from "./useAbsentPunishmentFilters";
 
-const PfPolicyFilters = ({form}) => {
-  const { workplaceGroupDDL, workplaceDDL, employmentTypeDDL, getWorkplaceDDL, getEmploymentTypeDDL } =
-    usePfPolicyFilters(form);
+const PfPolicyFilters = ({ form }) => {
+  const {
+    workplaceDDL,
+  } = usePfPolicyFilters(form);
   return (
     <Row gutter={[10, 2]}>
-      <Col md={5} sm={12} xs={24}>
-        <PSelect
-          options={workplaceGroupDDL.data}
-          name="workplaceGroup"
-          label="Workplace Group"
-          placeholder="Select Workplace Group"
-          onChange={(_, op) => {
-            form.setFieldsValue({ workplaceGroup: op });
-            getWorkplaceDDL();
-          }}
-          loading={workplaceGroupDDL.loading}
-          rules={[{ required: true, message: "Workplace Group Is Required" }]}
-        />
-      </Col>
       <Col md={5} sm={12} xs={24}>
         <PSelect
           options={workplaceDDL.data}
@@ -29,7 +16,6 @@ const PfPolicyFilters = ({form}) => {
           placeholder="Select Workplace"
           onChange={(_, op) => {
             form.setFieldsValue({ workplace: op });
-            getEmploymentTypeDDL();
           }}
           loading={workplaceDDL.loading}
           rules={[{ required: true, message: "Workplace Is Required" }]}
@@ -37,18 +23,24 @@ const PfPolicyFilters = ({form}) => {
       </Col>
       <Col md={5} sm={12} xs={24}>
         <PSelect
-          options={employmentTypeDDL.data}
-          name="employmentType"
-          label="Employment Type"
-          placeholder="Select Employment Type"
-          onChange={(_, op) => {
-            form.setFieldsValue({ employmentType: op });
+          options={[
+            {
+              value: 1,
+              label: "Active",
+            },
+            {
+              value: 2,
+              label: "Inactive",
+            },
+          ]}
+          name="status"
+          label="Status"
+          placeholder="Select Status"
+          onChange={(value) => {
+            form.setFieldsValue({ status: value });
           }}
-          loading={employmentTypeDDL.loading}
-          rules={[{ required: true, message: "Employment Type Is Required" }]}
         />
       </Col>
-
       <Col style={{ marginTop: "23px" }}>
         <PButton type="primary" action="submit" content="View" />
       </Col>

@@ -1,48 +1,53 @@
-import { PButton } from "Components";
+import { Switch, Tooltip } from "antd";
+import { Flex, PButton } from "Components";
 
 export const getHeader = (pages, history) => [
   {
     title: "SL",
     render: (_, __, index) =>
       (pages?.current - 1) * pages?.pageSize + index + 1,
-    width: 25,
+    width: 50,
     align: "center",
   },
   {
     title: "Policy Name",
-    dataIndex: "strPolicyName",
-    sorter: true,
-    width: 100,
-  },
-  {
-    title: "Workplace Group",
-    dataIndex: "strWorkPlaceGroupName",
-    sorter: true,
-    width: 120,
-  },
-  {
-    title: "Workplace",
-    dataIndex: "strWorkPlaceName",
-    sorter: true,
-    width: 100,
-  },
-  {
-    title: "Employment Type",
-    dataIndex: "strEmploymentTypeName",
-    sorter: true,
-    width: 120,
-  },
-  {
-    title: "PF Eligibility Depend on",
-    dataIndex: "strPFEligibilityDepandOn",
+    dataIndex: "policyName",
     sorter: true,
     width: 150,
   },
   {
-    title: "Status",
-    dataIndex: "strStatus",
+    title: "Workplace",
+    dataIndex: "workplaceName",
     sorter: true,
-    width: 80,
+    width: 150,
+  },
+  {
+    title: "Employment Type",
+    dataIndex: "employmentTypeList",
+    sorter: true,
+    width: 120,
+  },
+  {
+    title: "Designation",
+    dataIndex: "designationList",
+    sorter: true,
+    width: 120,
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    render: (_, rec) => (
+      <Flex justify="center">
+        <Tooltip
+          placement="bottom"
+          title={rec?.isActive ? "Active" : "Inactive"}
+        >
+          <Switch size="small" checked={rec?.isActive} onChange={() => {}} />
+        </Tooltip>
+      </Flex>
+    ),
+    align: "center",
+    width: 40,
   },
   {
     title: "Action",
@@ -50,28 +55,19 @@ export const getHeader = (pages, history) => [
     align: "center",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <PButton
-          content="View"
-          type="primary-outline"
-          onClick={() => {
-            history?.push({
-              pathname: `/pfpolicy/view/${record.intId}`,
-              state: { policyInfo: record },
-            });
-          }}
-        />
+        <PButton content="View" type="primary-outline" onClick={() => {}} />
         <PButton
           content="Extend"
           type="primary"
           onClick={() => {
             history?.push({
-              pathname: `/pfpolicy/extend/${record.intId}`,
+              pathname: `/administration/punishmentConfiguration/absentPunishment/configuration/extend/${record.policyId}`,
               state: { policyInfo: record },
             });
           }}
         />
       </div>
     ),
-    width: 120,
+    width: 140,
   },
 ];

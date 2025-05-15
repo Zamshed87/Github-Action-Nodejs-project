@@ -8,35 +8,15 @@ const useAbsentPunishmentFilters = (form) => {
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const workplaceDDL = useApiRequest([]);
-  const workplaceGroupDDL = useApiRequest([]);
-  const employmentTypeDDL = useApiRequest([]);
-
-  const getWorkplaceGroupsDDL = () => {
-    workplaceGroupDDL?.action({
-      urlKey: "WorkplaceGroupIdAll",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
 
   const getWorkplaceDDL = () => {
-    const { workplaceGroup } = form?.getFieldsValue(true) || {};
     workplaceDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Workplace",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value || wgId,
+        WorkplaceGroupId: wgId,
         intId: employeeId,
       },
       onSuccess: (res) => {
@@ -47,38 +27,13 @@ const useAbsentPunishmentFilters = (form) => {
       },
     });
   };
-  const getEmploymentTypeDDL = () => {
-    const { workplaceGroup, workplace } = form?.getFieldsValue(true) || {};
-
-    employmentTypeDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmploymentType",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.EmploymentType;
-          res[i].value = item?.Id;
-        });
-      },
-    });
-  };
 
   useEffect(() => {
-    getWorkplaceGroupsDDL();
+    getWorkplaceDDL();
   }, [orgId, buId, wgId, wId]);
 
   return {
-    workplaceGroupDDL,
     workplaceDDL,
-    employmentTypeDDL,
-    getWorkplaceDDL,
-    getEmploymentTypeDDL,
   };
 };
 

@@ -12,8 +12,8 @@ const useConfigSelectionHook = (form) => {
   const workplaceDDL = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
-  const [absentCalculationType, getACT, loadingACT, setACT] = useAxiosGet([]);
-  const [absentAmountDeductionType, getADT, loadingADT, setADT] = useAxiosGet([]);
+  const [absentCalculationTypeDDL, getACT, loadingACT, setACT] = useAxiosGet([]);
+  const [absentAmountDeductionTypeDDL, getADT, loadingADT, setADT] = useAxiosGet([]);
 
   const getWorkplaceDDL = () => {
     workplaceDDL?.action({
@@ -90,8 +90,8 @@ const useConfigSelectionHook = (form) => {
     getEmploymentTypeDDL,
     empDesignationDDL,
     getEmployeeDesignation,
-    absentCalculationType,
-    absentAmountDeductionType,
+    absentCalculationTypeDDL,
+    absentAmountDeductionTypeDDL,
     loadingACT,
     loadingADT,
   };
