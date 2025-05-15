@@ -374,6 +374,7 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Address",
     dataIndex: ["applicationInformation", "address"],
+    width: "60px",
   },
   {
     title: "Waiting Stage",
@@ -382,8 +383,7 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Status",
     dataIndex: ["applicationInformation", "status"],
-    width: 70,
-
+    width: "50px",
     render: (status) => (
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
