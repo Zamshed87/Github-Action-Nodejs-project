@@ -26,7 +26,7 @@ const initData = {
   yearId: new Date().getFullYear(),
 };
 
-export default function SalaryDetailsReport() {
+export default function SalaryDetailsReport({ type }) {
   const dispatch = useDispatch();
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
@@ -37,7 +37,10 @@ export default function SalaryDetailsReport() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    document.title = "Salary Requisition Report";
+    document.title =
+      type === "bonus"
+        ? "Bonus Requisition Report"
+        : "Salary Requisition Report";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -47,12 +50,20 @@ export default function SalaryDetailsReport() {
     if (item?.menuReferenceId === 82) {
       permission = item;
     }
+    if (item?.menuReferenceId === 30592) {
+      permission = item;
+    }
   });
 
   // state define
   const [loading, setLoading] = useState(false);
   // DDl section
   const [payrollPolicyDDL, setPayrollPolicyDDL] = useState([]);
+
+  const pathUrl =
+    type === "bonus"
+      ? "GetBonusRequisitionReport_Matador"
+      : "GetSalaryRequisitionReport_Matador";
 
   // useFormik hooks
   const {
@@ -74,17 +85,19 @@ export default function SalaryDetailsReport() {
     useState(false);
   // on form submit
   const saveHandler = (values) => {
+    const code = type === "bonus" ? "strBonusCode" : "strSalaryCode";
     getSalaryDetailsReportRDLC({
       setLoading: setRequisitionReportLoading,
       setterData: setRequisitionData,
-      url: `/PdfAndExcelReport/GetSalaryRequisitionReport_Matador?strPartName=htmlView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`,
+      url: `/PdfAndExcelReport/${pathUrl}?strPartName=htmlView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&${code}=${values?.payrollPolicy?.value}`,
     });
   };
 
   useEffect(() => {
     if (values?.monthId || values?.yearId) {
+      const typeUrl = type === "bonus" ? "BonusPeriod" : "PayrollPeriod";
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriod&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${typeUrl}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
         "SalaryCode",
         "SalaryCode",
         setPayrollPolicyDDL
@@ -98,7 +111,9 @@ export default function SalaryDetailsReport() {
         {permission?.isView ? (
           <div className="table-card">
             <div className="table-card-heading">
-              <h2>Salary Requisition Report</h2>
+              <h2>
+                {type === "bonus" ? "Bonus" : "Salary"} Requisition Report
+              </h2>
             </div>
             <div className="table-card-body">
               <div
@@ -151,7 +166,10 @@ export default function SalaryDetailsReport() {
                   </div>
                   <div className="col-lg-3">
                     <div className="input-field-main">
-                      <label>Salary Code</label>
+                      <label>
+                        {" "}
+                        {type === "bonus" ? "Bonus" : "Salary"} Code
+                      </label>
                       <FormikSelect
                         name="payrollPolicy"
                         options={[...payrollPolicyDDL] || []}
@@ -239,7 +257,7 @@ export default function SalaryDetailsReport() {
                             if (requisitionData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                            const url = `/PdfAndExcelReport/GetSalaryRequisitionReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
+                            const url = `/PdfAndExcelReport/${pathUrl}?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
                             downloadFile(
                               url,
                               "Salary Details Report",
@@ -273,7 +291,7 @@ export default function SalaryDetailsReport() {
                           if (requisitionData?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
-                            const url = `/PdfAndExcelReport/GetSalaryRequisitionReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
+                            const url = `/PdfAndExcelReport/${pathUrl}?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
 
                             getPDFAction(url, setLoading);
                           }
