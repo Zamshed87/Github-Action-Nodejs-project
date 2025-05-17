@@ -41,6 +41,8 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       disabledDate,
       addOnBefore,
       iconRender,
+      style,
+      className,
     } = property;
 
     const Components =
@@ -60,8 +62,15 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
         />
       ) : type === "dateRange" ? (
         <DatePicker.RangePicker
-          placeholder={(placeholder as unknown as [string, string]) || ["From Date", "To Date"]}
-          onChange={onChange as (values: any, formatString: [string, string]) => void}
+          placeholder={
+            (placeholder as unknown as [string, string]) || [
+              "From Date",
+              "To Date",
+            ]
+          }
+          onChange={
+            onChange as (values: any, formatString: [string, string]) => void
+          }
           disabled={disabled}
           suffixIcon={suffix}
           value={value}
@@ -179,7 +188,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           rules={rules}
           valuePropName={type === "checkbox" ? "checked" : valuePropName}
           hasFeedback={hasFeedback}
-          style={{ marginBottom: 0 }}
+          style={{...style, marginBottom: 0 }}
           className={disabled ? "peopledesk_input_disabled" : ""}
         >
           {Components}
