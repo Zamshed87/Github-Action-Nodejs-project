@@ -3033,7 +3033,11 @@ export const routingList = [
   },
   {
     path: "/compensationAndBenefits/reports/salaryRequisitionReport",
-    component: SalaryRequisitionReport,
+    component: () => <SalaryRequisitionReport type={"salary"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/bonusRequisitionReport",
+    component: () => <SalaryRequisitionReport type={"bonus"} />,
   },
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
