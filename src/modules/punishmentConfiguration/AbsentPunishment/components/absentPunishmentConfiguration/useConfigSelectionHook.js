@@ -35,7 +35,7 @@ const useConfigSelectionHook = (form) => {
   };
   const getEmploymentTypeDDL = () => {
     const { workplace } = form?.getFieldsValue(true) || {};
-
+    console.log(workplace)
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -43,7 +43,7 @@ const useConfigSelectionHook = (form) => {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value ?? wId,
+        IntWorkplaceId: workplace ?? wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -64,7 +64,7 @@ const useConfigSelectionHook = (form) => {
         AccountId: orgId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value ?? wId,
+        IntWorkplaceId: workplace ?? wId,
         intId: 0,
       },
       onSuccess: (res) => {
