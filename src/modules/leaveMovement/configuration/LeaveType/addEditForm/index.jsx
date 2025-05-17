@@ -1,16 +1,12 @@
 import { ModalFooter } from "Components/Modal";
-import { PForm, PInput, PSelect } from "Components/PForm";
+import { PForm, PInput } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row } from "antd";
-import { debounce } from "lodash";
+import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Switch } from "antd";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
-// import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
-// import { createEditEmpAction, userExistValidation } from "../helper";
-// import { submitHandler } from "./helper";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -20,21 +16,18 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
   // const debounce = useDebounce();
   const getSingleData = useApiRequest({});
   const saveLeaveType = useApiRequest({});
 
-  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { orgId, employeeId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   // states
-
-  const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
-
-  // Pages Start From Here code from above will be removed soon
 
   // Form Instance
   const [form] = Form.useForm();
@@ -61,12 +54,12 @@ export default function AddEditForm({
   }, [singleData?.intLeaveTypeId]);
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
     const cb = () => {
-      console.log("callback calling...");
       resetForm();
       setIsAddEditForm(false);
       getData();
+      setId({});
     };
-    let payload = {
+    const payload = {
       intParentId: singleData?.intParentId || 0,
       strLeaveType: values?.leaveType,
       strLeaveTypeCode: values?.leaveTypeCode,

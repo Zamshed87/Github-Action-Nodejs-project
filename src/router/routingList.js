@@ -260,6 +260,12 @@ import GradeLanding from "modules/PayrollManagementSytem/grade";
 import JobLevelLanding from "modules/PayrollManagementSytem/jobLevel";
 import JobClassLanding from "modules/PayrollManagementSytem/jobclass";
 import PayscaleLanding from "modules/PayrollManagementSytem/payscale";
+const AbsentPunishment = lazy(() =>
+  import("../modules/punishmentConfiguration/AbsentPunishment/index.jsx")
+);
+const AbsentPunishmentConfiguration = lazy(() =>
+  import("../modules/punishmentConfiguration/AbsentPunishment/components/absentPunishmentConfiguration/index.jsx")
+);
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
 import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
@@ -282,6 +288,8 @@ import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+import LatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment";
+import CreateEditLatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment/createEdit";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
 import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
@@ -458,7 +466,9 @@ const AssetRequisitionSelfCreate = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/addEditForm.jsx")
 );
 const AssetRequisitionCreate = lazy(() =>
-  import("../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx")
+  import(
+    "../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx"
+  )
 );
 const AssetRequisitionSelfLanding = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/index.jsx")
@@ -498,7 +508,9 @@ const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
 );
 const AssetRequisition = lazy(() =>
-  import("../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx")
+  import(
+    "../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx"
+  )
 );
 const AssetRegistrationCreate = lazy(() =>
   import(
@@ -751,13 +763,17 @@ const BankSalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/bankSalaryReport/index.jsx")
 );
 const FinisBankSalaryReport = lazy(() =>
-  import("../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx")
+  import(
+    "../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx"
+  )
 );
 const YearlySalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/yearlySalaryReport/index.jsx")
 );
 const MonthlySalaryBreakDownReport = lazy(() =>
-  import("../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx")
+  import(
+    "../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx"
+  )
 );
 const SingleSalaryReport = lazy(() =>
   import(
@@ -2546,6 +2562,14 @@ export const routingList = [
     path: "/administration/configuration/taxChallanConfig ",
     component: TaxChallanConfigLanding,
   },
+  {
+    path: "/administration/latePunishmentPolicy",
+    component: LatePunishmentConfig,
+  },
+  {
+    path: "/administration/latePunishmentPolicy/:type/:id",
+    component: CreateEditLatePunishmentConfig,
+  },
   // {
   //   path: "/SelfService/timeManagement/attendenceAdjustRequest",
   //   component: AttendanceApprovalRequest,
@@ -3022,7 +3046,11 @@ export const routingList = [
   },
   {
     path: "/compensationAndBenefits/reports/salaryRequisitionReport",
-    component: SalaryRequisitionReport,
+    component: () => <SalaryRequisitionReport type={"salary"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/bonusRequisitionReport",
+    component: () => <SalaryRequisitionReport type={"bonus"} />,
   },
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
@@ -3235,6 +3263,14 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/payScaleSetup",
     component: PayscaleLanding,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment",
+    component: AbsentPunishment,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment/configuration",
+    component: AbsentPunishmentConfiguration,
   },
   {
     path: "/administration/payrollConfiguration/jobClass",

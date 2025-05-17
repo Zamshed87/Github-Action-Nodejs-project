@@ -131,7 +131,7 @@ const EmpCheckList = () => {
         intAccountId: orgId,
         intBusinessUnitId: buId,
         IsXls: false,
-        intWorkplaceId: values?.workplace?.value,
+        workplaceIdList: values?.workplace?.value || 0,
         departments: formatFilterValue(values?.department),
         sections: formatFilterValue(values?.section),
         PageNo: pagination.current || 1,
@@ -182,7 +182,7 @@ const EmpCheckList = () => {
                 try {
                   const values = form.getFieldsValue(true);
                   downloadFile(
-                    `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
+                    `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&workplaceIdList=${
                       values?.workplace?.value
                     }&dteFromDate=${moment(values?.fromDate).format(
                       "YYYY-MM-DD"
@@ -207,7 +207,7 @@ const EmpCheckList = () => {
               const values = form.getFieldsValue(true);
 
               getPDFAction(
-                `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${values?.workplace?.value}`,
+                `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&workplaceIdList=${values?.workplace?.value}`,
                 setLoading,
                 "Employee CheckList Report.pdf"
               );

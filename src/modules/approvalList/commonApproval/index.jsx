@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Input, Spin } from "antd";
+import { Col, Input, Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
-import { DataTable } from "Components";
+import { DataTable, PSelect } from "Components";
 import { useLocation } from "react-router";
 import ApproveRejectComp from "common/ApproveRejectComp";
 import BackButton from "common/BackButton";
@@ -94,11 +94,13 @@ const CommonApprovalComponent = () => {
         buId,
         wgId: filteredWgId,
         wId: filteredWId,
-        employeeId,
+        employeeId: employeeId || 0,
+        employeeCode: filterData?.employee?.employeeCode || 0,
         setData,
         setTotalRecords,
         departmentId: filterData?.department?.value || 0,
         designationId: filterData?.designation?.value || 0,
+        waitingStage: filterData?.waitingStage || "",
         searchText: searchTerm,
         page,
       });
@@ -114,7 +116,6 @@ const CommonApprovalComponent = () => {
     const { workplaceGroup, workplace } = getFilteredValues(values, wId, wgId);
     setFilteredWId(workplace);
     setFilteredWgId(workplaceGroup);
-
     fetchPendingApprovals({
       id,
       setLoading,
@@ -122,11 +123,13 @@ const CommonApprovalComponent = () => {
       buId,
       wgId: workplaceGroup,
       wId: workplace,
-      employeeId,
+      employeeId: employeeId || 0,
+      employeeCode: values?.employee?.employeeCode || 0,
       setData,
       setTotalRecords,
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
+      waitingStage: values?.waitingStage || "",
       searchText: searchTerm,
       page,
     });
@@ -143,7 +146,7 @@ const CommonApprovalComponent = () => {
   // handle approve or reject
   const handleApproveReject = async (isApprove) => {
     const payload = selectedRow.map((key) => {
-      const row = data.find((item) => item.id === key?.key);
+      const row = data?.data?.find((item) => item.id === key?.key);
       return {
         configHeaderId: row.configHeaderId,
         approvalTransactionId: row.id,
@@ -167,11 +170,13 @@ const CommonApprovalComponent = () => {
         buId,
         wgId: filteredWgId,
         wId: filteredWId,
-        employeeId,
+        employeeId: employeeId || 0,
+        employeeCode: filterData?.employee?.employeeCode || 0,
         setData,
         setTotalRecords,
         departmentId: filterData?.department?.value || 0,
         designationId: filterData?.designation?.value || 0,
+        waitingStage: filterData?.waitingStage || "",
         searchText: searchTerm,
         page,
       });
@@ -211,14 +216,21 @@ const CommonApprovalComponent = () => {
       buId,
       wgId: filteredWgId,
       wId: filteredWId,
-      employeeId,
+      employeeId: employeeId || 0,
+      employeeCode: filterData?.employee?.employeeCode || 0,
       setData,
       setTotalRecords,
       departmentId: filterData?.department?.value || 0,
       designationId: filterData?.designation?.value,
+      waitingStage: filterData?.waitingStage || "",
       searchText: value,
     });
   }, 300);
+
+  const waitingStageDDL = data?.waitingStageList?.map((item) => ({
+    label: item,
+    value: item,
+  }));
 
   // render
   return (
@@ -265,7 +277,17 @@ const CommonApprovalComponent = () => {
             isDesignation={true}
             isEmployee={true}
             isAllValue={true}
-          />
+          >
+            <Col md={12} sm={12}>
+              <PSelect
+                allowClear
+                options={waitingStageDDL || []}
+                name="waitingStage"
+                label="Waiting Stage"
+                placeholder="Select Waiting Stage"
+              />
+            </Col>
+          </CommonFilter>
         </div>
       </div>
 
@@ -340,7 +362,7 @@ const CommonApprovalComponent = () => {
               : columnsDefault
           }
           bordered
-          data={data.map((item) => ({ ...item, key: item.id }))}
+          data={data?.data?.map((item) => ({ ...item, key: item.id }))}
           pagination={{
             pageSize: page.pageSize,
             current: page.pageNo,

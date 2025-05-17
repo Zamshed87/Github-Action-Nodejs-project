@@ -311,7 +311,10 @@ const CreateLoanApplicationModal = ({
           <Form onSubmit={handleSubmit}>
             {loading && <Loading />}
             <div className="businessUnitModal">
-              <div className="modalBody" style={{ padding: "0px 16px" }}>
+              <div
+                className="modalBody"
+                style={{ padding: "0px 16px", minHeight: "400px" }}
+              >
                 <div className="row">
                   <div className="col-4">
                     <label>

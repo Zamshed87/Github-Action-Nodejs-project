@@ -143,6 +143,7 @@ export const getSingleAnnouncement = async (
         dteExpiredDate: res?.data?.announcement?.dteExpiredDate,
         dteCreatedAt: res?.data?.announcement?.dteCreatedAt,
         intCreatedBy: res?.data?.announcement?.intCreatedBy,
+        intAttachmentId: res?.data?.announcement?.intAttachmentId,
         isActive: true,
       });
       setLoading && setLoading(false);
@@ -164,13 +165,14 @@ export const getSingleAnnouncementDeleteData = async (announcementId, cb) => {
   }
 };
 
-export const createAnnouncement = async (payload, setLoading) => {
+export const createAnnouncement = async (payload, setLoading, cb) => {
   setLoading(true);
   try {
     const res = await axios.post(`/MasterData/CreateEditAnnouncement`, payload);
     // cb();
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading(false);
+    cb();
   } catch (error) {
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading(false);

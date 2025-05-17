@@ -220,7 +220,7 @@ function ParmanentAddress({ getData, empId }) {
         thanaName:
           values?.policeStation?.label || singleData?.policeStation?.label,
         postOfficeId:
-          values?.postOffice?.value || singleData?.postOffice?.value,
+          values?.postOffice?.value || singleData?.postOffice?.value || 0,
         postOfficeName:
           values?.postOffice?.label || singleData?.postOffice?.label,
         postCode: values?.postCode || singleData?.postCode,
@@ -399,7 +399,7 @@ function ParmanentAddress({ getData, empId }) {
         wgId,
         buId,
         setPostOfficeDDL,
-        "intPostOfficeId",
+        "PostOfficeId",
         "strPostOffice",
         singleData?.policeStation?.value
       );
@@ -580,7 +580,7 @@ function ParmanentAddress({ getData, empId }) {
                               wgId,
                               buId,
                               setPostOfficeDDL,
-                              "intPostOfficeId",
+                              "PostOfficeId",
                               "strPostOffice",
                               valueOption?.value
                             );
@@ -604,6 +604,7 @@ function ParmanentAddress({ getData, empId }) {
                           value={values?.postOffice}
                           label=""
                           onChange={(valueOption) => {
+                            console.log("valueOption", valueOption);
                             setFieldValue("postCode", valueOption?.strPostCode);
                             setFieldValue("address", "");
                             setFieldValue("addressBn", "");
