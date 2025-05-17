@@ -40,7 +40,7 @@ const PFPolicy = () => {
     }
   });
 
-  return !permission?.isView ? (
+  return permission?.isView ? (
     <PForm
       form={form}
       initialValues={{
