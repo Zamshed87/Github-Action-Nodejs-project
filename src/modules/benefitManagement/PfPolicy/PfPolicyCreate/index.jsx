@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import ConfigSelection from "./components/PfPolicyConfiguration/ConfigSelection";
 import { createAbsentPunishment, detailsHeader } from "./helper";
 import { toast } from "react-toastify";
+import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
@@ -44,7 +44,7 @@ const AbsentPunishmentConfiguration = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`Absent Punishment Configuration`}
+            title={`PF Policy`}
             buttonList={[
               {
                 type: "primary",
@@ -87,18 +87,8 @@ const AbsentPunishmentConfiguration = () => {
               },
             ]}
           />
-          {/* <ConfigSelection form={form} setDetailList={setDetailList} /> */}
+          <PfPolicyConfiguration form={form} saveData={saveData} setSaveData={setSaveData} />
         </PCard>
-        {/* {detailList?.length > 0 && (
-          <PCardBody>
-            <DataTable
-              bordered
-              data={detailList}
-              rowKey={(row, idx) => idx}
-              header={detailsHeader(setDetailList, absentCalculationType)}
-            />
-          </PCardBody>
-        )} */}
       </PForm>
     </div>
   ) : (

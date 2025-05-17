@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import PfPolicyFilters from "./components/filter/PfPolicyFilters";
 import usePfPolicy from "./hooks/usePfPolicy";
+import { toast } from "react-toastify";
 
 const PFPolicy = () => {
   const dispatch = useDispatch();
@@ -59,6 +60,22 @@ const PFPolicy = () => {
           //   });
           //   fetchPfPolicy({ search: e.target.value });
           // }}
+          buttonList={[
+            {
+              type: "primary",
+              content: "Create New",
+              icon: "plus",
+              onClick: () => {
+                if (permission?.isCreate) {
+                  history.push(
+                    "/bm/pfPolicy/create"
+                  );
+                } else {
+                  toast.warn("You don't have permission");
+                }
+              },
+            },
+          ]}
         />
         <PCardBody className="mb-3">
           <PfPolicyFilters

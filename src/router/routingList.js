@@ -1802,6 +1802,9 @@ const ApplicationNotificationLogs = lazy(() =>
 const PFPolicy = lazy(() =>
   import("../modules/benefitManagement/PfPolicy/index.jsx")
 );
+const PFPolicyCreate = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -4331,6 +4334,10 @@ export const routingList = [
   {
     path: "/bm/pfPolicy",
     component: PFPolicy,
+  },
+  {
+    path: "/bm/pfPolicy/create",
+    component: PFPolicyCreate,
   },
 ];
 

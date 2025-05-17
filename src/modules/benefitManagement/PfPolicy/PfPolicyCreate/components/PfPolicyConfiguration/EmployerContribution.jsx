@@ -1,73 +1,77 @@
-import { PButton, PCardBody, PInput, PSelect } from "Components";
+import { DataTable, PButton, PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
 import { Checkbox, Col, Form, Row } from "antd";
 import { toast } from "react-toastify";
+import { detailsHeader } from "./helper";
 
-const EmployerContribution = ({form,setSaveData}) => {
-    const {
-        workplaceDDL,
-        employmentTypeDDL,
-        empDesignationDDL,
-        getEmploymentTypeDDL,
-        getEmployeeDesignation,
-        absentCalculationTypeDDL,
-        absentAmountDeductionTypeDDL,
-        loadingACT,
-        loadingADT,
-      } = useConfigSelectionHook(form);
-      const absentCalculationType = Form.useWatch("absentCalculationType", form);
-      const amountDeductionType = Form.useWatch("amountDeductionType", form);
-      const onAddDetail = () => {
-        form
-          .validateFields()
-          .then((values) => {
-            const dayStart = parseInt(values?.dayRange?.[0].format("DD"));
-            const dayEnd = parseInt(values?.dayRange?.[1].format("DD"));
-      
-            // Check for duplicate or overlapping ranges
-            const isOverlap = (prevDetailList) =>
-              prevDetailList.some(
-                (item) =>
-                  !(dayEnd < parseInt(item.dayRangeStartDay) ||
-                    dayStart > parseInt(item.dayRangeEndDay))
-              );
-      
-            setSaveData((prev) => {
-              if (isOverlap(prev)) {
-                toast.error("This day range overlaps with an existing one.");
-                return prev;
-              }
-      
-              const detail = {
-                eachDayCountBy: parseInt(values.eachDayCountBy?.format("DD")),
-                dayRange: `${dayStart} - ${dayEnd}`,
-                dayRangeStartDay: dayStart,
-                dayRangeEndDay: dayEnd,
-                consecutiveDay: values.consecutiveDay,
-                amountDeductionType: values.amountDeductionType?.value,
-                amountDeductionTypeName: values.amountDeductionType?.label,
-                amountDeductionAmountOrPercentage:
-                  values.amountDeductionAmountOrPercentage,
-              };
-      
-              // Reset only relevant fields
-              form.resetFields([
-                "eachDayCountBy",
-                "dayRange",
-                "consecutiveDay",
-                "amountDeductionType",
-                "amountDeductionAmountOrPercentage",
-              ]);
-      
-              return [...prev, detail];
-            });
-          })
-          .catch((err) => {
-            toast.error("Please fill all required fields.");
-          });
-      };
-    return (
-        <PCardBody>
+const EmployerContribution = ({ form, saveData, setSaveData }) => {
+  const {
+    workplaceDDL,
+    employmentTypeDDL,
+    empDesignationDDL,
+    getEmploymentTypeDDL,
+    getEmployeeDesignation,
+    absentCalculationTypeDDL,
+    absentAmountDeductionTypeDDL,
+    loadingACT,
+    loadingADT,
+  } = useConfigSelectionHook(form);
+  const absentCalculationType = Form.useWatch("absentCalculationType", form);
+  const amountDeductionType = Form.useWatch("amountDeductionType", form);
+  const onAddDetail = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        const dayStart = parseInt(values?.dayRange?.[0].format("DD"));
+        const dayEnd = parseInt(values?.dayRange?.[1].format("DD"));
+
+        // Check for duplicate or overlapping ranges
+        const isOverlap = (prevDetailList) =>
+          prevDetailList.some(
+            (item) =>
+              !(
+                dayEnd < parseInt(item.dayRangeStartDay) ||
+                dayStart > parseInt(item.dayRangeEndDay)
+              )
+          );
+
+        setSaveData((prev) => {
+          if (isOverlap(prev)) {
+            toast.error("This day range overlaps with an existing one.");
+            return prev;
+          }
+
+          const detail = {
+            eachDayCountBy: parseInt(values.eachDayCountBy?.format("DD")),
+            dayRange: `${dayStart} - ${dayEnd}`,
+            dayRangeStartDay: dayStart,
+            dayRangeEndDay: dayEnd,
+            consecutiveDay: values.consecutiveDay,
+            amountDeductionType: values.amountDeductionType?.value,
+            amountDeductionTypeName: values.amountDeductionType?.label,
+            amountDeductionAmountOrPercentage:
+              values.amountDeductionAmountOrPercentage,
+          };
+
+          // Reset only relevant fields
+          form.resetFields([
+            "eachDayCountBy",
+            "dayRange",
+            "consecutiveDay",
+            "amountDeductionType",
+            "amountDeductionAmountOrPercentage",
+          ]);
+
+          return [...prev, detail];
+        });
+      })
+      .catch((err) => {
+        toast.error("Please fill all required fields.");
+      });
+  };
+  return (
+    <>
+      <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
           {absentCalculationType === "1" && (
             <Col md={4} sm={12} xs={24}>
@@ -134,14 +138,25 @@ const EmployerContribution = ({form,setSaveData}) => {
             <PInput
               type="number"
               name="amountDeductionAmountOrPercentage"
-              label={`% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"}`}
-              placeholder={`% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"}`}
+              label={`% of Amount ${
+                amountDeductionType?.value == 3
+                  ? "Fixed Amount"
+                  : "(Based on 1 day)"
+              }`}
+              placeholder={`% of Amount ${
+                amountDeductionType?.value == 3
+                  ? "Fixed Amount"
+                  : "(Based on 1 day)"
+              }`}
               min={1}
               rules={[
                 {
                   required: true,
-                  message:
-                   `% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"} is Required`,
+                  message: `% of Amount ${
+                    amountDeductionType?.value == 3
+                      ? "Fixed Amount"
+                      : "(Based on 1 day)"
+                  } is Required`,
                 },
               ]}
             />
@@ -174,7 +189,18 @@ const EmployerContribution = ({form,setSaveData}) => {
           </Col>
         </Row>
       </PCardBody>
-    );
+      {saveData?.employeeContributions?.length > 0 && (
+        <PCardBody>
+          <DataTable
+            bordered
+            data={saveData?.employeeContributions || []}
+            rowKey={(row, idx) => idx}
+            header={detailsHeader(setSaveData, absentCalculationType)}
+          />
+        </PCardBody>
+      )}
+    </>
+  );
 };
 
 export default EmployerContribution;

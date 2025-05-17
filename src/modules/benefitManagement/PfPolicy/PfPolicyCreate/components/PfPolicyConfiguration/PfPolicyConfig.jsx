@@ -2,7 +2,7 @@ import { Col, Row } from "antd";
 import { PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
 
-const PfPolicyConfig = ({ form, setSaveData }) => {
+const PfPolicyConfig = ({ form }) => {
     const {
         workplaceDDL,
         employmentTypeDDL,
