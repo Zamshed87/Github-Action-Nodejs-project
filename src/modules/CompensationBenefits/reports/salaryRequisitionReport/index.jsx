@@ -98,8 +98,8 @@ export default function SalaryDetailsReport({ type }) {
     if (values?.monthId || values?.yearId) {
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${typeUrl}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
-        "SalaryCode",
-        "SalaryCode",
+        type === "bonus" ? "BonusCode" : "SalaryCode",
+        type === "bonus" ? "BonusCode" : "SalaryCode",
         setPayrollPolicyDDL
       );
     }
@@ -140,8 +140,8 @@ export default function SalaryDetailsReport({ type }) {
                                 .split("")
                                 .slice(0, 4)
                                 .join("")}`,
-                              "SalaryCode",
-                              "SalaryCode",
+                              type === "bonus" ? "BonusCode" : "SalaryCode",
+                              type === "bonus" ? "BonusCode" : "SalaryCode",
                               setPayrollPolicyDDL
                             );
                           }
@@ -260,7 +260,9 @@ export default function SalaryDetailsReport({ type }) {
                             const url = `/PdfAndExcelReport/${pathUrl}?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&${code}=${values?.payrollPolicy?.value}`;
                             downloadFile(
                               url,
-                              "Salary Details Report",
+                              type === "bonus"
+                                ? "Bonus Details Report"
+                                : "Salary Details Report",
                               "xlsx",
                               setLoading
                             );
