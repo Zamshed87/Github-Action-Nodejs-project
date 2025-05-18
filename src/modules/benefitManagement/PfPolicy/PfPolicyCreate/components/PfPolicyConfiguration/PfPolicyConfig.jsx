@@ -9,6 +9,7 @@ const PfPolicyConfig = ({ form }) => {
       fetchWorkplace: true,
       fetchEmploymentType: true,
       fetchEligibilityEnum: true,
+      fetchContributionEnum: true,
     });
   return (
     <PCardBody className="mb-4">
@@ -30,7 +31,7 @@ const PfPolicyConfig = ({ form }) => {
         <Col md={5} sm={12} xs={24}>
           <PInput
             type="text"
-            name="policyCode"
+            name="strPolicyCode"
             placeholder="Policy Code"
             label="Policy Code"
             rules={[
