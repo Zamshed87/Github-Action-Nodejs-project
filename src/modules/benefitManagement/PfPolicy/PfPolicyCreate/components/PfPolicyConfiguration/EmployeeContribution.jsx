@@ -3,22 +3,22 @@ import useConfigSelectionHook from "./useConfigSelectionHook";
 import { Checkbox, Col, Form, Row } from "antd";
 import { toast } from "react-toastify";
 import { detailsHeader } from "./helper";
-import DayRangePicker from "Components/PForm/Day/DayRangePicker";
 
 const EmployeeContribution = ({ form, saveData, setSaveData }) => {
-  const {
-    workplaceDDL,
-    employmentTypeDDL,
-    empDesignationDDL,
-    getEmploymentTypeDDL,
-    getEmployeeDesignation,
-    absentCalculationTypeDDL,
-    absentAmountDeductionTypeDDL,
-    loadingACT,
-    loadingADT,
-  } = useConfigSelectionHook(form);
-  const absentCalculationType = Form.useWatch("absentCalculationType", form);
-  const amountDeductionType = Form.useWatch("amountDeductionType", form);
+  const { contributionOpts, loadingContribution } = useConfigSelectionHook(
+    form,
+    {
+      fetchContributionEnum: true,
+    }
+  );
+  const intPfEligibilityDependOn = Form.useWatch(
+    "intPfEligibilityDependOn",
+    form
+  );
+  const intContributionDependOn = Form.useWatch(
+    "intContributionDependOn",
+    form
+  );
   const onAddDetail = () => {
     form
       .validateFields()
@@ -70,29 +70,61 @@ const EmployeeContribution = ({ form, saveData, setSaveData }) => {
         toast.error("Please fill all required fields.");
       });
   };
+  const getRangeFromLabel = (value) => {
+    switch (value?.value) {
+      case "1":
+        return "Service Length Start (Month)";
+      case "2":
+        return "Employment Type Length Start (Month)";
+      case "3":
+        return "Salary Range Start  (Amount)";
+      default:
+        return "N/A";
+    }
+  };
+  const getRangeToLabel = (value) => {
+    switch (value?.value) {
+      case "1":
+        return "Service Length End (Month)";
+      case "2":
+        return "Employment Type Length End (Month)";
+      case "3":
+        return "Salary Range End (Amount)";
+      default:
+        return "N/A";
+    }
+  };
+  const getEmployeeContributionLabel = (value) => {
+    let label = "";
+    switch (value?.value) {
+      case "1":
+        label = "% of Gross Salary";
+        break;
+      case "2":
+        label = "Basic Salary";
+        break;
+      case "3":
+        label = "Fixed Amount";
+        break;
+      default:
+        label = "N/A";
+    }
+    return `Employee Contribution (${label})`;
+  };
   return (
     <>
       <h3 className="mb-3">Employee Contribution Collection</h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
-          {absentCalculationType === "1" && (
-            <Col md={4} sm={12} xs={24}>
-              <DayRangePicker
-                type="day"
-                name="eachDayCountBy"
-                label="Each Day Count by"
-                rules={[
-                  { required: true, message: "Each Day Count By Is Required" },
-                ]}
-              />
-            </Col>
-          )}
           <Col md={4} sm={12} xs={24}>
             <Form.Item
               name="consecutiveDay"
               valuePropName="checked"
               rules={[
-                { required: true, message: "Employee Contribution is required" },
+                {
+                  required: true,
+                  message: "Employee Contribution is required",
+                },
               ]}
               style={{ marginTop: "16px", marginBottom: 0 }}
             >
@@ -105,24 +137,85 @@ const EmployeeContribution = ({ form, saveData, setSaveData }) => {
               </Checkbox>
             </Form.Item>
           </Col>
+          {intPfEligibilityDependOn?.value != "0" && (
+            <>
+              <Col md={5} sm={12} xs={24}>
+                <PInput
+                  type="number"
+                  name="intRangeFrom"
+                  label={getRangeFromLabel(intPfEligibilityDependOn)}
+                  placeholder={getRangeFromLabel(intPfEligibilityDependOn)}
+                  onChange={(value) => {
+                    form.setFieldsValue({ intRangeFrom: value });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: `${getRangeFromLabel(
+                        intPfEligibilityDependOn
+                      )} Is Require`,
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={5} sm={12} xs={24}>
+                <PInput
+                  type="number"
+                  name="intRangeTo"
+                  label={getRangeToLabel(intPfEligibilityDependOn)}
+                  placeholder={getRangeToLabel(intPfEligibilityDependOn)}
+                  onChange={(value) => {
+                    form.setFieldsValue({ intRangeTo: value });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: `${getRangeToLabel(
+                        intPfEligibilityDependOn
+                      )} Is Required`,
+                    },
+                  ]}
+                />
+              </Col>
+            </>
+          )}
           <Col md={5} sm={12} xs={24}>
             <PSelect
-              options={absentAmountDeductionTypeDDL}
-              name="amountDeductionType"
-              label="Amount Deduct Type"
-              placeholder="Select Amount Deduct Type"
+              options={contributionOpts}
+              name="intContributionDependOn"
+              label="Employee Contribution Depend On"
+              placeholder="Select Employee Contribution Depend On"
               onChange={(_, op) => {
-                form.setFieldsValue({ amountDeductionType: op });
+                form.setFieldsValue({ intContributionDependOn: op });
               }}
-              loading={loadingADT}
+              loading={loadingContribution}
               rules={[
                 {
                   required: true,
-                  message: "Absent Calculation Type Is Required",
+                  message: "Employee Contribution Depend On Is Required",
                 },
               ]}
             />
           </Col>
+          <Col md={5} sm={12} xs={24}>
+                <PInput
+                  type="number"
+                  name="intRangeFrom"
+                  label={getEmployeeContributionLabel(intContributionDependOn)}
+                  placeholder={getEmployeeContributionLabel(intContributionDependOn)}
+                  onChange={(_, op) => {
+                    form.setFieldsValue({ amountDeductionType: op });
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                      message: `${getEmployeeContributionLabel(
+                        intContributionDependOn
+                      )} Is Require`,
+                    },
+                  ]}
+                />
+              </Col>
           <Col style={{ marginTop: "23px" }}>
             <PButton
               type="primary"
@@ -157,7 +250,7 @@ const EmployeeContribution = ({ form, saveData, setSaveData }) => {
             bordered
             data={saveData?.employeeContributions || []}
             rowKey={(row, idx) => idx}
-            header={detailsHeader(setSaveData, absentCalculationType)}
+            header={detailsHeader(setSaveData, loadingContribution)}
           />
         </PCardBody>
       )}

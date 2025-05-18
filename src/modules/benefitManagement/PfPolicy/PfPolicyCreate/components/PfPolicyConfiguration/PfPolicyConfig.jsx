@@ -9,7 +9,6 @@ const PfPolicyConfig = ({ form }) => {
       fetchWorkplace: true,
       fetchEmploymentType: true,
       fetchEligibilityEnum: true,
-      fetchContributionEnum: true,
     });
   return (
     <PCardBody className="mb-4">
@@ -74,8 +73,8 @@ const PfPolicyConfig = ({ form }) => {
             name="intPfEligibilityDependOn"
             label="PF Eligibility Depend On"
             placeholder="Select PF Eligibility Depend on"
-            onChange={(value) => {
-              form.setFieldsValue({ intPfEligibilityDependOn: value });
+            onChange={(_,op) => {
+              form.setFieldsValue({ intPfEligibilityDependOn: op });
             }}
             loading={loadingEligibility}
             rules={[
