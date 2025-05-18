@@ -1,6 +1,7 @@
 import { Col, Row } from "antd";
 import { PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
+import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
 const PfPolicyConfig = ({ form }) => {
     const {
@@ -32,9 +33,23 @@ const PfPolicyConfig = ({ form }) => {
           />
         </Col>
         <Col md={5} sm={12} xs={24}>
+          <PInput
+            type="text"
+            name="policyCode"
+            placeholder="Policy Code"
+            label="Policy Code"
+            rules={[
+              {
+                required: true,
+                message: "Policy Code Is Required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={5} sm={12} xs={24}>
           <PSelect
             options={workplaceDDL.data}
-            name="workplaceId"
+            name="intWorkPlaceId"
             label="Workplace"
             placeholder="Select Workplace"
             onChange={(value) => {
@@ -47,39 +62,25 @@ const PfPolicyConfig = ({ form }) => {
           />
         </Col>
         <Col md={5} sm={12} xs={24}>
-          {/* <PSelectWithAll
+          <PSelectWithAll
             form={form}
-            name="employmentTypeList"
+            name="intEmploymentTypeIds"
             label="Employment Type"
             placeholder="Select Employment Type"
             options={employmentTypeDDL.data}
             loading={employmentTypeDDL.loading}
             advanceAllOption={true}
             rules={[{ required: true, message: "Employment Type is required" }]}
-          /> */}
-        </Col>
-        <Col md={5} sm={12} xs={24}>
-          {/* <PSelectWithAll
-            form={form}
-            name="designationList"
-            label="Employee Designation"
-            placeholder="Select Employee Designation"
-            options={empDesignationDDL.data}
-            loading={empDesignationDDL.loading}
-            advanceAllOption={true}
-            rules={[
-              { required: true, message: "Employee Designation is required" },
-            ]}
-          /> */}
+          />
         </Col>
         <Col md={5} sm={12} xs={24}>
           <PSelect
             options={absentCalculationTypeDDL}
-            name="absentCalculationType"
-            label="Calculation Type"
-            placeholder="Select Calculation Type"
+            name="intPfEligibilityDependOn"
+            label="PF Eligibility Depend On"
+            placeholder="Select PF Eligibility Depend on"
             onChange={(value) => {
-              form.setFieldsValue({ absentCalculationType: value });
+              form.setFieldsValue({ PFEligibilityDependOn: value });
             }}
             loading={loadingACT}
             rules={[
@@ -88,14 +89,6 @@ const PfPolicyConfig = ({ form }) => {
                 message: "Calculation Type Is Required",
               },
             ]}
-          />
-        </Col>
-        <Col md={5} sm={12} xs={24}>
-          <PInput
-            type="text"
-            name="policyDescription"
-            placeholder="Policy Description"
-            label="Policy Description"
           />
         </Col>
       </Row>

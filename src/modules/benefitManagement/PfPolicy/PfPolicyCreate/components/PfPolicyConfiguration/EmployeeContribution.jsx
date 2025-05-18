@@ -3,6 +3,7 @@ import useConfigSelectionHook from "./useConfigSelectionHook";
 import { Checkbox, Col, Form, Row } from "antd";
 import { toast } from "react-toastify";
 import { detailsHeader } from "./helper";
+import DayRangePicker from "Components/PForm/Day/DayRangePicker";
 
 const EmployeeContribution = ({ form, saveData, setSaveData }) => {
   const {
@@ -71,52 +72,39 @@ const EmployeeContribution = ({ form, saveData, setSaveData }) => {
   };
   return (
     <>
-     
+      <h3 className="mb-3">Employee Contribution Collection</h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
           {absentCalculationType === "1" && (
             <Col md={4} sm={12} xs={24}>
-              {/* <DayRangePicker
+              <DayRangePicker
                 type="day"
                 name="eachDayCountBy"
                 label="Each Day Count by"
                 rules={[
                   { required: true, message: "Each Day Count By Is Required" },
                 ]}
-              /> */}
+              />
             </Col>
           )}
-          {absentCalculationType === "2" && (
-            <Col md={4} sm={12} xs={24}>
-              {/* <DayRangePicker
-                type="dayRange"
-                name="dayRange"
-                label="Day Range"
-                rules={[{ required: true, message: "Day Range Is Required" }]}
-              /> */}
-            </Col>
-          )}
-          {absentCalculationType === "1" && (
-            <Col md={3} sm={12} xs={24}>
-              <Form.Item
-                name="consecutiveDay"
-                valuePropName="checked"
-                rules={[
-                  { required: true, message: "Consecutive Day is required" },
-                ]}
-                style={{ marginTop: 23, marginBottom: 0 }}
+          <Col md={3} sm={12} xs={24}>
+            <Form.Item
+              name="consecutiveDay"
+              valuePropName="checked"
+              rules={[
+                { required: true, message: "Employee Contribution is required" },
+              ]}
+              style={{ marginTop: 23, marginBottom: 0 }}
+            >
+              <Checkbox
+                onChange={(e) =>
+                  form.setFieldsValue({ consecutiveDay: e.target.checked })
+                }
               >
-                <Checkbox
-                  onChange={(e) =>
-                    form.setFieldsValue({ consecutiveDay: e.target.checked })
-                  }
-                >
-                  Is Consecutive Day?
-                </Checkbox>
-              </Form.Item>
-            </Col>
-          )}
-
+                Is Employee Contribution?
+              </Checkbox>
+            </Form.Item>
+          </Col>
           <Col md={5} sm={12} xs={24}>
             <PSelect
               options={absentAmountDeductionTypeDDL}
@@ -131,33 +119,6 @@ const EmployeeContribution = ({ form, saveData, setSaveData }) => {
                 {
                   required: true,
                   message: "Absent Calculation Type Is Required",
-                },
-              ]}
-            />
-          </Col>
-          <Col md={5} sm={12} xs={24}>
-            <PInput
-              type="number"
-              name="amountDeductionAmountOrPercentage"
-              label={`% of Amount ${
-                amountDeductionType?.value == 3
-                  ? "Fixed Amount"
-                  : "(Based on 1 day)"
-              }`}
-              placeholder={`% of Amount ${
-                amountDeductionType?.value == 3
-                  ? "Fixed Amount"
-                  : "(Based on 1 day)"
-              }`}
-              min={1}
-              rules={[
-                {
-                  required: true,
-                  message: `% of Amount ${
-                    amountDeductionType?.value == 3
-                      ? "Fixed Amount"
-                      : "(Based on 1 day)"
-                  } is Required`,
                 },
               ]}
             />

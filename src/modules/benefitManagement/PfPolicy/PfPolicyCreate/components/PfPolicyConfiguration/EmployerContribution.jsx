@@ -71,6 +71,7 @@ const EmployerContribution = ({ form, saveData, setSaveData }) => {
   };
   return (
     <>
+      <h3 className="mb-3">Company/ Employer Contribution Disbursement</h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
           {absentCalculationType === "1" && (

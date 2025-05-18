@@ -12,8 +12,23 @@ const useConfigSelectionHook = (form) => {
   const workplaceDDL = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
-  const [absentCalculationTypeDDL, getACT, loadingACT, setACT] = useAxiosGet([]);
-  const [absentAmountDeductionTypeDDL, getADT, loadingADT, setADT] = useAxiosGet([]);
+  // State declarations
+  const [
+    eligibilityOpts,
+    fetchEligibility,
+    loadingEligibility,
+    setEligibility,
+  ] = useAxiosGet([]);
+  const [
+    contributionOpts,
+    fetchContribution,
+    loadingContribution,
+    setContribution,
+  ] = useAxiosGet([]);
+  const [paidAfterOpts, fetchPaidAfter, loadingPaidAfter, setPaidAfter] =
+    useAxiosGet([]);
+  const [investmentOpts, fetchInvestment, loadingInvestment, setInvestment] =
+    useAxiosGet([]);
 
   const getWorkplaceDDL = () => {
     workplaceDDL?.action({
@@ -35,7 +50,7 @@ const useConfigSelectionHook = (form) => {
   };
   const getEmploymentTypeDDL = () => {
     const { workplace } = form?.getFieldsValue(true) || {};
-    console.log(workplace)
+    console.log(workplace);
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -54,33 +69,14 @@ const useConfigSelectionHook = (form) => {
       },
     });
   };
-  const getEmployeeDesignation = () => {
-    const { workplace } = form.getFieldsValue(true);
-    empDesignationDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmpDesignation",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace ?? wId,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.DesignationName;
-          res[i].value = item?.DesignationId;
-        });
-      },
-    });
-  };
+
   useEffect(() => {
     getWorkplaceDDL();
     getEmploymentTypeDDL();
-    getEmployeeDesignation();
-    getACT(getEnumData("AbsentCalculationTypeEnum", setACT));
-    getADT(getEnumData("AbsentAmountDeductionTypeEnum", setADT));
+    fetchEligibility(getEnumData("PfEligibilityDependOn", setEligibility));
+    fetchContribution(getEnumData("PfContributionDependOn", setContribution));
+    fetchPaidAfter(getEnumData("EmployeeContributionPaidAfter", setPaidAfter));
+    fetchInvestment(getEnumData("MonthlyInvestmentWith", setInvestment));
   }, [orgId, buId, wgId, wId]);
 
   return {
@@ -89,11 +85,14 @@ const useConfigSelectionHook = (form) => {
     employmentTypeDDL,
     getEmploymentTypeDDL,
     empDesignationDDL,
-    getEmployeeDesignation,
-    absentCalculationTypeDDL,
-    absentAmountDeductionTypeDDL,
-    loadingACT,
-    loadingADT,
+    eligibilityOpts,
+    loadingEligibility,
+    contributionOpts,
+    loadingContribution,
+    paidAfterOpts,
+    loadingPaidAfter,
+    investmentOpts,
+    loadingInvestment,
   };
 };
 
