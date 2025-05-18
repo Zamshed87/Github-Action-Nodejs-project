@@ -199,7 +199,8 @@ export default function FinalSettlementLanding() {
                     setId,
                     empId,
                     setEmpId,
-                    setClearanceId
+                    setClearanceId,
+                    setLoading,
                   )}
                   pages={pages}
                   rowDto={rowDto || []}
