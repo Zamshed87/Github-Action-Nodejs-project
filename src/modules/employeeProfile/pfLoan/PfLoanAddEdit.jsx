@@ -29,6 +29,7 @@ import PfLoanTable from "./components/pfLoanTable";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { useApiRequest } from "Hooks";
+import { isDevServer } from "App";
 
 const PfLoanAddEdit = () => {
   const dispatch = useDispatch();
@@ -226,6 +227,7 @@ const PfLoanAddEdit = () => {
                 selectedValue={values?.employee}
                 isSearchIcon={true}
                 handleChange={(valueOption) => {
+                  isDevServer && console.log({ valueOption });
                   setFieldValue("employee", valueOption);
                   orgId === 14 &&
                     valueOption?.value &&
