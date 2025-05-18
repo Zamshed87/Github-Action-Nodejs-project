@@ -8,10 +8,13 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import ConfigSelection from "./ConfigSelection";
 import { createAbsentPunishment, detailsHeader } from "./helper";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
   const [detailList, setDetailList] = useState([]);
+    const history = useHistory();
+  
   // redux
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
 
@@ -22,7 +25,7 @@ const AbsentPunishmentConfiguration = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30590)
+      permissionList.find((item) => item?.menuReferenceId === 30591)
     );
   }, [permissionList]);
 
@@ -73,9 +76,10 @@ const AbsentPunishmentConfiguration = () => {
                       createAbsentPunishment(
                         payload,
                         setLoading,
-                        setDetailList
+                        setDetailList,
+                        history,
+                        form
                       );
-                      form.resetFields();
                     })
                     .catch((_) => {
                       toast.error("Please fill all required fields.");
@@ -84,7 +88,7 @@ const AbsentPunishmentConfiguration = () => {
               },
             ]}
           />
-          <ConfigSelection form={form} setDetailList={setDetailList} />
+          <ConfigSelection form={form} detailList={detailList} setDetailList={setDetailList} />
         </PCard>
         {detailList?.length > 0 && (
           <PCardBody>

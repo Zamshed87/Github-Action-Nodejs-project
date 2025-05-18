@@ -5,19 +5,21 @@ import { toast } from "react-toastify";
 export const createAbsentPunishment = async (
   payload,
   setLoading,
-  setDetailList
+  setDetailList,
+  history,
+  form
 ) => {
   setLoading?.(true);
   try {
     const res = await axios.post(`/AbsentPunishment/Create`, payload);
-    console.log(res);
-    toast.success(res?.data?.message || "Submitted Successfully");
+    toast.success(res?.data?.message?.[0] || "Submitted Successfully");
     setLoading?.(false);
     setDetailList?.([]);
+    form?.resetFields?.();
+    history?.push?.("/administration/punishmentConfiguration/absentPunishment");
   } catch (error) {
     toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
     setLoading?.(false);
-    setDetailList?.([]);
   }
 };
 
@@ -43,7 +45,6 @@ export const detailsHeader = (setDetailList, absentCalculationType, action=true)
             title: "Day Range",
             dataIndex: "dayRange",
             render: (val) => {
-              console.log(val);
               if (val) {
                 const [from, to] = val
                   .split("-")
