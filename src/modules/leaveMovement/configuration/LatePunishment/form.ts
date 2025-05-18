@@ -215,6 +215,9 @@ export const LatePunishment = (
             varname: "eachDayCountBy",
             ddl: daysArray || [],
             placeholder: "Select Each Day Count by",
+            rules: [
+              { required: true, message: "Each Day Count by is required!" },
+            ],
             col: 6,
           },
         ]

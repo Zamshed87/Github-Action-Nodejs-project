@@ -19,40 +19,31 @@ function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
       policy.isConsecutiveDay === values.isConsecutiveDay &&
       policy.lateCalculationTypeId === 1
   );
+
   for (const policy of conflictingPolicies) {
     const oldMin = policy.minimumLateTime;
     const oldMax = policy.maximumLateTime;
     const newMin = values.minimumLateTime;
     const newMax = values.maximumLateTime;
+    console.log(oldMin, oldMax);
+    console.log(newMin, newMax);
 
     const isOverlapping = Math.max(oldMin, newMin) <= Math.min(oldMax, newMax);
+    console.log(isOverlapping);
 
     if (isOverlapping) {
       toast.error(
-        "You cannot set overlapping late time range when 'Is Consecutive Day' is." +
-          values.isConsecutiveDay
+        "You cannot set overlapping late time range" + values.isConsecutiveDay
       );
       return false;
     }
     console.log(policy.eachDayCountBy, "policy.eachDayCountBy");
     console.log(policy.eachDayCountById, "policy.eachDayCountById");
-
-    // ✅ Return the updated values directly instead of using form.setFieldsValue
-    return {
-      ...values,
-      eachDayCountBy: {
-        label: policy.eachDayCountBy,
-        value: policy.eachDayCountById,
-      },
-    };
   }
-
-  return values; // no update needed
 }
 
 function isDayRangeOverlapping(data: any[], values: any): boolean {
   // if (!Array.isArray(values?.dayRange)) return false;
-
   const [newStart, newEnd] = [
     new Date(values.dayRange[0]).getUTCDate(),
     new Date(values.dayRange[1]).getUTCDate(),
@@ -101,7 +92,7 @@ export const addHandler = (
   // values: any,
   form: any
 ) => {
-  let values = form.getFieldsValue(true);
+  const values = form.getFieldsValue(true);
 
   if (values?.minimumLateTime > values?.maximumLateTime) {
     return toast.error(
@@ -112,8 +103,6 @@ export const addHandler = (
     const validated = eachDayDuplicacyCheck(data, values, form);
 
     if (validated === false) return null;
-
-    values = validated; // 🔁 use updated values
   }
   if (
     values.lateCalculationType?.value === 2 &&
