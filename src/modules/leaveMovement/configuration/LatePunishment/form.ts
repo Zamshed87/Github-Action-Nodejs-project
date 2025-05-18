@@ -45,20 +45,34 @@ const punishmentType = [
   },
 ];
 
-const leaveDeductType = [
-  {
-    label: "Full Day",
-    value: 1,
-  },
-  {
-    label: "Half Day",
-    value: 2,
-  },
-  {
-    label: "Actual Clock Time",
-    value: 3,
-  },
-];
+const getleaveDeductType = (value: number) => {
+  if (value === 1) {
+    return [
+      {
+        label: "Full Day",
+        value: 1,
+      },
+      {
+        label: "Half Day",
+        value: 2,
+      },
+    ];
+  } else
+    return [
+      {
+        label: "Full Day",
+        value: 1,
+      },
+      {
+        label: "Half Day",
+        value: 2,
+      },
+      {
+        label: "Actual Clock Time",
+        value: 3,
+      },
+    ];
+};
 
 const amountDeductFrom = [
   {
@@ -261,7 +275,7 @@ export const LatePunishment = (
             type: "ddl",
             label: "Leave Deduct Type",
             varname: "leaveDeductType",
-            ddl: leaveDeductType || [],
+            ddl: getleaveDeductType(values?.lateCalculationType?.value) || [],
             placeholder: "Select leave deduct type",
             rules: [
               { required: true, message: "Leave Deduct Type is required!" },

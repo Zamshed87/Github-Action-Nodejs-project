@@ -86,6 +86,9 @@ const CreateEditLatePunishmentConfig = () => {
   );
 
   const getEmployeDepartment = () => {
+    form.setFieldsValue({
+      department: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
@@ -107,6 +110,9 @@ const CreateEditLatePunishmentConfig = () => {
     });
   };
   const getEmployeDesignation = () => {
+    form.setFieldsValue({
+      designation: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     empDesignationDDL?.action({
@@ -130,6 +136,9 @@ const CreateEditLatePunishmentConfig = () => {
   };
 
   const getEmploymentType = () => {
+    form.setFieldsValue({
+      employmentType: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     employmentTypeDDL?.action({
