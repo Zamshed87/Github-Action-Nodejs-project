@@ -5,7 +5,7 @@ import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 import DayRangePicker from "Components/PForm/Day/DayRangePicker";
 import { toast } from "react-toastify";
 
-const ConfigSelection = ({ form, setDetailList }) => {
+const ConfigSelection = ({ form, detailList, setDetailList }) => {
   const {
     workplaceDDL,
     employmentTypeDDL,
@@ -23,6 +23,10 @@ const ConfigSelection = ({ form, setDetailList }) => {
     form
       .validateFields()
       .then((values) => {
+        if (absentCalculationType == 1 && detailList.length == 1) {
+          toast.error("You can only add one element when each day is selected.");
+          return;
+        }
         const dayStart = parseInt(values?.dayRange?.[0].format("DD"));
         const dayEnd = parseInt(values?.dayRange?.[1].format("DD"));
   
@@ -143,6 +147,7 @@ const ConfigSelection = ({ form, setDetailList }) => {
               placeholder="Select Calculation Type"
               onChange={(value) => {
                 form.setFieldsValue({ absentCalculationType: value });
+                setDetailList([]);
               }}
               loading={loadingACT}
               rules={[
