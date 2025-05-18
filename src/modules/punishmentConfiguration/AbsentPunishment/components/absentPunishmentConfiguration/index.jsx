@@ -8,10 +8,13 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import ConfigSelection from "./ConfigSelection";
 import { createAbsentPunishment, detailsHeader } from "./helper";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
   const [detailList, setDetailList] = useState([]);
+    const history = useHistory();
+  
   // redux
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
 
@@ -22,7 +25,7 @@ const AbsentPunishmentConfiguration = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30590)
+      permissionList.find((item) => item?.menuReferenceId === 30591)
     );
   }, [permissionList]);
 
@@ -73,7 +76,8 @@ const AbsentPunishmentConfiguration = () => {
                       createAbsentPunishment(
                         payload,
                         setLoading,
-                        setDetailList
+                        setDetailList,
+                        history
                       );
                       form.resetFields();
                     })

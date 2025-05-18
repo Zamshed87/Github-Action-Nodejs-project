@@ -5,15 +5,17 @@ import { toast } from "react-toastify";
 export const createAbsentPunishment = async (
   payload,
   setLoading,
-  setDetailList
+  setDetailList,
+  history
 ) => {
   setLoading?.(true);
   try {
     const res = await axios.post(`/AbsentPunishment/Create`, payload);
     console.log(res);
-    toast.success(res?.data?.message || "Submitted Successfully");
+    toast.success(res?.data?.message?.[0] || "Submitted Successfully");
     setLoading?.(false);
     setDetailList?.([]);
+    history.push("/administration/punishmentConfiguration/absentPunishment");
   } catch (error) {
     toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
     setLoading?.(false);
