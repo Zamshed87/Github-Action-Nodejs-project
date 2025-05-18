@@ -115,7 +115,8 @@ export const LatePunishment = (
   empDesignationDDL: any[],
   DayRangeComponent: any,
   CustomCheckbox: any,
-  values: any
+  values: any,
+  form: any
 ) => {
   return [
     {
@@ -194,6 +195,13 @@ export const LatePunishment = (
       varname: "lateCalculationType",
       ddl: calculationType || [],
       placeholder: "Select late calculation type",
+      onChange: () => {
+        form.setFieldsValue({
+          eachDayCountBy: undefined,
+          dayRange: undefined,
+          calculatedBy: undefined,
+        });
+      },
       rules: [
         { required: true, message: "Late Calculation Type is required!" },
       ],

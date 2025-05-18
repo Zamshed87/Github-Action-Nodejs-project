@@ -430,7 +430,8 @@ const CreateEditLatePunishmentConfig = () => {
                     punishmentType,
                     leaveDeductType,
                     amountDeductFrom,
-                  }
+                  },
+                  form
                 )}
                 form={form}
               >
