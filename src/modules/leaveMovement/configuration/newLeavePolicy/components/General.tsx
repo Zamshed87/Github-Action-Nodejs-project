@@ -92,29 +92,7 @@ export const General = ({
       },
     });
   };
-  // const getHRPosition = () => {
-  //   const { workplace } = form.getFieldsValue(true);
-  //   // const strWorkplaceIdList = intWorkplaceList
-  //   //   ?.map((item: any) => item.value)
-  //   //   .join(",");
 
-  //   HRPositionDDL?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       DDLType: "AllPosition",
-  //       WorkplaceGroupId: wgId,
-  //       BusinessUnitId: buId,
-  //       strWorkplaceIdList: workplace?.value,
-  //     },
-  //     onSuccess: (data) => {
-  //       data?.forEach((item: any, idx: number) => {
-  //         data[idx].label = item?.PositionName;
-  //         data[idx].value = item?.PositionId;
-  //       });
-  //     },
-  //   });
-  // };
   const getEmployeDesignation = () => {
     const { workplace } = form.getFieldsValue(true);
 
@@ -336,6 +314,8 @@ export const General = ({
                 });
               }
             }}
+            showSearch
+            filterOption={false}
             rules={[
               {
                 required: true,
@@ -356,6 +336,8 @@ export const General = ({
             }
             name="intEmploymentTypeList"
             label=" Employment Type"
+            showSearch
+            filterOption={false}
             placeholder="  Employment Type"
             onChange={(value, op) => {
               if (value && value.includes(0)) {
@@ -425,6 +407,8 @@ export const General = ({
             }
             name="religionListDto"
             label="Religion"
+            showSearch
+            filterOption={false}
             placeholder="Religion"
             onChange={(value, op) => {
               if (value && value.includes(0)) {
