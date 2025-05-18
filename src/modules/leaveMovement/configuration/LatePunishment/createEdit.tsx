@@ -25,7 +25,6 @@ import {
   addHandler,
   addLeaveDeductions,
   createEditLatePunishmentConfig,
-  LatePunishment,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
@@ -36,6 +35,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined } from "@mui/icons-material";
 import View from "./view";
 import { toast } from "react-toastify";
+import { LatePunishment } from "./form";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -86,6 +86,9 @@ const CreateEditLatePunishmentConfig = () => {
   );
 
   const getEmployeDepartment = () => {
+    form.setFieldsValue({
+      department: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
@@ -107,6 +110,9 @@ const CreateEditLatePunishmentConfig = () => {
     });
   };
   const getEmployeDesignation = () => {
+    form.setFieldsValue({
+      designation: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     empDesignationDDL?.action({
@@ -130,6 +136,9 @@ const CreateEditLatePunishmentConfig = () => {
   };
 
   const getEmploymentType = () => {
+    form.setFieldsValue({
+      employmentType: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     employmentTypeDDL?.action({
@@ -421,7 +430,8 @@ const CreateEditLatePunishmentConfig = () => {
                     punishmentType,
                     leaveDeductType,
                     amountDeductFrom,
-                  }
+                  },
+                  form
                 )}
                 form={form}
               >

@@ -34,11 +34,11 @@ const RangeDatePicker = ({ name }: any) => {
           // disabledDate={disabledDate}
           picker={"date"}
           showTime={false}
-          disabledDate={(current) =>
-            current && (current.month() !== 0 || current.year() !== currentYear)
-          }
-          // ✅ Open the calendar in January
-          defaultPickerValue={[januaryStart, januaryStart]}
+          // disabledDate={(current) =>
+          //   current && (current.month() !== 0 || current.year() !== currentYear)
+          // }
+          // // ✅ Open the calendar in January
+          // defaultPickerValue={[januaryStart, januaryStart]}
           popupClassName="single-month-panel"
         />
       </Form.Item>
