@@ -228,6 +228,12 @@ const PfLoanAddEdit = () => {
                 isSearchIcon={true}
                 handleChange={(valueOption) => {
                   isDevServer && console.log({ valueOption });
+                  isDevServer &&
+                    console.log(
+                      `orgId === 14 &&
+                    valueOption?.value &&`,
+                      orgId === 14 && valueOption?.value
+                    );
                   setFieldValue("employee", valueOption);
                   orgId === 14 &&
                     valueOption?.value &&
