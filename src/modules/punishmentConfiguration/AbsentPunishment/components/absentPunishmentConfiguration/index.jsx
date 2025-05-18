@@ -77,9 +77,9 @@ const AbsentPunishmentConfiguration = () => {
                         payload,
                         setLoading,
                         setDetailList,
-                        history
+                        history,
+                        form
                       );
-                      form.resetFields();
                     })
                     .catch((_) => {
                       toast.error("Please fill all required fields.");
@@ -88,7 +88,7 @@ const AbsentPunishmentConfiguration = () => {
               },
             ]}
           />
-          <ConfigSelection form={form} setDetailList={setDetailList} />
+          <ConfigSelection form={form} detailList={detailList} setDetailList={setDetailList} />
         </PCard>
         {detailList?.length > 0 && (
           <PCardBody>

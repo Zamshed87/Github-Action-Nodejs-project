@@ -6,20 +6,20 @@ export const createAbsentPunishment = async (
   payload,
   setLoading,
   setDetailList,
-  history
+  history,
+  form
 ) => {
   setLoading?.(true);
   try {
     const res = await axios.post(`/AbsentPunishment/Create`, payload);
-    console.log(res);
     toast.success(res?.data?.message?.[0] || "Submitted Successfully");
     setLoading?.(false);
     setDetailList?.([]);
-    history.push("/administration/punishmentConfiguration/absentPunishment");
+    form?.resetFields?.();
+    history?.push?.("/administration/punishmentConfiguration/absentPunishment");
   } catch (error) {
     toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
     setLoading?.(false);
-    setDetailList?.([]);
   }
 };
 
@@ -45,7 +45,6 @@ export const detailsHeader = (setDetailList, absentCalculationType, action=true)
             title: "Day Range",
             dataIndex: "dayRange",
             render: (val) => {
-              console.log(val);
               if (val) {
                 const [from, to] = val
                   .split("-")
