@@ -7,6 +7,7 @@ import { dataFormatter } from "../helper";
 import EmployeeDetails from "./EmployeeDetails";
 import Chips from "common/Chips";
 import { dateFormatter } from "utility/dateFormatter";
+import Loading from "common/loading/Loading";
 
 export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
   const { orgId, intAccountId } = useSelector(
@@ -21,6 +22,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
   const [singleFinalSettlementData, setSingleFinalSettlementData] = useState(
     {}
   );
+  const [loading, setLoading] = useState(false);
   const [approvalHistoryData, setApprovalHistoryData] = useState([]);
   const [asesstHistoryData, setAssestHistoryData] = useState([]);
 
@@ -50,9 +52,16 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
       }
     );
   }, [id]);
+  console.log("singleFinalSettlementData", singleFinalSettlementData);
   return (
     <>
-      <EmployeeDetails loading={getSingleEmployeeLoading} employee={empBasic} />
+    {loading && <Loading />}
+      <EmployeeDetails
+        loading={getSingleEmployeeLoading}
+        employee={empBasic}
+        singleFinalSettlementData={singleFinalSettlementData}
+        setLoading={setLoading}
+      />
       <Row gutter={[8, 8]} style={{ marginTop: "20px" }}>
         <Col span={9}>
           <Card
