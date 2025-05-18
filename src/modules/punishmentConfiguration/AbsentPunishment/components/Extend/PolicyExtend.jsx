@@ -73,6 +73,10 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
                 form.setFieldsValue({ workplace: value });
                 getEmploymentTypeDDL();
                 getEmployeeDesignation();
+                form.resetFields([
+                  "employmentTypeList",
+                  "designationList",
+                ]);
               }}
               loading={workplaceDDL.loading}
               rules={[{ required: true, message: "Workplace Is Required" }]}
