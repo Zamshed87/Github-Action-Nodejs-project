@@ -4,31 +4,27 @@ import { shallowEqual, useSelector } from "react-redux";
 import { getEnumData } from "common/api/commonApi";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const useConfigSelectionHook = (form) => {
+const useConfigSelectionHook = (form, config = {}) => {
+  const {
+    fetchWorkplace = false,
+    fetchEmploymentType = false,
+    fetchEligibilityEnum = false,
+    fetchContributionEnum = false,
+    fetchPaidAfterEnum = false,
+    fetchInvestmentEnum = false,
+  } = config;
+
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const workplaceDDL = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
-  const empDesignationDDL = useApiRequest([]);
-  // State declarations
-  const [
-    eligibilityOpts,
-    fetchEligibility,
-    loadingEligibility,
-    setEligibility,
-  ] = useAxiosGet([]);
-  const [
-    contributionOpts,
-    fetchContribution,
-    loadingContribution,
-    setContribution,
-  ] = useAxiosGet([]);
-  const [paidAfterOpts, fetchPaidAfter, loadingPaidAfter, setPaidAfter] =
-    useAxiosGet([]);
-  const [investmentOpts, fetchInvestment, loadingInvestment, setInvestment] =
-    useAxiosGet([]);
+
+  const [eligibilityOpts, fetchEligibility, loadingEligibility, setEligibility] = useAxiosGet([]);
+  const [contributionOpts, fetchContribution, loadingContribution, setContribution] = useAxiosGet([]);
+  const [paidAfterOpts, fetchPaidAfter, loadingPaidAfter, setPaidAfter] = useAxiosGet([]);
+  const [investmentOpts, fetchInvestment, loadingInvestment, setInvestment] = useAxiosGet([]);
 
   const getWorkplaceDDL = () => {
     workplaceDDL?.action({
@@ -48,9 +44,9 @@ const useConfigSelectionHook = (form) => {
       },
     });
   };
+
   const getEmploymentTypeDDL = () => {
     const { workplace } = form?.getFieldsValue(true) || {};
-    console.log(workplace);
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -71,12 +67,18 @@ const useConfigSelectionHook = (form) => {
   };
 
   useEffect(() => {
-    getWorkplaceDDL();
-    getEmploymentTypeDDL();
-    fetchEligibility(getEnumData("PfEligibilityDependOn", setEligibility));
-    fetchContribution(getEnumData("PfContributionDependOn", setContribution));
-    fetchPaidAfter(getEnumData("EmployeeContributionPaidAfter", setPaidAfter));
-    fetchInvestment(getEnumData("MonthlyInvestmentWith", setInvestment));
+    if (fetchWorkplace) getWorkplaceDDL();
+    if (fetchEmploymentType) getEmploymentTypeDDL();
+    if (fetchEligibilityEnum)
+      fetchEligibility(getEnumData("PfEligibilityDependOn", setEligibility));
+    if (fetchContributionEnum)
+      fetchContribution(getEnumData("PfContributionDependOn", setContribution));
+    if (fetchPaidAfterEnum)
+      fetchPaidAfter(
+        getEnumData("EmployeeContributionPaidAfter", setPaidAfter)
+      );
+    if (fetchInvestmentEnum)
+      fetchInvestment(getEnumData("MonthlyInvestmentWith", setInvestment));
   }, [orgId, buId, wgId, wId]);
 
   return {
@@ -84,7 +86,6 @@ const useConfigSelectionHook = (form) => {
     getWorkplaceDDL,
     employmentTypeDDL,
     getEmploymentTypeDDL,
-    empDesignationDDL,
     eligibilityOpts,
     loadingEligibility,
     contributionOpts,

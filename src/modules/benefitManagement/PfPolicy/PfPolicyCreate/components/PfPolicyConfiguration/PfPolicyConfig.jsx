@@ -4,24 +4,19 @@ import useConfigSelectionHook from "./useConfigSelectionHook";
 import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
 const PfPolicyConfig = ({ form }) => {
-    const {
-        workplaceDDL,
-        employmentTypeDDL,
-        empDesignationDDL,
-        getEmploymentTypeDDL,
-        getEmployeeDesignation,
-        absentCalculationTypeDDL,
-        absentAmountDeductionTypeDDL,
-        loadingACT,
-        loadingADT,
-      } = useConfigSelectionHook(form);
+  const { workplaceDDL, employmentTypeDDL, eligibilityOpts, loadingEligibility, getEmploymentTypeDDL } =
+    useConfigSelectionHook(form, {
+      fetchWorkplace: true,
+      fetchEmploymentType: true,
+      fetchEligibilityEnum: true,
+    });
   return (
     <PCardBody className="mb-4">
       <Row gutter={[10, 2]}>
         <Col md={5} sm={12} xs={24}>
           <PInput
             type="text"
-            name="policyName"
+            name="strPolicyName"
             placeholder="Policy Name"
             label="Policy Name"
             rules={[
@@ -55,7 +50,6 @@ const PfPolicyConfig = ({ form }) => {
             onChange={(value) => {
               form.setFieldsValue({ workplace: value });
               getEmploymentTypeDDL();
-              getEmployeeDesignation();
             }}
             loading={workplaceDDL.loading}
             rules={[{ required: true, message: "Workplace Is Required" }]}
@@ -75,18 +69,18 @@ const PfPolicyConfig = ({ form }) => {
         </Col>
         <Col md={5} sm={12} xs={24}>
           <PSelect
-            options={absentCalculationTypeDDL}
+            options={eligibilityOpts}
             name="intPfEligibilityDependOn"
             label="PF Eligibility Depend On"
             placeholder="Select PF Eligibility Depend on"
             onChange={(value) => {
-              form.setFieldsValue({ PFEligibilityDependOn: value });
+              form.setFieldsValue({ intPfEligibilityDependOn: value });
             }}
-            loading={loadingACT}
+            loading={loadingEligibility}
             rules={[
               {
                 required: true,
-                message: "Calculation Type Is Required",
+                message: "PF Eligibility Depend on Is Required",
               },
             ]}
           />

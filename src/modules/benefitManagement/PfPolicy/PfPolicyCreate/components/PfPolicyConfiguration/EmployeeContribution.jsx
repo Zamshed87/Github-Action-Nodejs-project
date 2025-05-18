@@ -87,14 +87,14 @@ const EmployeeContribution = ({ form, saveData, setSaveData }) => {
               />
             </Col>
           )}
-          <Col md={3} sm={12} xs={24}>
+          <Col md={4} sm={12} xs={24}>
             <Form.Item
               name="consecutiveDay"
               valuePropName="checked"
               rules={[
                 { required: true, message: "Employee Contribution is required" },
               ]}
-              style={{ marginTop: 23, marginBottom: 0 }}
+              style={{ marginTop: "16px", marginBottom: 0 }}
             >
               <Checkbox
                 onChange={(e) =>
