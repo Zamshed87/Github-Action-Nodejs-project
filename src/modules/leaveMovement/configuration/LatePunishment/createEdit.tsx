@@ -25,7 +25,6 @@ import {
   addHandler,
   addLeaveDeductions,
   createEditLatePunishmentConfig,
-  LatePunishment,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
@@ -36,6 +35,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined } from "@mui/icons-material";
 import View from "./view";
 import { toast } from "react-toastify";
+import { LatePunishment } from "./form";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
