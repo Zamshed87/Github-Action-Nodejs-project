@@ -98,6 +98,10 @@ const ConfigSelection = ({ form, setDetailList }) => {
                 form.setFieldsValue({ workplace: value });
                 getEmploymentTypeDDL();
                 getEmployeeDesignation();
+                form.resetFields([
+                  "employmentTypeList",
+                  "designationList",
+                ]);
               }}
               loading={workplaceDDL.loading}
               rules={[{ required: true, message: "Workplace Is Required" }]}
@@ -188,9 +192,9 @@ const ConfigSelection = ({ form, setDetailList }) => {
               <Form.Item
                 name="consecutiveDay"
                 valuePropName="checked"
-                rules={[
-                  { required: true, message: "Consecutive Day is required" },
-                ]}
+                // rules={[
+                //   { required: true, message: "Consecutive Day is required" },
+                // ]}
                 style={{ marginTop: 23, marginBottom: 0 }}
               >
                 <Checkbox
