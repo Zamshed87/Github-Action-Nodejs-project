@@ -308,7 +308,7 @@ const Kpis = () => {
                   name="status"
                   options={
                     [
-                      { label: "All", value: null },
+                      { label: "All", value: "" },
                       { label: "Active", value: true },
                       { label: "Inactive", value: false },
                     ] || []
