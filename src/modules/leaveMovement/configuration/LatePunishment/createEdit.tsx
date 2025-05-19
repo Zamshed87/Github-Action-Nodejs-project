@@ -219,7 +219,7 @@ const CreateEditLatePunishmentConfig = () => {
     },
     {
       title: "Late Calculation Type",
-      dataIndex: "lateCalculationType",
+      dataIndex: "lateCalculationTypeDescription",
       fixed: "left",
     },
     {
