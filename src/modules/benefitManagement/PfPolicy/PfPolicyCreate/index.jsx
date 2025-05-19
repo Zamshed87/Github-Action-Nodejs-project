@@ -1,13 +1,13 @@
 import { Form } from "antd";
 import Loading from "common/loading/Loading";
-import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
+import { PCard, PCardHeader, PForm } from "Components";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { createAbsentPunishment, detailsHeader } from "./helper";
 import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
+import { createPFPolicy } from "./helper";
 
 const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
@@ -22,7 +22,6 @@ const AbsentPunishmentConfiguration = () => {
   const [loading, setLoading] = useState(false);
   const [permission, setPermission] = useState(null);
 
-
   useEffect(() => {
     setPermission(
       permissionList.find((item) => item?.menuReferenceId === 30590)
@@ -36,7 +35,6 @@ const AbsentPunishmentConfiguration = () => {
       document.title = "PeopleDesk";
     };
   }, []);
-  const absentCalculationType = Form.useWatch("absentCalculationType", form);
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -50,44 +48,59 @@ const AbsentPunishmentConfiguration = () => {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
+                  const commonFields = [
+                    "strPolicyName",
+                    "strPolicyCode",
+                    "intWorkPlaceId",
+                    "intEmploymentTypeIds",
+                    "intPfEligibilityDependOn",
+                    "intEmployeeContributionPaidAfter",
+                    "intMonthlyInvestmentWith",
+                    "intEmployeeContributionInFixedMonth",
+                  ];
                   form
-                    .validateFields([
-                      "workplaceId",
-                      "employmentTypeList",
-                      "designationList",
-                      "policyName",
-                      "policyDescription",
-                      "absentCalculationType",
-                    ])
+                    .validateFields(commonFields)
                     .then((values) => {
-                      // if (detailList.length < 1) {
-                      //   toast.error("Please add at least one detail.");
-                      //   return;
-                      // }
+                      if (saveData.employeeContributions.length < 1) {
+                        toast.error(
+                          "Please add at least one employee contribution."
+                        );
+                        return;
+                      }
                       const payload = {
-                        workplaceId: values?.workplaceId,
-                        employmentTypeList: values?.employmentTypeList,
-                        designationList: values?.designationList,
-                        policyName: values?.policyName,
-                        policyDescription: values?.policyDescription,
-                        absentCalculationType: values?.absentCalculationType,
-                        // absentPunishmentElementDto: [...detailList],
+                        strPolicyName: values?.strPolicyName,
+                        strPolicyCode: values?.strPolicyCode,
+                        intWorkPlaceId: values?.intWorkPlaceId,
+                        intEmploymentTypeIds: values?.intEmploymentTypeIds,
+                        intPfEligibilityDependOn:
+                          values?.intPfEligibilityDependOn?.value,
+                        employeeContributions: saveData?.employeeContributions,
+                        ...saveData,
+                        intEmployeeContributionPaidAfter: values?.intEmployeeContributionPaidAfter?.value,
+                        intEmployeeContributionInFixedMonth: values?.intEmployeeContributionInFixedMonth,
+                        isPFInvestment: values?.isPFInvestment,
+                        intMonthlyInvestmentWith: values?.intMonthlyInvestmentWith,
                       };
-                      createAbsentPunishment(
-                        payload,
-                        setLoading,
-                        // setDetailList
-                      );
-                      form.resetFields();
+                      createPFPolicy(payload, setLoading, () => {
+                        setSaveData({
+                          employeeContributions: [],
+                          employerContributions: [],
+                        });
+                        form.resetFields();
+                      });
                     })
-                    .catch((_) => {
+                    .catch(() => {
                       toast.error("Please fill all required fields.");
                     });
                 },
               },
             ]}
           />
-          <PfPolicyConfiguration form={form} saveData={saveData} setSaveData={setSaveData} />
+          <PfPolicyConfiguration
+            form={form}
+            saveData={saveData}
+            setSaveData={setSaveData}
+          />
         </PCard>
       </PForm>
     </div>

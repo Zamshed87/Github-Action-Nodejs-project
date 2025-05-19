@@ -1,12 +1,11 @@
 import { PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
-import { Col, Form, Row } from "antd";
+import { Col, Row } from "antd";
 
 const EmployeeContributionPfPayment = ({ form }) => {
   const { paidAfterOpts, loadingPaidAfter } = useConfigSelectionHook(form, {
     fetchPaidAfterEnum: true,
   });
-  const absentCalculationType = Form.useWatch("absentCalculationType", form);
 
   return (
     <>
