@@ -325,7 +325,7 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.amountDeductFrom?.value === 1 &&
+    ...(values?.amountDeductFrom?.value === 1 ||
     values?.amountDeductFrom?.value === 2
       ? [
           {
