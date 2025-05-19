@@ -59,7 +59,7 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
             intRangeTo: values.CintRangeTo,
             strContributionDependOn: values.CintContributionDependOn.label,
             intContributionDependOn: values.CintContributionDependOn.value,
-            numAppraisalValue: values.CnumAppraisalValue,
+            numApprisalValue: values.CnumAppraisalValue,
           };
           setSaveData((prev) => ({
             ...prev,
@@ -75,7 +75,7 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
             intRangeTo: values.intRangeTo,
             strContributionDependOn: values.intContributionDependOn.label,
             intContributionDependOn: values.intContributionDependOn.value,
-            numAppraisalValue: values.numAppraisalValue,
+            numApprisalValue: values.numAppraisalValue,
           };
           setSaveData((prev) => ({
             ...prev,
