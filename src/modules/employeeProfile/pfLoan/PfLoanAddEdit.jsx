@@ -28,6 +28,8 @@ import BackButton from "common/BackButton";
 import PfLoanTable from "./components/pfLoanTable";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { useApiRequest } from "Hooks";
+import { isDevServer } from "App";
 
 const PfLoanAddEdit = () => {
   const dispatch = useDispatch();
@@ -54,6 +56,7 @@ const PfLoanAddEdit = () => {
       permission = item;
     }
   });
+  const pfInfoApi = useApiRequest({});
 
   const [generatedData, setGeneratedData] = useState([]);
   const [loanTypeDDL, setLoanTypeDDL] = useState([]);
@@ -224,7 +227,29 @@ const PfLoanAddEdit = () => {
                 selectedValue={values?.employee}
                 isSearchIcon={true}
                 handleChange={(valueOption) => {
+                  isDevServer && console.log({ valueOption });
+                  isDevServer &&
+                    console.log(
+                      `orgId === 14 &&
+                    valueOption?.value &&`,
+                      orgId === 14 && valueOption?.value
+                    );
                   setFieldValue("employee", valueOption);
+                  orgId === 14 &&
+                    valueOption?.value &&
+                    pfInfoApi.action({
+                      urlKey: "GetEmployeePfAmount",
+                      method: "GET",
+                      params: {
+                        employeeId: valueOption?.value,
+                      },
+                      onSuccess: (res) => {
+                        setFieldValue("loanAmount", res?.pfOwn * 0.7);
+                      },
+                      onError: (error) => {
+                        toast.error(error?.response?.data?.title);
+                      },
+                    });
                 }}
                 placeholder="Search (min 3 letter)"
                 loadOptions={(v) => getSearchEmployeeList(buId, wgId, v, 4)}
@@ -269,7 +294,14 @@ const PfLoanAddEdit = () => {
             </div>
             <div className="col-lg-3">
               <div className="input-field-main">
-                <label>Loan Amount</label>
+                <label>
+                  Loan Amount{" "}
+                  {orgId == 14
+                    ? `( Pf Own:${pfInfoApi?.data?.pfOwn || 0} Pf Total:${
+                        pfInfoApi?.data?.pfTotal || 0
+                      } )`
+                    : ""}
+                </label>
                 <DefaultInput
                   classes="input-sm"
                   value={values?.loanAmount}
@@ -278,6 +310,14 @@ const PfLoanAddEdit = () => {
                   type="number"
                   className="form-control"
                   onChange={(e) => {
+                    if (
+                      orgId === 14 &&
+                      e.target.value > pfInfoApi?.data?.pfOwn * 0.7
+                    ) {
+                      return toast.warning(
+                        "Loan amount should be less than 70% of Own PF amount"
+                      );
+                    }
                     setFieldValue("loanAmount", e.target.value);
                     setGeneratedData([]);
                   }}

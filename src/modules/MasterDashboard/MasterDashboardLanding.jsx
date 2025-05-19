@@ -1,12 +1,10 @@
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import FormikSelect from "../../common/FormikSelect";
 import Loading from "../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../utility/customColor";
 import { dateFormatterForDashboard } from "../../utility/dateFormatter";
-import { customStyles } from "../../utility/selectCustomStyle";
 import ManagementDashboardLanding from "./ManagementDashboardLanding/ManagementDashboardLanding";
 import SelfDashboardLanding from "./SelfDashboardLanding/SelfDashboardLanding";
 import SupervisorDashboardLanding from "./SupervisorDashboardLanding/SupervisorDashboardLanding";
@@ -17,7 +15,7 @@ const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const firstSegment = location.pathname.split("/")[2];
-  const { strDisplayName, isOwner, isOfficeAdmin, orgId, buId } = useSelector(
+  const { strDisplayName, isOwner, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -40,7 +38,7 @@ const MasterDashboardLanding = () => {
     }
   };
 
-  const { values, setValues, errors, touched } = useFormik({
+  const { values, setValues } = useFormik({
     initialValues: {
       dashboardroleType: {
         value: getDashboardId(firstSegment),

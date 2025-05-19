@@ -1,11 +1,12 @@
-import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Descriptions, Typography } from "antd";
+import { FilePdfOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Card, Descriptions, Tooltip, Typography } from "antd";
 import { APIUrl } from "App";
 import moment from "moment";
+import { getPDFAction } from "utility/downloadFile";
 
 const { Title } = Typography;
 
-export default function EmployeeDetails({ employee, loading }) {
+export default function EmployeeDetails({ employee, loading, singleFinalSettlementData, setLoading }) {
   return (
     <Card
       style={{
@@ -18,26 +19,55 @@ export default function EmployeeDetails({ employee, loading }) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 4,
+            justifyContent: "space-between", // distribute space
             marginBottom: 5,
           }}
         >
-          {employee?.imageId ? (
-            <Avatar
-              size={35}
-              src={`${APIUrl}/Document/DownloadFile?id=${employee?.imageId}`}
-            />
-          ) : (
-            <Avatar size={35} icon={<UserOutlined />} />
-          )}
+          {/* Left side: Avatar and employee details */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {employee?.imageId ? (
+              <Avatar
+                size={35}
+                src={`${APIUrl}/Document/DownloadFile?id=${employee?.imageId}`}
+              />
+            ) : (
+              <Avatar size={35} icon={<UserOutlined />} />
+            )}
+            <div>
+              <Title style={{ fontSize: "14px", marginBottom: 0 }}>
+                {employee.strEmployeeName} [{employee.strEmployeeCode}]
+              </Title>
+              <Typography.Text type="secondary">
+                {employee.strEmployeeDesignation} -{" "}
+                {employee.strEmployeeDepartment}
+              </Typography.Text>
+            </div>
+          </div>
+
+          {/* Right side: Add your icon here */}
           <div>
-            <Title style={{ fontSize: "14px", marginBottom: 0 }}>
-              {employee.strEmployeeName} [{employee.strEmployeeCode}]
-            </Title>
-            <Typography.Text type="secondary">
-              {employee.strEmployeeDesignation} -{" "}
-              {employee.strEmployeeDepartment}
-            </Typography.Text>
+            {singleFinalSettlementData?.finalSettlementId && (
+              <Tooltip title="PDF" arrow>
+                <button
+                  className="iconButton"
+                  type="button"
+                  style={{
+                    height: "25px",
+                    width: "25px",
+                  }}
+                >
+                  <FilePdfOutlined
+                    sx={{ color: "#34a853" }}
+                    onClick={(e) => {
+                      getPDFAction(
+                        `/PdfAndExcelReport/GetFinalSettlementReport?separationId=${singleFinalSettlementData?.intSeparationId}&format=PDF`,
+                        setLoading
+                      );
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            )}
           </div>
         </div>
 

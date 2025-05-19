@@ -1,4 +1,4 @@
-import { EditTwoTone, EyeTwoTone, ProfileFilled, ProfileTwoTone } from "@ant-design/icons";
+import { EditTwoTone, EyeTwoTone, FilePdfOutlined, ProfileFilled, ProfileTwoTone } from "@ant-design/icons";
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import { Form, Tooltip } from "antd";
 import axios from "axios";
@@ -8,6 +8,7 @@ import MasterFilter from "common/MasterFilter";
 import PrimaryButton from "common/PrimaryButton";
 import moment from "moment";
 import { dateFormatter } from "utility/dateFormatter";
+import { getPDFAction } from "utility/downloadFile";
 
 // Utility function to format dates
 export const formatDate = (date) => moment(date).format("YYYY-MM-DD");
@@ -115,7 +116,8 @@ export const getFinalSettlementLandingTableColumn = (
     setId,
     empId,
     setEmpId,
-    setClearanceId
+    setClearanceId,
+    setLoading
 ) => {
 
     const confirmSendForApprovalPopup = (finalsettleId, sepId, employeeId) => {
@@ -395,6 +397,28 @@ export const getFinalSettlementLandingTableColumn = (
                             </button>
                         </Tooltip>
                     )}
+                    {data?.intFinalSettlementId && (
+                                <Tooltip title="PDF" arrow>
+                                  <button
+                                    className="iconButton"
+                                    type="button"
+                                    style={{
+                                      height: "25px",
+                                      width: "25px",
+                                    }}
+                                  >
+                                    <FilePdfOutlined
+                                      sx={{ color: "#34a853" }}
+                                      onClick={(e) => {
+                                        getPDFAction(
+                                          `/PdfAndExcelReport/GetFinalSettlementReport?separationId=${data?.separationId}&format=PDF`,
+                                          setLoading
+                                        );
+                                      }}
+                                    />
+                                  </button>
+                                </Tooltip>
+                              )}
 
                 </div>
             ),

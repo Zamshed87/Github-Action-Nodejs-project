@@ -16,7 +16,10 @@ const AbsentPunishmentConfiguration = () => {
     employerContributions: [],
   });
   // redux
-  const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
+  const {
+    permissionList,
+    profileData: { buId, wgId },
+  } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -68,6 +71,8 @@ const AbsentPunishmentConfiguration = () => {
                         return;
                       }
                       const payload = {
+                        intBusinessUnitId: buId,
+                        intWorkPlaceGroupId: wgId,
                         strPolicyName: values?.strPolicyName,
                         strPolicyCode: values?.strPolicyCode,
                         intWorkPlaceId: values?.intWorkPlaceId,
@@ -76,10 +81,13 @@ const AbsentPunishmentConfiguration = () => {
                           values?.intPfEligibilityDependOn?.value,
                         employeeContributions: saveData?.employeeContributions,
                         ...saveData,
-                        intEmployeeContributionPaidAfter: values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth: values?.intEmployeeContributionInFixedMonth,
+                        intEmployeeContributionPaidAfter:
+                          values?.intEmployeeContributionPaidAfter?.value,
+                        intEmployeeContributionInFixedMonth:
+                          values?.intEmployeeContributionInFixedMonth,
                         isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith: values?.intMonthlyInvestmentWith,
+                        intMonthlyInvestmentWith:
+                          values?.intMonthlyInvestmentWith,
                       };
                       createPFPolicy(payload, setLoading, () => {
                         setSaveData({

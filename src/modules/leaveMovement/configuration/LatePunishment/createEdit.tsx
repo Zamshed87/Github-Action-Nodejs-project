@@ -12,7 +12,11 @@ import {
 } from "Components";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams, useParams as UseParams } from "react-router-dom";
+import {
+  useHistory,
+  useParams,
+  useParams as UseParams,
+} from "react-router-dom";
 
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -21,7 +25,6 @@ import {
   addHandler,
   addLeaveDeductions,
   createEditLatePunishmentConfig,
-  LatePunishment,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "common/api";
 import { useApiRequest } from "Hooks";
@@ -32,6 +35,7 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { DeleteOutlined } from "@mui/icons-material";
 import View from "./view";
 import { toast } from "react-toastify";
+import { LatePunishment } from "./form";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -54,6 +58,8 @@ const CreateEditLatePunishmentConfig = () => {
     type?: string;
     id?: string;
   };
+  const history = useHistory();
+
   // redux
   const { profileData } = useSelector(
     (state: { auth: { profileData: any } }) => state?.auth,
@@ -80,6 +86,9 @@ const CreateEditLatePunishmentConfig = () => {
   );
 
   const getEmployeDepartment = () => {
+    form.setFieldsValue({
+      department: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
@@ -101,6 +110,9 @@ const CreateEditLatePunishmentConfig = () => {
     });
   };
   const getEmployeDesignation = () => {
+    form.setFieldsValue({
+      designation: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     empDesignationDDL?.action({
@@ -124,6 +136,9 @@ const CreateEditLatePunishmentConfig = () => {
   };
 
   const getEmploymentType = () => {
+    form.setFieldsValue({
+      employmentType: undefined,
+    });
     const { workplace } = form.getFieldsValue(true);
 
     employmentTypeDDL?.action({
@@ -204,7 +219,7 @@ const CreateEditLatePunishmentConfig = () => {
     },
     {
       title: "Late Calculation Type",
-      dataIndex: "lateCalculationType",
+      dataIndex: "lateCalculationTypeDescription",
       fixed: "left",
     },
     {
@@ -239,27 +254,27 @@ const CreateEditLatePunishmentConfig = () => {
     },
     {
       title: "Punishment Type",
-      dataIndex: "punishmentType",
+      dataIndex: "punishmentTypeDescription",
     },
     {
       title: "Leave Deduct",
-      dataIndex: "leaveDeductType",
+      dataIndex: "leaveDeductTypeDescription",
     },
     {
       title: "Leave Deduct Qty",
       dataIndex: "leaveDeductQty",
     },
     {
-      title: "Amount Deduct Type",
-      dataIndex: "amountDeductType",
+      title: "Amount Deduct from",
+      dataIndex: "amountDeductFromDescription",
     },
     {
-      title: "Amount Deduct",
-      dataIndex: "amountDeduct",
+      title: "Amount Deduct type time",
+      dataIndex: "amountDeductTypeDescription",
     },
     {
       title: "% of Amount (Based on 1 day)",
-      dataIndex: "percentOfAmount",
+      dataIndex: "amountOrPercentage",
     },
     {
       title: "Action",
@@ -341,7 +356,9 @@ const CreateEditLatePunishmentConfig = () => {
   };
 
   const isDeductionSeqShow = (): boolean => {
-    return data?.length > 0 && data.some((item) => item.punishmentTypeId === 1);
+    return (
+      data?.length > 0 && data.some((item) => Number(item.punishmentType) === 1)
+    );
   };
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
@@ -382,7 +399,11 @@ const CreateEditLatePunishmentConfig = () => {
                               data,
                               leaveDeductionData,
                               setLoading,
-                              () => {}
+                              () => {
+                                history.push(
+                                  "/administration/latePunishmentPolicy"
+                                );
+                              }
                             );
                           })
                           .catch(() => {});
@@ -411,7 +432,8 @@ const CreateEditLatePunishmentConfig = () => {
                     punishmentType,
                     leaveDeductType,
                     amountDeductFrom,
-                  }
+                  },
+                  form
                 )}
                 form={form}
               >

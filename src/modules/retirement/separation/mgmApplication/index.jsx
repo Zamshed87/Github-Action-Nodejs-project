@@ -228,7 +228,8 @@ export default function ManagementSeparation() {
                   setOpenModal,
                   permission,
                   setId,
-                  setEmpId
+                  setEmpId,
+                  setLoading
                 )}
                 pages={pages}
                 rowDto={rowDto}
