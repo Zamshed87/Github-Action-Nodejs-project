@@ -59,7 +59,7 @@ export const detailsHeader = ({
     },
     {
       title: getEmpContributionTitle(intContributionDependOn),
-      dataIndex: "numAppraisalValue",
+      dataIndex: "numApprisalValue",
     },
     ...(action
       ? [
