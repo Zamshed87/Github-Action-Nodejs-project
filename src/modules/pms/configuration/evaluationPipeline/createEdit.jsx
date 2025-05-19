@@ -86,9 +86,22 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
   const addHandler = (values) => {
     // Check if stakeholderTypeId matches the last object in stakeholderField
     const lastStakeholder = stakeholderField[stakeholderField.length - 1];
-    const isDuplicate =
-      lastStakeholder &&
-      lastStakeholder.stakeholderTypeId === values.stakeholderType.value;
+    console.log(lastStakeholder, "lastStakeholder");
+    console.log(values.stakeholderType.value, "values.stakeholderType.value");
+
+    let isDuplicate = false;
+    if (
+      values?.stakeholderType?.value == 2 ||
+      values?.stakeholderType?.value == 6
+    ) {
+      isDuplicate =
+        lastStakeholder &&
+        lastStakeholder.stakeholderId === values?.stakeholder?.value;
+    } else {
+      isDuplicate =
+        lastStakeholder &&
+        lastStakeholder.stakeholderTypeId === values.stakeholderType.value;
+    }
 
     if (isDuplicate) {
       toast.error("Stakeholder matches the last entry");
@@ -208,7 +221,7 @@ const EPCreateEdit = ({ modal, setModal, data, cb }) => {
             onSubmit={() => {
               const values = form.getFieldsValue(true);
               form
-                .validateFields(["evaluationCriteria", "leadership"])
+                .validateFields([])
                 .then(() => {
                   console.log("values", levelofLeaderShip);
                   handleEvaluationPipelineSetting(
