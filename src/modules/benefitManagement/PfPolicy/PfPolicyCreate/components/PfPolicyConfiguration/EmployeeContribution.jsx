@@ -1,9 +1,7 @@
 import { DataTable, PButton, PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
 import { Checkbox, Col, Form, Row } from "antd";
-import { toast } from "react-toastify";
 import { detailsHeader } from "./helper";
-import { add } from "lodash";
 
 const EmployeeContribution = ({
   form,
@@ -18,15 +16,18 @@ const EmployeeContribution = ({
       fetchContributionEnum: true,
     }
   );
+  const prefix = company ? "C" : "";
+
   const intPfEligibilityDependOn = Form.useWatch(
-    "intPfEligibilityDependOn",
+    `intPfEligibilityDependOn`,
     form
   );
   const intContributionDependOn = Form.useWatch(
-    "intContributionDependOn",
+    `${prefix}intContributionDependOn`,
     form
   );
-  
+  console.log(intContributionDependOn)
+
   const getRangeFromLabel = (value) => {
     switch (value?.value) {
       case "1":
@@ -68,88 +69,88 @@ const EmployeeContribution = ({
     }
     return `Employee Contribution (${label})`;
   };
+  const setPrefixedFieldValue = (name, value) => {
+    form.setFieldsValue({ [`${prefix}${name}`]: value });
+  };
+
   return (
     <>
       <h3 className="mb-3">
         {company
-          ? "Company/ Employer Contribution Disbursement"
+          ? "Company Contribution Disbursement"
           : "Employee Contribution Collection"}
       </h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
           <Col md={4} sm={12} xs={24}>
             <Form.Item
-              name="consecutiveDay"
+              name={`${prefix}consecutiveDay`}
+              defaultValue={true}
               valuePropName="checked"
-              rules={[
-                {
-                  required: true,
-                  message: "Employee Contribution is required",
-                },
-              ]}
               style={{ marginTop: "16px", marginBottom: 0 }}
             >
               <Checkbox
-                onChange={(e) =>
-                  form.setFieldsValue({ consecutiveDay: e.target.checked })
-                }
+                onChange={(e) => {
+                  setPrefixedFieldValue("consecutiveDay", e.target.checked);
+                }}
               >
-                {company
-                  ? "Company/ Employer Contribution"
-                  : "Is Employee Contribution?"}
+                {company ? "Company Contribution" : "Is Employee Contribution?"}
               </Checkbox>
             </Form.Item>
           </Col>
-          {intPfEligibilityDependOn?.value && intPfEligibilityDependOn?.value != "0" &&  (
-            <>
-              <Col md={4} sm={12} xs={24}>
-                <PInput
-                  type="number"
-                  name="intRangeFrom"
-                  label={getRangeFromLabel(intPfEligibilityDependOn)}
-                  placeholder={getRangeFromLabel(intPfEligibilityDependOn)}
-                  onChange={(value) => {
-                    form.setFieldsValue({ intRangeFrom: value });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: `${getRangeFromLabel(
-                        intPfEligibilityDependOn
-                      )} Is Require`,
-                    },
-                  ]}
-                />
-              </Col>
-              <Col md={4} sm={12} xs={24}>
-                <PInput
-                  type="number"
-                  name="intRangeTo"
-                  label={getRangeToLabel(intPfEligibilityDependOn)}
-                  placeholder={getRangeToLabel(intPfEligibilityDependOn)}
-                  onChange={(value) => {
-                    form.setFieldsValue({ intRangeTo: value });
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: `${getRangeToLabel(
-                        intPfEligibilityDependOn
-                      )} Is Required`,
-                    },
-                  ]}
-                />
-              </Col>
-            </>
-          )}
+          {intPfEligibilityDependOn?.value &&
+            intPfEligibilityDependOn?.value != "0" && (
+              <>
+                <Col md={5} sm={12} xs={24}>
+                  <PInput
+                    type="number"
+                    min={1}
+                    name={`${prefix}intRangeFrom`}
+                    label={getRangeFromLabel(intPfEligibilityDependOn)}
+                    placeholder={getRangeFromLabel(intPfEligibilityDependOn)}
+                    onChange={(value) => {
+                      setPrefixedFieldValue("intRangeFrom", value);
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: `${getRangeFromLabel(
+                          intPfEligibilityDependOn
+                        )} Is Require`,
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={4} sm={12} xs={24}>
+                  <PInput
+                    type="number"
+                    min={1}
+                    name={`${prefix}intRangeTo`}
+                    label={getRangeToLabel(intPfEligibilityDependOn)}
+                    placeholder={getRangeToLabel(intPfEligibilityDependOn)}
+                    onChange={(value) => {
+                      setPrefixedFieldValue("intRangeTo", value);
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: `${getRangeToLabel(
+                          intPfEligibilityDependOn
+                        )} Is Required`,
+                      },
+                    ]}
+                  />
+                </Col>
+              </>
+            )}
           <Col md={4} sm={12} xs={24}>
             <PSelect
               options={contributionOpts}
-              name="intContributionDependOn"
+              name={`${prefix}intContributionDependOn`}
               label="Employee Contribution Depend On"
               placeholder="Select Employee Contribution Depend On"
               onChange={(_, op) => {
-                form.setFieldsValue({ intContributionDependOn: op });
+                setPrefixedFieldValue("intContributionDependOn", op);
               }}
               loading={loadingContribution}
               rules={[
@@ -163,13 +164,14 @@ const EmployeeContribution = ({
           <Col md={5} sm={12} xs={24}>
             <PInput
               type="number"
-              name="numAppraisalValue"
+              min={1}
+              name={`${prefix}numAppraisalValue`}
               label={getEmployeeContributionLabel(intContributionDependOn)}
               placeholder={getEmployeeContributionLabel(
                 intContributionDependOn
               )}
               onChange={(_, op) => {
-                form.setFieldsValue({ amountDeductionType: op });
+                setPrefixedFieldValue("amountDeductionType", op);
               }}
               rules={[
                 {
@@ -192,12 +194,16 @@ const EmployeeContribution = ({
         </Row>
       </PCardBody>
       {data?.length > 0 && (
-        <PCardBody>
+        <PCardBody className="mb-4">
           <DataTable
             bordered
             data={data || []}
             rowKey={(row, idx) => idx}
-            header={detailsHeader({removeData, intContributionDependOn, intPfEligibilityDependOn})}
+            header={detailsHeader({
+              removeData,
+              intContributionDependOn,
+              intPfEligibilityDependOn,
+            })}
           />
         </PCardBody>
       )}

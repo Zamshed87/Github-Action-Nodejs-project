@@ -18,16 +18,49 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
       setSaveData((prev) => ({ ...prev, employeeContributions: newData }));
     }
   };
-console.log("saveData", saveData);
   const addData = (company) => {
+    const commonFields = [
+      "strPolicyName",
+      "strPolicyCode",
+      "intWorkPlaceId",
+      "intEmploymentTypeIds",
+      "intPfEligibilityDependOn",
+    ];
+
+    const employeeFields = [
+      "consecutiveDay",
+      "intRangeFrom",
+      "intRangeTo",
+      "intContributionDependOn",
+      "numAppraisalValue",
+    ];
+
+    const employerFields = [
+      "CconsecutiveDay",
+      "CintRangeFrom",
+      "CintRangeTo",
+      "CintContributionDependOn",
+      "CnumAppraisalValue",
+    ];
+
+    const validateFields = [
+      ...commonFields,
+      ...(company ? employerFields : employeeFields),
+    ];
     form
-      .validateFields()
+      .validateFields(validateFields)
       .then((values) => {
-        const contributionData = {
-          ...values,
-        };
+        let contributionData = {};
 
         if (company) {
+          contributionData = {
+            strPfConfigurationPart: "Employee",
+            intRangeFrom: values.CintRangeFrom,
+            intRangeTo: values.CintRangeTo,
+            strContributionDependOn: values.CintContributionDependOn.label,
+            intContributionDependOn: values.CintContributionDependOn.value,
+            numAppraisalValue: values.CnumAppraisalValue,
+          };
           setSaveData((prev) => ({
             ...prev,
             employerContributions: [
@@ -36,6 +69,14 @@ console.log("saveData", saveData);
             ],
           }));
         } else {
+          contributionData = {
+            strPfConfigurationPart: "Company",
+            intRangeFrom: values.intRangeFrom,
+            intRangeTo: values.intRangeTo,
+            strContributionDependOn: values.intContributionDependOn.label,
+            intContributionDependOn: values.intContributionDependOn.value,
+            numAppraisalValue: values.numAppraisalValue,
+          };
           setSaveData((prev) => ({
             ...prev,
             employeeContributions: [
@@ -45,10 +86,11 @@ console.log("saveData", saveData);
           }));
         }
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Please fill all required fields.");
       });
   };
+
   return (
     <>
       <PfPolicyConfig form={form} />
