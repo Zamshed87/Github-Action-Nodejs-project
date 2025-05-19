@@ -259,7 +259,7 @@ const mapLatePunishmentPayload = (
         leaveDeductTypeDescription: item.leaveDeductTypeDescription || "",
         leaveDeductQty: item.leaveDeductQty || 0,
         amountDeductFrom: item.amountDeductFrom || 0,
-        amountDeductFromDescription: item.amountDeductFrom || "",
+        amountDeductFromDescription: item.amountDeductFromDescription || 0,
         amountDeductType: item.amountDeductType || 0,
         amountDeductTypeDescription: item.amountDeductTypeDescription || "",
         amountOrPercentage: item.amountOrPercentage || 0,

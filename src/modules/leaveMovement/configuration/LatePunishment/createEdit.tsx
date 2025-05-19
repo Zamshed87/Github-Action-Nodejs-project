@@ -356,7 +356,9 @@ const CreateEditLatePunishmentConfig = () => {
   };
 
   const isDeductionSeqShow = (): boolean => {
-    return data?.length > 0 && data.some((item) => item.punishmentTypeId === 1);
+    return (
+      data?.length > 0 && data.some((item) => Number(item.punishmentType) === 1)
+    );
   };
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
