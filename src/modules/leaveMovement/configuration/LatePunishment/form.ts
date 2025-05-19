@@ -231,7 +231,7 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.lateCalculationType?.value !== 3
+    ...(values?.lateCalculationType?.value === 1
       ? [
           {
             type: "component",
@@ -325,7 +325,7 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.amountDeductFrom?.value === 1 &&
+    ...(values?.amountDeductFrom?.value === 1 ||
     values?.amountDeductFrom?.value === 2
       ? [
           {

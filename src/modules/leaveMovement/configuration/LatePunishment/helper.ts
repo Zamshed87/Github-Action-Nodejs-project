@@ -48,8 +48,11 @@ function isDayRangeOverlapping(data: any[], values: any): boolean {
     new Date(values.dayRange[0]).getUTCDate(),
     new Date(values.dayRange[1]).getUTCDate(),
   ];
+  const conflictingPolicies = data.filter(
+    (policy) => policy.lateCalculationTypeId === 2
+  );
 
-  for (const policy of data) {
+  for (const policy of conflictingPolicies) {
     const [oldStart, oldEnd] = policy.dayRangeId;
 
     const isOverlapping =
@@ -137,9 +140,8 @@ export const addHandler = (
       department: values.department?.label || values.department,
       departmentId: values.department?.value || null,
       policyDescription: values.policyDescription,
-      lateCalculationType:
-        values.lateCalculationType?.label || values.lateCalculationType,
-      lateCalculationTypeId: values.lateCalculationType?.value || null,
+      lateCalculationTypeDescription: values.lateCalculationType?.label || "-",
+      lateCalculationType: values.lateCalculationType?.value || null,
       eachDayCountBy: values.eachDayCountBy?.label || values.eachDayCountBy,
       eachDayCountById: values.eachDayCountBy?.value || null,
       dayRange: dayRange,
@@ -154,18 +156,16 @@ export const addHandler = (
       maximumLateTime: values.maximumLateTime || 0,
       lateTimeCalculatedBy: values.calculatedBy?.label || values.calculatedBy,
       lateTimeCalculatedById: values.calculatedBy?.value || null,
-      punishmentType: values.punishmentType?.label || values.punishmentType,
-      punishmentTypeId: values.punishmentType?.value || null,
-      leaveDeductType: values.leaveDeductType?.label || values.leaveDeductType,
-      leaveDeductTypeId: values.leaveDeductType?.value || null,
+      punishmentType: values.punishmentType?.value || 0,
+      punishmentTypeDescription: values.punishmentType?.label || "-",
+      leaveDeductType: values.leaveDeductType?.value || 0,
+      leaveDeductTypeDescription: values.leaveDeductType?.label || "-",
       leaveDeductQty: values.leaveDeductQty,
-      amountDeductFrom:
-        values.amountDeductFrom?.label || values.amountDeductFrom,
-      amountDeductFromId: values.amountDeductFrom?.value || null,
-      amountDeductType:
-        values.amountDeductType?.label || values.amountDeductType,
-      amountDeductTypeId: values.amountDeductType?.value || null,
-      amountPercentage: values.amountPercentage,
+      amountDeductFromDescription: values.amountDeductFrom?.label || "-",
+      amountDeductFrom: values.amountDeductFrom?.value || 0,
+      amountDeductTypeDescription: values.amountDeductType?.label || "-",
+      amountDeductType: values.amountDeductType?.value || 0,
+      amountOrPercentage: values.amountPercentage,
     },
   ]);
   form.resetFields(fieldsToReset);
@@ -173,18 +173,18 @@ export const addHandler = (
 
 const fieldsToReset = [
   "lateCalculationType",
-  // "eachDayCountBy",
-  // "dayRange",
-  // "isConsecutiveDay",
-  // "minimumLateTime",
-  // "maximumLateTime",
-  // "calculatedBy",
-  // "punishmentType",
-  // "leaveDeductType",
-  // "leaveDeductQty",
-  // "amountDeductFrom",
-  // "amountDeductType",
-  // "amountPercentage",
+  "eachDayCountBy",
+  "dayRange",
+  "isConsecutiveDay",
+  "minimumLateTime",
+  "maximumLateTime",
+  "calculatedBy",
+  "punishmentType",
+  "leaveDeductType",
+  "leaveDeductQty",
+  "amountDeductFrom",
+  "amountDeductType",
+  "amountPercentage",
 ]; // dynamically computed array
 
 export const createEditLatePunishmentConfig = async (
@@ -245,26 +245,28 @@ const mapLatePunishmentPayload = (
     actionBy: values?.employeeId || 0,
     elements: dataState.map(
       (item: any): LatePunishmentElement => ({
-        lateCalculationType: item.lateCalculationTypeId || 0,
-        lateCalculationTypeDescription: item.lateCalculationType || "",
+        lateCalculationType: item.lateCalculationType || 0,
+        lateCalculationTypeDescription:
+          item.lateCalculationTypeDescription || "",
         eachDayCountBy: item.eachDayCountById || 0,
         startDay: item.dayRange ? parseInt(item.dayRange.split("-")[0]) : 0,
         endDay: item.dayRange ? parseInt(item.dayRange.split("-")[1]) : 0,
         isConsecutiveDay: item.isConsecutiveDay || false,
         minimumLateTime: item.minimumLateTime || 0,
         maximumLateTime: item.maximumLateTime || 0,
-        lateTimeCalculatedBy: item.lateTimeCalculatedById || 0,
-        lateTimeCalculatedByDescription: item.lateTimeCalculatedBy || "",
-        punishmentType: item.punishmentTypeId || 0,
-        punishmentTypeDescription: item.punishmentType || "",
-        leaveDeductType: item.leaveDeductTypeId || 0,
-        leaveDeductTypeDescription: item.leaveDeductType || "",
+        lateTimeCalculatedBy: item.lateTimeCalculatedBy || 0,
+        lateTimeCalculatedByDescription:
+          item.lateTimeCalculatedByDescription || "",
+        punishmentType: item.punishmentType || 0,
+        punishmentTypeDescription: item.punishmentTypeDescription || "",
+        leaveDeductType: item.leaveDeductType || 0,
+        leaveDeductTypeDescription: item.leaveDeductTypeDescription || "",
         leaveDeductQty: item.leaveDeductQty || 0,
-        amountDeductFrom: item.amountDeductFromId || 0,
-        amountDeductFromDescription: item.amountDeductFrom || "",
-        amountDeductType: item.amountDeductTypeId || 0,
-        amountDeductTypeDescription: item.amountDeductType || "",
-        amountOrPercentage: item.amountPercentage || 0,
+        amountDeductFrom: item.amountDeductFrom || 0,
+        amountDeductFromDescription: item.amountDeductFromDescription || 0,
+        amountDeductType: item.amountDeductType || 0,
+        amountDeductTypeDescription: item.amountDeductTypeDescription || "",
+        amountOrPercentage: item.amountOrPercentage || 0,
         id: item.id || 0,
       })
     ),

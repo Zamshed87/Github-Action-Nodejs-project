@@ -219,7 +219,7 @@ const CreateEditLatePunishmentConfig = () => {
     },
     {
       title: "Late Calculation Type",
-      dataIndex: "lateCalculationType",
+      dataIndex: "lateCalculationTypeDescription",
       fixed: "left",
     },
     {
@@ -254,27 +254,27 @@ const CreateEditLatePunishmentConfig = () => {
     },
     {
       title: "Punishment Type",
-      dataIndex: "punishmentType",
+      dataIndex: "punishmentTypeDescription",
     },
     {
       title: "Leave Deduct",
-      dataIndex: "leaveDeductType",
+      dataIndex: "leaveDeductTypeDescription",
     },
     {
       title: "Leave Deduct Qty",
       dataIndex: "leaveDeductQty",
     },
     {
-      title: "Amount Deduct Type",
-      dataIndex: "amountDeductType",
+      title: "Amount Deduct from",
+      dataIndex: "amountDeductFromDescription",
     },
     {
-      title: "Amount Deduct",
-      dataIndex: "amountDeduct",
+      title: "Amount Deduct type time",
+      dataIndex: "amountDeductTypeDescription",
     },
     {
       title: "% of Amount (Based on 1 day)",
-      dataIndex: "percentOfAmount",
+      dataIndex: "amountOrPercentage",
     },
     {
       title: "Action",
@@ -356,7 +356,9 @@ const CreateEditLatePunishmentConfig = () => {
   };
 
   const isDeductionSeqShow = (): boolean => {
-    return data?.length > 0 && data.some((item) => item.punishmentTypeId === 1);
+    return (
+      data?.length > 0 && data.some((item) => Number(item.punishmentType) === 1)
+    );
   };
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
