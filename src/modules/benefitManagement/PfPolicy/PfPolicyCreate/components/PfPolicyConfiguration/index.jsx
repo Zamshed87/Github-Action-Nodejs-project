@@ -50,7 +50,6 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
     form
       .validateFields(validateFields)
       .then((values) => {
-        console.log("values", values);
         let contributionData = {};
 
         if (company) {
