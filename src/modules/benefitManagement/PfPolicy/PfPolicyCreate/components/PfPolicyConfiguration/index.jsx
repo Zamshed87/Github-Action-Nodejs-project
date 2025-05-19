@@ -7,10 +7,10 @@ import { toast } from "react-toastify";
 const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
   const removeData = (index, company) => {
     if (company) {
-      const newData = saveData?.employerContributions?.filter(
+      const newData = saveData?.companyContributions?.filter(
         (_, i) => i !== index
       );
-      setSaveData((prev) => ({ ...prev, employerContributions: newData }));
+      setSaveData((prev) => ({ ...prev, companyContributions: newData }));
     } else {
       const newData = saveData?.employeeContributions?.filter(
         (_, i) => i !== index
@@ -59,12 +59,12 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
             intRangeTo: values.CintRangeTo,
             strContributionDependOn: values.CintContributionDependOn.label,
             intContributionDependOn: values.CintContributionDependOn.value,
-            numApprisalValue: values.CnumAppraisalValue,
+            numAppraisalValue: values.CnumAppraisalValue,
           };
           setSaveData((prev) => ({
             ...prev,
-            employerContributions: [
-              ...(prev.employerContributions || []),
+            companyContributions: [
+              ...(prev.companyContributions || []),
               contributionData,
             ],
           }));
@@ -75,7 +75,7 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
             intRangeTo: values.intRangeTo,
             strContributionDependOn: values.intContributionDependOn.label,
             intContributionDependOn: values.intContributionDependOn.value,
-            numApprisalValue: values.numAppraisalValue,
+            numAppraisalValue: values.numAppraisalValue,
           };
           setSaveData((prev) => ({
             ...prev,
@@ -102,7 +102,7 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
       />
       <EmployeeContribution
         form={form}
-        data={saveData?.employerContributions}
+        data={saveData?.companyContributions}
         addData={() => addData(true)}
         removeData={(index) => removeData(index, true)}
         company={true}

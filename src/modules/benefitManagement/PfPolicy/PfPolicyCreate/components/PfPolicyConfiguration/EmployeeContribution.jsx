@@ -26,7 +26,6 @@ const EmployeeContribution = ({
     `${prefix}intContributionDependOn`,
     form
   );
-  console.log(intContributionDependOn)
 
   const getRangeFromLabel = (value) => {
     switch (value?.value) {
