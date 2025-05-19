@@ -6,8 +6,9 @@ export const detailsHeader = ({
   intContributionDependOn,
   action = true,
 }) => {
-  const PEDO = intContributionDependOn?.value && intContributionDependOn?.value !== "0";
-   
+  const PEDO =
+    intContributionDependOn?.value && intContributionDependOn?.value !== "0";
+
   const getDependOnTitle = (value) => {
     switch (value?.value) {
       case "1":
@@ -48,19 +49,17 @@ export const detailsHeader = ({
           {
             title: getDependOnTitle(intPfEligibilityDependOn),
             dataIndex: "intContributionDependOn",
-            render: (val) => val ?? "-",
+            render: (_, rec) => rec?.intRangeFrom ? `${rec.intRangeFrom} to ${rec.intRangeTo}` : "-",
           },
         ]
       : []),
     {
       title: "Employee Contribution Depend On",
-      dataIndex: "amountDeductionTypeName",
-      render: (val) => val ?? "-",
+      render: (_, rec) => rec?.strContributionDependOn ?? "-",
     },
     {
       title: getEmpContributionTitle(intContributionDependOn),
-      dataIndex: "consecutiveDay",
-      render: (val) => val ?? "-",
+      dataIndex: "numAppraisalValue",
     },
     ...(action
       ? [
